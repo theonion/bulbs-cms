@@ -1,0 +1,407 @@
+<style>
+
+/* edit page nav */
+.edit-page-nav.navbar-nav {
+    margin: 0 auto;
+    width: 850px;
+    float:none;
+}
+.edit-page-nav .content-status>a {
+    font-size:12px;
+    border-bottom: 1px #777  dotted;
+    padding:0px;
+    margin: 15px;
+}
+
+
+#content-body .document-tools.fixed {
+    position:fixed;
+}
+.drawer{
+    position: fixed;
+    left: 0;
+    background-color: rgb(230, 230, 240);
+    z-index: 250;
+    -webkit-transition: margin 0.25s, padding 0.25s;
+}
+
+.edit-page {
+    clear:both;
+}
+.bottom-drawer{
+    display: none;
+    bottom: 0px;
+    margin-bottom: 0px;
+}
+
+#tag-list{
+    margin: 0;
+    display: block;
+}
+#tag-list{
+
+}
+.image-edit-container{
+    position: relative;
+}
+.image-edit-overlay{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: none;
+}
+.image-edit-container:hover .image-edit-overlay{
+    display: block;
+}
+
+.metadata {
+    padding: 10px 65px;
+}
+input[name=feature-type]{
+    border: 0px none black;
+    background-color: #e9e9e9;
+}
+
+#info-row {
+    position: relative;
+    width:820px;
+    margin: 20px auto 0;
+}
+
+.content-field input{
+    -webkit-transition: border 0.3s ease-in-out;
+    -o-transition: border 0.3s ease-in-out;
+    -mozilla-transition: border 0.3s ease-in-out;
+    transition: border 0.3s ease-in-out;
+
+    -webkit-transition: border 0.3s ease-in-out;
+    -o-transition: border 0.3s ease-in-out;
+    -mozilla-transition: border 0.3s ease-in-out;
+    transition: border 0.3s ease-in-out;
+
+    border: 1px solid rgba(65, 65, 65, 0.3);
+    padding: 4px 6px 4px 6px;
+    background-color: rgb(250,250,250);
+    font-weight: normal;
+    font-size: 14px;
+    height: 30px;
+    -webkit-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    -mozilla-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+
+}
+.content-field input:focus,.content-field input:hover{
+    border: 1px solid #333;
+    background-color: rgb(245,245,245);
+}
+.content-field label{
+    margin-bottom: 0px;
+    font-size: 11px;
+}
+
+.new-tag-input{
+    min-width: 90px;
+}
+.content-edit-tags .tag{
+    margin-right: 4px;
+}
+input.new-feature-type{
+    background-color: #FFC761;
+}
+.delete-rating{
+    position: absolute;
+    font-size: 8px;
+    padding: 0px 2px 0px 2px;
+    left: 1095px;
+}
+
+#authors{
+    min-height: 32px;
+    padding: 0px 100px;
+}
+#authors .taglikeobject{
+    margin-bottom: 3px;
+}
+
+#add-review{
+    display: block;
+    font-size: 10px;
+    margin-bottom: 10px;
+}
+
+#add-review-modal a{
+    cursor: pointer;
+}
+.extra-info-section:not(:first-child){
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #E5E5E5;
+}
+.sponsor-info .main-image .image{
+    width: 80px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.sponsor-info .main-image .image-edit-overlay .edit{
+    right: 40px;
+}
+.sponsor-info .main-image .image-edit-overlay .remove, .sponsor-info .main-image .image-edit-overlay .edit{
+    top: -3px;
+    bottom: auto;
+    left: auto;
+}
+.main-image-meta, .sponsor-info-field{
+    padding: 0px 100px;
+}
+.main-image-meta, .main-image-meta input, .sponsor-info-field, .sponsor-info-field input{
+    width: 100%;
+}
+.main-image-meta input{
+    text-align: center;
+}
+.metadata .row{
+    margin: 5px;
+    border-bottom: 1px solid rgba(65,65,65,0.3);
+    padding-bottom: 10px;
+    margin-top: 10px;
+}
+
+#extra-info-modal .main-image img{ width: 100%; }
+#extra-info-modal .sponsor-info .main-image-meta, #extra-info-modal .sponsor-info .main-image .edit{ display: none; }
+#extra-info-modal .main-image.thumbnail-image .remove{ display: none; }
+
+#cropperModal{ z-index: 100000; }
+
+.errors-panel ul{
+    list-style-type: none;
+}
+
+.rating{
+    overflow: auto;
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+.rating .letter{
+    position: relative;
+    z-index: 5;
+    float: left;
+    width: 63px;
+    height: 63px;
+    font-size: 40px;
+    background-color: #F1F1F1;
+    border: 1px solid #fff;
+    text-align: center;
+}
+.rating .media{
+    float: left;
+    height: 63px;
+    width: 100%;
+    padding-left:67px;
+    margin-top: -63px;
+    border: 1px solid #fff;
+}
+.rating .media input{
+    display: block;
+}
+.rating .media .media-field{
+    float: left;
+    margin-right: 10px;
+}
+
+.rating .media .media-field input[name=episode]{
+    width: 43px;
+}
+.rating .media .media-field input[name=season]{
+    width: 43px;
+}
+.rating .media .media-field input[name=title]{
+    width: 220px;
+}
+
+
+.status-bar {
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    width: 60px;
+    font-size: 14px;
+    text-align: right;
+    color: #666;
+    padding: 15px 20px 15px 20px;
+    background-color: #ddd;
+}
+
+#embed-modal textarea,
+#embed-modal input[type=text] {
+    width: 100%;
+    max-width: 100%;
+    font-family: courier, fixed;
+    font-size:14px;
+
+    padding:5px;
+    background-color: #F1F1F1;
+}
+
+#embed-modal textarea {
+    height: 200px;
+    resize:vertical;
+}
+
+</style>
+
+<div id="next-modal"
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="create-new"
+    aria-hidden="true"
+    data-backdrop="false">
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Create content</h4>
+            </div><!--/modal-header-->
+            <div class="modal-body">
+                <div class="form-group">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<imagedrawer open-image-drawer="openImageDrawer" close-image-drawer="closeImageDrawer" article="article" />
+
+<div id="info-row">
+    <div id="alert-area" class="pull-left">
+        <div class="alert alert-danger errors-panel" ng-show="errors">
+            <ul>
+                <li ng-repeat="(field, errorList) in errors">
+                    {{field}}
+                    <ul style="margin-left: 15px;">
+                        <li ng-repeat="error in errorList">
+                            {{error}}
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="edit-page row">
+    <div id="content-wrapper" class="container">
+        <div ng-include="PARTIALS_URL + 'edit/' + (article.polymorphic_ctype || 'loading') + '.html'"></div>
+    </div>
+    <div class="status-bar"><span class="wordcount"></span></div>
+</div>
+
+<div id="thumbnail-modal"
+    class="modal fade edit-page image-modal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="thumbnail"
+    aria-hidden="true"
+    data-backdrop="true">
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Change Thumbnail</h4>
+            </div><!--/modal-header-->
+            <div class="modal-body">
+                <div class="main-image thumbnail-image extra-info-section">
+                    <label>Thumbnail Image</label>
+                    <titleimage article="article" image="article.image" caption="false" placeholder-text="Thumbnail Image" />
+                </div>
+            </div><!--/modal-body-->
+            <div class="modal-footer">
+                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Done</button>
+            </div><!--/modal-footer-->
+        </div><!--/modal-content-->
+    </div><!--/modal-dialog-->
+</div><!--/modal-->
+
+<div id="sponsored-content-modal"
+    class="modal fade edit-page image-modal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="sponsored-content"
+    aria-hidden="true"
+    data-backdrop="true">
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Sponsored Content</h4>
+            </div><!--/modal-header-->
+            <div class="modal-body">
+                <div class="sponsor-info extra-info-section">
+                    <label>Sponsor Info</label>
+                    <div class="sponsor-info-field content-field">
+                        <label>Sponsor Name</label>
+                        <input type="text" ng-model="article.sponsor_name" />
+                    </div>
+                    <div class="sponsor-info-field content-field">
+                        <label>Sponsor Image</label>
+                    </div>
+                    <div class="main-image">
+                        <titleimage article="article" image="article.sponsor_image" caption="false" placeholder-text="Sponsor Image" format="png" crop="original" />
+                    </div>
+                    <div class="sponsor-info-field content-field">
+                        <label>Pixel</label>
+                        <input type="text" ng-model="article.client_pixel" />
+                    </div>
+                </div>
+            </div><!--/modal-body-->
+            <div class="modal-footer">
+                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Done</button>
+            </div><!--/modal-footer-->
+        </div><!--/modal-content-->
+    </div><!--/modal-dialog-->
+</div><!--/modal-->
+<script>
+$(".image-modal").on("shown.bs.modal", function(){
+    window.picturefill();
+});
+</script>
+
+
+<div id="embed-modal"
+    class="modal fade bs-modal-lg edit-page"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="extra-info"
+    aria-hidden="true"
+    data-backdrop="true">
+        <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Embed something</h4>
+            </div><!--/modal-header-->
+            <div class="modal-body">
+                <label style="display:none">Source URL</label>
+                <input type="text" style="display:none" class="embed-source"></input>
+                <label>Embed code</label>
+                <textarea class="embed-body"></textarea>
+                <div class="embed-error alert alert-danger" style="display:none"><strong>Can't embed nothin'</strong>. Be sure to enter something into the embed code field.</div>
+                <label>Caption (optional)</label>
+                <input type="text" class="embed-caption"></input>
+
+
+            </div><!--/modal-body-->
+            <div class="modal-footer">
+                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                <button id="set-embed-button" class="btn btn-primary" aria-hidden="true">Embed</button>
+            </div><!--/modal-footer-->
+        </div><!--/modal-content-->
+    </div><!--/modal-dialog-->
+</div>
+
+<publish-content></publish-content>
+<trash-content></trash-content>
+<login></login>
