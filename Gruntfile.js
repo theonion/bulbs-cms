@@ -73,7 +73,7 @@ module.exports = function (grunt) {
       }],
       auth: {
         authRealm : '.avclub.com',
-        authList : ['sbloomfield:atmosphere99']
+        authList : ['sbloomfield:hunter2']
       },
       livereload: {
         options: {
