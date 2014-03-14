@@ -42,6 +42,10 @@ angular.module('bulbsCmsApp', [
     STATIC_URL + "**"]);*/
 
   })
+  .config(['$httpProvider', function($httpProvider) {
+    // NOTE: this probably isn't quite the right place for this:
+    $httpProvider.defaults.withCredentials = true;
+  }])
   .run(function($rootScope, $http, $cookies){
     // set the CSRF token here
     $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
