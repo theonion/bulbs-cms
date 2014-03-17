@@ -11,9 +11,9 @@ describe('Filter: truncateByCharacters', function () {
     truncateByCharacters = $filter('truncateByCharacters');
   }));
 
-  it('should return the input prefixed with "truncateByCharacters filter:"', function () {
+  it('should return the input with no changes when passed no argument', function () {
     var text = 'angularjs';
-    expect(truncateByCharacters(text)).toBe('truncateByCharacters filter: ' + text);
+    expect(truncateByCharacters(text)).toBe(text);
   });
 
 });

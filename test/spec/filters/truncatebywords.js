@@ -11,9 +11,9 @@ describe('Filter: truncateByWords', function () {
     truncateByWords = $filter('truncateByWords');
   }));
 
-  it('should return the input prefixed with "truncateByWords filter:"', function () {
+  it('should return the input with no changes when passed no argument', function () {
     var text = 'angularjs';
-    expect(truncateByWords(text)).toBe('truncateByWords filter: ' + text);
+    expect(truncateByWords(text)).toBe(text);
   });
 
 });

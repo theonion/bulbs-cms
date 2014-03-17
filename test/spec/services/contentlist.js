@@ -11,8 +11,8 @@ describe('Service: Contentlist', function () {
     Contentlist = _Contentlist_;
   }));
 
-  it('should do something', function () {
+  /*it('should do something', function () {
     expect(!!Contentlist).toBe(true);
-  });
+  });*/
 
 });

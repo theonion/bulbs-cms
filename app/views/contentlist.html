@@ -83,7 +83,7 @@
                                 <dt ng-show="article.feature_type">Feature type</dt>
                                 <dd class="feature-type">{{ article.feature_type }}</dd>
 
-                                <dt ng-show"article.tags">Tags</dt>
+                                <dt ng-show="article.tags">Tags</dt>
                                 <dd class="section"><span ng-repeat="tag in article.tags">{{ tag.name | truncateByWords:3 }}<span ng-show="!$last">, </span></span></dd>
 
                                 <dt ng-show="article.id">Article ID</dt>

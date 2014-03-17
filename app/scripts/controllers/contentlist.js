@@ -20,7 +20,7 @@ angular.module('bulbsCmsApp')
         if(typeof(authors) === 'string'){
           authors = [authors];
         }
-        if(authors.length === 1 && authors[0] === $window.currentUser){
+        if(authors.length === 1 && authors[0] === $window.current_user){
           $scope.myStuff = true;
         }else{
           $scope.myStuff = false;
@@ -43,7 +43,7 @@ angular.module('bulbsCmsApp')
     $('#meOnly').on('switch-change', function (e,data) {
         var value = data.value;
         if(value === true){
-          $location.search().authors = [$window.currentUser];
+          $location.search().authors = [$window.current_user];
           $scope.getContent();
         } else if (value === false){
           delete $location.search().authors;
