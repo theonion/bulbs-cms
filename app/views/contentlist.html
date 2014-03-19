@@ -30,10 +30,10 @@
                 <div class="panel-heading row" data-toggle="collapse" href="#collapse-{{ article.id }}">
                     <div class="heading col-xs-12 col-sm-8">
                         <strong>{{ article.feature_type }}</strong><br>
-                        <a class="panel-title collapsed" ng-bind-html="article.title | truncateByWords:15"></a></div>
+                        <a class="panel-title collapsed" ng-bind-html="article.title | words:15"></a></div>
                     <div class="published col-xs-12 col-sm-4">
                         <div class="publish-widget small" ng-hide="article.id == -1">
-                            <span ng-show="article.authors">By {{ article.authors.0.first_name | truncateByCharacters: 1 }} {{ article.authors.0.last_name }}
+                            <span ng-show="article.authors">By {{ article.authors.0.first_name | characters: 1 }} {{ article.authors.0.last_name }}
                             <span ng-show="article.authors.length > 1">and {{ article.authors.length - 1}} others</span> &middot; </span>
 
 
@@ -84,7 +84,7 @@
                                 <dd class="feature-type">{{ article.feature_type }}</dd>
 
                                 <dt ng-show="article.tags">Tags</dt>
-                                <dd class="section"><span ng-repeat="tag in article.tags">{{ tag.name | truncateByWords:3 }}<span ng-show="!$last">, </span></span></dd>
+                                <dd class="section"><span ng-repeat="tag in article.tags">{{ tag.name | words:3 }}<span ng-show="!$last">, </span></span></dd>
 
                                 <dt ng-show="article.id">Article ID</dt>
                                 <dd>{{ article.id }}</dd>
@@ -97,7 +97,7 @@
     </table>
 </div>
 <div class="row">
-    <pagination max-size="10" total-items="totalItems" page="currentPage" items-per-page="20" on-select-page="goToPage(page);" boundary-links="true"></pagination>
+    <pagination max-size="10" total-items="totalItems" page="currentPage" items-per-page="20" on-select-page="go_to_page(page);" boundary-links="true"></pagination>
 </div>
 <publish-content></publish-content>
 <trash-content></trash-content>
