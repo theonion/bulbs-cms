@@ -42,8 +42,8 @@
     "karma": "~0.10.9",
     "karma-ng-html2js-preprocessor": "~0.1.0",
     "grunt-angular-templates": "~0.5.3",
-    "connect-modrewrite": "^0.6.4-pre",
-    "connect-livereload": "^0.3.2"
+    "connect-modrewrite": "0.6.4-pre",
+    "connect-livereload": "0.3.2"
   },
   "engines": {
     "node": ">=0.8.0"
