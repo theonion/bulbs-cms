@@ -344,9 +344,11 @@ module.exports = function (grunt) {
     //ngtemplates settings
     ngtemplates: {
       bulbsCmsApp: {
-        src: '<%= yeoman.app %>/views/{,*/}*.html',
+        cwd: '<%= yeoman.app %>',
+        src: 'views/{,*/}*.html',
         dest: '.tmp/views/templates.js',
         options: {
+          url:    function(url) { return '/' + url; },
           htmlmin: {
             collapseBooleanAttributes:      true,
             collapseWhitespace:             true,
