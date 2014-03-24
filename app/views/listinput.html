@@ -1,0 +1,31 @@
+<style>
+.preview{ }
+.all-container{
+	display: none;
+}
+.all{
+	position: absolute;
+	background-color: #F1F1F1;
+	z-index: 100;
+	border: 1px solid #CCC;
+	padding: 2px 5px 2px 5px;
+}
+</style>
+<div class="list-input-container">
+	
+	<label for="label-{{noun}}" class="control-label small list-input-label">{{label}}</label>
+	<input class="form-control input-sm" type="text" id="label-{{noun}}" placeholder="Add new {{noun}}" />
+	
+	<div class="preview" ng-show="model.length > 0">
+		{{model[0]}} <span ng-show="model.length > 1">...</span>
+	</div>
+
+	<div class="all-container">
+		<div class="all">
+			<span ng-repeat="m in model track by $index">
+				{{m}}
+			</span>
+		</div>
+	</div>
+
+</div>

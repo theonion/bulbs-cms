@@ -1,0 +1,38 @@
+<div id="login-modal"
+class="modal fade edit-page"
+tabindex="-1"
+role="dialog"
+aria-labelledby="login"
+aria-hidden="true"
+data-backdrop="true">
+
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Login</h4>
+			</div><!--/modal-header-->
+			<div class="modal-body">
+				<h5>Your session expired. Please re-enter your username and password and try again.</h5>
+				<div class="login-fields">
+					<div>
+						<label>
+							Username
+							<input name="username" type="text" class="form-control">
+						</label>
+					</div>
+					<div>
+						<label>
+							Password
+							<input name="password" type="password" class="form-control">
+						</label>
+					</div>
+				</div>
+	        </div><!--/modal-body-->
+	        <div class="modal-footer">
+	            <button class="btn btn-default" aria-hidden="true" ng-click="login();">Login</button>
+	            <!--<button class="btn btn-primary" onclick="newContent();">Continue to editor &rarr;</button>-->
+	        </div><!--/modal-footer-->
+	    </div><!--/modal-content-->
+	</div><!--/modal-dialog-->
+</div><!--/modal-->

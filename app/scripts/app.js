@@ -24,12 +24,26 @@ angular.module('bulbsCmsApp', [
 
     $routeProvider
       .when('/cms/app/list/:queue/', {
-        templateUrl: '/views/contentlist.html',
-        controller: 'ContentlistCtrl'
+        templateUrl: PARTIALS_URL + 'contentlist.html',
+        controller: 'ContentlistCtrl',
+        reloadOnSearch: false
       })
       .when('/cms/app/edit/:id/', {
-        templateUrl: '/views/contentedit.html',
+        templateUrl: PARTIALS_URL + 'contentedit.html',
         controller: 'ContenteditCtrl'
+      })
+      .when('/cms/app/promotion/', {
+        templateUrl:  PARTIALS_URL + 'promotion.html',
+        controller: 'PromotionCtrl',
+        reloadOnSearch: false
+      })
+      .when('/cms/app/targeting/', {
+        templateUrl: PARTIALS_URL + 'targeting-editor.html',
+        controller: 'TargetingCtrl'
+      })
+      .when('/cms/app/pzones/', {
+        templateUrl: PARTIALS_URL + 'pzones.html',
+        controller: 'PZoneCtrl'
       })
       .otherwise({
         redirectTo: '/cms/app/list/published/'
@@ -41,6 +55,20 @@ angular.module('bulbsCmsApp', [
     'self',
     STATIC_URL + "**"]);*/
 
+  })
+  .config(function($provide) {
+    Raven.config(SENTRY_PUBLIC_DSN).install();
+      if (window.current_user) {
+          Raven.setUser({
+              username: window.current_user
+          })
+      }
+    $provide.decorator('$exceptionHandler', function($delegate) {
+      return function(exception, cause) {
+        $delegate(exception, cause);
+        Raven.captureException(exception);
+      }
+    });
   })
   .run(function($rootScope, $http, $cookies){
     // set the CSRF token here

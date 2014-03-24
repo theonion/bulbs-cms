@@ -1,0 +1,33 @@
+<div class="pzone-container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <select name="pzone" ng-model="pzoneName" class="form-control" style="width: 200px;">
+                <option value="homepage-two">Homepage Two</option>
+                <option value="homepage-three">Homepage Three</option>
+            </select>
+        </div>
+        <div class="panel-body" ng-if="pzone">
+            <div class="column col-md-6">
+                <div class="row">
+                    <div class="column col-md-3">
+                        <label>P'Zone Type:</label>
+                    </div>
+                    <div class="column col-md-4 form-group">
+                        <select name="pzone" ng-model="pzone.zone_type" class="form-control" ng-change="typeChanged()">
+                            <option value="list">Content</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="column col-md-8">
+                        <input type="text" ng-model="pzone.data.title" placeholder="Title HTML" class="form-control" />
+                    </div>
+                </div>
+                <div ng-include="getPZoneTemplate()" class="form-group"></div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <button type="submit" class="btn btn-success" id="save-pzone-btn" ng-click="save()">Save</button>
+        </div>
+    </div>
+</div>

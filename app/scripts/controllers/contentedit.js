@@ -1,15 +1,19 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ContenteditCtrl', function($scope, $routeParams, $http, $window, $location, $timeout, $compile, $q, $, ifExistsElse){
+  .controller('ContenteditCtrl', function($scope, $routeParams, $http, $window, $location, $timeout, $compile, $q, $, IfExistsElse){
+
+  $scope.PARTIALS_URL = $window.PARTIALS_URL;
+  $scope.CONTENT_PARTIALS_URL = $window.CONTENT_PARTIALS_URL;
+  $scope.CACHEBUSTER = $window.CACHEBUSTER;
+  $scope.MEDIA_ITEM_PARTIALS_URL = $window.MEDIA_ITEM_PARTIALS_URL;
+
   //set title
   $scope.$watch(function(){
     return 'AVCMS | Editing ' + ($scope.article && $('<span>' + $scope.article.title + '</span>').text()) || '';
   }, function(newTitle){
     $window.document.title = newTitle;
   });
-
-  $scope.PARTIALS_URL = $window.PARTIALS_URL;
 
   $('body').removeClass();
 
@@ -23,7 +27,7 @@ angular.module('bulbsCmsApp')
 
   $scope.tagCallback = function(o, input, freeForm){
     var tagVal = freeForm ? o : o.name;
-    ifExistsElse.ifExistsElse(
+    IfExistsElse.ifExistsElse(
       '/cms/api/v1/tag/?ordering=name&search=' + encodeURIComponent(tagVal),
       {name: tagVal},
       function(tag){ $scope.article.tags.push(tag); },
@@ -35,7 +39,7 @@ angular.module('bulbsCmsApp')
 
   $scope.sectionCallback = function(o, input, freeForm){
     var tagVal = freeForm ? o : o.name;
-    ifExistsElse.ifExistsElse(
+    IfExistsElse.ifExistsElse(
       '/cms/api/v1/tag/?ordering=name&search=' + encodeURIComponent(tagVal),
       {name: tagVal},
       function(tag){ $scope.article.tags.push(tag); },
@@ -75,7 +79,7 @@ angular.module('bulbsCmsApp')
 
   $scope.featureTypeCallback = function(o, input, freeForm){
     var fVal = freeForm ? o : o.name;
-    ifExistsElse.ifExistsElse(
+    IfExistsElse.ifExistsElse(
       '/cms/api/v1/things/?type=feature_type&q=' + encodeURIComponent(fVal),
       {name: fVal},
       function(ft){ $scope.article.feature_type = ft.name; $('#feature-type-container').removeClass('newtag'); },
@@ -129,7 +133,7 @@ angular.module('bulbsCmsApp')
       if(data.ratings[i].type === 'tvseason'){
         var identifier = data.ratings[i].media_item.identifier;
         show = data.ratings[i].media_item.show;
-        ifExistsElse.ifExistsElse(
+        IfExistsElse.ifExistsElse(
           '/reviews/api/v1/tvseason/?season=' + identifier + '&show=' + encodeURIComponent(show),
           {identifier: identifier, show: show},
           mediaItemExistsCbkFactory(i),
@@ -141,9 +145,9 @@ angular.module('bulbsCmsApp')
         var season = data.ratings[i].media_item.season;
         var episode = data.ratings[i].media_item.episode;
         var title = data.ratings[i].media_item.title;
-        ifExistsElse.ifExistsElse(
+        IfExistsElse.ifExistsElse(
           '/reviews/api/v1/tvepisode/?show=' + encodeURIComponent(show) + '&season=' + season + '&episode=' + episode,
-          {show: show, season: season, episode: episode, title: title},
+          {show: show, season: season, episode: episode},
           mediaItemExistsCbkFactory(i),
           mediaItemDoesNotExistCbkFactory(i),
           saveArticleErrorCbk

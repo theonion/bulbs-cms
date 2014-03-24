@@ -1,0 +1,21 @@
+'use strict';
+
+angular.module('bulbsCmsApp')
+  .directive('targeting', function () {
+    return {
+      restrict: 'E',
+      templateUrl: PARTIALS_URL + 'targeting.html',
+      scope: {
+          'targetingArray': '=',
+      },
+      link: function($scope, elem, attrs){
+
+          $scope.addTargetingRow = function(index){
+              $scope.targetingArray.push([]);
+          }
+          $scope.removeTargetingRow = function(index){
+              $scope.targetingArray.splice(index, 1);
+          }
+      }
+    };
+  });

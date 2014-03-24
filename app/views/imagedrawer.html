@@ -1,0 +1,242 @@
+<style>
+	#image-drawer{
+		display: none;
+	}
+	body.image-drawer-cropper-open{
+		padding-left: 300px;
+	}
+	body.image-drawer-cropper-open #image-drawer{
+		display: block;
+		width: 300px;
+		height: 100%;
+	}
+	body.image-drawer-cropper-open #image-drawer #image-library{
+		display: none;
+	}
+	body.image-drawer-library-open{
+		padding-left: 500px;
+	}
+	body.image-drawer-library-open #image-drawer{
+		display: block;
+		width: 500px;
+		height: 100%;
+	}
+	body.image-drawer-library-open #image-drawer #image-cropper{
+		left: 210px;
+	}
+	body.image-drawer-library-open #image-drawer #image-library{
+		display: block;
+	}
+	#image-drawer{
+		z-index: 10001;
+	}
+	#image-drawer .panel-body{
+		height: 100%;
+	}
+
+	#image-drawer-body{
+		position:relative;
+	}
+
+	#image-library{
+		position:absolute;
+		width:200px;
+		left:0px;
+		height: 100%;
+	}
+	#image-cropper{
+		position:absolute;
+		width:290px;
+		right: 0px;
+		height:100%;
+		overflow-y: scroll;
+		padding-bottom: 60px;
+	}
+
+	#image-drawer #image-drawer-top{
+		overflow: auto;
+		margin-bottom: 10px;
+	}
+
+
+	#image-library-body{
+		width: 100%;
+		height: 100%;
+		overflow-y: scroll;
+	}
+	#image-library-body div.image{
+		margin: 0px 5px 5px 5px;
+		position: relative;
+	}
+	#image-library-body .image-container{
+		width: 319px;
+		overflow: auto;
+	}
+	#image-library-body .image-container .image-info label{
+		font-size: 10px;
+		margin-bottom: 0px;
+	}
+	#image-library-body .image-container .image-info input{
+		width: 182px;
+		padding: 0px;
+		font-size: 10px;
+		height: 24px;
+	}
+	#image-library-body .image-container .image-info button{
+		padding: 1px 3px 1px 3px;
+		margin-top: 8px;
+	}
+	#image-library-body div.image{
+		border: 1px solid #EEE;
+	}
+	#image-library-body div.image:hover{
+		border: 1px solid #CCC;
+		cursor: pointer;
+	}
+	#image-library-body .original-image{
+		background-color: #dff0d8;
+		padding-top: 5px;
+	}
+
+	#image-drawer button.selected {
+		background-color: #3276B1;
+		color:#FFF;
+	}
+
+	#image-cropper .preview {
+		float: left;
+		display: block;
+		z-index: 2000;
+		position: relative;
+		width: 270px;
+        padding: 0;
+        margin: 0;
+	}
+	#image-cropper .modified {
+		padding: 3px;
+		border: 3px red solid;
+	}
+	#image-cropper .container {
+		width: 100%;
+		padding: 0px;
+		overflow: hidden;
+	}
+	#image-cropper .container .image{
+		width: 100%;
+	}
+	#image-cropper .container .image div{
+		padding: 0px;
+		height: auto;
+	}
+	#image-cropper .container .image div img{
+		height: auto;
+		position: relative;
+	}
+	#image-cropper .label {
+		z-index: 1500;
+		position: absolute;
+		top:0;
+		left: 0;
+		width: 100%;
+		padding: 8px;
+		text-align:left;
+		color: white;
+		font-family: Arial, Helvetica;
+		font-size: 2em;
+		overflow: hidden;
+	}
+	#image-cropper .preview:hover .container img {
+		opacity: 0.4;
+	}
+    .preview .thumbnail .div {
+        width: 100%;
+        height: 100px;
+    }
+
+    .cropped-image {
+        display: block;
+        height: 10px;
+    }
+
+</style>
+<div id='image-drawer' class='panel panel-default drawer bottom-drawer'>
+	<div class='panel-heading'>
+		<span>Images</span>
+		<span id="image-drawer-extras"></span>
+
+		<span id='image-drawer-close' class='pull-right' style="margin-top: -7px;">
+			<button class='btn btn-success' ng-click='closeImageDrawer();'>Done</button>
+		</span>
+	</div>
+	<div id="image-drawer-body" class='panel-body'>
+		<div id="image-drawer-top">
+			<button ng-hide="libraryOpen" class="btn btn-success" ng-click="openImageLibrary();">Change image</button>
+			<button ng-show="libraryOpen" class="btn btn-success" ng-click="closeImageLibrary('save');">Save</button>
+			<button ng-show="libraryOpen" class="btn" ng-click="closeImageLibrary('cancel');">Cancel</button>
+		</div>
+
+		<div id="image-library">
+			<div id="image-library-top">
+				<input type="text" placeholder="Search image library..." class="form-control" style="width: 200px;" ng-model="imageLibrarySearch" />
+
+				<div class="bcupload">
+					<button class="image-preview btn btn-warning" ng-click="drawerUpload();">New Image</button>
+				</div>
+			</div>
+			<div id="image-library-body">
+				<div ng-show="original_image" class="image-container original-image">
+					<div data-type="image" class="image pull-left" responsive-image image-id="{{original_image}}" crop="1x1">
+						<div></div>
+					</div>
+				</div>
+				<div ng-repeat="image in library_images" class="image-container" ng-hide="image.id == original_image">
+					<div data-type="image" class="image pull-left" responsive-image image-id="{{image.id}}" crop="1x1">
+						<div></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="image-cropper">
+			<div ng-hide="current_image && current_image.selections">
+				No image, no selections
+			</div>
+			<div ng-repeat="(ratio, selection) in current_image.selections">
+				<div class="preview">
+					<div class="label">{{ratio}}</div>
+					<div class="container">
+                        <a class="thumbnail" ng-click="cropImage(current_image, ratio);">
+                            <bettyimage image="current_image" ratio="ratio" width="260" />
+                        </a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+</div>
+
+<div id="cropperModal"
+        class="modal fade"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="create-new"
+        aria-hidden="true">
+
+        <div class="modal-dialog" style="width: 900px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Crop</h4>
+                </div><!--/modal-header-->
+                <div class="modal-body" style="height: 400px;">
+                	<img id="cropper-img" style="width: 500px; height: auto;" />
+                </div><!--/modal-body-->
+                <div class="modal-footer">
+                    <button id="cropper-modal-save-button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Save</button>
+                    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                </div><!--/modal-footer-->
+            </div><!--/modal-content-->
+        </div><!--/modal-dialog-->
+</div>
