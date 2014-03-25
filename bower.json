@@ -17,7 +17,11 @@
     "bootstrap-switch": "2.0.1",
     "raven-js": "1.1.11",
     "moment": "2.5.1",
-    "underscore": "1.6.0"
+    "underscore": "1.6.0",
+    "jcrop": "0.9.12",
+    "urlify": "theonion/urlify",
+    "onion-editor": "0.1.1",
+    "bootstrap3-datetimepicker": "3.0.0"
   },
   "devDependencies": {
     "angular-mocks": "1.2.8",

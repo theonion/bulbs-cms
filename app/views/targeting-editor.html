@@ -1,21 +1,7 @@
-<div class="row">
-	<div class="col-md-12">
-		<h4 style="color: red;">World's Shittiest Targeting Editor</h4>
-		<h6 style="color: blue;">by Sean Ryan Bloomfield (known patriot)</h6>
+<div class="panel panel-default" id="targeting">
+	<div class="panel-heading"><h4>Targeting Editor</h4></div>
+	<div class="panel-body">
+		<input type="text" class="form-control" ng-model="url" placeholder="URL to edit targeting for" tabindex="1" />
 	</div>
-</div>
-<div class="row">
-	<div class="col-md-12">
-		<input type="text" class="form-control" ng-model="url" placeholder="URL to edit targeting for"/>
-	</div>
-</div>
-<div class="row">
-	<div class="col-md-12">
-		<targeting targeting-array="targetingArray" />
-	</div>
-</div>
-<div class="row">
-	<div class="col-md-12">
-		<button class="btn btn-success btn-sm form-control add-targeting-button" type="submit" ng-click="save();">Save</button>
-	</div>
+	<targeting targeting-array="targetingArray" /></targeting>
 </div>
