@@ -4,7 +4,7 @@ angular.module('bulbsCmsApp')
   .directive('targeting', function () {
     return {
       restrict: 'E',
-      templateUrl: PARTIALS_URL + 'targeting.html'
+      templateUrl: PARTIALS_URL + 'targeting.html',
       link: function(scope, element, attrs){
 
           scope.addTargetingRow = function(index){
