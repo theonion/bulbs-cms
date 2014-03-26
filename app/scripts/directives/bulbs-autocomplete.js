@@ -8,9 +8,9 @@ angular.module('bulbsCmsApp')
       link: function postLink(scope, element, attrs) {
         scope.displayfn = scope[attrs.displayfn];
         scope.callback = scope[attrs.callback];
-        var $elem = $(element).find("input");
+        var $elem = $(element).find('input');
         $elem.attr('autocomplete', 'off');
-        var dropdown = $($compile($("#autocomplete-dropdown-template").html())(scope));
+        var dropdown = $($compile($('#autocomplete-dropdown-template').html())(scope));
         $(dropdown).css({
           position: 'absolute',
           top: $elem.position().top + $elem.outerHeight(),
@@ -23,7 +23,7 @@ angular.module('bulbsCmsApp')
 
         // Observe the element's dimensions.
         scope.$watch(
-          function(){
+          function () {
             return {
               top: $elem.position().top + $elem.outerHeight(),
               left: $elem.position().left,
@@ -42,17 +42,17 @@ angular.module('bulbsCmsApp')
 
         var inputCounter = 0, inputTimeout;
 
-        $elem.on('focus', function(e){
-          $elem.on('input', function(){
+        $elem.on('focus', function (e) {
+          $elem.on('input', function () {
             var val = $elem.val();
-            if(val === ""){
+            if (val === '') {
               scope.autocomplete_list = [];
               //if (!scope.$$phase) scope.$apply();
-            }else{
+            } else {
               $timeout.cancel(inputTimeout);
-              inputTimeout = $timeout(function(){ getAutocompletes(val); }, 200);
+              inputTimeout = $timeout(function () { getAutocompletes(val); }, 200);
 
-              if(inputCounter > 2){
+              if (inputCounter > 2) {
                 getAutocompletes(val);
               }
             }
@@ -60,73 +60,73 @@ angular.module('bulbsCmsApp')
           $(dropdown).fadeIn('fast');
         });
 
-        function getAutocompletes(val){
+        function getAutocompletes(val) {
           $timeout.cancel(inputTimeout);
           inputCounter = 0;
           $http({
             method: 'GET',
             url: attrs.resourceUrl + val
-          }).success(function(data){
+          }).success(function (data) {
             var results = data.results || data;
             scope.autocomplete_list = results.splice(0, 5);
-          }).error(function(data, status, headers, config){
-            if(status === 403){
+          }).error(function (data, status, headers, config) {
+            if (status === 403) {
               scope.showLoginModal();
             }
           });
         }
 
         scope.blurTimeout;
-        $elem.on('blur', function(e){
+        $elem.on('blur', function (e) {
           $(dropdown).fadeOut('fast');
         });
 
-        $(dropdown).on('mouseover', '.entry', function(e){
+        $(dropdown).on('mouseover', '.entry', function (e) {
           $(dropdown).find('.selected').removeClass('selected');
-          $(this).addClass('selected')
-        })
+          $(this).addClass('selected');
+        });
 
-        $elem.on('keyup', function(e){
-          if(e.keyCode === 40){ //down
-            if($('div.selected', dropdown).length === 0){
+        $elem.on('keyup', function (e) {
+          if (e.keyCode === 40) { //down
+            if ($('div.selected', dropdown).length === 0) {
               $('div.entry', dropdown).first().addClass('selected');
-            }else{
-              var curSelect = $('div.selected', dropdown);
-              var curSelectNext = curSelect.next('div');
-              if(curSelectNext.length === 0){
+            } else {
+              var curDownSelect = $('div.selected', dropdown);
+              var curDownSelectNext = curDownSelect.next('div');
+              if (curDownSelectNext.length === 0) {
                 $('div.entry', dropdown).first().addClass('selected');
-              }else{
-                curSelectNext.addClass('selected');
+              } else {
+                curDownSelectNext.addClass('selected');
               }
-              curSelect.removeClass('selected');
+              curDownSelect.removeClass('selected');
             }
           }
-          if(e.keyCode === 38){ //up
-            if($('div.selected', dropdown).length === 0){
+          if (e.keyCode === 38) { //up
+            if ($('div.selected', dropdown).length === 0) {
               $('div.entry', dropdown).last().addClass('selected');
-            }else{
+            } else {
               var curSelect = $('div.selected', dropdown);
               var curSelectNext = curSelect.prev('div');
-              if(curSelectNext.length === 0){
+              if (curSelectNext.length === 0) {
                 $('div.entry', dropdown).last().addClass('selected');
-              }else{
+              } else {
                 curSelectNext.addClass('selected');
               }
               curSelect.removeClass('selected');
             }
           }
-          if(e.keyCode === 13){
+          if (e.keyCode === 13) {
             var selected = $('div.selected', dropdown);
-            if(selected.length === 0) scope.onClick($elem.val(), true)
+            if (selected.length === 0) { scope.onClick($elem.val(), true); }
             selected.click();
           }
         });
 
-        scope.onClick = function(o, freeForm){
+        scope.onClick = function (o, freeForm) {
           scope.callback(o, $elem, freeForm || false);
           scope.autocomplete_list = [];
           //if (!scope.$$phase) scope.$apply();
-        }
+        };
 
       }
     };

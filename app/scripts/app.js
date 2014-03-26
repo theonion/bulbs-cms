@@ -1,12 +1,12 @@
 'use strict';
 
 var underscore = angular.module('underscore', []);
-underscore.factory('_', function() {
+underscore.factory('_', function () {
   return window._; // assumes underscore has already been loaded on the page
 });
 
 var jquery = angular.module('jquery', []);
-jquery.factory('$', function() {
+jquery.factory('$', function () {
   return window.$; // assumes jquery has already been loaded on the page
 });
 
@@ -56,21 +56,21 @@ angular.module('bulbsCmsApp', [
     STATIC_URL + "**"]);*/
 
   })
-  .config(function($provide) {
+  .config(function ($provide) {
     Raven.config(SENTRY_PUBLIC_DSN).install();
-      if (window.current_user) {
-          Raven.setUser({
-              username: window.current_user
-          })
-      }
-    $provide.decorator('$exceptionHandler', function($delegate) {
-      return function(exception, cause) {
+    if (window.current_user) {
+      Raven.setUser({
+        username: window.current_user
+      });
+    }
+    $provide.decorator('$exceptionHandler', function ($delegate) {
+      return function (exception, cause) {
         $delegate(exception, cause);
         Raven.captureException(exception);
-      }
+      };
     });
   })
-  .run(function($rootScope, $http, $cookies){
+  .run(function ($rootScope, $http, $cookies) {
     // set the CSRF token here
     $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
   });
