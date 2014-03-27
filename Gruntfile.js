@@ -288,6 +288,12 @@ module.exports = function (grunt) {
         cwd: '<%= yeoman.app %>/bower_components/jcrop/css',
         dest:'<%= yeoman.dist %>/styles/',
         src: 'Jcrop.gif'
+      },
+      fontawesome: {
+        expand: true,
+        cwd: '<%= yeoman.app %>/bower_components/font-awesome/fonts',
+        dest:'<%= yeoman.dist %>/styles/',
+        src: '*'
       }
     },
 
