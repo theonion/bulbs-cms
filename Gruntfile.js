@@ -282,6 +282,12 @@ module.exports = function (grunt) {
         cwd: '<%= yeoman.app %>/styles',
         dest: '.tmp/styles/',
         src: '{,*/}*.css'
+      },
+      jcropGif: {
+        expand: true,
+        cwd: '<%= yeoman.app %>/bower_components/jcrop/css',
+        dest:'<%= yeoman.dist %>/styles/',
+        src: 'Jcrop.gif'
       }
     },
 
@@ -403,12 +409,13 @@ module.exports = function (grunt) {
     'concat',
     'ngmin',
     'copy:dist',
+    'copy:jcropGif',
     'cdnify',
     'cssmin',
     'ngtemplates',
     'uglify',
     'rev',
-    'usemin',
+    'usemin'
   ]);
 
   grunt.registerTask('default', [
