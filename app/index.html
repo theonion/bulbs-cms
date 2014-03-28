@@ -110,6 +110,13 @@
     <!-- endbuild -->
 
     <script>
+        Raven.config('').install();
+        if (window.current_user) {
+          Raven.setUser({
+            username: window.current_user
+          })
+        }
+
         angular.module('bulbsCmsApp').config(['$httpProvider', function($httpProvider) {
             $httpProvider.defaults.withCredentials = true;
         }])

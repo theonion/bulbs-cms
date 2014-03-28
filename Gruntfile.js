@@ -183,7 +183,14 @@ module.exports = function (grunt) {
     useminPrepare: {
       html: '<%= yeoman.app %>/index.html',
       options: {
-        dest: '<%= yeoman.dist %>'
+        dest: '<%= yeoman.dist %>',
+        flow: {
+            steps: {
+              'js': ['concat', 'uglifyjs'],
+              'css': ['concat', 'cssmin'],
+            },
+            post: {}
+        }
       }
     },
 
@@ -326,24 +333,22 @@ module.exports = function (grunt) {
     //   }
     // },
     uglify: {
-      dist: {
-        files: {
-          '<%= yeoman.dist %>/scripts/scripts.js': [
-            '<%= yeoman.app %>/scripts/{,*/}*.js'
-          ]
-        }
+      options: {
+        mangle: false, //https://github.com/theonion/bulbs-cms/issues/4
       },
       templates: {
         files: {
           '<%= yeoman.dist %>/scripts/templates.js': [
-            '.tmp/views/templates.js'
+            '.tmp/concat/scripts/templates.js'
           ]
         }
       }
     },
-    // concat: {
-    //   dist: {}
-    // },
+    concat: {
+      options: {
+        separator: ';' + grunt.util.linefeed,
+      }
+    },
 
     // Test settings
     karma: {
@@ -358,7 +363,7 @@ module.exports = function (grunt) {
       bulbsCmsApp: {
         cwd: '<%= yeoman.app %>',
         src: 'views/{,*/}*.html',
-        dest: '.tmp/views/templates.js',
+        dest: '.tmp/concat/scripts/templates.js',
         options: {
           url:    function(url) { return '/' + url; },
           htmlmin: {
@@ -409,6 +414,7 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'clean:dist',
     'bower-install',
+    'ngtemplates',
     'useminPrepare',
     'concurrent:dist',
     'autoprefixer',
@@ -419,10 +425,7 @@ module.exports = function (grunt) {
     'copy:fontawesome',
     'cdnify',
     'cssmin',
-    'ngtemplates',
-    'uglify',
-    'rev',
-    'usemin'
+    'uglify'
   ]);
 
   grunt.registerTask('default', [
