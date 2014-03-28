@@ -57,16 +57,14 @@ angular.module('bulbsCmsApp', [
 
   })
   .config(function($provide) {
-    Raven.config(SENTRY_PUBLIC_DSN).install();
-      if (window.current_user) {
-          Raven.setUser({
-              username: window.current_user
-          })
-      }
     $provide.decorator('$exceptionHandler', function($delegate) {
       return function(exception, cause) {
+        console.log("exception handler got ")
+        console.log(exception)
+        console.log(cause)
         $delegate(exception, cause);
-        Raven.captureException(exception);
+        console.log("delegated")
+        window.Raven.captureException(exception);
       }
     });
   })

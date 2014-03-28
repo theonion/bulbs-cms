@@ -24,6 +24,27 @@
 
     <!-- endbuild -->
 
+    <script type="text/javascript">
+        var IMAGE_SERVER_URL = 'http://localimages.avclub.com';
+        var IMAGE_URL = 'http://localimages.avclub.com{{id}}/{{crop}}/{{width}}.{{format}}';
+        var BC_ADMIN_URL = 'http://localimages.avclub.com';
+
+        var LOADING_IMG_SRC = "/images/loading.gif";
+        var IMAGE_LISTENERS_DISABLED = true;
+        var DEFAULT_IMAGE_ID = 0;
+        var STATIC_URL = "/static/";
+        var PARTIALS_URL = "/views/";
+        var CONTENT_PARTIALS_URL = '/cms/api/partials/content/';
+        var MEDIA_ITEM_PARTIALS_URL = '/cms/api/partials/media_items/';
+        var CACHEBUSTER = "?" + Date.now();
+        // GA
+        var SENTRY_PUBLIC_DSN = "//77940b297e3f471294a244383a1a76fb@sentry.onion.com/5";
+
+        function jqueryCsrfSetup(){
+            return;
+        }
+    </script>
+
   </head>
   <body ng-app="bulbsCmsApp">
     <!--[if lt IE 7]>
@@ -89,6 +110,13 @@
     <!-- endbuild -->
 
     <script>
+        Raven.config('').install();
+        if (window.current_user) {
+          Raven.setUser({
+            username: window.current_user
+          })
+        }
+
         angular.module('bulbsCmsApp').config(['$httpProvider', function($httpProvider) {
             $httpProvider.defaults.withCredentials = true;
         }])
