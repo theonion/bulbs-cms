@@ -157,13 +157,13 @@ angular.module('bulbsCmsApp')
         }
 
         $scope.saveNewCrop = function(image, ratio){
-                  image.selections[ratio] = {
-                      'x0': user_selection_scaled[0],
-                      'y0': user_selection_scaled[1],
-                      'x1': user_selection_scaled[2],
-                      'y1': user_selection_scaled[3]
-                  };
-                  $scope.$apply();
+          image.selections[ratio] = {
+              'x0': user_selection_scaled[0],
+              'y0': user_selection_scaled[1],
+              'x1': user_selection_scaled[2],
+              'y1': user_selection_scaled[3]
+          };
+          $scope.$apply();
 
           $window.saveNewCrop(
             image,
@@ -187,7 +187,7 @@ angular.module('bulbsCmsApp')
         });
 
         function scaleSelection(scale, selection){
-          return [parseInt(scale * selection[0]), parseInt(scale * selection[1]), parseInt(scale * selection[2]), parseInt(scale * selection[3])];
+          return [Math.floor(scale * selection[0]), Math.floor(scale * selection[1]), Math.floor(scale * selection[2]), Math.floor(scale * selection[3])];
         }
 
         $scope.cropImage = function(image, ratio){
@@ -249,6 +249,7 @@ angular.module('bulbsCmsApp')
 
 
       }
+
 
     };
   });

@@ -16,7 +16,7 @@
 		<div>
 			<div class="article" ng-repeat="article in promotedArticles track by $index" data-index="{{$index}}">
 				<a ng-hide="$index == 0" class="move-up" ng-click="moveUp($index);"><span class="glyphicon glyphicon-chevron-up"></span></a>
-				<a ng-hide="$index == promotedArticles.length - 1" class="move-down" ng-click="moveDown($index);"><span class="glyphicon glyphicon-chevron-down"></span></a>	
+				<a ng-hide="$index == promotedArticles.length - 1" class="move-down" ng-click="moveDown($index);"><span class="glyphicon glyphicon-chevron-down"></span></a>
 				<articlecontainer article="article" ratio="4x3" />
 			</div>
 		</div>
@@ -24,9 +24,9 @@
 
 	<div class="sidebar-articles-container col-md-6">
 
-		<devicepreview />
+		<devicepreview></devicepreview>
 
-		<filterwidget />
+		<filterwidget></filterwidget>
 
 		<div id="filter-accordion" class="panel-group">
 			<div class="panel panel-default" ng-repeat="article in articles" ng-hide="articleIsInPromotedArticles(article.id);">
@@ -47,7 +47,7 @@
 
 				<div id="collapse-{{ article.id }}" class="panel-collapse collapse">
 					<ul class="panel-body list-unstyled">
-						
+
 						<li class="" ng-show="article.id > 0">
 							<button class="btn btn-primary" ng-click="insertArticle(article);">Insert&#133;</button>
 							<button class="btn btn-primary" ng-click="replaceArticle(article);">Replace&#133;</button>
