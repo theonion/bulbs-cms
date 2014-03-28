@@ -4,7 +4,7 @@ angular.module('bulbsCmsApp')
   .directive('filterwidget', function ($http, $location, $window, $timeout) {
     return {
       restrict: 'E',
-      templateUrl: PARTIALS_URL + 'filterwidget.html' + CACHEBUSTER,
+      templateUrl: PARTIALS_URL + 'filterwidget.html',
       link: function(scope, element, attrs){
         var $element = $(element);
         var $input = $element.find("input");
