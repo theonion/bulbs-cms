@@ -11,8 +11,39 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <link rel="stylesheet" href="styles/18be0f32.vendor.css"/>
-    <link rel="stylesheet" href="styles/main.css"/>
+    <!-- build:css styles/vendor.css -->
+    <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap-switch/build/css/bootstrap3/bootstrap-switch.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap3-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+    <!-- endbower -->
+    <link rel="stylesheet" href="bower_components/jcrop/css/jquery.Jcrop.min.css" />
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" />
+    <!-- endbuild -->
+    <!-- build:css({.tmp,app}) styles/main.css -->
+
+    <!-- endbuild -->
+
+    <script type="text/javascript">
+        var IMAGE_SERVER_URL = 'http://localimages.avclub.com';
+        var IMAGE_URL = 'http://localimages.avclub.com{{id}}/{{crop}}/{{width}}.{{format}}';
+        var BC_ADMIN_URL = 'http://localimages.avclub.com';
+
+        var LOADING_IMG_SRC = "/images/loading.gif";
+        var IMAGE_LISTENERS_DISABLED = true;
+        var DEFAULT_IMAGE_ID = 0;
+        var STATIC_URL = "/static/";
+        var PARTIALS_URL = "/views/";
+        var CONTENT_PARTIALS_URL = '/cms/api/partials/content/';
+        var MEDIA_ITEM_PARTIALS_URL = '/cms/api/partials/media_items/';
+        var CACHEBUSTER = "?" + Date.now();
+        // GA
+        var SENTRY_PUBLIC_DSN = "//77940b297e3f471294a244383a1a76fb@sentry.onion.com/5";
+
+        function jqueryCsrfSetup(){
+            return;
+        }
+    </script>
 
   </head>
   <body ng-app="bulbsCmsApp">
@@ -27,11 +58,65 @@
     <script src="bower_components/es5-shim/es5-shim.js"></script>
     <script src="bower_components/json3/lib/json3.min.js"></script>
     <![endif]-->
-    <script src="scripts/0e94154f.vendor.js"></script>
+    <!-- build:js scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/nprogress/nprogress.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/bootstrap-switch/build/js/bootstrap-switch.js"></script>
+    <script src="bower_components/raven-js/dist/raven.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <script src="bower_components/urlify/urlify.js"></script>
+    <script src="bower_components/onion-editor/build/onion-editor.min.js"></script>
+    <script src="bower_components/bootstrap3-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
 
-    <script src="scripts/be53774d.scripts.js"></script>
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="scripts/app.js"></script>
+    <script src="scripts/controllers/contentlist.js"></script>
+    <script src="scripts/controllers/contentedit.js"></script>
+    <script src="scripts/controllers/nav.js"></script>
+    <script src="scripts/controllers/promotion.js"></script>
+    <script src="scripts/controllers/pzone.js"></script>
+    <script src="scripts/controllers/targeting.js"></script>
+    <script src="scripts/services/if-exists-else.js"></script>
+    <script src="scripts/services/contentList.js"></script>
+    <script src="scripts/filters/truncateByCharacters.js"></script>
+    <script src="scripts/filters/truncateByWords.js"></script>
+    <script src="scripts/directives/articlecontainer.js"></script>
+    <script src="scripts/directives/bulbs-autocomplete.js"></script>
+    <script src="scripts/directives/bettyimage.js"></script>
+    <script src="scripts/directives/create-content.js"></script>
+    <script src="scripts/directives/devicepreview.js"></script>
+    <script src="scripts/directives/filterwidget.js"></script>
+    <script src="scripts/directives/imagedrawer.js"></script>
+    <script src="scripts/directives/listinput.js"></script>
+    <script src="scripts/directives/login.js"></script>
+    <script src="scripts/directives/video-upload.js"></script>
+    <script src="scripts/directives/publish-content.js"></script>
+    <script src="scripts/directives/media-rating.js"></script>
+    <script src="scripts/directives/responsive-image.js"></script>
+    <script src="scripts/directives/targeting.js"></script>
+    <script src="scripts/directives/titleimage.js"></script>
+    <script src="scripts/directives/trash-content.js"></script>
+    <!-- endbuild -->
 
     <script>
+        Raven.config('').install();
+        if (window.current_user) {
+          Raven.setUser({
+            username: window.current_user
+          })
+        }
+
         angular.module('bulbsCmsApp').config(['$httpProvider', function($httpProvider) {
             $httpProvider.defaults.withCredentials = true;
         }])
