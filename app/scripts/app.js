@@ -43,7 +43,7 @@ angular.module('bulbsCmsApp', [
       })
       .when('/cms/app/pzones/', {
         templateUrl: PARTIALS_URL + 'pzones.html',
-        controller: 'PZoneCtrl'
+        controller: 'PzoneCtrl'
       })
       .otherwise({
         redirectTo: '/cms/app/list/published/'
