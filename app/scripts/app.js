@@ -59,11 +59,7 @@ angular.module('bulbsCmsApp', [
   .config(function($provide) {
     $provide.decorator('$exceptionHandler', function($delegate) {
       return function(exception, cause) {
-        console.log("exception handler got ")
-        console.log(exception)
-        console.log(cause)
         $delegate(exception, cause);
-        console.log("delegated")
         window.Raven.captureException(exception);
       }
     });

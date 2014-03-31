@@ -24,6 +24,8 @@
 
     <!-- endbuild -->
 
+
+    <script type="text/javascript" src="image.js"></script>
     <script type="text/javascript">
         var IMAGE_SERVER_URL = 'http://localimages.avclub.com';
         var IMAGE_URL = 'http://localimages.avclub.com{{id}}/{{crop}}/{{width}}.{{format}}';
@@ -34,7 +36,7 @@
         var DEFAULT_IMAGE_ID = 0;
         var STATIC_URL = "/static/";
         var PARTIALS_URL = "/views/";
-        var CONTENT_PARTIALS_URL = '/cms/api/partials/content/';
+        var CONTENT_PARTIALS_URL = '/content_type_views/';
         var MEDIA_ITEM_PARTIALS_URL = '/cms/api/partials/media_items/';
         var CACHEBUSTER = "?" + Date.now();
         // GA
@@ -46,7 +48,7 @@
     </script>
 
   </head>
-  <body ng-app="bulbsCmsApp">
+  <body ng-app="bulbsCmsAppDev">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -110,18 +112,8 @@
     <script src="scripts/libraries/editor-cms-bridge.js"></script>
     <!-- endbuild -->
 
-    <script>
-        Raven.config('').install();
-        if (window.current_user) {
-          Raven.setUser({
-            username: window.current_user
-          })
-        }
-
-        angular.module('bulbsCmsApp').config(['$httpProvider', function($httpProvider) {
-            $httpProvider.defaults.withCredentials = true;
-        }])
-    </script>
+    <script src="bower_components/angular-mocks/angular-mocks.js"></script>
+    <script src="scripts/app-dev.js"></script>
 
 </body>
 </html>
