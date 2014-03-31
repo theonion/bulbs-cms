@@ -1,15 +1,19 @@
   bulbsCmsAppDev = angular.module('bulbsCmsAppDev', ['bulbsCmsApp', 'ngMockE2E']);
   bulbsCmsAppDev.run(function($httpBackend) {
 
-    // returns the current list of phones
-    $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/1\//).respond(MOCK_content.results[0]);
+    //GETS
+    $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/1\//).respond(MOCK_content.results[0]); //todo: capture the id and use it for the index
     $httpBackend.whenGET(/^\/cms\/api\/v1\/content.*/).respond(MOCK_content);
 
-    // adds a new phone to the phones array
+    //POSTS
+    //TODO: make this work
     $httpBackend.whenPOST('/phones').respond(function(method, url, data) {
       phones.push(angular.fromJson(data));
     });
+
+    //pass through for templates
     $httpBackend.whenGET(/^\/views\//).passThrough();
+    $httpBackend.whenGET(/^\/content_type_views\//).passThrough();
   });
 
 
@@ -19,7 +23,7 @@ var MOCK_content = {
   previous: null,
   results: [
     {
-      polymorphic_ctype: "core_shortarticle",
+      polymorphic_ctype: "content_content",
       tags: [
         {
         slug: "film",
