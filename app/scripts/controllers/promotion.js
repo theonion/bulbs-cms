@@ -24,14 +24,14 @@ angular.module('bulbsCmsApp')
     $scope.$watch('section', function(){
       getPromotedArea(); });
 
-    contentList.setUrl('/cms/api/v1/content/?published=True');
+    Contentlist.setUrl('/cms/api/v1/content/?published=True');
 
     var getContentCallback = function($scope, data){
       $scope.articles = data.results;
       $scope.totalItems = data.count; }
 
     $scope.getContent = function(){
-      contentList.getContent($scope, getContentCallback); }
+      Contentlist.getContent($scope, getContentCallback); }
 
     $scope.getContent();
 

@@ -300,7 +300,13 @@ module.exports = function (grunt) {
         expand: true,
         cwd: '<%= yeoman.app %>/bower_components/font-awesome/fonts',
         dest:'<%= yeoman.dist %>/fonts/',
-        src: 'fontawesome-webfont.*'
+        src: ['fontawesome-webfont.*']
+      },
+      fontawesomeCSS: {  // This is a hack for now. FontAwesome REALLY doesn't like getting minified, I guess.
+        expand: true,
+        cwd: '<%= yeoman.app %>/bower_components/font-awesome/css',
+        dest:'<%= yeoman.dist %>/styles/',
+        src: ['font-awesome.min.css']
       }
     },
 
@@ -423,6 +429,7 @@ module.exports = function (grunt) {
     'copy:dist',
     'copy:jcropGif',
     'copy:fontawesome',
+    'copy:fontawesomeCSS',
     'cdnify',
     'cssmin',
     'uglify'
