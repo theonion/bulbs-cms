@@ -1,0 +1,177 @@
+<section>
+  feature type, section, tags
+</section>
+
+<section class="main-image row">
+  <div class="clearfix well">
+    <titleimage article="article" image="article.detail_image" placeholder-text="Optional Main Image" />
+  </div>
+</section>
+
+<section class="title">
+  <div id="content-title" class="article-header heading"></div>
+  <script type="text/javascript">
+  window.initEditor(
+      'content_title_editor',
+      '#content-title',
+      {
+          /* global options */
+          element:document.getElementById("content-title"),
+          toolbar: {
+              selectionTools: $("#selection-tools-minimal-template").html(),
+          },
+          placeholder: "Type your Headline",
+          content: window.article.title,
+          allowNewline: false,
+          allowNbsp: false,
+          characterLimit: 200,
+          settings: {
+              font: "title",
+              visualize: false
+          },
+          sanitize: {
+            elements: ['i', 'em'],
+            remove_contents: ['script', 'style', ],
+          }
+      },
+      'title'
+  );
+  </script>
+</section>
+
+<section>
+  authors
+</section>
+
+<div id="content-body" class="article-text"></div>
+<script type="text/javascript">
+var image_crops = ["original", "16x9", "1x1", "3x1"];
+window.undomanager = window.undomanager || new UndoManager();
+window.findreplace = window.findreplace || new FindReplace();
+
+window.initEditor(
+    'content_body_editor',
+    '#content-body',
+    {
+        /* global options */
+        element:document.getElementById("content-body"),
+        toolbar: {
+            documentTools: $("#document-tools-template").html(),
+            embedTools: $("#embed-tools-template").html(),
+            linkTools: $("#link-tools-template").html(),
+            inlineTools: $("#inline-tools-template").html(),
+        },
+        undoManager: window.undomanager,
+        placeholder: "Write here",
+        content: window.article.body || "<p><br></p>",
+        editSource: true,
+        avlink: {
+            thingsUrl: "/cms/api/v1/things/",
+            contentUrl:"/cms/api/v1/content/",
+            host: "avclub.com"
+        },
+        statsContainer: ".wordcount",
+        /* This probably deserves its own file */
+        inline: {
+            image: {
+                size: {
+                    "huge": image_crops,
+                    "big": image_crops,
+                    "medium": image_crops,
+                    "small": image_crops,
+                    "small-centered": image_crops,
+                    "tiny": image_crops,
+                },
+                defaults: {
+                    size: "big",
+                    crop: "original",
+                    image_id: 0,
+                    caption: "",
+                    url: ""
+                },
+                template: $("#inline-image").html()
+            },
+            embed: {
+                size: {
+                    "original": ["auto"],
+                    "big": ["16x9", "4x3"],
+                    "small": ["16x9", "4x3"]
+                },
+                defaults: {
+                    "size": "original",
+                    "crop": "auto",
+                    "caption": "",
+                    "source":"",
+                    "body":""
+                },
+                template: $("#inline-embed").html()
+            },
+            "onion-video": {
+                size: {
+                    "big": ["16x9"],
+                    "small": ["16x9"]
+                },
+                defaults: {
+                    "size": "big",
+                    "crop": "16x9",
+                    "caption": ""
+                },
+                template: $("#inline-onion-video").html()
+            },
+            youtube: {
+                size: {
+                    "big": ["16x9", "4x3"],
+                    "small": ["16x9", "4x3"]
+                },
+                defaults: {
+                    size: "big",
+                    crop: "16x9",
+                    youtube_id: "foMQX9ZExsE",
+                    caption: ""
+                },
+                template: $("#inline-youtube").html()
+            },
+            hr: {
+                size: {
+                    "big": [],
+                },
+                defaults: {
+                    size:"big"
+                }
+            },
+            pullquote: {
+                size: {
+                    "big": [],
+                    "small": []
+                },
+                defaults: {
+
+                }
+            },
+            article: {
+                size: {
+                    "big": [],
+                    "small": []
+                },
+                defaults: {
+
+                }
+            },
+            articlelist: {
+                size: {
+                    "big": [],
+                    "small": []
+                },
+                defaults: {
+                    size: "small"
+                },
+                template: $("#inline-articlelist").html()
+            }
+        },
+        settings: {
+            visualize: false
+        }
+    },
+    'body'
+);
+</script>
