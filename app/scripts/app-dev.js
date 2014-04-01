@@ -1,14 +1,24 @@
   bulbsCmsAppDev = angular.module('bulbsCmsAppDev', ['bulbsCmsApp', 'ngMockE2E']);
   bulbsCmsAppDev.run(function($httpBackend) {
-
     //GETS
-    $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/1\//).respond(MOCK_content.results[0]); //todo: capture the id and use it for the index
+    $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/\d+\//).respond(function(method, url, data){
+      var re = /^\/cms\/api\/v1\/content\/(\d+)\//
+      var index = re.exec(url)[1];
+      if(index <= MOCK_content.results.length){
+
+        return [200, MOCK_content.results[index - 1], {}, "You did it"];
+      }else{
+        return [404, "Error body", {}, "You blew it"]; //todo: mock this correctly
+      }
+    });
+
     $httpBackend.whenGET(/^\/cms\/api\/v1\/content.*/).respond(MOCK_content);
+    $httpBackend.whenGET(/^\/cms\/api\/v1\/things.*/).respond(MOCK_things);
 
     //POSTS
     //TODO: make this work
-    $httpBackend.whenPOST('/phones').respond(function(method, url, data) {
-      phones.push(angular.fromJson(data));
+    $httpBackend.whenPOST(/^\/cms\/api\/v1\/content/).respond(function(method, url, data) {
+      MOCK_content.results.push(angular.fromJson(data));
     });
 
     //pass through for templates
@@ -68,6 +78,7 @@ var MOCK_content = {
     },
     {
       id: 2,
+      polymorphic_ctype: "content_content",
       feature_type: "What A Gal",
       title: "This is another article",
       authors: [
@@ -83,3 +94,5 @@ var MOCK_content = {
     }
   ]
 }
+
+var MOCK_things = [{"url": "/search?tags=so-you-think-you-can-dance", "param": "tags", "type": "tag", "name": "So You Think You Can Dance", "value": "so-you-think-you-can-dance"}, {"url": "/search?feature_types=oscar-this", "param": "feature_types", "type": "feature_type", "name": "Oscar This", "value": "oscar-this"}, {"url": "/search?feature_types=hear-this", "param": "feature_types", "type": "feature_type", "name": "Hear This", "value": "hear-this"}, {"url": "/search?feature_types=why-do-i-own-this", "param": "feature_types", "type": "feature_type", "name": "Why Do I Own This?", "value": "why-do-i-own-this"}, {"url": "/search?feature_types=out-this-month", "param": "feature_types", "type": "feature_type", "name": "Out This Month", "value": "out-this-month"}, {"url": "/search?feature_types=emmy-this", "param": "feature_types", "type": "feature_type", "name": "Emmy This!", "value": "emmy-this"}, {"url": "/search?feature_types=this-was-pop", "param": "feature_types", "type": "feature_type", "name": "This Was Pop", "value": "this-was-pop"}, {"url": "/search?feature_types=watch-this", "param": "feature_types", "type": "feature_type", "name": "Watch This", "value": "watch-this"}, {"url": "/search?feature_types=what-are-you-playing-this-weekend", "param": "feature_types", "type": "feature_type", "name": "What Are You Playing This Weekend?", "value": "what-are-you-playing-this-weekend"}, {"url": "/search?feature_types=i-watched-this-on-purpose", "param": "feature_types", "type": "feature_type", "name": "I Watched This On Purpose", "value": "i-watched-this-on-purpose"}]
