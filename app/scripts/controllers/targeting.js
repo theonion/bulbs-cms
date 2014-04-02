@@ -1,19 +1,13 @@
 'use strict';
 
-angular.module('bulbsCmsApp.targeting').controller('TargetingCtrl', [
-  '$scope',
-  '$http',
-  '$window',
-  '$location',
-  '$q',
-  'options',
-  function ($scope, $http, $window, $location, $q, options) {
+angular.module('bulbsCmsApp.targeting')
+  .controller('TargetingCtrl', function ($scope, $http, $window, $location, options) {
     //set title
-    $window.document.title = options.namespace + " | Targeting Editor";
+    $window.document.title = options.namespace + ' | Targeting Editor';
 
     NProgress.configure({
       minimum: 0.4
-    })
+    });
 
     var canceller;
     $scope.search = function (url) {
@@ -59,13 +53,13 @@ angular.module('bulbsCmsApp.targeting').controller('TargetingCtrl', [
         method: 'POST',
         url: options.endpoint + '?url=' + $scope.url,
         data: data
-      }).success(function(data){
+      }).success(function (data) {
         NProgress.done();
-      }).error(function(){
+      }).error(function () {
         NProgress.done();
-      })
+      });
 
-    }
+    };
 
     $scope.keyHandler = function (event, url) {
       if (event.keyCode === 13) { // enter

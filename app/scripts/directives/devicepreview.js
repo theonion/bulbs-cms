@@ -1,18 +1,15 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('devicepreview', function () {
+  .directive('devicepreview', function ($, PARTIALS_URL) {
     return {
       restrict: 'E',
       templateUrl: PARTIALS_URL + 'devicepreview.html',
-      link: function(scope, element, attrs){
+      link: function (scope, element, attrs) {
 
-        var pP =      $('#page-prev'),
-          tN =      pP.find('.nav a'),
-          cO =      pP.find('.tab-content .active');
-
-        var step = 100;
-        var scrolling = false;
+        var pP = $('#page-prev'),
+            tN = pP.find('.nav a'),
+            cO = pP.find('.tab-content .active');
 
         tN.click(function (e) {
           var newId = $(this).attr('href').split('#')[1];
@@ -21,11 +18,11 @@ angular.module('bulbsCmsApp')
         });
 
         $('#page-prev').on('show.bs.collapse', function () {
-           $(this).find('.fa').removeClass('fa-plus-square-o').addClass('fa-minus-square-o');
+          $(this).find('.fa').removeClass('fa-plus-square-o').addClass('fa-minus-square-o');
         });
 
         $('#page-prev').on('hide.bs.collapse', function () {
-           $(this).find('.fa').removeClass('fa-minus-square-o').addClass('fa-plus-square-o');
+          $(this).find('.fa').removeClass('fa-minus-square-o').addClass('fa-plus-square-o');
         });
       }
     };

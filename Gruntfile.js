@@ -371,7 +371,7 @@ module.exports = function (grunt) {
         src: 'views/{,*/}*.html',
         dest: '.tmp/concat/scripts/templates.js',
         options: {
-          url:    function(url) { return '/' + url; },
+          url:    function (url) { return '/' + url; },
           htmlmin: {
             collapseBooleanAttributes:      true,
             collapseWhitespace:             true,
