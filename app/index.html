@@ -27,21 +27,6 @@
     <script type="text/javascript" src="image.js"></script>
 
     <script type="text/javascript">
-        var IMAGE_SERVER_URL = 'http://localimages.avclub.com';
-        var IMAGE_URL = 'http://localimages.avclub.com{{id}}/{{crop}}/{{width}}.{{format}}';
-        var BC_ADMIN_URL = 'http://localimages.avclub.com';
-
-        var LOADING_IMG_SRC = "/images/loading.gif";
-        var IMAGE_LISTENERS_DISABLED = true;
-        var DEFAULT_IMAGE_ID = 0;
-        var STATIC_URL = "/static/";
-        var PARTIALS_URL = "/views/";
-        var CONTENT_PARTIALS_URL = '/content_type_views/';
-        var MEDIA_ITEM_PARTIALS_URL = '/cms/api/partials/media_items/';
-        var CACHEBUSTER = "?" + Date.now();
-        // GA
-        var SENTRY_PUBLIC_DSN = "//77940b297e3f471294a244383a1a76fb@sentry.onion.com/5";
-
         function jqueryCsrfSetup(){
             return;
         }
@@ -115,6 +100,23 @@
 
     <script src="bower_components/angular-mocks/angular-mocks.js"></script>
     <script src="scripts/app-dev.js"></script>
+    <script type="text/javascript">
+        angular.module('bulbsCmsApp').constant('IMAGE_SERVER_URL', 'http://localimages.avclub.com');
+        angular.module('bulbsCmsApp').constant('IMAGE_URL', 'http://localimages.avclub.com{{id}}/{{crop}}/{{width}}.{{format}}');
+        angular.module('bulbsCmsApp').constant('BC_ADMIN_URL', 'http://localimages.avclub.com');
+
+        angular.module('bulbsCmsApp').constant('LOADING_IMG_SRC', "/images/loading.gif");
+        angular.module('bulbsCmsApp').constant('IMAGE_LISTENERS_DISABLED', true);
+        angular.module('bulbsCmsApp').constant('DEFAULT_IMAGE_ID', 0);
+        angular.module('bulbsCmsApp').constant('STATIC_URL', "/static/");
+        angular.module('bulbsCmsApp').constant('PARTIALS_URL', "/views/");
+        angular.module('bulbsCmsApp').constant('CONTENT_PARTIALS_URL', '/content_type_views/');
+        angular.module('bulbsCmsApp').constant('MEDIA_ITEM_PARTIALS_URL', '/cms/api/partials/media_items/');
+        angular.module('bulbsCmsApp').constant('CACHEBUSTER', "?" + Date.now());
+
+        // GA
+        angular.module('bulbsCmsApp').constant('SENTRY_PUBLIC_DSN', "//77940b297e3f471294a244383a1a76fb@sentry.onion.com/5");
+    </script>
 
 </body>
 </html>

@@ -1,10 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('NavCtrl', function ($scope, $location, $window, $) {
-
-    //this is a controller for the navbar
-    $scope.STATIC_URL = $window.STATIC_URL;
+  .controller('NavCtrl', function ($scope, $location, $window, $, STATIC_URL) {
 
     $scope.isEditPage = $location.path().indexOf('/cms/app/edit/') === 0 ? true : false;
     console.log('is Edit Page: ' + $scope.isEditPage);

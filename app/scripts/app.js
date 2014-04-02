@@ -19,7 +19,7 @@ angular.module('bulbsCmsApp', [
   'jquery',
   'underscore'
 ])
-  .config(function ($locationProvider, $routeProvider, $sceProvider) {
+  .config(function ($locationProvider, $routeProvider, $sceProvider, PARTIALS_URL) {
     $locationProvider.html5Mode(true);
 
     $routeProvider

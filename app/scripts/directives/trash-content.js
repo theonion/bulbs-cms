@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('trashContent', function ($http, $) {
+  .directive('trashContent', function ($http, $, PARTIALS_URL) {
     return {
       restrict: 'E',
       templateUrl:  PARTIALS_URL + 'trash-content.html',

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('login', function ($http, $cookies, $window, $) {
+  .directive('login', function ($http, $cookies, $window, $, PARTIALS_URL) {
     return {
       restrict: 'E',
       templateUrl: PARTIALS_URL + 'login.html',

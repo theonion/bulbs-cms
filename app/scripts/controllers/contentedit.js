@@ -3,12 +3,11 @@
 angular.module('bulbsCmsApp')
   .controller('ContenteditCtrl', function (
     $scope, $routeParams, $http, $window,
-    $location, $timeout, $compile, $q, $, IfExistsElse)
+    $location, $timeout, $compile, $q, $, IfExistsElse,
+    PARTIALS_URL, CONTENT_PARTIALS_URL, CACHEBUSTER, MEDIA_ITEM_PARTIALS_URL)
   {
-    $scope.PARTIALS_URL = $window.PARTIALS_URL;
-    $scope.CONTENT_PARTIALS_URL = $window.CONTENT_PARTIALS_URL;
-    $scope.CACHEBUSTER = $window.CACHEBUSTER;
-    $scope.MEDIA_ITEM_PARTIALS_URL = $window.MEDIA_ITEM_PARTIALS_URL;
+
+    $scope.CONTENT_PARTIALS_URL = CONTENT_PARTIALS_URL;
 
     //set title
     $scope.$watch(function () {

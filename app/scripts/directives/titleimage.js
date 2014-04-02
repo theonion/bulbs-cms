@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('titleimage', function ($http, $window, $) {
+  .directive('titleimage', function ($http, $window, $, PARTIALS_URL) {
     return {
       restrict: 'E',
       templateUrl: PARTIALS_URL + 'titleimage.html',

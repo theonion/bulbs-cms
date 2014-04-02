@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('articlecontainer', function () {
+  .directive('articlecontainer', function (PARTIALS_URL) {
     return {
       restrict: 'E',
       templateUrl:  PARTIALS_URL + 'promotion-tool-article-container.html',
