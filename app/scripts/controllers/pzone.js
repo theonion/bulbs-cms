@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('PzoneCtrl', function ($scope, $http, $window, contentList) {
+  .controller('PzoneCtrl', function ($scope, $http, $window, Contentlist) {
     //set title
     $window.document.title = 'AVCMS | Pzone Editor';
 
@@ -29,13 +29,13 @@ angular.module('bulbsCmsApp')
       }
     };
 
-    contentList.setUrl('/cms/api/v1/content/?published=True');
-    var getContentCallback = function ($scope, data) {
-      $scope.articles = data.results;
-      $scope.totalItems = data.count;
+    Contentlist.setUrl('/cms/api/v1/content/?published=True');
+    var getContentCallback = function($scope, data){
+        $scope.articles = data.results;
+        $scope.totalItems = data.count;
     };
-    $scope.getContent = function () {
-      contentList.getContent($scope, getContentCallback);
+    $scope.getContent = function(){
+        Contentlist.getContent($scope, getContentCallback);
     };
     $scope.getContent();
 

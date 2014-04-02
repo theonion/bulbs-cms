@@ -43,7 +43,7 @@ angular.module('bulbsCmsApp', [
       })
       .when('/cms/app/pzones/', {
         templateUrl: PARTIALS_URL + 'pzones.html',
-        controller: 'PZoneCtrl'
+        controller: 'PzoneCtrl'
       })
       .otherwise({
         redirectTo: '/cms/app/list/published/'
@@ -56,18 +56,12 @@ angular.module('bulbsCmsApp', [
     STATIC_URL + "**"]);*/
 
   })
-  .config(function ($provide) {
-    Raven.config(SENTRY_PUBLIC_DSN).install();
-    if (window.current_user) {
-      Raven.setUser({
-        username: window.current_user
-      });
-    }
-    $provide.decorator('$exceptionHandler', function ($delegate) {
-      return function (exception, cause) {
+  .config(function($provide) {
+    $provide.decorator('$exceptionHandler', function($delegate) {
+      return function(exception, cause) {
         $delegate(exception, cause);
-        Raven.captureException(exception);
-      };
+        window.Raven.captureException(exception);
+      }
     });
   })
   .run(function ($rootScope, $http, $cookies) {

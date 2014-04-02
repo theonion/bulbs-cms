@@ -186,8 +186,8 @@ angular.module('bulbsCmsApp')
           $window.picturefill();
         });
 
-        function scaleSelection(scale, selection) {
-          return [parseInt(scale * selection[0]), parseInt(scale * selection[1]), parseInt(scale * selection[2]), parseInt(scale * selection[3])];
+        function scaleSelection(scale, selection){
+          return [Math.floor(scale * selection[0]), Math.floor(scale * selection[1]), Math.floor(scale * selection[2]), Math.floor(scale * selection[3])];
         }
 
         $scope.cropImage = function (image, ratio) {
@@ -248,6 +248,7 @@ angular.module('bulbsCmsApp')
 
 
       }
+
 
     };
   });

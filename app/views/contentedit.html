@@ -20,7 +20,7 @@
         </div>
     </div>
 </div>
-<imagedrawer open-image-drawer="openImageDrawer" close-image-drawer="closeImageDrawer" article="article" />
+<imagedrawer open-image-drawer="openImageDrawer" close-image-drawer="closeImageDrawer" article="article"></imagedrawer>
 
 <div id="info-row">
     <div id="alert-area">
@@ -35,7 +35,8 @@
 
 <div class="edit-page row">
     <div id="content-wrapper" class="container">
-        <div ng-include="CONTENT_PARTIALS_URL + (article.polymorphic_ctype || 'loading') + '.html' + CACHEBUSTER"></div>
+        <div ng-if="article.polymorphic_ctype" ng-include="CONTENT_PARTIALS_URL + article.polymorphic_ctype + '.html' + CACHEBUSTER"></div>
+        <h4 ng-if="!article.polymorphic_ctype" style="text-align:center;"><i class="fa fa-refresh fa-spin"></i> Loading</h4>
     </div>
     <div class="status-bar"><span class="wordcount"></span></div>
 </div>
@@ -57,7 +58,7 @@
             <div class="modal-body">
                 <div class="main-image thumbnail-image extra-info-section">
                     <label>Thumbnail Image</label>
-                    <titleimage article="article" image="article.image" caption="false" placeholder-text="Thumbnail Image" />
+                    <titleimage article="article" image="article.image" caption="false" placeholder-text="Thumbnail Image"></titleimage>
                 </div>
             </div><!--/modal-body-->
             <div class="modal-footer">
@@ -92,7 +93,7 @@
                         <label>Sponsor Image</label>
                     </div>
                     <div class="main-image">
-                        <titleimage article="article" image="article.sponsor_image" caption="false" placeholder-text="Sponsor Image" format="png" crop="original" />
+                        <titleimage article="article" image="article.sponsor_image" caption="false" placeholder-text="Sponsor Image" format="png" crop="original"></titleimage>
                     </div>
                     <div class="sponsor-info-field content-field">
                         <label>Pixel</label>

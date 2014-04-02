@@ -18,14 +18,37 @@
     <link rel="stylesheet" href="bower_components/bootstrap3-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
     <!-- endbower -->
     <link rel="stylesheet" href="bower_components/jcrop/css/jquery.Jcrop.min.css" />
-    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" />
     <!-- endbuild -->
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" />
     <!-- build:css({.tmp,app}) styles/main.css -->
 
     <!-- endbuild -->
 
+
+    <script type="text/javascript" src="image.js"></script>
+    <script type="text/javascript">
+        var IMAGE_SERVER_URL = 'http://localimages.avclub.com';
+        var IMAGE_URL = 'http://localimages.avclub.com{{id}}/{{crop}}/{{width}}.{{format}}';
+        var BC_ADMIN_URL = 'http://localimages.avclub.com';
+
+        var LOADING_IMG_SRC = "/images/loading.gif";
+        var IMAGE_LISTENERS_DISABLED = true;
+        var DEFAULT_IMAGE_ID = 0;
+        var STATIC_URL = "/static/";
+        var PARTIALS_URL = "/views/";
+        var CONTENT_PARTIALS_URL = '/content_type_views/';
+        var MEDIA_ITEM_PARTIALS_URL = '/cms/api/partials/media_items/';
+        var CACHEBUSTER = "?" + Date.now();
+        // GA
+        var SENTRY_PUBLIC_DSN = "//77940b297e3f471294a244383a1a76fb@sentry.onion.com/5";
+
+        function jqueryCsrfSetup(){
+            return;
+        }
+    </script>
+
   </head>
-  <body ng-app="bulbsCmsApp">
+  <body ng-app="bulbsCmsAppDev">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -55,6 +78,7 @@
     <script src="bower_components/urlify/urlify.js"></script>
     <script src="bower_components/onion-editor/build/onion-editor.min.js"></script>
     <script src="bower_components/bootstrap3-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="bower_components/jcrop/js/jquery.Jcrop.min.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -86,13 +110,11 @@
     <script src="scripts/directives/targeting.js"></script>
     <script src="scripts/directives/titleimage.js"></script>
     <script src="scripts/directives/trash-content.js"></script>
+    <script src="scripts/libraries/editor-cms-bridge.js"></script>
     <!-- endbuild -->
 
-    <script>
-        angular.module('bulbsCmsApp').config(['$httpProvider', function($httpProvider) {
-            $httpProvider.defaults.withCredentials = true;
-        }])
-    </script>
+    <script src="bower_components/angular-mocks/angular-mocks.js"></script>
+    <script src="scripts/app-dev.js"></script>
 
 </body>
 </html>

@@ -82,7 +82,7 @@ module.exports = function (grunt) {
           middleware: function (connect, options) {
             return [
               modRewrite([
-                '!\\.html|\\.js|\\.css|\\.swf|\\.jp(e?)g|\\.png|\\.gif$ /index.html'
+                '!\\.eot|\\.woff|\\.ttf|\\.svg|\\.html|\\.js|\\.css|\\.swf|\\.jp(e?)g|\\.png|\\.gif$ /index.html'
               ]),
               mountFolder(connect, '.tmp'),
               mountFolder(connect, 'app')
@@ -183,7 +183,14 @@ module.exports = function (grunt) {
     useminPrepare: {
       html: '<%= yeoman.app %>/index.html',
       options: {
-        dest: '<%= yeoman.dist %>'
+        dest: '<%= yeoman.dist %>',
+        flow: {
+            steps: {
+              'js': ['concat', 'uglifyjs'],
+              'css': ['concat', 'cssmin'],
+            },
+            post: {}
+        }
       }
     },
 
@@ -282,6 +289,24 @@ module.exports = function (grunt) {
         cwd: '<%= yeoman.app %>/styles',
         dest: '.tmp/styles/',
         src: '{,*/}*.css'
+      },
+      jcropGif: {
+        expand: true,
+        cwd: '<%= yeoman.app %>/bower_components/jcrop/css',
+        dest:'<%= yeoman.dist %>/styles/',
+        src: 'Jcrop.gif'
+      },
+      fontawesome: {
+        expand: true,
+        cwd: '<%= yeoman.app %>/bower_components/font-awesome/fonts',
+        dest:'<%= yeoman.dist %>/fonts/',
+        src: ['fontawesome-webfont.*']
+      },
+      fontawesomeCSS: {  // This is a hack for now. FontAwesome REALLY doesn't like getting minified, I guess.
+        expand: true,
+        cwd: '<%= yeoman.app %>/bower_components/font-awesome/css',
+        dest:'<%= yeoman.dist %>/styles/',
+        src: ['font-awesome.min.css']
       }
     },
 
@@ -314,24 +339,22 @@ module.exports = function (grunt) {
     //   }
     // },
     uglify: {
-      dist: {
-        files: {
-          '<%= yeoman.dist %>/scripts/scripts.js': [
-            '<%= yeoman.app %>/scripts/{,*/}*.js'
-          ]
-        }
+      options: {
+        mangle: false, //https://github.com/theonion/bulbs-cms/issues/4
       },
       templates: {
         files: {
           '<%= yeoman.dist %>/scripts/templates.js': [
-            '.tmp/views/templates.js'
+            '.tmp/concat/scripts/templates.js'
           ]
         }
       }
     },
-    // concat: {
-    //   dist: {}
-    // },
+    concat: {
+      options: {
+        separator: ';' + grunt.util.linefeed,
+      }
+    },
 
     // Test settings
     karma: {
@@ -346,7 +369,7 @@ module.exports = function (grunt) {
       bulbsCmsApp: {
         cwd: '<%= yeoman.app %>',
         src: 'views/{,*/}*.html',
-        dest: '.tmp/views/templates.js',
+        dest: '.tmp/concat/scripts/templates.js',
         options: {
           url:    function (url) { return '/' + url; },
           htmlmin: {
@@ -397,18 +420,19 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'clean:dist',
     'bower-install',
+    'ngtemplates',
     'useminPrepare',
     'concurrent:dist',
     'autoprefixer',
     'concat',
     'ngmin',
     'copy:dist',
+    'copy:jcropGif',
+    'copy:fontawesome',
+    'copy:fontawesomeCSS',
     'cdnify',
     'cssmin',
-    'ngtemplates',
-    'uglify',
-    'rev',
-    'usemin',
+    'uglify'
   ]);
 
   grunt.registerTask('default', [
