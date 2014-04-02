@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('mediaRating', function ($http) {
+  .directive('mediaRating', function ($http, $) {
     return {
       restrict: 'E',
       templateUrl: PARTIALS_URL + 'rating.html',

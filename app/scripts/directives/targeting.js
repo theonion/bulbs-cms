@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('targeting', function () {
+  .directive('targeting', function ($) {
     return {
       restrict: 'E',
       templateUrl: PARTIALS_URL + 'targeting.html',

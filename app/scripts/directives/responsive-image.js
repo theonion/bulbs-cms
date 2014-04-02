@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('responsiveImage', function ($window) {
+  .directive('responsiveImage', function ($window, $) {
     return {
       link: function (scope, element, attrs) {
         attrs.$observe('imageId', function (val) {

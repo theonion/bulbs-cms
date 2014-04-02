@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('filterwidget', function ($http, $location, $window, $timeout) {
+  .directive('filterwidget', function ($http, $location, $window, $timeout, $) {
     return {
       restrict: 'E',
       templateUrl: PARTIALS_URL + 'filterwidget.html',

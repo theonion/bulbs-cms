@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('PromotionCtrl', function ($scope, $http, $window, Contentlist) {
+  .controller('PromotionCtrl', function ($scope, $http, $window, $, Contentlist) {
 
     $window.document.title = 'AVCMS | Promotion Tool'; // set title
 

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('bulbsAutocomplete', function ($http, $location, $compile, $timeout) {
+  .directive('bulbsAutocomplete', function ($http, $location, $compile, $timeout, $) {
     return {
       restrict: 'A',
       scope: true,

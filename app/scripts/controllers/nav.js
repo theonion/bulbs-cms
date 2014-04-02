@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('NavCtrl', function ($scope, $location, $window) {
+  .controller('NavCtrl', function ($scope, $location, $window, $) {
 
     //this is a controller for the navbar
     $scope.STATIC_URL = $window.STATIC_URL;
