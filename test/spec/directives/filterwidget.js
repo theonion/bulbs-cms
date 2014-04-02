@@ -12,9 +12,4 @@ describe('Directive: filterwidget', function () {
     scope = $rootScope.$new();
   }));
 
-  it('should make hidden element visible', inject(function ($compile) {
-    element = angular.element('<filterwidget></filterwidget>');
-    element = $compile(element)(scope);
-    expect(element.text()).toBe('this is the filterwidget directive');
-  }));
 });

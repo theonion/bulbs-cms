@@ -12,9 +12,4 @@ describe('Directive: videoUpload', function () {
     scope = $rootScope.$new();
   }));
 
-  it('should make hidden element visible', inject(function ($compile) {
-    element = angular.element('<video-upload></video-upload>');
-    element = $compile(element)(scope);
-    expect(element.text()).toBe('this is the videoUpload directive');
-  }));
 });

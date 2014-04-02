@@ -12,9 +12,4 @@ describe('Directive: trashContent', function () {
     scope = $rootScope.$new();
   }));
 
-  it('should make hidden element visible', inject(function ($compile) {
-    element = angular.element('<trash-content></trash-content>');
-    element = $compile(element)(scope);
-    expect(element.text()).toBe('this is the trashContent directive');
-  }));
 });
