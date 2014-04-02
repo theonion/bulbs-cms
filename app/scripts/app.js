@@ -11,7 +11,7 @@ jquery.factory('$', function() {
 });
 
 angular.module('bulbsCmsApp', [
-  'bulbsCmsApp.targeting'
+  'bulbsCmsApp.targeting',
   'ngCookies',
   'ngResource',
   'ngSanitize',
