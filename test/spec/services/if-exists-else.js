@@ -11,8 +11,8 @@ describe('Service: IfExistsElse', function () {
     IfExistsElse = _IfExistsElse_;
   }));
 
-  it('should do something', function () {
+  /*it('should do something', function () {
     expect(!!IfExistsElse).toBe(true);
-  });
+  });*/
 
 });
