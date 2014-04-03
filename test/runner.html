@@ -2,26 +2,6 @@
 <html lang="en">
   <head>
     <title>End2end Test Runner</title>
-      <script type="text/javascript">
-        var IMAGE_SERVER_URL = 'http://localimages.avclub.com';
-        var IMAGE_URL = 'http://localimages.avclub.com{{id}}/{{crop}}/{{width}}.{{format}}';
-        var BC_ADMIN_URL = 'http://localimages.avclub.com';
-
-        var LOADING_IMG_SRC = "/images/loading.gif";
-        var IMAGE_LISTENERS_DISABLED = true;
-        var DEFAULT_IMAGE_ID = 0;
-        var STATIC_URL = "/static/";
-        var PARTIALS_URL = "/views/";
-        var CONTENT_PARTIALS_URL = '/content_type_views/';
-        var MEDIA_ITEM_PARTIALS_URL = '/cms/api/partials/media_items/';
-        var CACHEBUSTER = "?" + Date.now();
-        // GA
-        var SENTRY_PUBLIC_DSN = "//77940b297e3f471294a244383a1a76fb@sentry.onion.com/5";
-
-        function jqueryCsrfSetup(){
-            return;
-        }
-    </script>
     <script src="vendor/angular-scenario.js" ng-autotest></script>
     <script src="scenarios.js"></script>
   </head>

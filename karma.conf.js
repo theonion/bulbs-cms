@@ -31,6 +31,8 @@ module.exports = function(config) {
       'app/bower_components/bootstrap3-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
       'app/scripts/*.js',
       'app/scripts/**/*.js',
+      'app/mocks/app.js',
+      'app/mocks/api.js',
       'test/mock/**/*.js',
       'test/spec/**/*.js',
       'test/config.js'

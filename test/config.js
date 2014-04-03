@@ -10,6 +10,3 @@ angular.module('bulbsCmsApp').constant('PARTIALS_URL', "/views/");
 angular.module('bulbsCmsApp').constant('CONTENT_PARTIALS_URL', '/content_type_views/');
 angular.module('bulbsCmsApp').constant('MEDIA_ITEM_PARTIALS_URL', '/cms/api/partials/media_items/');
 angular.module('bulbsCmsApp').constant('CACHEBUSTER', "?" + Date.now());
-
-// GA
-angular.module('bulbsCmsApp').constant('SENTRY_PUBLIC_DSN', "//77940b297e3f471294a244383a1a76fb@sentry.onion.com/5");
