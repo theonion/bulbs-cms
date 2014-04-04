@@ -82,7 +82,7 @@ module.exports = function (grunt) {
           middleware: function (connect, options) {
             return [
               modRewrite([
-                '!\\.html|\\.js|\\.css|\\.swf|\\.jp(e?)g|\\.png|\\.gif$ /index.html'
+                '!\\.eot|\\.woff|\\.ttf|\\.svg|\\.html|\\.js|\\.css|\\.swf|\\.jp(e?)g|\\.png|\\.gif$ /index.html'
               ]),
               mountFolder(connect, '.tmp'),
               mountFolder(connect, 'app')
@@ -371,7 +371,7 @@ module.exports = function (grunt) {
         src: 'views/{,*/}*.html',
         dest: '.tmp/concat/scripts/templates.js',
         options: {
-          url:    function(url) { return '/' + url; },
+          url:    function (url) { return '/' + url; },
           htmlmin: {
             collapseBooleanAttributes:      true,
             collapseWhitespace:             true,

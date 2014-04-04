@@ -1,12 +1,12 @@
 'use strict';
 
 var underscore = angular.module('underscore', []);
-underscore.factory('_', function() {
+underscore.factory('_', function () {
   return window._; // assumes underscore has already been loaded on the page
 });
 
 var jquery = angular.module('jquery', []);
-jquery.factory('$', function() {
+jquery.factory('$', function () {
   return window.$; // assumes jquery has already been loaded on the page
 });
 
@@ -19,7 +19,7 @@ angular.module('bulbsCmsApp', [
   'jquery',
   'underscore'
 ])
-  .config(function ($locationProvider, $routeProvider, $sceProvider) {
+  .config(function ($locationProvider, $routeProvider, $sceProvider, PARTIALS_URL) {
     $locationProvider.html5Mode(true);
 
     $routeProvider
@@ -59,16 +59,12 @@ angular.module('bulbsCmsApp', [
   .config(function($provide) {
     $provide.decorator('$exceptionHandler', function($delegate) {
       return function(exception, cause) {
-        console.log("exception handler got ")
-        console.log(exception)
-        console.log(cause)
         $delegate(exception, cause);
-        console.log("delegated")
         window.Raven.captureException(exception);
       }
     });
   })
-  .run(function($rootScope, $http, $cookies){
+  .run(function ($rootScope, $http, $cookies) {
     // set the CSRF token here
     $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
   });

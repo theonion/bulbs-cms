@@ -1,0 +1,1 @@
+angular.module('bulbsCmsAppDev', ['bulbsCmsApp', 'ngMockE2E']);

@@ -12,9 +12,4 @@ describe('Directive: devicepreview', function () {
     scope = $rootScope.$new();
   }));
 
-  it('should make hidden element visible', inject(function ($compile) {
-    element = angular.element('<devicepreview></devicepreview>');
-    element = $compile(element)(scope);
-    expect(element.text()).toBe('this is the devicepreview directive');
-  }));
 });

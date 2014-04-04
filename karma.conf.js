@@ -11,6 +11,9 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      'app/image.js',
+      'app/bower_components/jquery/dist/jquery.js',
+      'app/bower_components/bootstrap/dist/js/bootstrap.js',
       'app/bower_components/angular/angular.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
       'app/bower_components/angular-resource/angular-resource.js',
@@ -18,10 +21,21 @@ module.exports = function(config) {
       'app/bower_components/angular-sanitize/angular-sanitize.js',
       'app/bower_components/angular-route/angular-route.js',
       'app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
+      'app/bower_components/nprogress/nprogress.js',
+      'app/bower_components/bootstrap-switch/build/js/bootstrap-switch.js',
+      //'app/bower_components/raven-js/dist/raven.js',
+      'app/bower_components/moment/moment.js',
+      'app/bower_components/underscore/underscore.js',
+      'app/bower_components/urlify/urlify.js',
+      'app/bower_components/onion-editor/build/onion-editor.min.js',
+      'app/bower_components/bootstrap3-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
       'app/scripts/*.js',
       'app/scripts/**/*.js',
+      'app/mocks/app.js',
+      'app/mocks/api.js',
       'test/mock/**/*.js',
-      'test/spec/**/*.js'
+      'test/spec/**/*.js',
+      'test/config.js'
     ],
 
     // list of files / patterns to exclude
