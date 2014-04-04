@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('imagedrawer', function ($http, $window, $, PARTIALS_URL) {
+  .directive('imagedrawer', function ($http, $window, $, PARTIALS_URL, IMAGE_SERVER_URL, BC_ADMIN_URL) {
     return {
       restrict: 'E',
       templateUrl: PARTIALS_URL + 'imagedrawer.html',
@@ -45,7 +45,7 @@ angular.module('bulbsCmsApp')
           params = params || {};
           $http({
             method: 'GET',
-            url: $window.BC_ADMIN_URL + '/api/search',
+            url: BC_ADMIN_URL + '/api/search',
             params: params,
             headers: {'X-Betty-Api-Key': 'c44027184faf2dc61d6660409dec817daaa75decfa853d68250cbe8e'}
           }).success(function (data) {
@@ -68,7 +68,7 @@ angular.module('bulbsCmsApp')
 
         var refreshCurrentImage = function (id, field) {
           $http({
-            url: $window.BC_ADMIN_URL + '/api/' + id,
+            url: BC_ADMIN_URL + '/api/' + id,
             method: 'GET',
             headers: {'X-Betty-Api-Key': 'c44027184faf2dc61d6660409dec817daaa75decfa853d68250cbe8e'}
           }).success(function (data) {
@@ -229,7 +229,7 @@ angular.module('bulbsCmsApp')
       },
       link: function (scope, element, attrs) {
         //hidden file input click
-        scope.IMAGE_SERVER_URL = $window.IMAGE_SERVER_URL;
+        scope.IMAGE_SERVER_URL = IMAGE_SERVER_URL;
 
         function preventDefault(e) {
           e = e || window.event;

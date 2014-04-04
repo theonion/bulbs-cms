@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('titleimage', function ($http, $window, $, PARTIALS_URL) {
+  .directive('titleimage', function ($http, $window, $, PARTIALS_URL, LOADING_IMG_SRC) {
     return {
       restrict: 'E',
       templateUrl: PARTIALS_URL + 'titleimage.html',
@@ -46,7 +46,7 @@ angular.module('bulbsCmsApp')
             scope.image.id,
             function (data) {
               function removeLoadingGif() {
-                $element.find('.image img[src=\"' + $window.LOADING_IMG_SRC + '\"]').remove();
+                $element.find('.image img[src=\"' + LOADING_IMG_SRC + '\"]').remove();
               }
 
               removeLoadingGif();
@@ -56,7 +56,7 @@ angular.module('bulbsCmsApp')
               }
 
               $element.find('.image img').on('load', removeLoadingGif);
-              $element.find('.image img').after('<img src=\"' + $window.LOADING_IMG_SRC + '\">');
+              $element.find('.image img').after('<img src=\"' + LOADING_IMG_SRC + '\">');
 
               scope.image.id = data.id.toString();
               scope.$apply();

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('bettyimage', function ($http, PARTIALS_URL) {
+  .directive('bettyimage', function ($http, PARTIALS_URL, IMAGE_SERVER_URL) {
     return {
       replace: true,
       restrict: 'E',
