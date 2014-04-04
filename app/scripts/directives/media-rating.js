@@ -31,7 +31,7 @@ angular.module('bulbsCmsApp')
         };
 
         $scope.mediaItemTemplate = function () {
-          return $scope.MEDIA_ITEM_PARTIALS_URL + $scope.article.ratings[$scope.index].type.toLowerCase() + '.html' + CACHEBUSTER;
+          return $scope.MEDIA_ITEM_PARTIALS_URL + $scope.article.ratings[$scope.index].type.toLowerCase() + '.html' + $scope.CACHEBUSTER;
         };
         $scope.tvShowDisplay = function (x) {
           return x.name;
