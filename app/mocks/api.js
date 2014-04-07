@@ -32,6 +32,7 @@ var MOCK_content = {
   previous: null,
   results: [
     {
+      id: 1,
       polymorphic_ctype: "content_content",
       tags: [
         {
@@ -62,7 +63,6 @@ var MOCK_content = {
       },
       sponsor_image: null,
       status: "Draft",
-      id: 10,
       published: null,
       title: "This is a draft article",
       slug: "this-is-a-draft-article",
@@ -70,6 +70,7 @@ var MOCK_content = {
       body: "This is a draft article. It was written by First Last. It is a Feature Type article."
     },
     {
+      id: 2,
       polymorphic_ctype: "content_content",
       tags: [
         {
@@ -100,7 +101,6 @@ var MOCK_content = {
       },
       sponsor_image: null,
       status: "Published",
-      id: 1,
       published: "2014-03-28T17:00:00Z",
       last_modified: "2014-03-27T19:13:04.074Z",
       title: "This is an article",
@@ -114,7 +114,7 @@ var MOCK_content = {
       sponsor_name: null
     },
     {
-      id: 2,
+      id: 3,
       polymorphic_ctype: "content_content",
       feature_type: "What A Gal",
       title: "This is another article",
