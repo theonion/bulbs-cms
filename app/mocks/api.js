@@ -21,6 +21,12 @@ angular.module('bulbsCmsAppDev').run(function($httpBackend) {
     $httpBackend.whenGET(/^\/promotions\/api\/contentlist\/4.*/).respond(MOCK_contentlist_4);
     $httpBackend.whenGET(/^\/promotions\/api\/contentlist\/5.*/).respond(MOCK_contentlist_5);
 
+    $httpBackend.whenPUT(/^\/promotions\/api\/contentlist\/1.*/).respond(MOCK_contentlist_1);
+    $httpBackend.whenPUT(/^\/promotions\/api\/contentlist\/2.*/).respond(MOCK_contentlist_2);
+    $httpBackend.whenPUT(/^\/promotions\/api\/contentlist\/3.*/).respond(MOCK_contentlist_3);
+    $httpBackend.whenPUT(/^\/promotions\/api\/contentlist\/4.*/).respond(MOCK_contentlist_4);
+    $httpBackend.whenPUT(/^\/promotions\/api\/contentlist\/5.*/).respond(MOCK_contentlist_5);
+
     //POSTS
     //TODO: make this work
     $httpBackend.whenPOST(/^\/cms\/api\/v1\/content/).respond(function(method, url, data) {
