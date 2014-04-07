@@ -5,18 +5,33 @@ angular.module('bulbsCmsApp')
 
     $window.document.title = 'AVCMS | Promotion Tool'; // set title
 
-    function getPromotedArea() {
+    function getPzones() {
       $http({
         method: 'GET',
-        url: '/promotions/api/contentlist/' + $scope.section + '/'
+        url: '/promotions/api/contentlist/'
       }).success(function (data) {
-        $scope.promotedArticles = data.items.splice(0, 6);
+        $scope.pzones = data;
+        $scope.pzone = data[0];
+        $scope.$watch('pzone', function () {
+          getPromotedArea();
+        });
       }).error(function (data) {
         alert('Content list does not exist.');
       });
     }
 
-    $scope.section = 'homepage';
+    getPzones();
+
+    function getPromotedArea() {
+      $http({
+        method: 'GET',
+        url: '/promotions/api/contentlist/'+ $scope.pzone.id +'/'
+      }).success(function (data) {
+        $scope.promotedArticles = data;
+      }).error(function (data) {
+        alert('Content list does not exist.');
+      });
+    }
 
     $scope.articleIsInPromotedArticles = function (id) {
       if ($scope.promotedArticles) {
@@ -28,10 +43,6 @@ angular.module('bulbsCmsApp')
       }
       return false;
     };
-
-    $scope.$watch('section', function () {
-      getPromotedArea();
-    });
 
     Contentlist.setUrl('/cms/api/v1/content/?published=True');
 
@@ -95,8 +106,8 @@ angular.module('bulbsCmsApp')
 
       $http({
         method: 'PUT',
-        url: '/promotions/api/contentlist/' + $scope.section + '/',
-        data: {name: $scope.section, items: items}
+        url: '/promotions/api/contentlist/' + $scope.pzone.id + '/',
+        data: {name: $scope.pzone.id, items: items}
       }).success(function (data) {  //we should write this to scope.promotedArticles again for coherency but i haint dun it
         $('.save-button').removeClass('btn-danger').addClass('btn-success').html('<i class="fa fa-check"></i> Saved');
         window.setTimeout(function () {

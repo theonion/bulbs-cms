@@ -2,15 +2,7 @@
 	<div class="promotion-area col-md-6">
 		<h1 class="h4">Currently promoted</h1>
 		<div>
-			<select name="section" ng-model="section" class="form-control">
-				<option value="homepage" selected>Homepage</option>
-				<option value="tv">TV</option>
-				<option value="music">Music</option>
-				<option value="film">Film</option>
-				<option value="books">Books</option>
-				<option value="games">Games</option>
-				<option value="aux">Aux</option>
-				<option value="comedy">Comedy</option>
+			<select name="pzone" ng-model="pzone" ng-options="p.name for p in pzones" class="form-control">
 			</select>
 		</div>
 		<div>
@@ -23,8 +15,6 @@
 	</div>
 
 	<div class="sidebar-articles-container col-md-6">
-
-		<devicepreview></devicepreview>
 
 		<filterwidget></filterwidget>
 

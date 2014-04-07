@@ -13,6 +13,13 @@ angular.module('bulbsCmsAppDev').run(function($httpBackend) {
 
     $httpBackend.whenGET(/^\/cms\/api\/v1\/content.*/).respond(MOCK_content);
     $httpBackend.whenGET(/^\/cms\/api\/v1\/things.*/).respond(MOCK_things);
+    $httpBackend.whenGET(/^\/promotions\/api\/contentlist\/$/).respond(MOCK_contentlist);
+
+    $httpBackend.whenGET(/^\/promotions\/api\/contentlist\/1.*/).respond(MOCK_contentlist_1);
+    $httpBackend.whenGET(/^\/promotions\/api\/contentlist\/2.*/).respond(MOCK_contentlist_2);
+    $httpBackend.whenGET(/^\/promotions\/api\/contentlist\/3.*/).respond(MOCK_contentlist_3);
+    $httpBackend.whenGET(/^\/promotions\/api\/contentlist\/4.*/).respond(MOCK_contentlist_4);
+    $httpBackend.whenGET(/^\/promotions\/api\/contentlist\/5.*/).respond(MOCK_contentlist_5);
 
     //POSTS
     //TODO: make this work
@@ -143,4 +150,18 @@ var MOCK_things = [
   {"url": "/search?feature_types=watch-this", "param": "feature_types", "type": "feature_type", "name": "Watch This", "value": "watch-this"},
   {"url": "/search?feature_types=what-are-you-playing-this-weekend", "param": "feature_types", "type": "feature_type", "name": "What Are You Playing This Weekend?", "value": "what-are-you-playing-this-weekend"},
   {"url": "/search?feature_types=i-watched-this-on-purpose", "param": "feature_types", "type": "feature_type", "name": "I Watched This On Purpose", "value": "i-watched-this-on-purpose"}
-]
+];
+
+var MOCK_contentlist = [
+  {'id': 1, 'name': 'Homepage One'},
+  {'id': 2, 'name': 'Homepage Two'},
+  {'id': 3, 'name': 'Music'},
+  {'id': 4, 'name': 'Quizzes'},
+  {'id': 5, 'name': 'Business'}
+];
+
+var MOCK_contentlist_1 = MOCK_content.results.slice(0,1);
+var MOCK_contentlist_2 = MOCK_content.results.slice(0,2);
+var MOCK_contentlist_3 = MOCK_content.results.slice(1,2);
+var MOCK_contentlist_4 = MOCK_content.results.slice(1,3);
+var MOCK_contentlist_5 = MOCK_content.results.slice(0,3);
