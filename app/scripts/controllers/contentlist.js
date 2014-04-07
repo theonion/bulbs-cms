@@ -3,7 +3,7 @@
 angular.module('bulbsCmsApp')
   .controller('ContentlistCtrl', function (
     $scope, $http, $timeout, $location,
-    $routeParams, $window, $, _, Contentlist)
+    $routeParams, $window, $, _, content)
   {
     //set title
     $window.document.title = 'AVCMS | Content';

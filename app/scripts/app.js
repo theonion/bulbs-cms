@@ -26,6 +26,9 @@ angular.module('bulbsCmsApp', [
       .when('/cms/app/list/:queue/', {
         templateUrl: PARTIALS_URL + 'contentlist.html',
         controller: 'ContentlistCtrl',
+        resolve: {
+          'content': 'Contentservice'
+        },
         reloadOnSearch: false
       })
       .when('/cms/app/edit/:id/', {
