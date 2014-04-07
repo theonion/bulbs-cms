@@ -1,14 +1,14 @@
 'use strict';
 
-angular.module('bulbsCmsApp')
-  .controller('PromotionCtrl', function ($scope, $http, $window, $, Contentlist) {
+angular.module('bulbsCmsApp.promotion')
+  .controller('PromotionCtrl', function ($scope, $http, $window, $, Contentlist, options) {
 
-    $window.document.title = 'AVCMS | Promotion Tool'; // set title
+    $window.document.title = options.namespace + ' | Promotion Tool'; // set title
 
     function getPzones() {
       $http({
         method: 'GET',
-        url: '/promotions/api/contentlist/'
+        url: options.endpoint
       }).success(function (data) {
         $scope.pzones = data;
         $scope.pzone = data[0];
@@ -25,7 +25,7 @@ angular.module('bulbsCmsApp')
     function getPromotedArea() {
       $http({
         method: 'GET',
-        url: '/promotions/api/contentlist/'+ $scope.pzone.id +'/'
+        url: options.endpoint + $scope.pzone.id +'/'
       }).success(function (data) {
         $scope.promotedArticles = data;
       }).error(function (data) {
@@ -106,7 +106,7 @@ angular.module('bulbsCmsApp')
 
       $http({
         method: 'PUT',
-        url: '/promotions/api/contentlist/' + $scope.pzone.id + '/',
+        url: options.endpoint + $scope.pzone.id + '/',
         data: {name: $scope.pzone.id, items: items}
       }).success(function (data) {  //we should write this to scope.promotedArticles again for coherency but i haint dun it
         $('.save-button').removeClass('btn-danger').addClass('btn-success').html('<i class="fa fa-check"></i> Saved');
