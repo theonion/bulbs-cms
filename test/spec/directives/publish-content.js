@@ -20,12 +20,8 @@ describe('Directive: publishContent', function () {
   }));*/
 
   it('should make the modal on there', inject(function ($compile) {
-    console.log("hi")
-    console.log(scope.article)
-    console.log(scope.openPubTimeModal)
     element = angular.element('<publish-content></publish-content>');
     element = $compile(element)(scope);
-    console.log(element.scope().openPubTimeModal)
 
   }));
 
