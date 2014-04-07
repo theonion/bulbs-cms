@@ -11,6 +11,7 @@ jquery.factory('$', function () {
 });
 
 angular.module('bulbsCmsApp', [
+  'bulbsCmsApp.promotion',
   'ngCookies',
   'ngResource',
   'ngSanitize',
@@ -68,3 +69,9 @@ angular.module('bulbsCmsApp', [
     // set the CSRF token here
     $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
   });
+
+angular.module('bulbsCmsApp.promotion', [])
+.value('options', {
+  namespace: 'AVCMS',
+  endpoint: '/promotions/api/contentlist/'
+});
