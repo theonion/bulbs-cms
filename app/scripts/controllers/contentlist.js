@@ -54,7 +54,15 @@ angular.module('bulbsCmsApp')
       });
 
     var url = '/cms/api/v1/content/';
-    if ($scope.queue !== 'all') { url = '/cms/api/v1/content/?status=' + $scope.queue; }
+    if($scope.queue !== 'all') {
+      var statusMappings = {
+        published: "Published",
+        waiting: "Waiting for Editor",
+        draft: "Draft",
+        scheduled: "Scheduled"
+      };
+      url = '/cms/api/v1/content/?status=' + statusMappings[$scope.queue];
+    }
     Contentlist.setUrl(url);
     var getContentCallback = function ($scope, data) {
         $scope.articles = data.results;
