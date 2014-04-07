@@ -3,14 +3,36 @@
 angular.module('bulbsCmsApp')
   .controller('ContentlistCtrl', function (
     $scope, $http, $timeout, $location,
-    $routeParams, $window, $, _, content)
+    $routeParams, $window, $, _, Contentservice, content)
   {
+    console.log('list controller here')
+    console.log(content)
     //set title
     $window.document.title = 'AVCMS | Content';
 
+    var url = '/cms/api/v1/content/';
+    if($scope.queue !== 'all') {
+      var statusMappings = {
+        published: "Published",
+        waiting: "Waiting for Editor",
+        draft: "Draft",
+        scheduled: "Scheduled"
+      };
+      url = '/cms/api/v1/content/?status=' + statusMappings[$scope.queue];
+    }
+    //Contentlist.setUrl(url);
+    var getContentCallback = function (data) {
+        $scope.articles = data.results;
+        $scope.totalItems = data.count;
+      };
+    $scope.getContent = function () {
+        Contentservice.get().then(getContentCallback);
+      };
+    getContentCallback(content);
+
+
     $scope.search = $location.search().search;
     $scope.queue = $routeParams.queue || 'all';
-    $scope.articles = [{'id': -1, 'title': 'Loading'}];
     $scope.myStuff = false;
 
     function updateIsMyStuff() {
@@ -52,26 +74,6 @@ angular.module('bulbsCmsApp')
           $scope.getContent();
         }
       });
-
-    var url = '/cms/api/v1/content/';
-    if($scope.queue !== 'all') {
-      var statusMappings = {
-        published: "Published",
-        waiting: "Waiting for Editor",
-        draft: "Draft",
-        scheduled: "Scheduled"
-      };
-      url = '/cms/api/v1/content/?status=' + statusMappings[$scope.queue];
-    }
-    Contentlist.setUrl(url);
-    var getContentCallback = function ($scope, data) {
-        $scope.articles = data.results;
-        $scope.totalItems = data.count;
-      };
-    $scope.getContent = function () {
-        Contentlist.getContent($scope, getContentCallback);
-      };
-    $scope.getContent();
 
     $scope.goToPage = function (page) {
         $location.search(_.extend($location.search(), {'page': page}));

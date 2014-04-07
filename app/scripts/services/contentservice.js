@@ -13,6 +13,7 @@ angular.module('bulbsCmsApp')
           method: 'GET',
           url: this.url
         }).success(function (data) {
+          console.log("content service http success here");
           deferred.resolve(data);
         }).error(function (data, status) {
           deferred.reject(data);
@@ -20,4 +21,6 @@ angular.module('bulbsCmsApp')
 
       return deferred.promise;
     }
+
+    return this.get();
   });
