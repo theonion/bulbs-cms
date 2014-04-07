@@ -2,10 +2,13 @@
 
 angular.module('bulbsCmsApp')
   .controller('ContenteditCtrl', function (
-    $scope, $routeParams, $http, $window,
-    $location, $timeout, $compile, $q, $, IfExistsElse,
-    PARTIALS_URL, CONTENT_PARTIALS_URL, CACHEBUSTER, MEDIA_ITEM_PARTIALS_URL)
+    $scope, $http, $window, $location,
+    $timeout, $compile, $q, $, IfExistsElse,
+    PARTIALS_URL, CONTENT_PARTIALS_URL, CACHEBUSTER, MEDIA_ITEM_PARTIALS_URL,
+    content)
   {
+    console.log('content edit ctrl here')
+    console.log(content)
 
     $scope.CONTENT_PARTIALS_URL = CONTENT_PARTIALS_URL;
     $scope.MEDIA_ITEM_PARTIALS_URL = MEDIA_ITEM_PARTIALS_URL;
@@ -235,26 +238,11 @@ angular.module('bulbsCmsApp')
       return obj.first_name + ' ' + obj.last_name;
     };
 
-    function getArticle(callback) {
-      $http({
-        url: '/cms/api/v1/content/' + $routeParams.id + '/',
-        method: 'GET'
-      }).success(function (data) {
-        $scope.article = data;
-        $window.article = $scope.article;
-
-        if (callback) { callback(data); }
-      }).error(function (data, status) {
-        $scope.errors = $scope.errors || {};
-        if (status === 500) {
-          $scope.errors['Server Error'] = $scope.errors['Server Error'] || [];
-          $scope.errors['Server Error'].push('There was a problem with the content API.');
-        }
-      });
-    }
-
-    getArticle(function (data) {
-      $window.cock = data;
+    var getArticleCallback = function (data) {
+      console.log('get article callback')
+      console.log(data)
+      $window.article = data;
+      $scope.article = data;
       if ($location.search().rating_type && (!data.ratings || data.ratings.length === 0)) {
         $scope.article.ratings = [{
           type: $location.search().rating_type
@@ -276,8 +264,26 @@ angular.module('bulbsCmsApp')
 
 
       });
+    }
+    getArticleCallback(content);
 
-    });
+    function getArticle(callback) {
+      $http({
+        url: '/cms/api/v1/content/' + $routeParams.id + '/',
+        method: 'GET'
+      }).success(function (data) {
+        $scope.article = data;
+        $window.article = $scope.article;
+
+        if (callback) { callback(data); }
+      }).error(function (data, status) {
+        $scope.errors = $scope.errors || {};
+        if (status === 500) {
+          $scope.errors['Server Error'] = $scope.errors['Server Error'] || [];
+          $scope.errors['Server Error'].push('There was a problem with the content API.');
+        }
+      });
+    }
 
     function waitForDirt() {
       $('.edit-page').one('change input', 'input,div.editor', function () {

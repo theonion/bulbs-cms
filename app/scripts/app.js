@@ -33,7 +33,10 @@ angular.module('bulbsCmsApp', [
       })
       .when('/cms/app/edit/:id/', {
         templateUrl: PARTIALS_URL + 'contentedit.html',
-        controller: 'ContenteditCtrl'
+        controller: 'ContenteditCtrl',
+        resolve: {
+          'content': 'Contentservice'
+        },
       })
       .when('/cms/app/promotion/', {
         templateUrl:  PARTIALS_URL + 'promotion.html',
