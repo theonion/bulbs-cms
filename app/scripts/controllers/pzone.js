@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('PzoneCtrl', function ($scope, $http, $window, $, Contentlist) {
+  .controller('PzoneCtrl', function ($scope, $http, $window, $, Contentlist, PARTIALS_URL) {
     //set title
     $window.document.title = 'AVCMS | Pzone Editor';
 
