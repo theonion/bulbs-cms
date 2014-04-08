@@ -11,6 +11,7 @@ jquery.factory('$', function () {
 });
 
 angular.module('bulbsCmsApp', [
+  'bulbsCmsApp.targeting',
   'ngCookies',
   'ngResource',
   'ngSanitize',
@@ -19,52 +20,59 @@ angular.module('bulbsCmsApp', [
   'jquery',
   'underscore'
 ])
-  .config(function ($locationProvider, $routeProvider, $sceProvider, PARTIALS_URL) {
-    $locationProvider.html5Mode(true);
+.config(function ($locationProvider, $routeProvider, $sceProvider, PARTIALS_URL) {
+  $locationProvider.html5Mode(true);
 
-    $routeProvider
-      .when('/cms/app/list/:queue/', {
-        templateUrl: PARTIALS_URL + 'contentlist.html',
-        controller: 'ContentlistCtrl',
-        reloadOnSearch: false
-      })
-      .when('/cms/app/edit/:id/', {
-        templateUrl: PARTIALS_URL + 'contentedit.html',
-        controller: 'ContenteditCtrl'
-      })
-      .when('/cms/app/promotion/', {
-        templateUrl:  PARTIALS_URL + 'promotion.html',
-        controller: 'PromotionCtrl',
-        reloadOnSearch: false
-      })
-      .when('/cms/app/targeting/', {
-        templateUrl: PARTIALS_URL + 'targeting-editor.html',
-        controller: 'TargetingCtrl'
-      })
-      .when('/cms/app/pzones/', {
-        templateUrl: PARTIALS_URL + 'pzones.html',
-        controller: 'PzoneCtrl'
-      })
-      .otherwise({
-        redirectTo: '/cms/app/list/published/'
-      });
-
-    //TODO: whitelist staticonion.
-    $sceProvider.enabled(false);
-    /*.resourceUrlWhitelist([
-    'self',
-    STATIC_URL + "**"]);*/
-
-  })
-  .config(function($provide) {
-    $provide.decorator('$exceptionHandler', function($delegate) {
-      return function(exception, cause) {
-        $delegate(exception, cause);
-        window.Raven.captureException(exception);
-      }
+  $routeProvider
+    .when('/cms/app/list/:queue/', {
+      templateUrl: PARTIALS_URL + 'contentlist.html',
+      controller: 'ContentlistCtrl',
+      reloadOnSearch: false
+    })
+    .when('/cms/app/edit/:id/', {
+      templateUrl: PARTIALS_URL + 'contentedit.html',
+      controller: 'ContenteditCtrl'
+    })
+    .when('/cms/app/promotion/', {
+      templateUrl:  PARTIALS_URL + 'promotion.html',
+      controller: 'PromotionCtrl',
+      reloadOnSearch: false
+    })
+    .when('/cms/app/targeting/', {
+      templateUrl: PARTIALS_URL + 'targeting-editor.html',
+      controller: 'TargetingCtrl'
+    })
+    .when('/cms/app/pzones/', {
+      templateUrl: PARTIALS_URL + 'pzones.html',
+      controller: 'PzoneCtrl'
+    })
+    .otherwise({
+      redirectTo: '/cms/app/list/published/'
     });
-  })
-  .run(function ($rootScope, $http, $cookies) {
-    // set the CSRF token here
-    $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
+
+  //TODO: whitelist staticonion.
+  $sceProvider.enabled(false);
+  /*.resourceUrlWhitelist([
+  'self',
+  STATIC_URL + "**"]);*/
+
+})
+.config(function ($provide) {
+  $provide.decorator('$exceptionHandler', function($delegate) {
+    return function(exception, cause) {
+      $delegate(exception, cause);
+      window.Raven.captureException(exception);
+    }
   });
+})
+.run(function ($rootScope, $http, $cookies) {
+  // set the CSRF token here
+  $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
+});
+
+angular.module('bulbsCmsApp.targeting', [])
+
+.value('options', {
+  namespace: 'AVCMS',
+  endpoint: '/ads/targeting'
+});

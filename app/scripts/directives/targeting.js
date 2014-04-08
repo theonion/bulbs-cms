@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('bulbsCmsApp')
+angular.module('bulbsCmsApp.targeting')
   .directive('targeting', function ($, PARTIALS_URL) {
     return {
       restrict: 'E',
