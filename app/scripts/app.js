@@ -1,30 +1,33 @@
 'use strict';
 
-var underscore = angular.module('underscore', []);
-underscore.factory('_', function () {
-  return window._; // assumes underscore has already been loaded on the page
-});
+// ****** External Libraries ****** \\
 
-var jquery = angular.module('jquery', []);
-jquery.factory('$', function () {
-  return window.$; // assumes jquery has already been loaded on the page
-});
+angular.module('underscore', []).value('_', window._);
+angular.module('NProgress', []).value('NProgress', window.NProgress);
+angular.module('URLify', []).value('URLify', window.URLify);
+angular.module('jquery', []).value('$', window.$);
+
+
+// ****** App Config ****** \\
 
 angular.module('bulbsCmsApp', [
+  'bulbsCmsApp.targeting',
   'ngCookies',
   'ngResource',
   'ngSanitize',
   'ngRoute',
   'ui.bootstrap',
   'jquery',
-  'underscore'
+  'underscore',
+  'NProgress',
+  'URLify'
 ])
-  .config(function ($locationProvider, $routeProvider, $sceProvider, PARTIALS_URL) {
-    $locationProvider.html5Mode(true);
+.config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
+  $locationProvider.html5Mode(true);
 
     $routeProvider
       .when('/cms/app/list/:queue/', {
-        templateUrl: PARTIALS_URL + 'contentlist.html',
+        templateUrl: routes.PARTIALS_URL + 'contentlist.html',
         controller: 'ContentlistCtrl',
         resolve: {
           content: function (Contentlistservice) {
@@ -34,7 +37,7 @@ angular.module('bulbsCmsApp', [
         reloadOnSearch: false
       })
       .when('/cms/app/edit/:id/', {
-        templateUrl: PARTIALS_URL + 'contentedit.html',
+        templateUrl: routes.PARTIALS_URL + 'contentedit.html',
         controller: 'ContenteditCtrl',
         resolve: {
           content: function (Contenteditservice) {
@@ -43,38 +46,47 @@ angular.module('bulbsCmsApp', [
         },
       })
       .when('/cms/app/promotion/', {
-        templateUrl:  PARTIALS_URL + 'promotion.html',
+        templateUrl:  routes.PARTIALS_URL + 'promotion.html',
         controller: 'PromotionCtrl',
         reloadOnSearch: false
       })
       .when('/cms/app/targeting/', {
-        templateUrl: PARTIALS_URL + 'targeting-editor.html',
+        templateUrl: routes.PARTIALS_URL + 'targeting-editor.html',
         controller: 'TargetingCtrl'
       })
       .when('/cms/app/pzones/', {
-        templateUrl: PARTIALS_URL + 'pzones.html',
+        templateUrl: routes.PARTIALS_URL + 'pzones.html',
         controller: 'PzoneCtrl'
       })
       .otherwise({
         redirectTo: '/cms/app/list/published/'
       });
 
-    //TODO: whitelist staticonion.
-    $sceProvider.enabled(false);
-    /*.resourceUrlWhitelist([
-    'self',
-    STATIC_URL + "**"]);*/
+  //TODO: whitelist staticonion.
+  $sceProvider.enabled(false);
+  /*.resourceUrlWhitelist([
+  'self',
+  STATIC_URL + "**"]);*/
 
-  })
-  .config(function($provide) {
-    $provide.decorator('$exceptionHandler', function($delegate) {
-      return function(exception, cause) {
-        $delegate(exception, cause);
-        window.Raven.captureException(exception);
-      }
-    });
-  })
-  .run(function ($rootScope, $http, $cookies) {
-    // set the CSRF token here
-    $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
+})
+.config(function ($provide) {
+  $provide.decorator('$exceptionHandler', function($delegate) {
+    return function(exception, cause) {
+      $delegate(exception, cause);
+      window.Raven.captureException(exception);
+    }
   });
+})
+.run(function ($rootScope, $http, $cookies) {
+  // set the CSRF token here
+  $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
+});
+
+// ****** CMS Plugins ****** \\
+
+angular.module('bulbsCmsApp.targeting', [])
+
+.value('options', {
+  namespace: 'AVCMS',
+  endpoint: '/ads/targeting'
+});

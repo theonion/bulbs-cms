@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('listinput', function ($, PARTIALS_URL) {
+  .directive('listinput', function ($, routes) {
     return {
       restrict: 'E',
-      templateUrl: PARTIALS_URL + 'listinput.html',
+      templateUrl: routes.PARTIALS_URL + 'listinput.html',
       scope: {
         'model': '='
       },

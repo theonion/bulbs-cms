@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('filterwidget', function ($http, $location, $window, $timeout, $, PARTIALS_URL) {
+  .directive('filterwidget', function ($http, $location, $window, $timeout, $, routes) {
     return {
       restrict: 'E',
-      templateUrl: PARTIALS_URL + 'filterwidget.html',
+      templateUrl: routes.PARTIALS_URL + 'filterwidget.html',
       link: function (scope, element, attrs) {
         var $element = $(element);
         var $input = $element.find('input');

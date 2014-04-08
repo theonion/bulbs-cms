@@ -1,7 +1,10 @@
 <div class="panel panel-default" id="targeting">
-	<div class="panel-heading"><h4>Targeting Editor</h4></div>
-	<div class="panel-body">
-		<input type="text" class="form-control" ng-model="url" placeholder="URL to edit targeting for" tabindex="1" />
-	</div>
-	<targeting targeting-array="targetingArray" /></targeting>
+  <div class="panel-heading"><h4>Targeting Editor</h4></div>
+  <div class="panel-body input-group">
+    <input type="text" class="form-control" ng-keyup="keyHandler($event, url)" ng-model="url" placeholder="URL to edit targeting for" tabindex="1" />
+    <div class="input-group-btn">
+      <a class="btn btn-primary search-button" ng-click="search(url);" ><span class="fa fa-search"></span></a>
+    </div>
+  </div>
+  <targeting targeting-array="targetingArray"></targeting>
 </div>

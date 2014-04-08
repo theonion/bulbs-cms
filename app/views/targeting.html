@@ -1,25 +1,25 @@
 <div ng-show="targetingArray.length > 0">
-	<div class="panel-body targeting-table">
-		<table class="table targeting-group">
-			<tr>
-				<th>Key</th>
-				<th>Value</th>
-				<th class="invisible">Actions</th>
-			</tr>
-			<tr class="table-striped targeting-row" ng-repeat="t in targetingArray">
-				<td>
-					<input name="key" type="text" placeholder="Key" class="form-control" ng-model="targetingArray[$index][0]"></td>
-				<td>
-					<input name="value" type="text" placeholder="Value" class="form-control" ng-model="targetingArray[$index][1]"></td>
-				<td>
-					<button class="btn btn-danger pull-right" type="submit" ng-click="removeTargetingRow($index);">
-					<i class="glyphicon glyphicon-remove"></i></button></td>
-			</tr>
-		</table>
-	</div>
-	<div class="panel-footer text-right">
-		<button class="btn btn-success add-targeting-button" type="submit" ng-click="addTargetingRow($index);">
-			<i class="glyphicon glyphicon-plus"></i> Add Row</button>
-		<button class="btn btn-primary add-targeting-button" type="submit" ng-click="save();">Save</button>
-	</div>
+  <div class="panel-body targeting-table">
+    <table class="table targeting-group">
+      <tr>
+        <th>Key</th>
+        <th>Value</th>
+        <th class="invisible">Actions</th>
+      </tr>
+      <tr class="table-striped targeting-row" ng-repeat="t in targetingArray">
+        <td>
+          <input name="key" type="text" placeholder="Key" class="form-control" ng-model="targetingArray[$index][0]"></td>
+        <td>
+          <input name="value" type="text" placeholder="Value" class="form-control" ng-model="targetingArray[$index][1]"></td>
+        <td>
+          <button class="btn btn-danger pull-right" type="submit" ng-click="removeTargetingRow($index);">
+          <i class="glyphicon glyphicon-remove"></i></button></td>
+      </tr>
+    </table>
+  </div>
+  <div class="panel-footer text-right">
+    <button class="btn btn-success add-targeting-button" type="submit" ng-click="addTargetingRow($index);">
+      <i class="glyphicon glyphicon-plus"></i> Add Row</button>
+    <button class="btn btn-primary add-targeting-button" type="submit" ng-click="save();">Save</button>
+  </div>
 </div>

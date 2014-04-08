@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('login', function ($http, $cookies, $window, $, PARTIALS_URL) {
+  .directive('login', function ($http, $cookies, $window, $, routes) {
     return {
       restrict: 'E',
-      templateUrl: PARTIALS_URL + 'login.html',
+      templateUrl: routes.PARTIALS_URL + 'login.html',
       link: function (scope, element, attrs) {
         scope.showLoginModal = function () {
           $('#login-modal').modal('show');
