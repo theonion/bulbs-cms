@@ -3,6 +3,7 @@ angular.module('bulbsCmsAppDev').run(function($httpBackend) {
     $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/\d+\//).respond(function(method, url, data){
       var re = /^\/cms\/api\/v1\/content\/(\d+)\//
       var index = re.exec(url)[1];
+
       if(index <= MOCK_content.results.length){
 
         return [200, MOCK_content.results[index - 1], {}, "You did it"];
@@ -23,6 +24,9 @@ angular.module('bulbsCmsAppDev').run(function($httpBackend) {
     //pass through for templates
     $httpBackend.whenGET(/^\/views\//).passThrough();
     $httpBackend.whenGET(/^\/content_type_views\//).passThrough();
+    $httpBackend.when('OPTIONS', /^http:\/\/localimages\.avclub\.com.*/).passThrough();
+    $httpBackend.when('GET', /^http:\/\/localimages\.avclub\.com.*/).passThrough();
+    $httpBackend.when('POST', /^http:\/\/localimages\.avclub\.com.*/).passThrough();
   });
 
 

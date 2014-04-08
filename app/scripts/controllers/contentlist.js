@@ -3,7 +3,7 @@
 angular.module('bulbsCmsApp')
   .controller('ContentlistCtrl', function (
     $scope, $http, $timeout, $location,
-    $routeParams, $window, $, _, Contentservice, content)
+    $routeParams, $window, $, _, Contentlistservice, content)
   {
     console.log('list controller here')
     console.log(content)
@@ -26,7 +26,7 @@ angular.module('bulbsCmsApp')
         $scope.totalItems = data.count;
       };
     $scope.getContent = function () {
-        Contentservice.get().then(getContentCallback);
+        Contentlistservice.get().then(getContentCallback);
       };
     getContentCallback(content);
 

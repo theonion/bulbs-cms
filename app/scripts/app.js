@@ -27,7 +27,9 @@ angular.module('bulbsCmsApp', [
         templateUrl: PARTIALS_URL + 'contentlist.html',
         controller: 'ContentlistCtrl',
         resolve: {
-          'content': 'Contentservice'
+          content: function (Contentlistservice) {
+            return Contentlistservice.get();
+          }
         },
         reloadOnSearch: false
       })
@@ -35,7 +37,9 @@ angular.module('bulbsCmsApp', [
         templateUrl: PARTIALS_URL + 'contentedit.html',
         controller: 'ContenteditCtrl',
         resolve: {
-          'content': 'Contentservice'
+          content: function (Contenteditservice) {
+            return Contenteditservice.get();
+          }
         },
       })
       .when('/cms/app/promotion/', {

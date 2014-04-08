@@ -5,8 +5,11 @@ angular.module('bulbsCmsApp')
     $scope, $http, $window, $location,
     $timeout, $compile, $q, $, IfExistsElse,
     CONTENT_PARTIALS_URL, CACHEBUSTER, MEDIA_ITEM_PARTIALS_URL,
-    Contentservice, content)
+    Contenteditservice, content)
   {
+
+    console.log("content edit here")
+    console.log(content)
 
     $scope.CONTENT_PARTIALS_URL = CONTENT_PARTIALS_URL;
     $scope.MEDIA_ITEM_PARTIALS_URL = MEDIA_ITEM_PARTIALS_URL;
@@ -44,10 +47,6 @@ angular.module('bulbsCmsApp')
     $window.document.title = 'AVCMS | Editing ' + ($scope.article && $('<span>' + $scope.article.title + '</span>').text());
 
     $('body').removeClass();
-
-    var nav = $($compile($('#edit-page-nav-bar-template').html())($scope));
-    $('ul.edit-page-nav').html(nav);
-    $('ul.nav').show();
 
     $scope.tagDisplayFn = function (o) {
       return o.name;
@@ -309,7 +308,7 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.publishSuccessCbk = function () {
-      Contentservice.get().then(getArticleCallback);
+      Contenteditservice.get().then(getArticleCallback);
     };
 
     $scope.trashSuccessCbk = function () {

@@ -1,0 +1,41 @@
+<div class="navbar-header">
+  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+    <span class="sr-only">Toggle navigation</span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span></button>
+  <a id="logo" class="navbar-brand" href="/cms/app/list"><img style="width: 50px; height: 50px;" src="/images/onion.png"></a></div>
+
+<div class="collapse navbar-collapse" id="navbar-collapse">
+    <ul ng-show="navType == 'list'" class="nav navbar-nav">
+      <li><a href="/cms/app/list">Content</a></li>
+      <li><a href="/cms/app/promotion/">Promotion</a></li>
+      <li><a href="/cms/app/targeting/">Targeting</a></li>
+      <li><a href="/cms/app/pzones/">P'Zones</a></li></ul>
+
+    <ul ng-show="navType == 'edit'" class="nav navbar-nav edit-page-nav container">
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">More <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li><a href="" role="button" data-target="#thumbnail-modal" data-toggle="modal">Thumbnail</a></li>
+          <li><a href="" role="button" data-target="#sponsored-content-modal" data-toggle="modal">Sponsored Object</a></li>
+          <li><a href="" role="button" ng-click="trashContent(article.id);">Delete</a></li></ul></li>
+
+      <li class="pull-right">
+        <button id="save-article-btn"  style="margin-top:7px" class="btn btn-success" href="" ng-click="saveArticle();">Save</button></li>
+
+      <li class="content-status pull-right">
+        <a target="_blank" href="/r/{{article.id}}">Preview&nbsp;&nbsp;<i class="fa fa-share"></i></a></li>
+
+      <li class="content-status pull-right" ng-show="article.status == 'Draft' || article.status == 'Waiting for Editor'">
+        <a href="" ng-click="saveThenOpenSendModal(article);">
+            <span class="fa fa-check" ng-show="article.status == 'Waiting for Editor'"></span> Send to Editors </a></li>
+
+      <li class="content-status pull-right" ng-show="article.status == 'Draft' || article.status == 'Waiting for Editor'">
+        <a href="" ng-click="saveThenPublish(article);">Publish</a></li>
+
+      <li class="content-status pull-right" ng-show="article.status == 'Published'">
+        <a href="" ng-click="saveThenPublish(article);">Published on {{article.published|date:"MMMM d, yyyy 'at' h:mm a" }}</a></li>
+
+      <li class="content-status pull-right" ng-show="article.status == 'Scheduled'">
+        <a href="" ng-click="saveThenPublish(article);">Scheduled to be published on {{article.published|date:"MMMM d, yyyy 'at' h:mm a" }}</a></li></ul></div>
