@@ -21,10 +21,10 @@ Install dependencies:
 Deploying
 ---------
 
-git checkout release
-git merge master
-grunt build
-git commit
-git push
-make a release
-update bower versions accordingly
+1. git checkout release
+2. git merge master
+3. grunt build
+4. git commit
+5. git push
+6. make a release
+7. update bower versions accordingly
