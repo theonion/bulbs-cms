@@ -1,14 +1,12 @@
 angular.module('bulbsCmsApp.mockApi').run([
   '$httpBackend', 'mockApiData',
   function($httpBackend, mockApiData) {
-    // content list
-    $httpBackend.whenGET(/^\/cms\/api\/v1\/content.*/).respond(mockApiData['content.list']);
-
     // content instance
     $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/\d+\/$/).respond(function(method, url, data) {
       var re = /^\/cms\/api\/v1\/content\/(\d+)\//;
       var index = re.exec(url)[1];
       var contentList = mockApiData['content.list'];
+
       if(index <= contentList.results.length) {
         return [200, contentList.results[index - 1]];
       } else {
@@ -22,8 +20,11 @@ angular.module('bulbsCmsApp.mockApi').run([
     $httpBackend.whenPUT('/cms/api/v1/content/4/', mockApiData['content.edit'])
       .respond(mockApiData['content.edit.response']);
 
+    // content list
+    $httpBackend.whenGET(/^\/cms\/api\/v1\/content.*/).respond(mockApiData['content.list']);
+
     // things
-    $httpBackend.whenGET('/cms/api/v1/things/').respond(mockApiData['things.list']);
+    $httpBackend.whenGET(/^\/cms\/api\/v1\/things.*/).respond(mockApiData['things.list']);
 
     // promotions contentlist
     $httpBackend.whenGET('/promotions/api/contentlist/').respond(mockApiData['contentlist.list']);
