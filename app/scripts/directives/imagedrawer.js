@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('imagedrawer', function ($http, $window, $, PARTIALS_URL, IMAGE_SERVER_URL, BC_ADMIN_URL) {
+  .directive('imagedrawer', function ($http, $window, $, routes) {
     return {
       restrict: 'E',
-      templateUrl: PARTIALS_URL + 'imagedrawer.html',
+      templateUrl: routes.PARTIALS_URL + 'imagedrawer.html',
       scope: {
         openImageDrawer: '=',
         closeImageDrawer: '=',
@@ -45,7 +45,7 @@ angular.module('bulbsCmsApp')
           params = params || {};
           $http({
             method: 'GET',
-            url: BC_ADMIN_URL + '/api/search',
+            url: routes.BC_ADMIN_URL + '/api/search',
             params: params,
             headers: {'X-Betty-Api-Key': 'c44027184faf2dc61d6660409dec817daaa75decfa853d68250cbe8e'}
           }).success(function (data) {
@@ -68,7 +68,7 @@ angular.module('bulbsCmsApp')
 
         var refreshCurrentImage = function (id, field) {
           $http({
-            url: BC_ADMIN_URL + '/api/' + id,
+            url: routes.BC_ADMIN_URL + '/api/' + id,
             method: 'GET',
             headers: {'X-Betty-Api-Key': 'c44027184faf2dc61d6660409dec817daaa75decfa853d68250cbe8e'}
           }).success(function (data) {
@@ -192,7 +192,7 @@ angular.module('bulbsCmsApp')
 
         $scope.cropImage = function (image, ratio) {
           var width = 500;
-          $('#cropper-img').attr('src', IMAGE_SERVER_URL + '/' + image.id + '/original/' + width + '.jpg');
+          $('#cropper-img').attr('src', routes.IMAGE_SERVER_URL + '/' + image.id + '/original/' + width + '.jpg');
 
           var aspectWidth = ratio.split('x')[0];
           var aspectHeight = ratio.split('x')[1];
@@ -229,7 +229,7 @@ angular.module('bulbsCmsApp')
       },
       link: function (scope, element, attrs) {
         //hidden file input click
-        scope.IMAGE_SERVER_URL = IMAGE_SERVER_URL;
+        scope.IMAGE_SERVER_URL = routes.IMAGE_SERVER_URL;
 
         function preventDefault(e) {
           e = e || window.event;

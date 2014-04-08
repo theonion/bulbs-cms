@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('mediaRating', function ($http, $, PARTIALS_URL) {
+  .directive('mediaRating', function ($http, $, routes) {
     return {
       restrict: 'E',
-      templateUrl: PARTIALS_URL + 'rating.html',
+      templateUrl: routes.PARTIALS_URL + 'rating.html',
       scope: true,
       controller: function ($scope) {
         $scope.search = function (el) {

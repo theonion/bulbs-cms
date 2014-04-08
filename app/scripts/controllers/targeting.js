@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp.targeting')
-  .controller('TargetingCtrl', function ($scope, $http, $window, $q, $location, options) {
+  .controller('TargetingCtrl', function ($scope, $http, $window, $q, $location, options, NProgress) {
     //set title
     $window.document.title = options.namespace + ' | Targeting Editor';
 

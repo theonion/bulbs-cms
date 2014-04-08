@@ -2,9 +2,9 @@
 
 angular.module('bulbsCmsApp').directive(
   'videoUpload',
-  function ($http, $window, $timeout, $sce, $, PARTIALS_URL) {
+  function ($http, $window, $timeout, $sce, $, routes) {
     return {
-      templateUrl: PARTIALS_URL + 'mainvideo.html',
+      templateUrl: routes.PARTIALS_URL + 'mainvideo.html',
       scope: {
         'article': '='
       },
