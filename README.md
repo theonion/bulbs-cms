@@ -17,3 +17,14 @@ Install dependencies:
 `grunt serve` to run the dev server
 
 `grunt test` to test
+
+Deploying
+---------
+
+git checkout release
+git merge master
+grunt build
+git commit
+git push
+make a release
+update bower versions accordingly
