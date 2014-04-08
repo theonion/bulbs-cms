@@ -2,8 +2,8 @@ angular.module('bulbsCmsApp.mockApi').run([
   '$httpBackend', 'mockApiData',
   function($httpBackend, mockApiData) {
     // content list
-    $httpBackend.whenGET('/cms/api/v1/content/').respond(mockApiData['content.list']);
-    
+    $httpBackend.whenGET(/^\/cms\/api\/v1\/content.*/).respond(mockApiData['content.list']);
+
     // content instance
     $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/\d+\/$/).respond(function(method, url, data) {
       var re = /^\/cms\/api\/v1\/content\/(\d+)\//;
@@ -24,7 +24,7 @@ angular.module('bulbsCmsApp.mockApi').run([
 
     // things
     $httpBackend.whenGET('/cms/api/v1/things/').respond(mockApiData['things.list']);
-    
+
     // templates
     $httpBackend.whenGET(/^\/views\//).passThrough();
     $httpBackend.whenGET(/^\/content_type_views\//).passThrough();
