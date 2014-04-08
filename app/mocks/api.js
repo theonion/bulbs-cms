@@ -2,7 +2,7 @@ angular.module('bulbsCmsApp.mockApi').run([
   '$httpBackend', 'mockApiData',
   function($httpBackend, mockApiData) {
     // content list
-    $httpBackend.whenGET('/cms/api/v1/content/').respond(mockApiData['content.list']);
+    $httpBackend.whenGET(/^\/cms\/api\/v1\/content.*/).respond(mockApiData['content.list']);
 
     // content instance
     $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/\d+\/$/).respond(function(method, url, data) {
