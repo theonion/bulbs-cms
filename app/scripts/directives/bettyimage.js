@@ -1,11 +1,11 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('bettyimage', function ($http, PARTIALS_URL, IMAGE_SERVER_URL) {
+  .directive('bettyimage', function ($http, routes) {
     return {
       replace: true,
       restrict: 'E',
-      templateUrl: PARTIALS_URL + 'bettyimage.html',
+      templateUrl: routes.PARTIALS_URL + 'bettyimage.html',
       scope: {
         'image': '=',
         'ratio': '=',
@@ -27,7 +27,7 @@ angular.module('bulbsCmsApp')
         var scale = scope.width / selectionWidth;
 
         var requestWidth = Math.round((scale * (scope.image.width - selectionWidth)) + scope.width);
-        element.css('background-image', 'url(' + IMAGE_SERVER_URL + '/' + scope.image.id + '/original/' + requestWidth + '.jpg)');
+        element.css('background-image', 'url(' + routes.IMAGE_SERVER_URL + '/' + scope.image.id + '/original/' + requestWidth + '.jpg)');
         element.css('background-position', (scale * selection.x0 * -1) + 'px ' + (scale * selection.y0 * -1) + 'px');
       }
     };

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('PzoneCtrl', function ($scope, $http, $window, $, Contentlist) {
+  .controller('PzoneCtrl', function ($scope, $http, $window, $, Contentlist, routes) {
     //set title
     $window.document.title = 'AVCMS | Pzone Editor';
 
@@ -40,7 +40,7 @@ angular.module('bulbsCmsApp')
     $scope.getContent();
 
     $scope.getPZoneTemplate = function () {
-      return PARTIALS_URL + 'pzones/' + $scope.pzone.zone_type + '.html';
+      return routes.PARTIALS_URL + 'pzones/' + $scope.pzone.zone_type + '.html';
     };
 
     $scope.remove = function (contentId) {
