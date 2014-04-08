@@ -4,55 +4,17 @@ describe('Controller: ContenteditCtrl', function () {
 
   // load the controller's module
   beforeEach(module('bulbsCmsApp'));
+  beforeEach(module('bulbsCmsApp.mockApi'));
 
   var ContenteditCtrl,
     scope;
 
-  var initArticle = {
-    polymorphic_ctype: "content_content",
-    tags: [
-      {
-      slug: "section",
-      type: "core_section",
-      id: 1,
-      name: "Section"
-      }
-    ],
-    authors: [
-      {
-      username: "username",
-      first_name: "First",
-      last_name: "Last",
-      id: 1
-      }
-    ],
-    image: {
-      caption: null,
-      alt: null,
-      id: "1"
-    },
-    absolute_url: "/article/slug-10",
-    detail_image: {
-      caption: null,
-      alt: null,
-      id: "1"
-    },
-    sponsor_image: null,
-    status: "Draft",
-    id: 10,
-    published: null,
-    title: "This is a draft article",
-    slug: "this-is-a-draft-article",
-    feature_type: "Feature Type",
-    body: "This is a draft article. It was written by First Last. It is a Feature Type article."
-  }
-
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope) {
+  beforeEach(inject(function ($controller, $rootScope, mockApiData) {
     scope = $rootScope.$new();
     ContenteditCtrl = $controller('ContenteditCtrl', {
       $scope: scope,
-      content: initArticle
+      content: mockApiData['content.list'].results[0]
     });
   }));
 
