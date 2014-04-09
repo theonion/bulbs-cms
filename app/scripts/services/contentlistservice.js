@@ -3,13 +3,12 @@
 angular.module('bulbsCmsApp')
   .service('Contentlistservice', function Contentlistservice($http, $q) {
     return {
-      url: '/cms/api/v1/content',
       get: function(){
         var deferred = $q.defer();
 
         $http({
             method: 'GET',
-            url: this.url
+            url: '/cms/api/v1/content'
           }).success(function (data) {
             console.log("content list service http success here");
             deferred.resolve(data);

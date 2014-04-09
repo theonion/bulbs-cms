@@ -4,16 +4,16 @@ angular.module('bulbsCmsApp')
   .controller('ContenteditCtrl', function (
     $scope, $http, $window, $location,
     $timeout, $compile, $q, $, IfExistsElse,
-    CONTENT_PARTIALS_URL, CACHEBUSTER, MEDIA_ITEM_PARTIALS_URL,
-    Contenteditservice, content)
+    routes, Contenteditservice, content)
   {
 
     console.log("content edit here")
     console.log(content)
 
-    $scope.CONTENT_PARTIALS_URL = CONTENT_PARTIALS_URL;
-    $scope.MEDIA_ITEM_PARTIALS_URL = MEDIA_ITEM_PARTIALS_URL;
-    $scope.CACHEBUSTER = CACHEBUSTER;
+    $scope.PARTIALS_URL = routes.PARTIALS_URL;
+    $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
+    $scope.MEDIA_ITEM_PARTIALS_URL = routes.MEDIA_ITEM_PARTIALS_URL;
+    $scope.CACHEBUSTER = routes.CACHEBUSTER;
 
 
     var getArticleCallback = function (data) {
