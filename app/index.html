@@ -132,5 +132,9 @@
         angular.module('bulbsCmsApp').constant('CACHEBUSTER', "?" + Date.now());
     </script>
 
+    <script>
+        angular.module('bulbsCmsAppDev', ['bulbsCmsApp.mockApi', 'bulbsCmsApp']);
+    </script>
+
 </body>
 </html>
