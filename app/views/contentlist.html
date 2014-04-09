@@ -68,7 +68,7 @@
 
                                     <div class="form-group"><a class="form-control btn btn-warning" href="#" ng-show="article.published" confirmed-click="pubUnpublish(article);" ng-confirm-click="Are you sure you want to unpublish this article?">Unpublish</a></div>
 
-                                    <div class="form-group"><a class="form-control btn btn-danger" href="#" ng-hide="article.published" ng-click="trashContent(article.id);">Delete&nbsp;&nbsp;<i class="fa fa-trash"></i></a></div>
+                                    <div class="form-group"><button ng-controller="ContentworkflowCtrl" class="form-control btn btn-danger" role="button" ng-hide="article.published" ng-click="trashContentModal(article.id);">Delete&nbsp;&nbsp;<i class="fa fa-trash"></i></button></div>
                                 </div>
                                 <dl class="pull-left col-xs-7 col-med-4 col-lg-9">
                                     <dt>Status</dt>
@@ -104,5 +104,4 @@
     </div>
 </div>
 <publish-content></publish-content>
-<trash-content></trash-content>
 <login></login>

@@ -20,6 +20,8 @@ angular.module('bulbsCmsApp.mockApi').run([
       });
     $httpBackend.whenPUT('/cms/api/v1/content/4/', mockApiData['content.edit'])
       .respond(mockApiData['content.edit.response']);
+    $httpBackend.whenPOST(/\/cms\/api\/v1\/content\/\d+\/trash\//, mockApiData['content.trash'])
+      .respond(mockApiData['content.trash.response']);
 
     // content list
     $httpBackend.whenGET(/^\/cms\/api\/v1\/content.*/).respond(mockApiData['content.list']);
@@ -103,6 +105,12 @@ angular.module('bulbsCmsApp.mockApi').run([
     "body": "",
     "client_pixel": null,
     "sponsor_name": null
+  },
+  "content.trash": {
+    "status": "Trashed"
+  },
+  "content.trash.response": {
+    "status": "Trashed"
   },
   "content.list": {
     count: 100,
