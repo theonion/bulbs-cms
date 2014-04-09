@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('mediaRating', function ($http, $, PARTIALS_URL) {
+  .directive('mediaRating', function ($http, $, routes) {
     return {
       restrict: 'E',
-      templateUrl: PARTIALS_URL + 'rating.html',
+      templateUrl: routes.PARTIALS_URL + 'rating.html',
       scope: true,
       controller: function ($scope) {
         $scope.search = function (el) {
@@ -31,7 +31,7 @@ angular.module('bulbsCmsApp')
         };
 
         $scope.mediaItemTemplate = function () {
-          return $scope.MEDIA_ITEM_PARTIALS_URL + $scope.article.ratings[$scope.index].type.toLowerCase() + '.html' + CACHEBUSTER;
+          return $scope.MEDIA_ITEM_PARTIALS_URL + $scope.article.ratings[$scope.index].type.toLowerCase() + '.html' + $scope.CACHEBUSTER;
         };
         $scope.tvShowDisplay = function (x) {
           return x.name;

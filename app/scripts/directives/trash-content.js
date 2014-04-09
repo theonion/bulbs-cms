@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('trashContent', function ($http, $, PARTIALS_URL) {
+  .directive('trashContent', function ($http, $, routes) {
     return {
       restrict: 'E',
-      templateUrl:  PARTIALS_URL + 'trash-content.html',
+      templateUrl:  routes.PARTIALS_URL + 'trash-content.html',
       link: function (scope, elem, attrs) {
         //note: define trashSuccessCbk() in whatever controller this directive gets used in.
         scope.trashContent = function (idOrConfirmed) {

@@ -8,6 +8,8 @@ angular.module('bulbsCmsApp')
   {
 
     $scope.CONTENT_PARTIALS_URL = CONTENT_PARTIALS_URL;
+    $scope.MEDIA_ITEM_PARTIALS_URL = MEDIA_ITEM_PARTIALS_URL;
+    $scope.CACHEBUSTER = CACHEBUSTER;
 
     //set title
     $scope.$watch(function () {
