@@ -19,6 +19,8 @@ angular.module('bulbsCmsApp')
       }).error(function (data, status, headers, config) {
         if (status === 404) {
           $scope.trashSuccessCbk();
+          $('#trash-confirm-button').html('Delete');
+          $modalInstance.close();
         } else if (status === 403) {
           $scope.showLoginModal();
         } else {

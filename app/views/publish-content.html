@@ -15,7 +15,7 @@
 			</div>
 			<div class="modal-footer">
 				<button ng-show="pubTimeArticle.published" class="btn btn-warning pull-left" confirmed-click="pubUnpublish(pubTimeArticle);" ng-confirm-click="Are you sure you want to unpublish this article?" data-dismiss="modal">Unpublish</button>
-				<button ng-hide="pubTimeArticle.published" class="btn btn-danger pull-left" ng-click="trashContent(pubTimeArticle.id);" data-dismiss="modal">Delete</button>
+				<button class="btn btn-danger pull-left" ng-hide="pubTimeArticle.published" ng-controller="ContentworkflowCtrl" role="button" ng-click="trashContentModal(pubTimeArticle.id);" data-dismiss="modal">Delete&nbsp;&nbsp;<i class="fa fa-trash"></i></button>
 
 				<button class="btn btn-link" ng-click="pubTimeCancel();" data-dismiss="modal">Cancel</button>
 				<button class="btn btn-primary" ng-click="pubTimeSave(pubTimeArticle);" data-dismiss="modal">Save changes</button>

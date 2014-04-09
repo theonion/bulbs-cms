@@ -13,7 +13,7 @@
       <ul class="dropdown-menu">
         <li><a href="" role="button" data-target="#thumbnail-modal" data-toggle="modal">Thumbnail</a></li>
         <li><a href="" role="button" data-target="#sponsored-content-modal" data-toggle="modal">Sponsored Object</a></li>
-        <li><a href="" role="button" ng-click="trashContent(article.id);">Delete</a></li></ul></li>
+        <li><a href="" ng-controller="ContentworkflowCtrl" role="button" ng-click="trashContentModal(article.id);">Delete</a></li></ul></li>
 
     <li class="pull-right">
       <button id="save-article-btn"  style="margin-top:7px" class="btn btn-success" href="" ng-click="saveArticle();">Save</button></li>
