@@ -8,7 +8,6 @@ angular.module('bulbsCmsApp')
       scope: {},
       replace: true,
       link: function postLink(scope, element, attrs) {
-        //element.text('this is the activeNav directive');
         scope.href = attrs.href;
         scope.label = attrs.label;
         if($location.path().indexOf(scope.href) === 0){

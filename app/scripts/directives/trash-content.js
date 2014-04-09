@@ -8,6 +8,7 @@ angular.module('bulbsCmsApp')
       link: function (scope, elem, attrs) {
         //note: define trashSuccessCbk() in whatever controller this directive gets used in.
         scope.trashContent = function (idOrConfirmed) {
+          console.log("trash content here");
           if (idOrConfirmed === true) {
             $('#trash-confirm-button').html('<i class="fa fa-refresh fa-spin"></i> Trashing');
             $http({

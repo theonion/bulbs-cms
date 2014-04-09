@@ -103,7 +103,6 @@
     <script src="scripts/directives/titleimage.js"></script>
     <script src="scripts/directives/trash-content.js"></script>
     <script src="scripts/libraries/editor-cms-bridge.js"></script>
-    <script src="scripts/services/contentservice.js"></script>
     <script src="scripts/services/contentlist.js"></script>
     <script src="scripts/services/contentlistservice.js"></script>
     <script src="scripts/services/contenteditservice.js"></script>
@@ -139,6 +138,12 @@
 
     <script>
         angular.module('bulbsCmsAppDev', ['bulbsCmsApp.mockApi', 'bulbsCmsApp']);
+
+        //huhhhhh
+        $("body").on("click", "a", function(e){
+          if($(this).attr("target") == "_blank") return true;
+          $(this).attr("target", "_self");
+        });
     </script>
 
 </body>
