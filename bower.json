@@ -20,7 +20,7 @@
     "underscore": "1.6.0",
     "jcrop": "0.9.12",
     "urlify": "theonion/urlify",
-    "onion-editor": "0.1.1",
+    "onion-editor": "0.1.4",
     "bootstrap-datetimepicker": "https://github.com/Eonasdan/bootstrap-datetimepicker/archive/v1.0.0.zip"
   },
   "devDependencies": {
