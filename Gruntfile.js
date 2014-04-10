@@ -38,6 +38,13 @@ module.exports = function (grunt) {
         files: ['<%= yeoman.app %>/scripts/{,*/}*.js', 'test/spec/{,*/}*.js'],
         tasks: ['newer:jshint:all']
       },
+      jsHintReload: {
+        files: ['<%= yeoman.app %>/scripts/{,*/}*.js', 'test/spec/{,*/}*.js'],
+        tasks: ['newer:jshint:all'],
+        options: {
+          livereload: true
+        }
+      },
       jsTest: {
         files: ['<%= yeoman.app %>/scripts/{,*/}*.js', 'test/spec/{,*/}*.js'],
         tasks: ['test']
@@ -398,6 +405,21 @@ module.exports = function (grunt) {
       'autoprefixer',
       'connect:livereload',
       'watch:livereload'
+    ]);
+  });
+
+  grunt.registerTask('serve', function (target) {
+    if (target === 'dist') {
+      return grunt.task.run(['build', 'connect:dist:keepalive']);
+    }
+
+    grunt.task.run([
+      'clean:server',
+      'bower-install',
+      'concurrent:server',
+      'autoprefixer',
+      'connect:livereload',
+      'watch:livereload:jsHintReload'
     ]);
   });
 
