@@ -1,0 +1,19 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+  <h4 class="modal-title">Choose publish date &amp; time</h4>
+</div>
+<div class="modal-body">
+  <div class="form-group">
+    <div class="datetimepicker2 input-group date">
+      <input type="text" readonly="" class="disabled uneditable-input form-control" data-format="MM/dd/yyyy HH:mm PP" value="{{pubTimeArticle.published|date:'MM/dd/yyyy hh:mm a'}}" />
+      <a class="input-group-addon"><i class="fa fa-calendar"></i></a>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button ng-show="pubTimeArticle.published" class="btn btn-warning pull-left" confirmed-click="pubUnpublish(pubTimeArticle);" ng-confirm-click="Are you sure you want to unpublish this article?" data-dismiss="modal">Unpublish</button>
+  <button class="btn btn-danger pull-left" ng-hide="pubTimeArticle.published" ng-controller="ContentworkflowCtrl" role="button" ng-click="trashContentModal(pubTimeArticle.id);" data-dismiss="modal">Delete&nbsp;&nbsp;<i class="fa fa-trash"></i></button>
+
+  <button class="btn btn-link" ng-click="$dismiss();">Cancel</button>
+  <button id="save-pub-time-button" class="btn btn-primary" ng-click="pubTimeSave(pubTimeArticle);">Save changes</button>
+</div>

@@ -23,6 +23,7 @@ angular.module('bulbsCmsApp')
           $modalInstance.close();
         } else if (status === 403) {
           $scope.showLoginModal();
+          $('#trash-confirm-button').html('Delete');
         } else {
           $('#trash-confirm-button').html('<i class="fa fa-frown-o" style="color:red"></i> Error!');
         }

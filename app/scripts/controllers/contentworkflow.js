@@ -11,7 +11,17 @@ angular.module('bulbsCmsApp')
           articleId: function(){ return articleId; }
         }
       });
-    }
+    };
 
+    $scope.pubTimeModal = function(articleId) {
+      $modal.open({
+        templateUrl: routes.PARTIALS_URL + 'modals/choose-date-modal.html',
+        controller: 'PubtimemodalCtrl',
+        scope: $scope,
+        resolve: {
+          articleId: function(){ return articleId; }
+        }
+      });
+    };
 
   });
