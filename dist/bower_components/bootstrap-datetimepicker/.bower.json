@@ -1,0 +1,20 @@
+{
+  "name": "bootstrap-datetimepicker",
+  "version": "1.0.0",
+  "main": [
+    "build/css/bootstrap-datetimepicker.min.css",
+    "build/js/bootstrap-datetimepicker.min.js"
+  ],
+  "dependencies": {
+    "jquery": ">=1.8.3",
+    "bootstrap": ">=3.0"
+  },
+  "_cacheHeaders": {
+    "Content-Length": "57338",
+    "Content-Type": "application/zip",
+    "Content-Disposition": "attachment; filename=bootstrap-datetimepicker-1.0.0.zip"
+  },
+  "_source": "https://github.com/Eonasdan/bootstrap-datetimepicker/archive/v1.0.0.zip",
+  "_target": "*",
+  "_originalSource": "https://github.com/Eonasdan/bootstrap-datetimepicker/archive/v1.0.0.zip"
+}
