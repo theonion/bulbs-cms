@@ -11,8 +11,6 @@ angular.module('jquery', []).value('$', window.$);
 // ****** App Config ****** \\
 
 angular.module('bulbsCmsApp', [
-  'bulbsCmsApp.targeting',
-  'bulbsCmsApp.promotion',
   'ngCookies',
   'ngResource',
   'ngSanitize',
@@ -73,16 +71,3 @@ angular.module('bulbsCmsApp', [
   $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
 });
 
-// ****** CMS Plugins ****** \\
-
-angular.module('bulbsCmsApp.targeting', [])
-.value('options', {
-  namespace: 'AVCMS',
-  endpoint: '/ads/targeting'
-});
-
-angular.module('bulbsCmsApp.promotion', [])
-.value('options', {
-  namespace: 'AVCMS',
-  endpoint: '/promotions/api/contentlist/'
-});

@@ -1,37 +1,35 @@
 'use strict';
 
-angular.module('bulbsCmsApp.promotion')
-  .controller('PromotionCtrl', function ($scope, $http, $window, $, Contentlist, options) {
+angular.module('bulbsCmsApp')
+  .controller('PromotionCtrl', function ($scope, $http, $window, $, Contentlist, promo_options) {
+    $window.document.title = promo_options.namespace + ' | Promotion Tool'; // set title
 
-    $window.document.title = options.namespace + ' | Promotion Tool'; // set title
-
-    function getPzones() {
+    $scope.getPzones(url) {
       $http({
         method: 'GET',
-        url: options.endpoint
+        url: url
       }).success(function (data) {
-        $scope.pzones = data;
-        $scope.pzone = data[0];
-        $scope.$watch('pzone', function () {
-          getPromotedArea();
+        $scope.pzones = data.results;
+        $scope.pzone = data.results[0];
+        $scope.$watch('pzone', function (pzone) {
+          if (pzone.content.length) {
+            $scope.promotedArticles = pzone.content.slice(0);
+          } else {
+            $scope.promotedArticles = [{
+              hey_checkthis: true,
+              title: 'Nothing Promoted!',
+              feature_type: 'Click an article on the right and use \'Insert\''
+            }];
+          }
         });
       }).error(function (data) {
         alert('Content list does not exist.');
       });
     }
 
-    getPzones();
-
-    function getPromotedArea() {
-      $http({
-        method: 'GET',
-        url: options.endpoint + $scope.pzone.id +'/'
-      }).success(function (data) {
-        $scope.promotedArticles = data;
-      }).error(function (data) {
-        alert('Content list does not exist.');
-      });
-    }
+    $scope.$on('$viewContentLoaded', function() {
+      $scope.getPzones(promo_options.endpoint);
+    });
 
     $scope.articleIsInPromotedArticles = function (id) {
       if ($scope.promotedArticles) {
@@ -67,11 +65,13 @@ angular.module('bulbsCmsApp.promotion')
       pC.off('click');
       pC.on('click', '.promotion-area.select-mode .article-container', function (e) {
         var index = $(this).parents('[data-index]').data('index') - 0;
+        var limit = promo_options.upper_limits[$scope.pzone.name];
+
         if (!$scope.promotedArticles[index] || !$scope.promotedArticles[index].id) {
           $scope.promotedArticles.splice(index, 1, $scope.selectedArticle);
         }
         else { $scope.promotedArticles.splice(index, 0, $scope.selectedArticle); }
-        if ($scope.promotedArticles.length > 6) {
+        if (limit && $scope.promotedArticles.length > limit) {
           $scope.promotedArticles.pop($scope.promotedArticles.length);
         }
         pA.removeClass('select-mode');
@@ -104,10 +104,17 @@ angular.module('bulbsCmsApp.promotion')
 
       $('.save-button').html('<i class="fa fa-refresh fa-spin"></i> Saving');
 
+      var payload = $scope.pzone;
+      if ($scope.promotedArticles[0].hey_checkthis) {
+        payload.content = [];
+      } else {
+        payload.content = $scope.promotedArticles;
+      }
+
       $http({
         method: 'PUT',
-        url: options.endpoint + $scope.pzone.id + '/',
-        data: {name: $scope.pzone.id, items: items}
+        url: promo_options.endpoint + $scope.pzone.id + '/',
+        data: payload
       }).success(function (data) {  //we should write this to scope.promotedArticles again for coherency but i haint dun it
         $('.save-button').removeClass('btn-danger').addClass('btn-success').html('<i class="fa fa-check"></i> Saved');
         window.setTimeout(function () {
