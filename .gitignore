@@ -3,4 +3,3 @@ dist/bower_components
 .tmp
 .sass-cache
 app/bower_components
-bower.json
