@@ -4,7 +4,7 @@ angular.module('bulbsCmsApp')
   .controller('PromotionCtrl', function ($scope, $http, $window, $, Contentlist, promo_options) {
     $window.document.title = promo_options.namespace + ' | Promotion Tool'; // set title
 
-    $scope.getPzones(url) {
+    $scope.getPzones = function (url) {
       $http({
         method: 'GET',
         url: url
