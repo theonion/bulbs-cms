@@ -1,36 +1,47 @@
 'use strict';
 
-angular.module('bulbsCmsApp')
-  .controller('TargetingCtrl', function ($scope, $http, $window, $location) {
+angular.module('bulbsCmsApp.targeting')
+  .controller('TargetingCtrl', function ($scope, $http, $window, $q, $location, options, NProgress) {
     //set title
-    $window.document.title = 'AVCMS | Targeting Editor';
+    $window.document.title = options.namespace + ' | Targeting Editor';
 
     NProgress.configure({
       minimum: 0.4
     });
 
-    $scope.$watch('url', function () {
-      if (!$scope.url) { return; }
+    var canceller;
+    $scope.search = function (url) {
+      if(!url) { return; }
 
-      $scope.targetingArray = [];
+      if (typeof(canceller) === 'undefined') {
+        canceller = $q.defer();
+      } else {
+        canceller.resolve();
+        NProgress.set(0);
+        canceller = $q.defer();
+      }
+
       NProgress.start();
+
       $http({
         method: 'GET',
-        url: '/ads/targeting',
+        url: options.endpoint,
+        timeout: canceller.promise,
         params: {url: $scope.url}
       }).success(function (data) {
+        $scope.targetingArray = [];
         for (var k in data) {
           $scope.targetingArray.push([k, data[k]]);
         }
         NProgress.done();
       }).error(function (data, status, headers, config) {
-        if (status === 404) {
-          //this isnt actually working yet
-          $scope.targetingArray.push(['', '']);
+        if (status == 404) {
+          $scope.targetingArray = [];
+          $scope.targetingArray.push(["", ""]);
+          NProgress.done();
         }
-        NProgress.done();
       });
-    });
+    }
 
     $scope.save = function () {
       var data = {};
@@ -40,7 +51,7 @@ angular.module('bulbsCmsApp')
       NProgress.start();
       $http({
         method: 'POST',
-        url: '/ads/targeting?url=' + $scope.url,
+        url: options.endpoint + '?url=' + $scope.url,
         data: data
       }).success(function (data) {
         NProgress.done();
@@ -50,10 +61,18 @@ angular.module('bulbsCmsApp')
 
     };
 
+    $scope.keyHandler = function (event, url) {
+      if (event.keyCode === 13) { // enter
+        this.search(url);
+      } else if (event.keyCode === 27) { // escape
+        event.currentTarget.value = "";
+      }
+    }
+
     //grab url query key
     var search = $location.search();
     if (search && search.url) {
       $scope.url = decodeURIComponent(search.url);
     }
-
-  });
+  }
+);

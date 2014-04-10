@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('articlecontainer', function (PARTIALS_URL) {
+  .directive('articlecontainer', function (routes) {
     return {
       restrict: 'E',
-      templateUrl:  PARTIALS_URL + 'promotion-tool-article-container.html',
+      templateUrl:  routes.PARTIALS_URL + 'promotion-tool-article-container.html',
       scope: {
         'article': '='
       },

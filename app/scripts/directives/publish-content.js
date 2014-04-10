@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('publishContent', function ($http, $, PARTIALS_URL) {
+  .directive('publishContent', function ($http, $, routes) {
     return {
       restrict: 'E',
-      templateUrl:  PARTIALS_URL + 'publish-content.html',
+      templateUrl:  routes.PARTIALS_URL + 'publish-content.html',
       link: function (scope, element, attrs) {
         //note: define publisSuccessCbk in whatever controller this directive goes in
         scope.openPubTimeModal = function (article) {
