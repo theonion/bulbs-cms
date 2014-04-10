@@ -40,11 +40,11 @@
                                 <span ng-show="article.authors.length > 1">and {{ article.authors.length - 1}} others</span> &middot; </span>
 
 
-                                <a class="text-success" ng-show="article.status == 'Published'" ng-controller="ContentworkflowCtrl" ng-click="pubTimeModal(article.id);" >{{ article.published|date:"EEE',' M/d/yy' at ' h:mm a" }}</a>
+                                <a class="text-success" ng-show="article.status == 'Published'" ng-controller="ContentworkflowCtrl" ng-click="pubTimeModal(article);" >{{ article.published|date:"EEE',' M/d/yy' at ' h:mm a" }}</a>
 
-                                <a class="text-info" ng-hide="article.published" ng-controller="ContentworkflowCtrl" ng-click="pubTimeModal(article.id);" >Draft</a>
+                                <a class="text-info" ng-hide="article.published" ng-controller="ContentworkflowCtrl" ng-click="pubTimeModal(article);" >Draft</a>
 
-                                <a class="text-info" ng-show="article.status == 'Scheduled'" ng-controller="ContentworkflowCtrl" ng-click="pubTimeModal(article.id);" ><strong>Scheduled</strong> for {{ article.published|date:"EEE M/d/yy 'at' h:mm a" }}</a>
+                                <a class="text-info" ng-show="article.status == 'Scheduled'" ng-controller="ContentworkflowCtrl" ng-click="pubTimeModal(article);" ><strong>Scheduled</strong> for {{ article.published|date:"EEE M/d/yy 'at' h:mm a" }}</a>
 
 
                             </div>
@@ -64,7 +64,7 @@
                                     <div class="form-group"><a class="form-control btn btn-success" href="/cms/app/edit/{{article.id}}">Edit article&nbsp;&nbsp;<i class="fa fa-pencil"></i></a></div>
                                     <div class="form-group"><a class="form-control btn btn-primary" ng-show="article.id > -1" target="_blank" href="/r/{{article.id}}">Preview&nbsp;&nbsp;<i class="fa fa-share"></i></a></div>
 
-                                    <div class="form-group"><a class="form-control btn btn-primary" ng-show="article.id > -1" ng-controller="ContentworkflowCtrl" ng-click="pubTimeModal(article.id);">Edit publish time&nbsp;&nbsp;<i class="fa fa-calendar"></i></a></div>
+                                    <div class="form-group"><a class="form-control btn btn-primary" ng-show="article.id > -1" ng-controller="ContentworkflowCtrl" ng-click="pubTimeModal(article);">Edit publish time&nbsp;&nbsp;<i class="fa fa-calendar"></i></a></div>
 
                                     <div class="form-group"><a class="form-control btn btn-warning" href="#" ng-show="article.published" confirmed-click="pubUnpublish(article);" ng-confirm-click="Are you sure you want to unpublish this article?">Unpublish</a></div>
 
@@ -73,11 +73,11 @@
                                 <dl class="pull-left col-xs-7 col-med-4 col-lg-9">
                                     <dt>Status</dt>
                                     <dd>
-                                        <a class="text-success" ng-show="article.status == 'Published'" ng-controller="ContentworkflowCtrl" ng-click="pubTimeModal(article.id);" >{{ article.published|date:"EEE',' M/d/yy' at ' h:mm a" }}</a>
+                                        <a class="text-success" ng-show="article.status == 'Published'" ng-controller="ContentworkflowCtrl" ng-click="pubTimeModal(article);" >{{ article.published|date:"EEE',' M/d/yy' at ' h:mm a" }}</a>
 
-                                        <a class="text-info" ng-hide="article.published" ng-controller="ContentworkflowCtrl" ng-click="pubTimeModal(article.id);" >Draft</a>
+                                        <a class="text-info" ng-hide="article.published" ng-controller="ContentworkflowCtrl" ng-click="pubTimeModal(article);" >Draft</a>
 
-                                        <a class="text-info" ng-show="article.status == 'Scheduled'" ng-controller="ContentworkflowCtrl" ng-click="pubTimeModal(article.id);" ><strong>Scheduled</strong> for {{ article.published|date:"EEE M/d/yy 'at' h:mm a" }}</a>
+                                        <a class="text-info" ng-show="article.status == 'Scheduled'" ng-controller="ContentworkflowCtrl" ng-click="pubTimeModal(article);" ><strong>Scheduled</strong> for {{ article.published|date:"EEE M/d/yy 'at' h:mm a" }}</a>
                                     </dd>
 
                                     <dt ng-show="article.authors">Author<span ng-show="article.authors.length > 1">s</span></dt>

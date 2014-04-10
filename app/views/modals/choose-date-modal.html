@@ -15,5 +15,14 @@
   <button class="btn btn-danger pull-left" ng-hide="pubTimeArticle.published" ng-controller="ContentworkflowCtrl" role="button" ng-click="trashContentModal(pubTimeArticle.id);" data-dismiss="modal">Delete&nbsp;&nbsp;<i class="fa fa-trash"></i></button>
 
   <button class="btn btn-link" ng-click="$dismiss();">Cancel</button>
-  <button id="save-pub-time-button" class="btn btn-primary" ng-click="pubTimeSave(pubTimeArticle);">Save changes</button>
+  <button id="save-pub-time-button" class="btn btn-primary" ng-click="setPubTime();">Save changes</button>
 </div>
+
+<script>
+  $('.datetimepicker2').datetimepicker({ // init widget
+    language: 'en',
+    pick12HourFormat: true,
+    pickSeconds: false,
+    maskInput: false
+  });
+</script>
