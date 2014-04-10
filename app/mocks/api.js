@@ -27,18 +27,31 @@ angular.module('bulbsCmsApp.mockApi').run([
     $httpBackend.whenGET(/^\/cms\/api\/v1\/things.*/).respond(mockApiData['things.list']);
 
     // promotions contentlist
-    $httpBackend.whenGET('/promotions/api/contentlist/').respond(mockApiData['contentlist.list']);
-    $httpBackend.whenGET('/promotions/api/contentlist/1/').respond(mockApiData['content.list'].results.slice(0,1));
-    $httpBackend.whenGET('/promotions/api/contentlist/2/').respond(mockApiData['content.list'].results.slice(0,2));
-    $httpBackend.whenGET('/promotions/api/contentlist/3/').respond(mockApiData['content.list'].results.slice(1,2));
-    $httpBackend.whenGET('/promotions/api/contentlist/4/').respond(mockApiData['content.list'].results.slice(1,3));
-    $httpBackend.whenGET('/promotions/api/contentlist/5/').respond(mockApiData['content.list'].results.slice(0,3));
+    var contentlist = {
+      count: 5,
+      next: null,
+      previous: null,
+      results: [
+        {id: 1, name: 'Homepage One', length: 1, content: mockApiData['content.list'].results.slice(0,1) },
+        {id: 2, name: 'Homepage Two', length: 2, content: mockApiData['content.list'].results.slice(0,2) },
+        {id: 3, name: 'Music', length: 1, content: mockApiData['content.list'].results.slice(1,2) },
+        {id: 4, name: 'Quizzes', length: 2, content: mockApiData['content.list'].results.slice(1,3) },
+        {id: 5, name: 'Business', length: 3, content: mockApiData['content.list'].results.slice(0,3) }
+      ]
+    };
 
-    $httpBackend.whenPUT('/promotions/api/contentlist/1/').respond(mockApiData['content.list'].results.slice(0,1));
-    $httpBackend.whenPUT('/promotions/api/contentlist/2/').respond(mockApiData['content.list'].results.slice(0,2));
-    $httpBackend.whenPUT('/promotions/api/contentlist/3/').respond(mockApiData['content.list'].results.slice(1,2));
-    $httpBackend.whenPUT('/promotions/api/contentlist/4/').respond(mockApiData['content.list'].results.slice(1,3));
-    $httpBackend.whenPUT('/promotions/api/contentlist/5/').respond(mockApiData['content.list'].results.slice(0,3));
+    $httpBackend.whenGET('/promotions/api/contentlist/').respond(contentlist);
+    $httpBackend.whenGET('/promotions/api/contentlist/1/').respond(contentlist.results[0]);
+    $httpBackend.whenGET('/promotions/api/contentlist/2/').respond(contentlist.results[1]);
+    $httpBackend.whenGET('/promotions/api/contentlist/3/').respond(contentlist.results[2]);
+    $httpBackend.whenGET('/promotions/api/contentlist/4/').respond(contentlist.results[3]);
+    $httpBackend.whenGET('/promotions/api/contentlist/5/').respond(contentlist.results[4]);
+
+    $httpBackend.whenPUT('/promotions/api/contentlist/1/').respond(contentlist.results[0]);
+    $httpBackend.whenPUT('/promotions/api/contentlist/2/').respond(contentlist.results[1]);
+    $httpBackend.whenPUT('/promotions/api/contentlist/3/').respond(contentlist.results[2]);
+    $httpBackend.whenPUT('/promotions/api/contentlist/4/').respond(contentlist.results[3]);
+    $httpBackend.whenPUT('/promotions/api/contentlist/5/').respond(contentlist.results[4]);
 
     // templates
     $httpBackend.whenGET(/^\/views\//).passThrough();
@@ -218,11 +231,16 @@ angular.module('bulbsCmsApp.mockApi').run([
     {"url": "/search?feature_types=what-are-you-playing-this-weekend", "param": "feature_types", "type": "feature_type", "name": "What Are You Playing This Weekend?", "value": "what-are-you-playing-this-weekend"},
     {"url": "/search?feature_types=i-watched-this-on-purpose", "param": "feature_types", "type": "feature_type", "name": "I Watched This On Purpose", "value": "i-watched-this-on-purpose"}
   ],
-  'contentlist.list': [
-    {'id': 1, 'name': 'Homepage One'},
-    {'id': 2, 'name': 'Homepage Two'},
-    {'id': 3, 'name': 'Music'},
-    {'id': 4, 'name': 'Quizzes'},
-    {'id': 5, 'name': 'Business'}
-  ]
+  'contentlist.list': {
+    'count': 5,
+    'next': null,
+    'previous': null,
+    'results': [
+      {'id': 1, 'name': 'Homepage One'},
+      {'id': 2, 'name': 'Homepage Two'},
+      {'id': 3, 'name': 'Music'},
+      {'id': 4, 'name': 'Quizzes'},
+      {'id': 5, 'name': 'Business'}
+    ]
+  }
 });
