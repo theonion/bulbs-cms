@@ -142,6 +142,10 @@ angular.module('bulbsCmsApp')
       $scope.promotedArticles[index + 1] = toMove;
     };
 
+    $scope.remove = function (index) {
+      $scope.promotedArticles.splice(index, 1);
+    };
+
 
     $('body').on('shown.bs.collapse', '#page-prev .collapse', function () {
       $window.picturefill();

@@ -7,6 +7,7 @@
 		</div>
 		<div>
 			<div class="article" ng-repeat="article in promotedArticles track by $index" data-index="{{$index}}">
+        <button type="button" class="close btn btn-link pull-left" ng-click="remove($index)">x</button>
 				<a ng-hide="$index == 0" class="move-up" ng-click="moveUp($index);"><span class="glyphicon glyphicon-chevron-up"></span></a>
 				<a ng-hide="$index == promotedArticles.length - 1" class="move-down" ng-click="moveDown($index);"><span class="glyphicon glyphicon-chevron-down"></span></a>
 				<articlecontainer article="article" ratio="4x3" />
