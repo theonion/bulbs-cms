@@ -1,0 +1,33 @@
+{
+  "name": "onion-editor",
+  "version": "0.1.1",
+  "homepage": "https://github.com/theonion/editor",
+  "authors": [
+    "Mike Wnuk <mwnuk@theonion.com>"
+  ],
+  "description": "It's an HTML editor.",
+  "main": "build/onion-editor.min.js",
+  "keywords": [
+    "editor"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "junk",
+    "examples",
+    "src"
+  ],
+  "_release": "0.1.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.1.1",
+    "commit": "ac8244f8c4daa3b346dfd693dfe7ab3839cd0a32"
+  },
+  "_source": "git://github.com/theonion/editor.git",
+  "_target": "0.1.1",
+  "_originalSource": "onion-editor"
+}

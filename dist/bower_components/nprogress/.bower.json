@@ -1,0 +1,32 @@
+{
+  "name": "nprogress",
+  "repo": "rstacruz/nprogress",
+  "description": "slim progress bar",
+  "keywords": [
+    "progress",
+    "bar",
+    "spinner"
+  ],
+  "license": "MIT",
+  "main": "nprogress.js",
+  "scripts": [
+    "nprogress.js"
+  ],
+  "styles": [
+    "nprogress.css"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ],
+  "homepage": "https://github.com/theonion/nprogress",
+  "_release": "bd4ec636b2",
+  "_resolution": {
+    "type": "commit",
+    "commit": "bd4ec636b21eb98256fcb467bce31e0e64d277e8"
+  },
+  "_source": "git://github.com/theonion/nprogress.git",
+  "_target": "bd4ec636b21eb98256fcb467bce31e0e64d277e8",
+  "_originalSource": "theonion/nprogress"
+}
