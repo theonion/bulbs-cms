@@ -1,9 +1,8 @@
 'use strict';
 
-angular.module('bulbsCmsApp.targeting')
-  .controller('TargetingCtrl', function ($scope, $http, $window, $q, $location, options, NProgress) {
-    //set title
-    $window.document.title = options.namespace + ' | Targeting Editor';
+angular.module('bulbsCmsApp')
+  .controller('TargetingCtrl', function ($scope, $http, $window, $q, $location, tar_options, NProgress) {
+    $window.document.title = tar_options.namespace + ' | Targeting Editor';
 
     NProgress.configure({
       minimum: 0.4
@@ -25,7 +24,7 @@ angular.module('bulbsCmsApp.targeting')
 
       $http({
         method: 'GET',
-        url: options.endpoint,
+        url: tar_options.endpoint,
         timeout: canceller.promise,
         params: {url: $scope.url}
       }).success(function (data) {
@@ -51,7 +50,7 @@ angular.module('bulbsCmsApp.targeting')
       NProgress.start();
       $http({
         method: 'POST',
-        url: options.endpoint + '?url=' + $scope.url,
+        url: tar_options.endpoint + '?url=' + $scope.url,
         data: data
       }).success(function (data) {
         NProgress.done();
