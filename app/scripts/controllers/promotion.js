@@ -25,21 +25,6 @@ angular.module('bulbsCmsApp')
       }).error(function (data) {
         alert('Content list does not exist.');
       });
-    }
-
-    $scope.$on('$viewContentLoaded', function() {
-      $scope.getPzones(promo_options.endpoint);
-    });
-
-    $scope.articleIsInPromotedArticles = function (id) {
-      if ($scope.promotedArticles) {
-        for (var i in $scope.promotedArticles) {
-          if ($scope.promotedArticles[i].id === id) {
-            return true;
-          }
-        }
-      }
-      return false;
     };
 
     Contentlist.setUrl('/cms/api/v1/content/?published=True');
@@ -53,7 +38,21 @@ angular.module('bulbsCmsApp')
       Contentlist.getContent($scope, getContentCallback);
     };
 
-    $scope.getContent();
+    $scope.$on('$viewContentLoaded', function() {
+      $scope.getPzones(promo_options.endpoint);
+      $scope.getContent();
+    });
+
+    $scope.articleIsInPromotedArticles = function (id) {
+      if ($scope.promotedArticles) {
+        for (var i in $scope.promotedArticles) {
+          if ($scope.promotedArticles[i].id === id) {
+            return true;
+          }
+        }
+      }
+      return false;
+    };
 
     var pA = $('.promotion-area'),
       pC = $('.promotion-container');
@@ -92,10 +91,6 @@ angular.module('bulbsCmsApp')
       });
     };
 
-    $scope.clearTopArticle = function () {
-      $scope.promotedArticles[0] = {};
-    };
-
     $scope.save = function () {
       var items = $scope.promotedArticles.slice(0); //copy
       if (!items[0].id) {
@@ -115,7 +110,8 @@ angular.module('bulbsCmsApp')
         method: 'PUT',
         url: promo_options.endpoint + $scope.pzone.id + '/',
         data: payload
-      }).success(function (data) {  //we should write this to scope.promotedArticles again for coherency but i haint dun it
+      }).success(function (data) {
+        $scope.pzone.content = data.content;
         $('.save-button').removeClass('btn-danger').addClass('btn-success').html('<i class="fa fa-check"></i> Saved');
         window.setTimeout(function () {
           $('.save-button').html('Save');
