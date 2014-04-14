@@ -1,19 +1,18 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('PzoneCtrl', function ($scope, $http, $window, $, Contentlist, routes) {
+  .controller('PzoneCtrl', function ($scope, $http, $window, $, ContentApi, PromotionApi, routes) {
     //set title
     $window.document.title = 'AVCMS | Pzone Editor';
 
     function getPzone() {
-      $http({
-        method: 'GET',
-        url: '/promotions/api/pzone/' + $scope.pzoneName + '/'
-      }).success(function (data) {
-        $scope.pzone = data;
-      }).error(function (data) {
-        console.log('Zone does not exist.');
-      });
+      PromotionApi.one('pzone/' + $scope.pzoneName).get()
+        .then(function (data) {
+          $scope.pzone = data;
+        })
+        .catch(function (data) {
+          console.log('Zone does not exist.');
+        });
     }
 
     $scope.pzoneName = 'homepage-one';
@@ -29,13 +28,12 @@ angular.module('bulbsCmsApp')
       }
     };
 
-    Contentlist.setUrl('/cms/api/v1/content/?published=True');
-    var getContentCallback = function($scope, data){
-        $scope.articles = data.results;
-        $scope.totalItems = data.count;
+    var getContentCallback = function (data) {
+      $scope.articles = data;
+      $scope.totalItems = data.metadata.count;
     };
-    $scope.getContent = function(){
-        Contentlist.getContent($scope, getContentCallback);
+    $scope.getContent = function () {
+      ContentApi.getList('content').then(getContentCallback);
     };
     $scope.getContent();
 
@@ -65,22 +63,19 @@ angular.module('bulbsCmsApp')
 
     $scope.save = function () {
       $('#save-pzone-btn').html('<i class="fa fa-refresh fa-spin"></i> Saving');
-      $http({
-        method: 'PUT',
-        url: '/promotions/api/pzone/' + $scope.pzoneName + '/',
-        data: $scope.pzone
-      }).success(function (data) {
-        $('#save-pzone-btn').html('<i class="fa fa-check" style="color:green"></i> Saved!');
-        window.setTimeout(function () {
-          $('#save-pzone-btn').html('Save');
-        }, 2000);
-      }).error(function (data) {
-        $('#save-pzone-btn').html('<i class="fa fa-frown" style="color:red"></i> Saved!');
-        window.setTimeout(function () {
-          $('#save-pzone-btn').html('Save');
-        }, 2000);
-      });
+      var pzone = ContentApi.restangularizeElement(null, $scope.pzone, 'pzone/' + $scope.pzoneName);
+      pzone.put()
+        .then(function (data) {
+          $('#save-pzone-btn').html('<i class="fa fa-check" style="color:green"></i> Saved!');
+          window.setTimeout(function () {
+            $('#save-pzone-btn').html('Save');
+          }, 2000);
+        })
+        .catch(function (data) {
+          $('#save-pzone-btn').html('<i class="fa fa-frown" style="color:red"></i> Saved!');
+          window.setTimeout(function () {
+            $('#save-pzone-btn').html('Save');
+          }, 2000);
+        });
     };
-
-
   });
