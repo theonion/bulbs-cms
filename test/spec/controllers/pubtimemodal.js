@@ -5,11 +5,13 @@ describe('Controller: PubtimemodalCtrl', function () {
   // load the controller's module
   beforeEach(module('bulbsCmsApp'));
   beforeEach(module('bulbsCmsApp.mockApi'));
+  beforeEach(module('jsTemplates'));
 
   var PubtimemodalCtrl,
     scope,
     modal,
-    modalService
+    modalService,
+    httpBackend;
 
   var articleWithNoFeatureType = {
     id: 1,
@@ -26,9 +28,12 @@ describe('Controller: PubtimemodalCtrl', function () {
   }
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope, $modal, routes) {
+  beforeEach(inject(function ($controller, $rootScope, $httpBackend, $modal, routes) {
+    httpBackend = $httpBackend;
+
+    var modalUrl = routes.PARTIALS_URL + 'modals/choose-date-modal.html';
     modal = $modal.open({
-      templateUrl: routes.PARTIALS_URL + 'modals/choose-date-modal.html'
+      templateUrl: modalUrl
     })
 
     modal.dismiss = function () { return true; }
@@ -40,18 +45,37 @@ describe('Controller: PubtimemodalCtrl', function () {
       $scope: scope,
       $modal: modalService,
       $modalInstance: modal,
-      article: articleWithNoFeatureType
+      article: articleWithFeatureType
     });
 
   }));
+
+  afterEach(function() {
+    httpBackend.verifyNoOutstandingExpectation();
+    httpBackend.verifyNoOutstandingRequest();
+  });
+
+  it('should have a setPubTime function', function () {
+    expect(angular.isFunction(scope.setPubTime)).toBe(true);
+  });
 
   it('should close itself and open validation modal when you try to publish with no feature type', function () {
     spyOn(modal, 'dismiss');
     spyOn(modalService, 'open');
 
-    scope.setPubTime();
+    scope.setPubTime(articleWithNoFeatureType);
 
     expect(modal.dismiss).toHaveBeenCalled();
     expect(modalService.open).toHaveBeenCalled();
   });
+
+  it('should make an http request in setPubTime', function () {
+    httpBackend.expectPOST('/cms/api/v1/content/' + articleWithFeatureType.id + '/publish/').respond({status: "Published"});
+
+    scope.dateTimePickerValue = "aha";
+    scope.setPubTime(articleWithFeatureType);
+
+    httpBackend.flush();
+  });
+
 });
