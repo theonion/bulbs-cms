@@ -57,38 +57,45 @@ angular.module('bulbsCmsApp')
     var pA = $('.promotion-area'),
       pC = $('.promotion-container');
 
-    $scope.insertArticle = function (article) {
+    $scope.insertArticleMode = function (article) {
       $scope.selectedArticle = article;
 
       pA.addClass('select-mode');
       pC.off('click');
       pC.on('click', '.promotion-area.select-mode .article-container', function (e) {
         var index = $(this).parents('[data-index]').data('index') - 0;
-        var limit = promo_options.upper_limits[$scope.pzone.name];
-
-        if (!$scope.promotedArticles[index] || !$scope.promotedArticles[index].id) {
-          $scope.promotedArticles.splice(index, 1, $scope.selectedArticle);
-        }
-        else { $scope.promotedArticles.splice(index, 0, $scope.selectedArticle); }
-        if (limit && $scope.promotedArticles.length > limit) {
-          $scope.promotedArticles.pop($scope.promotedArticles.length);
-        }
+        $scope.insertArticle(index);
         pA.removeClass('select-mode');
         $scope.$apply();
       });
     };
 
-    $scope.replaceArticle = function (article) {
+    $scope.insertArticle = function (index) {
+      var limit = promo_options.upper_limits[$scope.pzone.name];
+      if (!$scope.promotedArticles[index] || !$scope.promotedArticles[index].id) {
+        $scope.promotedArticles.splice(index, 1, $scope.selectedArticle);
+      }
+      else { $scope.promotedArticles.splice(index, 0, $scope.selectedArticle); }
+      if (limit && $scope.promotedArticles.length > limit) {
+        $scope.promotedArticles.pop($scope.promotedArticles.length);
+      }
+    };
+
+    $scope.replaceArticleMode = function (article) {
       $scope.selectedArticle = article;
 
       pA.addClass('select-mode');
       pC.off('click');
       pC.on('click', '.promotion-area.select-mode .article-container', function (e) {
         var index = $(this).parents('[data-index]').data('index');
-        $scope.promotedArticles.splice(index, 1, $scope.selectedArticle);
+        $scope.replaceArticle(index);
         pA.removeClass('select-mode');
         $scope.$apply();
       });
+    };
+
+    $scope.replaceArticle = function (index) {
+      $scope.promotedArticles.splice(index, 1, $scope.selectedArticle);
     };
 
     $scope.save = function () {
