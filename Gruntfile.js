@@ -34,16 +34,20 @@ module.exports = function (grunt) {
 
     // Watches files for changes and runs tasks based on the changed files
     watch: {
-      js: {
-        files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
+      jsHint: {
+        files: ['<%= yeoman.app %>/scripts/{,*/}*.js', 'test/spec/{,*/}*.js'],
+        tasks: ['newer:jshint:all']
+      },
+      jsHintReload: {
+        files: ['<%= yeoman.app %>/scripts/{,*/}*.js', 'test/spec/{,*/}*.js'],
         tasks: ['newer:jshint:all'],
         options: {
           livereload: true
         }
       },
       jsTest: {
-        files: ['test/spec/{,*/}*.js'],
-        tasks: ['newer:jshint:test', 'karma']
+        files: ['<%= yeoman.app %>/scripts/{,*/}*.js', 'test/spec/{,*/}*.js'],
+        tasks: ['test']
       },
       styles: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
@@ -400,7 +404,22 @@ module.exports = function (grunt) {
       'concurrent:server',
       'autoprefixer',
       'connect:livereload',
-      'watch'
+      'watch:livereload'
+    ]);
+  });
+
+  grunt.registerTask('serve-lr', function (target) {
+    if (target === 'dist') {
+      return grunt.task.run(['build', 'connect:dist:keepalive']);
+    }
+
+    grunt.task.run([
+      'clean:server',
+      'bower-install',
+      'concurrent:server',
+      'autoprefixer',
+      'connect:livereload',
+      'watch:livereload:jsHintReload'
     ]);
   });
 
@@ -410,6 +429,12 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('test', [
+    'travis',
+    'newer:jshint:all:test',
+    'watch:jsHint:jsTest'
+  ]);
+
+  grunt.registerTask('travis', [
     'clean:server',
     'concurrent:test',
     'autoprefixer',

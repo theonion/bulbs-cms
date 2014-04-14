@@ -16,7 +16,9 @@ Install dependencies:
 
 `grunt serve` to run the dev server
 
-`grunt test` to test
+`grunt test` will jshint and unit test your code as you make changes
+
+`grunt travis` will run unit tests once
 
 Deploying
 ---------

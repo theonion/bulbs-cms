@@ -21,7 +21,7 @@ angular.module('bulbsCmsApp.mockApi').run([
       .respond(mockApiData['content.edit.response']);
 
     // content list
-    $httpBackend.whenGET(/^\/cms\/api\/v1\/content.*/).respond(mockApiData['content.list']);
+    $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/(\?.*)?$/).respond(mockApiData['content.list']);
 
     // things
     $httpBackend.whenGET(/^\/cms\/api\/v1\/things.*/).respond(mockApiData['things.list']);
@@ -40,18 +40,18 @@ angular.module('bulbsCmsApp.mockApi').run([
       ]
     };
 
-    $httpBackend.whenGET('/promotions/api/contentlist/').respond(contentlist);
-    $httpBackend.whenGET('/promotions/api/contentlist/1/').respond(contentlist.results[0]);
-    $httpBackend.whenGET('/promotions/api/contentlist/2/').respond(contentlist.results[1]);
-    $httpBackend.whenGET('/promotions/api/contentlist/3/').respond(contentlist.results[2]);
-    $httpBackend.whenGET('/promotions/api/contentlist/4/').respond(contentlist.results[3]);
-    $httpBackend.whenGET('/promotions/api/contentlist/5/').respond(contentlist.results[4]);
+    $httpBackend.whenGET('/cms/api/v1/contentlist/').respond(contentlist);
+    $httpBackend.whenGET('/cms/api/v1/contentlist/1/').respond(contentlist.results[0]);
+    $httpBackend.whenGET('/cms/api/v1/contentlist/2/').respond(contentlist.results[1]);
+    $httpBackend.whenGET('/cms/api/v1/contentlist/3/').respond(contentlist.results[2]);
+    $httpBackend.whenGET('/cms/api/v1/contentlist/4/').respond(contentlist.results[3]);
+    $httpBackend.whenGET('/cms/api/v1/contentlist/5/').respond(contentlist.results[4]);
 
-    $httpBackend.whenPUT('/promotions/api/contentlist/1/').respond(contentlist.results[0]);
-    $httpBackend.whenPUT('/promotions/api/contentlist/2/').respond(contentlist.results[1]);
-    $httpBackend.whenPUT('/promotions/api/contentlist/3/').respond(contentlist.results[2]);
-    $httpBackend.whenPUT('/promotions/api/contentlist/4/').respond(contentlist.results[3]);
-    $httpBackend.whenPUT('/promotions/api/contentlist/5/').respond(contentlist.results[4]);
+    $httpBackend.whenPUT('/cms/api/v1/contentlist/1/').respond(contentlist.results[0]);
+    $httpBackend.whenPUT('/cms/api/v1/contentlist/2/').respond(contentlist.results[1]);
+    $httpBackend.whenPUT('/cms/api/v1/contentlist/3/').respond(contentlist.results[2]);
+    $httpBackend.whenPUT('/cms/api/v1/contentlist/4/').respond(contentlist.results[3]);
+    $httpBackend.whenPUT('/cms/api/v1/contentlist/5/').respond(contentlist.results[4]);
 
     // templates
     $httpBackend.whenGET(/^\/views\//).passThrough();
