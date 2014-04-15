@@ -57,10 +57,10 @@ angular.module('bulbsCmsApp')
     if($scope.queue !== 'all') {
       //TODO: kill this with fire
       var statusMappings = {
-        published: "after=" + moment().format('YYYY-MM-DDTHH:mmZ'),
+        published: "before=" + moment().format('YYYY-MM-DDTHH:mmZ'),
         waiting: "status=Waiting for Editor",
         draft: "status=Draft",
-        scheduled: "before=" + moment().format('YYYY-MM-DDTHH:mmZ')
+        scheduled: "after=" + moment().format('YYYY-MM-DDTHH:mmZ')
       };
       url = '/cms/api/v1/content/?' + statusMappings[$scope.queue];
     }
