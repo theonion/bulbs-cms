@@ -55,13 +55,14 @@ angular.module('bulbsCmsApp')
 
     var url = '/cms/api/v1/content/';
     if($scope.queue !== 'all') {
+      //TODO: kill this with fire
       var statusMappings = {
-        published: "Published",
-        waiting: "Waiting for Editor",
-        draft: "Draft",
-        scheduled: "Scheduled"
+        published: "after=" + moment().format('YYYY-MM-DDTHH:mmZ'),
+        waiting: "status=Waiting for Editor",
+        draft: "status=Draft",
+        scheduled: "before=" + moment().format('YYYY-MM-DDTHH:mmZ')
       };
-      url = '/cms/api/v1/content/?status=' + statusMappings[$scope.queue];
+      url = '/cms/api/v1/content/?' + statusMappings[$scope.queue];
     }
     Contentlist.setUrl(url);
     var getContentCallback = function ($scope, data) {
