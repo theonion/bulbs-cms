@@ -12,7 +12,6 @@ angular.module('moment', []).value('moment', window.moment);
 // ****** App Config ****** \\
 
 angular.module('bulbsCmsApp', [
-  'bulbsCmsApp.targeting',
   'ngCookies',
   'ngResource',
   'ngSanitize',
@@ -85,11 +84,3 @@ angular.module('bulbsCmsApp', [
   $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
 });
 
-// ****** CMS Plugins ****** \\
-
-angular.module('bulbsCmsApp.targeting', [])
-
-.value('options', {
-  namespace: 'AVCMS',
-  endpoint: '/ads/targeting'
-});

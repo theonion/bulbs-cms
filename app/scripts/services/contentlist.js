@@ -29,6 +29,7 @@ angular.module('bulbsCmsApp')
         minimum: 0.4
       });
       $window.NProgress.start();
+
       $http({
         method: 'GET',
         url: this.url,

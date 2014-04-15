@@ -1,37 +1,31 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('PromotionCtrl', function ($scope, $http, $window, $, Contentlist) {
+  .controller('PromotionCtrl', function ($scope, $http, $window, $, Contentlist, promo_options) {
+    $window.document.title = promo_options.namespace + ' | Promotion Tool'; // set title
 
-    $window.document.title = 'AVCMS | Promotion Tool'; // set title
-
-    function getPromotedArea() {
+    $scope.getPzones = function (url) {
       $http({
         method: 'GET',
-        url: '/promotions/api/contentlist/' + $scope.section + '/'
+        url: url
       }).success(function (data) {
-        $scope.promotedArticles = data.items.splice(0, 6);
+        $scope.pzones = data.results;
+        $scope.pzone = data.results[0];
+        $scope.$watch('pzone', function (pzone) {
+          if (pzone.content.length) {
+            $scope.promotedArticles = pzone.content.slice(0);
+          } else {
+            $scope.promotedArticles = [{
+              hey_checkthis: true,
+              title: 'Nothing Promoted!',
+              feature_type: 'Click an article on the right and use \'Insert\''
+            }];
+          }
+        });
       }).error(function (data) {
         alert('Content list does not exist.');
       });
-    }
-
-    $scope.section = 'homepage';
-
-    $scope.articleIsInPromotedArticles = function (id) {
-      if ($scope.promotedArticles) {
-        for (var i in $scope.promotedArticles) {
-          if ($scope.promotedArticles[i].id === id) {
-            return true;
-          }
-        }
-      }
-      return false;
     };
-
-    $scope.$watch('section', function () {
-      getPromotedArea();
-    });
 
     Contentlist.setUrl('/cms/api/v1/content/?published=True');
 
@@ -44,45 +38,64 @@ angular.module('bulbsCmsApp')
       Contentlist.getContent($scope, getContentCallback);
     };
 
-    $scope.getContent();
+    $scope.$on('$viewContentLoaded', function() {
+      $scope.getPzones(promo_options.endpoint);
+      $scope.getContent();
+    });
+
+    $scope.articleIsInPromotedArticles = function (id) {
+      if ($scope.promotedArticles) {
+        for (var i in $scope.promotedArticles) {
+          if ($scope.promotedArticles[i].id === id) {
+            return true;
+          }
+        }
+      }
+      return false;
+    };
 
     var pA = $('.promotion-area'),
       pC = $('.promotion-container');
 
-    $scope.insertArticle = function (article) {
+    $scope.insertArticleMode = function (article) {
       $scope.selectedArticle = article;
 
       pA.addClass('select-mode');
       pC.off('click');
       pC.on('click', '.promotion-area.select-mode .article-container', function (e) {
         var index = $(this).parents('[data-index]').data('index') - 0;
-        if (!$scope.promotedArticles[index] || !$scope.promotedArticles[index].id) {
-          $scope.promotedArticles.splice(index, 1, $scope.selectedArticle);
-        }
-        else { $scope.promotedArticles.splice(index, 0, $scope.selectedArticle); }
-        if ($scope.promotedArticles.length > 6) {
-          $scope.promotedArticles.pop($scope.promotedArticles.length);
-        }
+        $scope.insertArticle(index);
         pA.removeClass('select-mode');
         $scope.$apply();
       });
     };
 
-    $scope.replaceArticle = function (article) {
+    $scope.insertArticle = function (index) {
+      var limit = promo_options.upper_limits[$scope.pzone.name];
+      if (!$scope.promotedArticles[index] || !$scope.promotedArticles[index].id) {
+        $scope.promotedArticles.splice(index, 1, $scope.selectedArticle);
+      }
+      else { $scope.promotedArticles.splice(index, 0, $scope.selectedArticle); }
+      if (limit && $scope.promotedArticles.length > limit) {
+        $scope.promotedArticles.pop($scope.promotedArticles.length);
+      }
+    };
+
+    $scope.replaceArticleMode = function (article) {
       $scope.selectedArticle = article;
 
       pA.addClass('select-mode');
       pC.off('click');
       pC.on('click', '.promotion-area.select-mode .article-container', function (e) {
         var index = $(this).parents('[data-index]').data('index');
-        $scope.promotedArticles.splice(index, 1, $scope.selectedArticle);
+        $scope.replaceArticle(index);
         pA.removeClass('select-mode');
         $scope.$apply();
       });
     };
 
-    $scope.clearTopArticle = function () {
-      $scope.promotedArticles[0] = {};
+    $scope.replaceArticle = function (index) {
+      $scope.promotedArticles.splice(index, 1, $scope.selectedArticle);
     };
 
     $scope.save = function () {
@@ -93,11 +106,19 @@ angular.module('bulbsCmsApp')
 
       $('.save-button').html('<i class="fa fa-refresh fa-spin"></i> Saving');
 
+      var payload = $scope.pzone;
+      if ($scope.promotedArticles[0].hey_checkthis) {
+        payload.content = [];
+      } else {
+        payload.content = $scope.promotedArticles;
+      }
+
       $http({
         method: 'PUT',
-        url: '/promotions/api/contentlist/' + $scope.section + '/',
-        data: {name: $scope.section, items: items}
-      }).success(function (data) {  //we should write this to scope.promotedArticles again for coherency but i haint dun it
+        url: promo_options.endpoint + $scope.pzone.id + '/',
+        data: payload
+      }).success(function (data) {
+        $scope.pzone.content = data.content;
         $('.save-button').removeClass('btn-danger').addClass('btn-success').html('<i class="fa fa-check"></i> Saved');
         window.setTimeout(function () {
           $('.save-button').html('Save');
@@ -122,6 +143,10 @@ angular.module('bulbsCmsApp')
       var toMove = $scope.promotedArticles[index];
       $scope.promotedArticles[index] = $scope.promotedArticles[index + 1];
       $scope.promotedArticles[index + 1] = toMove;
+    };
+
+    $scope.remove = function (index) {
+      $scope.promotedArticles.splice(index, 1);
     };
 
 
