@@ -1,6 +1,6 @@
 language: node_js
 before_script:
-  - npm install -g bower karma-cli
+  - npm install -g bower
   - bower install
 script:
   - karma start karma.conf-ci.js
