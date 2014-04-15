@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('articleimage', function ($http, $window, $compile, $, routes) {
+  .directive('slideshowPane', function ($http, $window, $compile, $, routes) {
     return {
       restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'articleimage.html',
+      templateUrl: routes.PARTIALS_URL + 'slideshow-pane.html',
       scope: {
         article: '='
       },
@@ -30,7 +30,7 @@ angular.module('bulbsCmsApp')
                 };
                 setTimeout($window.picturefill, 200);
                 var el = $compile(
-                  "<articleimage placeholder-text='Slide Image'></articleimage>"
+                  "<slideshow-pane placeholder-text='Slide Image'></slideshow-pane>"
                 )( scope );
                 $element.parent().append( el );
               });
