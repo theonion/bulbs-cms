@@ -15,11 +15,11 @@ describe('Directive: activeNav', function () {
   path = '/cms/app/list';
   html = '<active-nav href="' + path + '" label="Content"></active-nav>';
 
-  beforeEach(inject(function ($rootScope, $compile) {
+  beforeEach(inject(function ($rootScope, $compile, _$location_, _$browser_) {
     scope = $rootScope.$new();
 
-    $location = angular.scope().$service('$location');
-    $browser = angular.scope().$service('$browser');
+    $location = _$location_;
+    $browser = _$browser_;
     $location.path(path);
     $browser.poll();
 
