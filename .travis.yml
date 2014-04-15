@@ -1,8 +1,8 @@
 language: node_js
 before_script:
-  - ./node_modules/bower/bin/bower install
+  - ./node_modules/.bin/bower install
 script:
-  - ./node_modules/karma/bin/karma start karma.conf-ci.js
+  - ./node_modules/.bin/karma start karma.conf-ci.js
 cache:
   directories:
     - node_modules
