@@ -12,13 +12,14 @@ angular.module('bulbsCmsApp')
 
     var url = '/cms/api/v1/content/';
     if($scope.queue !== 'all') {
+      //TODO: kill this with fire
       var statusMappings = {
-        published: "Published",
-        waiting: "Waiting for Editor",
-        draft: "Draft",
-        scheduled: "Scheduled"
+        published: "before=" + moment().format('YYYY-MM-DDTHH:mmZ'),
+        waiting: "status=Waiting for Editor",
+        draft: "status=Draft",
+        scheduled: "after=" + moment().format('YYYY-MM-DDTHH:mmZ')
       };
-      url = '/cms/api/v1/content/?status=' + statusMappings[$scope.queue];
+      url = '/cms/api/v1/content/?' + statusMappings[$scope.queue];
     }
     //Contentlist.setUrl(url);
     var getContentCallback = function (data) {
@@ -75,30 +76,6 @@ angular.module('bulbsCmsApp')
         }
       });
 
-<<<<<<< HEAD
-=======
-    var url = '/cms/api/v1/content/';
-    if($scope.queue !== 'all') {
-      //TODO: kill this with fire
-      var statusMappings = {
-        published: "before=" + moment().format('YYYY-MM-DDTHH:mmZ'),
-        waiting: "status=Waiting for Editor",
-        draft: "status=Draft",
-        scheduled: "after=" + moment().format('YYYY-MM-DDTHH:mmZ')
-      };
-      url = '/cms/api/v1/content/?' + statusMappings[$scope.queue];
-    }
-    Contentlist.setUrl(url);
-    var getContentCallback = function ($scope, data) {
-        $scope.articles = data.results;
-        $scope.totalItems = data.count;
-      };
-    $scope.getContent = function () {
-        Contentlist.getContent($scope, getContentCallback);
-      };
-    $scope.getContent();
-
->>>>>>> master
     $scope.goToPage = function (page) {
         $location.search(_.extend($location.search(), {'page': page}));
         $scope.getContent();

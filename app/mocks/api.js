@@ -31,8 +31,6 @@ angular.module('bulbsCmsApp.mockApi').run([
 
     // things
     $httpBackend.whenGET(/^\/cms\/api\/v1\/things.*/).respond(mockApiData['things.list']);
-<<<<<<< HEAD
-=======
 
     // promotions contentlist
     var contentlist = {
@@ -60,7 +58,7 @@ angular.module('bulbsCmsApp.mockApi').run([
     $httpBackend.whenPUT('/cms/api/v1/contentlist/3/').respond(contentlist.results[2]);
     $httpBackend.whenPUT('/cms/api/v1/contentlist/4/').respond(contentlist.results[3]);
     $httpBackend.whenPUT('/cms/api/v1/contentlist/5/').respond(contentlist.results[4]);
->>>>>>> master
+
 
     // templates
     $httpBackend.whenGET(/^\/views\//).passThrough();
