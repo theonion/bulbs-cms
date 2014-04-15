@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('publishContent', function ($http, $, routes) {
+  .directive('publishContent', function ($http, $, routes, moment) {
     return {
       restrict: 'E',
       templateUrl:  routes.PARTIALS_URL + 'publish-content.html',

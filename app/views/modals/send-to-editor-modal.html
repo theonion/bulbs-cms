@@ -1,0 +1,14 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+  <h4 class="modal-title">Send to Editor</h4>
+</div>
+<div class="modal-body">
+          <section class="form-group note-to-editor">
+              <h5>Note for Editor <small>(Optional)</small></h5>
+              <textarea type="text" style="height: 150px;" class="form-control note-to-editor" ng-model="noteToEditor"></textarea>
+          </section>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-link" data-dismiss="modal">Cancel</button>
+  <button class="btn btn-primary" ng-click="sendToEditor(pubTimeArticle);" data-dismiss="modal">Send</button>
+</div>

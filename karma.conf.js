@@ -29,14 +29,15 @@ module.exports = function(config) {
       'app/bower_components/underscore/underscore.js',
       'app/bower_components/urlify/urlify.js',
       'app/bower_components/onion-editor/build/onion-editor.min.js',
-      'app/bower_components/bootstrap3-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
+      'app/bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js',
       'app/scripts/*.js',
       'app/scripts/**/*.js',
       'app/mocks/app.js',
       'app/mocks/api.js',
       'test/mock/**/*.js',
       'test/spec/**/*.js',
-      'test/config.js'
+      'test/config.js',
+      'app/views/**/*.html'
     ],
 
     // list of files / patterns to exclude
@@ -63,6 +64,19 @@ module.exports = function(config) {
     // - PhantomJS
     // - IE (only Windows)
     browsers: ['Chrome'],
+
+    preprocessors: {
+      'app/views/**/*.html': 'ng-html2js'
+    },
+
+    ngHtml2JsPreprocessor: {
+      // strip this from the file path
+      stripPrefix: 'app',
+
+      // setting this option will create only a single module that contains templates
+      // from all the files, so you can load them all with module('foo')
+      moduleName: 'jsTemplates'
+    },
 
 
     // Continuous Integration mode

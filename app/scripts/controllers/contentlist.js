@@ -5,6 +5,8 @@ angular.module('bulbsCmsApp')
     $scope, $http, $timeout, $location,
     $routeParams, $window, $, _, moment, ContentApi)
   {
+    console.log('list controller here')
+    console.log(content)
     //set title
     $window.document.title = 'AVCMS | Content';
 

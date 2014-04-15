@@ -6,6 +6,7 @@ angular.module('underscore', []).value('_', window._);
 angular.module('NProgress', []).value('NProgress', window.NProgress);
 angular.module('URLify', []).value('URLify', window.URLify);
 angular.module('jquery', []).value('$', window.$);
+angular.module('moment', []).value('moment', window.moment);
 
 
 // ****** App Config ****** \\
@@ -17,40 +18,52 @@ angular.module('bulbsCmsApp', [
   'ngRoute',
   'restangular',
   'ui.bootstrap',
+  'ui.bootstrap.datetimepicker',
   'jquery',
   'underscore',
   'NProgress',
-  'URLify'
+  'URLify',
+  'moment'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
 
-  $routeProvider
-    .when('/cms/app/list/:queue/', {
-      templateUrl: routes.PARTIALS_URL + 'contentlist.html',
-      controller: 'ContentlistCtrl',
-      reloadOnSearch: false
-    })
-    .when('/cms/app/edit/:id/', {
-      templateUrl: routes.PARTIALS_URL + 'contentedit.html',
-      controller: 'ContenteditCtrl'
-    })
-    .when('/cms/app/promotion/', {
-      templateUrl: routes.PARTIALS_URL + 'promotion.html',
-      controller: 'PromotionCtrl',
-      reloadOnSearch: false
-    })
-    .when('/cms/app/targeting/', {
-      templateUrl: routes.PARTIALS_URL + 'targeting-editor.html',
-      controller: 'TargetingCtrl'
-    })
-    .when('/cms/app/pzones/', {
-      templateUrl: routes.PARTIALS_URL + 'pzones.html',
-      controller: 'PzoneCtrl'
-    })
-    .otherwise({
-      redirectTo: '/cms/app/list/published/'
-    });
+    $routeProvider
+      .when('/cms/app/list/:queue/', {
+        templateUrl: routes.PARTIALS_URL + 'contentlist.html',
+        controller: 'ContentlistCtrl',
+        resolve: {
+          content: function (Contentlistservice) {
+            return Contentlistservice.get();
+          }
+        },
+        reloadOnSearch: false
+      })
+      .when('/cms/app/edit/:id/', {
+        templateUrl: routes.PARTIALS_URL + 'contentedit.html',
+        controller: 'ContenteditCtrl',
+        resolve: {
+          content: function (Contenteditservice) {
+            return Contenteditservice.get();
+          }
+        },
+      })
+      .when('/cms/app/promotion/', {
+        templateUrl:  routes.PARTIALS_URL + 'promotion.html',
+        controller: 'PromotionCtrl',
+        reloadOnSearch: false
+      })
+      .when('/cms/app/targeting/', {
+        templateUrl: routes.PARTIALS_URL + 'targeting-editor.html',
+        controller: 'TargetingCtrl'
+      })
+      .when('/cms/app/pzones/', {
+        templateUrl: routes.PARTIALS_URL + 'pzones.html',
+        controller: 'PzoneCtrl'
+      })
+      .otherwise({
+        redirectTo: '/cms/app/list/published/'
+      });
 
   //TODO: whitelist staticonion.
   $sceProvider.enabled(false);

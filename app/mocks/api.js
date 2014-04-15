@@ -5,6 +5,7 @@ angular.module('bulbsCmsApp.mockApi').run([
     $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/\d+\/$/).respond(function(method, url, data) {
       var re = /^\/cms\/api\/v1\/content\/(\d+)\//;
       var index = re.exec(url)[1];
+
       var contentList = mockApiData['content.list'];
 
       if(index <= contentList.results.length) {
@@ -19,6 +20,11 @@ angular.module('bulbsCmsApp.mockApi').run([
       });
     $httpBackend.whenPUT('/cms/api/v1/content/4/', mockApiData['content.edit'])
       .respond(mockApiData['content.edit.response']);
+    $httpBackend.whenPOST(/\/cms\/api\/v1\/content\/\d+\/trash\//, mockApiData['content.trash'])
+      .respond(mockApiData['content.trash.response']);
+
+    // content list
+    $httpBackend.whenGET(/^\/cms\/api\/v1\/content.*/).respond(mockApiData['content.list']);
 
     // content list
     $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/(\?.*)?$/).respond(mockApiData['content.list']);
@@ -53,9 +59,13 @@ angular.module('bulbsCmsApp.mockApi').run([
     $httpBackend.whenPUT('/cms/api/v1/contentlist/4/').respond(contentlist.results[3]);
     $httpBackend.whenPUT('/cms/api/v1/contentlist/5/').respond(contentlist.results[4]);
 
+
     // templates
     $httpBackend.whenGET(/^\/views\//).passThrough();
     $httpBackend.whenGET(/^\/content_type_views\//).passThrough();
+    $httpBackend.when('OPTIONS', /^http:\/\/localimages\.avclub\.com.*/).passThrough();
+    $httpBackend.when('GET', /^http:\/\/localimages\.avclub\.com.*/).passThrough();
+    $httpBackend.when('POST', /^http:\/\/localimages\.avclub\.com.*/).passThrough();
   }
 ]).constant('mockApiData', {
   // NOTE: double-quotes are used because JSON
@@ -127,6 +137,12 @@ angular.module('bulbsCmsApp.mockApi').run([
     "client_pixel": null,
     "sponsor_name": null
   },
+  "content.trash": {
+    "status": "Trashed"
+  },
+  "content.trash.response": {
+    "status": "Trashed"
+  },
   "content.list": {
     count: 100,
     next: "/cms/api/v1/content/?page=2",
@@ -162,7 +178,7 @@ angular.module('bulbsCmsApp.mockApi').run([
       published: null,
       title: "This is a draft article",
       slug: "this-is-a-draft-article",
-      feature_type: "Feature Type",
+      feature_type: null,
       body: "This is a draft article. It was written by First Last. It is a Feature Type article."
     }, {
       polymorphic_ctype: "content_content",

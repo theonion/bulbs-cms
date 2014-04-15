@@ -15,10 +15,9 @@
     <!-- bower:css -->
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="bower_components/bootstrap-switch/build/css/bootstrap3/bootstrap-switch.css" />
-    <link rel="stylesheet" href="bower_components/angular-bootstrap-datetimepicker/src/css/datetimepicker.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
     <!-- endbower -->
     <link rel="stylesheet" href="bower_components/jcrop/css/jquery.Jcrop.min.css" />
-    <link rel="stylesheet" href="bower_components/nprogress/nprogress.css" />
     <!-- endbuild -->
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" />
     <!-- build:css({.tmp,app}) styles/main.css -->
@@ -46,7 +45,7 @@
     <![endif]-->
 
     <!-- Add your site or application content here -->
-    <div ng-view=""></div>
+    <div class="container" ng-view=""></div>
 
     <!--[if lt IE 9]>
     <script src="bower_components/es5-shim/es5-shim.js"></script>
@@ -69,9 +68,7 @@
     <script src="bower_components/underscore/underscore.js"></script>
     <script src="bower_components/urlify/urlify.js"></script>
     <script src="bower_components/onion-editor/build/onion-editor.min.js"></script>
-    <script src="bower_components/lodash/dist/lodash.compat.js"></script>
-    <script src="bower_components/restangular/dist/restangular.js"></script>
-    <script src="bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js"></script>
+    <script src="bower_components/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
     <!-- endbower -->
     <script src="bower_components/jcrop/js/jquery.Jcrop.min.js"></script>
     <!-- endbuild -->
@@ -85,6 +82,7 @@
     <script src="scripts/controllers/pzone.js"></script>
     <script src="scripts/controllers/targeting.js"></script>
     <script src="scripts/services/if-exists-else.js"></script>
+    <script src="scripts/services/contentList.js"></script>
     <script src="scripts/filters/truncateByCharacters.js"></script>
     <script src="scripts/filters/truncateByWords.js"></script>
     <script src="scripts/directives/articlecontainer.js"></script>
@@ -102,16 +100,8 @@
     <script src="scripts/directives/responsive-image.js"></script>
     <script src="scripts/directives/targeting.js"></script>
     <script src="scripts/directives/titleimage.js"></script>
+    <script src="scripts/directives/trash-content.js"></script>
     <script src="scripts/libraries/editor-cms-bridge.js"></script>
-    <script src="scripts/services/bulbsapi.js"></script>
-    <script src="scripts/services/contentapi.js"></script>
-    <script src="scripts/services/reviewapi.js"></script>
-    <script src="scripts/services/promotionapi.js"></script>
-    <script src="scripts/services/adapi.js"></script>
-    <script src="scripts/directives/activenav.js"></script>
-    <script src="scripts/controllers/contentworkflow.js"></script>
-    <script src="scripts/controllers/trashcontentmodal.js"></script>
-    <script src="scripts/controllers/pubtimemodal.js"></script>
     <!-- endbuild -->
 
     <script src="bower_components/angular-mocks/angular-mocks.js"></script>
@@ -120,17 +110,6 @@
 
 
     <script type="text/javascript">
-        angular.module('bulbsCmsApp').constant('routes', {
-            IMAGE_SERVER_URL: 'http://localimages.avclub.com',
-            BC_ADMIN_URL: 'http://localimages.avclub.com',
-            LOADING_IMG_SRC: '/images/loading.gif',
-            STATIC_URL: '/static/',
-            PARTIALS_URL: '/views/',
-            CONTENT_PARTIALS_URL: '/content_type_views/',
-            MEDIA_ITEM_PARTIALS_URL: '/cms/api/partials/media_items/',
-            CACHEBUSTER: '?' + Date.now()
-        });
-
         angular.module('bulbsCmsApp').constant('IMAGE_SERVER_URL', 'http://localimages.avclub.com');
         angular.module('bulbsCmsApp').constant('BC_ADMIN_URL', 'http://localimages.avclub.com');
         angular.module('bulbsCmsApp').constant('LOADING_IMG_SRC', "/images/loading.gif");
@@ -139,29 +118,6 @@
         angular.module('bulbsCmsApp').constant('CONTENT_PARTIALS_URL', '/content_type_views/');
         angular.module('bulbsCmsApp').constant('MEDIA_ITEM_PARTIALS_URL', '/cms/api/partials/media_items/');
         angular.module('bulbsCmsApp').constant('CACHEBUSTER', "?" + Date.now());
-
-        // ****** CMS Plugins ****** \\
-
-        angular.module('bulbsCmsApp').constant('tar_options', {
-          namespace: 'Woodruff',
-          endpoint: '/ads/targeting'
-        });
-
-        angular.module('bulbsCmsApp').constant('promo_options', {
-          namespace: 'Woodruff',
-          endpoint: '/cms/api/v1/contentlist/',
-          upper_limits: {}
-        });
-    </script>
-
-    <script>
-        angular.module('bulbsCmsAppDev', ['bulbsCmsApp.mockApi', 'bulbsCmsApp']);
-
-        //huhhhhh
-        $("body").on("click", "a", function(e){
-          if($(this).attr("target") == "_blank") return true;
-          $(this).attr("target", "_self");
-        });
     </script>
 
 </body>
