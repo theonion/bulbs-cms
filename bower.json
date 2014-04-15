@@ -20,7 +20,7 @@
     "underscore": "1.6.0",
     "jcrop": "0.9.12",
     "urlify": "theonion/urlify",
-    "angular-bootstrap-datetimepicker": "~0.2.2"
+    "angular-bootstrap-datetimepicker": "~0.2.2",
     "onion-editor": "^0.1.4"
   },
   "devDependencies": {
