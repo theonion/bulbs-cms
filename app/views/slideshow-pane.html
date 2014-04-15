@@ -1,0 +1,23 @@
+<div>
+    <div class="image-edit-container {{image}}">
+        <div data-type="image" class="image" data-format="{{format || 'jpg'}}" responsive-image image-id="{{(image && image.id) || 0}}" crop="{{crop || '16x9'}}">
+            <div></div>
+        </div>
+        <div class="image-edit-overlay">
+            <div class="remove">
+                <button ng-click="removeImage(index);" class="fa fa-trash-o"></button></div>
+            <div class="edit">
+                <button name="inline_edit" ng-click="editImage(index);">CHANGE</button></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="main-image-meta main-image-alt col-md-12 form-group">
+            <label class="control-label small">Alt text</label>
+            <input type="text" class="form-control" placeholder="Describes image's contents" ng-model="image.alt" />
+        </div>
+        <div class="main-image-meta main-image-caption col-md-12 form-group" ng-hide="hideCaption">
+            <label class="control-label small">Caption</label>
+            <textarea class="form-control" placeholder="Brief explanation of image" ng-model="image.caption" />
+        </div>
+    </div>
+</div>
