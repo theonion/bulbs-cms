@@ -5,6 +5,7 @@ describe('Directive: activeNav', function () {
   beforeEach(module('bulbsCmsApp'));
 
   var element,
+    inactiveElement,
     scope,
     compile,
     html,
@@ -24,12 +25,18 @@ describe('Directive: activeNav', function () {
     $browser.poll();
 
     element = angular.element($compile(html)(scope));
+    inactiveElement = angular.element($compile('<active-nav href="whatever" label="Whatever"></active-nav>')(scope));
     scope = element.scope();
     scope.$apply();
+
   }));
 
-  it('should be cool', function () {
+  it('should add the active class to the current path', function () {
     expect(element.hasClass('active')).toBe(true);
+  });
+
+  it('should not add the active class to an element that is not for the current path', function () {
+    expect(inactiveElement.hasClass('active')).toBe(false);
   });
 
 });
