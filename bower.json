@@ -29,5 +29,6 @@
     "angular-scenario": "1.2.8"
   },
   "resolutions": {
+    "angular": "1.2.8"
   }
 }

@@ -32,21 +32,11 @@ angular.module('bulbsCmsApp', [
       .when('/cms/app/list/:queue/', {
         templateUrl: routes.PARTIALS_URL + 'contentlist.html',
         controller: 'ContentlistCtrl',
-        resolve: {
-          content: function (Contentlistservice) {
-            return Contentlistservice.get();
-          }
-        },
         reloadOnSearch: false
       })
       .when('/cms/app/edit/:id/', {
         templateUrl: routes.PARTIALS_URL + 'contentedit.html',
         controller: 'ContenteditCtrl',
-        resolve: {
-          content: function (Contenteditservice) {
-            return Contenteditservice.get();
-          }
-        },
       })
       .when('/cms/app/promotion/', {
         templateUrl:  routes.PARTIALS_URL + 'promotion.html',

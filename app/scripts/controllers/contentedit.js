@@ -11,34 +11,6 @@ angular.module('bulbsCmsApp')
     $scope.MEDIA_ITEM_PARTIALS_URL = routes.MEDIA_ITEM_PARTIALS_URL;
     $scope.CACHEBUSTER = routes.CACHEBUSTER;
 
-
-    var getArticleCallback = function (data) {
-      $window.article = data;
-      $scope.article = data;
-      if ($location.search().rating_type && (!data.ratings || data.ratings.length === 0)) {
-        $scope.article.ratings = [{
-          type: $location.search().rating_type
-        }];
-      }
-
-      $scope.$watch('article.detail_image.id', function (newVal, oldVal) {
-        if (!$scope.article) { return; }
-        if (newVal && oldVal && newVal === oldVal) { return; }
-
-        if (newVal === null) { return; } //no image
-
-        if (!$scope.article.image || !$scope.article.image.id || //no thumbnail
-          (newVal && oldVal && $scope.article.image && $scope.article.image.id && oldVal === $scope.article.image.id) || //thumbnail is same
-          (!oldVal && newVal) //detail was trashed
-        ) {
-          $scope.article.image = {id: newVal, alt: null, caption: null};
-        }
-
-
-      });
-    }
-    getArticleCallback(content);
-
     var getArticleCallback = function (data) {
       $window.article = $scope.article = data;
       if ($location.search().rating_type && (!data.ratings || data.ratings.length === 0)) {
