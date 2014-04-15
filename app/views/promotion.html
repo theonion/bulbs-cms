@@ -2,7 +2,7 @@
 	<div class="promotion-area col-md-6">
 		<h1 class="h4">Currently promoted</h1>
 		<div>
-			<select name="pzone" ng-model="pzone" ng-options="p.name for p in pzones" class="form-control">
+			<select name="pzone" ng-model="pzone" ng-options="p.name for p in pzones | orderBy:'name'" class="form-control">
 			</select>
 		</div>
 		<div>
