@@ -16,6 +16,7 @@ angular.module('bulbsCmsApp', [
   'ngResource',
   'ngSanitize',
   'ngRoute',
+  'restangular',
   'ui.bootstrap',
   'ui.bootstrap.datetimepicker',
   'jquery',

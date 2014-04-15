@@ -2,9 +2,9 @@
 
 angular.module('bulbsCmsApp')
   .controller('ContenteditCtrl', function (
-    $scope, $http, $window, $location,
-    $timeout, $compile, $q, $, IfExistsElse,
-    routes, Contenteditservice, content)
+    $scope, $routeParams, $http, $window,
+    $location, $timeout, $compile, $q, $, IfExistsElse,
+    routes, ContentApi, ReviewApi)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
@@ -39,6 +39,35 @@ angular.module('bulbsCmsApp')
     }
     getArticleCallback(content);
 
+    var getArticleCallback = function (data) {
+      $window.article = $scope.article = data;
+      if ($location.search().rating_type && (!data.ratings || data.ratings.length === 0)) {
+        $scope.article.ratings = [{
+          type: $location.search().rating_type
+        }];
+      }
+
+      $scope.$watch('article.detail_image.id', function (newVal, oldVal) {
+        if (!$scope.article) { return; }
+        if (newVal && oldVal && newVal === oldVal) { return; }
+
+        if (newVal === null) { return; } //no image
+
+        if (!$scope.article.image || !$scope.article.image.id || //no thumbnail
+          (newVal && oldVal && $scope.article.image && $scope.article.image.id && oldVal === $scope.article.image.id) || //thumbnail is same
+          (!oldVal && newVal) //detail was trashed
+        ) {
+          $scope.article.image = {id: newVal, alt: null, caption: null};
+        }
+
+
+      });
+    };
+
+    function getContent() {
+      ContentApi.one('content', $routeParams.id).get().then(getArticleCallback);
+    }
+    getContent();
     //set title
     $window.document.title = 'AVCMS | Editing ' + ($scope.article && $('<span>' + $scope.article.title + '</span>').text());
 
@@ -51,7 +80,10 @@ angular.module('bulbsCmsApp')
     $scope.tagCallback = function (o, input, freeForm) {
       var tagVal = freeForm ? o : o.name;
       IfExistsElse.ifExistsElse(
-        '/cms/api/v1/tag/?ordering=name&search=' + encodeURIComponent(tagVal),
+        ContentApi.all('tag').getList({
+          ordering: 'name',
+          search: tagVal
+        }),
         {name: tagVal},
         function (tag) { $scope.article.tags.push(tag); },
         function (value) { $scope.article.tags.push({name: value.name, type: 'content_tag', new: true}); },
@@ -63,7 +95,10 @@ angular.module('bulbsCmsApp')
     $scope.sectionCallback = function (o, input, freeForm) {
       var tagVal = freeForm ? o : o.name;
       IfExistsElse.ifExistsElse(
-        '/cms/api/v1/tag/?ordering=name&search=' + encodeURIComponent(tagVal),
+        ContentApi.all('tag').getList({
+          ordering: 'name',
+          search: tagVal
+        }),
         {name: tagVal},
         function (tag) { $scope.article.tags.push(tag); },
         function () { console.log('Can\'t create sections.'); },
@@ -103,7 +138,10 @@ angular.module('bulbsCmsApp')
     $scope.featureTypeCallback = function (o, input, freeForm) {
       var fVal = freeForm ? o : o.name;
       IfExistsElse.ifExistsElse(
-        '/cms/api/v1/things/?type=feature_type&q=' + encodeURIComponent(fVal),
+        ContentApi.all('things').getList({
+          type: 'feature_type',
+          q: fVal
+        }),
         {name: fVal},
         function (ft) { $scope.article.feature_type = ft.name; $('#feature-type-container').removeClass('newtag'); },
         function (value) { $scope.article.feature_type = value.name; $('#feature-type-container').addClass('newtag'); },
@@ -157,7 +195,10 @@ angular.module('bulbsCmsApp')
           var identifier = data.ratings[i].media_item.identifier;
           show = data.ratings[i].media_item.show;
           IfExistsElse.ifExistsElse(
-            '/reviews/api/v1/tvseason/?season=' + identifier + '&show=' + encodeURIComponent(show),
+            ReviewApi.all('tvseason').getList({
+              season: identifier,
+              show: show
+            }),
             {identifier: identifier, show: show},
             mediaItemExistsCbkFactory(i),
             mediaItemDoesNotExistCbkFactory(i),
@@ -167,9 +208,12 @@ angular.module('bulbsCmsApp')
           show = data.ratings[i].media_item.show;
           var season = data.ratings[i].media_item.season;
           var episode = data.ratings[i].media_item.episode;
-          // var title = data.ratings[i].media_item.title;
           IfExistsElse.ifExistsElse(
-            '/reviews/api/v1/tvepisode/?show=' + encodeURIComponent(show) + '&season=' + season + '&episode=' + episode,
+            ReviewApi.all('tvepisode').getList({
+              show: show,
+              season: season,
+              episode: episode
+            }),
             {show: show, season: season, episode: episode},
             mediaItemExistsCbkFactory(i),
             mediaItemDoesNotExistCbkFactory(i),
@@ -197,32 +241,25 @@ angular.module('bulbsCmsApp')
 
     function saveMediaItem(index) {
       var type = $scope.article.ratings[index].type;
-      var media_item = $scope.article.ratings[index].media_item;
-      var url = '/reviews/api/v1/' + type + '/';
-      var method = 'POST';
-      if (media_item.id) {
-        url += media_item.id + '/';
-        method = 'PUT';
+      var mediaItem = $scope.article.ratings[index].media_item;
+      mediaItem = ReviewApi.restangularizeElement(null, mediaItem, type);
+      var q;
+      if (mediaItem.id) {
+        q = mediaItem.put();
+      } else {
+        q = mediaItem.post();
       }
-      $http({
-        url: url,
-        method: method,
-        data: media_item
-      }).success(function (resp) {
+      q.then(function (resp) {
         $scope.article.ratings[index].media_item = resp;
         $scope.mediaItemCallbackCounter -= 1;
-      }).error(saveArticleErrorCbk);
+      }).catch(saveArticleErrorCbk);
     }
 
     function saveToContentApi() {
       $('#save-article-btn').html('<i class=\'fa fa-refresh fa-spin\'></i> Saving');
-
-      $http({
-        url: '/cms/api/v1/content/' + ($scope.article.id || '') + '/',
-        method: 'PUT',
-        data: $scope.article
-      }).success(saveArticleSuccessCbk).error(saveArticleErrorCbk);
-
+      $scope.article.put()
+        .then(saveArticleSuccessCbk)
+        .catch(saveArticleErrorCbk);
     }
 
     function saveArticleErrorCbk(data, status) {
@@ -304,7 +341,7 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.publishSuccessCbk = function () {
-      Contenteditservice.get().then(getArticleCallback);
+      getContent();
     };
 
     $scope.trashSuccessCbk = function () {

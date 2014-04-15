@@ -3,38 +3,49 @@
 angular.module('bulbsCmsApp')
   .controller('ContentlistCtrl', function (
     $scope, $http, $timeout, $location,
-    $routeParams, $window, $, _, Contentlistservice, content)
+    $routeParams, $window, $, _, moment, ContentApi)
   {
     console.log('list controller here')
     console.log(content)
     //set title
     $window.document.title = 'AVCMS | Content';
 
-    var url = '/cms/api/v1/content/';
-    if($scope.queue !== 'all') {
-      //TODO: kill this with fire
-      var statusMappings = {
-        published: "before=" + moment().format('YYYY-MM-DDTHH:mmZ'),
-        waiting: "status=Waiting for Editor",
-        draft: "status=Draft",
-        scheduled: "after=" + moment().format('YYYY-MM-DDTHH:mmZ')
-      };
-      url = '/cms/api/v1/content/?' + statusMappings[$scope.queue];
-    }
-    //Contentlist.setUrl(url);
-    var getContentCallback = function (data) {
-        $scope.articles = data.results;
-        $scope.totalItems = data.count;
-      };
-    $scope.getContent = function () {
-        Contentlistservice.get().then(getContentCallback);
-      };
-    getContentCallback(content);
-
-
-    $scope.search = $location.search().search;
-    $scope.queue = $routeParams.queue || 'all';
+    $scope.pageNumber = $location.search().page || '1';
     $scope.myStuff = false;
+    $scope.queue = $routeParams.queue || 'all';
+    $scope.search = $location.search().search;
+
+    var getContentCallback = function (data) {
+        $scope.articles = data;
+        $scope.totalItems = data.metadata.count;
+      };
+
+    $scope.getContent = function () {
+        var params = {
+          page: $scope.pageNumber
+        };
+        if ($scope.queue !== 'all') {
+          params.status = {
+            published: "before=" + moment().format('YYYY-MM-DDTHH:mmZ'),
+            waiting: "status=Waiting for Editor",
+            draft: "status=Draft",
+            scheduled: "after=" + moment().format('YYYY-MM-DDTHH:mmZ')
+          }[$scope.queue];
+        }
+        var search = $location.search();
+        for (var prop in search) {
+          if (!search.hasOwnProperty(prop)) {
+            continue;
+          }
+          var val = search[prop];
+          if (!val || val === 'false') {
+            continue;
+          }
+          params[prop] = val;
+        }
+        ContentApi.all('content').getList(params)
+          .then(getContentCallback);
+      };
 
     function updateIsMyStuff() {
         if (!$location.search().authors) {
@@ -52,6 +63,7 @@ angular.module('bulbsCmsApp')
         }
       }
     updateIsMyStuff();
+    $scope.getContent();
 
     $scope.$on('$routeUpdate', function () {
         updateIsMyStuff();
