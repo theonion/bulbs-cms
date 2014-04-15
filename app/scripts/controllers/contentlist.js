@@ -3,7 +3,7 @@
 angular.module('bulbsCmsApp')
   .controller('ContentlistCtrl', function (
     $scope, $http, $timeout, $location,
-    $routeParams, $window, $, _, ContentApi)
+    $routeParams, $window, $, _, moment, ContentApi)
   {
     //set title
     $window.document.title = 'AVCMS | Content';
@@ -24,10 +24,10 @@ angular.module('bulbsCmsApp')
         };
         if ($scope.queue !== 'all') {
           params.status = {
-            published: 'Published',
-            waiting: 'Waiting for Editor',
-            draft: 'Draft',
-            scheduled: 'Scheduled'
+            published: "before=" + moment().format('YYYY-MM-DDTHH:mmZ'),
+            waiting: "status=Waiting for Editor",
+            draft: "status=Draft",
+            scheduled: "after=" + moment().format('YYYY-MM-DDTHH:mmZ')
           }[$scope.queue];
         }
         var search = $location.search();
