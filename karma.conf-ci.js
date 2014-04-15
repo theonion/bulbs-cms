@@ -8,6 +8,24 @@ module.exports = function(config) {
     process.exit(1);
   }
 
+  var customLaunchers = {
+    'SL_Chrome': {
+      base: 'SauceLabs',
+      browserName: 'chrome'
+    },
+    'SL_Firefox': {
+      base: 'SauceLabs',
+      browserName: 'firefox',
+      version: '26'
+    },
+    'SL_Safari': {
+      base: 'SauceLabs',
+      browserName: 'safari',
+      platform: 'OS X 10.9',
+      version: '7'
+    },
+  };
+
   config.set({
     // base path, that will be used to resolve files and exclude
     basePath: '',
@@ -47,24 +65,6 @@ module.exports = function(config) {
     // list of files / patterns to exclude
     exclude: [],
 
-    // Sauce Labs Config
-    customLaunchers: {
-      'SL_Chrome': {
-        base: 'SauceLabs',
-        browserName: 'chrome'
-      },
-      'SL_Firefox': {
-        base: 'SauceLabs',
-        browserName: 'firefox',
-        version: '26'
-      },
-      'SL_Safari': {
-        base: 'SauceLabs',
-        browserName: 'safari',
-        platform: 'OS X 10.9',
-        version: '7'
-      },
-    },
 
     sauceLabs: {
       testName: 'Bulbs CMS Karma Tests',
@@ -80,6 +80,7 @@ module.exports = function(config) {
 
 
     reporters: ['dots', 'saucelabs'],
+    customLaunchers: customLaunchers,
     browsers: Object.keys(customLaunchers),
     captureTimeout: 120000,
     singleRun: true
