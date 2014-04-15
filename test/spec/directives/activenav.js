@@ -2,14 +2,34 @@
 
 describe('Directive: activeNav', function () {
 
-  // load the directive's module
   beforeEach(module('bulbsCmsApp'));
 
   var element,
-    scope;
+    scope,
+    compile,
+    html,
+    $location,
+    $browser,
+    path;
 
-  beforeEach(inject(function ($rootScope) {
+  path = '/cms/app/list';
+  html = '<active-nav href="' + path + '" label="Content"></active-nav>';
+
+  beforeEach(inject(function ($rootScope, $compile) {
     scope = $rootScope.$new();
+
+    $location = angular.scope().$service('$location');
+    $browser = angular.scope().$service('$browser');
+    $location.path(path);
+    $browser.poll();
+
+    element = angular.element($compile(html)(scope));
+    scope = element.scope();
+    scope.$apply();
   }));
+
+  it('should be cool', function () {
+    expect(element.hasClass('active')).toBe(true);
+  });
 
 });

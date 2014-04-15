@@ -15,6 +15,7 @@ angular.module('bulbsCmsApp')
         return;
       }
 
+      //TODO: this isn't working
       var newPubDate = $scope.dateTimePickerValue;
       console.log(newPubDate);
       if (newPubDate) {
