@@ -4,22 +4,23 @@ angular.module('bulbsCmsApp')
   .controller('PromotionCtrl', function ($scope, $http, $window, $, ContentApi, PromotionApi, promo_options) {
     $window.document.title = promo_options.namespace + ' | Promotion Tool'; // set title
 
+    $scope.$watch('pzone', function (pzone) {
+      if (pzone && pzone.content && pzone.content.length) {
+        $scope.promotedArticles = pzone.content.slice(0);
+      } else {
+        $scope.promotedArticles = [{
+          hey_checkthis: true,
+          title: 'Nothing Promoted!',
+          feature_type: 'Click an article on the right and use \'Insert\''
+        }];
+      }
+    });
+
     $scope.getPzones = function () {
       ContentApi.all('contentlist').getList()
         .then(function (data) {
           $scope.pzones = data;
           $scope.pzone = data[0];
-          $scope.$watch('pzone', function (pzone) {
-            if (pzone.content.length) {
-              $scope.promotedArticles = pzone.content.slice(0);
-            } else {
-              $scope.promotedArticles = [{
-                hey_checkthis: true,
-                title: 'Nothing Promoted!',
-                feature_type: 'Click an article on the right and use \'Insert\''
-              }];
-            }
-          });
         })
         .catch(function (data) {
           alert('Content list does not exist.');
