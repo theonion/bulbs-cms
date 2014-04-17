@@ -28,4 +28,4 @@ deploy:
   skip_cleanup: true
   upload-dir: bower
   on:
-    all_branches: true
+    tags: true
