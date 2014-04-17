@@ -17,7 +17,7 @@ before_deploy:
   - ./node_modules/.bin/grunt build
   - mv dist bulbs-cms
   - mkdir artifacts
-  - zip -r ./artifacts/bulbs-cms-$TRAVIS_BRANCH.zip ./dist/ -x "*bower_components*" -x "robots.txt" -x "index.html" -x "404.html" -x "favicon.ico"
+  - zip -r ./artifacts/bulbs-cms-$TRAVIS_BRANCH.zip ./bulbs-cms/ -x "*bower_components*" -x "robots.txt" -x "index.html" -x "404.html" -x "favicon.ico"
 deploy:
   provider: s3
   access_key_id: AKIAI4JLSCX5OZGZA6GQ
