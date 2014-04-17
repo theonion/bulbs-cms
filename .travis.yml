@@ -14,6 +14,8 @@ env:
   - secure: SMuB6bfiSZjhl/IWbborF+Zy2RVK1gHY6/Ps8bDGmETcK3La++KMneDK5aeJLCY4Hx3VuhAb5Da44M1tYT0oa8kcXaPguDULBIJEY/lTZWZZfq/kTAws/qBATcBe5LdYjpSSRUwsuPNzwgPbG+Ci6PilPd60oFtHir8uJ5FFLjg=
   - secure: j38MkiQhTQPuA9fgfygYR9DOUmIAqjbOk+qIT5DoHhFYsYZrJwLMrQaF66RwzWmGEwtHdkXA6BI7tY/GhwnO46m6JAvhPT3ZNRGzd0d44VWE7FyhYvw0alZeY1MYM7mUZNsv7bET7/tvinYyfVNQiMvgRLk4a4kZL0e350TlHbQ=
 before_deploy:
+  - printenv
+  - git status
   - ./node_modules/.bin/grunt build
   - mkdir artifacts
   - zip -r ./artifacts/bulbs-cms-latest.zip ./dist/ -x "*node_modules*"
