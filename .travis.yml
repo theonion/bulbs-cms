@@ -15,13 +15,15 @@ env:
   - secure: j38MkiQhTQPuA9fgfygYR9DOUmIAqjbOk+qIT5DoHhFYsYZrJwLMrQaF66RwzWmGEwtHdkXA6BI7tY/GhwnO46m6JAvhPT3ZNRGzd0d44VWE7FyhYvw0alZeY1MYM7mUZNsv7bET7/tvinYyfVNQiMvgRLk4a4kZL0e350TlHbQ=
 before_deploy:
   - ./node_modules/.bin/grunt build
+  - mkdir artifacts
+  - zip -r ./artifacts/bulbs-cms-latest.zip ./dist/
 deploy:
   provider: s3
   access_key_id: AKIAI4JLSCX5OZGZA6GQ
   secret_access_key:
     secure: L4XBzkzh0cNq5xNHOYG8/Ej3nYX5qMz/AN4HNcono+ByGbiDT0VfFJjBfVdyGDBXdnYsVKIwwfFQHzv8W9QWPmyLi/GWv2dsxH3zSuoccAt8XlM4HxTNTr250HA0xDiU90h+6k66ZeHYD+d6Tunsyd3SAZul4CvxLiiFavMsfgM=
   bucket: onionwebtech
-  local-dir: dist
+  local-dir: artifacts
   skip_cleanup: true
   upload-dir: bower
   on:
