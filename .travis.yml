@@ -27,4 +27,4 @@ deploy:
   skip_cleanup: true
   upload-dir: bower
   on:
-    tags: true
+    all_branches: true
