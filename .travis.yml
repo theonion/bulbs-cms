@@ -15,8 +15,9 @@ env:
   - secure: j38MkiQhTQPuA9fgfygYR9DOUmIAqjbOk+qIT5DoHhFYsYZrJwLMrQaF66RwzWmGEwtHdkXA6BI7tY/GhwnO46m6JAvhPT3ZNRGzd0d44VWE7FyhYvw0alZeY1MYM7mUZNsv7bET7/tvinYyfVNQiMvgRLk4a4kZL0e350TlHbQ=
 before_deploy:
   - ./node_modules/.bin/grunt build
+  - mv dist bulbs-cms
   - mkdir artifacts
-  - zip -r ./artifacts/bulbs-cms-$TRAVIS_BRANCH.zip ./dist/ -x "*bower_components*"
+  - zip -r ./artifacts/bulbs-cms-$TRAVIS_BRANCH.zip ./dist/ -x "*bower_components*" -x "robots.txt" -x "index.html" -x "404.html" -x "favicon.ico"
 deploy:
   provider: s3
   access_key_id: AKIAI4JLSCX5OZGZA6GQ
