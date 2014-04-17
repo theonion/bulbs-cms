@@ -18,7 +18,7 @@ before_deploy:
   - git status
   - ./node_modules/.bin/grunt build
   - mkdir artifacts
-  - zip -r ./artifacts/bulbs-cms-latest.zip ./dist/ -x "*node_modules*"
+  - zip -r ./artifacts/bulbs-cms-latest.zip ./dist/ -x "*bower_components*"
 deploy:
   provider: s3
   access_key_id: AKIAI4JLSCX5OZGZA6GQ
