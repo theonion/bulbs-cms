@@ -4,7 +4,7 @@ angular.module('bulbsCmsApp')
   .controller('ContenteditCtrl', function (
     $scope, $routeParams, $http, $window,
     $location, $timeout, $compile, $q, $, IfExistsElse,
-    routes, ContentApi, ReviewApi)
+    routes, ContentApi, ReviewApi, Login)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
@@ -59,7 +59,7 @@ angular.module('bulbsCmsApp')
         {name: tagVal},
         function (tag) { $scope.article.tags.push(tag); },
         function (value) { $scope.article.tags.push({name: value.name, type: 'content_tag', new: true}); },
-        function (data, status) { if (status === 403) { $scope.showLoginModal(); } }
+        function (data, status) { if (status === 403) { Login.showLoginModal(); } }
       );
       $(input).val('');
     };
@@ -74,7 +74,7 @@ angular.module('bulbsCmsApp')
         {name: tagVal},
         function (tag) { $scope.article.tags.push(tag); },
         function () { console.log('Can\'t create sections.'); },
-        function (data, status) { if (status === 403) { $scope.showLoginModal(); } }
+        function (data, status) { if (status === 403) { Login.showLoginModal(); } }
       );
       $(input).val('');
     };
@@ -117,7 +117,7 @@ angular.module('bulbsCmsApp')
         {name: fVal},
         function (ft) { $scope.article.feature_type = ft.name; $('#feature-type-container').removeClass('newtag'); },
         function (value) { $scope.article.feature_type = value.name; $('#feature-type-container').addClass('newtag'); },
-        function (data, status) { if (status === 403) { $scope.showLoginModal(); } }
+        function (data, status) { if (status === 403) { Login.showLoginModal(); } }
       );
     };
 
@@ -237,7 +237,7 @@ angular.module('bulbsCmsApp')
     function saveArticleErrorCbk(data, status) {
       if (status === 403) {
         //gotta get them to log in
-        $scope.showLoginModal();
+        Login.showLoginModal();
         $('#save-article-btn').html('Save');
         return;
       }

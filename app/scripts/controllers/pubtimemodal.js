@@ -1,8 +1,29 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance, $, routes, article) {
+  .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance, $, moment, Login, routes, article) {
     $scope.article = article;
+
+    var oldPubTime = $scope.article.published;
+
+    $modalInstance.result.then(
+      function(){ }, //closed
+      function(){ //dismissed
+        $scope.article.published = oldPubTime;
+        $('#save-pub-time-button').html('Save Changes');
+      }
+    );
+
+    var viewDateFormat = 'MM/DD/YYYY hh:mm a';
+    var modelDateFormat = 'YYYY-MM-DDTHH:mmZ';
+
+    $scope.setPublishNow = function () {
+      $scope.article.published = moment().format(modelDateFormat);
+    }
+
+    $scope.setPublishMidnight = function () {
+      $scope.article.published = moment(new Date().setHours(24,0,0,0)).format(modelDateFormat);
+    }
 
     $scope.setPubTime = function (article) {
       //we're planning on making feature_type a db required field
@@ -15,14 +36,7 @@ angular.module('bulbsCmsApp')
         return;
       }
 
-      //TODO: this isn't working
-      var newPubDate = $scope.dateTimePickerValue;
-      console.log(newPubDate);
-      if (newPubDate) {
-        //the CST locks this to CST.
-        newPubDate = moment(newPubDate, 'MM/DD/YYYY hh:mm a CST').format('YYYY-MM-DDTHH:mmZ');
-      }
-      var data = {published: newPubDate};
+      var data = {published: $scope.article.published};
 
       $('#save-pub-time-button').html('<i class="fa fa-refresh fa-spin"></i> Saving');
       $http({
@@ -35,9 +49,9 @@ angular.module('bulbsCmsApp')
         $('#save-pub-time-button').html('Save Changes');
       }).error(function (error, status, data) {
         if (status === 403) {
-          $scope.showLoginModal();
-          $('#save-pub-time-button').html('Save Changes');
+          Login.showLoginModal();
         }
+        $modalInstance.dismiss();
       });
     };
 

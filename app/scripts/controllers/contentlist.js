@@ -101,6 +101,9 @@ angular.module('bulbsCmsApp')
       };
 
     $scope.publishSuccessCbk = function (article, data) {
+        console.log('publishSuccessCbk');
+        console.log(article)
+        console.log(data)
         var i;
         for (i = 0; i < $scope.articles.length; i++) {
           if ($scope.articles[i].id === article.id) {

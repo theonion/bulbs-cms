@@ -54,7 +54,12 @@
                         <div class="panel-body">
                             <div class="pull-left col-sm-3 col-xs-12">
                                 <a class="thumbnail" href="/cms/app/edit/{{article.id}}">
-                                    <img ng-if="article.image.id" ng-src="http://img.onionstatic.com/avclub/{{ article.image.id }}/16x9/400.jpg" alt="{{ article.image.alt }}" />
+                                    <div ng-if="article.image.id" style="position: relative;">
+                                        <img class="loading-image" style="width: 100%;" src="/static/cms/img/loading.gif">
+                                        <div data-type="image" class="image" style="position: absolute; top: 0; width: 100%; height: 100%;" data-format="jpg" data-alt="Thumbnail Image" responsive-image image-id="{{ article.image.id }}" crop="16x9">
+                                            <div></div>
+                                        </div>
+                                    </div>
                                     <span ng-if="!article.image.id" class="no-image text-large"><i class="fa-exclamation-triangle fa"></i><span>No image selected.</span></span>
                                 </a>
                             </div>
@@ -66,7 +71,7 @@
 
                                     <div class="form-group"><a class="form-control btn btn-primary" ng-show="article.id > -1" ng-controller="ContentworkflowCtrl" ng-click="pubTimeModal(article);">Edit publish time&nbsp;&nbsp;<i class="fa fa-calendar"></i></a></div>
 
-                                    <div class="form-group"><a class="form-control btn btn-warning" href="#" ng-show="article.published" confirmed-click="pubUnpublish(article);" ng-confirm-click="Are you sure you want to unpublish this article?">Unpublish</a></div>
+                                    <div class="form-group"><a class="form-control btn btn-warning" role="button" ng-show="article.published" ng-controller="UnpublishCtrl" confirmed-click="unpublish(article).then(publishSuccessCbk, publishSuccessCbk);" ng-confirm-click="Are you sure you want to unpublish this article?">Unpublish</a></div>
 
                                     <div class="form-group"><button ng-controller="ContentworkflowCtrl" class="form-control btn btn-danger" role="button" ng-hide="article.published" ng-click="trashContentModal(article.id);">Delete&nbsp;&nbsp;<i class="fa fa-trash"></i></button></div>
                                 </div>
@@ -103,4 +108,3 @@
 <div class="row">
     <pagination max-size="10" total-items="totalItems" page="pageNumber" items-per-page="20" on-select-page="goToPage(page);" boundary-links="true"></pagination>
 </div>
-<login></login>

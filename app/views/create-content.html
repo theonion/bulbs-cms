@@ -5,115 +5,116 @@
 </div>
 
 <div id="create" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="create-new" aria-hidden="true" data-backdrop="false">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Create Content</h4>
-            </div>
-            <div class="modal-body">
-                <div class="form-group container-fluid" id="createcontent-01">
-                    <div id="choose-articletype" class="row ">
-                        <section id="choose-contenttype" class="primary col-xs-4" data-toggle="buttons">
-                            <h5>1. Choose a type:</h5>
-                            <ul class="nav nav-pills nav-stacked">
-                                <li><a class="create-content" data-toggle="pill"  data-content_type="core_shortarticle"   href="#create-shortform"  value="Short feature">Short feature</a></li>
-                                <li><a class="create-content" data-toggle="pill"  data-content_type="core_article"  href="#create-longform"  value="Longform feature">Longform feature</a></li>
-                                <li><a class="create-content" data-toggle="pill"  data-content_type="reviews_review"  href="#create-review"  value="Review">Review</a></li>
-                                <li><a class="create-content go-next" data-toggle="pill"  data-content_type="core_video"  href="#create-video"  value="Video">Video</a></li>
-                                <li><a class="create-content go-next" data-toggle="pill"  data-content_type="core_externallink"  href="#create-link"  value="Linked content">Linked content</a></li>
-                            </ul>
-                        </section>
-                        <div class="tab-content col-xs-8">
-                            <section id="create-shortform" class="tab-pane fade panel panel-default">
-                                <div class="panel-heading"><h6 class="panel-title">Short feature</h6></div>
-                                <div class="panel-body">
-                                    <figure class="thumbnail"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAATIAAADzCAMAAAAy22pSAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACFQTFRFQEBAgICAz8/P39/fn5+f7+/vcHBwv7+/f39/AAAA////jWzwgQAABHNJREFUeNrs3et6oyAQgGEUUyj3f8Hbbp94SMCZkagkfvOz5dC+3RWcjOgSYQwHAWSQQQYZZARkkDVFFr7L8b/dtxwxP86iexTmMkXlD7YYBzLIIIMMMsgggwwyyCCDrER2C+X4/X4f5PD5cRbdvTCXKSp/sMU43JaTyYAMMsgIyI7Pyu67U/tWjgMZZJBBBhlkkEEGGWSQQXYS2e3IdKi2+2IcbsvJZEBGQAZZE2QhvnOE/X+L8EQW3RuLuTj+Ft1OMU4xI4tv/H9l/OFjt9cU3YeRdR1kkEEGGWSQQQYZZJBBBhlkkEEGGWSQQQYZZJBBBhlkkEEGGWSQQQYZZJBBBhlkkEEGGWSQQQYZZJBBBhlkkEEGGWSQQQYZZJBBBhlkkEEGGWSQQQYZZJBBBhlkkEEGGWSQQQYZZJApyDgk1Up27FG8H0F2REAGGWSQQQYZZJBBBtkeZNm3lrkU728NK71kbGwyfylZuH8PMsggg+xYMp9LQgz3DEdIQyFPMWSSIPfBBlZMVkzIIDuYrHeF6FP2y4oOl9zK/kZI+Vfwyh0ggwwyrmWsmJBBVke220fzB4QbyaRX1t9S/t31t3kTJVmIb0zWBXHF1C+cQUv2IQEZZJA1GEde/gnzJoOADLIGyWJ5lemm9eSnubAkdaVFK6RObJNrnJuiebJoIYtlsii2yTXOTQEZZJBBViAbXDGGKdv7lZJbj6GUGu6nKYZy+vi5cW4KNhnsy84Mr6tf8SlfsRKzhStXymQUq6QeExpP/SDbhcwLWZOU+ik7IjXO9colYion9eeSRWHZT9OkQWyc62XcSWgmjZC9gKyRrSxkkEF2Fpn0VHaaNoNe/wh3KpZAq8YRJg22T5ic/Ccq1MBf9kM5yCCDrInbcvkJktW787j+dEnu4upzvauv+oYBS+OcmjFb2WTkcqdyVlbeWxgGLI3jIIPsRLK+vhR77HcRslBf8C/VTEG2nSyXwHsu1vr511qdWTQMWBqnb4LsQ+LIaxnB55iQNUg2bKgZMBQGpPSlHOKxhmEwXXVu2oLi+TLXK9YVW1ZWrjqRE63btx3RtLapV8z5BM50WwEZZJBBtjvZkZd/gn0ZZJBBdkmyaK7AeFgEldlH/RKsKZiHDDLIIIPspfmyWXpLmwKTn9UxJuA0D/+wyagPL9SAjI+VZFrOHzkJ1yFTn5Mh5DwiZJBB9p5kceNWQE4xVmYol88ct3uPCRlkkEH2OrKN55eJFVRBvGEy1hWsFhhU1icsz09oiexqmwzIINv/ttzwdMlfPz4uecGKWX0ogbpQ2HAAgnReQWubDHthua6X4aHhBnKwn0/WPyR2B93u5qnfhcgK52SIv9Qe52RABlk9WfWhBOqHUf3Gd9iH1q5lxFU/lIMMsv3Denj9vUO/gSysXXe9/giCYmPTcTXRduxN2JzJKLxptXaTsZpWVdecmw5FMmduIYMMsobJjrz8fwhZIylGv/a3e8wsFhubjkQNtqNVPfsytrKQQUZABhlkkF0v/gkwALTMq2BDAp2OAAAAAElFTkSuQmCC" alt="Short feature preview" /></figure>
-                                    <div class="row">
-                                        <h5 class="text-muted col-xs-12">Use this type for the following:</h5>
-                                        <ul class="list-unstyled small">
-                                            <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_shortarticle" data-init='{"feature_type": "Newswire"}'>Newswire</a></li>
-                                            <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_shortarticle" data-init='{"feature_type": "Great Job, Internet!"}'>Great Job, Internet!</a></li>
-                                            <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_shortarticle" data-init='{"feature_type": "Watch This"}'>Watch This</a></li>
-                                            <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_shortarticle" data-init='{"feature_type": "Hear This"}'>Hear This</a></li>
-                                            <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_shortarticle" data-init='{"feature_type": "Coming Distractions"}'>Coming Distractions</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </section>
-                            <section id="create-longform" class="tab-pane in active panel panel-default">
-                                <div class="panel-heading"><h6 class="panel-title">Longform feature</h6></div>
-                                <div class="panel-body">
-                                    <figure class="thumbnail"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAATIAAAEgCAMAAAAABg9nAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACFQTFRFf39/gICAQEBAv7+/n5+fz8/P39/fcHBw7+/vAAAA////0FzXCwAAA0dJREFUeNrs3NtuozAUBVDHXJLw/x88iTTVlMbXABlUrf1Utfg4WmqLsY4Ji3QmIECGDBkyZILsULIhSDHDC1mIFykkhleyiz+5Ui7IkCFDhgwZMmTIkCFDJsiQIUOGTJAhQ4YMGTJkyJAhQ4YMGTJkyJAhE2TIkCFDJsiQIUOGDBkyZMiQIUOGDBkyZMiQCTJkyJAhE2TIkCFDhgwZMmTIkCETZMiQIUMmyJAhQ4ZMkCFDhgwZMmTIkCFDhkyQIUOGDJkgQ4YMGTJkyJAhQ4YMGTJkyJAhQybIkCFDhkyQIUOGDBkyZMiQIUOGDBkyZMiQIRNkyJAhQybIkCFDhgwZMmTIkCFDJsiQnY4sXqSQ+Eo2BClmeCGT1iBDhgwZMmSC7MNkwz2f58/jvZ6QrrMaHipzdWXjB1vVQYYMGTJkyJAhQ4YMGbJcbkM+z59PQz1zus5q+FyZqysbP9iqjsdyOxnIkCETZOcg61o/Pe/ioeG6mK7cOnxdBxkyZMiQIUOGDBkyZMj+E1nX7untMWBuuG5KV24dvq7jsdxOBjJkggzZ123bGabu34D4wZNyY8xmXKavL6/LEsv5dvE6078pstekLk5NkSc77FRp6jxmqYFh+LaKrnY7DLkFf6hek7o43VCBDBkyZMj2IfsliwxkyJAhQ7bbHfNvj3Jsup1lR3XeFlsmDciQIUOGbCvZWNnBWpZr02ZWdlTnpljLpKNFhnUZMmTItpLNiQN4t1Q7SNsZv6m9v+SNOtNJH5hSG4GxrSmq7RxpvWCuTkSGDBkyZDuRDYm+jfnle49HlJaWj8fzV2NzSLlgrs5oXWYpiwwZssP+/RfvA5nMuTrv3xDqs8/n25UN7e/kyW60vr/saGngQIYMGTJk+20xFvcasyfg5r03Heuz36zLLGWRIUP2NtnY3U7wo3mgflYnth/IaT38c6Jd2ZamlR/rhth+Ir9t1dLSMI8MGTJkyCwykCFDhgzZ1gem9seaepN1R53K8Ou5yMKWzdh7uTt/2Gl4RIYMGTJkFhnIkCFDhuyQO2Z/Y/nuh4aLBZEhQ4YM2SH7ZZ0vJSj3A7z3AoRiwSTZJ1+S+jviVbznXPshQIYMGTJkguyI/BFgAOgZqN3NpnvIAAAAAElFTkSuQmCC" alt="Longform feature preview" /></figure>
-                                    <div class="row">
-                                        <h5 class="text-muted col-xs-12">Use this type for the following:</h5>
-                                        <ul class="list-unstyled small">
-                                            <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_article" data-init='{"feature_type": "Inventory"}'>Inventory</a></li>
-                                            <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_article" data-init='{"feature_type": "AVQ&A"}'>AVQ&amp;A</a></li>
-                                            <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_article" data-init='{"feature_type": "Interview"}'>Interview</a></li>
-                                            <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_article" data-init='{"feature_type": "For Our Consideration"}'>For Our Consideration</a></li>
-                                            <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_article" data-init='{"feature_type": "What&#39;s On Tonight"}'>What's On Tonight</a></li>
-                                            <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_article" data-init='{"feature_type": "Podmass"}'>Podmass</a></li>
-                                            <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_article" data-init='{"feature_type": "Big Issues"}'>Big Issues</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </section>
-                            <section id="create-review" class="tab-pane fade panel panel-default">
-                                <div class="panel-heading"><h6 class="panel-title">Reviews</h6></div>
-                                <div class="panel-body">
-                                    <div class="callout type-tv">
-                                        <h4>TV</h4>
-                                        <a href="#" class="create-content go-next" data-content_type="reviews_tvepisodereview" data-init='{"feature_type": "TV Club"}' data-tag="tv" data-rating_type="tvepisode">Episode</a> &middot;
-                                        <a href="#" class="create-content go-next" data-content_type="reviews_tvepisodereview" data-init='{"feature_type": "TV Club Classic"}' data-tag="tv" data-rating_type="tvepisode">Classic Episode</a> &middot;
-                                        <a href="#" class="create-content go-next" data-content_type="reviews_review" data-init='{"feature_type": "TV Review"}' data-tag="tv" data-rating_type="tvseason">Full Season</a>
-                                    </div>
-                                    <div class="callout type-film">
-                                        <h4>Film</h4>
-                                        <a href="#" class="create-content go-next" data-content_type="reviews_review" data-init='{"feature_type": "Movie Review"}' data-tag="film" data-rating_type="movie">Theatrical</a> &middot;
-                                        <a href="#" class="create-content go-next" data-content_type="reviews_review" data-init='{"feature_type": "DVD Review"}' data-tag="film" data-rating_type="movie">Home Video</a>
-                                    </div>
-                                    <div class="callout type-music">
-                                        <h4>Music</h4>
-                                        <a href="#" class="create-content go-next" data-content_type="reviews_review" data-init='{"feature_type": "Music Review"}' data-tag="music" data-rating_type="album">Album</a>
-                                    </div>
-                                    <div class="callout type-books">
-                                        <h4>Books</h4>
-                                        <a href="#" class="create-content go-next" data-content_type="reviews_review" data-init='{"feature_type": "Book Review"}' data-tag="books" data-rating_type="book">Book</a>
-                                    </div>
-                                    <div class="callout type-comedy">
-                                        <h4>Comedy</h4>
-                                        <a href="#" class="create-content go-next" data-content_type="reviews_review" data-init='{"feature_type": "Comedy Album Review"}' data-tag="comedy" data-rating_type="album">Album</a> &middot;
-                                        <a href="#" class="create-content go-next" data-content_type="reviews_review" data-init='{"feature_type": "Comedy Special Review"}' data-tag="comedy" data-rating_type="movie">Special</a>
-                                    </div>
-                                </div>
-                            </section>
-                            <section id="create-video" class="tab-pane fade panel panel-default">
-                                <div class="panel-heading"><h6 class="panel-title">Video</h6></div>
-                                <div class="panel-body">
-                                    <p>Bet you can't guess what kind of content this is!</p></div>
-                            </section>
-                            <section id="create-link" class="tab-pane fade panel panel-default">
-                                <div class="panel-heading"><h6 class="panel-title">Linked content</h6></div>
-                                <div class="panel-body">
-                                    <p>This type is for linking to content elsewhere on the web.</p></div>
-                            </section>
-                        </div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Create Content</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group container-fluid" id="createcontent-01">
+          <div id="choose-articletype" class="row ">
+            <section id="choose-contenttype" class="primary col-xs-4" data-toggle="buttons">
+              <h5>1. Choose a type:</h5>
+              <ul class="nav nav-pills nav-stacked">
+                <li><a class="create-content" data-toggle="pill"  data-content_type="core_shortarticle"   href="#create-shortform"  value="Short feature">Short feature</a></li>
+                <li><a class="create-content" data-toggle="pill"  data-content_type="core_article"  href="#create-longform"  value="Longform feature">Longform feature</a></li>
+                <li><a class="create-content" data-toggle="pill"  data-content_type="reviews_review"  href="#create-review"  value="Review">Review</a></li>
+                <li><a class="create-content go-next" data-toggle="pill"  data-content_type="core_video"  href="#create-video"  value="Video">Video</a></li>
+                <li><a class="create-content go-next" data-toggle="pill"  data-content_type="core_externallink"  href="#create-link"  value="Linked content">Linked content</a></li>
+              </ul>
+            </section>
+            <div class="tab-content col-xs-8">
+              <section id="create-shortform" class="tab-pane fade panel panel-default">
+                <div class="panel-heading"><h6 class="panel-title">Short feature</h6></div>
+                  <div class="panel-body">
+                    <figure class="thumbnail"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAATIAAADzCAMAAAAy22pSAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACFQTFRFQEBAgICAz8/P39/fn5+f7+/vcHBwv7+/f39/AAAA////jWzwgQAABHNJREFUeNrs3et6oyAQgGEUUyj3f8Hbbp94SMCZkagkfvOz5dC+3RWcjOgSYQwHAWSQQQYZZARkkDVFFr7L8b/dtxwxP86iexTmMkXlD7YYBzLIIIMMMsgggwwyyCCDrER2C+X4/X4f5PD5cRbdvTCXKSp/sMU43JaTyYAMMsgIyI7Pyu67U/tWjgMZZJBBBhlkkEEGGWSQQXYS2e3IdKi2+2IcbsvJZEBGQAZZE2QhvnOE/X+L8EQW3RuLuTj+Ft1OMU4xI4tv/H9l/OFjt9cU3YeRdR1kkEEGGWSQQQYZZJBBBhlkkEEGGWSQQQYZZJBBBhlkkEEGGWSQQQYZZJBBBhlkkEEGGWSQQQYZZJBBBhlkkEEGGWSQQQYZZJBBBhlkkEEGGWSQQQYZZJBBBhlkkEEGGWSQQQYZZJApyDgk1Up27FG8H0F2REAGGWSQQQYZZJBBBtkeZNm3lrkU728NK71kbGwyfylZuH8PMsggg+xYMp9LQgz3DEdIQyFPMWSSIPfBBlZMVkzIIDuYrHeF6FP2y4oOl9zK/kZI+Vfwyh0ggwwyrmWsmJBBVke220fzB4QbyaRX1t9S/t31t3kTJVmIb0zWBXHF1C+cQUv2IQEZZJA1GEde/gnzJoOADLIGyWJ5lemm9eSnubAkdaVFK6RObJNrnJuiebJoIYtlsii2yTXOTQEZZJBBViAbXDGGKdv7lZJbj6GUGu6nKYZy+vi5cW4KNhnsy84Mr6tf8SlfsRKzhStXymQUq6QeExpP/SDbhcwLWZOU+ik7IjXO9colYion9eeSRWHZT9OkQWyc62XcSWgmjZC9gKyRrSxkkEF2Fpn0VHaaNoNe/wh3KpZAq8YRJg22T5ic/Ccq1MBf9kM5yCCDrInbcvkJktW787j+dEnu4upzvauv+oYBS+OcmjFb2WTkcqdyVlbeWxgGLI3jIIPsRLK+vhR77HcRslBf8C/VTEG2nSyXwHsu1vr511qdWTQMWBqnb4LsQ+LIaxnB55iQNUg2bKgZMBQGpPSlHOKxhmEwXXVu2oLi+TLXK9YVW1ZWrjqRE63btx3RtLapV8z5BM50WwEZZJBBtjvZkZd/gn0ZZJBBdkmyaK7AeFgEldlH/RKsKZiHDDLIIIPspfmyWXpLmwKTn9UxJuA0D/+wyagPL9SAjI+VZFrOHzkJ1yFTn5Mh5DwiZJBB9p5kceNWQE4xVmYol88ct3uPCRlkkEH2OrKN55eJFVRBvGEy1hWsFhhU1icsz09oiexqmwzIINv/ttzwdMlfPz4uecGKWX0ogbpQ2HAAgnReQWubDHthua6X4aHhBnKwn0/WPyR2B93u5qnfhcgK52SIv9Qe52RABlk9WfWhBOqHUf3Gd9iH1q5lxFU/lIMMsv3Denj9vUO/gSysXXe9/giCYmPTcTXRduxN2JzJKLxptXaTsZpWVdecmw5FMmduIYMMsobJjrz8fwhZIylGv/a3e8wsFhubjkQNtqNVPfsytrKQQUZABhlkkF0v/gkwALTMq2BDAp2OAAAAAElFTkSuQmCC" alt="Short feature preview" /></figure>
+                    <div class="row">
+                      <h5 class="text-muted col-xs-12">Use this type for the following:</h5>
+                      <ul class="list-unstyled small">
+                        <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_shortarticle" data-init='{"feature_type": "Newswire"}'>Newswire</a></li>
+                        <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_shortarticle" data-init='{"feature_type": "Great Job, Internet!"}'>Great Job, Internet!</a></li>
+                        <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_shortarticle" data-init='{"feature_type": "Watch This"}'>Watch This</a></li>
+                        <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_shortarticle" data-init='{"feature_type": "Hear This"}'>Hear This</a></li>
+                        <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_shortarticle" data-init='{"feature_type": "Coming Distractions"}'>Coming Distractions</a></li>
+                      </ul>
                     </div>
+                  </div>
                 </div>
-                <section class="form-group enter-title hidden" id="createcontent-02">
-                    <h5>2. Enter a headline <small>(You'll be able to change this later.)</small></h5>
-                    <input type="text" class="form-control new-title" ng-model="newTitle">
-                    <p class="text-muted small"><em>Adding placeholder title text helps you find this content while it's still in a draft state.</em></p>
-                </section>
+              </section>
+                <section id="create-longform" class="tab-pane in active panel panel-default">
+                  <div class="panel-heading"><h6 class="panel-title">Longform feature</h6></div>
+                    <div class="panel-body">
+                      <figure class="thumbnail"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAATIAAAEgCAMAAAAABg9nAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACFQTFRFf39/gICAQEBAv7+/n5+fz8/P39/fcHBw7+/vAAAA////0FzXCwAAA0dJREFUeNrs3NtuozAUBVDHXJLw/x88iTTVlMbXABlUrf1Utfg4WmqLsY4Ji3QmIECGDBkyZILsULIhSDHDC1mIFykkhleyiz+5Ui7IkCFDhgwZMmTIkCFDJsiQIUOGTJAhQ4YMGTJkyJAhQ4YMGTJkyJAhE2TIkCFDJsiQIUOGDBkyZMiQIUOGDBkyZMiQCTJkyJAhE2TIkCFDhgwZMmTIkCETZMiQIUMmyJAhQ4ZMkCFDhgwZMmTIkCFDhkyQIUOGDJkgQ4YMGTJkyJAhQ4YMGTJkyJAhQybIkCFDhkyQIUOGDBkyZMiQIUOGDBkyZMiQIRNkyJAhQybIkCFDhgwZMmTIkCFDJsiQnY4sXqSQ+Eo2BClmeCGT1iBDhgwZMmSC7MNkwz2f58/jvZ6QrrMaHipzdWXjB1vVQYYMGTJkyJAhQ4YMGbJcbkM+z59PQz1zus5q+FyZqysbP9iqjsdyOxnIkCETZOcg61o/Pe/ioeG6mK7cOnxdBxkyZMiQIUOGDBkyZMj+E1nX7untMWBuuG5KV24dvq7jsdxOBjJkggzZ123bGabu34D4wZNyY8xmXKavL6/LEsv5dvE6078pstekLk5NkSc77FRp6jxmqYFh+LaKrnY7DLkFf6hek7o43VCBDBkyZMj2IfsliwxkyJAhQ7bbHfNvj3Jsup1lR3XeFlsmDciQIUOGbCvZWNnBWpZr02ZWdlTnpljLpKNFhnUZMmTItpLNiQN4t1Q7SNsZv6m9v+SNOtNJH5hSG4GxrSmq7RxpvWCuTkSGDBkyZDuRDYm+jfnle49HlJaWj8fzV2NzSLlgrs5oXWYpiwwZssP+/RfvA5nMuTrv3xDqs8/n25UN7e/kyW60vr/saGngQIYMGTJk+20xFvcasyfg5r03Heuz36zLLGWRIUP2NtnY3U7wo3mgflYnth/IaT38c6Jd2ZamlR/rhth+Ir9t1dLSMI8MGTJkyCwykCFDhgzZ1gem9seaepN1R53K8Ou5yMKWzdh7uTt/2Gl4RIYMGTJkFhnIkCFDhuyQO2Z/Y/nuh4aLBZEhQ4YM2SH7ZZ0vJSj3A7z3AoRiwSTZJ1+S+jviVbznXPshQIYMGTJkguyI/BFgAOgZqN3NpnvIAAAAAElFTkSuQmCC" alt="Longform feature preview" /></figure>
+                      <div class="row">
+                        <h5 class="text-muted col-xs-12">Use this type for the following:</h5>
+                        <ul class="list-unstyled small">
+                          <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_article" data-init='{"feature_type": "Inventory"}'>Inventory</a></li>
+                          <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_article" data-init='{"feature_type": "AVQ&A"}'>AVQ&amp;A</a></li>
+                          <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_article" data-init='{"feature_type": "Interview"}'>Interview</a></li>
+                          <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_article" data-init='{"feature_type": "For Our Consideration"}'>For Our Consideration</a></li>
+                          <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_article" data-init='{"feature_type": "What&#39;s On Tonight"}'>What's On Tonight</a></li>
+                          <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_article" data-init='{"feature_type": "Podmass"}'>Podmass</a></li>
+                          <li class="col-xs-6"><a href="#" class="create-content go-next" data-content_type="core_article" data-init='{"feature_type": "Big Issues"}'>Big Issues</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </section>
+                  <section id="create-review" class="tab-pane fade panel panel-default">
+                    <div class="panel-heading"><h6 class="panel-title">Reviews</h6></div>
+                      <div class="panel-body">
+                        <div class="callout type-tv">
+                          <h4>TV</h4>
+                          <a href="#" class="create-content go-next" data-content_type="reviews_tvepisodereview" data-init='{"feature_type": "TV Club"}' data-tag="tv" data-rating_type="tvepisode">Episode</a> &middot;
+                          <a href="#" class="create-content go-next" data-content_type="reviews_tvepisodereview" data-init='{"feature_type": "TV Club Classic"}' data-tag="tv" data-rating_type="tvepisode">Classic Episode</a> &middot;
+                          <a href="#" class="create-content go-next" data-content_type="reviews_review" data-init='{"feature_type": "TV Review"}' data-tag="tv" data-rating_type="tvseason">Full Season</a>
+                        </div>
+                        <div class="callout type-film">
+                          <h4>Film</h4>
+                          <a href="#" class="create-content go-next" data-content_type="reviews_review" data-init='{"feature_type": "Movie Review"}' data-tag="film" data-rating_type="movie">Theatrical</a> &middot;
+                          <a href="#" class="create-content go-next" data-content_type="reviews_review" data-init='{"feature_type": "DVD Review"}' data-tag="film" data-rating_type="movie">Home Video</a>
+                        </div>
+                        <div class="callout type-music">
+                          <h4>Music</h4>
+                          <a href="#" class="create-content go-next" data-content_type="reviews_review" data-init='{"feature_type": "Music Review"}' data-tag="music" data-rating_type="album">Album</a>
+                        </div>
+                        <div class="callout type-books">
+                          <h4>Books</h4>
+                          <a href="#" class="create-content go-next" data-content_type="reviews_review" data-init='{"feature_type": "Book Review"}' data-tag="books" data-rating_type="book">Book</a>
+                        </div>
+                        <div class="callout type-comedy">
+                          <h4>Comedy</h4>
+                          <a href="#" class="create-content go-next" data-content_type="reviews_review" data-init='{"feature_type": "Comedy Album Review"}' data-tag="comedy" data-rating_type="album">Album</a> &middot;
+                          <a href="#" class="create-content go-next" data-content_type="reviews_review" data-init='{"feature_type": "Comedy Special Review"}' data-tag="comedy" data-rating_type="movie">Special</a>
+                        </div>
+                      </div>
+                  </section>
+                  <section id="create-video" class="tab-pane fade panel panel-default">
+                      <div class="panel-heading"><h6 class="panel-title">Video</h6></div>
+                      <div class="panel-body">
+                        <p>Bet you can't guess what kind of content this is!</p></div>
+                  </section>
+                  <section id="create-link" class="tab-pane fade panel panel-default">
+                      <div class="panel-heading"><h6 class="panel-title">Linked content</h6></div>
+                      <div class="panel-body">
+                        <p>This type is for linking to content elsewhere on the web.</p></div>
+                  </section>
+              </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancel</button>
-                <button class="btn btn-primary next-pane" aria-hidden="true">Next <span class="fa fa-angle-double-right"></span></button>
-                <button type="button" class="btn btn-success go" ng-class="{ hidden: !newTitle || newTitle.length === 0 }" ng-click="newArticle();">Create article</button>
-            </div>
+          </div>
+          <section class="form-group enter-title hidden" id="createcontent-02">
+            <h5>2. Enter a headline <small>(You'll be able to change this later.)</small></h5>
+            <input type="text" class="form-control new-title" ng-model="newTitle">
+            <p class="text-muted small"><em>Adding placeholder title text helps you find this content while it's still in a draft state.</em></p>
+          </section>
         </div>
-    </div>
+        <div class="modal-footer">
+          <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancel</button>
+          <button class="btn btn-primary next-pane" aria-hidden="true">Next <span class="fa fa-angle-double-right"></span></button>
+          <button type="button" class="btn btn-success go" ng-class="{ hidden: !newTitle || newTitle.length === 0 }" ng-click="newArticle();">Create article</button>
+        </div>
+      </div>
+  </div>
 </div>
 
 <script type="text/javascript">

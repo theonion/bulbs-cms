@@ -5,11 +5,9 @@
 <div class="modal-body">
     <div class="well">
       <div class="dropdown">
-        <a class="dropdown-toggle" id="datetimeDropdown" role="button" data-toggle="dropdown" data-target="#" href="#">
-          <div class="input-group">
-            <input type="text" class="form-control" data-ng-model="article.published">
-            <span class="input-group-add-on"><i class="glyphicon glyphicon-calendar"></i></span>
-          </div>
+        <a class="dropdown-toggle input-group" id="datetimeDropdown" role="button" data-toggle="dropdown" data-target="#" href="#">
+            <input readonly class="form-control disabled uneditable-input" value="{{article.published|date:'MM/dd/yyyy hh:mm a CST'}}">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
         </a>
         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
           <datetimepicker
@@ -17,21 +15,26 @@
             data-datetimepicker-config="{ dropdownSelector: '#datetimeDropdown' }"/>
         </ul>
       </div>
+      <div>
+        <a ng-click="setPublishNow();">Now</a> |
+        <a ng-click="setPublishMidnight();">Midnight</a>
+      </div>
     </div>
 </div>
 <div class="modal-footer">
   <button
-    ng-show="pubTimeArticle.published"
+    ng-show="article.published"
     class="btn btn-warning pull-left"
-    confirmed-click="pubUnpublish(pubTimeArticle);"
+    ng-controller="UnpublishCtrl"
+    confirmed-click="unpublish(article);"
     ng-confirm-click="Are you sure you want to unpublish this article?"
     data-dismiss="modal">Unpublish</button>
   <button
     class="btn btn-danger pull-left"
-    ng-hide="pubTimeArticle.published"
+    ng-hide="article.published"
     ng-controller="ContentworkflowCtrl"
-    role="button" ng-click="trashContentModal(pubTimeArticle.id);"
-    data-dismiss="modal">Delete&nbsp;&nbsp;<i class="fa fa-trash"></i></button>
+    role="button" ng-click="$dismiss(); trashContentModal(article.id);"
+    data-dismiss="modal">Delete</button>
 
   <button class="btn btn-link" ng-click="$dismiss();">Cancel</button>
   <button id="save-pub-time-button" class="btn btn-primary" ng-click="setPubTime(article);">Save changes</button>

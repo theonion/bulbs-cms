@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ContentworkflowCtrl', function ($scope, $http, $modal, routes) {
+  .controller('ContentworkflowCtrl', function ($scope, $http, $modal, $window, routes) {
     $scope.trashContentModal = function (articleId) {
       return $modal.open({
         templateUrl: routes.PARTIALS_URL + 'modals/confirm-trash-modal.html',
@@ -13,7 +13,7 @@ angular.module('bulbsCmsApp')
       });
     };
 
-    $scope.pubTimeModal = function(article) {
+    $scope.pubTimeModal = function (article) {
       return $modal.open({
         templateUrl: routes.PARTIALS_URL + 'modals/choose-date-modal.html',
         controller: 'PubtimemodalCtrl',

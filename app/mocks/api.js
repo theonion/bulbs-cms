@@ -14,14 +14,20 @@ angular.module('bulbsCmsApp.mockApi').run([
         return [404, {"detail": "Not found"}];
       }
     });
+
     $httpBackend.whenPOST('/cms/api/v1/content/', mockApiData['content.create'])
       .respond(function(method, url, data) {
         return [201, mockApiData['content.create.response']];
       });
+
     $httpBackend.whenPUT('/cms/api/v1/content/4/', mockApiData['content.edit'])
       .respond(mockApiData['content.edit.response']);
+
     $httpBackend.whenPOST(/\/cms\/api\/v1\/content\/\d+\/trash\//, mockApiData['content.trash'])
       .respond(mockApiData['content.trash.response']);
+
+    $httpBackend.whenPOST(/\/cms\/api\/v1\/content\/\d+\/publish\//, mockApiData['content.publish'])
+      .respond(mockApiData['content.publish.response']);
 
     // content list
     $httpBackend.whenGET(/^\/cms\/api\/v1\/content.*/).respond(mockApiData['content.list']);
@@ -142,6 +148,13 @@ angular.module('bulbsCmsApp.mockApi').run([
   },
   "content.trash.response": {
     "status": "Trashed"
+  },
+  "content.publish": {
+    "published": "1969-06-09T16:20-05:00"
+  },
+  "content.publish.response": {
+    "published": "1969-06-09T16:20-05:00",
+    "status": "Published"
   },
   "content.list": {
     count: 100,

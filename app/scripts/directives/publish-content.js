@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('publishContent', function ($http, $, routes, moment) {
+  .directive('publishContent', function ($http, Login, $, routes, moment) {
     return {
       restrict: 'E',
       templateUrl:  routes.PARTIALS_URL + 'publish-content.html',
@@ -48,7 +48,7 @@ angular.module('bulbsCmsApp')
             scope.publishSuccessCbk(article, resp);
           }).error(function (error, status, data) {
             if (status === 403) {
-              scope.showLoginModal();
+              Login.showLoginModal();
             }
           });
         }
