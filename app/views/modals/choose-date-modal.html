@@ -26,7 +26,7 @@
     ng-show="article.published"
     class="btn btn-warning pull-left"
     ng-controller="UnpublishCtrl"
-    confirmed-click="unpublish(article);"
+    confirmed-click="unpublish(article).then(publishSuccessCbk); $dismiss();"
     ng-confirm-click="Are you sure you want to unpublish this article?"
     data-dismiss="modal">Unpublish</button>
   <button
