@@ -71,7 +71,7 @@
 
                                     <div class="form-group"><a class="form-control btn btn-primary" ng-show="article.id > -1" ng-controller="ContentworkflowCtrl" ng-click="pubTimeModal(article);">Edit publish time&nbsp;&nbsp;<i class="fa fa-calendar"></i></a></div>
 
-                                    <div class="form-group"><a class="form-control btn btn-warning" role="button" ng-show="article.published" ng-controller="UnpublishCtrl" confirmed-click="unpublish(article).then(publishSuccessCbk, publishSuccessCbk);" ng-confirm-click="Are you sure you want to unpublish this article?">Unpublish</a></div>
+                                    <div class="form-group"><a class="form-control btn btn-warning" role="button" ng-show="article.published" ng-controller="UnpublishCtrl" confirmed-click="unpublish(article).then(publishSuccessCbk)" ng-confirm-click="Are you sure you want to unpublish this article?">Unpublish</a></div>
 
                                     <div class="form-group"><button ng-controller="ContentworkflowCtrl" class="form-control btn btn-danger" role="button" ng-hide="article.published" ng-click="trashContentModal(article.id);">Delete&nbsp;&nbsp;<i class="fa fa-trash"></i></button></div>
                                 </div>

@@ -100,17 +100,17 @@ angular.module('bulbsCmsApp')
         $scope.getContent();
       };
 
-    $scope.publishSuccessCbk = function (article, data) {
+    $scope.publishSuccessCbk = function (data) {
         console.log('publishSuccessCbk');
-        console.log(article)
-        console.log(data)
+        console.log(data.article)
+        console.log(data.response)
         var i;
         for (i = 0; i < $scope.articles.length; i++) {
-          if ($scope.articles[i].id === article.id) {
+          if ($scope.articles[i].id === data.article.id) {
             break;
           }
         }
-        for (var field in data) { $scope.articles[i][field] = data[field]; }
+        for (var field in data.response) { $scope.articles[i][field] = data.response[field]; }
       };
 
     $scope.trashSuccessCbk = function () {
