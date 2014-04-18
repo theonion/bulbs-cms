@@ -22,14 +22,14 @@
       <a target="_blank" href="/r/{{article.id}}">Preview&nbsp;&nbsp;<i class="fa fa-share"></i></a></li>
 
     <li class="content-status pull-right" ng-show="article.status == 'Draft' || article.status == 'Waiting for Editor'">
-      <a href="" ng-click="saveThenOpenSendModal(article);">
+      <a href="" ng-controller="ContentworkflowCtrl" ng-click="saveArticle().then(sendToEditorModal);">
           <span class="fa fa-check" ng-show="article.status == 'Waiting for Editor'"></span> Send to Editors </a></li>
 
     <li class="content-status pull-right" ng-show="article.status == 'Draft' || article.status == 'Waiting for Editor'">
-      <a href="" ng-click="saveThenPublish(article);">Publish</a></li>
+      <a href="" ng-controller="ContentworkflowCtrl" ng-click="saveArticle().then(pubTimeModal);">Publish</a></li>
 
-    <li class="content-status pull-right" ng-show="article.status == 'Published'">
-      <a href="" ng-click="saveThenPublish(article);">Published on {{article.published|date:"MMMM d, yyyy 'at' h:mm a" }}</a></li>
+    <li class="content-status pull-right" ng-show="article.status && article.published < Date()">
+      <a href="" ng-controller="ContentworkflowCtrl" ng-click="saveArticle().then(pubTimeModal);">Published on {{article.published|date:"MMMM d, yyyy 'at' h:mm a" }}</a></li>
 
     <li class="content-status pull-right" ng-show="article.status == 'Scheduled'">
-      <a href="" ng-click="saveThenPublish(article);">Scheduled to be published on {{article.published|date:"MMMM d, yyyy 'at' h:mm a" }}</a></li></ul></div>
+      <a href="" ng-controller="ContentworkflowCtrl" ng-click="saveArticle().then(pubTimeModal);">Scheduled to be published on {{article.published|date:"MMMM d, yyyy 'at' h:mm a" }}</a></li></ul></div>
