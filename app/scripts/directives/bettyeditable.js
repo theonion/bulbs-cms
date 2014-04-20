@@ -51,7 +51,6 @@ angular.module('bulbsCmsApp')
           var topPosition = selection.y0 / (1200 * ratioHeight / ratioWidth) * 100;
 
           pictureDiv.style.backgroundPosition = leftPosition + "% " + topPosition + "%, center";
-          console.log(leftPosition + "% " + topPosition + "%, center");
           pictureDiv.style.backgroundSize = "cover";
         }
 
