@@ -43,7 +43,6 @@ angular.module('bulbsCmsApp')
           //which makes ng-repeat fully refresh the library
           //can make this a lot smarter
           params = params || {};
-          console.log(BC_API_KEY)
           $http({
             method: 'GET',
             url: routes.BC_ADMIN_URL + '/api/search',
@@ -68,7 +67,6 @@ angular.module('bulbsCmsApp')
         };
 
         var refreshCurrentImage = function (id, field) {
-          console.log(BC_API_KEY)
           $http({
             url: routes.BC_ADMIN_URL + '/api/' + id,
             method: 'GET',
