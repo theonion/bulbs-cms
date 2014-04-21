@@ -26,6 +26,22 @@ angular.module('bulbsCmsApp')
           }).success(function(response){
             $scope.imageData = response;
             $scope.showImage();
+          }).error(function(data, status, headers, config){
+            if (status === 404) {
+              // For placeholder images, we definitely need to figure some better out here.
+              $scope.imageData = {
+                "width": 1200,
+                "selections" : {
+                  "16x9" : {
+                    "x0": 0,
+                    "y0": 0,
+                    "x1": 1200,
+                    "y1": 675
+                  }
+                }
+              }
+              $scope.showImage();
+            }
           });
         };
 
