@@ -103,15 +103,14 @@ angular.module('bulbsCmsApp')
 
         pushdownDiv.style.paddingTop = (ratioHeight / ratioWidth * 100) + "%";
 
-
-        if (scope.imageId === undefined) {
+        if (scope.imageId) {
+          scope.showImage();
+        } else {
           pictureDiv.className = 'picture fa fa-picture-o';
           element.on("click", function(e){
             e.stopPropagation();
             input[0].click();
           });
-        } else {
-          scope.showImage();
         }
       }
     };
