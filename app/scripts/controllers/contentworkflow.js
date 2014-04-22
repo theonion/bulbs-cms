@@ -36,7 +36,7 @@ angular.module('bulbsCmsApp')
     }
 
     $scope.getStatus = function (article) {
-      if(!article.published){
+      if(!article || !article.published){
         return 'unpublished';
       }else if(moment(article.published) > moment()){
         return 'scheduled';
