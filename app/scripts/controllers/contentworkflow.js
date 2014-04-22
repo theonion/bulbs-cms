@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ContentworkflowCtrl', function ($scope, $http, $modal, $window, routes) {
+  .controller('ContentworkflowCtrl', function ($scope, $http, $modal, $window, moment, routes) {
     $scope.trashContentModal = function (articleId) {
       return $modal.open({
         templateUrl: routes.PARTIALS_URL + 'modals/confirm-trash-modal.html',
@@ -33,6 +33,16 @@ angular.module('bulbsCmsApp')
           article: function(){ return article; }
         }
       });
+    }
+
+    $scope.getStatus = function (article) {
+      if(!article.published){
+        return 'unpublished';
+      }else if(moment(article.published) > moment()){
+        return 'scheduled';
+      }else{
+        return 'published';
+      }
     }
 
   });

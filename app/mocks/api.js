@@ -235,9 +235,9 @@ angular.module('bulbsCmsApp.mockApi').run([
     }, {
       id: 3,
       polymorphic_ctype: "content_content",
-      feature_type: "What A Gal",
-      title: "This is another article",
-      slug: "this-is-another-article-3",
+      feature_type: "Big Feature",
+      title: "Some title",
+      slug: "some-title-3",
       authors: [{
         username: "BobbyNutson",
         first_name: "Bobby",
@@ -246,6 +246,45 @@ angular.module('bulbsCmsApp.mockApi').run([
       image: {
         id: "1"
       }
+    }, {
+      id: 4,
+      title: "Far Future Article",
+      feature_type: "Feature From The Future",
+      slug: "far-future-article-4",
+      polymorphic_ctype: "content_content",
+      tags: [{
+        slug: "film",
+        type: "core_section",
+        id: 22,
+        name: "Film"
+      }],
+      authors: [{
+        username: "milquetoast",
+        first_name: "Milque",
+        last_name: "Toast",
+        id: 1
+      }],
+      image: {
+        caption: null,
+        alt: null,
+        id: "1"
+      },
+      absolute_url: "/article/article-1",
+      detail_image: {
+        caption: null,
+        alt: null,
+        id: "1"
+      },
+      sponsor_image: null,
+      status: "Published",
+      published: "2021-03-28T17:00:00Z",
+      last_modified: "2014-03-27T19:13:04.074Z",
+      description: "",
+      subhead: "",
+      indexed: true,
+      body: "This is a body",
+      client_pixel: null,
+      sponsor_name: null
     }]
   },
   "things.list": [
