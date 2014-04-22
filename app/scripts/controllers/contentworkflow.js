@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ContentworkflowCtrl', function ($scope, $http, $modal, $window, moment, routes) {
+  .controller('ContentworkflowCtrl', function ($scope, $http, $modal, $window, moment, routes, TIMEZONE_LABEL) {
+    $scope.TIMEZONE_LABEL = TIMEZONE_LABEL;
+
     $scope.trashContentModal = function (articleId) {
       return $modal.open({
         templateUrl: routes.PARTIALS_URL + 'modals/confirm-trash-modal.html',
