@@ -17,6 +17,7 @@ angular.module('bulbsCmsApp', [
   'ngSanitize',
   'ngRoute',
   'ui.bootstrap',
+  'bettyCropper',
   'jquery',
   'underscore',
   'NProgress',
