@@ -24,4 +24,15 @@ angular.module('bulbsCmsApp')
       });
     };
 
+    $scope.sendToEditorModal = function (article) {
+      return $modal.open({
+        templateUrl: routes.PARTIALS_URL + 'modals/send-to-editor-modal.html',
+        controller: 'SendtoeditormodalCtrl',
+        scope: $scope,
+        resolve: {
+          article: function(){ return article; }
+        }
+      });
+    }
+
   });
