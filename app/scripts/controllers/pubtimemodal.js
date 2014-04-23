@@ -56,9 +56,6 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.dateTimePickerCallback = function(newVal, oldVal) {
-      console.log("dateTimePickerCallback")
-      console.log(newVal)
-      console.log(oldVal)
       var newMoment = moment(newVal);
       //ask to me explain this and I'll just cry
       var newDate = moment().zone(TIMEZONE_OFFSET)
@@ -68,7 +65,6 @@ angular.module('bulbsCmsApp')
         .hour(newMoment.hour())
         .minute(newMoment.minute())
         .format(modelDateFormat);
-      console.log(newDate);
       $scope.article.published = newDate;
     };
 
