@@ -1,5 +1,12 @@
 angular.module('bettyCropper', [])
-  .service('$bettycropper', function $bettycropper($http, IMAGE_SERVER_URL) {
+  .service('$bettycropper', function $bettycropper($http, $interpolate, IMAGE_SERVER_URL, BC_API_KEY) {
+
+    /*\
+
+      Betty Cropper API
+
+    \*/
+
     this.detail = function (id) {
       return $http({
         method: 'GET',
@@ -58,6 +65,33 @@ angular.module('bettyCropper', [])
         data: selections,
         transformRequest: angular.identity
       });
+    };
+
+    /*\
+
+      Convenience Methods
+
+    \*/
+
+    this.url = function (id, crop, width, format) {
+      var exp = $interpolate(
+        "{{ url }}/{{ id }}/{{ crop }}/{{ width }}.{{ format }}"
+      );
+      return exp({
+        url: IMAGE_SERVER_URL,
+        id: id,
+        crop: crop,
+        width: width,
+        format: format
+      });
+    };
+
+    this.orig_jpg = function (id, width) {
+      return this.url(id, 'original', width, 'jpg');
+    };
+
+    this.orig_gif = function (id, width) {
+      return this.url(id, 'original', width, 'gif');
     };
 
   });

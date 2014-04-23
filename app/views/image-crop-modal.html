@@ -1,1 +1,22 @@
-<button ng-click="">OK</button>
+<div class="image-cropper-modal">
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="cancel();" aria-hidden="true">&times;</button>
+    <h4 class="modal-title">Image Cropper</h4>
+  </div>
+  <div class="modal-body">
+    <div id="crop-image" class="pull-right">
+      <img ng-src="{{ image_url }}">
+    </div>
+    <ul class="thumb-list">
+      <li ng-repeat="(ratio, selection) in image.selections">
+        <div class="cropped-thumb">
+          <img ng-click="setCurrSelection(ratio, selection)" ng-style="ratio_styles.{{ ratio }}" ng-src="{{ thumb_url }}">
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-default">Save</button>
+    <button class="btn btn-success">Save & Do Next</button>
+  </div>
+</div>
