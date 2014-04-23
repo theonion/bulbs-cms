@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('imagedrawer', function ($http, $window, $, routes) {
+  .directive('imagedrawer', function ($http, $window, $, routes, BC_API_KEY) {
     return {
       restrict: 'E',
       templateUrl: routes.PARTIALS_URL + 'imagedrawer.html',
@@ -47,7 +47,7 @@ angular.module('bulbsCmsApp')
             method: 'GET',
             url: routes.BC_ADMIN_URL + '/api/search',
             params: params,
-            headers: {'X-Betty-Api-Key': 'c44027184faf2dc61d6660409dec817daaa75decfa853d68250cbe8e'}
+            headers: {'X-Betty-Api-Key': BC_API_KEY}
           }).success(function (data) {
             $scope.library_images = prependCurrentImage(data.results, $scope.current_image);
           });
@@ -70,7 +70,7 @@ angular.module('bulbsCmsApp')
           $http({
             url: routes.BC_ADMIN_URL + '/api/' + id,
             method: 'GET',
-            headers: {'X-Betty-Api-Key': 'c44027184faf2dc61d6660409dec817daaa75decfa853d68250cbe8e'}
+            headers: {'X-Betty-Api-Key': BC_API_KEY}
           }).success(function (data) {
             if (field) {
               $scope.current_image[field] = data[field];
