@@ -5,7 +5,6 @@ angular.module('bulbsCmsApp')
 
     $scope.unpublish = function (article) {
       var data = {published: false};
-      console.log(" hi")
       var deferred = $q.defer();
       $http({
         url: '/cms/api/v1/content/' + article.id + '/publish/',

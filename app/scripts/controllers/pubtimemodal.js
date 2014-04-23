@@ -25,10 +25,10 @@ angular.module('bulbsCmsApp')
       $scope.article.published = moment().zone(TIMEZONE_OFFSET).hour(24).minute(0).format(modelDateFormat);
     }
 
-    $scope.setPubTime = function (article) {
+    $scope.setPubTime = function () {
       //we're planning on making feature_type a db required field
       //but for now we're just validating on the front-end on publish
-      if (!article.feature_type) {
+      if (!$scope.article.feature_type) {
         $modalInstance.dismiss();
         $modal.open({
           templateUrl: routes.PARTIALS_URL + 'modals/pubtime-validation-modal.html'
@@ -40,11 +40,11 @@ angular.module('bulbsCmsApp')
 
       $('#save-pub-time-button').html('<i class="fa fa-refresh fa-spin"></i> Saving');
       $http({
-        url: '/cms/api/v1/content/' + article.id + '/publish/',
+        url: '/cms/api/v1/content/' + $scope.article.id + '/publish/',
         method: 'POST',
         data: data
       }).success(function (resp) {
-        $scope.publishSuccessCbk && $scope.publishSuccessCbk(article, resp);
+        $scope.publishSuccessCbk && $scope.publishSuccessCbk({article: $scope.article, response: resp});
         $modalInstance.close();
         $('#save-pub-time-button').html('Save Changes');
       }).error(function (error, status, data) {
