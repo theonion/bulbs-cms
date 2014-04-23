@@ -1,5 +1,12 @@
 angular.module('bettyCropper', [])
-  .service('$bettycropper', function $bettycropper($http, IMAGE_SERVER_URL) {
+  .service('$bettycropper', function $bettycropper($http, $interpolate, IMAGE_SERVER_URL, BC_API_KEY) {
+
+    /*\
+
+      Betty Cropper API
+
+    \*/
+
     this.detail = function (id) {
       return $http({
         method: 'GET',
@@ -14,7 +21,7 @@ angular.module('bettyCropper', [])
 
     this.detail_patch = function (id, name, credit, selections) {
       return $http({
-        method: 'GET',
+        method: 'PATCH',
         url: IMAGE_SERVER_URL + '/api/' + id,
         headers: {
           'X-Betty-Api-Key': BC_API_KEY,
@@ -55,9 +62,35 @@ angular.module('bettyCropper', [])
           'X-Betty-Api-Key': BC_API_KEY,
           'Content-Type': undefined
         },
-        data: selections,
-        transformRequest: angular.identity
+        data: selections
       });
+    };
+
+    /*\
+
+      Convenience Methods
+
+    \*/
+
+    this.url = function (id, crop, width, format) {
+      var exp = $interpolate(
+        "{{ url }}/{{ id }}/{{ crop }}/{{ width }}.{{ format }}"
+      );
+      return exp({
+        url: IMAGE_SERVER_URL,
+        id: id,
+        crop: crop,
+        width: width,
+        format: format
+      });
+    };
+
+    this.orig_jpg = function (id, width) {
+      return this.url(id, 'original', width, 'jpg');
+    };
+
+    this.orig_gif = function (id, width) {
+      return this.url(id, 'original', width, 'gif');
     };
 
   });
