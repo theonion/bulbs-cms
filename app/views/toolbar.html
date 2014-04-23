@@ -29,7 +29,7 @@
       <a href="" ng-click="saveArticle().then(pubTimeModal);">Publish</a></li>
 
     <li class="content-status pull-right" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'published'">
-      <a href="" ng-click="saveArticle().then(pubTimeModal);">Published on {{article.published|utcToTimezone|date:"MMMM d, yyyy 'at' h:mm a" }} {{TIMEZONE_LABEL}}</a></li>
+      <a href="" ng-click="saveArticle().then(pubTimeModal);">Published on {{article.published|tzDate:"MMMM d, yyyy 'at' h:mm a" }} {{TIMEZONE_LABEL}}</a></li>
 
     <li class="content-status pull-right" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'scheduled'">
-      <a href="" ng-click="saveArticle().then(pubTimeModal);">Scheduled to be published on {{article.published|utcToTimezone|date:"MMMM d, yyyy 'at' h:mm a" }} {{TIMEZONE_LABEL}}</a></li></ul></div>
+      <a href="" ng-click="saveArticle().then(pubTimeModal);">Scheduled to be published on {{article.published|tzDate:"MMMM d, yyyy 'at' h:mm a" }} {{TIMEZONE_LABEL}}</a></li></ul></div>

@@ -40,11 +40,11 @@
                                 <span ng-show="article.authors.length > 1">and {{ article.authors.length - 1}} others</span> &middot; </span>
 
 
-                                <a class="text-success" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'published'" ng-click="pubTimeModal(article);" >{{ article.published|utcToTimezone|date:"EEE',' M/d/yy' at ' h:mm a" }} {{TIMEZONE_LABEL}}</a>
+                                <a class="text-success" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'published'" ng-click="pubTimeModal(article);" >{{ article.published|tzDate:"EEE',' M/d/yy' at ' h:mm a" }} {{TIMEZONE_LABEL}}</a>
 
                                 <a class="text-info" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'unpublished'"  ng-click="pubTimeModal(article);" >Draft</a>
 
-                                <a class="text-info" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'scheduled'" ng-click="pubTimeModal(article);" ><strong>Scheduled</strong> for {{ article.published|utcToTimezone|date:"EEE M/d/yy 'at' h:mm a" }} {{TIMEZONE_LABEL}}</a>
+                                <a class="text-info" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'scheduled'" ng-click="pubTimeModal(article);" ><strong>Scheduled</strong> for {{ article.published|tzDate:"EEE M/d/yy 'at' h:mm a" }} {{TIMEZONE_LABEL}}</a>
 
 
                             </div>
@@ -78,11 +78,11 @@
                                 <dl class="pull-left col-xs-7 col-med-4 col-lg-9">
                                     <dt>Status</dt>
                                     <dd>
-                                        <a class="text-success" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'published'" ng-click="pubTimeModal(article);" >{{ article.published|utcToTimezone|date:"EEE',' M/d/yy' at ' h:mm a" }} {{TIMEZONE_LABEL}}</a>
+                                        <a class="text-success" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'published'" ng-click="pubTimeModal(article);" >{{ article.published|tzDate:"EEE',' M/d/yy' at ' h:mm a" }} {{TIMEZONE_LABEL}}</a>
 
                                         <a class="text-info" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'unpublished'" ng-click="pubTimeModal(article);" >Draft</a>
 
-                                        <a class="text-info" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'scheduled'" ng-click="pubTimeModal(article);" ><strong>Scheduled</strong> for {{ article.published|utcToTimezone|date:"EEE M/d/yy 'at' h:mm a" }} {{TIMEZONE_LABEL}}</a>
+                                        <a class="text-info" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'scheduled'" ng-click="pubTimeModal(article);" ><strong>Scheduled</strong> for {{ article.published|tzDate:"EEE M/d/yy 'at' h:mm a" }} {{TIMEZONE_LABEL}}</a>
                                     </dd>
 
                                     <dt ng-show="article.authors">Author<span ng-show="article.authors.length > 1">s</span></dt>

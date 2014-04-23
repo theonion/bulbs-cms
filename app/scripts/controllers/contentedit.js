@@ -230,12 +230,14 @@ angular.module('bulbsCmsApp')
     function saveToContentApi() {
       $('#save-article-btn').html('<i class=\'fa fa-refresh fa-spin\'></i> Saving');
       $scope.article.put()
-        .then(saveArticleSuccessCbk)
-        .catch(saveArticleErrorCbk);
+        .then(saveArticleSuccessCbk, saveArticleErrorCbk);
     }
 
-    function saveArticleErrorCbk(data, status) {
-      if (status === 403) {
+    function saveArticleErrorCbk(data) {
+      console.log('save article error cbk')
+      console.log(data)
+      console.log(status)
+      if (data.status === 403) {
         //gotta get them to log in
         Login.showLoginModal();
         $('#save-article-btn').html('Save');

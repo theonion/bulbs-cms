@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance, $, moment, Login, routes, article) {
+  .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance, $, moment, Login, routes, article, TIMEZONE_OFFSET) {
     $scope.article = article;
-
+    $scope.dateTimePickerValue = $scope.article.published;
     var oldPubTime = $scope.article.published;
 
     $modalInstance.result.then(
@@ -18,11 +18,11 @@ angular.module('bulbsCmsApp')
     var modelDateFormat = 'YYYY-MM-DDTHH:mmZ';
 
     $scope.setPublishNow = function () {
-      $scope.article.published = moment().format(modelDateFormat);
+      $scope.article.published = moment().zone(TIMEZONE_OFFSET).format(modelDateFormat);
     }
 
     $scope.setPublishMidnight = function () {
-      $scope.article.published = moment(new Date().setHours(24,0,0,0)).format(modelDateFormat);
+      $scope.article.published = moment().zone(TIMEZONE_OFFSET).hour(24).minute(0).format(modelDateFormat);
     }
 
     $scope.setPubTime = function (article) {
@@ -54,5 +54,24 @@ angular.module('bulbsCmsApp')
         $modalInstance.dismiss();
       });
     };
+
+    $scope.dateTimePickerCallback = function(newVal, oldVal) {
+      console.log("dateTimePickerCallback")
+      console.log(newVal)
+      console.log(oldVal)
+      var newMoment = moment(newVal);
+      //ask to me explain this and I'll just cry
+      var newDate = moment().zone(TIMEZONE_OFFSET)
+        .year(newMoment.year())
+        .month(newMoment.month())
+        .date(newMoment.date())
+        .hour(newMoment.hour())
+        .minute(newMoment.minute())
+        .format(modelDateFormat);
+      console.log(newDate);
+      $scope.article.published = newDate;
+    };
+
+
 
   });

@@ -14,9 +14,7 @@ angular.module('bulbsCmsApp')
       showLoginModal: function () {
         return $modal.open({
           templateUrl: routes.PARTIALS_URL + 'modals/login-modal.html',
-          controller: 'LoginmodalCtrl',
-          scope: $scope,
-          resolve: {}
+          controller: 'LoginmodalCtrl'
         });
       },
       login: function (username, password) {

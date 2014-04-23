@@ -6,12 +6,13 @@
     <div class="well">
       <div class="dropdown">
         <a class="dropdown-toggle input-group" id="datetimeDropdown" role="button" data-toggle="dropdown" data-target="#" href="#">
-            <input readonly class="form-control disabled uneditable-input" value="{{article.published|utcToTimezone|date:'MM/dd/yyyy hh:mm a'}} {{TIMEZONE_LABEL}}">
+            <input readonly class="form-control disabled uneditable-input" value="{{article.published|tzDate:'MM/dd/yyyy hh:mm a'}} {{TIMEZONE_LABEL}}">
             <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
         </a>
         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
           <datetimepicker
-            data-ng-model="article.published"
+            data-ng-model="dateTimePickerValue"
+            data-on-set-time="dateTimePickerCallback"
             data-datetimepicker-config="{ dropdownSelector: '#datetimeDropdown' }"/>
         </ul>
       </div>
