@@ -3,7 +3,7 @@
 angular.module('bulbsCmsApp')
   .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance, $, moment, Login, routes, article, TIMEZONE_OFFSET) {
     $scope.article = article;
-    $scope.dateTimePickerValue = $scope.article.published;
+    $scope.dateTimePickerValue = $scope.article.published || false;
     var oldPubTime = $scope.article.published;
 
     $modalInstance.result.then(
