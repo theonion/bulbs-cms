@@ -24,12 +24,15 @@ angular.module('bulbsCmsApp')
           page: $scope.pageNumber
         };
         if ($scope.queue !== 'all') {
-          params.status = {
-            published: "before=" + moment().format('YYYY-MM-DDTHH:mmZ'),
-            waiting: "status=Waiting for Editor",
-            draft: "status=Draft",
-            scheduled: "after=" + moment().format('YYYY-MM-DDTHH:mmZ')
-          }[$scope.queue];
+          if($scope.queue === 'published'){
+            params.before = moment().format('YYYY-MM-DDTHH:mmZ')
+          }else if($scope.queue === 'waiting'){
+            params.status = "Waiting for Editor"
+          }else if($scope.queue === 'draft'){
+            params.status = "Draft"
+          }else if($scope.queue === 'scheduled'){
+            params.after = moment().format('YYYY-MM-DDTHH:mmZ')
+          };
         }
         var search = $location.search();
         for (var prop in search) {
