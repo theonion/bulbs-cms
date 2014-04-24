@@ -37,7 +37,7 @@ angular.module('bulbsCmsApp')
     };
 
     function getContent() {
-      ContentApi.one('content', $routeParams.id).get().then(getArticleCallback);
+      return ContentApi.one('content', $routeParams.id).get().then(getArticleCallback);
     }
     getContent();
     //set title
@@ -315,7 +315,7 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.publishSuccessCbk = function () {
-      getContent();
+      return getContent();
     };
 
     $scope.trashSuccessCbk = function () {

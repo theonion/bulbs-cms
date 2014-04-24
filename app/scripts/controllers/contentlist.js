@@ -3,7 +3,7 @@
 angular.module('bulbsCmsApp')
   .controller('ContentlistCtrl', function (
     $scope, $http, $timeout, $location,
-    $routeParams, $window, $, _, moment, ContentApi)
+    $routeParams, $window, $q, $, _, moment, ContentApi)
   {
 
     //set title
@@ -104,16 +104,18 @@ angular.module('bulbsCmsApp')
       };
 
     $scope.publishSuccessCbk = function (data) {
-        console.log('publishSuccessCbk');
-        console.log(data.article)
-        console.log(data.response)
         var i;
         for (i = 0; i < $scope.articles.length; i++) {
           if ($scope.articles[i].id === data.article.id) {
             break;
           }
         }
-        for (var field in data.response) { $scope.articles[i][field] = data.response[field]; }
+
+        for (var field in data.response) {
+          $scope.articles[i][field] = data.response[field];
+        }
+
+        return $q.when();
       };
 
     $scope.trashSuccessCbk = function () {
