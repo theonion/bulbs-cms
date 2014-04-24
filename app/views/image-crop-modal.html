@@ -5,18 +5,18 @@
   </div>
   <div class="modal-body">
     <div id="crop-image" class="pull-right">
-      <img ng-src="{{ image_url }}">
+      <img ng-src="{{ image_url }}" ng-style="crop_image_style">
     </div>
     <ul class="thumb-list">
       <li ng-repeat="(ratio, selection) in image.selections">
         <div class="cropped-thumb">
-          <img ng-click="setCurrSelection(ratio, selection)" ng-style="ratio_styles.{{ ratio }}" ng-src="{{ thumb_url }}">
+          <img ng-click="setSelectedCrop(ratio, selection)" ng-style="ratio_styles.{{ ratio }}" ng-src="{{ image_url }}">
         </div>
       </li>
     </ul>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-default">Save</button>
-    <button class="btn btn-success">Save & Do Next</button>
+    <button ng-click="save()" class="btn btn-default">Save</button>
+    <button ng-click="saveAndNext()" class="btn btn-success">Save & Do Next</button>
   </div>
 </div>

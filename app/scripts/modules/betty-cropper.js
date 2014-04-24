@@ -21,7 +21,7 @@ angular.module('bettyCropper', [])
 
     this.detail_patch = function (id, name, credit, selections) {
       return $http({
-        method: 'GET',
+        method: 'PATCH',
         url: IMAGE_SERVER_URL + '/api/' + id,
         headers: {
           'X-Betty-Api-Key': BC_API_KEY,
@@ -62,8 +62,7 @@ angular.module('bettyCropper', [])
           'X-Betty-Api-Key': BC_API_KEY,
           'Content-Type': undefined
         },
-        data: selections,
-        transformRequest: angular.identity
+        data: selections
       });
     };
 
