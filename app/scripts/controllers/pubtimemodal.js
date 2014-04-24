@@ -3,7 +3,10 @@
 angular.module('bulbsCmsApp')
   .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance, $, moment, Login, routes, article, TIMEZONE_OFFSET) {
     $scope.article = article;
-    $scope.dateTimePickerValue = $scope.article.published || false;
+
+    $scope.datePickerValue = $scope.article.published;
+    $scope.timePickerValue = $scope.article.published;
+
     var oldPubTime = $scope.article.published;
 
     $modalInstance.result.then(
@@ -17,12 +20,26 @@ angular.module('bulbsCmsApp')
     var viewDateFormat = 'MM/DD/YYYY hh:mm a';
     var modelDateFormat = 'YYYY-MM-DDTHH:mmZ';
 
-    $scope.setPublishNow = function () {
-      $scope.article.published = moment().zone(TIMEZONE_OFFSET).format(modelDateFormat);
+    $scope.setTimeShortcut = function (shortcut) {
+      if(shortcut == 'now'){
+        var now = moment().format(modelDateFormat);
+        $scope.timePickerValue = now;
+        $scope.datePickerValue = now;
+      }
+      if(shortcut == 'midnight'){
+        var midnight = moment().hour(24).minute(0).format(modelDateFormat);
+        $scope.timePickerValue = midnight;
+        $scope.datePickerValue = midnight;
+      }
     }
 
-    $scope.setPublishMidnight = function () {
-      $scope.article.published = moment().zone(TIMEZONE_OFFSET).hour(24).minute(0).format(modelDateFormat);
+    $scope.setDateShortcut = function (shortcut) {
+      if(shortcut == 'today'){
+        $scope.datePickerValue = moment().format(modelDateFormat);
+      }
+      if(shortcut == 'tomorrow'){
+        $scope.datePickerValue = moment().date(moment().date() + 1).format(modelDateFormat);
+      }
     }
 
     $scope.setPubTime = function () {
@@ -36,7 +53,16 @@ angular.module('bulbsCmsApp')
         return;
       }
 
-      var data = {published: $scope.article.published};
+      var newDate = moment($scope.datePickerValue);
+      var newTime = moment($scope.timePickerValue);
+      var newDateTime = moment().zone(TIMEZONE_OFFSET)
+        .year(newDate.year())
+        .month(newDate.month())
+        .date(newDate.date())
+        .hour(newTime.hour())
+        .minute(newTime.minute())
+        .format(modelDateFormat)
+      var data = {published: newDate};
 
       $('#save-pub-time-button').html('<i class="fa fa-refresh fa-spin"></i> Saving');
       $http({

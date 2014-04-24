@@ -4,21 +4,31 @@
 </div>
 <div class="modal-body">
     <div class="well">
-      <div class="dropdown">
-        <a class="dropdown-toggle input-group" id="datetimeDropdown" role="button" data-toggle="dropdown" data-target="#" href="#">
-            <input readonly class="form-control disabled uneditable-input" value="{{article.published|tzDate:'MM/dd/yyyy hh:mm a'}}">
-            <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-        </a>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-          <datetimepicker
-            data-ng-model="dateTimePickerValue"
-            data-on-set-time="dateTimePickerCallback"
-            data-datetimepicker-config="{ dropdownSelector: '#datetimeDropdown' }"/>
-        </ul>
+      <div class="well">
+        <div class="date-dropdown dropdown">
+          <label>Date</label>
+          <a class="dropdown-toggle input-group" id="dateDropdown" role="button" data-toggle="dropdown" data-target="#" href="#">
+              <input readonly class="form-control disabled uneditable-input" value="{{datePickerValue|tzDate:'MM/dd/yyyy'}}">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+          </a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+            <datetimepicker
+              data-ng-model="datePickerValue"
+              data-datetimepicker-config="{ dropdownSelector: '#dateDropdown', minView: 'day' }"/>
+          </ul>
+          <div style="margin-top:2px; margin-left: 2px;">
+            <a ng-click="setDateShortcut('today');">Today</a> |
+            <a ng-click="setDateShortcut('tomorrow');">Tomorrow</a>
+          </div>
+        </div>
       </div>
-      <div>
-        <a ng-click="setPublishNow();">Now</a> |
-        <a ng-click="setPublishMidnight();">Midnight</a>
+      <div class="well" style="margin-top:8px; padding-top: 12px;">
+        <label>Time</label>
+        <timepicker minute-step="5" ng-model="timePickerValue"></timepicker>
+        <div>
+          <a ng-click="setTimeShortcut('now');">Now</a> |
+          <a ng-click="setTimeShortcut('midnight');">Midnight</a>
+        </div>
       </div>
     </div>
 </div>
