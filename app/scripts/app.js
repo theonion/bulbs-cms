@@ -71,5 +71,8 @@ angular.module('bulbsCmsApp', [
 .run(function ($rootScope, $http, $cookies) {
   // set the CSRF token here
   $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
+  var deleteHeaders = $http.defaults.headers.delete || {};
+  deleteHeaders['X-CSRFToken'] = $cookies.csrftoken;
+  $http.defaults.headers.delete = deleteHeaders;
 });
 
