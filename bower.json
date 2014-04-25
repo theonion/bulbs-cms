@@ -21,7 +21,8 @@
     "jcrop": "0.9.12",
     "urlify": "theonion/urlify",
     "onion-editor": "^0.1.5",
-    "bootstrap-datetimepicker": "https://github.com/Eonasdan/bootstrap-datetimepicker/archive/v1.0.0.zip"
+    "bootstrap-datetimepicker": "https://github.com/Eonasdan/bootstrap-datetimepicker/archive/v1.0.0.zip",
+    "restangular": "~1.4.0"
   },
   "devDependencies": {
     "angular-mocks": "1.2.8",
