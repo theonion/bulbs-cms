@@ -79,6 +79,18 @@ module.exports = function(config) {
     // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
     logLevel: config.LOG_INFO,
 
+    preprocessors: {
+      'app/views/**/*.html': 'ng-html2js'
+    },
+
+    ngHtml2JsPreprocessor: {
+      // strip this from the file path
+      stripPrefix: 'app',
+
+      // setting this option will create only a single module that contains templates
+      // from all the files, so you can load them all with module('foo')
+      moduleName: 'jsTemplates'
+    },
 
     reporters: ['dots', 'saucelabs'],
     customLaunchers: customLaunchers,
