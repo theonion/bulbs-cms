@@ -4,15 +4,23 @@ angular.module('bulbsCmsApp')
   .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance, $, moment, Login, routes, article, TIMEZONE_OFFSET) {
     $scope.article = article;
 
-    $scope.datePickerValue = $scope.article.published;
-    $scope.timePickerValue = $scope.article.published;
+    $scope.pickerValue = moment($scope.article.published);
 
-    var oldPubTime = $scope.article.published;
+    $scope.$watch('pickerValue', function(newVal){
+      console.log(newVal)
+      var pubTimeMoment = moment(newVal).zone(TIMEZONE_OFFSET);
+      $scope.datePickerValue = moment()
+        .year(pubTimeMoment.year())
+        .month(pubTimeMoment.month())
+        .date(pubTimeMoment.date());
+      $scope.timePickerValue = moment()
+        .hour(pubTimeMoment.hour())
+        .minute(pubTimeMoment.minute());
+    });
 
     $modalInstance.result.then(
       function(){ }, //closed
       function(){ //dismissed
-        $scope.article.published = oldPubTime;
         $('#save-pub-time-button').html('Save Changes');
       }
     );
@@ -22,23 +30,21 @@ angular.module('bulbsCmsApp')
 
     $scope.setTimeShortcut = function (shortcut) {
       if(shortcut == 'now'){
-        var now = moment().format(modelDateFormat);
-        $scope.timePickerValue = now;
-        $scope.datePickerValue = now;
+        var now = moment().zone(TIMEZONE_OFFSET);
+        $scope.pickerValue = now;
       }
       if(shortcut == 'midnight'){
-        var midnight = moment().hour(24).minute(0).format(modelDateFormat);
-        $scope.timePickerValue = midnight;
-        $scope.datePickerValue = midnight;
+        var midnight = moment().zone(TIMEZONE_OFFSET).hour(24).minute(0);
+        $scope.pickerValue = midnight;
       }
     }
 
     $scope.setDateShortcut = function (shortcut) {
       if(shortcut == 'today'){
-        $scope.datePickerValue = moment().format(modelDateFormat);
+        $scope.pickerValue = $scope.pickerValue.date(moment().zone(TIMEZONE_OFFSET).date());
       }
       if(shortcut == 'tomorrow'){
-        $scope.datePickerValue = moment().date(moment().date() + 1).format(modelDateFormat);
+        $scope.pickerValue = $scope.pickerValue.date(moment().zone(TIMEZONE_OFFSET).date() + 1);
       }
     }
 
@@ -70,6 +76,7 @@ angular.module('bulbsCmsApp')
         method: 'POST',
         data: data
       }).success(function (resp) {
+        $scope.article.published = resp.published;
         $scope.publishSuccessCbk && $scope.publishSuccessCbk({article: $scope.article, response: resp});
         $modalInstance.close();
         $('#save-pub-time-button').html('Save Changes');
@@ -80,20 +87,5 @@ angular.module('bulbsCmsApp')
         $modalInstance.dismiss();
       });
     };
-
-    $scope.dateTimePickerCallback = function(newVal, oldVal) {
-      var newMoment = moment(newVal);
-      //ask to me explain this and I'll just cry
-      var newDate = moment().zone(TIMEZONE_OFFSET)
-        .year(newMoment.year())
-        .month(newMoment.month())
-        .date(newMoment.date())
-        .hour(newMoment.hour())
-        .minute(newMoment.minute())
-        .format(modelDateFormat);
-      $scope.article.published = newDate;
-    };
-
-
 
   });

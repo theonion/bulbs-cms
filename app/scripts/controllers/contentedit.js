@@ -40,8 +40,10 @@ angular.module('bulbsCmsApp')
       return ContentApi.one('content', $routeParams.id).get().then(getArticleCallback);
     }
     getContent();
-    //set title
-    $window.document.title = 'AVCMS | Editing ' + ($scope.article && $('<span>' + $scope.article.title + '</span>').text());
+
+    $scope.$watch('article.title', function(){
+      $window.document.title = 'AVCMS | Editing ' + ($scope.article && $('<span>' + $scope.article.title + '</span>').text());
+    });
 
     $('body').removeClass();
 
