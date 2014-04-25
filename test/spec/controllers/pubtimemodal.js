@@ -55,27 +55,31 @@ describe('Controller: PubtimemodalCtrl', function () {
     httpBackend.verifyNoOutstandingRequest();
   });
 
-  it('should have a setPubTime function', function () {
-    expect(angular.isFunction(scope.setPubTime)).toBe(true);
-  });
+  describe('function: setPubTime', function () {
+    it('should exist', function () {
+      expect(angular.isFunction(scope.setPubTime)).toBe(true);
+    });
 
-  it('should close itself and open validation modal when you try to publish with no feature type', function () {
-    spyOn(modal, 'dismiss');
-    spyOn(modalService, 'open');
+    it('should close pubTime modal and open validation modal when you try to publish with no feature type', function () {
+      spyOn(modal, 'dismiss');
+      spyOn(modalService, 'open');
 
-    scope.setPubTime(articleWithNoFeatureType);
+      scope.article = articleWithNoFeatureType;
+      scope.setPubTime();
 
-    expect(modal.dismiss).toHaveBeenCalled();
-    expect(modalService.open).toHaveBeenCalled();
-  });
+      expect(modal.dismiss).toHaveBeenCalled();
+      expect(modalService.open).toHaveBeenCalled();
+    });
 
-  it('should make an http request in setPubTime', function () {
-    httpBackend.expectPOST('/cms/api/v1/content/' + articleWithFeatureType.id + '/publish/').respond({status: "Published"});
+    it('should make an http request to the publis endpoint', function () {
+      httpBackend.expectPOST('/cms/api/v1/content/' + articleWithFeatureType.id + '/publish/').respond({status: "Published"});
 
-    scope.dateTimePickerValue = "aha";
-    scope.setPubTime(articleWithFeatureType);
+      scope.dateTimePickerValue = "aha";
+      scope.setPubTime(articleWithFeatureType);
 
-    httpBackend.flush();
+      httpBackend.flush();
+    });
+
   });
 
 });

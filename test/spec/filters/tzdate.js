@@ -11,9 +11,4 @@ describe('Filter: tzDate', function () {
     tzDate = $filter('tzDate');
   }));
 
-  it('should return the input prefixed with "tzDate filter:"', function () {
-    var text = 'angularjs';
-    expect(tzDate(text)).toBe('tzDate filter: ' + text);
-  });
-
 });
