@@ -24,7 +24,7 @@
       </div>
       <div class="well" style="margin-top:8px; padding-top: 12px;">
         <label>Time ({{TIMEZONE_LABEL}})</label>
-        <timepicker minute-step="5" ng-model="timePickerValue"></timepicker>
+        <timepicker minute-step="5" ng-model="$parent.timePickerValue" mousewheel="false"></timepicker>
         <div>
           <a ng-click="setTimeShortcut('now');">Now</a> |
           <a ng-click="setTimeShortcut('midnight');">Midnight</a>

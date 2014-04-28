@@ -7,7 +7,6 @@ angular.module('bulbsCmsApp')
     $scope.pickerValue = moment($scope.article.published);
 
     $scope.$watch('pickerValue', function(newVal){
-      console.log(newVal)
       var pubTimeMoment = moment(newVal).zone(TIMEZONE_OFFSET);
       $scope.datePickerValue = moment()
         .year(pubTimeMoment.year())
@@ -40,11 +39,12 @@ angular.module('bulbsCmsApp')
     }
 
     $scope.setDateShortcut = function (shortcut) {
+      var today = moment().zone(TIMEZONE_OFFSET);
       if(shortcut == 'today'){
-        $scope.pickerValue = $scope.pickerValue.date(moment().zone(TIMEZONE_OFFSET).date());
+        $scope.datePickerValue = moment().year(today.year()).month(today.month()).date(today.date());
       }
       if(shortcut == 'tomorrow'){
-        $scope.pickerValue = $scope.pickerValue.date(moment().zone(TIMEZONE_OFFSET).date() + 1);
+        $scope.datePickerValue = moment().year(today.year()).month(today.month()).date(today.date() + 1);
       }
     }
 

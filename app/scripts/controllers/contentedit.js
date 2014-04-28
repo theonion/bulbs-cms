@@ -236,9 +236,6 @@ angular.module('bulbsCmsApp')
     }
 
     function saveArticleErrorCbk(data) {
-      console.log('save article error cbk')
-      console.log(data)
-      console.log(status)
       if (data.status === 403) {
         //gotta get them to log in
         Login.showLoginModal();

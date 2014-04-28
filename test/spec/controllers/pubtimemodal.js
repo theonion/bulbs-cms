@@ -11,7 +11,8 @@ describe('Controller: PubtimemodalCtrl', function () {
     scope,
     modal,
     modalService,
-    httpBackend;
+    httpBackend,
+    mockmoment;
 
   var articleWithNoFeatureType = {
     id: 1,
@@ -28,7 +29,7 @@ describe('Controller: PubtimemodalCtrl', function () {
   }
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope, $httpBackend, $modal, routes) {
+  beforeEach(inject(function ($controller, $rootScope, $httpBackend, $modal, moment, routes) {
     httpBackend = $httpBackend;
 
     var modalUrl = routes.PARTIALS_URL + 'modals/choose-date-modal.html';
@@ -40,11 +41,20 @@ describe('Controller: PubtimemodalCtrl', function () {
     modalService = $modal
     modalService.open = function () { return true; }
 
+    mockmoment = function(param) {
+      if(param){
+        return moment(param);
+      }else{
+        return moment("Fri Apr 25 2014 14:22:10 GMT-0500 (UTC)");
+      }
+    }
+
     scope = $rootScope.$new();
     PubtimemodalCtrl = $controller('PubtimemodalCtrl', {
       $scope: scope,
       $modal: modalService,
       $modalInstance: modal,
+      moment: mockmoment,
       article: articleWithFeatureType
     });
 
@@ -80,6 +90,77 @@ describe('Controller: PubtimemodalCtrl', function () {
       httpBackend.flush();
     });
 
+  });
+
+  describe('function: setTimeShortcut', function () {
+    it('should exist', function () {
+      expect(angular.isFunction(scope.setTimeShortcut)).toBe(true);
+    });
+
+    describe('with param "now"', function () {
+      it('should set the timePickerValue to the mocked value', function () {
+        scope.setTimeShortcut('now');
+        scope.$apply();
+
+        expect(scope.timePickerValue.hour()).toBe(14);
+        expect(scope.timePickerValue.minute()).toBe(22);
+      });
+
+    });
+
+    describe('with param "midnight"', function () {
+      it('should set the timePickerValue to midnight', function () {
+        scope.setTimeShortcut('midnight');
+        scope.$apply();
+
+        expect(scope.timePickerValue.hour()).toBe(0);
+        expect(scope.timePickerValue.minute()).toBe(0);
+      });
+    });
+
+    describe('in a different timezone', function () {
+      //mock a different timezone
+      beforeEach(inject(function ($controller, moment) {
+
+        mockmoment = function(param) {
+          if(param){
+            return moment(param);
+          }else{
+            return moment("Fri Apr 25 2014 12:22:10 GMT-0700 (UTC)");
+          }
+        }
+
+        PubtimemodalCtrl = $controller('PubtimemodalCtrl', {
+          $scope: scope,
+          $modal: modalService,
+          $modalInstance: modal,
+          moment: mockmoment,
+          article: articleWithFeatureType
+        });
+      }));
+
+      describe('with param "now"', function () {
+        it('should set the timePickerValue to the mocked value', function () {
+          scope.setTimeShortcut('now');
+          scope.$apply();
+
+          expect(scope.timePickerValue.hour()).toBe(14);
+          expect(scope.timePickerValue.minute()).toBe(22);
+        });
+
+      });
+
+      describe('with param "midnight"', function () {
+        it('should set the timePickerValue to midnight', function () {
+          scope.setTimeShortcut('midnight');
+          scope.$apply();
+
+          expect(scope.timePickerValue.hour()).toBe(0);
+          expect(scope.timePickerValue.minute()).toBe(0);
+        });
+      });
+
+    });
   });
 
 });
