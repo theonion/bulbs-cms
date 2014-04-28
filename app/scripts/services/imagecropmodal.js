@@ -20,12 +20,13 @@ angular.module('bulbsCmsApp')
           var jcrop_api, ratioOrder;
           $scope.thumb_width = 180;
           $scope.crop_image_width = 550;
+          $scope.image_url = $bettycropper.orig_jpg(id, $scope.crop_image_width);
+          $scope.thumb_url = $bettycropper.orig_jpg(id, $scope.thumb_width);
 
           var setupCropperCallback = function (data) {
             $scope.image = data;
             // $scope.setCropStyle($scope.image);
             $scope.setThumbStyles($scope.image, $scope.image.selections);
-            $scope.image_url = $bettycropper.orig_jpg(id, $scope.crop_image_width);
             ratioOrder = Object.keys($scope.image.selections);
 
             $('#crop-image').Jcrop({
