@@ -16,17 +16,15 @@ angular.module('bulbsCmsApp')
         imageId: "="
       },
       link: function (scope, element, attrs) {
-        var ModalInstanceCtrl = function ($scope, $interpolate, $bettycropper, $modalInstance, id) {
-          var jcrop_api, ratioOrder;
+        var ModalInstanceCtrl = function ($scope, $timeout, $bettycropper, $modalInstance, id) {
+          var jcrop_api;
+          $scope.cropMode = false;
           $scope.thumb = {height:180, width: 180};
           $scope.crop_image_width = 550;
           $scope.image_url = $bettycropper.orig_jpg(id, $scope.crop_image_width);
+          $scope.preview_style = {};
 
-          var setupCropperCallback = function (data) {
-            $scope.image = data;
-            $scope.setThumbStyles($scope.image, $scope.image.selections);
-            ratioOrder = Object.keys($scope.image.selections);
-
+          var setupCropper = function () {
             $('#crop-image').Jcrop({
               allowSelect: false,
               allowMove: true,
@@ -35,8 +33,8 @@ angular.module('bulbsCmsApp')
             }, function () { // Jcrop Init Callback
               jcrop_api = this;
               $scope.selectedCrop = [
-                ratioOrder[0],
-                $scope.image.selections[ratioOrder[0]]
+                $scope.ratioOrder[0],
+                $scope.image.selections[$scope.ratioOrder[0]]
               ];
             });
           };
@@ -70,11 +68,20 @@ angular.module('bulbsCmsApp')
           // Don't understand why I can't do selectedCrop = {ratio: selection}
           // in the ng-click handler...
           $scope.setSelectedCrop = function (ratio, selection) {
-            $scope.selectedCrop = [ratio, selection];
+            $scope.cropMode = true;
+            if (angular.isUndefined(jcrop_api)) {
+              $timeout(setupCropper, 0).then(function () { // WHY DO I NEED A TIMEOUT
+                $scope.selectedCrop = [ratio, selection];
+              });
+            } else {
+              $scope.selectedCrop = [ratio, selection];
+            }
           };
 
           $scope.$watch('selectedCrop', function (newVal) {
             if (angular.isUndefined(newVal)) {  return;  }
+
+            $scope.preview_style = $scope.thumb_styles[$scope.selectedCrop[0]];
 
             var scale = $scope.crop_image_width / $scope.image.width;
             var selection = newVal[1];
@@ -95,8 +102,8 @@ angular.module('bulbsCmsApp')
           $scope.setThumbStyles = function (image, selections) {
             $scope.thumb_styles = $scope.thumb_styles || {};
 
-            for (var s in selections) {
-              $scope.computeThumbStyle(image, s, selections[s]);
+            for (var ratio in selections) {
+              $scope.computeThumbStyle(image, ratio, selections[ratio]);
             }
           };
 
@@ -152,20 +159,24 @@ angular.module('bulbsCmsApp')
               $scope.selectedCrop[0],
               $scope.image.selections[$scope.selectedCrop[0]]
             ).success(function (data) {
-              var next = ratioOrder.indexOf($scope.selectedCrop[0]) + 1;
-              if (next >= ratioOrder.length) {
+              var next = $scope.ratioOrder.indexOf($scope.selectedCrop[0]) + 1;
+              if (next >= $scope.ratioOrder.length) {
                 next = 0;
               }
               $scope.selectedCrop = [
-                ratioOrder[next],
-                $scope.image.selections[ratioOrder[next]]
+                $scope.ratioOrder[next],
+                $scope.image.selections[$scope.ratioOrder[next]]
               ];
             });
 
           };
 
           $bettycropper.detail(id)
-            .success(setupCropperCallback);
+            .success(function (data) {
+              $scope.image = data;
+              $scope.setThumbStyles($scope.image, $scope.image.selections);
+              $scope.ratioOrder = Object.keys($scope.image.selections);
+            });
 
         };
 
