@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('createContent', function ($http, $window, $, IfExistsElse, Login, routes) {
+  .directive('createContent', function ($http, $window, $, IfExistsElse, Login, ContentApi, routes) {
     return {
       restrict: 'E',
       templateUrl:  routes.PARTIALS_URL + 'create-content.html',
