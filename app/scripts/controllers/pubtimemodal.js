@@ -4,8 +4,6 @@ angular.module('bulbsCmsApp')
   .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance, $, moment, Login, routes, article, TIMEZONE_OFFSET) {
     $scope.article = article;
 
-    $scope.pickerValue = moment($scope.article.published);
-
     $scope.$watch('pickerValue', function(newVal){
       var pubTimeMoment = moment(newVal).zone(TIMEZONE_OFFSET);
       $scope.datePickerValue = moment()
@@ -87,5 +85,11 @@ angular.module('bulbsCmsApp')
         $modalInstance.dismiss();
       });
     };
+
+    if($scope.article.published){
+      $scope.pickerValue = moment($scope.article.published);
+    }else{
+      $scope.setTimeShortcut('now');
+    }
 
   });
