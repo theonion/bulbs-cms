@@ -1,10 +1,6 @@
 {
   "name": "bulbs-cms",
-<<<<<<< HEAD
-  "version": "0.2.14",
-=======
   "version": "0.3.0",
->>>>>>> master
   "dependencies": {
     "json3": "~3.2.6",
     "es5-shim": "~2.1.0",
@@ -24,24 +20,16 @@
     "underscore": "1.6.0",
     "jcrop": "0.9.12",
     "urlify": "theonion/urlify",
-<<<<<<< HEAD
-    "onion-editor": "^0.1.5",
-    "bootstrap-datetimepicker": "https://github.com/Eonasdan/bootstrap-datetimepicker/archive/v1.0.0.zip"
-=======
     "angular-bootstrap-datetimepicker": "~0.2.2",
     "onion-editor": "^0.1.5",
     "restangular": "~1.4.0"
->>>>>>> master
   },
   "devDependencies": {
     "angular-mocks": "1.2.8",
     "angular-scenario": "1.2.8"
-<<<<<<< HEAD
-=======
   },
   "resolutions": {
     "angular": "1.2.8",
     "bootstrap": ">=3.0"
->>>>>>> master
   }
 }
