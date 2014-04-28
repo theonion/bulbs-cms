@@ -1,38 +1,42 @@
-<div class="pzone-container" id="pzone-content">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4>Promotion Zone Editor</h4>
-        </div>
-        <div class="panel-body">
-            <div class="col-xs-3 form-group">
+<nav class="navbar navbar-default" role="navigation" ng-controller="NavCtrl" ng-include="PARTIALS_URL + 'nav.html'" ></nav>
 
-                <div class="form-group">
-                    <label for="select-pzone">Select zone to edit</label>
-                    <select name="pzone" tabindex="1" id="select-pzone" ng-model="pzoneName" class="form-control">
-                        <option value="homepage-two">Homepage Two</option>
-                        <option value="homepage-three">Homepage Three</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="select-zone-type">Select zone type</label>
-                    <select name="pzone" id="select-zone-type" disabled ng-model="pzone.zone_type" class="form-control disabled" ng-change="typeChanged()">
-                        <option value="list">Content</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <button type="submit" class="pull-right btn btn-success" id="save-pzone-btn" ng-click="save()">Save</button>
-                </div>
-
+<div class="container">
+    <div class="pzone-container" id="pzone-content">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Promotion Zone Editor</h4>
             </div>
-            <div class="col-xs-9 form-group" ng-if="pzone">
-                <div class="form-group">
-                    <label for="edit-zone-title">Edit zone title HTML</label>
-                    <input id="edit-zone-title" type="text" ng-model="pzone.data.title" placeholder="<a href=&quot;#&quot;>Zone Title</a>" class="form-control" />
-                </div>
+            <div class="panel-body">
+                <div class="col-xs-3 form-group">
 
-                <div ng-include="getPZoneTemplate()" class="form-group"></div>
+                    <div class="form-group">
+                        <label for="select-pzone">Select zone to edit</label>
+                        <select name="pzone" tabindex="1" id="select-pzone" ng-model="pzoneName" class="form-control">
+                            <option value="homepage-two">Homepage Two</option>
+                            <option value="homepage-three">Homepage Three</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="select-zone-type">Select zone type</label>
+                        <select name="pzone" id="select-zone-type" disabled ng-model="pzone.zone_type" class="form-control disabled" ng-change="typeChanged()">
+                            <option value="list">Content</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="pull-right btn btn-success" id="save-pzone-btn" ng-click="save()">Save</button>
+                    </div>
+
+                </div>
+                <div class="col-xs-9 form-group" ng-if="pzone">
+                    <div class="form-group">
+                        <label for="edit-zone-title">Edit zone title HTML</label>
+                        <input id="edit-zone-title" type="text" ng-model="pzone.data.title" placeholder="<a href=&quot;#&quot;>Zone Title</a>" class="form-control" />
+                    </div>
+
+                    <div ng-include="getPZoneTemplate()" class="form-group"></div>
+                </div>
             </div>
         </div>
     </div>

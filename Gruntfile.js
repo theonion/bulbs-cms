@@ -429,9 +429,7 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('test', [
-    'travis',
-    'newer:jshint:all:test',
-    'watch:jsHint:jsTest'
+    'travis'
   ]);
 
   grunt.registerTask('travis', [

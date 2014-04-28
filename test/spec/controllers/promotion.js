@@ -6,13 +6,12 @@ describe('Controller: PromotionCtrl', function () {
   beforeEach(module('bulbsCmsApp'));
   beforeEach(module('bulbsCmsApp.mockApi'));
 
-  var $httpBackend, $rootScope, PromotionCtrl, Contentlist, scope, options;
+  var $httpBackend, $rootScope, PromotionCtrl, scope, options;
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $injector, promo_options, mockApiData) {
     $httpBackend = $injector.get('$httpBackend');
     $rootScope = $injector.get('$rootScope');
-    Contentlist = $injector.get('Contentlist');
     options = promo_options;
     scope = $rootScope.$new();
     PromotionCtrl = $controller('PromotionCtrl', {
@@ -23,16 +22,14 @@ describe('Controller: PromotionCtrl', function () {
 
   it('should get pzones and content when the views load', function() {
     spyOn(scope, 'getPzones');
-    spyOn(Contentlist, 'getContent');
     $rootScope.$broadcast("$viewContentLoaded");
-    expect(scope.getPzones).toHaveBeenCalledWith(options.endpoint);
-    expect(Contentlist.getContent).toHaveBeenCalled();
+    expect(scope.getPzones).toHaveBeenCalled();
   });
 
   describe('getPzones', function () {
 
     it('should get the pzones and the promoted articles', function () {
-      $httpBackend.expect('GET', '/foo/bar/').respond({
+      $httpBackend.expect('GET', '/cms/api/v1/contentlist/').respond({
         results: [{
           content: [{
             title: 'blah'
@@ -41,8 +38,8 @@ describe('Controller: PromotionCtrl', function () {
       });
 
       scope.$apply(function () {
-        scope.getPzones('/foo/bar/');
-      })
+        scope.getPzones();
+      });
 
       $httpBackend.flush();
 

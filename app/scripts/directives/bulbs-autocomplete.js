@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('bulbsAutocomplete', function ($http, $location, $compile, $timeout, $) {
+  .directive('bulbsAutocomplete', function ($http, $location, $compile, $timeout, $, Login) {
     return {
       restrict: 'A',
       scope: true,
@@ -71,7 +71,7 @@ angular.module('bulbsCmsApp')
             scope.autocomplete_list = results.splice(0, 5);
           }).error(function (data, status, headers, config) {
             if (status === 403) {
-              scope.showLoginModal();
+              Login.showLoginModal();
             }
           });
         }

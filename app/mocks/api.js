@@ -5,6 +5,7 @@ angular.module('bulbsCmsApp.mockApi').run([
     $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/\d+\/$/).respond(function(method, url, data) {
       var re = /^\/cms\/api\/v1\/content\/(\d+)\//;
       var index = re.exec(url)[1];
+
       var contentList = mockApiData['content.list'];
 
       if(index <= contentList.results.length) {
@@ -13,12 +14,23 @@ angular.module('bulbsCmsApp.mockApi').run([
         return [404, {"detail": "Not found"}];
       }
     });
+
     $httpBackend.whenPOST('/cms/api/v1/content/', mockApiData['content.create'])
       .respond(function(method, url, data) {
         return [201, mockApiData['content.create.response']];
       });
+
     $httpBackend.whenPUT('/cms/api/v1/content/4/', mockApiData['content.edit'])
       .respond(mockApiData['content.edit.response']);
+
+    $httpBackend.whenPOST(/\/cms\/api\/v1\/content\/\d+\/trash\//, mockApiData['content.trash'])
+      .respond(mockApiData['content.trash.response']);
+
+    $httpBackend.whenPOST(/\/cms\/api\/v1\/content\/\d+\/publish\//, mockApiData['content.publish'])
+      .respond(mockApiData['content.publish.response']);
+
+    // content list
+    $httpBackend.whenGET(/^\/cms\/api\/v1\/content.*/).respond(mockApiData['content.list']);
 
     // content list
     $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/(\?.*)?$/).respond(mockApiData['content.list']);
@@ -53,9 +65,13 @@ angular.module('bulbsCmsApp.mockApi').run([
     $httpBackend.whenPUT('/cms/api/v1/contentlist/4/').respond(contentlist.results[3]);
     $httpBackend.whenPUT('/cms/api/v1/contentlist/5/').respond(contentlist.results[4]);
 
+
     // templates
     $httpBackend.whenGET(/^\/views\//).passThrough();
     $httpBackend.whenGET(/^\/content_type_views\//).passThrough();
+    $httpBackend.when('OPTIONS', /^http:\/\/localimages\.avclub\.com.*/).passThrough();
+    $httpBackend.when('GET', /^http:\/\/localimages\.avclub\.com.*/).passThrough();
+    $httpBackend.when('POST', /^http:\/\/localimages\.avclub\.com.*/).passThrough();
   }
 ]).constant('mockApiData', {
   // NOTE: double-quotes are used because JSON
@@ -127,6 +143,19 @@ angular.module('bulbsCmsApp.mockApi').run([
     "client_pixel": null,
     "sponsor_name": null
   },
+  "content.trash": {
+    "status": "Trashed"
+  },
+  "content.trash.response": {
+    "status": "Trashed"
+  },
+  "content.publish": {
+    "published": "1969-06-09T16:20-05:00"
+  },
+  "content.publish.response": {
+    "published": "1969-06-09T16:20-05:00",
+    "status": "Published"
+  },
   "content.list": {
     count: 100,
     next: "/cms/api/v1/content/?page=2",
@@ -162,7 +191,7 @@ angular.module('bulbsCmsApp.mockApi').run([
       published: null,
       title: "This is a draft article",
       slug: "this-is-a-draft-article",
-      feature_type: "Feature Type",
+      feature_type: null,
       body: "This is a draft article. It was written by First Last. It is a Feature Type article."
     }, {
       polymorphic_ctype: "content_content",
@@ -206,9 +235,9 @@ angular.module('bulbsCmsApp.mockApi').run([
     }, {
       id: 3,
       polymorphic_ctype: "content_content",
-      feature_type: "What A Gal",
-      title: "This is another article",
-      slug: "this-is-another-article-3",
+      feature_type: "Big Feature",
+      title: "Some title",
+      slug: "some-title-3",
       authors: [{
         username: "BobbyNutson",
         first_name: "Bobby",
@@ -217,6 +246,45 @@ angular.module('bulbsCmsApp.mockApi').run([
       image: {
         id: "1"
       }
+    }, {
+      id: 4,
+      title: "Far Future Article",
+      feature_type: "Feature From The Future",
+      slug: "far-future-article-4",
+      polymorphic_ctype: "content_content",
+      tags: [{
+        slug: "film",
+        type: "core_section",
+        id: 22,
+        name: "Film"
+      }],
+      authors: [{
+        username: "milquetoast",
+        first_name: "Milque",
+        last_name: "Toast",
+        id: 1
+      }],
+      image: {
+        caption: null,
+        alt: null,
+        id: "1"
+      },
+      absolute_url: "/article/article-1",
+      detail_image: {
+        caption: null,
+        alt: null,
+        id: "1"
+      },
+      sponsor_image: null,
+      status: "Published",
+      published: "2021-03-28T17:00:00Z",
+      last_modified: "2014-03-27T19:13:04.074Z",
+      description: "",
+      subhead: "",
+      indexed: true,
+      body: "This is a body",
+      client_pixel: null,
+      sponsor_name: null
     }]
   },
   "things.list": [
