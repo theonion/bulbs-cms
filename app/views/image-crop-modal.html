@@ -9,8 +9,7 @@
     </div>
     <ul class="thumb-list">
       <li ng-repeat="(ratio, selection) in image.selections">
-        <div class="cropped-thumb">
-          <img ng-click="setSelectedCrop(ratio, selection)" ng-style="ratio_styles.{{ ratio }}" ng-src="{{ thumb_url }}">
+        <div ng-click="setSelectedCrop(ratio, selection)" ng-style="thumb_styles.{{ ratio }}" class="cropped-thumb">
         </div>
       </li>
     </ul>

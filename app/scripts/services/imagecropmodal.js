@@ -18,14 +18,12 @@ angular.module('bulbsCmsApp')
       link: function (scope, element, attrs) {
         var ModalInstanceCtrl = function ($scope, $interpolate, $bettycropper, $modalInstance, id) {
           var jcrop_api, ratioOrder;
-          $scope.thumb_width = 180;
+          $scope.thumb = {height:180, width: 180};
           $scope.crop_image_width = 550;
           $scope.image_url = $bettycropper.orig_jpg(id, $scope.crop_image_width);
-          $scope.thumb_url = $bettycropper.orig_jpg(id, $scope.thumb_width);
 
           var setupCropperCallback = function (data) {
             $scope.image = data;
-            // $scope.setCropStyle($scope.image);
             $scope.setThumbStyles($scope.image, $scope.image.selections);
             ratioOrder = Object.keys($scope.image.selections);
 
@@ -95,7 +93,7 @@ angular.module('bulbsCmsApp')
           });
 
           $scope.setThumbStyles = function (image, selections) {
-            $scope.ratio_styles = $scope.ratio_styles || {};
+            $scope.thumb_styles = $scope.thumb_styles || {};
 
             for (var s in selections) {
               $scope.computeThumbStyle(image, s, selections[s]);
@@ -103,31 +101,29 @@ angular.module('bulbsCmsApp')
           };
 
           $scope.computeThumbStyle = function (image, ratio, selection) {
-            var top, right, bottom, left;
-            var scale = $scope.thumb_width / image.width;
+            var scale, styles, h_or_w, selection_length,
+            s_width = selection.x1 - selection.x0,
+            s_height = selection.y1 - selection.y0;
+            if (s_width < s_height) {
+              h_or_w = 'height';
+              selection_length = s_height;
+            } else {
+              h_or_w = 'width';
+              selection_length = s_width;
+            }
 
-            top = $scope.scaleNumber(selection.y0, scale);
-            left = $scope.scaleNumber(selection.x0, scale);
-            right = $scope.scaleNumber(image.width - selection.x1, scale);
-            bottom = $scope.scaleNumber(image.height - selection.y1, scale);
+            styles = {};
+            scale = $scope.thumb[h_or_w] / selection_length;
+            styles['background'] = 'url('+$scope.image_url+')';
+            styles['background-size'] = $scope.scaleNumber($scope.image.width, scale) + 'px';
+            styles['background-position'] = '' +
+              '-' + $scope.scaleNumber(selection.x0, scale) +'px ' +
+              '-' + $scope.scaleNumber(selection.y0, scale) + 'px';
+            styles['background-repeat'] = 'no-repeat';
+            styles['height'] = $scope.scaleNumber(s_height, scale) + 'px';
+            styles['width'] = $scope.scaleNumber(s_width, scale) + 'px';
 
-            var margin = '-'+top+'px -'+right+'px -'+bottom+'px -'+left+'px';
-
-            $scope.ratio_styles[ratio] = {
-              margin: margin
-            };
-          };
-
-          $scope.setCropStyle = function (image) {
-            var scale = $scope.crop_image_width / image.width;
-            var transforms = {
-              '-webkit-transform': 'scale('+scale+')',
-              '-moz-transform': 'scale('+scale+')',
-              '-ms-transform': 'scale('+scale+')',
-              '-o-transform': 'scale('+scale+')',
-              'transform': 'scale('+scale+')'
-            };
-            $scope.crop_image_style = transforms;
+            $scope.thumb_styles[ratio] = styles;
           };
 
           $scope.scaleNumber = function (num, by_scale) {
