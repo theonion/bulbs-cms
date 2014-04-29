@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('createContent', function ($http, $window, $, IfExistsElse, Login, routes) {
+  .directive('createContent', function ($http, $window, $, IfExistsElse, Login, ContentApi, routes) {
     return {
       restrict: 'E',
       templateUrl:  routes.PARTIALS_URL + 'create-content.html',
@@ -23,7 +23,10 @@ angular.module('bulbsCmsApp')
 
           if ($scope.tag) {
             IfExistsElse.ifExistsElse(
-              '/cms/api/v1/tag/?ordering=name&search=' + encodeURIComponent($scope.tag),
+              ContentApi.all('tag').getList({
+                ordering: 'name',
+                search: $scope.tag
+              }),
               {slug: $scope.tag},
               function (tag) { $scope.init.tags = [tag]; $scope.gotTags = true; },
               function (value) { console.log('couldnt find tag ' + value.slug + ' for initial value'); },
@@ -34,7 +37,10 @@ angular.module('bulbsCmsApp')
           }
 
           IfExistsElse.ifExistsElse(
-            '/cms/api/v1/user/?ordering=name&search=' + $window.current_user,
+            ContentApi.all('user').getList({
+              ordering: 'name',
+              search: $window.current_user
+            }),
             {username: $window.current_user},
             function (user) { $scope.init.authors = [user]; $scope.gotUser = true; },
             function (value) { console.log('are you bruce willis in sixth sense? dunno.'); },
