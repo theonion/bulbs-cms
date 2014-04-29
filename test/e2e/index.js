@@ -8,6 +8,7 @@ describe('index page', function () {
     ptor = protractor.getInstance();
   });
 
+  //TODO: make a file just for testing this directive
   describe('create content directive', function () {
     beforeEach(function () {
       createContentButton = element(by.css('[data-target="#create"]'));
