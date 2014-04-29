@@ -31,7 +31,7 @@ angular.module('bulbsCmsApp')
         $scope.pickerValue = now;
       }
       if(shortcut == 'midnight'){
-        var midnight = moment().hour(24).minute(0);
+        var midnight = moment().zone(TIMEZONE_OFFSET).hour(24).minute(0);
         $scope.pickerValue = midnight;
       }
     }
