@@ -8,10 +8,12 @@ describe('index page', function () {
     ptor = protractor.getInstance();
   });
 
-  it('should have a create content button', function () {
-    elem = by.css('div[data-target="#create"]');
+  describe('create content button', function () {
+    it('should have a create content button', function () {
+      elem = by.css('[data-target="#create"]');
 
-    expect(element(elem).isPresent()).toBeTruthy()
+      expect(element(elem).isPresent()).toBeTruthy()
+    });
   });
 
 });
