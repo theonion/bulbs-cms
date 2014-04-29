@@ -132,9 +132,10 @@ angular.module('bulbsCmsApp')
           $input.trigger('blur');
         }
 
-        scope.$watch('locationSearch', function (search) {
+        function getFilterObjects () {
+          var search = $location.search();
           scope.filterObjects = {};
-          if (typeof(search) === 'undefined') { return; }
+          if (typeof(search) === 'undefined') { console.log("udnefined"); return; }
           //TODO: this sucks
           var filterParamsToTypes = {'authors': 'author', 'tags': 'tag', 'feature_types': 'feature_type'};
           for (var filterParam in filterParamsToTypes) {
@@ -147,11 +148,13 @@ angular.module('bulbsCmsApp')
             }
           }
           if (search.search) { scope.filterInputValue = search.search; }
-        });
+        }
+
         scope.$on('$routeUpdate', function () {
-          scope.locationSearch = $location.search();
+          getFilterObjects();
         });
-        scope.locationSearch = $location.search();
+
+        getFilterObjects();
 
         function getQueryToLabelMappings(type, query) {
           //this is pretty stupid
