@@ -30,12 +30,12 @@ describe('index page', function () {
 
     describe('create content modal', function () {
       beforeEach(function () {
-        button.click();
+        createContentButton.click();
         nextButton = element(by.css('button.next-pane'));
       });
 
       it('should have a next button', function () {
-        expect(button.isDisplayed()).toBeTruthy();
+        expect(nextButton.isDisplayed()).toBeTruthy();
       });
 
       describe('next panel', function () {
