@@ -66,7 +66,7 @@ angular.module('bulbsCmsApp')
         .hour(newTime.hour())
         .minute(newTime.minute())
         .format(modelDateFormat)
-      var data = {published: newDate};
+      var data = {published: newDateTime};
 
       $('#save-pub-time-button').html('<i class="fa fa-refresh fa-spin"></i> Saving');
       $http({

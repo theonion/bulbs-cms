@@ -21,6 +21,8 @@ describe('Controller: PubtimemodalCtrl', function () {
     title: "No feature type"
   }
 
+  var publishUrl = '/cms/api/v1/content/1/publish/';
+
   var articleWithFeatureType = {
     id: 1,
     feature_type: "Feature Type",
@@ -45,7 +47,7 @@ describe('Controller: PubtimemodalCtrl', function () {
       if(param){
         return moment(param);
       }else{
-        return moment("Fri Apr 25 2014 14:22:10 GMT-0500 (UTC)");
+        return moment("Fri Apr 25 2014 14:22:00 GMT-0500 (UTC)");
       }
     }
 
@@ -82,7 +84,7 @@ describe('Controller: PubtimemodalCtrl', function () {
     });
 
     it('should make an http request to the publis endpoint', function () {
-      httpBackend.expectPOST('/cms/api/v1/content/' + articleWithFeatureType.id + '/publish/').respond({status: "Published"});
+      httpBackend.expectPOST(publishUrl).respond({status: "Published"});
 
       scope.dateTimePickerValue = "aha";
       scope.setPubTime(articleWithFeatureType);
@@ -106,6 +108,18 @@ describe('Controller: PubtimemodalCtrl', function () {
         expect(scope.timePickerValue.minute()).toBe(22);
       });
 
+      it('should make setPubTime post the mocked date', function () {
+        scope.setTimeShortcut('now');
+        scope.$apply();
+
+        httpBackend.expectPOST(publishUrl, {published: "2014-04-25T14:22-05:00"}).respond({status: "Published"});
+
+        scope.setPubTime();
+
+        httpBackend.flush();
+      });
+
+
     });
 
     describe('with param "midnight"', function () {
@@ -115,6 +129,17 @@ describe('Controller: PubtimemodalCtrl', function () {
 
         expect(scope.timePickerValue.hour()).toBe(0);
         expect(scope.timePickerValue.minute()).toBe(0);
+      });
+
+      it('should make setPubTime post the mocked date', function () {
+        scope.setTimeShortcut('midnight');
+        scope.$apply();
+
+        httpBackend.expectPOST(publishUrl, {published: "2014-04-26T00:00-05:00"}).respond({status: "Published"});
+
+        scope.setPubTime();
+
+        httpBackend.flush();
       });
     });
 
