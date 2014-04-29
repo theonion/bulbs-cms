@@ -23,8 +23,7 @@ angular.module('bulbsCmsApp', [
   'underscore',
   'NProgress',
   'URLify',
-  'moment',
-  'restangular'
+  'moment'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
