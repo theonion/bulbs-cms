@@ -1,5 +1,5 @@
 describe('index page', function () {
-  var ptor, elem;
+  var ptor, createContentButton, modal, nextButton, titleInput;
 
   var indexUrl = 'http://0.0.0.0:9069/cms/app/list/published/';
 
@@ -8,11 +8,52 @@ describe('index page', function () {
     ptor = protractor.getInstance();
   });
 
-  describe('create content button', function () {
-    it('should have a create content button', function () {
-      elem = by.css('[data-target="#create"]');
+  describe('create content directive', function () {
+    beforeEach(function () {
+      createContentButton = element(by.css('[data-target="#create"]'));
+      modal = element(by.id('create'));
+    })
 
-      expect(element(elem).isPresent()).toBeTruthy()
+    it('createContentButton should be displayed on the page', function () {
+      expect(createContentButton.isDisplayed()).toBeTruthy();
+    });
+
+    it('modal should be invisible on the page', function () {
+      expect(modal.isPresent()).toBeTruthy();
+      expect(modal.isDisplayed()).toBeFalsy();
+    });
+
+    it('createContentButton click should display modal', function () {
+      createContentButton.click();
+      expect(modal.isDisplayed()).toBeTruthy();
+    });
+
+    describe('create content modal', function () {
+      beforeEach(function () {
+        button.click();
+        nextButton = element(by.css('button.next-pane'));
+      });
+
+      it('should have a next button', function () {
+        expect(button.isDisplayed()).toBeTruthy();
+      });
+
+      describe('next panel', function () {
+        beforeEach(function () {
+          nextButton.click();
+          titleInput = element(by.css('input.new-title'));
+        });
+
+        it('should have an input field', function () {
+          expect(titleInput.isDisplayed()).toBeTruthy();
+        });
+
+        //TODO: test that entering a title and pressing enter makes a new article
+
+      });
+
+
+
     });
   });
 
