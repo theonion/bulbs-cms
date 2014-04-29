@@ -47,7 +47,7 @@ describe('Controller: PubtimemodalCtrl', function () {
       if(param){
         return moment(param);
       }else{
-        return moment("Fri Apr 25 2014 14:22:10 GMT-0500 (UTC)");
+        return moment("Fri Apr 25 2014 14:22:00 GMT-0500 (UTC)");
       }
     }
 
@@ -112,8 +112,11 @@ describe('Controller: PubtimemodalCtrl', function () {
         scope.setTimeShortcut('now');
         scope.$apply();
 
-        httpBackend.expectPOST(publishUrl, {published: "2014-04-25T14:22-05:00"});
+        httpBackend.expectPOST(publishUrl, {published: "2014-04-25T14:22-05:00"}).respond({status: "Published"});
+
         scope.setPubTime();
+
+        httpBackend.flush();
       });
 
 
@@ -132,8 +135,11 @@ describe('Controller: PubtimemodalCtrl', function () {
         scope.setTimeShortcut('midnight');
         scope.$apply();
 
-        httpBackend.expectPOST(publishUrl, {published: "2014-04-26T05:00-05:00"});
+        httpBackend.expectPOST(publishUrl, {published: "2014-04-26T00:00-05:00"}).respond({status: "Published"});
+
         scope.setPubTime();
+
+        httpBackend.flush();
       });
     });
 

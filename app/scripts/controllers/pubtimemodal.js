@@ -31,7 +31,7 @@ angular.module('bulbsCmsApp')
         $scope.pickerValue = now;
       }
       if(shortcut == 'midnight'){
-        var midnight = moment().zone(TIMEZONE_OFFSET).hour(24).minute(0);
+        var midnight = moment().hour(24).minute(0);
         $scope.pickerValue = midnight;
       }
     }
@@ -66,7 +66,7 @@ angular.module('bulbsCmsApp')
         .hour(newTime.hour())
         .minute(newTime.minute())
         .format(modelDateFormat)
-      var data = {published: newDate};
+      var data = {published: newDateTime};
 
       $('#save-pub-time-button').html('<i class="fa fa-refresh fa-spin"></i> Saving');
       $http({
