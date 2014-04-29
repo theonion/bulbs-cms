@@ -16,7 +16,7 @@ module.exports = function(config) {
     'SL_Firefox': {
       base: 'SauceLabs',
       browserName: 'firefox',
-      version: '26'
+      version: '27'
     },
     'SL_Safari': {
       base: 'SauceLabs',
@@ -46,20 +46,23 @@ module.exports = function(config) {
       'app/bower_components/angular-route/angular-route.js',
       'app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'app/bower_components/nprogress/nprogress.js',
+      'app/bower_components/restangular/dist/restangular.js',
       'app/bower_components/bootstrap-switch/build/js/bootstrap-switch.js',
       //'app/bower_components/raven-js/dist/raven.js',
+      'app/bower_components/restangular/dist/restangular.js',
       'app/bower_components/moment/moment.js',
       'app/bower_components/underscore/underscore.js',
       'app/bower_components/urlify/urlify.js',
       'app/bower_components/onion-editor/build/onion-editor.min.js',
-      'app/bower_components/bootstrap3-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
+      'app/bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js',
       'app/scripts/*.js',
       'app/scripts/**/*.js',
       'app/mocks/app.js',
       'app/mocks/api.js',
       'test/mock/**/*.js',
       'test/spec/**/*.js',
-      'test/config.js'
+      'test/config.js',
+      'app/views/**/*.html'
     ],
 
     // list of files / patterns to exclude
@@ -78,6 +81,18 @@ module.exports = function(config) {
     // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
     logLevel: config.LOG_INFO,
 
+    preprocessors: {
+      'app/views/**/*.html': 'ng-html2js'
+    },
+
+    ngHtml2JsPreprocessor: {
+      // strip this from the file path
+      stripPrefix: 'app',
+
+      // setting this option will create only a single module that contains templates
+      // from all the files, so you can load them all with module('foo')
+      moduleName: 'jsTemplates'
+    },
 
     reporters: ['dots', 'saucelabs'],
     customLaunchers: customLaunchers,

@@ -16,7 +16,9 @@ angular.module('bulbsCmsApp', [
   'ngResource',
   'ngSanitize',
   'ngRoute',
+  'restangular',
   'ui.bootstrap',
+  'ui.bootstrap.datetimepicker',
   'bettyCropper',
   'jquery',
   'underscore',
@@ -27,32 +29,32 @@ angular.module('bulbsCmsApp', [
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
 
-  $routeProvider
-    .when('/cms/app/list/:queue/', {
-      templateUrl: routes.PARTIALS_URL + 'contentlist.html',
-      controller: 'ContentlistCtrl',
-      reloadOnSearch: false
-    })
-    .when('/cms/app/edit/:id/', {
-      templateUrl: routes.PARTIALS_URL + 'contentedit.html',
-      controller: 'ContenteditCtrl'
-    })
-    .when('/cms/app/promotion/', {
-      templateUrl: routes.PARTIALS_URL + 'promotion.html',
-      controller: 'PromotionCtrl',
-      reloadOnSearch: false
-    })
-    .when('/cms/app/targeting/', {
-      templateUrl: routes.PARTIALS_URL + 'targeting-editor.html',
-      controller: 'TargetingCtrl'
-    })
-    .when('/cms/app/pzones/', {
-      templateUrl: routes.PARTIALS_URL + 'pzones.html',
-      controller: 'PzoneCtrl'
-    })
-    .otherwise({
-      redirectTo: '/cms/app/list/published/'
-    });
+    $routeProvider
+      .when('/cms/app/list/:queue/', {
+        templateUrl: routes.PARTIALS_URL + 'contentlist.html',
+        controller: 'ContentlistCtrl',
+        reloadOnSearch: false
+      })
+      .when('/cms/app/edit/:id/', {
+        templateUrl: routes.PARTIALS_URL + 'contentedit.html',
+        controller: 'ContenteditCtrl',
+      })
+      .when('/cms/app/promotion/', {
+        templateUrl:  routes.PARTIALS_URL + 'promotion.html',
+        controller: 'PromotionCtrl',
+        reloadOnSearch: false
+      })
+      .when('/cms/app/targeting/', {
+        templateUrl: routes.PARTIALS_URL + 'targeting-editor.html',
+        controller: 'TargetingCtrl'
+      })
+      .when('/cms/app/pzones/', {
+        templateUrl: routes.PARTIALS_URL + 'pzones.html',
+        controller: 'PzoneCtrl'
+      })
+      .otherwise({
+        redirectTo: '/cms/app/list/published/'
+      });
 
   //TODO: whitelist staticonion.
   $sceProvider.enabled(false);
@@ -72,5 +74,8 @@ angular.module('bulbsCmsApp', [
 .run(function ($rootScope, $http, $cookies) {
   // set the CSRF token here
   $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
+  var deleteHeaders = $http.defaults.headers.delete || {};
+  deleteHeaders['X-CSRFToken'] = $cookies.csrftoken;
+  $http.defaults.headers.delete = deleteHeaders;
 });
 

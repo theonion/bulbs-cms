@@ -1,44 +1,26 @@
-<div id="next-modal"
-    class="modal fade"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="create-new"
-    aria-hidden="true"
-    data-backdrop="false">
+<nav class="navbar navbar-default" role="navigation" ng-controller="NavCtrl" ng-include="PARTIALS_URL + 'toolbar.html'" ></nav>
 
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Create content</h4>
-            </div><!--/modal-header-->
-            <div class="modal-body">
-                <div class="form-group">
+<imagedrawer open-image-drawer="openImageDrawer" close-image-drawer="closeImageDrawer" article="article"></imagedrawer>
 
-                </div>
+<div class="container">
+    <div id="info-row">
+        <div id="alert-area">
+            <div class="alert alert-danger errors-panel" ng-show="errors">
+                <dl ng-repeat="(field, errorList) in errors" class="dl-horizontal small">
+                    <dt>{{field}}</dt>
+                    <dd ng-repeat="error in errorList">{{error}}</dd>
+                </dl>
             </div>
         </div>
     </div>
-</div>
-<imagedrawer open-image-drawer="openImageDrawer" close-image-drawer="closeImageDrawer" article="article"></imagedrawer>
 
-<div id="info-row">
-    <div id="alert-area">
-        <div class="alert alert-danger errors-panel" ng-show="errors">
-            <dl ng-repeat="(field, errorList) in errors" class="dl-horizontal small">
-                <dt>{{field}}</dt>
-                <dd ng-repeat="error in errorList">{{error}}</dd>
-            </dl>
+    <div class="edit-page row">
+        <div id="content-wrapper" class="container">
+            <div ng-if="article.polymorphic_ctype" ng-include="CONTENT_PARTIALS_URL + article.polymorphic_ctype + '.html' + CACHEBUSTER"></div>
+            <h4 ng-if="!article.polymorphic_ctype" style="text-align:center;">Erro: article has no content type.</h4>
         </div>
+        <div class="status-bar"><span class="wordcount"></span></div>
     </div>
-</div>
-
-<div class="edit-page row">
-    <div id="content-wrapper" class="container">
-        <div ng-if="article.polymorphic_ctype" ng-include="CONTENT_PARTIALS_URL + article.polymorphic_ctype + '.html' + CACHEBUSTER"></div>
-        <h4 ng-if="!article.polymorphic_ctype" style="text-align:center;"><i class="fa fa-refresh fa-spin"></i> Loading</h4>
-    </div>
-    <div class="status-bar"><span class="wordcount"></span></div>
 </div>
 
 <div id="thumbnail-modal"
@@ -144,7 +126,3 @@ $(".image-modal").on("shown.bs.modal", function(){
         </div><!--/modal-content-->
     </div><!--/modal-dialog-->
 </div>
-
-<publish-content></publish-content>
-<trash-content></trash-content>
-<login></login>

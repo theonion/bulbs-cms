@@ -1,0 +1,24 @@
+<div class="modal-header">
+  <button type="button" class="close" ng-click="$dismiss();" aria-hidden="true">&times;</button>
+  <h4 class="modal-title">Login</h4>
+</div><!--/modal-header-->
+<div class="modal-body">
+  <h5>Your session expired. Please re-enter your username and password and try again.</h5>
+  <div class="login-fields">
+    <div>
+      <label>
+        Username
+        <input name="username" type="text" class="form-control">
+      </label>
+    </div>
+    <div>
+      <label>
+        Password
+        <input name="password" type="password" class="form-control">
+      </label>
+    </div>
+  </div>
+</div><!--/modal-body-->
+<div class="modal-footer">
+    <button class="btn btn-default" aria-hidden="true" ng-click="login();">Login</button>
+</div><!--/modal-footer-->

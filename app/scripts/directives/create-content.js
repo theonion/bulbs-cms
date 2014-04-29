@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('createContent', function ($http, $window, $, IfExistsElse, PARTIALS_URL) {
+  .directive('createContent', function ($http, $window, $, IfExistsElse, Login, routes) {
     return {
       restrict: 'E',
-      templateUrl:  PARTIALS_URL + 'create-content.html',
+      templateUrl:  routes.PARTIALS_URL + 'create-content.html',
       controller: function ($scope) {
         $scope.gotTags = false;
         $scope.gotUser = false;
@@ -27,7 +27,7 @@ angular.module('bulbsCmsApp')
               {slug: $scope.tag},
               function (tag) { $scope.init.tags = [tag]; $scope.gotTags = true; },
               function (value) { console.log('couldnt find tag ' + value.slug + ' for initial value'); },
-              function (data, status, headers, config) { if (status === 403) { $scope.showLoginModal(); } }
+              function (data, status, headers, config) { if (status === 403) { Login.showLoginModal(); } }
             );
           } else {
             $scope.gotTags = true;
@@ -38,7 +38,7 @@ angular.module('bulbsCmsApp')
             {username: $window.current_user},
             function (user) { $scope.init.authors = [user]; $scope.gotUser = true; },
             function (value) { console.log('are you bruce willis in sixth sense? dunno.'); },
-            function (data, status, headers, config) { if (status === 403) { $scope.showLoginModal(); } }
+            function (data, status, headers, config) { if (status === 403) { Login.showLoginModal(); } }
           );
 
           $scope.gotSave = true;

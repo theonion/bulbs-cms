@@ -1,45 +1,44 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('PromotionCtrl', function ($scope, $http, $window, $, Contentlist, promo_options) {
+  .controller('PromotionCtrl', function ($scope, $http, $window, $, ContentApi, PromotionApi, promo_options) {
     $window.document.title = promo_options.namespace + ' | Promotion Tool'; // set title
 
-    $scope.getPzones = function (url) {
-      $http({
-        method: 'GET',
-        url: url
-      }).success(function (data) {
-        $scope.pzones = data.results;
-        $scope.pzone = data.results[0];
-        $scope.$watch('pzone', function (pzone) {
-          if (pzone.content.length) {
-            $scope.promotedArticles = pzone.content.slice(0);
-          } else {
-            $scope.promotedArticles = [{
-              hey_checkthis: true,
-              title: 'Nothing Promoted!',
-              feature_type: 'Click an article on the right and use \'Insert\''
-            }];
-          }
+    $scope.$watch('pzone', function (pzone) {
+      if (pzone && pzone.content && pzone.content.length) {
+        $scope.promotedArticles = pzone.content.slice(0);
+      } else {
+        $scope.promotedArticles = [{
+          hey_checkthis: true,
+          title: 'Nothing Promoted!',
+          feature_type: 'Click an article on the right and use \'Insert\''
+        }];
+      }
+    });
+
+    $scope.getPzones = function () {
+      ContentApi.all('contentlist').getList()
+        .then(function (data) {
+          $scope.pzones = data;
+          $scope.pzone = data[0];
+        })
+        .catch(function (data) {
+          alert('Content list does not exist.');
         });
-      }).error(function (data) {
-        alert('Content list does not exist.');
-      });
     };
 
-    Contentlist.setUrl('/cms/api/v1/content/?published=True');
-
-    var getContentCallback = function ($scope, data) {
-      $scope.articles = data.results;
-      $scope.totalItems = data.count;
+    var getContentCallback = function (data) {
+      $scope.articles = data;
+      $scope.totalItems = data.metadata.count;
     };
 
     $scope.getContent = function () {
-      Contentlist.getContent($scope, getContentCallback);
+      ContentApi.all('content').getList({published: true})
+        .then(getContentCallback);
     };
 
-    $scope.$on('$viewContentLoaded', function() {
-      $scope.getPzones(promo_options.endpoint);
+    $scope.$on('$viewContentLoaded', function () {
+      $scope.getPzones();
       $scope.getContent();
     });
 
@@ -112,23 +111,20 @@ angular.module('bulbsCmsApp')
       } else {
         payload.content = $scope.promotedArticles;
       }
-
-      $http({
-        method: 'PUT',
-        url: promo_options.endpoint + $scope.pzone.id + '/',
-        data: payload
-      }).success(function (data) {
-        $scope.pzone.content = data.content;
-        $('.save-button').removeClass('btn-danger').addClass('btn-success').html('<i class="fa fa-check"></i> Saved');
-        window.setTimeout(function () {
-          $('.save-button').html('Save');
-        }, 2000);
-      }).error(function (data) {
-        $('.save-button').removeClass('btn-success').addClass('btn-danger').html('<i class="fa fa-frown-o"></i> Error');
-        window.setTimeout(function () {
-          $('.save-button').html('Save');
-        }, 2000);
-      });
+      var pzone = ContentApi.restangularizeElement(null, payload, 'contentlist');
+      pzone.put()
+        .then(function (data) {
+          $scope.pzone.content = data.content;
+          $('.save-button').removeClass('btn-danger').addClass('btn-success').html('<i class="fa fa-check"></i> Saved');
+          window.setTimeout(function () {
+            $('.save-button').html('Save');
+          }, 2000);
+        }).catch(function (data) {
+          $('.save-button').removeClass('btn-success').addClass('btn-danger').html('<i class="fa fa-frown-o"></i> Error');
+          window.setTimeout(function () {
+            $('.save-button').html('Save');
+          }, 2000);
+        });
     };
 
     $scope.moveUp = function (index) {
