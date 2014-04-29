@@ -18,6 +18,7 @@ angular.module('bulbsCmsApp', [
   'ngRoute',
   'ui.bootstrap',
   'ui.bootstrap.datetimepicker',
+  'restangular',
   'bettyCropper',
   'jquery',
   'underscore',
