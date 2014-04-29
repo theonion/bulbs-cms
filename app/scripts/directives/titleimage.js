@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('titleimage', function ($http, $window, $, routes) {
+  .directive('titleimage', function ($http, $window, $, routes, openImageCropModal) {
     return {
       restrict: 'E',
       templateUrl: routes.PARTIALS_URL + 'titleimage.html',
@@ -42,30 +42,8 @@ angular.module('bulbsCmsApp')
           });
         },
         scope.editTitleImage = function () {
-          $window.openImageDrawer(
-            scope.image.id,
-            function (data) {
-              function removeLoadingGif() {
-                $element.find('.image img[src=\"' + routes.LOADING_IMG_SRC + '\"]').remove();
-              }
-
-              removeLoadingGif();
-
-              if ($element.find('.image').data('imageId') === data.id) {
-                return;
-              }
-
-              $element.find('.image img').on('load', removeLoadingGif);
-              $element.find('.image img').after('<img src=\"' + routes.LOADING_IMG_SRC + '\">');
-
-              scope.image.id = data.id.toString();
-              scope.$apply();
-              $window.picturefill();
-              if ($element.find('.image img')[0].complete) { removeLoadingGif(); }
-            },
-            function () { return; },
-            function (oldImage) {
-              scope.image = oldImage;
+          openImageCropModal(scope.image.id).then(
+            function () {
               $window.picturefill();
             }
           );
