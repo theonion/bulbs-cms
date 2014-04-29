@@ -16,9 +16,11 @@ angular.module('bulbsCmsApp')
     });
 
     $modalInstance.result.then(
-      function(){ }, //closed
+      function(){
+        $('#save-pub-time-button').html('Publish');
+      }, //closed
       function(){ //dismissed
-        $('#save-pub-time-button').html('Save Changes');
+        $('#save-pub-time-button').html('Publish');
       }
     );
 
@@ -66,7 +68,7 @@ angular.module('bulbsCmsApp')
         .hour(newTime.hour())
         .minute(newTime.minute())
         .format(modelDateFormat)
-      var data = {published: newDate};
+      var data = {published: newDateTime};
 
       $('#save-pub-time-button').html('<i class="fa fa-refresh fa-spin"></i> Saving');
       $http({
@@ -77,7 +79,6 @@ angular.module('bulbsCmsApp')
         $scope.article.published = resp.published;
         $scope.publishSuccessCbk && $scope.publishSuccessCbk({article: $scope.article, response: resp});
         $modalInstance.close();
-        $('#save-pub-time-button').html('Save Changes');
       }).error(function (error, status, data) {
         if (status === 403) {
           Login.showLoginModal();
