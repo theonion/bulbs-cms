@@ -75,7 +75,13 @@ This bridges the embed module that the editor exposes & our custom image impleme
         function editImage(options) {
 
             current_id = options.element.getAttribute("data-image-id");
-            openImageDrawer(current_id, onDrawerImageChange, onDrawerSave, onDrawerCancel);
+
+            openImageCropModal(current_id).then(
+                function () {
+                    $(options.element).attr("data-image-id", current_id);
+                    window.picturefill();
+                }
+            );
 
             function onDrawerImageChange(id) {
                 $(options.element).attr("data-image-id", id);
@@ -104,7 +110,7 @@ This bridges the embed module that the editor exposes & our custom image impleme
         editor.on("init", cleanup);
 
         function cleanup() {
-            // hack alert: let's transform old embeds here. Not ideal, but whatever. 
+            // hack alert: let's transform old embeds here. Not ideal, but whatever.
             var old_embeds = $("[data-type=embed] iframe[src^='/videos/embed']").parents("div.embed");
             for (var i = 0; i < old_embeds.length; i++) {
                 var id = $("iframe", old_embeds[i]).attr("src").split("=")[1]
@@ -189,7 +195,7 @@ This bridges the embed module that the editor exposes & our custom image impleme
 
         function edit(opts) {
             //populate modal contents
-            
+
             $("#embed-modal .embed-body").val(unescape($(opts.element).attr("data-body")));
             $("#embed-modal .embed-source").val($(opts.element).attr("data-source"));
             $("#embed-modal .embed-caption").val($(".caption", opts.element).text());
@@ -203,9 +209,9 @@ This bridges the embed module that the editor exposes & our custom image impleme
                 }
                 else {
                     $(".embed-error").hide();
-                    opts.onChange(opts.element, 
+                    opts.onChange(opts.element,
                         {body: embed_body,
-                        caption: $("#embed-modal .embed-caption").val(),  
+                        caption: $("#embed-modal .embed-caption").val(),
                         source: $("#embed-modal .embed-source").val(),
                         escapedbody: escape(embed_body)
                     })
@@ -228,12 +234,12 @@ This bridges the embed module that the editor exposes & our custom image impleme
                 }
                 else {
                     $(".embed-error").hide();
-                    opts.onSuccess(opts.block, 
-                        {body: embed_body, 
-                        caption: $("#embed-modal .embed-caption").val(),  
+                    opts.onSuccess(opts.block,
+                        {body: embed_body,
+                        caption: $("#embed-modal .embed-caption").val(),
                         source: $("#embed-modal .embed-source").val(),
                         escapedbody: escape(embed_body)
-                    })                
+                    })
                     $("#embed-modal").modal("hide");
                 }
             });

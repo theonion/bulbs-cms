@@ -15,7 +15,7 @@
     <div ng-show="cropMode">
       <div class="pull-right actions">
         <button ng-click="back()" class="btn btn-default">Back</button>
-        <button ng-click="save()" class="btn btn-default">Save</button>
+        <button ng-click="saveAndQuit()" class="btn btn-default">Save & Quit</button>
         <button ng-click="saveAndNext()" class="btn btn-success">Save & Do Next</button>
         <div class="ratio-paginator">
           <span ng-repeat="ratio in ratioOrder" ng-style="isCurrentCrop(ratio)" class="fa fa-circle small-paginator"></span>
