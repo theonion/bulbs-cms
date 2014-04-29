@@ -74,17 +74,17 @@ This bridges the embed module that the editor exposes & our custom image impleme
 
         function editImage(options) {
 
-            current_id = options.element.getAttribute("data-image-id");
+            current_id = options.element.getAttribute('data-image-id');
 
             openImageCropModal(current_id).then(
                 function () {
-                    $(options.element).attr("data-image-id", current_id);
+                    $(options.element).attr('data-image-id', current_id);
                     window.picturefill();
                 }
             );
 
             function onDrawerImageChange(id) {
-                $(options.element).attr("data-image-id", id);
+                $(options.element).attr('data-image-id', id);
                 window.picturefill();
             }
 

@@ -19,7 +19,7 @@ angular.module('bettyCropper', [])
       });
     };
 
-    this.detail_patch = function (id, name, credit, selections) {
+    this.detailPatch = function (id, name, credit, selections) {
       return $http({
         method: 'PATCH',
         url: IMAGE_SERVER_URL + '/api/' + id,
@@ -54,7 +54,7 @@ angular.module('bettyCropper', [])
       });
     };
 
-    this.update_selection = function (id, ratio, selections) {
+    this.updateSelection = function (id, ratio, selections) {
       return $http({
         method: 'POST',
         url: IMAGE_SERVER_URL + '/api/' + id + "/" + ratio,
@@ -85,11 +85,11 @@ angular.module('bettyCropper', [])
       });
     };
 
-    this.orig_jpg = function (id, width) {
+    this.origJpg = function (id, width) {
       return this.url(id, 'original', width, 'jpg');
     };
 
-    this.orig_gif = function (id, width) {
+    this.origGif = function (id, width) {
       return this.url(id, 'original', width, 'gif');
     };
 
