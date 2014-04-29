@@ -12,6 +12,8 @@ angular.module('bulbsCmsApp')
       },
       controller: function ($scope, $element, $attrs, $http, routes, BC_API_KEY) {
 
+        var DEFAULT_WIDTH = 1200;
+
         $scope.imageData = null;
 
         $scope.getImageData = function() {
@@ -30,7 +32,7 @@ angular.module('bulbsCmsApp')
             if (status === 404) {
               // For placeholder images, we definitely need to figure some better out here.
               $scope.imageData = {
-                "width": 1200,
+                "width": DEFAULT_WIDTH,
                 "selections" : {
                   "16x9" : {
                     "x0": 0,
@@ -47,27 +49,26 @@ angular.module('bulbsCmsApp')
 
         $scope.showImage = function(){
           if($scope.imageData === null) {
-            console.log("Getting selections!");
             $scope.getImageData();
             return;
           }
-          var pictureDiv = $element.find("div")[1];
-          var pushdownDiv = $element.find("div")[0];
-          pictureDiv.className = "picture";
+          var pictureDiv = $element.find('div')[1];
+          var pushdownDiv = $element.find('div')[0];
+          pictureDiv.className = 'picture';
 
           var ratioWidth = parseInt($scope.ratio.split('x')[0], 10);
           var ratioHeight = parseInt($scope.ratio.split('x')[1], 10);
 
-          pushdownDiv.style.paddingTop = (ratioHeight / ratioWidth * 100) + "%";
-          pictureDiv.style.backgroundImage = 'url(' + routes.IMAGE_SERVER_URL + '/' + $scope.imageId + '/original/' + 1200 + '.jpg)';
+          pushdownDiv.style.paddingTop = (ratioHeight / ratioWidth * 100) + '%';
+          pictureDiv.style.backgroundImage = 'url(' + routes.IMAGE_SERVER_URL + '/' + $scope.imageId + '/original/' + DEFAULT_WIDTH + '.jpg)';
           
           var selection = $scope.imageData.selections[$scope.ratio];
 
-          var leftPosition = selection.x0 / 1200 * 100;
-          var topPosition = selection.y0 / (1200 * ratioHeight / ratioWidth) * 100;
+          var leftPosition = selection.x0 / DEFAULT_WIDTH * 100;
+          var topPosition = selection.y0 / (DEFAULT_WIDTH * ratioHeight / ratioWidth) * 100;
 
-          pictureDiv.style.backgroundPosition = leftPosition + "% " + topPosition + "%, center";
-          pictureDiv.style.backgroundSize = "cover";
+          pictureDiv.style.backgroundPosition = leftPosition + '% ' + topPosition + '%, center';
+          pictureDiv.style.backgroundSize = 'cover';
         }
 
         $scope.uploadSuccess = function(response){
@@ -78,17 +79,17 @@ angular.module('bulbsCmsApp')
 
         $scope.upload = function(e){
           if (this.files.length != 1) {
-            console.log("We need exactly one image!");
+            console.log('We need exactly one image!');
             return;
           }
           var file = this.files[0];
-          if (file.type.indexOf("image/") != 0) {
-            console.log("Not an image!");
+          if (file.type.indexOf('image/') != 0) {
+            console.log('Not an image!');
             return;
           }
 
           if (file.size > 6800000) {
-            console.log("The file is too large!")
+            console.log('The file is too large!')
           }
 
           var imageData = new FormData();
@@ -108,22 +109,22 @@ angular.module('bulbsCmsApp')
       },
       link: function (scope, element, attrs) {
 
-        var input = element.find("input");
-        input.on("change", scope.upload);
+        var input = element.find('input');
+        input.on('change', scope.upload);
 
-        var pictureDiv = element.find("div")[1];
-        var pushdownDiv = element.find("div")[0];
+        var pictureDiv = element.find('div')[1];
+        var pushdownDiv = element.find('div')[0];
 
         var ratioWidth = parseInt(scope.ratio.split('x')[0], 10);
         var ratioHeight = parseInt(scope.ratio.split('x')[1], 10);
 
-        pushdownDiv.style.paddingTop = (ratioHeight / ratioWidth * 100) + "%";
+        pushdownDiv.style.paddingTop = (ratioHeight / ratioWidth * 100) + '%';
 
         if (scope.imageId) {
           scope.showImage();
         } else {
           pictureDiv.className = 'picture fa fa-picture-o';
-          element.on("click", function(e){
+          element.on('click', function(e){
             e.stopPropagation();
             input[0].click();
           });
