@@ -1,0 +1,182 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <base href="/">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css styles/vendor.css -->
+    <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap-switch/build/css/bootstrap3/bootstrap-switch.css" />
+    <link rel="stylesheet" href="bower_components/angular-bootstrap-datetimepicker/src/css/datetimepicker.css" />
+    <!-- endbower -->
+    <link rel="stylesheet" href="bower_components/jcrop/css/jquery.Jcrop.min.css" />
+    <link rel="stylesheet" href="bower_components/nprogress/nprogress.css" />
+    <!-- endbuild -->
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" />
+    <!-- build:css({.tmp,app}) styles/main.css -->
+
+    <!-- endbuild -->
+
+    <script type="text/javascript" src="image.js"></script>
+    <script type="text/javascript">
+        var BC_ADMIN_URL = 'http://localimages.avclub.com';
+        var IMAGE_URL = 'http://localimages.avclub.com{{id}}/{{crop}}/{{width}}.{{format}}';
+        var IMAGE_LISTENERS_DISABLED = true;
+        var DEFAULT_IMAGE_ID = 0;
+    </script>
+
+    <script type="text/javascript">
+        function jqueryCsrfSetup(){
+            return;
+        }
+    </script>
+
+  </head>
+  <body ng-app="bulbsCmsAppDev">
+    <!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <!-- Add your site or application content here -->
+    <div ng-view=""></div>
+
+    <!--[if lt IE 9]>
+    <script src="bower_components/es5-shim/es5-shim.js"></script>
+    <script src="bower_components/json3/lib/json3.min.js"></script>
+    <![endif]-->
+    <!-- build:js scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/nprogress/nprogress.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/bootstrap-switch/build/js/bootstrap-switch.js"></script>
+    <script src="bower_components/raven-js/dist/raven.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <script src="bower_components/urlify/urlify.js"></script>
+    <script src="bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js"></script>
+    <script src="bower_components/onion-editor/build/onion-editor.min.js"></script>
+    <script src="bower_components/lodash/dist/lodash.compat.js"></script>
+    <script src="bower_components/restangular/dist/restangular.js"></script>
+    <!-- endbower -->
+    <script src="bower_components/jcrop/js/jquery.Jcrop.min.js"></script>
+    <!-- endbuild -->
+
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="scripts/app.js"></script>
+
+    <script src="scripts/controllers/contentlist.js"></script>
+    <script src="scripts/controllers/contentedit.js"></script>
+    <script src="scripts/controllers/nav.js"></script>
+    <script src="scripts/controllers/promotion.js"></script>
+    <script src="scripts/controllers/pzone.js"></script>
+    <script src="scripts/controllers/targeting.js"></script>
+    <script src="scripts/controllers/contentworkflow.js"></script>
+    <script src="scripts/controllers/trashcontentmodal.js"></script>
+    <script src="scripts/controllers/pubtimemodal.js"></script>
+    <script src="scripts/controllers/loginmodal.js"></script>
+    <script src="scripts/controllers/unpublish.js"></script>
+
+    <script src="scripts/directives/activenav.js"></script>
+    <script src="scripts/directives/articlecontainer.js"></script>
+    <script src="scripts/directives/bulbs-autocomplete.js"></script>
+    <script src="scripts/directives/bettyeditable.js"></script>
+    <script src="scripts/directives/bettyimage.js"></script>
+    <script src="scripts/directives/create-content.js"></script>
+    <script src="scripts/directives/devicepreview.js"></script>
+    <script src="scripts/directives/filterwidget.js"></script>
+    <script src="scripts/directives/imagedrawer.js"></script>
+    <script src="scripts/directives/listinput.js"></script>
+    <script src="scripts/directives/video-upload.js"></script>
+    <script src="scripts/directives/media-rating.js"></script>
+    <script src="scripts/directives/responsive-image.js"></script>
+    <script src="scripts/directives/slideshow-pane.js"></script>
+    <script src="scripts/directives/targeting.js"></script>
+    <script src="scripts/directives/titleimage.js"></script>
+
+    <script src="scripts/filters/truncateByCharacters.js"></script>
+    <script src="scripts/filters/truncateByWords.js"></script>
+
+    <script src="scripts/libraries/editor-cms-bridge.js"></script>
+
+    <script src="scripts/services/if-exists-else.js"></script>
+    <script src="scripts/services/bulbsapi.js"></script>
+    <script src="scripts/services/contentapi.js"></script>
+    <script src="scripts/services/reviewapi.js"></script>
+    <script src="scripts/services/promotionapi.js"></script>
+    <script src="scripts/services/adapi.js"></script>
+    <script src="scripts/services/login.js"></script>
+    <script src="scripts/controllers/sendtoeditormodal.js"></script>
+    <script src="scripts/filters/tzdate.js"></script>
+    <!-- endbuild -->
+
+    <script src="bower_components/angular-mocks/angular-mocks.js"></script>
+    <script src="mocks/app.js"></script>
+    <script src="mocks/api.js"></script>
+
+
+    <script type="text/javascript">
+        angular.module('bulbsCmsApp').constant('routes', {
+            IMAGE_SERVER_URL: 'http://localimages.avclub.com',
+            BC_ADMIN_URL: 'http://localimages.avclub.com',
+            LOADING_IMG_SRC: '/images/loading.gif',
+            STATIC_URL: '/static/',
+            PARTIALS_URL: '/views/',
+            CONTENT_PARTIALS_URL: '/content_type_views/',
+            MEDIA_ITEM_PARTIALS_URL: '/cms/api/partials/media_items/',
+            CACHEBUSTER: '?' + Date.now(),
+            NAV_LOGO: '/images/onion.png'
+        });
+
+        angular.module('bulbsCmsApp').constant('IMAGE_SERVER_URL', 'http://localimages.avclub.com');
+        angular.module('bulbsCmsApp').constant('BC_ADMIN_URL', 'http://localimages.avclub.com');
+        angular.module('bulbsCmsApp').constant('BC_API_KEY', 'c44027184faf2dc61d6660409dec817daaa75decfa853d68250cbe8e');
+        angular.module('bulbsCmsApp').constant('LOADING_IMG_SRC', "/images/loading.gif");
+        angular.module('bulbsCmsApp').constant('STATIC_URL', "/static/");
+        angular.module('bulbsCmsApp').constant('PARTIALS_URL', "/views/");
+        angular.module('bulbsCmsApp').constant('CONTENT_PARTIALS_URL', '/content_type_views/');
+        angular.module('bulbsCmsApp').constant('MEDIA_ITEM_PARTIALS_URL', '/cms/api/partials/media_items/');
+        angular.module('bulbsCmsApp').constant('CACHEBUSTER', "?" + Date.now());
+        angular.module('bulbsCmsApp').constant('TIMEZONE_OFFSET', '-0500');
+        angular.module('bulbsCmsApp').constant('TIMEZONE_LABEL', 'CST');
+
+        // ****** CMS Plugins ****** \\
+
+        angular.module('bulbsCmsApp').constant('tar_options', {
+          namespace: 'Woodruff',
+          endpoint: '/ads/targeting'
+        });
+
+        angular.module('bulbsCmsApp').constant('promo_options', {
+          namespace: 'Woodruff',
+          endpoint: '/cms/api/v1/contentlist/',
+          upper_limits: {}
+        });
+    </script>
+
+    <script>
+        angular.module('bulbsCmsAppDev', ['bulbsCmsApp.mockApi', 'bulbsCmsApp']);
+
+        //huhhhhh
+        $("body").on("click", "a", function(e){
+          if($(this).attr("target") == "_blank") return true;
+          $(this).attr("target", "_self");
+        });
+    </script>
+
+</body>
+</html>
