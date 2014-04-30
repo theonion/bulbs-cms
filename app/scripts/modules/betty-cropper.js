@@ -1,5 +1,5 @@
-angular.module('bettyCropper', [])
-  .service('bettyCropper', function bettyCropper($http, $interpolate, IMAGE_SERVER_URL, BC_API_KEY) {
+angular.module('BettyCropper', [])
+  .service('BettyCropper', function BettyCropper($http, $interpolate, IMAGE_SERVER_URL, BC_API_KEY) {
 
     /*\
 

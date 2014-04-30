@@ -3,14 +3,14 @@
 angular.module('bulbsCmsApp')
   .factory('openImageCropModal', function ($window, $document, $compile, $rootScope, $modal, routes) {
     var openImageCropModal = function (id) {
-      var ModalInstanceCtrl = function ($scope, $timeout, bettyCropper, $modalInstance, id) {
+      var ModalInstanceCtrl = function ($scope, $timeout, BettyCropper, $modalInstance, id) {
         var jcrop_api;
         $scope.cropMode = false;
         $scope.thumb = {height:180, width: 180};
         $scope.preview_thumb = {height: 110, width: 110};
 
         $scope.crop_image_width = 550;
-        $scope.image_url = bettyCropper.origJpg(id, $scope.crop_image_width);
+        $scope.image_url = BettyCropper.origJpg(id, $scope.crop_image_width);
         $scope.preview_style = {};
 
         var setupCropper = function () {
@@ -151,7 +151,7 @@ angular.module('bulbsCmsApp')
         $scope.saveAndQuit = function () {
           // Should probably use a save directive here
           $scope.processJcropSelection(jcrop_api.tellSelect());
-          bettyCropper.update_selection(
+          BettyCropper.update_selection(
             $scope.image.id,
             $scope.selectedCrop[0],
             $scope.image.selections[$scope.selectedCrop[0]]
@@ -162,7 +162,7 @@ angular.module('bulbsCmsApp')
 
         $scope.saveAndNext = function () {
           $scope.processJcropSelection(jcrop_api.tellSelect());
-          bettyCropper.update_selection(
+          BettyCropper.update_selection(
             $scope.image.id,
             $scope.selectedCrop[0],
             $scope.image.selections[$scope.selectedCrop[0]]
@@ -185,7 +185,7 @@ angular.module('bulbsCmsApp')
           }
         };
 
-        bettyCropper.detail(id)
+        BettyCropper.detail(id)
           .success(function (data) {
             $scope.image = data;
             $scope.setThumbStyles($scope.image, $scope.image.selections);
