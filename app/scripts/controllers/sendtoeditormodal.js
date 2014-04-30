@@ -9,6 +9,7 @@ angular.module('bulbsCmsApp')
         data: {notes: $scope.noteToEditor}
       }).success(function (data) {
         $scope.publishSuccessCbk({article: article, response: data});
+        $modalInstance.close();
       }).error(function (error, status, data) {
         if(status === 403) {
           Login.showLoginModal();
