@@ -1,3 +1,6 @@
+angular.module('BettyCropper').constant('IMAGE_SERVER_URL', 'http://localimages.avclub.com');
+angular.module('BettyCropper').constant('BC_API_KEY', 'http://localimages.avclub.com');
+
 angular.module('bulbsCmsApp').constant('routes', {
   IMAGE_SERVER_URL: 'http://localimages.avclub.com',
   BC_ADMIN_URL: 'http://localimages.avclub.com',

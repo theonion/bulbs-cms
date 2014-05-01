@@ -69,9 +69,15 @@ angular.module('bulbsCmsApp.mockApi').run([
     // templates
     $httpBackend.whenGET(/^\/views\//).passThrough();
     $httpBackend.whenGET(/^\/content_type_views\//).passThrough();
-    $httpBackend.when('OPTIONS', /^http:\/\/localimages\.avclub\.com.*/).passThrough();
-    $httpBackend.when('GET', /^http:\/\/localimages\.avclub\.com.*/).passThrough();
-    $httpBackend.when('POST', /^http:\/\/localimages\.avclub\.com.*/).passThrough();
+
+    // betty cropper
+    $httpBackend.when('OPTIONS', /^http:\/\/localimages\.avclub\.com.*/).respond('');
+    $httpBackend.when('GET', /^http:\/\/localimages\.avclub\.com\/api\/\d+$/)
+      .respond(mockApiData['bettycropper.detail']);
+    $httpBackend.when('POST', /^http:\/\/localimages\.avclub\.com\/api\/\d+\/.*$/)
+      .respond(mockApiData['bettycropper.updateSelection']);
+    $httpBackend.when('POST', /^http:\/\/localimages\.avclub\.com\/api\/new$/)
+      .respond(mockApiData['bettycropper.new']);
   }
 ]).constant('mockApiData', {
   // NOTE: double-quotes are used because JSON
@@ -310,5 +316,140 @@ angular.module('bulbsCmsApp.mockApi').run([
       {'id': 4, 'name': 'Quizzes'},
       {'id': 5, 'name': 'Business'}
     ]
+  },
+  "bettycropper.detail": {
+    "credit": "No-Look Wnuk",
+    "name": 'prom1985_2.jpg',
+    "id": '1',
+    "height": 450,
+    "width": 800,
+    "selections": {
+      "1x1": {
+        "y0": 0,
+        "y1": 0,
+        "x0": 0,
+        "x1": 0
+      },
+      "2x1": {
+        "y0": 100,
+        "y1": 250,
+        "x0": 100,
+        "x1": 400
+      },
+      "3x1": {
+        "y0": 200,
+        "y1": 450,
+        "x0": 0,
+        "x1": 750
+      },
+      "3x4": {
+        "y0": 0,
+        "y1": 400,
+        "x0": 500,
+        "x1": 800
+      },
+      "4x3": {
+        "y0": 150,
+        "y1": 450,
+        "x0": 400,
+        "x1": 800
+      },
+      "16x9": {
+        "y0": 0,
+        "y1": 450,
+        "x0": 0,
+        "x1": 800
+      }
+    }
+  },
+  'bettycropper.updateSelection': {
+    "credit": "No-Look Wnuk",
+    "name": 'prom1985_2.jpg',
+    "id": '1',
+    "height": 450,
+    "width": 800,
+    "selections": {
+      "1x1": {
+        "y0": 0,
+        "y1": 0,
+        "x0": 0,
+        "x1": 0
+      },
+      "2x1": {
+        "y0": 100,
+        "y1": 250,
+        "x0": 100,
+        "x1": 400
+      },
+      "3x1": {
+        "y0": 200,
+        "y1": 450,
+        "x0": 0,
+        "x1": 750
+      },
+      "3x4": {
+        "y0": 0,
+        "y1": 400,
+        "x0": 500,
+        "x1": 800
+      },
+      "4x3": {
+        "y0": 150,
+        "y1": 450,
+        "x0": 400,
+        "x1": 800
+      },
+      "16x9": {
+        "y0": 0,
+        "y1": 450,
+        "x0": 0,
+        "x1": 800
+      }
+    }
+  },
+  'bettycropper.new': {
+    "credit": "No-Look Wnuk",
+    "name": 'prom1985_2.jpg',
+    "id": '1',
+    "height": 450,
+    "width": 800,
+    "selections": {
+      "1x1": {
+        "y0": 0,
+        "y1": 0,
+        "x0": 0,
+        "x1": 0
+      },
+      "2x1": {
+        "y0": 100,
+        "y1": 250,
+        "x0": 100,
+        "x1": 400
+      },
+      "3x1": {
+        "y0": 200,
+        "y1": 450,
+        "x0": 0,
+        "x1": 750
+      },
+      "3x4": {
+        "y0": 0,
+        "y1": 400,
+        "x0": 500,
+        "x1": 800
+      },
+      "4x3": {
+        "y0": 150,
+        "y1": 450,
+        "x0": 400,
+        "x1": 800
+      },
+      "16x9": {
+        "y0": 0,
+        "y1": 450,
+        "x0": 0,
+        "x1": 800
+      }
+    }
   }
 });
