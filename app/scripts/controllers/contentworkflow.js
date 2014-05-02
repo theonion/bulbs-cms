@@ -37,6 +37,17 @@ angular.module('bulbsCmsApp')
       });
     }
 
+    $scope.changelogModal = function (article) {
+      return $modal.open({
+        templateUrl: routes.PARTIALS_URL + 'modals/changelog-modal.html',
+        controller: 'ChangelogmodalCtrl',
+        scope: $scope,
+        resolve: {
+          article: function(){ return article; }
+        }
+      });
+    };
+
     $scope.getStatus = function (article) {
       if(!article || !article.published){
         return 'unpublished';
@@ -45,6 +56,6 @@ angular.module('bulbsCmsApp')
       }else{
         return 'published';
       }
-    }
+    };
 
   });
