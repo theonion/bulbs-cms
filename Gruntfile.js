@@ -53,6 +53,10 @@ module.exports = function (grunt) {
         files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
         tasks: ['newer:copy:styles', 'autoprefixer']
       },
+      less: {
+        files: ['<%= yeoman.app %>/styles/{,*/}*.less'],
+        tasks: ['less']
+      },
       gruntfile: {
         files: ['Gruntfile.js']
       },
@@ -165,6 +169,18 @@ module.exports = function (grunt) {
         html: '<%= yeoman.app %>/index.html',
         ignorePath: '<%= yeoman.app %>/'
       }
+    },
+
+    less: {
+      development: {
+        files: [{
+          expand: true,
+          cwd: 'app/styles/',
+          src: '{,*/}*.less',
+          dest: 'app/styles/',
+          ext: '.css'
+        }]
+      },
     },
 
     // Renames files for browser caching purposes
@@ -421,7 +437,7 @@ module.exports = function (grunt) {
       'concurrent:server',
       'autoprefixer',
       'connect:livereload',
-      'watch:livereload'
+      'watch:livereload:less'
     ]);
   });
 
@@ -436,7 +452,7 @@ module.exports = function (grunt) {
       'concurrent:server',
       'autoprefixer',
       'connect:livereload',
-      'watch:livereload:jsHintReload'
+      'watch:livereload:jsHintReload:less'
     ]);
   });
 
