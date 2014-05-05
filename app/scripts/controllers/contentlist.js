@@ -136,7 +136,10 @@ angular.module('bulbsCmsApp')
         else { tP.collapse('hide'); }
         $(this).html('<i class=\"fa fa-' + i + '-circle\"></i> ' + t + ' all');
         $(this).attr('state', nS);
+        $window.picturefill();
       });
+
+    $('body').on('shown.bs.collapse', 'table tr.panel', function(){ window.picturefill() });
 
     $('#meOnly').bootstrapSwitch();
 
