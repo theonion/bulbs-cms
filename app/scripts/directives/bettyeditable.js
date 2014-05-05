@@ -1,77 +1,29 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('bettyeditable', function ($http, routes, BC_API_KEY) {
+  .directive('bettyeditable', function ($http, routes, BettyCropper, openImageCropModal) {
     return {
-      replace: true,
       restrict: 'E',
       templateUrl: routes.PARTIALS_URL + 'bettyeditable.html',
       scope: {
-        'imageId': '=',
+        'image': '=',
+        'addStyles': '@',
+        'placeholderText': '@',
         'ratio': "@"
       },
-      controller: function ($scope, $element, $attrs, $http, routes, BC_API_KEY) {
+      controller: function ($scope, $element) {
 
         $scope.imageData = null;
 
-        $scope.getImageData = function() {
-          $http({
-            method: 'GET',
-            url: routes.IMAGE_SERVER_URL + '/api/' + $scope.imageId,
-            headers: {
-              'X-Betty-Api-Key': BC_API_KEY,
-              'Content-Type': undefined
-            },
-            transformRequest: angular.identity
-          }).success(function(response){
-            $scope.imageData = response;
-            $scope.showImage();
-          }).error(function(data, status, headers, config){
-            if (status === 404) {
-              // For placeholder images, we definitely need to figure some better out here.
-              $scope.imageData = {
-                "width": 1200,
-                "selections" : {
-                  "16x9" : {
-                    "x0": 0,
-                    "y0": 0,
-                    "x1": 1200,
-                    "y1": 675
-                  }
-                }
-              }
-              $scope.showImage();
-            }
-          });
-        };
-
-        $scope.showImage = function(){
-          if($scope.imageData === null) {
-            console.log("Getting selections!");
-            $scope.getImageData();
-            return;
-          }
-          var pictureDiv = $element.find("div")[1];
-          var pushdownDiv = $element.find("div")[0];
-          pictureDiv.className = "picture";
-
-          var ratioWidth = parseInt($scope.ratio.split('x')[0], 10);
-          var ratioHeight = parseInt($scope.ratio.split('x')[1], 10);
-
-          pushdownDiv.style.paddingTop = (ratioHeight / ratioWidth * 100) + "%";
-          pictureDiv.style.backgroundImage = 'url(' + routes.IMAGE_SERVER_URL + '/' + $scope.imageId + '/original/' + 1200 + '.jpg)';
-          
-          var selection = $scope.imageData.selections[$scope.ratio];
-
-          var leftPosition = selection.x0 / 1200 * 100;
-          var topPosition = selection.y0 / (1200 * ratioHeight / ratioWidth) * 100;
-
-          pictureDiv.style.backgroundPosition = leftPosition + "% " + topPosition + "%, center";
-          pictureDiv.style.backgroundSize = "cover";
-        }
-
         $scope.uploadSuccess = function(response){
-          $scope.imageId = response.id;
+          if (!$scope.image) {
+            $scope.image = {
+              id: null,
+              caption: null,
+              alt: null
+            };
+          }
+          $scope.image.id = response.id;
           $scope.imageData = response;
           $scope.showImage();
         }
@@ -94,40 +46,114 @@ angular.module('bulbsCmsApp')
           var imageData = new FormData();
           imageData.append('image', file);
 
-          $http({
-            method: 'POST',
-            url: routes.IMAGE_SERVER_URL + '/api/new',
-            headers: {
-              'X-Betty-Api-Key': BC_API_KEY,
-              'Content-Type': undefined
-            },
-            data: imageData,
-            transformRequest: angular.identity
-          }).success($scope.uploadSuccess);
+          BettyCropper.new(
+            file
+          ).success($scope.uploadSuccess);
         };
       },
       link: function (scope, element, attrs) {
-
         var input = element.find("input");
         input.on("change", scope.upload);
 
-        var pictureDiv = element.find("div")[1];
-        var pushdownDiv = element.find("div")[0];
+        var DEFAULT_IMAGE_WIDTH = 1200;
 
         var ratioWidth = parseInt(scope.ratio.split('x')[0], 10);
         var ratioHeight = parseInt(scope.ratio.split('x')[1], 10);
 
-        pushdownDiv.style.paddingTop = (ratioHeight / ratioWidth * 100) + "%";
-
-        if (scope.imageId) {
-          scope.showImage();
-        } else {
-          pictureDiv.className = 'picture fa fa-picture-o';
-          element.on("click", function(e){
-            e.stopPropagation();
-            input[0].click();
-          });
+        scope.uploadFile = function () {
+          input[0].click();
         }
+
+        scope.showImage = function () {
+          if (scope.imageData === null) {
+            console.log("Getting selections!");
+            scope.getImageData();
+            return;
+          }
+          scope.imageStyling = scope.computeImageStyle(
+            scope.imageData,
+            scope.imageData.selections[scope.ratio]
+          );
+
+        };
+
+        scope.computeImageStyle = function (image, selection) {
+          var scale, styles,
+          el_height = (image.height / image.width) * $(element).parent().width(),
+          s_width = selection.x1 - selection.x0,
+          s_height = selection.y1 - selection.y0,
+          tmp_selection = selection;
+
+          if (!s_width || !s_height) {
+            /*
+                If we have bogus selections, make
+                the crop equal to the whole image
+            */
+            s_width = $(element).parent().width();
+            s_height = el_height;
+            tmp_selection = {
+              'x0': 0,
+              'y0': 0,
+              'x1': s_width,
+              'y1': s_height
+            };
+          }
+
+          styles = {};
+          scale = $(element).parent().width() / s_width;
+          styles['background'] = 'url(' + BettyCropper.origJpg(scope.image.id, DEFAULT_IMAGE_WIDTH) + ')';
+          styles['background-size'] = scope.scaleNumber(image.width, scale) + 'px';
+          styles['background-position'] = '' +
+            '-' + scope.scaleNumber(tmp_selection.x0, scale) + 'px ' +
+            '-' + scope.scaleNumber(tmp_selection.y0, scale) + 'px';
+          styles['background-repeat'] = 'no-repeat';
+          styles['height'] = scope.scaleNumber(s_height, scale) + 'px';
+          // styles['width'] = scope.scaleNumber(s_width, scale) + 'px';
+          styles['position'] = 'relative';
+
+          return styles;
+        };
+
+        scope.scaleNumber = function (num, by_scale) {
+          return Math.floor(num * by_scale);
+        };
+
+        scope.getImageData = function () {
+          BettyCropper.detail(
+            scope.image.id
+          ).success(function (response) {
+            scope.imageData = response;
+            scope.showImage();
+          }).error(function(data, status, headers, config){
+            if (status === 404) {
+              var el_Height = (ratioHeight / ratioWidth) * $(element).parent().width();
+              scope.imageStyling = {
+                'background': 'url(' + BettyCropper.url(
+                  scope.image.id, scope.ratio, DEFAULT_IMAGE_WIDTH, 'jpg'
+                ) + ')',
+                'background-size': $(element).parent().width(),
+                'height': Math.floor(el_Height) + 'px',
+                'position': 'relative'
+              };
+            }
+          });
+        };
+
+        scope.removeImage = function () {
+          scope.image = null;
+        };
+
+        scope.editImage = function () {
+          openImageCropModal(scope.image.id)
+          .then(function () {
+            scope.getImageData();
+          })
+        }
+
+        if (scope.image) {
+          scope.showImage();
+        }
+
       }
     };
   });
