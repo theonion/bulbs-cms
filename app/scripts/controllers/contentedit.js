@@ -3,8 +3,9 @@
 angular.module('bulbsCmsApp')
   .controller('ContenteditCtrl', function (
     $scope, $routeParams, $http, $window,
-    $location, $timeout, $interval, $compile, $q, $, moment,
-    IfExistsElse, routes, ContentApi, ReviewApi, Login)
+    $location, $timeout, $interval, $compile, $q, $,
+    IfExistsElse, Localstoragebackup, ContentApi, ReviewApi, Login,
+    routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
@@ -144,7 +145,7 @@ angular.module('bulbsCmsApp')
     });
 
     $scope.saveArticle = function () {
-      $scope.backupToLocalStorage();
+      Localstoragebackup.backupToLocalStorage();
 
       var data = $scope.article;
 
@@ -329,41 +330,9 @@ angular.module('bulbsCmsApp')
     };
 
 
-    /*hacky first version of local storage backup
-    this is for backing up body contents to local storage
-    for now this is just keying to articleBodyBackup.<timestamp>.<article id>.body
-    if LS is full, it tries deleting old backups
-    TODO: make into a service, make configurable, add tests
-    TODO: capture routeChange and cancel this interval
-    (this works for now because we're doing a full teardown on route change
-    if we ever go back to a real 'single page app' this will fuck up)*/
-    $scope.backupToLocalStorage = function () {
-      var keyPrefix = 'articleBodyBackup';
-      var keySuffix = '.' + $routeParams.id + '.body';
-      try{
-        $window.localStorage &&
-          $window.localStorage.setItem(keyPrefix + '.' + moment().unix() + keySuffix, $("#content-body .editor").html()); //TODO: this is gonna break
-      }catch (error){
-        console.log("Caught localStorage Error " + error)
-        console.log("Trying to prune old entries");
-        var localStorageKeys = Object.keys($window.localStorage);
-        for(var keyIndex in localStorageKeys){
-          var key = $window.localStorage.key(keyIndex);
-          if(key && key.split('.')[0] != keyPrefix){
-            continue;
-          }
-          var yesterday = moment().date(moment().date()-1).unix();
-          var keyStamp = Number(key.split('.')[1]);
-          if(keyStamp < yesterday){
-            $window.localStorage.removeItem(key);
-          }
-        }
-      };
-    }
-
     var backupInterval = (function(){
-      var interval = 60000; //1 minute
-      return $interval($scope.backupToLocalStorage, interval)
+      var interval = 300000; //5 minute
+      return $interval(Localstoragebackup.backupToLocalStorage, interval)
     })();
 
 
