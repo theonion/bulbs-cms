@@ -342,7 +342,7 @@ angular.module('bulbsCmsApp')
       return $interval(function () {
         try{
           $window.localStorage &&
-            $window.localStorage.setItem(keyPrefix + '.' + new Date().getTime() + keySuffix, $("#content-body .editor").html());
+            $window.localStorage.setItem(keyPrefix + '.' + moment().unix() + keySuffix, $("#content-body .editor").html());
         }catch (error){
           console.log("Caught localStorage Error " + error)
           console.log("Trying to prune old entries");
@@ -352,7 +352,7 @@ angular.module('bulbsCmsApp')
             if(key && key.split('.')[0] != keyPrefix){
               continue;
             }
-            var yesterday = moment().date(moment().date()-1).unix() * 1000;
+            var yesterday = moment().date(moment().date()-1).unix();
             var keyStamp = Number(key.split('.')[1]);
             if(keyStamp < yesterday){
               $window.localStorage.removeItem(key);
