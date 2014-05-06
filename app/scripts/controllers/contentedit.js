@@ -3,8 +3,8 @@
 angular.module('bulbsCmsApp')
   .controller('ContenteditCtrl', function (
     $scope, $routeParams, $http, $window,
-    $location, $timeout, $compile, $q, $, IfExistsElse,
-    routes, ContentApi, ReviewApi, Login)
+    $location, $timeout, $interval, $compile, $q, $, moment,
+    IfExistsElse, routes, ContentApi, ReviewApi, Login)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
@@ -287,6 +287,8 @@ angular.module('bulbsCmsApp')
       angular.element(id + ' .editor').bind('input', function () {
         $scope.article[articleField] = $scope.editors[name].getContent();
       });
+
+
     };
 
     //exporting this to global so editor snippets can self-instantiate
@@ -323,5 +325,42 @@ angular.module('bulbsCmsApp')
         $window.history.back();
       }, 1500);
     };
+
+
+    /*hacky first version of local storage backup
+    this is for backing up body contents to local storage
+    for now this is just keying to articleBodyBackup.<timestamp>.<article id>.body
+    if LS is full, it tries deleting old backups
+    TODO: make into a service, make configurable, add tests
+    TODO: capture routeChange and cancel this interval
+    (this works for now because we're doing a full teardown on route change
+    if we ever go back to a real 'single page app' this will fuck up)*/
+    var backupInterval = (function(){
+      var interval = 60000; //1 minute
+      var keyPrefix = 'articleBodyBackup';
+      var keySuffix = '.' + $routeParams.id + '.body';
+      return $interval(function () {
+        try{
+          $window.localStorage &&
+            $window.localStorage.setItem(keyPrefix + '.' + new Date().getTime() + keySuffix, $("#content-body .editor").html());
+        }catch (error){
+          console.log("Caught localStorage Error " + error)
+          console.log("Trying to prune old entries");
+          var localStorageKeys = Object.keys($window.localStorage);
+          for(var keyIndex in localStorageKeys){
+            var key = $window.localStorage.key(keyIndex);
+            if(key && key.split('.')[0] != keyPrefix){
+              continue;
+            }
+            var yesterday = moment().date(moment().date()-1).unix() * 1000;
+            var keyStamp = Number(key.split('.')[1]);
+            if(keyStamp < yesterday){
+              $window.localStorage.removeItem(key);
+            }
+          }
+        };
+      }, interval)
+    })();
+
 
   });

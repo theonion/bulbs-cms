@@ -1,5 +1,35 @@
 <section>
-  feature type, section, tags
+    <div class="metadata container-fluid">
+      <div class="row">
+        <div class="col-sm-4 row" bulbs-autocomplete resource-url="/cms/api/v1/things/?type=feature_type&q=" displayfn="featureTypeDisplayFn" callback="featureTypeCallback">
+          <div class="col-xs-12">
+            <h1 class="h6"><label class="control-label" for="feature_type-input">Feature Type</label></h1>
+            <div class="tag taglikeobject" id="feature-type-container" ng-show="article.feature_type">
+              <span class="tagname">{{article.feature_type}} </span>
+              <a class="remove" ng-click='article.feature_type = null;'>
+                <span class='glyphicon glyphicon-remove'></span></a></div>
+                <input class="form-control input-sm new-tag-input" id="feature_type-input" name="feature_type" type="text" placeholder="e.g. Newswire, TV Club" ng-hide="article.feature_type" /></div></div>
+        <div class="col-sm-8 row input-list" bulbs-autocomplete resource-url="/cms/api/v1/tag/?ordering=name&types=core_section&search=" displayfn="tagDisplayFn" callback="sectionCallback">
+          <h1 class="h6 col-xs-12"><label class="control-label" for="section-input">Sections</label></h1>
+          <div class="col-sm-4 form-group">
+            <input class="form-control input-sm new-tag-input" id="section-input" name="section" type="text" placeholder="e.g. TV, Film, Music, Games" /></div>
+          <div class="col-sm-8">
+            <ul class="list-inline">
+              <li class="{{tag.slug}} label tag taglikeobject" ng-repeat="tag in article.tags" ng-show="tag.type == 'core_section'">
+                <span class="tagname">{{tag.name}}</span>
+                <a class="remove" ng-click='removeTag($event);' data-tag='{{tag}}'>
+                  <span class='glyphicon glyphicon-remove'></span></a></li></ul></div></div></div>
+        <div class="row content-edit-tags input-list">
+          <div class="" bulbs-autocomplete resource-url="/cms/api/v1/tag/?ordering=name&types=content_tag&search=" displayfn="tagDisplayFn" callback="tagCallback">
+            <h1 class="h6 col-xs-12"><label class="control-label" for="tag-input">Tags</label></h1>
+            <div class="col-sm-4 form-group">
+              <input class="form-control input-sm new-tag-input" id="tag-input" name="tag" type="text" placeholder="e.g. Name of show, network, artist"  /></div>
+            <div class="col-sm-8">
+              <ul class="list-inline">
+                <li class="label tag taglikeobject" ng-repeat="tag in article.tags" ng-show="tag.type == 'content_tag'" ng-class="{newtag: tag.new}">
+                  <span class="tagname">{{tag.name}}</span>
+                  <a class="remove" ng-click='removeTag($event);' data-tag='{{tag}}'>
+                    <span class='glyphicon glyphicon-remove'></span></a></li></ul></div></div></div></div>
 </section>
 
 <section class="main-image row">
@@ -8,39 +38,75 @@
   </div>
 </section>
 
-<section class="title">
-  <div id="content-title" class="article-header heading"></div>
-  <script type="text/javascript">
-  window.initEditor(
-      'content_title_editor',
-      '#content-title',
-      {
-          /* global options */
-          element:document.getElementById("content-title"),
-          toolbar: {
-              selectionTools: $("#selection-tools-minimal-template").html(),
-          },
-          placeholder: "Type your Headline",
-          content: window.article.title,
-          allowNewline: false,
-          allowNbsp: false,
-          characterLimit: 200,
-          settings: {
-              font: "title",
-              visualize: false
-          },
-          sanitize: {
-            elements: ['i', 'em'],
-            remove_contents: ['script', 'style', ],
-          }
-      },
-      'title'
-  );
-  </script>
+<section>
+    <div id="content-title" class="article-header heading"></div>
+    <script type="text/javascript">
+    window.initEditor(
+        'content_title_editor',
+        '#content-title',
+        {
+            /* global options */
+            element:document.getElementById("content-title"),
+            toolbar: {
+                selectionTools: $("#selection-tools-minimal-template").html(),
+            },
+            placeholder: "Type your Headline",
+            content: window.article.title,
+            allowNewline: false,
+            allowNbsp: false,
+            characterLimit: 200,
+            settings: {
+                font: "title",
+                visualize: false
+            },
+            sanitize: {
+              elements: ['i', 'em'],
+              remove_contents: ['script', 'style', ],
+            }
+        },
+        'title'
+    );
+    </script>
+    <div id="content-subhead" class="article-header subheading"></div>
+    <script type="text/javascript">
+    window.initEditor(
+        'content_subhead_editor',
+        '#content-subhead',
+        {
+            /* global options */
+            element:document.getElementById("content-subhead"),
+            placeholder: "Type your Subhead (optional)",
+            content: window.article.subhead,
+            allowNewline: false,
+            allowNbsp: false,
+            characterLimit: 400,
+            settings: {
+                font: "subhead",
+                visualize: false
+            },
+            sanitize: {
+                elements: [],
+                remove_contents: ['script', 'style', ],
+            }
+        },
+        'subhead'
+    );
+    </script>
 </section>
 
 <section>
-  authors
+    <div id="authors" class="content-field row input-list" bulbs-autocomplete resource-url="/cms/api/v1/user/?ordering=name&search=" displayfn="authorDisplayFn" callback="authorCallback">
+      <div class="well clearfix">
+        <h1 class="h5 col-sm-10 col-sm-push-1"><label for="author-input" class="control-label">Authors</label></h1>
+        <div class="col-sm-3 col-sm-push-1">
+          <input id="author-input" name="author" type="text" class="new-tag-input form-control input-sm" placeholder="Author" /></div>
+        <div class="col-sm-7 col-sm-push-1">
+          <ul class="list-inline">
+            <li class="label author taglikeobject" ng-repeat="author in article.authors">
+              <span class="author-span">
+                {{(author.first_name && author.last_name && author.first_name + ' ' + author.last_name) || 'username: ' + author.username}}</span>
+              <a class="remove" ng-click='removeAuthor($event);' data-author='{{author}}'>
+                <span class='glyphicon glyphicon-remove'></span></a></li></ul></div></div></div>
 </section>
 
 <div id="content-body" class="article-text"></div>
