@@ -14,9 +14,13 @@ angular.module('bulbsCmsApp')
       var timestamp = Number(keys[i].split('.')[1]) * 1000;
       timestamps.push(timestamp);
     }
-    $scope.timestamps = timestamps.sort();
+    $scope.timestamps = timestamps.sort().reverse();
 
-    $scope.preview = function (timestamp) {
+    $scope.preview = function (timestamp, $event) {
+      //manipulating dom in a controller is gross! bad!
+      $('.version-timestamp-list .active').removeClass('active');
+      $($event.target).parent().addClass('active');
+
       var key = prefix + '.' + timestamp/1000 + '.' + article.id + '.body';
       var html = $window.localStorage.getItem(key);
       $scope.versionPreview = html;
