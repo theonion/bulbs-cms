@@ -25,7 +25,7 @@
                     crop = el.getAttribute( "data-crop" );
                 var _w = div.offsetWidth,
                     _h = div.offsetHeight;
-                
+
                 if (!crop || crop === "" || crop === "auto") {
                     crop = computeAspectRatio(_w, _h);
                 }
@@ -50,52 +50,69 @@
                     }
                 }
 
-                // Find any existing img element in the picture element
-                var picImg = div.getElementsByTagName( "img" )[ 0 ];
-
-                if(!picImg){
-                    // for performance reasons this will be added to the dom later
-                    picImg = w.document.createElement( "img" );
-                    picImg.alt = el.getAttribute( "data-alt" );
-                }
-
-                //picImg.className = "loading";
-                picImg.onload = function() {
-                    //this.className = "";
-                };
                 // if the existing image is larger (or the same) than the one we're about to load, do not update.
                 //however if the crop changes, we need to reload.
                 if (width > 0) {
-
-                    //ie8 doesn't support natural width, always load.
-                    if (typeof picImg.naturalWidth === "undefined" || picImg.naturalWidth < width ||
-                        crop !== computeAspectRatio(picImg.naturalWidth, picImg.naturalHeight)) {
-                        var id_str = "";
-                        for(var ii=0; ii < id.length; ii++) {
-                            if ((ii % 4) === 0) {
-                                id_str += "/";
+                    var tmp = div;
+                    if (id) {
+                        $.ajax({
+                            url: w.BC_ADMIN_URL + '/api/' + id,
+                            headers: {
+                                'X-Betty-Api-Key': 'c44027184faf2dc61d6660409dec817daaa75decfa853d68250cbe8e',
+                                'Content-Type': undefined
+                            },
+                            success: function (res) {
+                                var imageData = res;
+                                computeStyle(tmp, imageData, imageData.selections[crop])
                             }
-                            id_str += id.charAt(ii);
-                        }
-                        var url = tmpl(w.IMAGE_URL, {id: id_str, crop: crop, width: width, format:format});
-                        imageData.push({
-                            'div': div,
-                            'img': picImg,
-                            'url': url
                         });
                     }
                 }
             }
         }
-        // all DOM updates should probably go here
-        for(var i = 0; i < imageData.length; i++) {
-            var data = imageData[i];
-            data.img.src = data.url;
-            if (!data.img.parentNode) {
-                data.div.appendChild(data.img);
-            }
-        }
     };
+
+    function computeStyle(element, image, selection) {
+        var scale, styles,
+        el_height = (image.height / image.width) * $(element).width(),
+        s_width = selection.x1 - selection.x0,
+        s_height = selection.y1 - selection.y0,
+        tmp_selection = selection;
+
+        if (!s_width || !s_height) {
+          /*
+              If we have bogus selections, make
+              the crop equal to the whole image
+          */
+          s_width = $(element).width();
+          s_height = el_height;
+          tmp_selection = {
+            'x0': 0,
+            'y0': 0,
+            'x1': s_width,
+            'y1': s_height
+          };
+        }
+
+        scale = $(element).width() / s_width;
+        console.log(tmpl(w.IMAGE_URL, {id: image.id, crop: 'original', width: 1200, format:'jpg'}))
+        element.style.background = 'url(' +
+            w.BC_ADMIN_URL + '/' + image.id + '/original/1200.jpg' +
+        ')';
+        element.style.backgroundSize = scaleNumber(image.width, scale) + 'px';
+        element.style.backgroundPosition = '' +
+          '-' + scaleNumber(tmp_selection.x0, scale) + 'px ' +
+          '-' + scaleNumber(tmp_selection.y0, scale) + 'px';
+        element.style.backgroundRepeat = 'no-repeat';
+        element.style.height = scaleNumber(s_height, scale) + 'px';
+        element.style.width = scaleNumber(s_width, scale) + 'px';
+        element.style.position = 'relative';
+    }
+
+    function scaleNumber(num, by_scale) {
+      return Math.floor(num * by_scale);
+    };
+
 
     function computeAspectRatio(_w, _h) {
         if (_w !== 0 && _h !== 0) {
@@ -167,37 +184,27 @@
                 }
             }
 
-            // Find any existing img element in the picture element
-            var picImg = div.getElementsByTagName( "img" )[ 0 ];
-
-
-            if(!picImg){
-                picImg = w.document.createElement( "img" );
-                picImg.alt = el.getAttribute( "data-alt" );
-
-                div.appendChild( picImg );
-            }
-
-            //picImg.className = "loading";
-            picImg.onload = function() {
-                //this.className = "";
-            };
             // if the existing image is larger (or the same) than the one we're about to load, do not update.
             //however if the crop changes, we need to reload.
             if (width > 0) {
+                var tmp = div;
+                if (id) {
+                    $.ajax({
+                        url: w.BC_ADMIN_URL + '/api/' + id,
+                        headers: {
+                            'X-Betty-Api-Key': 'c44027184faf2dc61d6660409dec817daaa75decfa853d68250cbe8e',
+                            'Content-Type': undefined
+                        },
+                        success: function (res) {
+                            var imageData = res;
+                            computeStyle(tmp, imageData, imageData.selections[crop])
+                        },
+                        error: function (res, status) {
+                            if (status === '404') {
 
-                //ie8 doesn't support natuarl width, always load.
-                if (typeof picImg.naturalWidth === "undefined" || picImg.naturalWidth < width ||
-                    crop !== computeAspectRatio(picImg.naturalWidth, picImg.naturalHeight)) {
-                    var id_str = "";
-                    for(var i=0;i < id.length;i++) {
-                        if ((i % 4) === 0) {
-                            id_str += "/";
+                            }
                         }
-                        id_str += id.charAt(i);
-                    }
-                    var url = tmpl(w.IMAGE_URL, {id: id_str, crop: crop, width: width, format:format});
-                    picImg.src = url;
+                    });
                 }
             }
         }

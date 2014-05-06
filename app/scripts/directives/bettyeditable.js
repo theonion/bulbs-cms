@@ -108,7 +108,7 @@ angular.module('bulbsCmsApp')
             '-' + scope.scaleNumber(tmp_selection.y0, scale) + 'px';
           styles['background-repeat'] = 'no-repeat';
           styles['height'] = scope.scaleNumber(s_height, scale) + 'px';
-          // styles['width'] = scope.scaleNumber(s_width, scale) + 'px';
+          styles['width'] = scope.scaleNumber(s_width, scale) + 'px';
           styles['position'] = 'relative';
 
           return styles;
