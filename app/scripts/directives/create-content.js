@@ -4,7 +4,7 @@ angular.module('bulbsCmsApp')
   .directive('createContent', function ($http, $window, $, IfExistsElse, Login, ContentApi, routes) {
     return {
       restrict: 'E',
-      templateUrl:  routes.PARTIALS_URL + 'create-content.html',
+      templateUrl:  routes.DIRECTIVE_PARTIALS_URL + 'create-content.html',
       controller: function ($scope) {
         $scope.gotTags = false;
         $scope.gotUser = false;
