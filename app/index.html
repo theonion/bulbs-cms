@@ -146,6 +146,7 @@
             STATIC_URL: '/static/',
             PARTIALS_URL: '/views/',
             CONTENT_PARTIALS_URL: '/content_type_views/',
+            DIRECTIVE_PARTIALS_URL: '/views/',
             MEDIA_ITEM_PARTIALS_URL: '/cms/api/partials/media_items/',
             CACHEBUSTER: '?' + Date.now(),
             NAV_LOGO: '/images/onion.png'
@@ -158,6 +159,7 @@
         angular.module('bulbsCmsApp').constant('STATIC_URL', "/static/");
         angular.module('bulbsCmsApp').constant('PARTIALS_URL', "/views/");
         angular.module('bulbsCmsApp').constant('CONTENT_PARTIALS_URL', '/content_type_views/');
+        angular.module('bulbsCmsApp').constant('DIRECTIVE_PARTIALS_URL', '/views/');
         angular.module('bulbsCmsApp').constant('MEDIA_ITEM_PARTIALS_URL', '/cms/api/partials/media_items/');
         angular.module('bulbsCmsApp').constant('CACHEBUSTER', "?" + Date.now());
         angular.module('bulbsCmsApp').constant('TIMEZONE_OFFSET', '-0500');
