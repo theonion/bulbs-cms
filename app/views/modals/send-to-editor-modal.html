@@ -5,10 +5,10 @@
 <div class="modal-body">
           <section class="form-group note-to-editor">
               <h5>Note for Editor <small>(Optional)</small></h5>
-              <textarea type="text" style="height: 150px;" class="form-control note-to-editor" ng-model="noteToEditor"></textarea>
+              <textarea type="text" style="height: 150px;" class="form-control note-to-editor" ng-model="$parent.noteToEditor"></textarea>
           </section>
 </div>
 <div class="modal-footer">
-  <button class="btn btn-link" data-dismiss="modal">Cancel</button>
-  <button class="btn btn-primary" ng-click="sendToEditor(article);" data-dismiss="modal">Send</button>
+  <button class="btn btn-link" ng-click="$dismiss();">Cancel</button>
+  <button class="btn btn-primary" ng-click="sendToEditor(article);">Send</button>
 </div>

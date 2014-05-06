@@ -3,9 +3,9 @@
 angular.module('bulbsCmsApp')
   .controller('ContentlistCtrl', function (
     $scope, $http, $timeout, $location,
-    $routeParams, $window, $q, $, _, moment, ContentApi)
+    $routeParams, $window, $q, $, _, moment, ContentApi, LOADING_IMG_SRC)
   {
-
+    $scope.LOADING_IMG_SRC = LOADING_IMG_SRC;
     //set title
     $window.document.title = 'AVCMS | Content';
 
@@ -136,7 +136,10 @@ angular.module('bulbsCmsApp')
         else { tP.collapse('hide'); }
         $(this).html('<i class=\"fa fa-' + i + '-circle\"></i> ' + t + ' all');
         $(this).attr('state', nS);
+        $window.picturefill();
       });
+
+    $('body').on('shown.bs.collapse', 'table tr.panel', function(){ window.picturefill() });
 
     $('#meOnly').bootstrapSwitch();
 

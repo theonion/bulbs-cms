@@ -9,7 +9,7 @@ angular.module('bulbsCmsApp')
         'image': '=',
         'addStyles': '@',
         'placeholderText': '@',
-        'ratio': "@"
+        'ratio': '@'
       },
       controller: function ($scope, $element) {
 
@@ -30,17 +30,17 @@ angular.module('bulbsCmsApp')
 
         $scope.upload = function(e){
           if (this.files.length != 1) {
-            console.log("We need exactly one image!");
+            console.log('We need exactly one image!');
             return;
           }
           var file = this.files[0];
-          if (file.type.indexOf("image/") != 0) {
-            console.log("Not an image!");
+          if (file.type.indexOf('image/') != 0) {
+            console.log('Not an image!');
             return;
           }
 
           if (file.size > 6800000) {
-            console.log("The file is too large!")
+            console.log('The file is too large!')
           }
 
           var imageData = new FormData();
@@ -52,8 +52,9 @@ angular.module('bulbsCmsApp')
         };
       },
       link: function (scope, element, attrs) {
-        var input = element.find("input");
-        input.on("change", scope.upload);
+
+        var input = element.find('input');
+        input.on('change', scope.upload);
 
         var DEFAULT_IMAGE_WIDTH = 1200;
 
@@ -66,7 +67,7 @@ angular.module('bulbsCmsApp')
 
         scope.showImage = function () {
           if (scope.imageData === null) {
-            console.log("Getting selections!");
+            console.log('Getting selections!');
             scope.getImageData();
             return;
           }

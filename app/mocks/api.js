@@ -38,6 +38,25 @@ angular.module('bulbsCmsApp.mockApi').run([
     // things
     $httpBackend.whenGET(/^\/cms\/api\/v1\/things.*/).respond(mockApiData['things.list']);
 
+    // change log
+    $httpBackend.whenGET(/^\/cms\/api\/v1\/log.*/).respond(mockApiData['changelog']);
+
+    // users
+    $httpBackend.whenGET(/^\/cms\/api\/v1\/user\/\d+\/$/).respond(function(method, url, data) {
+      var re = /^\/cms\/api\/v1\/user\/(\d+)\//;
+      var index = re.exec(url)[1];
+
+      var userList = mockApiData['user.list'];
+
+      if(index <= userList.results.length) {
+        return [200, userList.results[index - 1]];
+      } else {
+        return [404, {"detail": "Not found"}];
+      }
+    });
+
+    $httpBackend.whenGET(/^\/cms\/api\/v1\/user\/.*/).respond(mockApiData['user.list']);
+
     // promotions contentlist
     var contentlist = {
       count: 5,
@@ -361,6 +380,90 @@ angular.module('bulbsCmsApp.mockApi').run([
         "x1": 800
       }
     }
+  },
+  "changelog": [
+    {
+      id: 5,
+      action_time: "2014-04-28T06:51:39.427Z",
+      content_type: 15,
+      object_id: "1",
+      user: 1,
+      change_message: "Published"
+    },
+    {
+      id: 4,
+      action_time: "2014-04-28T06:51:39.427Z",
+      content_type: 15,
+      object_id: "1",
+      user: 1,
+      change_message: "Scheduled"
+    },
+    {
+      id: 3,
+      action_time: "2014-04-28T06:51:21.550Z",
+      content_type: 15,
+      object_id: "1",
+      user: 1,
+      change_message: "Waiting for Editor"
+    },
+    {
+      id: 2,
+      action_time: "2014-04-28T06:51:09.732Z",
+      content_type: 15,
+      object_id: "1",
+      user: 1,
+      change_message: "Saved"
+    },
+    {
+      id: 1,
+      action_time: "2014-04-28T06:47:49.576Z",
+      content_type: 15,
+      object_id: "1",
+      user: 1,
+      change_message: "Created"
+    }
+  ],
+  "user.list": {
+    count: 5,
+    next: '/?next',
+    previous: null,
+    results: [
+      {
+        username: "User1",
+        first_name: "First1",
+        last_name: "Last1",
+        id: 1,
+        email: "flast1@theonion.com"
+      },
+      {
+        username: "User2",
+        first_name: "First2",
+        last_name: "Last2",
+        id: 2,
+        email: "flast2@theonion.com"
+      },
+      {
+        username: "User3",
+        first_name: "First3",
+        last_name: "Last3",
+        id: 3,
+        email: "flast3@theonion.com"
+      },
+      {
+        username: "User4",
+        first_name: "First4",
+        last_name: "Last4",
+        id: 4,
+        email: "flast4@theonion.com"
+      },
+      {
+        username: "User5",
+        first_name: "First5",
+        last_name: "Last5",
+        id: 5,
+        email: "flast5@theonion.com"
+      }
+    ]
   },
   'bettycropper.updateSelection': {
     "credit": "No-Look Wnuk",

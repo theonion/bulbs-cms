@@ -22,13 +22,15 @@
     <!-- endbuild -->
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" />
     <!-- build:css({.tmp,app}) styles/main.css -->
-
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/promotion.css" />
+    <link rel="stylesheet" href="styles/targeting.css" />
     <!-- endbuild -->
 
     <script type="text/javascript" src="cms-image.js"></script>
     <script type="text/javascript">
-        var BC_ADMIN_URL = 'http://localimages.avclub.com';
-        var IMAGE_URL = 'http://localimages.avclub.com{{id}}/{{crop}}/{{width}}.{{format}}';
+        var BC_ADMIN_URL = 'http://localimages.avclub.com/avclub/';
+        var IMAGE_URL = 'http://localimages.avclub.com/avclub/{{id}}/{{crop}}/{{width}}.{{format}}';
         var IMAGE_LISTENERS_DISABLED = true;
         var DEFAULT_IMAGE_ID = 0;
     </script>
@@ -125,6 +127,7 @@
     <script src="scripts/services/login.js"></script>
     <script src="scripts/controllers/sendtoeditormodal.js"></script>
     <script src="scripts/filters/tzdate.js"></script>
+    <script src="scripts/controllers/changelogmodal.js"></script>
     <!-- endbuild -->
 
     <script src="bower_components/angular-mocks/angular-mocks.js"></script>
@@ -137,8 +140,8 @@
         angular.module('BettyCropper').constant('BC_API_KEY', 'http://localimages.avclub.com');
 
         angular.module('bulbsCmsApp').constant('routes', {
-            IMAGE_SERVER_URL: 'http://localimages.avclub.com',
-            BC_ADMIN_URL: 'http://localimages.avclub.com',
+            IMAGE_SERVER_URL: 'http://localimages.avclub.com/avclub/',
+            BC_ADMIN_URL: 'http://localimages.avclub.com/avclub/',
             LOADING_IMG_SRC: '/images/loading.gif',
             STATIC_URL: '/static/',
             PARTIALS_URL: '/views/',

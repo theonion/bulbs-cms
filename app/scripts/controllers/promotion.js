@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('PromotionCtrl', function ($scope, $http, $window, $, ContentApi, PromotionApi, promo_options) {
+  .controller('PromotionCtrl', function ($scope, $http, $window, $location, $, ContentApi, PromotionApi, promo_options) {
     $window.document.title = promo_options.namespace + ' | Promotion Tool'; // set title
 
     $scope.$watch('pzone', function (pzone) {
@@ -33,7 +33,22 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.getContent = function () {
-      ContentApi.all('content').getList({published: true})
+      var params = {published: true};
+      var search = $location.search();
+      for (var prop in search) {
+        if (!search.hasOwnProperty(prop)) {
+          continue;
+        }
+        var val = search[prop];
+        if (!val || val === 'false') {
+          continue;
+        }
+        params[prop] = val;
+      }
+      ContentApi.all('content').getList(params)
+        .then(getContentCallback);
+
+      ContentApi.all('content').getList(params)
         .then(getContentCallback);
     };
 

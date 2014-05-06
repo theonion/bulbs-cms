@@ -1,0 +1,14 @@
+<div class="modal-header">
+  <button type="button" class="close" ng-click="$dismiss();" aria-hidden="true">&times;</button>
+  <h4 class="modal-title">Changelog</h4></div>
+
+<div class="modal-body">
+  <ul class="list-group">
+    <li class="list-group-item" ng-repeat="entry in changelog" ng-class='{"list-group-item-success": entry.change_message == "Published", "list-group-item-info": entry.change_message == "Scheduled", "list-group-item-warning": entry.change_message == "Waiting for Editor"}'>
+      <h4 class="list-group-item-heading">
+        {{entry.change_message}}</h4>
+      <p class="list-group-item-text">{{users[entry.user].first_name}} {{users[entry.user].last_name}}</p>
+      <p class="list-group-item-text">{{entry.action_time|tzDate:"MMMM d, yyyy 'at' h:mm a"}}</li></ul></div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" aria-hidden="true" ng-click="$dismiss();">Close</button></div>
