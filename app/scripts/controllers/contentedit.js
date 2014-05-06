@@ -144,6 +144,8 @@ angular.module('bulbsCmsApp')
     });
 
     $scope.saveArticle = function () {
+      $scope.backupToLocalStorage();
+
       var data = $scope.article;
 
       $scope.article.title = $scope.editors.content_title_editor.getContent();
