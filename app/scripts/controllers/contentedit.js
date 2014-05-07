@@ -358,7 +358,7 @@ angular.module('bulbsCmsApp')
 
 
     var backupInterval = (function(){
-      var interval = 300000; //5 minute
+      var interval = 60000; //1 minute
       return $interval(Localstoragebackup.backupToLocalStorage, interval)
     })();
 
