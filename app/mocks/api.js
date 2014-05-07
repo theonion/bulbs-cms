@@ -212,7 +212,7 @@ angular.module('bulbsCmsApp.mockApi').run([
       slug: "this-is-a-draft-article",
       feature_type: null,
       body: "This is a draft article. It was written by First Last. It is a Feature Type article.",
-      last_modified: "2014-04-08T15:35:15.118Z"
+      last_modified: "2015-04-08T15:35:15.118Z"
     }, {
       polymorphic_ctype: "content_content",
       tags: [{

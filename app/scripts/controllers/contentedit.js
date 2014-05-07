@@ -3,7 +3,7 @@
 angular.module('bulbsCmsApp')
   .controller('ContenteditCtrl', function (
     $scope, $routeParams, $http, $window,
-    $location, $timeout, $interval, $compile, $q, $,
+    $location, $timeout, $interval, $compile, $q, $modal, $,
     IfExistsElse, Localstoragebackup, ContentApi, ReviewApi, Login,
     routes)
   {
@@ -147,6 +147,32 @@ angular.module('bulbsCmsApp')
     $scope.saveArticle = function () {
       Localstoragebackup.backupToLocalStorage();
 
+      ContentApi.one('content', $routeParams.id).get().then(function (data) {
+        console.log(data)
+        if(data.last_modified &&
+          $scope.article.last_modified &&
+          moment(data.last_modified) > moment($scope.article.last_modified)){
+          $scope.saveArticleDeferred.reject();
+          $modal.open({
+            templateUrl: routes.PARTIALS_URL + 'modals/last-modified-guard-modal.html',
+            controller: 'LastmodifiedguardmodalCtrl',
+            scope: $scope,
+            resolve: {
+              articleOnPage: function () { return $scope.article; },
+              articleOnServer: function () { return data; },
+            }
+          });
+        }else{
+          $scope.postValidationSaveArticle();
+        }
+      });
+
+      return $scope.saveArticleDeferred.promise;
+
+    };
+
+    $scope.postValidationSaveArticle = function () {
+
       var data = $scope.article;
 
       $scope.article.title = $scope.editors.content_title_editor.getContent();
@@ -201,7 +227,8 @@ angular.module('bulbsCmsApp')
         }
       }
       return $scope.saveArticleDeferred.promise;
-    };
+
+    }
 
     function mediaItemExistsCbkFactory(index) {
       return function (media_item) {

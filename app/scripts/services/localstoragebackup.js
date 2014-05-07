@@ -21,17 +21,20 @@ angular.module('bulbsCmsApp')
     this.keyPrefix = 'articleBodyBackup';
     this.keySuffix = '.' + $routeParams.id + '.body';
 
+    var keyPrefix = this.keyPrefix;
+    var keySuffix = this.keySuffix;
+
     this.backupToLocalStorage = function () {
       try{
         $window.localStorage &&
-          $window.localStorage.setItem(this.keyPrefix + '.' + moment().unix() + this.keySuffix, $("#content-body .editor").html()); //TODO: this is gonna break
+          $window.localStorage.setItem(keyPrefix + '.' + moment().unix() + keySuffix, $("#content-body .editor").html()); //TODO: this is gonna break
       }catch (error){
         console.log("Caught localStorage Error " + error)
         console.log("Trying to prune old entries");
         var localStorageKeys = Object.keys($window.localStorage);
         for(var keyIndex in localStorageKeys){
           var key = $window.localStorage.key(keyIndex);
-          if(key && key.split('.')[0] != this.keyPrefix){
+          if(key && key.split('.')[0] != keyPrefix){
             continue;
           }
           var yesterday = moment().date(moment().date()-1).unix();
