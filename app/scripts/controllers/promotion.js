@@ -112,7 +112,7 @@ angular.module('bulbsCmsApp')
       $scope.promotedArticles.splice(index, 1, $scope.selectedArticle);
     };
 
-    $scope.save = function () {
+    $scope.getSavePromise = function () {
       var items = $scope.promotedArticles.slice(0); //copy
       if (!items[0].id) {
         items.shift();

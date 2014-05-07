@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('saveButton', function ($q, $timeout, routes) {
+  .directive('saveButton', function ($q, $timeout, NProgress, routes) {
     return {
       replace: true,
       restrict: 'E',
@@ -24,21 +24,25 @@ angular.module('bulbsCmsApp')
           }
         });
 
+        NProgress.configure({
+          minimum: 0.4
+        });
+
         scope.save = function () {
+          NProgress.start();
           element
             .prop('disabled', true)
             .removeClass('btn-danger')
-            .addClass('btn-success')
             .html('<i class=\'fa fa-refresh fa-spin\'></i> ' + scope.config.busy);
 
           var combined = $q.all(scope.getPromises());
 
           var promise = combined.then(
             function (result) {
+              NProgress.done();
               element
                 .prop('disabled', false)
                 .removeClass('btn-danger')
-                .addClass('btn-success')
                 .html('<i class=\'fa fa-check\' style=\'color:green\'></i> ' + scope.config.finished);
 
               $timeout(function () {
@@ -48,9 +52,9 @@ angular.module('bulbsCmsApp')
               return result;
             },
             function (reason) {
+              NProgress.done();
               element
                 .prop('disabled', false)
-                .removeClass('btn-success')
                 .addClass('btn-danger')
                 .html('<i class=\'fa fa-frown-o\' style=\'color:red\'></i> ' + scope.config.error);
 
