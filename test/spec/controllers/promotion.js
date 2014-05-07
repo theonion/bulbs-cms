@@ -89,14 +89,17 @@ describe('Controller: PromotionCtrl', function () {
 
   });
 
-  describe('save', function() {
+  describe('getSavePromise', function() {
 
-    it('should send a PUT request to the contentlist endpoint', function() {
+    it('should return a list with one PUT promise', function() {
       var data = {name: 'blah', id:1, content: [{title:"some data"}]};
       scope.pzone = data;
       scope.promotedArticles = data.content;
       $httpBackend.expect('PUT', options.endpoint + data.id + '/').respond(data.content);
-      scope.save();
+      var promises = scope.getSavePromise();
+      expect(promises[0].then).toBeDefined();
+      expect(promises[0].finally).toBeDefined();
+      expect(promises[0].catch).toBeDefined();
       $httpBackend.flush();
     });
 
