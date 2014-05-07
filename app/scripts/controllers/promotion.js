@@ -127,19 +127,7 @@ angular.module('bulbsCmsApp')
         payload.content = $scope.promotedArticles;
       }
       var pzone = ContentApi.restangularizeElement(null, payload, 'contentlist');
-      pzone.put()
-        .then(function (data) {
-          $scope.pzone.content = data.content;
-          $('.save-button').removeClass('btn-danger').addClass('btn-success').html('<i class="fa fa-check"></i> Saved');
-          window.setTimeout(function () {
-            $('.save-button').html('Save');
-          }, 2000);
-        }).catch(function (data) {
-          $('.save-button').removeClass('btn-success').addClass('btn-danger').html('<i class="fa fa-frown-o"></i> Error');
-          window.setTimeout(function () {
-            $('.save-button').html('Save');
-          }, 2000);
-        });
+      return [pzone.put()];
     };
 
     $scope.moveUp = function (index) {
