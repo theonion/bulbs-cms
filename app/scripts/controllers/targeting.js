@@ -42,17 +42,17 @@ angular.module('bulbsCmsApp')
       });
     }
 
-    $scope.getSavePromise = function () {
+    $scope.save = function () {
       var data = {};
       for (var i in $scope.targetingArray) {
         data[$scope.targetingArray[i][0]] = $scope.targetingArray[i][1];
       }
 
-      return [$http({
+      return $http({
         method: 'POST',
         url: tar_options.endpoint + '?url=' + $scope.url,
         data: data
-      })];
+      });
 
     };
 

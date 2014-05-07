@@ -4,6 +4,13 @@ angular.module('bulbsCmsApp')
   .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance, $, moment, Login, routes, article, TIMEZONE_OFFSET) {
     $scope.article = article;
 
+    $scope.pubButton = {
+      idle: 'Publish',
+      busy: 'Publishing',
+      finished: 'Published!',
+      error: 'Error!'
+    }
+
     $scope.$watch('pickerValue', function(newVal){
       var pubTimeMoment = moment(newVal).zone(TIMEZONE_OFFSET);
       $scope.datePickerValue = moment()
@@ -14,15 +21,6 @@ angular.module('bulbsCmsApp')
         .hour(pubTimeMoment.hour())
         .minute(pubTimeMoment.minute());
     });
-
-    $modalInstance.result.then(
-      function(){
-        $('#save-pub-time-button').html('Publish');
-      }, //closed
-      function(){ //dismissed
-        $('#save-pub-time-button').html('Publish');
-      }
-    );
 
     var viewDateFormat = 'MM/DD/YYYY hh:mm a';
     var modelDateFormat = 'YYYY-MM-DDTHH:mmZ';
@@ -70,21 +68,27 @@ angular.module('bulbsCmsApp')
         .format(modelDateFormat)
       var data = {published: newDateTime};
 
-      $('#save-pub-time-button').html('<i class="fa fa-refresh fa-spin"></i> Saving');
-      $http({
+      return $http({
         url: '/cms/api/v1/content/' + $scope.article.id + '/publish/',
         method: 'POST',
         data: data
-      }).success(function (resp) {
-        $scope.article.published = resp.published;
-        $scope.publishSuccessCbk && $scope.publishSuccessCbk({article: $scope.article, response: resp});
-        $modalInstance.close();
-      }).error(function (error, status, data) {
-        if (status === 403) {
-          Login.showLoginModal();
-        }
-        $modalInstance.dismiss();
       });
+    };
+
+    $scope.setPubTimeCbk = function (publish_promise) {
+      publish_promise
+        .then(function (result) {
+          $scope.article.published = result.data.published;
+          console.log(result)
+          $scope.publishSuccessCbk && $scope.publishSuccessCbk({article: $scope.article, response: result.data});
+          $modalInstance.close();
+        })
+        .catch(function (reason) {
+          if (reason.status === 403) {
+            Login.showLoginModal();
+          }
+          $modalInstance.dismiss();
+        });
     };
 
     if($scope.article.published){

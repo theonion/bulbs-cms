@@ -112,7 +112,7 @@ angular.module('bulbsCmsApp')
       $scope.promotedArticles.splice(index, 1, $scope.selectedArticle);
     };
 
-    $scope.getSavePromise = function () {
+    $scope.save = function () {
       var items = $scope.promotedArticles.slice(0); //copy
       if (!items[0].id) {
         items.shift();
@@ -127,7 +127,7 @@ angular.module('bulbsCmsApp')
         payload.content = $scope.promotedArticles;
       }
       var pzone = ContentApi.restangularizeElement(null, payload, 'contentlist');
-      return [pzone.put()];
+      return pzone.put();
     };
 
     $scope.moveUp = function (index) {

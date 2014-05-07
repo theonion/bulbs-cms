@@ -9,7 +9,7 @@ angular.module('bulbsCmsApp')
       scope: {
         'getPromises': '&',
         'saveCbk': '&onSave',
-        'config': '@'
+        'config': '=?'
       },
       link: function (scope, element, attrs) {
 
@@ -35,7 +35,12 @@ angular.module('bulbsCmsApp')
             .removeClass('btn-danger')
             .html('<i class=\'fa fa-refresh fa-spin\'></i> ' + scope.config.busy);
 
-          var combined = $q.all(scope.getPromises());
+          var save_promises = scope.getPromises();
+          if (!angular.isArray(save_promises)) {
+            save_promises = [save_promises];
+          }
+
+          var combined = $q.all(save_promises);
 
           var promise = combined.then(
             function (result) {
@@ -43,7 +48,7 @@ angular.module('bulbsCmsApp')
               element
                 .prop('disabled', false)
                 .removeClass('btn-danger')
-                .html('<i class=\'fa fa-check\' style=\'color:green\'></i> ' + scope.config.finished);
+                .html('<i class=\'fa fa-check\'></i> ' + scope.config.finished);
 
               $timeout(function () {
                 element.html(scope.config.idle);
@@ -61,7 +66,7 @@ angular.module('bulbsCmsApp')
               return reason;
             });
           if (scope.saveCbk) {
-            scope.saveCbk(promise);
+            scope.saveCbk({promise: promise});
           }
         }
       }

@@ -7,5 +7,5 @@
 </div><!--/modal-body-->
 <div class="modal-footer">
     <button class="btn btn-link" aria-hidden="true" ng-click="$dismiss();">Cancel</button>
-    <button id="trash-confirm-button" class="btn btn-danger" aria-hidden="true" ng-click="trashContent(articleId)">Delete</button>
+    <save-button class="btn-danger-copy" get-promises="trashContent()" on-save="trashCbk(promise)" config="deleteButton"/>
 </div><!--/modal-footer-->
