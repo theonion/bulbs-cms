@@ -47,9 +47,6 @@ angular.module('bulbsCmsApp')
       }
       ContentApi.all('content').getList(params)
         .then(getContentCallback);
-
-      ContentApi.all('content').getList(params)
-        .then(getContentCallback);
     };
 
     $scope.$on('$viewContentLoaded', function () {
