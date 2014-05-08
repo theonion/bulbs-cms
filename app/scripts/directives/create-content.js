@@ -58,8 +58,12 @@ angular.module('bulbsCmsApp')
             }
             $window.location.href = $window.location.origin + new_path;
           }).error(function (data, status, headers, config) {
-            console.log('wow. error.');
-            $('button.go').html('<i class="fa fa-frown-o" style="color:red"></i> Error!');
+            if (status === 403) {
+              $('button.go')
+                .html('<i class="fa fa-frown-o" style="color:red"></i> Please Login');
+            } else {
+              $('button.go').html('<i class="fa fa-frown-o" style="color:red"></i> Error!');
+            }
             $scope.gotSave = false;
           });
         }
