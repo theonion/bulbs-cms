@@ -4,7 +4,7 @@ angular.module('bulbsCmsApp')
   .directive('createContent', function ($http, $window, $, IfExistsElse, Login, ContentApi, routes) {
     return {
       restrict: 'E',
-      templateUrl:  routes.PARTIALS_URL + 'create-content.html',
+      templateUrl:  routes.DIRECTIVE_PARTIALS_URL + 'create-content.html',
       controller: function ($scope) {
         $scope.gotTags = false;
         $scope.gotUser = false;
@@ -36,16 +36,10 @@ angular.module('bulbsCmsApp')
             $scope.gotTags = true;
           }
 
-          IfExistsElse.ifExistsElse(
-            ContentApi.all('user').getList({
-              ordering: 'name',
-              search: $window.current_user
-            }),
-            {username: $window.current_user},
-            function (user) { $scope.init.authors = [user]; $scope.gotUser = true; },
-            function (value) { console.log('are you bruce willis in sixth sense? dunno.'); },
-            function (data, status, headers, config) { if (status === 403) { Login.showLoginModal(); } }
-          );
+          $http.get('/users/me/').then(function(data){
+            $scope.init.authors = [data.data];
+            $scope.gotUser = true;
+          });
 
           $scope.gotSave = true;
         };
@@ -64,8 +58,12 @@ angular.module('bulbsCmsApp')
             }
             $window.location.href = $window.location.origin + new_path;
           }).error(function (data, status, headers, config) {
-            console.log('wow. error.');
-            $('button.go').html('<i class="fa fa-frown-o" style="color:red"></i> Error!');
+            if (status === 403) {
+              $('button.go')
+                .html('<i class="fa fa-frown-o" style="color:red"></i> Please Login');
+            } else {
+              $('button.go').html('<i class="fa fa-frown-o" style="color:red"></i> Error!');
+            }
             $scope.gotSave = false;
           });
         }

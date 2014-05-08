@@ -48,6 +48,18 @@ angular.module('bulbsCmsApp')
       });
     };
 
+    $scope.versionBrowserModal = function (article) {
+      return $modal.open({
+        templateUrl: routes.PARTIALS_URL + 'modals/version-browser-modal.html',
+        controller: 'VersionbrowsermodalCtrl',
+        scope: $scope,
+        size: 'lg',
+        resolve: {
+          article: function(){ return article; }
+        }
+      });
+    }
+
     $scope.getStatus = function (article) {
       if(!article || !article.published){
         return 'unpublished';

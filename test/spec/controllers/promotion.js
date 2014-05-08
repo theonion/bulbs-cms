@@ -6,12 +6,13 @@ describe('Controller: PromotionCtrl', function () {
   beforeEach(module('bulbsCmsApp'));
   beforeEach(module('bulbsCmsApp.mockApi'));
 
-  var $httpBackend, $rootScope, PromotionCtrl, scope, options;
+  var $httpBackend, $rootScope, PromotionCtrl, scope, options, mockApiData;
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $injector, promo_options, mockApiData) {
+  beforeEach(inject(function ($controller, $injector, promo_options) {
     $httpBackend = $injector.get('$httpBackend');
     $rootScope = $injector.get('$rootScope');
+    mockApiData = $injector.get('mockApiData');
     options = promo_options;
     scope = $rootScope.$new();
     PromotionCtrl = $controller('PromotionCtrl', {
@@ -29,13 +30,8 @@ describe('Controller: PromotionCtrl', function () {
   describe('getPzones', function () {
 
     it('should get the pzones and the promoted articles', function () {
-      $httpBackend.expect('GET', '/cms/api/v1/contentlist/').respond({
-        results: [{
-          content: [{
-            title: 'blah'
-          }]
-        }]
-      });
+      $httpBackend.expect('GET', '/cms/api/v1/contentlist/')
+        .respond(mockApiData['contentlist.list']);
 
       scope.$apply(function () {
         scope.getPzones();
@@ -91,12 +87,15 @@ describe('Controller: PromotionCtrl', function () {
 
   describe('save', function() {
 
-    it('should send a PUT request to the contentlist endpoint', function() {
+    it('should return a PUT promise', function() {
       var data = {name: 'blah', id:1, content: [{title:"some data"}]};
       scope.pzone = data;
       scope.promotedArticles = data.content;
       $httpBackend.expect('PUT', options.endpoint + data.id + '/').respond(data.content);
-      scope.save();
+      var promise = scope.save();
+      expect(promise.then).toBeDefined();
+      expect(promise.finally).toBeDefined();
+      expect(promise.catch).toBeDefined();
       $httpBackend.flush();
     });
 
