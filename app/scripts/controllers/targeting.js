@@ -47,15 +47,11 @@ angular.module('bulbsCmsApp')
       for (var i in $scope.targetingArray) {
         data[$scope.targetingArray[i][0]] = $scope.targetingArray[i][1];
       }
-      NProgress.start();
-      $http({
+
+      return $http({
         method: 'POST',
         url: tar_options.endpoint + '?url=' + $scope.url,
         data: data
-      }).success(function (data) {
-        NProgress.done();
-      }).error(function () {
-        NProgress.done();
       });
 
     };

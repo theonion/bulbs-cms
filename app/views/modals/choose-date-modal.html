@@ -48,5 +48,5 @@
     data-dismiss="modal">Delete</button>
 
   <button class="btn btn-link" ng-click="$dismiss();">Cancel</button>
-  <button id="save-pub-time-button" class="btn btn-primary" ng-click="setPubTime();">Publish</button>
+  <save-button class="btn-primary" get-promise="setPubTime()" on-save="setPubTimeCbk(promise)" config="pubButton"/>
 </div>
