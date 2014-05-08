@@ -37,8 +37,6 @@ angular.module('bulbsCmsApp')
           }
 
           $http.get('/users/me/').then(function(data){
-            console.log("HEY IM HERE")
-            console.log(data);
             $scope.init.authors = [data.data];
             $scope.gotUser = true;
           });
