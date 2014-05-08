@@ -95,7 +95,7 @@
         }
 
         scale = $(element).width() / s_width;
-        console.log(tmpl(w.IMAGE_URL, {id: image.id, crop: 'original', width: 1200, format:'jpg'}))
+
         element.style.background = 'url(' +
             w.BC_ADMIN_URL + '/' + image.id + '/original/1200.jpg' +
         ')';
