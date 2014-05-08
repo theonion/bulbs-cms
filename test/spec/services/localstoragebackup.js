@@ -54,6 +54,11 @@ describe('Service: Localstoragebackup', function () {
       }
     }
 
+    spyOn(mockWindow.localStorage, 'key');
+    spyOn(mockWindow.localStorage, 'getItem');
+    spyOn(mockWindow.localStorage, 'setItem');
+    spyOn(mockWindow.localStorage, 'removeItem');
+
     module(function ($provide) {
       $provide.value('$window', mockWindow);
     });
@@ -66,6 +71,10 @@ describe('Service: Localstoragebackup', function () {
       }
     }
 
+    module(function ($provide) {
+      $provide.value('$', mockJquery);
+    });
+
   });
 
   beforeEach(inject(function (_Localstoragebackup_) {
@@ -77,6 +86,11 @@ describe('Service: Localstoragebackup', function () {
   });
 
   describe('function backupToLocalStorage', function () {
+
+    it('should insert into localStorage', function () {
+      Localstoragebackup.backupToLocalStorage();
+      expect(mockWindow.localStorage.setItem).toHaveBeenCalled();
+    })
 
   });
 
