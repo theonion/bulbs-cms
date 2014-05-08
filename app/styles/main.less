@@ -213,8 +213,95 @@ nav.navbar{
 
 #targeting .panel-heading, #pzone-content .panel-heading { cursor: default; }
 
+.image-cropper-modal {
+  .modal-body {
+    .breather {
+      padding-top: 20px;
+    }
+    .more-breathing {
+      padding-bottom: 20px
+    }
+    .thumb-list {
+      li {
+        display: inline-block;
+        height: 180px;
+        width: 180px;
+        margin: 0 3px;
+        position: relative;
+        &.preview_thumb {
+          height: 110px;
+          width: 110px;
+          .crop-overlay {
+            display: block;
+            background: rgba(0, 0, 0, 0.6);
+            .overlay-text {
+              font-size: 20px;
+              display: block;
+            }
+          }
+        }
+        &:hover .crop-overlay {
+          background: rgba(0, 0, 0, 0.6);
+          .overlay-text { display: block; }
+        }
+        .crop-overlay {
+          position: absolute;
+          z-index: 2;
+          top: 0; left: 0; right: 0; bottom: 0;
+          .overlay-text {
+            display: none;
+            color: white;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            margin: auto;
+            text-align: center;
+            height: 64px;
+            font-size: 40px;
+          }
+        }
+        .cropped-thumb {
+          overflow: hidden;
+          position: absolute;
+          top: 0; left: 0; right: 0; bottom: 0;
+          margin: 0 auto;
+        }
+      }
+    }
+    .actions {
+      text-align: center;
+      button {
+        width: 100%;
+        margin-bottom: 5px;
+      }
+    }
+    .ratio-paginator span.fa-circle {
+      margin: 0 8px;
+      color: #dedede;
+    }
+  }
+}
+
+.edit-page bettyeditable .image-edit-container {
+  padding: 10px;
+  .edit {
+    bottom: auto;
+    top: 10px;
+  }
+  .remove {
+    bottom: auto;
+    top: 10px;
+  }
+  .caption-alt {
+    position: absolute;
+    bottom: 0px;
+    left: 10px;
+    width: 101%;
+  }
+}
+
 .btn-danger-copy {
   color: #fff;
   background-color: #d9534f;
   border-color: #d43f3a;
 }
+

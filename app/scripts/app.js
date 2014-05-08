@@ -16,15 +16,15 @@ angular.module('bulbsCmsApp', [
   'ngResource',
   'ngSanitize',
   'ngRoute',
-  'restangular',
   'ui.bootstrap',
   'ui.bootstrap.datetimepicker',
+  'restangular',
+  'BettyCropper',
   'jquery',
   'underscore',
   'NProgress',
   'URLify',
-  'moment',
-  'restangular'
+  'moment'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
