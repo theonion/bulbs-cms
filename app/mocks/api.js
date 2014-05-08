@@ -30,7 +30,7 @@ angular.module('bulbsCmsApp.mockApi').run([
       .respond(mockApiData['content.publish.response']);
 
     // content list
-    $httpBackend.whenGET(/^\/cms\/api\/v1\/content.*/).respond(mockApiData['content.list']);
+    $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/$/).respond(mockApiData['content.list']);
 
     // content list
     $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/(\?.*)?$/).respond(mockApiData['content.list']);
