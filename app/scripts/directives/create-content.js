@@ -36,16 +36,10 @@ angular.module('bulbsCmsApp')
             $scope.gotTags = true;
           }
 
-          IfExistsElse.ifExistsElse(
-            ContentApi.all('user').getList({
-              ordering: 'name',
-              search: $window.current_user
-            }),
-            {username: $window.current_user},
-            function (user) { $scope.init.authors = [user]; $scope.gotUser = true; },
-            function (value) { console.log('are you bruce willis in sixth sense? dunno.'); },
-            function (data, status, headers, config) { if (status === 403) { Login.showLoginModal(); } }
-          );
+          $http.get('/users/me/').then(function(data){
+            $scope.init.authors = [data.data];
+            $scope.gotUser = true;
+          });
 
           $scope.gotSave = true;
         };

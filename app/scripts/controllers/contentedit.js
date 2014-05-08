@@ -3,8 +3,9 @@
 angular.module('bulbsCmsApp')
   .controller('ContenteditCtrl', function (
     $scope, $routeParams, $http, $window,
-    $location, $timeout, $interval, $compile, $q, $, moment,
-    IfExistsElse, routes, ContentApi, ReviewApi, Login)
+    $location, $timeout, $interval, $compile, $q, $modal, $,
+    IfExistsElse, Localstoragebackup, ContentApi, ReviewApi, Login,
+    routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
@@ -144,6 +145,34 @@ angular.module('bulbsCmsApp')
     });
 
     $scope.saveArticle = function () {
+      Localstoragebackup.backupToLocalStorage();
+
+      ContentApi.one('content', $routeParams.id).get().then(function (data) {
+        console.log(data)
+        if(data.last_modified &&
+          $scope.article.last_modified &&
+          moment(data.last_modified) > moment($scope.article.last_modified)){
+          $scope.saveArticleDeferred.reject();
+          $modal.open({
+            templateUrl: routes.PARTIALS_URL + 'modals/last-modified-guard-modal.html',
+            controller: 'LastmodifiedguardmodalCtrl',
+            scope: $scope,
+            resolve: {
+              articleOnPage: function () { return $scope.article; },
+              articleOnServer: function () { return data; },
+            }
+          });
+        }else{
+          $scope.postValidationSaveArticle();
+        }
+      });
+
+      return $scope.saveArticleDeferred.promise;
+
+    };
+
+    $scope.postValidationSaveArticle = function () {
+
       var data = $scope.article;
 
       $scope.article.title = $scope.editors.content_title_editor.getContent();
@@ -198,7 +227,8 @@ angular.module('bulbsCmsApp')
         }
       }
       return $scope.saveArticleDeferred.promise;
-    };
+
+    }
 
     function mediaItemExistsCbkFactory(index) {
       return function (media_item) {
@@ -326,43 +356,9 @@ angular.module('bulbsCmsApp')
       }, 1500);
     };
 
-
-    /*hacky first version of local storage backup
-    this is for backing up body contents to local storage
-    for now this is just keying to articleBodyBackup.<timestamp>.<article id>.body
-    if LS is full, it tries deleting old backups
-    TODO: make into a service, make configurable, add tests
-    TODO: capture routeChange and cancel this interval
-    (this works for now because we're doing a full teardown on route change
-    if we ever go back to a real 'single page app' this will fuck up)*/
-    $scope.backupToLocalStorage = function () {
-      var keyPrefix = 'articleBodyBackup';
-      var keySuffix = '.' + $routeParams.id + '.body';
-      try{
-        $window.localStorage &&
-          $window.localStorage.setItem(keyPrefix + '.' + moment().unix() + keySuffix, $("#content-body .editor").html()); //TODO: this is gonna break
-      }catch (error){
-        console.log("Caught localStorage Error " + error)
-        console.log("Trying to prune old entries");
-        var localStorageKeys = Object.keys($window.localStorage);
-        for(var keyIndex in localStorageKeys){
-          var key = $window.localStorage.key(keyIndex);
-          if(key && key.split('.')[0] != keyPrefix){
-            continue;
-          }
-          var yesterday = moment().date(moment().date()-1).unix();
-          var keyStamp = Number(key.split('.')[1]);
-          if(keyStamp < yesterday){
-            $window.localStorage.removeItem(key);
-          }
-        }
-      };
-    }
-
     var backupInterval = (function(){
       var interval = 60000; //1 minute
-      return $interval($scope.backupToLocalStorage, interval)
+      return $interval(Localstoragebackup.backupToLocalStorage, interval)
     })();
-
 
   });

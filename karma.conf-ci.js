@@ -24,6 +24,11 @@ module.exports = function(config) {
       platform: 'OS X 10.9',
       version: '7'
     },
+    'SL_iOS': {
+      base: 'SauceLabs',
+      platform: 'ios',
+      version: '7'
+    }
   };
 
   config.set({

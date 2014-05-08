@@ -12,8 +12,14 @@ describe('Controller: NavCtrl', function () {
   beforeEach(inject(function ($controller, $rootScope) {
     scope = $rootScope.$new();
     NavCtrl = $controller('NavCtrl', {
-      $scope: scope
+      $scope: scope,
+      routes: {PARTIALS_URL: 'cool', NAV_LOGO: 'cool'}
     });
   }));
+
+  it('should attach two values to scope', function () {
+    expect(scope.PARTIALS_URL).toBe('cool');
+    expect(scope.NAV_LOGO).toBe('cool');
+  });
 
 });
