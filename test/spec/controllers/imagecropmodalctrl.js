@@ -1,12 +1,12 @@
 'use strict';
 
-describe('Controller: ModalInstanceCtrl', function () {
+describe('Controller: ImageCropModalCtrl', function () {
 
   // load the controller's module
   beforeEach(module('bulbsCmsApp'));
   beforeEach(module('bulbsCmsApp.mockApi'));
 
-  var $httpBackend, $rootScope, ModalInstanceCtrl,
+  var $httpBackend, $rootScope, ImageCropModalCtrl,
   modalInstance, scope, mockApiData, BettyCropper;
 
   // Initialize the controller and a mock scope
@@ -37,8 +37,8 @@ describe('Controller: ModalInstanceCtrl', function () {
 
     scope = $rootScope.$new();
 
-    ModalInstanceCtrl = $controller(
-      $injector.get('ModalInstanceCtrl'),
+    ImageCropModalCtrl = $controller(
+      'ImageCropModalCtrl',
       {
         $scope: scope,
         $modalInstance: modalInstance,

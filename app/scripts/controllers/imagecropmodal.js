@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .value('ModalInstanceCtrl', function ($scope, $timeout, $modalInstance, BettyCropper, id) {
+  .controller('ImageCropModalCtrl', function ($scope, $timeout, $modalInstance, BettyCropper, id) {
     $scope.cropMode = false;
     $scope.thumb = {height:180, width: 180};
     $scope.preview_thumb = {height: 110, width: 110};
@@ -191,19 +191,4 @@ angular.module('bulbsCmsApp')
 
     $scope.onInit();
 
-  })
-  .factory('openImageCropModal', function ($window, $modal, routes, ModalInstanceCtrl) {
-    var openImageCropModal = function (id) {
-
-      return $modal.open({
-        templateUrl: routes.PARTIALS_URL + "image-crop-modal.html",
-        controller: ModalInstanceCtrl,
-        resolve: {
-          id: function () { return id; }
-        }
-      }).result;
-
-    };
-    $window.openImageCropModal = openImageCropModal; // THIS IS SOME BULLSHIT
-    return openImageCropModal;
-  })
+  });
