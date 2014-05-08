@@ -91,12 +91,15 @@ describe('Controller: PromotionCtrl', function () {
 
   describe('save', function() {
 
-    it('should send a PUT request to the contentlist endpoint', function() {
+    it('should return a PUT promise', function() {
       var data = {name: 'blah', id:1, content: [{title:"some data"}]};
       scope.pzone = data;
       scope.promotedArticles = data.content;
       $httpBackend.expect('PUT', options.endpoint + data.id + '/').respond(data.content);
-      scope.save();
+      var promise = scope.save();
+      expect(promise.then).toBeDefined();
+      expect(promise.finally).toBeDefined();
+      expect(promise.catch).toBeDefined();
       $httpBackend.flush();
     });
 
