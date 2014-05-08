@@ -79,7 +79,6 @@ angular.module('bulbsCmsApp')
       publish_promise
         .then(function (result) {
           $scope.article.published = result.data.published;
-          console.log(result)
           $scope.publishSuccessCbk && $scope.publishSuccessCbk({article: $scope.article, response: result.data});
           $modalInstance.close();
         })

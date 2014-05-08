@@ -7,7 +7,7 @@ angular.module('bulbsCmsApp')
       restrict: 'E',
       templateUrl: routes.PARTIALS_URL + 'save-button.html',
       scope: {
-        'getPromises': '&',
+        'getPromise': '&',
         'saveCbk': '&onSave',
         'config': '=?'
       },
@@ -35,14 +35,9 @@ angular.module('bulbsCmsApp')
             .removeClass('btn-danger')
             .html('<i class=\'fa fa-refresh fa-spin\'></i> ' + scope.config.busy);
 
-          var save_promises = scope.getPromises();
-          if (!angular.isArray(save_promises)) {
-            save_promises = [save_promises];
-          }
+          var save_promise = scope.getPromise();
 
-          var combined = $q.all(save_promises);
-
-          var promise = combined.then(
+          var promise = save_promise.then(
             function (result) {
               NProgress.done();
               element
