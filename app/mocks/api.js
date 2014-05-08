@@ -30,7 +30,7 @@ angular.module('bulbsCmsApp.mockApi').run([
       .respond(mockApiData['content.publish.response']);
 
     // content list
-    $httpBackend.whenGET(/^\/cms\/api\/v1\/content.*/).respond(mockApiData['content.list']);
+    $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/$/).respond(mockApiData['content.list']);
 
     // content list
     $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/(\?.*)?$/).respond(mockApiData['content.list']);
@@ -84,6 +84,9 @@ angular.module('bulbsCmsApp.mockApi').run([
     $httpBackend.whenPUT('/cms/api/v1/contentlist/4/').respond(contentlist.results[3]);
     $httpBackend.whenPUT('/cms/api/v1/contentlist/5/').respond(contentlist.results[4]);
 
+    // adding these into mockApiData for now. they'll be generated later.
+    mockApiData['contentlist.list'] = contentlist;
+    mockApiData['contentlist.list.1'] = contentlist.results[0];
 
     // templates
     $httpBackend.whenGET(/^\/views\//).passThrough();
@@ -92,7 +95,7 @@ angular.module('bulbsCmsApp.mockApi').run([
     $httpBackend.when('GET', /^http:\/\/localimages\.avclub\.com.*/).passThrough();
     $httpBackend.when('POST', /^http:\/\/localimages\.avclub\.com.*/).passThrough();
   }
-]).constant('mockApiData', {
+]).value('mockApiData', {
   // NOTE: double-quotes are used because JSON
   "content.create": {
     "title": "A Test Article"
