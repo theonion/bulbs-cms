@@ -3,7 +3,7 @@
 angular.module('bulbsCmsApp')
   .controller('PzoneCtrl', function ($scope, $http, $window, $, ContentApi, PromotionApi, routes) {
     //set title
-    $window.document.title = 'AVCMS | Pzone Editor';
+    $window.document.title = routes.CMS_NAMESPACE + ' | Pzone Editor';
 
     function getPzone() {
       PromotionApi.one('pzone/' + $scope.pzoneName).get()

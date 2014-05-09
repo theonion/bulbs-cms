@@ -43,7 +43,7 @@ angular.module('bulbsCmsApp')
     getContent();
 
     $scope.$watch('article.title', function(){
-      $window.document.title = 'AVCMS | Editing ' + ($scope.article && $('<span>' + $scope.article.title + '</span>').text());
+      $window.document.title = routes.CMS_NAMESPACE + ' | Editing ' + ($scope.article && $('<span>' + $scope.article.title + '</span>').text());
     });
 
     $('body').removeClass();

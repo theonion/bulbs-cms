@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('PromotionCtrl', function ($scope, $http, $window, $location, $, ContentApi, PromotionApi, promo_options) {
-    $window.document.title = promo_options.namespace + ' | Promotion Tool'; // set title
+  .controller('PromotionCtrl', function ($scope, $window, $location, $, ContentApi, PromotionApi, promo_options, routes) {
+    $window.document.title = routes.CMS_NAMESPACE + ' | Promotion Tool'; // set title
 
     $scope.$watch('pzone', function (pzone) {
       if (pzone && pzone.content && pzone.content.length) {

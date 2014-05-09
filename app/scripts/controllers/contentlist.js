@@ -3,11 +3,12 @@
 angular.module('bulbsCmsApp')
   .controller('ContentlistCtrl', function (
     $scope, $http, $timeout, $location,
-    $routeParams, $window, $q, $, _, moment, ContentApi, LOADING_IMG_SRC)
+    $routeParams, $window, $q, $, _, moment, ContentApi,
+    LOADING_IMG_SRC, routes)
   {
     $scope.LOADING_IMG_SRC = LOADING_IMG_SRC;
     //set title
-    $window.document.title = 'AVCMS | Content';
+    $window.document.title = routes.CMS_NAMESPACE + ' | Content';
 
     $scope.pageNumber = $location.search().page || '1';
     $scope.myStuff = false;
