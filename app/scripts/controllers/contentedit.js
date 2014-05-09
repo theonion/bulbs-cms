@@ -148,7 +148,6 @@ angular.module('bulbsCmsApp')
       Localstoragebackup.backupToLocalStorage();
 
       ContentApi.one('content', $routeParams.id).get().then(function (data) {
-        console.log(data)
         if(data.last_modified &&
           $scope.article.last_modified &&
           moment(data.last_modified) > moment($scope.article.last_modified)){
