@@ -2,9 +2,14 @@ angular.module('bulbsCmsApp.mockApi').run([
   '$httpBackend', 'mockApiData',
   function($httpBackend, mockApiData) {
     // content instance
-    $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/\d+\/$/).respond(function(method, url, data) {
+    function getContentId(url) {
       var re = /^\/cms\/api\/v1\/content\/(\d+)\//;
       var index = re.exec(url)[1];
+      return index;
+    }
+
+    $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/\d+\/$/).respond(function(method, url, data) {
+      var index = getContentId(url);
 
       var contentList = mockApiData['content.list'];
 
@@ -15,18 +20,19 @@ angular.module('bulbsCmsApp.mockApi').run([
       }
     });
 
+    $httpBackend.whenPUT(/^\/cms\/api\/v1\/content\/\d+\/$/).respond(function(method, url, data) {
+      return [200, data];
+    });
+
     $httpBackend.whenPOST('/cms/api/v1/content/', mockApiData['content.create'])
       .respond(function(method, url, data) {
         return [201, mockApiData['content.create.response']];
       });
 
-    $httpBackend.whenPUT('/cms/api/v1/content/4/', mockApiData['content.edit'])
-      .respond(mockApiData['content.edit.response']);
-
-    $httpBackend.whenPOST(/\/cms\/api\/v1\/content\/\d+\/trash\//, mockApiData['content.trash'])
+    $httpBackend.whenPOST(/\/cms\/api\/v1\/content\/\d+\/trash\//)
       .respond(mockApiData['content.trash.response']);
 
-    $httpBackend.whenPOST(/\/cms\/api\/v1\/content\/\d+\/publish\//, mockApiData['content.publish'])
+    $httpBackend.whenPOST(/\/cms\/api\/v1\/content\/\d+\/publish\//)
       .respond(mockApiData['content.publish.response']);
 
     // content list
@@ -42,20 +48,32 @@ angular.module('bulbsCmsApp.mockApi').run([
     $httpBackend.whenGET(/^\/cms\/api\/v1\/log.*/).respond(mockApiData['changelog']);
 
     // users
-    $httpBackend.whenGET(/^\/cms\/api\/v1\/user\/\d+\/$/).respond(function(method, url, data) {
-      var re = /^\/cms\/api\/v1\/user\/(\d+)\//;
+    $httpBackend.whenGET(/^\/cms\/api\/v1\/author\/\d+\/$/).respond(function(method, url, data) {
+      var re = /^\/cms\/api\/v1\/author\/(\d+)\//;
       var index = re.exec(url)[1];
 
-      var userList = mockApiData['user.list'];
+      var authorList = mockApiData['author.list'];
 
-      if(index <= userList.results.length) {
-        return [200, userList.results[index - 1]];
+      if(index <= authorList.results.length) {
+        return [200, authorList.results[index - 1]];
       } else {
         return [404, {"detail": "Not found"}];
       }
     });
 
-    $httpBackend.whenGET(/^\/cms\/api\/v1\/user\/.*/).respond(mockApiData['user.list']);
+    $httpBackend.whenGET(/^\/cms\/api\/v1\/author\/.*/).respond(mockApiData['author.list']);
+
+    $httpBackend.whenGET('/users/logout/').respond(function(method, url, data){
+      return [200]
+    });
+
+    $httpBackend.whenGET(/\/users\/me\/?/).respond({
+      username: "JesseWoghin",
+      first_name: "Jesse",
+      last_name: "Woghin",
+      id: 35823,
+      email: "jwoghin@theonion.com"
+    });
 
     // promotions contentlist
     var contentlist = {
@@ -387,6 +405,14 @@ angular.module('bulbsCmsApp.mockApi').run([
   },
   "changelog": [
     {
+      id: 6,
+      action_time: "2014-04-29T06:51:39.427Z",
+      content_type: 15,
+      object_id: "1",
+      user: 6,
+      change_message: "Saved"
+    },
+    {
       id: 5,
       action_time: "2014-04-28T06:51:39.427Z",
       content_type: 15,
@@ -427,7 +453,7 @@ angular.module('bulbsCmsApp.mockApi').run([
       change_message: "Created"
     }
   ],
-  "user.list": {
+  "author.list": {
     count: 5,
     next: '/?next',
     previous: null,
@@ -466,6 +492,13 @@ angular.module('bulbsCmsApp.mockApi').run([
         last_name: "Last5",
         id: 5,
         email: "flast5@theonion.com"
+      },
+      {
+        username: "Username6",
+        first_name: "",
+        last_name: "",
+        id: 6,
+        email: "flast6@theonion.com"
       }
     ]
   },
