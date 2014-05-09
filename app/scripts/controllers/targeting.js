@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('TargetingCtrl', function ($scope, $http, $window, $q, $location, tar_options, NProgress) {
-    $window.document.title = tar_options.namespace + ' | Targeting Editor';
+  .controller('TargetingCtrl', function ($scope, $http, $window, $q, $location, tar_options, NProgress, routes) {
+    $window.document.title = routes.CMS_NAMESPACE + ' | Targeting Editor';
 
     NProgress.configure({
       minimum: 0.4
