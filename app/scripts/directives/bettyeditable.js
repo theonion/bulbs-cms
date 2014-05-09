@@ -9,6 +9,7 @@ angular.module('bulbsCmsApp')
         'image': '=',
         'addStyles': '@',
         'placeholderText': '@',
+        'hideMetas': '=',
         'ratio': '@'
       },
       controller: function ($scope, $element) {
