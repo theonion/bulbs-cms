@@ -1,13 +1,16 @@
 <div class="modal-header">
   <button type="button" class="close" ng-click="$dismiss();" aria-hidden="true">&times;</button>
-  <h4 class="modal-title">Newer Version on Server</h4></div>
+  <h4 class="modal-title">Whoops!</h4></div>
 
 <div class="modal-body last-modified-preview">
-  <h4>There is a more recent version of the article on the server</h4>
-  <h5>Here is the body of the newer version</h5>
-  <div class="body-preview" ng-bind-html="articleOnServer.body"></div></div>
+  <h5>Looks like {{lastSavedBy|user}} is also editing this document. Would you like to overwrite {{lastSavedBy|user}}'s changes?</h5>
+  <div class="well" style="text-align:center;">
+    <button class="btn btn-warning" aria-hidden="true" ng-click="loadFromServer();">Use this version</button>
+    <button class="btn btn-danger" aria-hidden="true" ng-click="saveAnyway();">Use my version</button>
+    <button class="btn btn-default" aria-hidden="true" ng-click="$dismiss();">Cancel</button></div>
+
+  <h5>Here's {{lastSavedBy|user}}'s version:</h5>
+  <div class="body-preview well" ng-bind-html="articleOnServer.body"></div></div>
 
 <div class="modal-footer">
-    <button class="btn btn-default" aria-hidden="true" ng-click="$dismiss();">Cancel</button>
-    <button class="btn btn-warning" aria-hidden="true" ng-click="loadFromServer();">Load Latest Version From Server</button>
-    <button class="btn btn-danger" aria-hidden="true" ng-click="saveAnyway();">Save Anyway</button></div>
+    <button class="btn btn-default" aria-hidden="true" ng-click="$dismiss();">Cancel</button></div>
