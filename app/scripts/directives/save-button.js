@@ -58,7 +58,7 @@ angular.module('bulbsCmsApp')
                 .addClass('btn-danger')
                 .html('<i class=\'fa fa-frown-o\' style=\'color:red\'></i> ' + scope.config.error);
 
-              return reason;
+              return $q.reject(reason);
             });
           if (scope.saveCbk) {
             scope.saveCbk({promise: promise});
