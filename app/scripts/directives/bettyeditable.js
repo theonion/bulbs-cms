@@ -52,7 +52,6 @@ angular.module('bulbsCmsApp')
         };
       },
       link: function (scope, element, attrs) {
-
         var input = element.find('input');
         input.on('change', scope.upload);
 
@@ -61,9 +60,11 @@ angular.module('bulbsCmsApp')
         var ratioWidth = parseInt(scope.ratio.split('x')[0], 10);
         var ratioHeight = parseInt(scope.ratio.split('x')[1], 10);
 
-        scope.uploadFile = function () {
-          input[0].click();
-        }
+        element
+          .find('#betty-editable-add-image')
+          .bind('click', function () {
+            input[0].click();
+          })
 
         scope.showImage = function () {
           if (scope.imageData === null) {
@@ -151,7 +152,7 @@ angular.module('bulbsCmsApp')
           })
         }
 
-        if (scope.image && scope.image.id) {
+        if (scope.image) {
           scope.showImage();
         }
 
