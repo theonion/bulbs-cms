@@ -144,7 +144,7 @@ td.author { max-width: 150px; }
         button.go{ width: 100%; margin-top: 5px; } } }
 
 /* navbar */
-nav.navbar{ ul li:not(:first-child){ border-left: 1px solid #F1F1F1; }
+nav.navbar ul li:not(:first-child){ border-left: 1px solid #F1F1F1; }
 
 .filterwidget { position: relative; }
 
@@ -210,11 +210,13 @@ nav.navbar{ ul li:not(:first-child){ border-left: 1px solid #F1F1F1; }
 
                 .overlay-text { font-size: 20px; display: block; } }
 
-        &:hover .crop-overlay { background: rgba(0, 0, 0, 0.6); .overlay-text { display: block; } }
+            &:hover .crop-overlay { background: rgba(0, 0, 0, 0.6);
 
-            .crop-overlay { position: absolute; z-index: 2; top: 0; left: 0; right: 0; bottom: 0;
+                .overlay-text { display: block; } } }
 
-                .overlay-text { display: none; color: white; position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto; text-align: center; height: 64px; font-size: 40px; } }
+        .crop-overlay { position: absolute; z-index: 2; top: 0; left: 0; right: 0; bottom: 0;
+
+            .overlay-text { display: none; color: white; position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto; text-align: center; height: 64px; font-size: 40px; } }
 
         .cropped-thumb { overflow: hidden; position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: 0 auto; } }
 
