@@ -135,6 +135,7 @@
     <script src="scripts/controllers/versionbrowsermodal.js"></script>
     <script src="scripts/services/localstoragebackup.js"></script>
     <script src="scripts/controllers/lastmodifiedguardmodal.js"></script>
+    <script src="scripts/filters/user.js"></script>
     <!-- endbuild -->
 
     <script src="bower_components/angular-mocks/angular-mocks.js"></script>
@@ -156,7 +157,8 @@
             DIRECTIVE_PARTIALS_URL: '/views/',
             MEDIA_ITEM_PARTIALS_URL: '/cms/api/partials/media_items/',
             CACHEBUSTER: '?' + Date.now(),
-            NAV_LOGO: '/images/onion.png'
+            NAV_LOGO: '/images/onion.png',
+            CMS_NAMESPACE: 'Smoove'
         });
 
         angular.module('bulbsCmsApp').constant('IMAGE_SERVER_URL', 'http://localimages.avclub.com');
@@ -175,13 +177,10 @@
         // ****** CMS Plugins ****** \\
 
         angular.module('bulbsCmsApp').constant('tar_options', {
-          namespace: 'Woodruff',
           endpoint: '/ads/targeting'
         });
 
         angular.module('bulbsCmsApp').constant('promo_options', {
-          namespace: 'Woodruff',
-          endpoint: '/cms/api/v1/contentlist/',
           upper_limits: {}
         });
     </script>
