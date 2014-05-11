@@ -71,6 +71,20 @@ angular.module('bulbsCmsApp')
 
       },
       link: function (scope, element, attrs) {
+        console.log(element.find("#content-title"))
+
+        //HEY THIS SUCKS
+        //TODO: This sucks!
+        angular.element('#content-title .editor').bind('input', function () {
+          scope.$apply(function(){
+            scope.newTitle = angular.element('#content-title .editor').html();
+            var tmp = document.createElement("DIV");
+            tmp.innerHTML = scope.newTitle;
+            scope.newTitleText = (tmp.textContent || tmp.innerText || "").replace(/^\s+|\s+$/g, '');
+          });
+
+        });
+
         $(element).find('a.create-content').on('click', function (e) {
           $('a.create-content.active').removeClass('active');
           $(this).addClass('active');
@@ -102,8 +116,8 @@ angular.module('bulbsCmsApp')
           $('.new-title').focus();
         });
 
-        $(element).find('.new-title').on('keydown', function (e) {
-          if (e.keyCode === 13) {
+        $(element).find('.editor').on('keydown', function (e) {
+          if (e.keyCode === 13 && scope.newTitleText) {
             $(element).find('.go').click();
           }
         });
