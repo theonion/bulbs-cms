@@ -15,7 +15,7 @@
 						<div ng-repeat="article in promotedArticles track by $index" data-index="{{$index}}">
 							<div ng-if="article.image.id" style="position: relative;">
 								<img class="loading-image" style="width: 100%;" src="/static/cms/img/loading.gif">
-								<div data-index="{{$index}}" class="media-object pull-left article-0{{$index+1}} image" style="position: absolute; top: 0; width: 100%; height: 100%;" data-type="image" data-format="jpg" data-alt="{{article.title}}" responsive-image image-id="{{ article.image.id }}" crop="16x9">
+								<div data-index="{{$index}}" class="media-object pull-left article-0{{$index+1}} image" data-type="image" data-format="jpg" data-alt="{{article.title}}" responsive-image image-id="{{ article.image.id }}" crop="16x9">
 									<div></div>
 								</div>
 							</div>
