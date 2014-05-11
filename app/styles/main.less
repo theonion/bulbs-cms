@@ -254,17 +254,21 @@ nav.navbar ul li:not(:first-child){ border-left: 1px solid #F1F1F1; }
 
     .panel-body { margin-bottom: 0; }
 
-    .article { position: relative; }
+    .article { position: relative; 
 
-    .close { margin-right: 5px; }
+        h1.h5 { margin-top: 0; clear: both; } }
 
-    .media { margin-top: 10px; border-bottom: 1px solid #ccc; padding-bottom: 10px; padding-right: 40px; }
+    .close { margin: 10px 5px 0 0; }
 
-    .move-up, .move-down { margin: 0; position: absolute; right: 10px; z-index: 10; }
+    .media { border-bottom: 1px solid #ccc; padding: 10px 10px 10px 0; }
 
-    .move-up { top: 5px }
+    .move-up, .move-down { margin: 0; position: absolute; right: 10px; z-index: 10; cursor: pointer; 
 
-    .move-down { bottom: 10px }
+        &:hover { color: lighten(#428BCA,20%); } }
+
+    .move-up { top: 5px; }
+
+    .move-down { bottom: 0; }
 
     .sidebar-articles-container { position: relative }
 
@@ -274,7 +278,7 @@ nav.navbar ul li:not(:first-child){ border-left: 1px solid #F1F1F1; }
 
             button { height: 50%; width: 65px; } } }
 
-    .promotion-area.select-mode .article-container { border: 1px solid #CCC; box-shadow: 0px 0px 70px #CCC; cursor: pointer;
+    .promotion-area.select-mode .article-container { border: 1px solid #CCC; box-shadow: 0px 0px 70px #CCC; cursor: pointer; margin-top: 5px; padding-left: 10px;
 
         &:hover { border: 1px solid #428BCA; box-shadow: 0px 0px 70px #428BCA; } }
 
