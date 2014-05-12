@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('createContent', function ($http, $window, $, IfExistsElse, Login, ContentApi, routes) {
+  .directive('createContent', function ($http, $window, $, IfExistsElse, Login, ContentApi, routes, AUTO_ADD_AUTHOR) {
     return {
       restrict: 'E',
       templateUrl:  routes.DIRECTIVE_PARTIALS_URL + 'create-content.html',
@@ -36,10 +36,14 @@ angular.module('bulbsCmsApp')
             $scope.gotTags = true;
           }
 
-          $http.get('/users/me/').then(function(data){
-            $scope.init.authors = [data.data];
+          if(AUTO_ADD_AUTHOR){
+            $http.get('/users/me/').then(function(data){
+              $scope.init.authors = [data.data];
+              $scope.gotUser = true;
+            });
+          }else{
             $scope.gotUser = true;
-          });
+          }
 
           $scope.gotSave = true;
         };
