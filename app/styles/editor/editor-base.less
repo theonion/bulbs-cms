@@ -1,0 +1,189 @@
+* {
+    margin:0px;
+    padding:0px;
+}
+.edit-page {
+
+    a {
+        cursor:pointer;
+    }
+
+    input,textarea, button,
+    .editor:focus {
+        outline: none;
+    }
+
+    body {
+        font-family: Helvetica, Arial, sans-serif;
+        background-color: #ddd ;
+    }
+
+    #editor {
+        padding: 20px 0;
+        min-height: 100%;
+    }
+
+    .editor-wrapper {
+        margin: 0px auto;
+        position:relative;
+        background-color: transparent;
+    }
+
+
+    .editorPlaceholder,
+    .editor {
+        background-color: transparent;
+        position:relative;
+        z-index:20;
+        width: auto;
+        margin: 0px;
+        padding: 10px 100px;
+    }
+    .editorPlaceholder {
+        z-index: 10;
+        position:absolute;
+    }
+
+    .editor blockquote,
+    .editor ul,
+    .editor ol,
+    .editor p,
+    .editor>div {
+        min-height:24px;
+    }
+
+    .editor blockquote {
+        clear:both;
+        padding: 0 30px;
+    }
+
+
+    .editor ul,
+    .editor ol {
+        clear:both;
+        padding-left:  45px;
+        padding-right:  45px;
+
+    }
+
+    .editor li {
+        margin-bottom: 4px;
+    }
+
+
+    #content-wrapper {
+        margin-top: 100px;
+        margin: 20px auto 0;
+        border:1px #ddd solid;
+        
+    }
+
+    #content-wrapper.container {
+        max-width: 842px;
+        min-width: 400px;
+        width: auto;
+        padding:0px;
+    }
+
+
+    /* some mediaquery stuff */
+
+
+
+    #content-title .editor,
+    #content-title .editorPlaceholder {
+        padding-bottom: 10px;
+    }
+    #content-subhead .editor,
+    #content-subhead .editorPlaceholder {
+        padding-bottom: 10px;
+        padding-top: 10px;
+    }
+
+    #content-body .editor {
+        min-height: 600px;
+        padding-bottom: 500px;
+    }
+
+
+    .label {
+        //opacity: .7;
+    }
+
+
+
+    .visualize .editor ul,
+    .visualize .editor ol {
+        background-color: rgba(166,226,45,.1);
+    }
+
+    .visualize .editor div {
+        background-color: rgba(249,39,114,.5); /* don't want these to appear */
+    }
+    .visualize .editor p
+     {
+        background-color: rgba(102,217,239,.1);
+    }
+    .visualize .editor blockquote {
+        background-color: rgba(174,129,255,.1);
+    }
+
+    blockquote {
+        border-left: 5px solid #ddd;
+    }
+
+    /* status bar */
+
+    #statusbar {
+        display:none;
+        position: fixed;
+        bottom: 0;
+        right : 0;
+        width : 100px;
+        height : 40px;
+        background-color: #ddd;
+        border-top: 1px #ccc solid;
+        border-left: 1px #ccc solid;
+        border-top-left-radius: 4px;
+        padding: 4px;
+        font-size: 12px;
+        color: #333;
+    }
+
+    #statusbar button {
+        display:inline-block;
+        width: auto;
+        text-align:center;
+    }
+
+
+
+    /* smaller screens */
+    @media screen and (min-width: 320px) and (max-width: 1024px) {
+    #content-wrapper.container {
+        padding:0px;
+        margin: 0;
+        margin-right: 120px
+
+    }
+    .editorPlaceholder,
+    .editor {
+        padding: 0 50px;
+    }
+    .document-tools .toolbar-contents {
+        right: 60px;
+        padding-left:0px;
+        left: auto;
+    }
+
+    }
+    @media screen and (min-width: 320px) and (max-width: 800px) {
+    .editorPlaceholder,
+    .editor {
+        padding: 0 20px;
+    }
+    }
+
+}
+
+
