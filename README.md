@@ -28,5 +28,6 @@ Deploying
 3. grunt build
 4. git commit
 5. git push
-6. make a release
-7. update bower versions accordingly
+6. make a [release](https://github.com/theonion/bulbs-cms/releases)
+7. update [bower.json](https://github.com/theonion/bulbs-cms/blob/master/bower.json) with the new version number
+8. update bower versions elsewhere to deploy the new version
