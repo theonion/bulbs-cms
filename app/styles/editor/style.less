@@ -1,0 +1,71 @@
+.edit-page-nav.navbar-nav { margin: 0 auto; float: none; }
+
+#content-body .document-tools.fixed { position: fixed }
+
+.edit-page { clear: both }
+
+.drawer { position: fixed; left: 0; background-color: rgb(230, 230, 240); z-index: 250; -webkit-transition: margin 0.25s, padding 0.25s; }
+
+.bottom-drawer { display: none; bottom: 0px; margin-bottom: 0px; }
+
+#tag-list { margin: 0; display: block; }
+
+.image-edit-container { position: relative;
+
+	img { max-width: 100%; }
+
+	&:hover .image-edit-overlay { display: block }
+
+	& + div { margin-top: 10px; } }
+
+.image-edit-overlay { position: absolute; top: 0px; left: 0px; display: none; }
+
+#info-row { position: fixed; margin: 0 auto; width: 50%; position: fixed; top: 10px; right: 0; left: 0; z-index: 100;
+
+	dl { margin-top: 10px; margin-bottom: 0;
+
+		&:first-child { margin-top: 0; } } }
+
+.extra-info-section:not(:first-child) { margin-top: 20px; padding-top: 20px; border-top: 1px solid #E5E5E5; }
+
+.sponsor-info .main-image {
+
+	.image { width: 80px; margin-left: auto; margin-right: auto; }
+
+	.image-edit-overlay .edit { right: 40px }
+
+	.image-edit-overlay .remove, .image-edit-overlay .edit { top: -3px; bottom: auto; left: auto; } }
+
+#extra-info-modal {
+
+	.main-image img { width: 100% }
+
+	.sponsor-info .main-image-meta, .sponsor-info .main-image .edit { display: none }
+
+	.main-image.thumbnail-image .remove { display: none } }
+
+#cropperModal { z-index: 100000 }
+
+.errors-panel ul { list-style-type: none }
+
+.status-bar { position: fixed; bottom: 0px; right: 0px; width: 60px; font-size: 14px; text-align: right; color: #666; padding: 15px 20px 15px 20px; background-color: #ddd; }
+
+#embed-modal {
+
+	textarea, input[type=text] { width: 100%; max-width: 100%; font-family: courier, fixed; font-size: 14px; padding: 5px; background-color: #F1F1F1; }
+
+	textarea { height: 200px; resize: vertical; } }
+
+section .h6, section .h5 { margin: 0px; font-weight: 700; }
+
+section .row .well { margin-bottom: 20px; }
+
+.metadata .list-inline { margin-left: 0; }
+
+.metadata .label, #authors .label { background-color: rgba(150,150,150,1); padding: 4px 8px 5px !important; margin-top: 5px; margin-right: 5px;
+
+	a.remove { color: #fff; margin-right: -2px; } }
+
+#feature-type-container { display: block; margin: 5px 0 10px; }
+
+.metadata label { margin-top: 10px; }
