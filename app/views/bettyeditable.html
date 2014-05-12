@@ -8,11 +8,11 @@
             <div class="edit">
                 <button name="inline_edit" ng-click="editImage();">EDIT CROPS</button></div>
             <div class="clearfix row caption-alt">
-                <div class="main-image-meta main-image-caption col-md-6 form-group" ng-hide="hideCaption">
+                <div class="main-image-meta main-image-caption col-md-6 form-group" ng-hide="hideMetas">
                     <label class="control-label small">Caption</label>
                     <input type="text" class="form-control" placeholder="Brief explanation of image" ng-model="image.caption" />
                 </div>
-                <div class="main-image-meta main-image-alt col-md-6 form-group">
+                <div class="main-image-meta main-image-alt col-md-6 form-group" ng-hide="hideMetas">
                     <label class="control-label small">Alt text</label>
                     <input type="text" class="form-control" placeholder="Describes image's contents" ng-model="image.alt" />
                 </div>

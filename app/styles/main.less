@@ -1,26 +1,16 @@
-.cf:before,
-.cf:after {
-    content: " "; /* 1 */
-    display: table; /* 2 */
-}
+@import url('bootstrap-navbar-override.css');
 
-.cf:after {
-    clear: both;
-}
+.cf:before, .cf:after { content: " "; display: table; }
 
-/**
- * For IE 6/7 only
- * Include this rule to trigger hasLayout and contain floats.
- */
-.cf {
-    *zoom: 1;
-}
+.cf:after { clear: both; }
+
+.cf { *zoom: 1; }
 
 textarea, input, button { outline: none; }
 
 .image img{ width: 100%; }
 
-body { background-color: #F1F1F1 }
+body { background-color: #F1F1F1; padding-top: 55px; }
 
 #footer { text-align: center }
 
@@ -40,9 +30,9 @@ body { background-color: #F1F1F1 }
 
     &.form-horizontal .control-group, &.form-horizontal legend { margin-bottom: 10px } }
 
-#logo { width: 50px; height: 50px;
+#logo { width: 35px; height: 35px; padding: 5px;
 
-    img { width: 50px; height: 50px; } }
+    img { width: 100%; height: 100%; } }
 
 .navbar-brand { padding: 0px; margin-left: 15px; }
 
@@ -156,12 +146,7 @@ td.author { max-width: 150px; }
         button.go{ width: 100%; margin-top: 5px; } } }
 
 /* navbar */
-nav.navbar{
-    ul li:not(:first-child){
-        border-left: 1px solid #F1F1F1;
-    }
-}
-
+nav.navbar ul li:not(:first-child){ border-left: 1px solid #F1F1F1; }
 
 .filterwidget { position: relative; }
 
@@ -209,99 +194,102 @@ nav.navbar{
 
 #pzone-content {
 
+    .panel-heading { cursor: default; }
+
     .close { margin-top: 5px; } }
 
-#targeting .panel-heading, #pzone-content .panel-heading { cursor: default; }
+.image-cropper-modal .modal-body {
 
-.image-cropper-modal {
-  .modal-body {
-    .breather {
-      padding-top: 20px;
-    }
-    .more-breathing {
-      padding-bottom: 20px
-    }
-    .thumb-list {
-      li {
-        display: inline-block;
-        height: 180px;
-        width: 180px;
-        margin: 0 3px;
-        position: relative;
-        &.preview_thumb {
-          height: 110px;
-          width: 110px;
-          .crop-overlay {
-            display: block;
-            background: rgba(0, 0, 0, 0.6);
-            .overlay-text {
-              font-size: 20px;
-              display: block;
-            }
-          }
-        }
-        &:hover .crop-overlay {
-          background: rgba(0, 0, 0, 0.6);
-          .overlay-text { display: block; }
-        }
-        .crop-overlay {
-          position: absolute;
-          z-index: 2;
-          top: 0; left: 0; right: 0; bottom: 0;
-          .overlay-text {
-            display: none;
-            color: white;
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            margin: auto;
-            text-align: center;
-            height: 64px;
-            font-size: 40px;
-          }
-        }
-        .cropped-thumb {
-          overflow: hidden;
-          position: absolute;
-          top: 0; left: 0; right: 0; bottom: 0;
-          margin: 0 auto;
-        }
-      }
-    }
-    .actions {
-      text-align: center;
-      button {
-        width: 100%;
-        margin-bottom: 5px;
-      }
-    }
-    .ratio-paginator span.fa-circle {
-      margin: 0 8px;
-      color: #dedede;
-    }
-  }
-}
+    .breather { padding-top: 20px; }
 
-.edit-page bettyeditable .image-edit-container {
-  padding: 10px;
-  .edit {
-    bottom: auto;
-    top: 10px;
-  }
-  .remove {
-    bottom: auto;
-    top: 10px;
-  }
-  .caption-alt {
-    position: absolute;
-    bottom: 0px;
-    left: 10px;
-    width: 101%;
-  }
-}
+    .more-breathing { padding-bottom: 20px }
 
-.btn-danger-copy {
-  color: #fff;
-  background-color: #d9534f;
-  border-color: #d43f3a;
-}
+    .thumb-list li { display: inline-block; height: 180px; width: 180px; margin: 0 3px; position: relative;
 
+        &.preview_thumb { height: 110px; width: 110px;
+
+            .crop-overlay { display: block; background: rgba(0, 0, 0, 0.6);
+
+                .overlay-text { font-size: 20px; display: block; } }
+
+            &:hover .crop-overlay { background: rgba(0, 0, 0, 0.6);
+
+                .overlay-text { display: block; } } }
+
+        .crop-overlay { position: absolute; z-index: 2; top: 0; left: 0; right: 0; bottom: 0;
+
+            .overlay-text { display: none; color: white; position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto; text-align: center; height: 64px; font-size: 40px; } }
+
+        .cropped-thumb { overflow: hidden; position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: 0 auto; } }
+
+    .actions { text-align: center;
+
+        button { width: 100%; margin-bottom: 5px; } }
+
+    .ratio-paginator span.fa-circle { margin: 0 8px; color: #dedede; } }
+
+.edit-page bettyeditable .image-edit-container { padding: 10px;
+
+  .edit { bottom: auto; top: 10px; }
+
+  .remove { bottom: auto; top: 10px; }
+
+  .caption-alt { position: absolute; bottom: 0px; left: 10px; width: 101%; } }
+
+.btn-danger-copy { color: #fff; background-color: #d9534f; border-color: #d43f3a; }
+
+#targeting {
+
+    .panel-heading { cursor: default; }
+
+    .targeting-group { margin-bottom: 0;
+
+        th { padding-top: 0; }
+
+        td, th { border-top: 0 !important; } }
+
+    .targeting-table { padding-top: 0; } }
+
+.promotion-container {
+
+    .promotion-area { margin-bottom: 20px; }
+
+    .panel-body { margin-bottom: 0; }
+
+    .article { position: relative; 
+
+        h1.h5 { margin-top: 0; clear: both; padding-top: 5px; } }
+
+    .close { margin: 10px 5px 0 0; }
+
+    .media { border-bottom: 1px solid #ccc; padding: 10px 10px 10px 0; }
+
+    .move-up, .move-down { margin: 0; position: absolute; right: 10px; z-index: 10; cursor: pointer; 
+
+        &:hover { color: lighten(#428BCA,20%); } }
+
+    .move-up { top: 5px; }
+
+    .move-down { bottom: 0; }
+
+    .sidebar-articles-container { position: relative }
+
+    .sidebar-article-container { border: 1px solid #CCC; border-radius: 4px; overflow: auto; position: relative;
+
+        .button-container { height: 100%; position: absolute; width: 60px;
+
+            button { height: 50%; width: 65px; } } }
+
+    .promotion-area.select-mode .article-container { border: 1px solid #CCC; box-shadow: 0px 0px 70px #CCC; cursor: pointer; margin-top: 5px; padding-left: 10px;
+
+        &:hover { border: 1px solid #428BCA; box-shadow: 0px 0px 70px #428BCA; } }
+
+    .promotion-container {
+
+        .filterwidget { padding: 0; width: 100%; }
+
+        .sidebar-articles-container { width: 100% } } }
+
+.save-button { opacity: 0.8; margin-bottom:10px; 
+
+    &:hover { opacity: 1; } }

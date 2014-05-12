@@ -94,7 +94,7 @@
           </div>
           <section class="form-group enter-title hidden" id="createcontent-02">
             <h5>2. Enter a headline <small>(You'll be able to change this later.)</small></h5>
-            <input type="text" class="form-control new-title" ng-model="newTitle">
+            <div id="content-title" class="article-header heading"></div>
             <p class="text-muted small"><em>Adding placeholder title text helps you find this content while it's still in a draft state.</em></p>
           </section>
         </div>
@@ -107,29 +107,51 @@
   </div>
 </div>
 
-<script type="text/javascript">
-    function showEnterTitle(){
-        $("#create .choose-content-type").fadeOut(200, function(){
-            $("#create .enter-title").fadeIn(200, function(){
-                $("#create .enter-title input.new-title").focus();
-            });
-        });
-    }
-    function showChooseContentType(){
-        $("#create .enter-title").fadeOut(200, function(){
-            $("#create .choose-content-type").fadeIn(200);
-        });
-    }
-    $('#create').on('hidden.bs.modal', function(){
-        $("#create #createcontent-01").removeClass('hidden');
-        $("#create #createcontent-02").addClass('hidden');
-        $("#create .next-pane").removeClass('hidden');
-        $("#create .go").addClass('hidden');
-        $("#create a.create-content.active").removeClass('active');
-        $("#create input.new-title").val('');
+<style>
+  .editorPlaceholder, .editor{
+    padding: 10px 0px 10px 0px !important;
+  }
+</style>
 
-    });
-    $('#create').on('show.bs.modal', function(){
-        $("#choose-contenttype a.create-content:first").click();
-    })
+<script type="text/javascript">
+  window.Editor({
+    /* global options */
+    element:document.getElementById("content-title"),
+    placeholder: "Type your Headline",
+    allowNewline: false,
+    allowNbsp: false,
+    characterLimit: 200,
+    settings: {
+        font: "title",
+        visualize: false
+    },
+    sanitize: {
+      elements: ['i', 'em'],
+      remove_contents: ['script', 'style', ],
+    }
+  });
+  function showEnterTitle(){
+      $("#create .choose-content-type").fadeOut(200, function(){
+          $("#create .enter-title").fadeIn(200, function(){
+              $("#create .enter-title input.new-title").focus();
+          });
+      });
+  }
+  function showChooseContentType(){
+      $("#create .enter-title").fadeOut(200, function(){
+          $("#create .choose-content-type").fadeIn(200);
+      });
+  }
+  $('#create').on('hidden.bs.modal', function(){
+      $("#create #createcontent-01").removeClass('hidden');
+      $("#create #createcontent-02").addClass('hidden');
+      $("#create .next-pane").removeClass('hidden');
+      $("#create .go").addClass('hidden');
+      $("#create a.create-content.active").removeClass('active');
+      $("#create input.new-title").val('');
+
+  });
+  $('#create').on('show.bs.modal', function(){
+      $("#choose-contenttype a.create-content:first").click();
+  });
 </script>

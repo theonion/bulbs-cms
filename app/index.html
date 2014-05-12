@@ -23,8 +23,6 @@
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" />
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css" />
-    <link rel="stylesheet" href="styles/promotion.css" />
-    <link rel="stylesheet" href="styles/targeting.css" />
     <link rel="stylesheet" href="styles/version-browser.css" />
     <link rel="stylesheet" href="styles/last-modified-preview.css" />
     <!-- endbuild -->
@@ -173,6 +171,7 @@
         angular.module('bulbsCmsApp').constant('CACHEBUSTER', "?" + Date.now());
         angular.module('bulbsCmsApp').constant('TIMEZONE_OFFSET', '-0500');
         angular.module('bulbsCmsApp').constant('TIMEZONE_LABEL', 'CST');
+        angular.module('bulbsCmsApp').constant('AUTO_ADD_AUTHOR', true);
 
         // ****** CMS Plugins ****** \\
 

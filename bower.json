@@ -1,6 +1,6 @@
 {
   "name": "bulbs-cms",
-  "version": "0.5.1",
+  "version": "0.5.4",
   "dependencies": {
     "json3": "~3.2.6",
     "es5-shim": "~2.1.0",
@@ -21,7 +21,7 @@
     "jcrop": "0.9.12",
     "urlify": "theonion/urlify",
     "angular-bootstrap-datetimepicker": "~0.2.2",
-    "onion-editor": "^0.1.5",
+    "onion-editor": "^0.1.8",
     "restangular": "~1.4.0"
   },
   "devDependencies": {
