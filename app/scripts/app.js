@@ -7,7 +7,7 @@ angular.module('NProgress', []).value('NProgress', window.NProgress);
 angular.module('URLify', []).value('URLify', window.URLify);
 angular.module('jquery', []).value('$', window.$);
 angular.module('moment', []).value('moment', window.moment);
-
+angular.module('PNotify', []).value('PNotify', window.PNotify);
 
 // ****** App Config ****** \\
 
@@ -24,7 +24,8 @@ angular.module('bulbsCmsApp', [
   'underscore',
   'NProgress',
   'URLify',
-  'moment'
+  'moment',
+  'PNotify'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
@@ -63,12 +64,50 @@ angular.module('bulbsCmsApp', [
   STATIC_URL + "**"]);*/
 
 })
-.config(function ($provide) {
+.config(function ($provide, $httpProvider) {
   $provide.decorator('$exceptionHandler', function($delegate) {
     return function(exception, cause) {
       $delegate(exception, cause);
       window.Raven.captureException(exception);
     }
+  });
+
+  $httpProvider.interceptors.push(function ($q, $window, PNotify) {
+    return {
+      responseError: function (rejection) {
+        console.log(rejection)
+        var stack = {
+          animation: true,
+          dir1: 'up',
+          dir2: 'left'
+        };
+        new PNotify({
+          title: 'You found a bug!',
+          text:
+            'Looks like something just went wrong, and we need your help to fix it! \
+            Report it, and we\'ll make sure it never happens again.',
+          type: 'error',
+          confirm: {
+            confirm: true,
+            align: 'left',
+            buttons: [{
+              text: 'Report Bug',
+              addClass: 'btn-danger pnotify-report-bug',
+              click: function (notice) {
+                $window.openBugReportModal();
+              }
+            }, {addClass: 'hidden'}] // removing the "Cancel" button
+          },
+          buttons: {
+            sticker: false
+          },
+          icon: 'fa fa-bug pnotify-error-icon',
+          addclass: "stack-bottomright",
+          stack: stack
+        });
+        return $q.reject(rejection);
+      }
+    };
   });
 })
 .run(function ($rootScope, $http, $cookies) {
