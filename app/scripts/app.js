@@ -30,7 +30,7 @@ angular.module('bulbsCmsApp', [
   $locationProvider.html5Mode(true);
 
     $routeProvider
-      .when('/cms/app/list/:queue/', {
+      .when('/cms/app/list/', {
         templateUrl: routes.PARTIALS_URL + 'contentlist.html',
         controller: 'ContentlistCtrl',
         reloadOnSearch: false
@@ -53,7 +53,7 @@ angular.module('bulbsCmsApp', [
         controller: 'PzoneCtrl'
       })
       .otherwise({
-        redirectTo: '/cms/app/list/published/'
+        redirectTo: '/cms/app/list/'
       });
 
   //TODO: whitelist staticonion.

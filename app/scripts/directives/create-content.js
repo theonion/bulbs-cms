@@ -75,8 +75,6 @@ angular.module('bulbsCmsApp')
 
       },
       link: function (scope, element, attrs) {
-        console.log(element.find("#content-title"))
-
         //HEY THIS SUCKS
         //TODO: This sucks!
         angular.element('#content-title .editor').bind('input', function () {

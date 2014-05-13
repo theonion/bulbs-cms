@@ -140,6 +140,7 @@
     <script src="scripts/services/localstoragebackup.js"></script>
     <script src="scripts/controllers/lastmodifiedguardmodal.js"></script>
     <script src="scripts/filters/user.js"></script>
+    <script src="scripts/directives/status-filter.js"></script>
     <!-- endbuild -->
 
     <script src="bower_components/angular-mocks/angular-mocks.js"></script>
@@ -148,6 +149,10 @@
 
 
     <script type="text/javascript">
+        //these probably don't need to be constants
+        //but there probably isn't any reason for them to not be
+        //so...
+        // ¯\_(ツ)_/¯
         angular.module('BettyCropper').constant('IMAGE_SERVER_URL', 'http://localimages.avclub.com');
         angular.module('BettyCropper').constant('BC_API_KEY', 'http://localimages.avclub.com');
 
@@ -178,6 +183,12 @@
         angular.module('bulbsCmsApp').constant('TIMEZONE_OFFSET', '-0500');
         angular.module('bulbsCmsApp').constant('TIMEZONE_LABEL', 'CST');
         angular.module('bulbsCmsApp').constant('AUTO_ADD_AUTHOR', true);
+
+        /*angular.module('bulbsCmsApp').config(function (StatusFilterProvider) {
+            StatusFilterProvider.setStatuses([
+
+            ]);
+        });*/
 
         // ****** CMS Plugins ****** \\
 
