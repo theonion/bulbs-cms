@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .provider('StatusFilterProvider', function () {
-    var statuses = [
+  .provider('StatusFilterOptions', function () {
+    var _statuses = [
       {label: 'Draft', key: 'status', value: 'draft'},
       {label: 'Published', key: 'before', value: function(){ return moment().format('YYYY-MM-DDTHH:mmZ')}},
       {label: 'Scheduled', key: 'after', value: function(){ return moment().format('YYYY-MM-DDTHH:mmZ')}},
@@ -10,26 +10,26 @@ angular.module('bulbsCmsApp')
     ];
 
     this.setStatuses = function (statuses) {
-      statuses = statuses;
+      _statuses = statuses;
     }
 
     this.$get = function () {
       return {
         getStatuses: function () {
-          return statuses;
+          return _statuses;
         }
       };
     };
 
   })
-  .directive('statusFilter', function ($location, _, StatusFilterProvider, routes) {
+  .directive('statusFilter', function ($location, _, StatusFilterOptions, routes) {
     return {
       templateUrl: routes.PARTIALS_URL + 'status-filter.html',
       restrict: 'E',
       replace: true,
       controller: 'ContentlistCtrl',
       link: function postLink(scope, element, attrs) {
-        scope.options = StatusFilterProvider.getStatuses();
+        scope.options = StatusFilterOptions.getStatuses();
 
         scope.isActive = function (option){
           if(option.key && option.key in $location.search()){
