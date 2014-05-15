@@ -9,7 +9,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <h4 class="modal-title">Create Content</h4></div>
       <div class="modal-body">
-        <div class="form-group container-fluid" id="createcontent-01">
+        <div class="form-group container-fluid" ng-show="panel == 1" id="createcontent-01">
           <div id="choose-articletype" class="row ">
             <section id="choose-contenttype" class="primary col-xs-4" data-toggle="buttons">
               <h5>1. Choose a type:</h5>
@@ -92,16 +92,17 @@
               </div>
             </div>
           </div>
-          <section class="form-group enter-title hidden" id="createcontent-02">
+          <section class="form-group enter-title edit-page" ng-show="panel == 2" id="createcontent-02">
             <h5>2. Enter a headline <small>(You'll be able to change this later.)</small></h5>
-            <div id="content-title" class="article-header heading"></div>
+            <div id="content-title" class="article-header heading title"></div>
             <p class="text-muted small"><em>Adding placeholder title text helps you find this content while it's still in a draft state.</em></p>
           </section>
         </div>
         <div class="modal-footer">
+          <button class="btn btn-default pull-left" ng-show="panel == 2" ng-click="panel = 1;" aria-hidden="true">Back</button>
           <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancel</button>
-          <button class="btn btn-primary next-pane" aria-hidden="true">Next <span class="fa fa-angle-double-right"></span></button>
-          <button type="button" class="btn btn-success go" ng-class="{ hidden: !newTitle || newTitle.length === 0 }" ng-click="newArticle();">Create article</button>
+          <button class="btn btn-primary next-pane" aria-hidden="true" ng-show="panel == 1" ng-click="panel = 2;">Next <span class="fa fa-angle-double-right"></span></button>
+          <button type="button" class="btn btn-success go" ng-show="panel == 2" ng-class="{ disabled: !newTitleText || newTitleText.length === 0 }" ng-click="newArticle();">Create article</button>
         </div>
       </div>
   </div>
@@ -109,7 +110,7 @@
 
 <style>
   .editorPlaceholder, .editor{
-    padding: 10px 0px 10px 0px !important;
+    padding: 10px 20px !important;
   }
 </style>
 
@@ -142,15 +143,7 @@
           $("#create .choose-content-type").fadeIn(200);
       });
   }
-  $('#create').on('hidden.bs.modal', function(){
-      $("#create #createcontent-01").removeClass('hidden');
-      $("#create #createcontent-02").addClass('hidden');
-      $("#create .next-pane").removeClass('hidden');
-      $("#create .go").addClass('hidden');
-      $("#create a.create-content.active").removeClass('active');
-      $("#create input.new-title").val('');
 
-  });
   $('#create').on('show.bs.modal', function(){
       $("#choose-contenttype a.create-content:first").click();
   });

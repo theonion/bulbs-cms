@@ -77,14 +77,18 @@ angular.module('bulbsCmsApp')
       link: function (scope, element, attrs) {
         //HEY THIS SUCKS
         //TODO: This sucks!
+        scope.panel = 1;
+
         angular.element('#content-title .editor').bind('input', function () {
           scope.$apply(function(){
             scope.newTitle = angular.element('#content-title .editor').html();
-            var tmp = document.createElement("DIV");
-            tmp.innerHTML = scope.newTitle;
-            scope.newTitleText = (tmp.textContent || tmp.innerText || "").replace(/^\s+|\s+$/g, '');
           });
+        });
 
+        scope.$watch('newTitle', function(newTitle){
+          var tmp = document.createElement("DIV");
+          tmp.innerHTML = scope.newTitle || "";
+          scope.newTitleText = (tmp.textContent || tmp.innerText || "").replace(/^\s+|\s+$/g, '');
         });
 
         $(element).find('a.create-content').on('click', function (e) {
@@ -112,9 +116,7 @@ angular.module('bulbsCmsApp')
           console.log('next clicked');
           console.log(scope.contentType);
           console.log(scope.init);
-          $('#createcontent-01').addClass('hidden');
-          $('#createcontent-02').removeClass('hidden');
-          $('button.next-pane:not(.hide)').addClass('hidden');
+          scope.panel = 2;
           $('.new-title').focus();
         });
 
@@ -123,6 +125,13 @@ angular.module('bulbsCmsApp')
             $(element).find('.go').click();
           }
         });
+
+        $('#create').on('hidden.bs.modal', function(){
+          $("#create #content-title .editor").html("<p><br></p>");
+          scope.newTitle = "";
+          scope.panel = 1;
+        });
+
       }
 
     };
