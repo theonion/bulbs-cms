@@ -7,6 +7,7 @@ angular.module('NProgress', []).value('NProgress', window.NProgress);
 angular.module('URLify', []).value('URLify', window.URLify);
 angular.module('jquery', []).value('$', window.$);
 angular.module('moment', []).value('moment', window.moment);
+angular.module('keypress', []).value('keypress', window.keypress);
 
 
 // ****** App Config ****** \\
@@ -24,7 +25,8 @@ angular.module('bulbsCmsApp', [
   'underscore',
   'NProgress',
   'URLify',
-  'moment'
+  'moment',
+  'keypress'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);

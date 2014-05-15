@@ -3,7 +3,8 @@
 angular.module('bulbsCmsApp')
   .controller('ContenteditCtrl', function (
     $scope, $routeParams, $http, $window,
-    $location, $timeout, $interval, $compile, $q, $modal, $,
+    $location, $timeout, $interval, $compile, $q, $modal,
+    $, _, keypress,
     IfExistsElse, Localstoragebackup, ContentApi, ReviewApi, Login,
     routes)
   {
@@ -13,7 +14,8 @@ angular.module('bulbsCmsApp')
     $scope.CACHEBUSTER = routes.CACHEBUSTER;
 
     var getArticleCallback = function (data) {
-      $window.article = $scope.article = data;
+      $window.article = $scope.article = _.clone(data);
+      $scope.last_saved_article = _.clone(data);
       if ($location.search().rating_type && (!data.ratings || data.ratings.length === 0)) {
         $scope.article.ratings = [{
           type: $location.search().rating_type
@@ -170,6 +172,10 @@ angular.module('bulbsCmsApp')
 
     };
 
+    var listener = new keypress.Listener();
+    listener.simple_combo('cmd s', function(e) { $scope.saveArticle(); });
+    listener.simple_combo('ctrl s', function(e) { $scope.saveArticle(); });
+
     $scope.postValidationSaveArticle = function () {
 
       var data = $scope.article;
@@ -283,10 +289,10 @@ angular.module('bulbsCmsApp')
       setTimeout(function () {
           $('#save-article-btn').html('Save');
         }, 1000);
-      $scope.article = resp;
+      $scope.article = _.clone(resp);
+      $scope.last_saved_article = _.clone(resp);
       $scope.errors = null;
       $location.search('rating_type', null); //maybe just kill the whole query string with $location.url($location.path())
-      dirtGone();
       $scope.saveArticleDeferred.resolve(resp);
     }
 
@@ -294,19 +300,23 @@ angular.module('bulbsCmsApp')
       return obj.first_name + ' ' + obj.last_name;
     };
 
-    function waitForDirt() {
-      $('.edit-page').one('change input', 'input,div.editor', function () {
-        //listen for any kind of input or change and bind a onbeforeunload event
+    $scope.$watch('article', function(){
+      if(_.isEqual($scope.article, $scope.last_saved_article)){
+        $scope.articleIsDirty = false;
+      }else{
+        $scope.articleIsDirty = true;
+      }
+    }, true);
+
+    $scope.$watch('articleIsDirty', function(){
+      if($scope.articleIsDirty){
         window.onbeforeunload = function () {
           return 'You have unsaved changes. Leave anyway?';
         };
-      });
-    }
-
-    function dirtGone() {
-      window.onbeforeunload = function () {};
-    }
-    waitForDirt();
+      }else{
+        window.onbeforeunload = function () {};
+      }
+    });
 
     $('#extra-info-modal').on('shown.bs.modal', function () { $window.picturefill(); });
 
@@ -315,6 +325,7 @@ angular.module('bulbsCmsApp')
       $scope.editors[name] = new window.Editor(options);
       angular.element(id + ' .editor').bind('input', function () {
         $scope.article[articleField] = $scope.editors[name].getContent();
+        $scope.$apply();
       });
 
 
