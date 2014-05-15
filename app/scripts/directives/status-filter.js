@@ -44,6 +44,7 @@ angular.module('bulbsCmsApp')
               return true;
             }
           }
+          return false;
         };
 
         scope.filterByStatus = function (option) {
@@ -63,14 +64,3 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-
-
-/*
-
-  <a class="btn btn-default" href="" ng-click="filterByStatus('draft');" ng-class="{ active: queue == 'draft' }" rel="keep-params">Draft</a>
-  <a class="btn btn-default" ng-class="{ active: queue == 'waiting' }" rel="keep-params">Edit</a>
-  <a class="btn btn-default" href="/cms/app/list/published/" ng-class="{ active: queue == 'published' }" rel="keep-params">Published</a>
-  <a class="btn btn-default" href="/cms/app/list/scheduled/" ng-class="{ active: queue == 'scheduled' }" rel="keep-params">Scheduled</a>
-  <a class="btn btn-default" href="/cms/app/list/all/" ng-class="{ active: queue == 'all' }" rel="keep-params">All</a></div>
-
-*/
