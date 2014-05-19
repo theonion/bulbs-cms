@@ -7,6 +7,7 @@ angular.module('NProgress', []).value('NProgress', window.NProgress);
 angular.module('URLify', []).value('URLify', window.URLify);
 angular.module('jquery', []).value('$', window.$);
 angular.module('moment', []).value('moment', window.moment);
+angular.module('keypress', []).value('keypress', window.keypress);
 
 
 // ****** App Config ****** \\
@@ -24,43 +25,44 @@ angular.module('bulbsCmsApp', [
   'underscore',
   'NProgress',
   'URLify',
-  'moment'
+  'moment',
+  'keypress'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
 
-    $routeProvider
-      .when('/cms/app/list/:queue/', {
-        templateUrl: routes.PARTIALS_URL + 'contentlist.html',
-        controller: 'ContentlistCtrl',
-        reloadOnSearch: false
-      })
-      .when('/cms/app/edit/:id/', {
-        templateUrl: routes.PARTIALS_URL + 'contentedit.html',
-        controller: 'ContenteditCtrl',
-      })
-      .when('/cms/app/promotion/', {
-        templateUrl:  routes.PARTIALS_URL + 'promotion.html',
-        controller: 'PromotionCtrl',
-        reloadOnSearch: false
-      })
-      .when('/cms/app/targeting/', {
-        templateUrl: routes.PARTIALS_URL + 'targeting-editor.html',
-        controller: 'TargetingCtrl'
-      })
-      .when('/cms/app/pzones/', {
-        templateUrl: routes.PARTIALS_URL + 'pzones.html',
-        controller: 'PzoneCtrl'
-      })
-      .otherwise({
-        redirectTo: '/cms/app/list/published/'
-      });
+  $routeProvider
+    .when('/cms/app/list/', {
+      templateUrl: routes.PARTIALS_URL + 'contentlist.html',
+      controller: 'ContentlistCtrl',
+      reloadOnSearch: false
+    })
+    .when('/cms/app/edit/:id/', {
+      templateUrl: routes.PARTIALS_URL + 'contentedit.html',
+      controller: 'ContenteditCtrl',
+    })
+    .when('/cms/app/promotion/', {
+      templateUrl:  routes.PARTIALS_URL + 'promotion.html',
+      controller: 'PromotionCtrl',
+      reloadOnSearch: false
+    })
+    .when('/cms/app/targeting/', {
+      templateUrl: routes.PARTIALS_URL + 'targeting-editor.html',
+      controller: 'TargetingCtrl'
+    })
+    .when('/cms/app/pzones/', {
+      templateUrl: routes.PARTIALS_URL + 'pzones.html',
+      controller: 'PzoneCtrl'
+    })
+    .otherwise({
+      redirectTo: '/cms/app/list/'
+    });
 
-  //TODO: whitelist staticonion.
-  $sceProvider.enabled(false);
-  /*.resourceUrlWhitelist([
-  'self',
-  STATIC_URL + "**"]);*/
+    //TODO: whitelist staticonion.
+    $sceProvider.enabled(false);
+    /*.resourceUrlWhitelist([
+    'self',
+    STATIC_URL + "**"]);*/
 
 })
 .config(function ($provide) {
