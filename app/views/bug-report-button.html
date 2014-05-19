@@ -1,0 +1,23 @@
+<button class="btn btn-primary btn-sm bug-report-button" ng-hide="modalVisible" ng-click="showModal()"><i class="fa fa-chevron-left"></i>Report A Bug</button>
+<div ng-show="modalVisible" class="bug-report-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" ng-click="dismissModal();" aria-hidden="true">&times;</button>
+      <h4 class="modal-title">Tell us what happened</h4>
+    </div>
+    <div class="modal-body">
+      <section class="form-group">
+          <h6>When I tried to:</h6>
+          <textarea class="form-control" ng-model="report.whenITry"></textarea>
+          <h6>I thought this would happen:</h6>
+          <textarea class="form-control" ng-model="report.iExpected"></textarea>
+          <h6>...but this happened instead:</h6>
+          <textarea class="form-control" ng-model="report.butIGot"></textarea>
+      </section>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-sm btn-link" ng-click="dismissModal();">Cancel</button>
+      <save-button class="btn-primary btn-sm" get-promise="sendToWebtech();" on-save="sendToWebtechCbk(promise)" config="reportButton"></save-button>
+    </div>
+  </div>
+</div>
