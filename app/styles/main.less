@@ -34,8 +34,6 @@ body { background-color: #F1F1F1; padding-top: 55px; }
 
     img { height: 50%; max-height: 22px; } }
 
-.navbar-brand { padding: 0px; margin-left: 0; }
-
 #button-area { position: fixed; right: 25px; top: 25px; display: block; }
 
 #appbar { position: absolute; top: 0px; left: 0px; background-color: #333333; width: 100%; font-size: 13px;
@@ -146,9 +144,19 @@ td.author { max-width: 150px; }
         button.go{ width: 100%; margin-top: 5px; } } }
 
 /* navbar */
-nav.navbar ul li:not(:first-child){ border-left: 1px solid #F1F1F1; }
+nav.navbar {
+
+    ul li {
+
+        &:not(:first-child){ border-left: 1px solid #F1F1F1; }
+
+        i { padding-right: 4px; margin-left: -4px; } }
+
+    .navbar-brand { padding: 0px; margin-left: 0; } }
 
 #save-article-btn { width: 100px; font-size: inherit; margin: 1px 0; }
+
+.changeable span { border-bottom: 1px dotted #777 !important; }
 
 .filterwidget { position: relative; }
 
