@@ -75,7 +75,6 @@ angular.module('bulbsCmsApp', [
   $httpProvider.interceptors.push(function ($q, $window, PNotify) {
     return {
       responseError: function (rejection) {
-        console.log(rejection)
         var stack = {
           animation: true,
           dir1: 'up',
@@ -94,7 +93,7 @@ angular.module('bulbsCmsApp', [
               text: 'Report Bug',
               addClass: 'btn-danger pnotify-report-bug',
               click: function (notice) {
-                $window.openBugReportModal();
+
               }
             }, {addClass: 'hidden'}] // removing the "Cancel" button
           },
