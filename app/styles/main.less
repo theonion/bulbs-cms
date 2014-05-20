@@ -30,9 +30,9 @@ body { background-color: #F1F1F1; padding-top: 55px; }
 
     &.form-horizontal .control-group, &.form-horizontal legend { margin-bottom: 10px } }
 
-#logo { height: auto; padding: 8px 8px 5px 8px;
+#logo { height: auto; padding: 7px 8px;
 
-    img { height: 50%; max-height: 22px; } }
+    img { max-height: 20px; } }
 
 #button-area { position: fixed; right: 25px; top: 25px; display: block; }
 
@@ -146,6 +146,8 @@ td.author { max-width: 150px; }
 /* navbar */
 nav.navbar {
 
+    .navbar-toggle { margin-right: 1px; border: 0; border-radius: 0; padding: 10px; }
+
     ul li {
 
         &:not(:first-child){ border-left: 1px solid #F1F1F1; }
@@ -154,7 +156,11 @@ nav.navbar {
 
     .navbar-brand { padding: 0px; margin-left: 0; } }
 
-#save-article-btn { width: 100px; font-size: inherit; margin: 1px 0; }
+.navbar-save { font-size: inherit; line-height: inherit; margin: 1px;
+
+    &.visible-xs-inline { border-radius: 0; } }
+
+@media (min-width: 768px) { #save-article-btn { width: 100px; margin-right: 18px; margin-left: 3px; } }
 
 .changeable span { border-bottom: 1px dotted #777 !important; }
 
@@ -300,6 +306,19 @@ nav.navbar {
 
         .sidebar-articles-container { width: 100% } } }
 
-.save-button { opacity: 0.8; margin-bottom:10px; 
+.save-button { opacity: 0.8; margin-bottom:10px;
 
     &:hover { opacity: 1; } }
+
+// workaround for https://github.com/twbs/bootstrap/issues/10263
+@media screen and (max-width: 768px) {
+    .visible-xs-inline {
+        display: inline-block !important;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .visible-xs-inline {
+        display: none !important;
+    }
+}
