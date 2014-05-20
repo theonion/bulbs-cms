@@ -23,10 +23,16 @@
     </div>
     <div class="well">
       <label>Time ({{TIMEZONE_LABEL}})</label>
-      <timepicker minute-step="5" ng-model="$parent.timePickerValue" mousewheel="false"></timepicker>
-      <div class="btn-group">
-        <a class="btn-default btn" ng-click="setTimeShortcut('now');">Now</a>
-        <a class="btn-default btn" ng-click="setTimeShortcut('midnight');">Midnight</a>
+      <div class="row">
+        <div class="col-sm-4 col-xs-12">
+          <timepicker minute-step="5" ng-model="$parent.timePickerValue" mousewheel="false"></timepicker>
+        </div>
+        <div class="col-sm-8 col-xs-12">
+          <div class="btn-group" style="margin-top: 34px;">
+            <a class="btn-default btn" ng-click="setTimeShortcut('now');">Now</a>
+            <a class="btn-default btn" ng-click="setTimeShortcut('midnight');">Midnight</a>
+          </div>
+        </div>
       </div>
     </div>
 </div>
