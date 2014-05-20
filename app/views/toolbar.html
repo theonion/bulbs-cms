@@ -38,8 +38,7 @@
 
     <li class="content-status pull-right" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'unpublished'">
       <a href="" ng-click="saveArticle().then(sendToEditorModal);">
-          <i class="glyphicon glyphicon-send" ng-hide="article.status == 'Waiting for Editor'"></i>
-          <span class="fa fa-check" ng-show="article.status == 'Waiting for Editor'"></span> Send to Editors...</a></li>
+          <i class="glyphicon glyphicon-send"></i> Send to Editors...</a></li>
 
     <li class="content-status pull-right" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'unpublished'">
       <a href="" ng-click="saveArticle().then(pubTimeModal);">
