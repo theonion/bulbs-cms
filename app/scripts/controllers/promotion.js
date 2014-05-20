@@ -1,11 +1,12 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('PromotionCtrl', function ($scope, $window, $location, $, ContentApi, PromotionApi, promo_options, routes) {
+  .controller('PromotionCtrl', function ($scope, $window, $location, $, _, ContentApi, PromotionApi, promo_options, routes) {
     $window.document.title = routes.CMS_NAMESPACE + ' | Promotion Tool'; // set title
 
     $scope.$watch('pzone', function (pzone) {
       if (pzone && pzone.content && pzone.content.length) {
+        $scope.lastSavedPromotedArticles = _.clone(pzone.content.slice(0));
         $scope.promotedArticles = pzone.content.slice(0);
       } else {
         $scope.promotedArticles = [{
@@ -15,6 +16,14 @@ angular.module('bulbsCmsApp')
         }];
       }
     });
+
+    $scope.$watch('promotedArticles', function(){
+      if(_.isEqual($scope.promotedArticles, $scope.lastSavedPromotedArticles)){
+        $scope.promotedArticlesDirty = false;
+      }else{
+        $scope.promotedArticlesDirty = true;
+      }
+    }, true);
 
     $scope.getPzones = function () {
       ContentApi.all('contentlist').getList()

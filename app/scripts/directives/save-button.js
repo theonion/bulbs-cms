@@ -16,7 +16,7 @@ angular.module('bulbsCmsApp')
         attrs.$observe('config', function (val) {
           if (!angular.isDefined(val)) {
             scope.config = {
-              idle: 'Save',
+              idle: '<i class=\'glyphicon glyphicon-floppy-disk\'></i> Save',
               busy: 'Saving',
               finished: 'Saved!',
               error: 'Error!'
