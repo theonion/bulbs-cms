@@ -113,9 +113,6 @@ angular.module('bulbsCmsApp')
         });
 
         $('button.next-pane:not(.hide)').on('click', function (e) {
-          console.log('next clicked');
-          console.log(scope.contentType);
-          console.log(scope.init);
           scope.panel = 2;
           $('.new-title').focus();
         });

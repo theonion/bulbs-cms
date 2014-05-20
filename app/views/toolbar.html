@@ -18,7 +18,7 @@
         <li><a href="" ng-controller="ContentworkflowCtrl" role="button" ng-click="trashContentModal(article.id);">Delete</a></li></ul></li>
 
     <li class="pull-right">
-      <button id="save-article-btn" class="btn btn-success btn-sm navbar-btn" ng-class="{disabled: !articleIsDirty}" href="" ng-click="saveArticle();">Save</button></li>
+      <button id="save-article-btn" class="btn btn-sm navbar-btn" ng-class="{'btn-default': !articleIsDirty, 'btn-success': articleIsDirty}" href="" ng-click="saveArticle();">Save</button></li>
 
     <li class="content-status pull-right">
       <a target="_blank" href="/r/{{article.id}}">Preview&nbsp;&nbsp;<i class="fa fa-share"></i></a></li>
