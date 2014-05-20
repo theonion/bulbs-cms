@@ -31,6 +31,7 @@ module.exports = function(config) {
       'app/bower_components/urlify/urlify.js',
       'app/bower_components/onion-editor/build/onion-editor.min.js',
       'app/bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js',
+      'app/bower_components/Keypress/keypress.js',
       'app/scripts/*.js',
       'app/scripts/**/*.js',
       'app/mocks/app.js',
