@@ -248,6 +248,8 @@ angular.module('bulbsCmsApp')
       };
     }
 
+    var saveHTML =  "<i class=\'glyphicon glyphicon-floppy-disk\'></i> Save";
+
     function saveMediaItem(index) {
       var type = $scope.article.ratings[index].type;
       var mediaItem = $scope.article.ratings[index].media_item;
@@ -265,7 +267,7 @@ angular.module('bulbsCmsApp')
     }
 
     function saveToContentApi() {
-      $('#save-article-btn').html('<i class=\'fa fa-refresh fa-spin\'></i> Saving');
+      $('#save-article-btn').html('<i class=\'glyphicon glyphicon-refresh fa-spin\'></i> Saving');
       $scope.article.put()
         .then(saveArticleSuccessCbk, saveArticleErrorCbk);
     }
@@ -274,10 +276,10 @@ angular.module('bulbsCmsApp')
       if (data.status === 403) {
         //gotta get them to log in
         Login.showLoginModal();
-        $('#save-article-btn').html('Save');
+        $('#save-article-btn').html(saveHTML);
         return;
       }
-      $('#save-article-btn').html('<i class=\'fa fa-frown-o\' style=\'color:red\'></i> Error!');
+      $('#save-article-btn').html('<i class=\'glyphicon glyphicon-remove\'></i> Error');
       if (status === 400) {
         $scope.errors = data;
       }
@@ -285,10 +287,10 @@ angular.module('bulbsCmsApp')
     }
 
     function saveArticleSuccessCbk(resp) {
-      $('#save-article-btn').html('<i class=\'fa fa-check\' style=\'color:green\'></i> Saved!');
+      $('#save-article-btn').html('<i class=\'glyphicon glyphicon-check\'></i> Saved!');
       setTimeout(function () {
-          $('#save-article-btn').html('Save');
-        }, 1000);
+          $('#save-article-btn').html(saveHTML);
+        }, 2500);
       $scope.article = _.clone(resp);
       $scope.last_saved_article = _.clone(resp);
       $scope.errors = null;
@@ -311,7 +313,7 @@ angular.module('bulbsCmsApp')
     $scope.$watch('articleIsDirty', function(){
       if($scope.articleIsDirty){
         window.onbeforeunload = function () {
-          return 'You have unsaved changes. Leave anyway?';
+          return 'You have unsaved changes. Do you want to continue?';
         };
       }else{
         window.onbeforeunload = function () {};

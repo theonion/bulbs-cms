@@ -134,10 +134,6 @@ angular.module('bulbsCmsApp')
       return Math.floor(num * by_scale);
     };
 
-    $scope.cancel = function () {
-      $modalInstance.dismiss('cancel');
-    };
-
     $scope.back = function () {
       $scope.cropMode = false;
     }
