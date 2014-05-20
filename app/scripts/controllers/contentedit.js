@@ -249,6 +249,7 @@ angular.module('bulbsCmsApp')
     }
 
     var saveHTML =  "<i class=\'glyphicon glyphicon-floppy-disk\'></i> Save";
+    var navbarSave = ".navbar-save";
 
     function saveMediaItem(index) {
       var type = $scope.article.ratings[index].type;
@@ -267,7 +268,7 @@ angular.module('bulbsCmsApp')
     }
 
     function saveToContentApi() {
-      $('#save-article-btn').html('<i class=\'glyphicon glyphicon-refresh fa-spin\'></i> Saving');
+      $(navbarSave).html('<i class=\'glyphicon glyphicon-refresh fa-spin\'></i> Saving');
       $scope.article.put()
         .then(saveArticleSuccessCbk, saveArticleErrorCbk);
     }
@@ -276,10 +277,10 @@ angular.module('bulbsCmsApp')
       if (data.status === 403) {
         //gotta get them to log in
         Login.showLoginModal();
-        $('#save-article-btn').html(saveHTML);
+        $(navbarSave).html(saveHTML);
         return;
       }
-      $('#save-article-btn').html('<i class=\'glyphicon glyphicon-remove\'></i> Error');
+      $(navbarSave).html('<i class=\'glyphicon glyphicon-remove\'></i> Error');
       if (status === 400) {
         $scope.errors = data;
       }
@@ -287,9 +288,9 @@ angular.module('bulbsCmsApp')
     }
 
     function saveArticleSuccessCbk(resp) {
-      $('#save-article-btn').html('<i class=\'glyphicon glyphicon-check\'></i> Saved!');
+      $(navbarSave).html('<i class=\'glyphicon glyphicon-ok\'></i> Saved!');
       setTimeout(function () {
-          $('#save-article-btn').html(saveHTML);
+          $(navbarSave).html(saveHTML);
         }, 2500);
       $scope.article = _.clone(resp);
       $scope.last_saved_article = _.clone(resp);
