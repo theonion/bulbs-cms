@@ -30,11 +30,9 @@ body { background-color: #F1F1F1; padding-top: 55px; }
 
     &.form-horizontal .control-group, &.form-horizontal legend { margin-bottom: 10px } }
 
-#logo { width: 35px; height: 35px; padding: 5px;
+#logo { height: auto; padding: 8px 8px 5px 8px;
 
-    img { width: 100%; height: 100%; } }
-
-.navbar-brand { padding: 0px; margin-left: 15px; }
+    img { height: 50%; max-height: 22px; } }
 
 #button-area { position: fixed; right: 25px; top: 25px; display: block; }
 
@@ -146,7 +144,19 @@ td.author { max-width: 150px; }
         button.go{ width: 100%; margin-top: 5px; } } }
 
 /* navbar */
-nav.navbar ul li:not(:first-child){ border-left: 1px solid #F1F1F1; }
+nav.navbar {
+
+    ul li {
+
+        &:not(:first-child){ border-left: 1px solid #F1F1F1; }
+
+        i { padding-right: 4px; margin-left: -4px; } }
+
+    .navbar-brand { padding: 0px; margin-left: 0; } }
+
+#save-article-btn { width: 100px; font-size: inherit; margin: 1px 0; }
+
+.changeable span { border-bottom: 1px dotted #777 !important; }
 
 .filterwidget { position: relative; }
 

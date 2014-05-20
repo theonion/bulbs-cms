@@ -4,30 +4,34 @@
 </div>
 <div class="modal-body">
     <div class="well">
-      <div class="well">
-        <div class="date-dropdown dropdown">
-          <label>Date</label>
-          <a class="dropdown-toggle input-group" id="dateDropdown" role="button" data-toggle="dropdown" data-target="#" href="#">
-              <input readonly class="form-control disabled uneditable-input" value="{{datePickerValue|tzDate:'MM/dd/yyyy'}}">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-          </a>
-          <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-            <datetimepicker
-              data-ng-model="$parent.datePickerValue"
-              data-datetimepicker-config="{ dropdownSelector: '#dateDropdown', minView: 'day' }"/>
-          </ul>
-          <div style="margin-top:2px; margin-left: 2px;">
-            <a ng-click="setDateShortcut('today');">Today</a> |
-            <a ng-click="setDateShortcut('tomorrow');">Tomorrow</a>
+      <div class="date-dropdown dropdown">
+        <label>Date</label>
+        <div class="input-group">
+          <input readonly class="form-control disabled uneditable-input" value="{{datePickerValue|tzDate:'MM/dd/yyyy'}}">
+          <div class="input-group-btn">
+            <a class="btn-default btn" ng-click="setDateShortcut('today');">Today</a>
+            <a class="btn-default btn" ng-click="setDateShortcut('tomorrow');">Tomorrow</a>
+            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-calendar"></i></a>
+            <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dLabel">
+              <datetimepicker
+                data-ng-model="$parent.datePickerValue"
+                data-datetimepicker-config="{ dropdownSelector: '#dateDropdown', minView: 'day' }"/>
+            </ul>
           </div>
         </div>
       </div>
-      <div class="well" style="margin-top:8px; padding-top: 12px;">
-        <label>Time ({{TIMEZONE_LABEL}})</label>
-        <timepicker minute-step="5" ng-model="$parent.timePickerValue" mousewheel="false"></timepicker>
-        <div>
-          <a ng-click="setTimeShortcut('now');">Now</a> |
-          <a ng-click="setTimeShortcut('midnight');">Midnight</a>
+    </div>
+    <div class="well">
+      <label>Time ({{TIMEZONE_LABEL}})</label>
+      <div class="row">
+        <div class="col-sm-4 col-xs-12">
+          <timepicker minute-step="5" ng-model="$parent.timePickerValue" mousewheel="false"></timepicker>
+        </div>
+        <div class="col-sm-8 col-xs-12">
+          <div class="btn-group" style="margin-top: 34px;">
+            <a class="btn-default btn" ng-click="setTimeShortcut('now');">Now</a>
+            <a class="btn-default btn" ng-click="setTimeShortcut('midnight');">Midnight</a>
+          </div>
         </div>
       </div>
     </div>

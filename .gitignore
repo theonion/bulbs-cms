@@ -3,4 +3,4 @@ dist/bower_components
 .tmp
 .sass-cache
 app/bower_components
-app/styles/*.css
+app/styles/**/*.css

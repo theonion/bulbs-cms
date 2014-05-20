@@ -1,138 +1,95 @@
 * {
     margin:0px;
-    padding:0px;
-}
+    padding:0px; }
+
 .edit-page {
 
-    a {
-        cursor:pointer;
-    }
+    a { cursor:pointer; }
 
-    input,textarea, button,
-    .editor:focus {
-        outline: none;
-    }
+    input, textarea, button, .editor:focus { outline: none; }
 
     body {
         font-family: Helvetica, Arial, sans-serif;
-        background-color: #ddd ;
-    }
+        background-color: #ddd; }
 
     #editor {
         padding: 20px 0;
-        min-height: 100%;
-    }
+        min-height: 100%; }
 
     .editor-wrapper {
         margin: 0px auto;
         position:relative;
-        background-color: transparent;
-    }
+        background-color: transparent; }
 
-
-    .editorPlaceholder,
-    .editor {
+    .editorPlaceholder, .editor {
         background-color: transparent;
         position:relative;
         z-index:20;
         width: auto;
         margin: 0px;
-        padding: 10px 100px;
-    }
+        padding: 10px 100px; }
+
     .editorPlaceholder {
+        color: #B3B3B3 !important;
+        font-style: italic;
         z-index: 10;
-        position:absolute;
-    }
+        position:absolute; }
 
-    .editor blockquote,
-    .editor ul,
-    .editor ol,
-    .editor p,
-    .editor>div {
-        min-height:24px;
-    }
+    .editor { background-color: rgba(225,225,225,0.4); color: #666; margin: 10px; border-radius: 5px; overflow: hidden; min-height: 3em;
 
-    .editor blockquote {
-        clear:both;
-        padding: 0 30px;
-    }
+        &:hover { background-color: rgba(220,220,220, 0.4); color: #444; }
 
+        &:focus { background-color: rgba(210,210,210,0.4); color: #111; }
 
-    .editor ul,
-    .editor ol {
-        clear:both;
-        padding-left:  45px;
-        padding-right:  45px;
+        blockquote, ul, ol, p, >div { min-height:24px; }
 
-    }
+        blockquote {
+            clear:both;
+            padding: 0 30px; }
 
-    .editor li {
-        margin-bottom: 4px;
-    }
+        ul, ol {
+            clear:both;
+            padding-left:  45px;
+            padding-right:  45px; }
 
+        li { margin-bottom: 4px; } }
 
     #content-wrapper {
         margin-top: 100px;
         margin: 20px auto 0;
         border:1px #ddd solid;
-        
-    }
 
-    #content-wrapper.container {
-        max-width: 842px;
-        min-width: 400px;
-        width: auto;
-        padding:0px;
-    }
+        &.container {
+            max-width: 842px;
+            min-width: 400px;
+            width: auto;
+            padding:0px; } }
 
+    #content-title .editor, #content-title .editorPlaceholder { padding-bottom: 10px; }
 
-    /* some mediaquery stuff */
-
-
-
-    #content-title .editor,
-    #content-title .editorPlaceholder {
-        padding-bottom: 10px;
-    }
-    #content-subhead .editor,
-    #content-subhead .editorPlaceholder {
+    #content-subhead .editor, #content-subhead .editorPlaceholder {
         padding-bottom: 10px;
         padding-top: 10px;
-    }
+        margin-bottom: 20px; }
 
     #content-body .editor {
         min-height: 600px;
         padding-bottom: 500px;
-    }
+        padding-top: 25px; }
 
+    #content-body .editorPlaceholder { margin: 1em 0 0; }
 
-    .label {
-        //opacity: .7;
-    }
+    .visualize .editor {
 
+        ul, ol { background-color: rgba(166,226,45,.1); }
 
+        div { background-color: rgba(249,39,114,.5); /* don't want these to appear */ }
 
-    .visualize .editor ul,
-    .visualize .editor ol {
-        background-color: rgba(166,226,45,.1);
-    }
+        p { background-color: rgba(102,217,239,.1); }
 
-    .visualize .editor div {
-        background-color: rgba(249,39,114,.5); /* don't want these to appear */
-    }
-    .visualize .editor p
-     {
-        background-color: rgba(102,217,239,.1);
-    }
-    .visualize .editor blockquote {
-        background-color: rgba(174,129,255,.1);
-    }
+        blockquote { background-color: rgba(174,129,255,.1); } }
 
-    blockquote {
-        border-left: 5px solid #ddd;
-    }
-
-    /* status bar */
+    blockquote { border-left: 5px solid #ddd; }
 
     #statusbar {
         display:none;
@@ -148,42 +105,35 @@
         padding: 4px;
         font-size: 12px;
         color: #333;
-    }
 
-    #statusbar button {
-        display:inline-block;
-        width: auto;
-        text-align:center;
-    }
-
-
+        button {
+            display:inline-block;
+            width: auto;
+            text-align:center; } }
 
     /* smaller screens */
     @media screen and (min-width: 320px) and (max-width: 1024px) {
-    #content-wrapper.container {
-        padding:0px;
-        margin: 0;
-        margin-right: 120px
 
-    }
-    .editorPlaceholder,
-    .editor {
-        padding: 0 50px;
-    }
-    .document-tools .toolbar-contents {
-        right: 60px;
-        padding-left:0px;
-        left: auto;
-    }
+        #content-wrapper.container {
+            padding:0px;
+            margin: 0;
+            margin-right: 120px; }
 
-    }
+        .editorPlaceholder, .editor { padding: 0 50px; }
+
+        .document-tools .toolbar-contents {
+            right: 60px;
+            padding-left:0px;
+            left: auto; } }
+
     @media screen and (min-width: 320px) and (max-width: 800px) {
-    .editorPlaceholder,
-    .editor {
-        padding: 0 20px;
-    }
-    }
 
-}
+        .editorPlaceholder, .editor { padding: 0 20px; } } }
 
-
+#edit-source textarea {
+    width: 100%;
+    height: 400px;
+    border: 1px solid #ccc;
+    font-family: monospace;
+    line-height: 1.9em;
+    padding: 10px; }
