@@ -288,7 +288,7 @@ angular.module('bulbsCmsApp')
     }
 
     function saveArticleSuccessCbk(resp) {
-      $(navbarSave).html('<i class=\'glyphicon glyphicon-check\'></i> Saved!');
+      $(navbarSave).html('<i class=\'glyphicon glyphicon-ok\'></i> Saved!');
       setTimeout(function () {
           $(navbarSave).html(saveHTML);
         }, 2500);
