@@ -130,8 +130,6 @@ angular.module('bulbsCmsApp')
 
     $('body').on('shown.bs.collapse', 'table tr.panel', function(){ $window.picturefill() });
 
-    $('#meOnly').bootstrapSwitch();
-
   })
   .directive('ngConfirmClick', [ // Used on the unpublish button
     function () {
