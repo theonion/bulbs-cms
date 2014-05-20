@@ -133,7 +133,10 @@ angular.module('bulbsCmsApp')
         payload.content = $scope.promotedArticles;
       }
       var pzone = ContentApi.restangularizeElement(null, payload, 'contentlist');
-      return pzone.put();
+      return pzone.put().then(function(data){
+        $scope.lastSavedPromotedArticles = _.clone(data.content);
+        $scope.promotedArticles = data.content;
+      });
     };
 
     $scope.moveUp = function (index) {
