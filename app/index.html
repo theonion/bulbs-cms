@@ -97,7 +97,6 @@
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>
 
-    <script src="scripts/controllers/bugreport.js"></script>
     <script src="scripts/controllers/contentlist.js"></script>
     <script src="scripts/controllers/contentedit.js"></script>
     <script src="scripts/controllers/nav.js"></script>
@@ -114,6 +113,7 @@
     <script src="scripts/directives/activenav.js"></script>
     <script src="scripts/directives/articlecontainer.js"></script>
     <script src="scripts/directives/bulbs-autocomplete.js"></script>
+    <script src="scripts/directives/bugreporter.js"></script>
     <script src="scripts/directives/bettyeditable.js"></script>
     <script src="scripts/directives/bettyimage.js"></script>
     <script src="scripts/directives/create-content.js"></script>
@@ -210,7 +210,7 @@
           $(this).attr("target", "_self");
         });
     </script>
-    <div ng-controller="BugReportCtrl" ng-include="PARTIALS_URL + '/bug-report-button.html'"></div>
+    <bug-reporter/>
 
 </body>
 </html>
