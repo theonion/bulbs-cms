@@ -15,12 +15,12 @@ angular.module('bulbsCmsApp')
 
     var getArticleCallback = function (data) {
       $window.article = $scope.article = data;
-      $scope.last_saved_article = _.clone(data);
       if ($location.search().rating_type && (!data.ratings || data.ratings.length === 0)) {
         $scope.article.ratings = [{
           type: $location.search().rating_type
         }];
       }
+      $scope.last_saved_article = angular.copy(data);
 
       $scope.$watch('article.detail_image.id', function (newVal, oldVal) {
         if (!$scope.article) { return; }
@@ -293,7 +293,7 @@ angular.module('bulbsCmsApp')
           $(navbarSave).html(saveHTML);
         }, 2500);
       $scope.article = resp;
-      $scope.last_saved_article = _.clone(resp);
+      $scope.last_saved_article = angular.copy(resp);
       $scope.errors = null;
       $location.search('rating_type', null); //maybe just kill the whole query string with $location.url($location.path())
       $scope.saveArticleDeferred.resolve(resp);
@@ -304,7 +304,7 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.$watch('article', function(){
-      if(_.isEqual($scope.article, $scope.last_saved_article)){
+      if(angular.equals($scope.article, $scope.last_saved_article)){
         $scope.articleIsDirty = false;
       }else{
         $scope.articleIsDirty = true;
