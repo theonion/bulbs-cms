@@ -14,7 +14,7 @@ angular.module('bulbsCmsApp')
     $scope.CACHEBUSTER = routes.CACHEBUSTER;
 
     var getArticleCallback = function (data) {
-      $window.article = $scope.article = _.clone(data);
+      $window.article = $scope.article = data;
       $scope.last_saved_article = _.clone(data);
       if ($location.search().rating_type && (!data.ratings || data.ratings.length === 0)) {
         $scope.article.ratings = [{
@@ -86,10 +86,10 @@ angular.module('bulbsCmsApp')
 
     $scope.removeTag = function (e) {
       var tag = $(e.target).parents('[data-tag]').data('tag');
-      var id = tag.id;
+      var name = tag.name;
       var newtags = [];
       for (var i in $scope.article.tags) {
-        if ($scope.article.tags[i].id !== id) {
+        if ($scope.article.tags[i].name !== name) {
           newtags.push($scope.article.tags[i]);
         }
       }
@@ -292,7 +292,7 @@ angular.module('bulbsCmsApp')
       setTimeout(function () {
           $(navbarSave).html(saveHTML);
         }, 2500);
-      $scope.article = _.clone(resp);
+      $scope.article = resp;
       $scope.last_saved_article = _.clone(resp);
       $scope.errors = null;
       $location.search('rating_type', null); //maybe just kill the whole query string with $location.url($location.path())
