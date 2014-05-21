@@ -6,7 +6,7 @@
     <span class="icon-bar"></span>
     <span class="icon-bar"></span>
   </button>
-  <a class="navbar-save btn navbar-btn visible-xs-inline pull-right" ng-class="{'btn-primary': !articleIsDirty, 'btn-success': articleIsDirty}" href="" ng-click="saveArticle();">
+  <a class="navbar-save btn btn-success navbar-btn visible-xs-inline pull-right" ng-class="{'btn-clean': !articleIsDirty}" href="" ng-click="saveArticle();">
       <i class="glyphicon glyphicon-floppy-disk"></i> Save</a>
 </div>
 
@@ -58,7 +58,7 @@
           <i class="glyphicon glyphicon-share-alt"></i> Preview</a></li>
 
       <li class="hidden-xs">
-        <button id="save-article-btn" class="navbar-save btn btn-sm navbar-btn" ng-class="{'btn-primary': !articleIsDirty, 'btn-success': articleIsDirty}" href="" ng-click="saveArticle();">
+        <button id="save-article-btn" class="navbar-save btn btn-success btn-sm navbar-btn" ng-class="{'btn-clean': !articleIsDirty}" href="" ng-click="saveArticle();">
           <i class="glyphicon glyphicon-floppy-disk"></i> Save</button></li>
 
   </ul></div>
