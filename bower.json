@@ -11,7 +11,7 @@
     "angular-cookies": "~1.2.8",
     "angular-sanitize": "~1.2.8",
     "angular-route": "~1.2.8",
-    "font-awesome": "~4.0.3",
+    "font-awesome": "~4.1.0",
     "nprogress": "theonion/nprogress#bd4ec636b21eb98256fcb467bce31e0e64d277e8",
     "angular-bootstrap": "0.10.0",
     "bootstrap-switch": "2.0.1",
