@@ -1,39 +1,62 @@
 <div class="image-cropper-modal">
   <div class="modal-header">
     <button type="button" class="close" ng-click="$dismiss();" aria-hidden="true">&times;</button>
-    <h4 class="modal-title">Image Cropper</h4>
+    <h4 class="modal-title" ng-hide="cropMode">Edit Image Options</h4>
+    <h4 class="modal-title" ng-show="cropMode">Crop Image</h4>
   </div>
   <div class="modal-body">
-    <ul ng-hide="cropMode" class="thumb-list breather">
-      <li ng-repeat="(ratio, selection) in image.selections">
-        <div class="crop-overlay" ng-click="setSelectedCrop(ratio, selection)">
-          <span class="overlay-text">{{ratio}}</span>
-        </div>
-        <div ng-style="thumb_styles.{{ ratio }}" class="cropped-thumb"></div>
-      </li>
-    </ul>
-    <div ng-show="cropMode">
-      <div class="pull-right actions">
-        <button ng-click="back()" class="btn btn-default">Back</button>
-        <button ng-click="saveAndQuit()" class="btn btn-default">Save & Quit</button>
-        <button ng-click="saveAndNext()" class="btn btn-success">Save & Do Next</button>
-        <div class="ratio-paginator">
-          <span ng-repeat="ratio in ratioOrder" ng-style="isCurrentCrop(ratio)" class="fa fa-circle small-paginator"></span>
-        </div>
-      </div>
-      <ul class="thumb-list more-breathing">
-        <li class="preview_thumb">
-          <div class="crop-overlay" ng-click="setSelectedCrop(ratio, selection)">
-            <span class="overlay-text">{{selectedCrop[0]}}</span>
+    <div ng-hide="cropMode">
+      <button
+        class="btn btn-primary pull-right crop-images-button"
+        ng-click="setSelectedCrop(ratioOrder[0], image.selections[ratioOrder[0]])">Crop Images</button>
+
+      <h5>Set Image Crops</h5>
+      <ul class="thumb-list">
+        <li ng-repeat="(ratio, selection) in image.selections">
+          <div class="cropped-thumb-container" ng-click="setSelectedCrop(ratio, selection)">
+            <div ng-style="thumb_styles.{{ ratio }}" class="cropped-thumb">
+            </div>
           </div>
-          <div ng-style="preview_style" class="cropped-thumb"></div>
+          <span><strong>{{ ratio }}</strong></span>
         </li>
       </ul>
-      <div class="crop-image-container">
-        <div id="crop-image">
-          <img ng-src="{{ image_url }}">
+      <hr>
+      <div class="row">
+        <div class="form-group col-md-6">
+          <label class="control-label small">Caption / Photo Credit</label>
+          <input type="text" class="form-control" placeholder="Brief explanation of image" ng-model="img_ref.caption" />
+        </div>
+        <div class="form-group col-md-6">
+          <label class="control-label small">Alt Text</label>
+          <input type="text" class="form-control" placeholder="Describe image's contents" ng-model="img_ref.alt" />
         </div>
       </div>
+    </div>
+    <div ng-show="cropMode">
+      <div class="crop-image-container">
+        <div id="crop-image" ng-style="crop_image_style">
+          <img ng-src="{{ image_url }}" height="400px">
+        </div>
+      </div>
+      <div class="ratio-paginator">
+        <span
+          ng-repeat="ratio in ratioOrder"
+          ng-class="isCurrentCropOrDone(ratio)"
+          class="fa small-paginator"
+          ng-click="setSelectedCrop(ratio, image.selections[ratio])">{{ ratio }}</span>
+
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div ng-hide="cropMode">
+      <button class="btn btn-link pull-left" ng-click="$close('delete');"><i class="fa fa-trash-o"></i>Delete</button>
+      <button class="btn btn-success" ng-click="$close();">Done</button>
+    </div>
+    <div ng-show="cropMode">
+      <button class="btn btn-link" ng-click="saveAndQuit()" ng-hide="finished">Save and Finish</button>
+      <button class="btn btn-success" ng-click="saveAndNext()" ng-hide="finished">Save & Continue</button>
+      <button class="btn btn-success" ng-click="saveAndQuit()" ng-show="finished">Save & Finish</button>
     </div>
   </div>
 </div>

@@ -147,9 +147,13 @@ angular.module('bulbsCmsApp')
         };
 
         scope.editImage = function () {
-          openImageCropModal(scope.image.id)
-          .then(function () {
-            scope.getImageData();
+          openImageCropModal(scope.image)
+          .then(function (result) {
+            if (result == 'delete') {
+              scope.image = null;
+            } else {
+              scope.getImageData();
+            }
           })
         }
 

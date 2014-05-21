@@ -208,35 +208,53 @@ nav.navbar {
 
     .close { margin-top: 5px; } }
 
-.image-cropper-modal .modal-body {
+.jcrop-centered {
+  margin: 0 auto;
+}
 
-    .breather { padding-top: 20px; }
+.image-cropper-modal {
 
-    .more-breathing { padding-bottom: 20px }
+  .modal-body {
 
-    .thumb-list li { display: inline-block; height: 180px; width: 180px; margin: 0 3px; position: relative;
+    .crop-images-button { margin-top: -8px; }
 
-        &.preview_thumb { height: 110px; width: 110px;
+    .thumb-list {
 
-            .crop-overlay { display: block; background: rgba(0, 0, 0, 0.6);
+      margin-top: 30px;
 
-                .overlay-text { font-size: 20px; display: block; } }
+      li {
+        display: inline-block; margin: 0 3px; position: relative;
 
-            &:hover .crop-overlay { background: rgba(0, 0, 0, 0.6);
+        height: 180px; width: 180px;
 
-                .overlay-text { display: block; } } }
+        .cropped-thumb-container {
+          height: 180px;
+          width: 180px;
+          background-color: #dedede;
+          cursor: pointer;
+          &:hover { background-color: #777; }
+          .cropped-thumb { overflow: hidden; position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: 0 auto; }
+        }
+      }
+    }
 
-        .crop-overlay { position: absolute; z-index: 2; top: 0; left: 0; right: 0; bottom: 0;
+    .ratio-paginator span.fa {
+      cursor: pointer;
+      margin-top: 10px;
+      margin-right: 8px;
+      padding: 8px;
+      &.fa-circle-thin { color: #333; }
+      &.fa-check { color:#47a447; }
+    }
+  }
 
-            .overlay-text { display: none; color: white; position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto; text-align: center; height: 64px; font-size: 40px; } }
+  .modal-footer {
+    .btn.btn-link {
+      i { margin-right: 3px; font-size: 16px; color: red;}
+    }
+  }
 
-        .cropped-thumb { overflow: hidden; position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: 0 auto; } }
-
-    .actions { text-align: center;
-
-        button { width: 100%; margin-bottom: 5px; } }
-
-    .ratio-paginator span.fa-circle { margin: 0 8px; color: #dedede; } }
+}
 
 .edit-page bettyeditable .image-edit-container { padding: 10px;
 
@@ -266,7 +284,7 @@ nav.navbar {
 
     .panel-body { margin-bottom: 0; }
 
-    .article { position: relative; 
+    .article { position: relative;
 
         h1.h5 { margin-top: 0; clear: both; padding-top: 5px; } }
 
@@ -274,7 +292,7 @@ nav.navbar {
 
     .media { border-bottom: 1px solid #ccc; padding: 10px 10px 10px 0; }
 
-    .move-up, .move-down { margin: 0; position: absolute; right: 10px; z-index: 10; cursor: pointer; 
+    .move-up, .move-down { margin: 0; position: absolute; right: 10px; z-index: 10; cursor: pointer;
 
         &:hover { color: lighten(#428BCA,20%); } }
 
@@ -300,6 +318,6 @@ nav.navbar {
 
         .sidebar-articles-container { width: 100% } } }
 
-.save-button { opacity: 0.8; margin-bottom:10px; 
+.save-button { opacity: 0.8; margin-bottom:10px;
 
     &:hover { opacity: 1; } }
