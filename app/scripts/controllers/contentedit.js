@@ -86,10 +86,10 @@ angular.module('bulbsCmsApp')
 
     $scope.removeTag = function (e) {
       var tag = $(e.target).parents('[data-tag]').data('tag');
-      var id = tag.id;
+      var name = tag.name;
       var newtags = [];
       for (var i in $scope.article.tags) {
-        if ($scope.article.tags[i].id !== id) {
+        if ($scope.article.tags[i].name !== name) {
           newtags.push($scope.article.tags[i]);
         }
       }
