@@ -214,35 +214,56 @@ nav.navbar {
 
     .close { margin-top: 5px; } }
 
-.image-cropper-modal .modal-body {
+.jcrop-centered {
+  margin: 0 auto;
+}
 
-    .breather { padding-top: 20px; }
+.image-cropper-modal {
 
-    .more-breathing { padding-bottom: 20px }
+  &:focus { outline: none; }
 
-    .thumb-list li { display: inline-block; height: 180px; width: 180px; margin: 0 3px; position: relative;
+  .modal-body {
 
-        &.preview_thumb { height: 110px; width: 110px;
+    .crop-images-button { margin-top: -8px; }
 
-            .crop-overlay { display: block; background: rgba(0, 0, 0, 0.6);
+    .thumb-list {
 
-                .overlay-text { font-size: 20px; display: block; } }
+      margin-top: 30px;
 
-            &:hover .crop-overlay { background: rgba(0, 0, 0, 0.6);
+      li {
+        display: inline-block; margin: 0 3px; position: relative;
 
-                .overlay-text { display: block; } } }
+        height: 180px; width: 180px;
 
-        .crop-overlay { position: absolute; z-index: 2; top: 0; left: 0; right: 0; bottom: 0;
+        .cropped-thumb-container {
+          height: 180px;
+          width: 180px;
+          background-color: #dedede;
+          cursor: pointer;
+          &:hover { background-color: #777; }
+          .cropped-thumb { overflow: hidden; position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: 0 auto; }
+        }
+      }
+    }
 
-            .overlay-text { display: none; color: white; position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto; text-align: center; height: 64px; font-size: 40px; } }
+    .ratio-paginator span.fa {
+      cursor: pointer;
+      margin-top: 10px;
+      margin-right: 8px;
+      padding: 8px;
+      &.fa-circle-thin { color: #333; }
+      &.fa-check { color:#47a447; }
+      &:hover { background-color: #d9edf7; }
+    }
+  }
 
-        .cropped-thumb { overflow: hidden; position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: 0 auto; } }
+  .modal-footer {
+    .btn.btn-link {
+      i { margin-right: 3px; font-size: 16px; color: red;}
+    }
+  }
 
-    .actions { text-align: center;
-
-        button { width: 100%; margin-bottom: 5px; } }
-
-    .ratio-paginator span.fa-circle { margin: 0 8px; color: #dedede; } }
+}
 
 .edit-page bettyeditable .image-edit-container { padding: 10px;
 
