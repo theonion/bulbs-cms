@@ -20,22 +20,24 @@
           <span><strong>{{ ratio }}</strong></span>
         </li>
       </ul>
-      <hr>
-      <div class="row">
-        <div class="form-group col-md-6">
-          <label class="control-label small">Caption / Photo Credit</label>
-          <input type="text" class="form-control" placeholder="Brief explanation of image" ng-model="img_ref.caption" />
-        </div>
-        <div class="form-group col-md-6">
-          <label class="control-label small">Alt Text</label>
-          <input type="text" class="form-control" placeholder="Describe image's contents" ng-model="img_ref.alt" />
+      <div ng-show="img_ref.caption">
+        <hr>
+        <div class="row">
+          <div class="form-group col-md-6">
+            <label class="control-label small">Caption / Photo Credit</label>
+            <input type="text" class="form-control" placeholder="Brief explanation of image" ng-model="img_ref.caption" />
+          </div>
+          <div class="form-group col-md-6">
+            <label class="control-label small">Alt Text</label>
+            <input type="text" class="form-control" placeholder="Describe image's contents" ng-model="img_ref.alt" />
+          </div>
         </div>
       </div>
     </div>
     <div ng-show="cropMode">
       <div class="crop-image-container">
-        <div id="crop-image" ng-style="crop_image_style">
-          <img ng-src="{{ image_url }}" height="400px">
+        <div id="crop-image">
+          <img ng-src="{{ image_url }}" ng-style="crop_image_style">
         </div>
       </div>
       <div class="ratio-paginator">
