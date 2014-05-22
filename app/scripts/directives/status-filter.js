@@ -32,7 +32,7 @@ angular.module('bulbsCmsApp')
         scope.options = StatusFilterOptions.getStatuses();
 
         scope.isActive = function (option){
-          if(option.key && option.key in $location.search()){
+          if(option.key && option.key in $location.search() && $location.search()[option.key] == getValue(option)){
             return true;
           }
           if(!option.key){ //all
@@ -51,15 +51,21 @@ angular.module('bulbsCmsApp')
           var search = {}
           var value;
           if(option.key){
-            if(typeof option.value == "function"){
-              value = option.value();
-            }else{
-              value = option.value
-            }
+            value = getValue(option);
             search[option.key] = value;
           }
           $location.search(search);
         };
+
+        function getValue(option){
+          var value;
+          if(typeof option.value == "function"){
+            value = option.value();
+          }else{
+            value = option.value
+          }
+          return value;
+        }
 
       }
     };

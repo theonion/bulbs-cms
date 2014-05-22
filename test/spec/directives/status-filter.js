@@ -46,6 +46,13 @@ describe('Directive: statusFilter', function () {
       $browser.poll();
       expect(scope.isActive({label: 'Test', key: 'key', value: 'value'})).toBe(true);
     });
+
+    it('should return true for only one option even if they have the same keys', function () {
+      $location.search({key: 'value'});
+      $browser.poll();
+      expect(scope.isActive({label: 'Test', key: 'key', value: function(){ return 'value'; }})).toBe(true);
+      expect(scope.isActive({label: 'Test', key: 'key', value: function(){ return 'othervalue'; }})).toBe(false);
+    });
   });
 
   describe('filterByStatus', function () {
