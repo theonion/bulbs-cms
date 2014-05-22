@@ -173,8 +173,15 @@ angular.module('bulbsCmsApp')
           uncomputedCrops.push(ratio);
         }
       }
+
       $scope.uncomputedCrops = uncomputedCrops;
-      $scope.finished = ($scope.uncomputedCrops.length === 0);
+
+      if ($scope.uncomputedCrops.length) {
+        $scope.finished = true;
+      } else {
+        $scope.finished = false;
+      }
+
     });
 
     $scope.isCurrentCropOrDone = function (ratio) {
