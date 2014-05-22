@@ -87,6 +87,7 @@ angular.module('bulbsCmsApp')
       // $scope.crop_image_style = $scope.computeThumbStyle(
       //   $scope.image,
       // );
+
     });
 
     $scope.setThumbStyles = function (image, selections) {
@@ -150,11 +151,13 @@ angular.module('bulbsCmsApp')
         $scope.selectedCrop[0],
         $scope.image.selections[$scope.selectedCrop[0]]
       ).success(function (data) {
-        $scope.currentCrop = $scope.ratioOrder.indexOf($scope.uncomputedCrops[0]);
-        $scope.selectedCrop = [
-          $scope.ratioOrder[$scope.currentCrop],
-          $scope.image.selections[$scope.ratioOrder[$scope.currentCrop]]
-        ];
+        if ($scope.uncomputedCrops.length) {
+          $scope.currentCrop = $scope.ratioOrder.indexOf($scope.uncomputedCrops[0]);
+          $scope.selectedCrop = [
+            $scope.ratioOrder[$scope.currentCrop],
+            $scope.image.selections[$scope.ratioOrder[$scope.currentCrop]]
+          ];
+        }
       });
     };
 
@@ -166,9 +169,7 @@ angular.module('bulbsCmsApp')
         }
       }
       $scope.uncomputedCrops = uncomputedCrops;
-      if ($scope.uncomputedCrops.length === 0) {
-        $scope.finished = true;
-      }
+      $scope.finished = ($scope.uncomputedCrops.length === 0);
     });
 
     $scope.isCurrentCropOrDone = function (ratio) {
@@ -193,6 +194,19 @@ angular.module('bulbsCmsApp')
           $scope.image = data;
           $scope.setThumbStyles($scope.image, $scope.image.selections);
           $scope.ratioOrder = Object.keys($scope.image.selections);
+
+          var cropper = angular.element('.image-cropper-modal');
+          cropper.focus(); // for capturing key events
+          cropper.on('keyup', function (e) {
+            if (e.which === 13) {
+              if ($scope.cropMode) {
+                $scope.uncomputedCrops.length ? $scope.saveAndNext() : $scope.saveAndQuit();
+              } else {
+                $modalInstance.close();
+              }
+            }
+          });
+
         });
     }
 

@@ -1,4 +1,4 @@
-<div class="image-cropper-modal">
+<div class="image-cropper-modal" tabindex="1">
   <div class="modal-header">
     <button type="button" class="close" ng-click="$dismiss();" aria-hidden="true">&times;</button>
     <h4 class="modal-title" ng-hide="cropMode">Edit Image Options</h4>
@@ -42,7 +42,7 @@
         <span
           ng-repeat="ratio in ratioOrder"
           ng-class="isCurrentCropOrDone(ratio)"
-          class="fa small-paginator"
+          class="fa"
           ng-click="setSelectedCrop(ratio, image.selections[ratio])">{{ ratio }}</span>
 
       </div>

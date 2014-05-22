@@ -27,6 +27,7 @@ angular.module('bulbsCmsApp')
           $scope.image.id = response.id;
           $scope.imageData = response;
           $scope.showImage();
+          $scope.editImage();
         }
 
         $scope.upload = function(e){
