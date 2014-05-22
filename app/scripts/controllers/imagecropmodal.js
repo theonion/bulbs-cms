@@ -177,11 +177,13 @@ angular.module('bulbsCmsApp')
       });
     };
 
-    $scope.$watchCollection('image.selections', function (newCollection) {
+    $scope.$watchCollection('image.selections', function (newCollection, oldCollection) {
       var uncomputedCrops = [];
-      console.log(newCollection)
+      console.log('in watch: image', $scope.image)
+      console.log('newCollection', newCollection)
+      console.log('oldCollection', oldCollection)
       for (var ratio in newCollection) {
-        if (newCollection[ratio].source == 'auto') {
+        if (newCollection[ratio].source != 'user') {
           uncomputedCrops.push(ratio);
         }
       }
