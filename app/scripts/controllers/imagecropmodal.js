@@ -45,6 +45,7 @@ angular.module('bulbsCmsApp')
         selection.y1 = $scope.scaleNumber(s.y2, 1 / scale);
         selection.source = 'user';
 
+        console.log($scope.image.selections)
         $scope.image.selections[$scope.selectedCrop[0]] = selection;
         $scope.thumb_styles[$scope.selectedCrop[0]] = $scope.computeThumbStyle(
           $scope.image,
@@ -178,6 +179,7 @@ angular.module('bulbsCmsApp')
 
     $scope.$watchCollection('image.selections', function (newCollection) {
       var uncomputedCrops = [];
+      console.log(newCollection)
       for (var ratio in newCollection) {
         if (newCollection[ratio].source == 'auto') {
           uncomputedCrops.push(ratio);
