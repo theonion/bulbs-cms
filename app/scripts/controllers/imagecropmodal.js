@@ -225,6 +225,8 @@ angular.module('bulbsCmsApp')
           var cropper = angular.element('.image-cropper-modal');
           cropper.focus(); // for capturing key events
           cropper.on('keyup', function (e) {
+            console.log('cropMode', $scope.cropMode)
+            console.log('uncomputedCrops', $scope.uncomputedCrops)
             if (e.which === 13) {
               if ($scope.cropMode) {
                 if ($scope.uncomputedCrops.length) {
