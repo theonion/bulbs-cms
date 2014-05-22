@@ -2,6 +2,47 @@
     margin:0px;
     padding:0px; }
 
+.editorPlaceholder, .editor {
+    background-color: transparent;
+    line-height: 25px;
+    position:relative;
+    z-index:20;
+    width: auto;
+    padding:10px 20px; }
+
+.editorPlaceholder {
+    color: #B3B3B3 !important;
+    font-style: italic;
+    z-index: 10;
+    position:absolute; }
+
+.editor {
+    background-color: rgba(225,225,225,0.4);
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 0 0 10px 0;
+    min-height: 3em;
+
+    &:hover { background-color: rgba(220,220,220, 0.4); }
+
+    &:focus { background-color: rgba(210,210,210,0.4); }
+
+    p { margin-bottom: 0; }
+
+    blockquote, ul, ol, p, >div { min-height:24px; }
+
+    blockquote {
+        clear:both;
+        padding: 0 30px; }
+
+    ul, ol {
+        clear:both;
+        padding-left: 45px;
+        padding-right: 45px; }
+
+    li { margin-bottom: 4px; } }
+
+
 .edit-page {
 
     a { cursor:pointer; }
@@ -21,39 +62,6 @@
         position:relative;
         background-color: transparent; }
 
-    .editorPlaceholder, .editor {
-        background-color: transparent;
-        position:relative;
-        z-index:20;
-        width: auto;
-        margin: 0px;
-        padding: 10px 100px; }
-
-    .editorPlaceholder {
-        color: #B3B3B3 !important;
-        font-style: italic;
-        z-index: 10;
-        position:absolute; }
-
-    .editor { background-color: rgba(225,225,225,0.4); color: #666; margin: 10px; border-radius: 5px; overflow: hidden; min-height: 3em;
-
-        &:hover { background-color: rgba(220,220,220, 0.4); color: #444; }
-
-        &:focus { background-color: rgba(210,210,210,0.4); color: #111; }
-
-        blockquote, ul, ol, p, >div { min-height:24px; }
-
-        blockquote {
-            clear:both;
-            padding: 0 30px; }
-
-        ul, ol {
-            clear:both;
-            padding-left:  45px;
-            padding-right:  45px; }
-
-        li { margin-bottom: 4px; } }
-
     #content-wrapper {
         margin-top: 100px;
         margin: 20px auto 0;
@@ -65,19 +73,27 @@
             width: auto;
             padding:0px; } }
 
-    #content-title .editor, #content-title .editorPlaceholder { padding-bottom: 10px; }
+    #content-title, #content-subhead, #content-body {
+        .editor, .editorPlaceholder { margin-right: 10px; margin-left: 10px; } }
 
-    #content-subhead .editor, #content-subhead .editorPlaceholder {
-        padding-bottom: 10px;
-        padding-top: 10px;
-        margin-bottom: 20px; }
+    #content-title {
+        .editor { padding-top: 10px; min-height: 50px; }
+        .editor, .editorPlaceholder { font-size: 23px; line-height: 30px; font-weight: bold; } }
 
-    #content-body .editor {
-        min-height: 600px;
-        padding-bottom: 500px;
-        padding-top: 25px; }
+    #content-subhead {
+        .editor { padding-top: 10px; }
+        .editor, .editorPlaceholder { font-size: 16px; line-height: 25px; font-weight: bold; } }
 
-    #content-body .editorPlaceholder { margin: 1em 0 0; }
+    #content-body {
+        .editor, .editorPlaceholder {
+            padding-top: 80px;
+            padding-left: 90px;
+            padding-right: 90px;
+            margin-top: 0; }
+
+        .editor {
+            min-height: 600px;
+            padding-bottom: 500px; } }
 
     .visualize .editor {
 
@@ -119,16 +135,10 @@
             margin: 0;
             margin-right: 120px; }
 
-        .editorPlaceholder, .editor { padding: 0 50px; }
-
         .document-tools .toolbar-contents {
             right: 60px;
             padding-left:0px;
-            left: auto; } }
-
-    @media screen and (min-width: 320px) and (max-width: 800px) {
-
-        .editorPlaceholder, .editor { padding: 0 20px; } } }
+            left: auto; } } }
 
 #edit-source textarea {
     width: 100%;

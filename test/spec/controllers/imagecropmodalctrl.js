@@ -140,17 +140,6 @@ describe('Controller: ImageCropModalCtrl', function () {
 
   });
 
-  describe('cancel', function () {
-
-    it('should dismiss the modal', function () {
-      spyOn(modalInstance, 'dismiss');
-      scope.cancel();
-      expect(modalInstance.dismiss).toHaveBeenCalled();
-    });
-
-  });
-
-
   describe('back', function () {
 
     it('should turn off cropMode', function () {

@@ -8,7 +8,7 @@
         </select>
       </div>
       <div>
-        <save-button get-promise="save()" class="btn navbar-btn save-button form-control btn-sm" ng-class="{'btn-success': promotedArticlesDirty, 'btn-default': !promotedArticlesDirty}"></save-button>
+        <save-button get-promise="save()" class="btn btn-success navbar-btn save-button form-control btn-sm" ng-class="{'btn-clean': !promotedArticlesDirty}"></save-button>
       </div>
       <div>
         <div class="article" ng-repeat="article in promotedArticles track by $index" data-index="{{$index}}">
