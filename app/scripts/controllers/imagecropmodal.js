@@ -227,7 +227,11 @@ angular.module('bulbsCmsApp')
           cropper.on('keyup', function (e) {
             if (e.which === 13) {
               if ($scope.cropMode) {
-                $scope.uncomputedCrops.length ? $scope.saveAndNext() : $scope.saveAndQuit();
+                if ($scope.uncomputedCrops.length) {
+                  $scope.saveAndNext();
+                } else {
+                  $scope.saveAndQuit();
+                }
               } else if ($scope.finished) {
                 $modalInstance.close();
               }
