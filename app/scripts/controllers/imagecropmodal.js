@@ -32,7 +32,12 @@ angular.module('bulbsCmsApp')
       ) {
         var selection = {};
 
-        var length = $scope.image.width > $scope.image.height ? 'width' : 'height';
+        var length;
+        if ($scope.image.width > $scope.image.height) {
+          length = 'width';
+        } else {
+          length = 'height';
+        }
         var scale = $scope.crop_image[length] / $scope.image[length];
         selection.x0 = $scope.scaleNumber(s.x, 1 / scale);
         selection.y0 = $scope.scaleNumber(s.y, 1 / scale);
@@ -63,7 +68,12 @@ angular.module('bulbsCmsApp')
     $scope.$watch('selectedCrop', function (newVal) {
       if (angular.isUndefined(newVal)) {  return;  }
 
-      var length = $scope.image.width > $scope.image.height ? 'width' : 'height';
+      var length;
+      if ($scope.image.width > $scope.image.height) {
+        length = 'width';
+      } else {
+        length = 'height';
+      }
       var scale = $scope.crop_image[length] / $scope.image[length];
       var selection = newVal[1];
       var ratioNums = newVal[0].split('x');
