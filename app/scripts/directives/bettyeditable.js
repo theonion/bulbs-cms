@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('bettyeditable', function ($http, routes, BettyCropper, openImageCropModal) {
+  .directive('bettyeditable', function ($http, routes, BettyCropper, openImageCropModal, DEFAULT_IMAGE_WIDTH) {
     return {
       restrict: 'E',
       templateUrl: routes.PARTIALS_URL + 'bettyeditable.html',
@@ -27,6 +27,7 @@ angular.module('bulbsCmsApp')
           $scope.image.id = response.id;
           $scope.imageData = response;
           $scope.showImage();
+          $scope.editImage();
         }
 
         $scope.upload = function(e){
@@ -56,8 +57,6 @@ angular.module('bulbsCmsApp')
         var input = element.find('input');
         input.on('change', scope.upload);
 
-        var DEFAULT_IMAGE_WIDTH = 1200;
-
         var ratioWidth = parseInt(scope.ratio.split('x')[0], 10);
         var ratioHeight = parseInt(scope.ratio.split('x')[1], 10);
 
@@ -69,7 +68,6 @@ angular.module('bulbsCmsApp')
 
         scope.showImage = function () {
           if (scope.imageData === null) {
-            console.log('Getting selections!');
             scope.getImageData();
             return;
           }
@@ -147,9 +145,13 @@ angular.module('bulbsCmsApp')
         };
 
         scope.editImage = function () {
-          openImageCropModal(scope.image.id)
-          .then(function () {
-            scope.getImageData();
+          openImageCropModal(scope.image)
+          .then(function (result) {
+            if (result == 'delete') {
+              scope.image = null;
+            } else {
+              scope.getImageData();
+            }
           })
         }
 

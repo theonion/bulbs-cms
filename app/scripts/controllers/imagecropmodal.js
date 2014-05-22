@@ -1,27 +1,23 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ImageCropModalCtrl', function ($scope, $timeout, $modalInstance, BettyCropper, id) {
+  .controller('ImageCropModalCtrl', function ($scope, $timeout, $modalInstance, BettyCropper, img_ref, DEFAULT_IMAGE_WIDTH) {
     $scope.cropMode = false;
-    $scope.thumb = {height:180, width: 180};
-    $scope.preview_thumb = {height: 110, width: 110};
+    $scope.thumb = {height: 170, width: 170};
+    $scope.crop_image = {height: 400, width: 550};
+    $scope.img_ref = img_ref;
 
-    $scope.crop_image_width = 550;
-    $scope.image_url = BettyCropper.origJpg(id, $scope.crop_image_width);
-    $scope.preview_style = {};
+    $scope.image_url = BettyCropper.origJpg($scope.img_ref.id, DEFAULT_IMAGE_WIDTH);
 
     var setupCropper = function () {
       $('#crop-image').Jcrop({
         allowSelect: false,
         allowMove: true,
         allowResize: true,
+        addClass: 'jcrop-centered',
         keySupport: false
       }, function () { // Jcrop Init Callback
         $scope.jcrop_api = this;
-        $scope.selectedCrop = [
-          $scope.ratioOrder[$scope.currentCrop],
-          $scope.image.selections[$scope.ratioOrder[$scope.currentCrop]]
-        ];
       });
     };
 
@@ -36,21 +32,18 @@ angular.module('bulbsCmsApp')
       ) {
         var selection = {};
 
-        var scale = $scope.crop_image_width / $scope.image.width;
+        var length = $scope.image.width > $scope.image.height ? 'width' : 'height';
+        var scale = $scope.crop_image[length] / $scope.image[length];
         selection.x0 = $scope.scaleNumber(s.x, 1 / scale);
         selection.y0 = $scope.scaleNumber(s.y, 1 / scale);
         selection.x1 = $scope.scaleNumber(s.x2, 1 / scale);
         selection.y1 = $scope.scaleNumber(s.y2, 1 / scale);
+        selection.source = 'user';
 
         $scope.image.selections[$scope.selectedCrop[0]] = selection;
         $scope.thumb_styles[$scope.selectedCrop[0]] = $scope.computeThumbStyle(
           $scope.image,
           $scope.thumb,
-          selection
-        );
-        $scope.preview_style = $scope.computeThumbStyle(
-          $scope.image,
-          $scope.preview_thumb,
           selection
         );
       }
@@ -70,15 +63,12 @@ angular.module('bulbsCmsApp')
     $scope.$watch('selectedCrop', function (newVal) {
       if (angular.isUndefined(newVal)) {  return;  }
 
-      $scope.preview_style = $scope.computeThumbStyle(
-        $scope.image,
-        $scope.preview_thumb,
-        newVal[1]
-      );
-
-      var scale = $scope.crop_image_width / $scope.image.width;
+      var length = $scope.image.width > $scope.image.height ? 'width' : 'height';
+      var scale = $scope.crop_image[length] / $scope.image[length];
       var selection = newVal[1];
       var ratioNums = newVal[0].split('x');
+
+      $scope.currentCrop = $scope.ratioOrder.indexOf(newVal[0]);
 
       $scope.jcrop_api.setOptions({
         aspectRatio: ratioNums[0] / ratioNums[1]
@@ -90,6 +80,7 @@ angular.module('bulbsCmsApp')
         $scope.scaleNumber(selection.x1, scale),
         $scope.scaleNumber(selection.y1, scale)
       ]);
+
     });
 
     $scope.setThumbStyles = function (image, selections) {
@@ -130,13 +121,21 @@ angular.module('bulbsCmsApp')
       return styles;
     };
 
+    $scope.computeImageTagStyle = function (image, thumb) {
+      var styles = {};
+
+      if (image.width > image.height) {
+        styles.width = thumb.width;
+      } else {
+        styles.height = thumb.height;
+      }
+
+      return styles;
+    };
+
     $scope.scaleNumber = function (num, by_scale) {
       return Math.floor(num * by_scale);
     };
-
-    $scope.back = function () {
-      $scope.cropMode = false;
-    }
 
     $scope.saveAndQuit = function () {
       // Should probably use a save directive here
@@ -146,7 +145,7 @@ angular.module('bulbsCmsApp')
         $scope.selectedCrop[0],
         $scope.image.selections[$scope.selectedCrop[0]]
       ).success(function (data) {
-        $modalInstance.close(); // Should be passing updated styling here
+        $scope.cropMode = false;
       });
     };
 
@@ -157,31 +156,67 @@ angular.module('bulbsCmsApp')
         $scope.selectedCrop[0],
         $scope.image.selections[$scope.selectedCrop[0]]
       ).success(function (data) {
-        var next = $scope.currentCrop + 1;
-        if (next >= $scope.ratioOrder.length) {
-          next = 0;
+        if ($scope.uncomputedCrops.length) {
+          $scope.currentCrop = $scope.ratioOrder.indexOf($scope.uncomputedCrops[0]);
+          $scope.selectedCrop = [
+            $scope.ratioOrder[$scope.currentCrop],
+            $scope.image.selections[$scope.ratioOrder[$scope.currentCrop]]
+          ];
         }
-        $scope.currentCrop = next;
-        $scope.selectedCrop = [
-          $scope.ratioOrder[$scope.currentCrop],
-          $scope.image.selections[$scope.ratioOrder[$scope.currentCrop]]
-        ];
       });
     };
 
-    $scope.isCurrentCrop = function (ratio) {
-      if ($scope.ratioOrder[$scope.currentCrop] === ratio) {
-        return {color: '#5bc0de'};
+    $scope.$watchCollection('image.selections', function (newCollection) {
+      var uncomputedCrops = [];
+      for (var ratio in newCollection) {
+        if (newCollection[ratio].source == 'auto') {
+          uncomputedCrops.push(ratio);
+        }
       }
+      $scope.uncomputedCrops = uncomputedCrops;
+      $scope.finished = ($scope.uncomputedCrops.length === 0);
+    });
+
+    $scope.isCurrentCropOrDone = function (ratio) {
+      var classes = {};
+
+      if ($scope.ratioOrder[$scope.currentCrop] === ratio) {
+        classes['bg-info'] = true;
+      }
+
+      if ($scope.image.selections[ratio].source == 'user') {
+        classes['fa-check'] = true;
+      } else {
+        classes['fa-circle-thin'] = true;
+      }
+
+      return classes;
     };
 
     $scope.onInit = function () {
-      BettyCropper.detail(id)
+      BettyCropper.detail($scope.img_ref.id)
         .success(function (data) {
           $scope.image = data;
           $scope.setThumbStyles($scope.image, $scope.image.selections);
           $scope.ratioOrder = Object.keys($scope.image.selections);
-          $scope.currentCrop = 0;
+
+          $scope.crop_image_style = $scope.computeImageTagStyle(
+            angular.element('#crop-image img')[0],
+            $scope.crop_image
+          );
+
+          var cropper = angular.element('.image-cropper-modal');
+          cropper.focus(); // for capturing key events
+          cropper.on('keyup', function (e) {
+            if (e.which === 13) {
+              if ($scope.cropMode) {
+                $scope.uncomputedCrops.length ? $scope.saveAndNext() : $scope.saveAndQuit();
+              } else if ($scope.finished) {
+                $modalInstance.close();
+              }
+            }
+          });
+
         });
     }
 

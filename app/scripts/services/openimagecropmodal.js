@@ -2,13 +2,13 @@
 
 angular.module('bulbsCmsApp')
   .factory('openImageCropModal', function ($window, $modal, routes) {
-    var openImageCropModal = function (id) {
+    var openImageCropModal = function (image) {
 
       return $modal.open({
         templateUrl: routes.PARTIALS_URL + "image-crop-modal.html",
         controller: 'ImageCropModalCtrl',
         resolve: {
-          id: function () { return id; }
+          img_ref: function () { return image; }
         }
       }).result;
 

@@ -42,7 +42,11 @@ describe('Controller: ImageCropModalCtrl', function () {
       {
         $scope: scope,
         $modalInstance: modalInstance,
-        id: 1,
+        img_ref: {
+          id: 1,
+          caption: 'Taboola: The Uncut',
+          alt: 'CMS, RMS, FreeMS'
+        },
       }
     );
 
@@ -71,7 +75,6 @@ describe('Controller: ImageCropModalCtrl', function () {
     it('should compute various style attributes', function () {
       scope.image.selections['1x1'] = 'haaaaaallleluhaa';
       scope.thumb_styles['1x1'] = 'you wanna piece o me?';
-      scope.preview_style = 'what happened to Barney, truly?';
       spyOn(scope, 'computeThumbStyle');
 
       scope.processJcropSelection({
@@ -80,7 +83,6 @@ describe('Controller: ImageCropModalCtrl', function () {
 
       expect(scope.image.selections['1x1']).not.toBe('haaaaaallleluhaa');
       expect(scope.thumb_styles['1x1']).not.toBe('you wanna piece o me?');
-      expect(scope.preview_style).not.toBe('what happened to Barney, truly?');
     });
 
   });
@@ -88,8 +90,7 @@ describe('Controller: ImageCropModalCtrl', function () {
 
   describe('watch: selectedCrop', function () {
 
-    it('should setup the preview thumbnail and JCrop (brittle)', function () {
-      scope.preview_style = 'The ManboysMan';
+    it('should setup JCrop (brittle)', function () {
       spyOn(scope.jcrop_api, 'setOptions');
       spyOn(scope.jcrop_api, 'setSelect');
       scope.selectedCrop = [
@@ -97,19 +98,16 @@ describe('Controller: ImageCropModalCtrl', function () {
       ];
       scope.$apply();
 
-      expect(scope.preview_style).not.toBe('The ManboysMan');
       expect(scope.jcrop_api.setOptions).toHaveBeenCalled();
       expect(scope.jcrop_api.setSelect).toHaveBeenCalled();
     });
 
     it('should do nothing if the new value is undefined', function () {
-      scope.preview_style = 'The ManboysMan';
       spyOn(scope.jcrop_api, 'setOptions');
       spyOn(scope.jcrop_api, 'setSelect');
       scope.selectedCrop = undefined;
       scope.$apply();
 
-      expect(scope.preview_style).toBe('The ManboysMan');
       expect(scope.jcrop_api.setOptions).not.toHaveBeenCalled();
       expect(scope.jcrop_api.setSelect).not.toHaveBeenCalled();
 
@@ -139,17 +137,6 @@ describe('Controller: ImageCropModalCtrl', function () {
     });
 
   });
-
-  describe('back', function () {
-
-    it('should turn off cropMode', function () {
-      scope.cropMode = 'fewaijfoewafjwea';
-      scope.back();
-      expect(scope.cropMode).toBe(false);
-    });
-
-  });
-
 
   describe('saveAndQuit', function () {
 
@@ -192,12 +179,12 @@ describe('Controller: ImageCropModalCtrl', function () {
   });
 
 
-  describe('isCurrentCrop', function () {
+  describe('isCurrentCropOrDone', function () {
 
     it('returns a style if the ratio is the current crop', function () {
-      scope.ratioOrder = ['blah', 'bloo', 'bobafat'];
-      expect(scope.isCurrentCrop('blah')).toEqual(jasmine.any(Object));
-      expect(scope.isCurrentCrop('ACCEPT ME')).toBeUndefined();
+      scope.ratioOrder = ['1x1', '16x9', '3x1'];
+      scope.currentCrop = '1x1'
+      expect(scope.isCurrentCropOrDone('1x1')).toEqual(jasmine.any(Object));
     });
 
   });
