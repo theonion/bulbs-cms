@@ -6,14 +6,22 @@
       <h4 class="modal-title">Tell us what happened</h4>
     </div>
     <div class="modal-body">
-      <section class="form-group">
-          <h6>When I tried to:</h6>
-          <textarea class="form-control" ng-model="report.firstRes"></textarea>
-          <h6>I thought this would happen:</h6>
-          <textarea class="form-control" ng-model="report.secondRes"></textarea>
-          <h6>...but this happened instead:</h6>
-          <textarea class="form-control" ng-model="report.thirdRes"></textarea>
-      </section>
+      <div ng-hide="showThankYou">
+        <section class="form-group">
+            <h6>When I tried to:</h6>
+            <textarea class="form-control" ng-model="report.firstRes"></textarea>
+            <h6>I thought this would happen:</h6>
+            <textarea class="form-control" ng-model="report.secondRes"></textarea>
+            <h6>...but this happened instead:</h6>
+            <textarea class="form-control" ng-model="report.thirdRes"></textarea>
+        </section>
+      </div>
+      <div ng-show="showThankYou">
+        <h6>Thanks for taking the time to fill out a bug report!</h6>
+        <h6>This let's us know what problems you're running into and how to reproduce them.</h6>
+        <h6>That way we can fix them as fast as possible.</h6>
+        <h6>We promise.</h6>
+      </div>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-sm btn-link" ng-click="dismissModal();">Cancel</button>

@@ -16,12 +16,15 @@ angular.module('bulbsCmsApp')
         };
 
         $scope.modalVisible = false;
+        $scope.showThankYou = false;
+
         $scope.showModal = function () {
           $scope.modalVisible = true;
         };
 
         $scope.dismissModal = function () {
           $scope.modalVisible = false;
+          $scope.showThankYou = false;
         }
 
         $scope.sendToWebtech = function () {
@@ -41,14 +44,12 @@ angular.module('bulbsCmsApp')
         $scope.sendToWebtechCbk = function (promise) {
           promise
             .then(function () {
-              $element.find('.modal-body').html('\
-                <h6>Thanks for taking the time to fill out a bug report!</h6>\
-                <h6>This let\'s us know what problems you\'re running into and how to reproduce them.</h6>\
-                <h6>That way we can fix them as fast as possible.</h6>\
-                <h6>We promise.</h6>\
-              ');
+              $scope.showThankYou = true;
               $timeout(function() {
                 $scope.dismissModal();
+                for (var entry in $scope.report) {
+                  $scope.report[entry] = "";
+                }
               }, 5000);
             });
         };
