@@ -66,6 +66,20 @@ angular.module('bulbsCmsApp')
       }
     };
 
+    $scope.setFirstUncomputedCrop = function () {
+      if ($scope.uncomputedCrops.length) {
+        $scope.setSelectedCrop(
+          $scope.uncomputedCrops[0],
+          $scope.image.selections[$scope.uncomputedCrops[0]]
+        );
+      } else {
+        $scope.setSelectedCrop(
+          $scope.ratioOrder[0],
+          $scope.image.selections[$scope.ratioOrder[0]]
+        );
+      }
+    }
+
     $scope.$watch('selectedCrop', function (newVal) {
       if (angular.isUndefined(newVal)) {  return;  }
 
@@ -79,7 +93,7 @@ angular.module('bulbsCmsApp')
       var selection = newVal[1];
       var ratioNums = newVal[0].split('x');
 
-      $scope.currentCrop = $scope.ratioOrder.indexOf(newVal[0]);
+      $scope.currentCrop = newVal[0];
 
       $scope.jcrop_api.setOptions({
         aspectRatio: ratioNums[0] / ratioNums[1]
@@ -167,12 +181,14 @@ angular.module('bulbsCmsApp')
         $scope.selectedCrop[0],
         $scope.image.selections[$scope.selectedCrop[0]]
       ).success(function (data) {
+        console.log('in saveAndNext')
         if ($scope.uncomputedCrops.length) {
-          $scope.currentCrop = $scope.ratioOrder.indexOf($scope.uncomputedCrops[0]);
-          $scope.selectedCrop = [
-            $scope.ratioOrder[$scope.currentCrop],
-            $scope.image.selections[$scope.ratioOrder[$scope.currentCrop]]
-          ];
+          $scope.setSelectedCrop(
+            $scope.uncomputedCrops[0],
+            $scope.image.selections[$scope.uncomputedCrops[0]]
+          );
+        } else {
+          $scope.cropMode = false;
         }
       });
     };
@@ -190,10 +206,10 @@ angular.module('bulbsCmsApp')
 
       $scope.uncomputedCrops = uncomputedCrops;
 
-      if ($scope.uncomputedCrops.length) {
-        $scope.finished = true;
-      } else {
+      if ($scope.uncomputedCrops.length > 1) {
         $scope.finished = false;
+      } else {
+        $scope.finished = true;
       }
 
     });
@@ -201,7 +217,7 @@ angular.module('bulbsCmsApp')
     $scope.isCurrentCropOrDone = function (ratio) {
       var classes = {};
 
-      if ($scope.ratioOrder[$scope.currentCrop] === ratio) {
+      if ($scope.currentCrop === ratio) {
         classes['bg-info'] = true;
       }
 
