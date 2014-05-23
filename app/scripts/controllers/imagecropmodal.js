@@ -181,8 +181,9 @@ angular.module('bulbsCmsApp')
         $scope.selectedCrop[0],
         $scope.image.selections[$scope.selectedCrop[0]]
       ).success(function (data) {
+        console.log('in saveAndNext')
         if ($scope.uncomputedCrops.length) {
-          $scope.setSelectedCrop = (
+          $scope.setSelectedCrop(
             $scope.uncomputedCrops[0],
             $scope.image.selections[$scope.uncomputedCrops[0]]
           );
@@ -205,7 +206,7 @@ angular.module('bulbsCmsApp')
 
       $scope.uncomputedCrops = uncomputedCrops;
 
-      if ($scope.uncomputedCrops.length) {
+      if ($scope.uncomputedCrops.length > 1) {
         $scope.finished = false;
       } else {
         $scope.finished = true;
