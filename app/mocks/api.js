@@ -118,6 +118,13 @@ angular.module('bulbsCmsApp.mockApi').run([
       .respond(mockApiData['bettycropper.updateSelection']);
     $httpBackend.when('POST', /^http:\/\/localimages\.avclub\.com\/api\/new$/)
       .respond(mockApiData['bettycropper.new']);
+
+    // send to webtech (fickle)
+    $httpBackend.whenPOST('/cms/api/v1/report-bug/').respond('');
+
+
+    // for anything that uses BC_ADMIN_URL
+    $httpBackend.when('GET', /^http:\/\/localimages\.avclub\.com\/avclub.*/).respond('');
   }
 ]).value('mockApiData', {
   // NOTE: double-quotes are used because JSON
@@ -369,37 +376,43 @@ angular.module('bulbsCmsApp.mockApi').run([
         "y0": 0,
         "y1": 0,
         "x0": 0,
-        "x1": 0
+        "x1": 0,
+        "source": "auto"
       },
       "2x1": {
         "y0": 100,
         "y1": 250,
         "x0": 100,
-        "x1": 400
+        "x1": 400,
+        "source": "auto"
       },
       "3x1": {
         "y0": 200,
         "y1": 450,
         "x0": 0,
-        "x1": 750
+        "x1": 750,
+        "source": "auto"
       },
       "3x4": {
         "y0": 0,
         "y1": 400,
         "x0": 500,
-        "x1": 800
+        "x1": 800,
+        "source": "auto"
       },
       "4x3": {
         "y0": 150,
         "y1": 450,
         "x0": 400,
-        "x1": 800
+        "x1": 800,
+        "source": "user"
       },
       "16x9": {
         "y0": 0,
         "y1": 450,
         "x0": 0,
-        "x1": 800
+        "x1": 800,
+        "source": "user"
       }
     }
   },

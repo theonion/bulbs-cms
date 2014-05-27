@@ -25,6 +25,7 @@ angular.module('bulbsCmsApp').constant('CACHEBUSTER', "?" + Date.now());
 angular.module('bulbsCmsApp').constant('TIMEZONE_OFFSET', '-0500');
 angular.module('bulbsCmsApp').constant('TIMEZONE_LABEL', 'CST');
 angular.module('bulbsCmsApp').constant('AUTO_ADD_AUTHOR', false);
+angular.module('bulbsCmsApp').constant('DEFAULT_IMAGE_WIDTH', 1200);
 
 angular.module('bulbsCmsApp').constant('tar_options', {
   namespace: 'Woodruff',

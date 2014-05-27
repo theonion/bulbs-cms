@@ -8,6 +8,9 @@
         </select>
       </div>
       <div>
+        <save-button get-promise="save()" class="btn btn-success navbar-btn save-button form-control btn-sm" ng-class="{'btn-clean': !promotedArticlesDirty}"></save-button>
+      </div>
+      <div>
         <div class="article" ng-repeat="article in promotedArticles track by $index" data-index="{{$index}}">
           <button type="button" class="close btn btn-link pull-left" ng-click="remove($index)"><span class="glyphicon glyphicon-remove"></span></button>
           <a ng-hide="$index == 0" class="move-up" ng-click="moveUp($index);"><span class="glyphicon glyphicon-chevron-up"></span></a>
@@ -46,12 +49,5 @@
         </div>
       </div>
     </div>
-  </div>
-</div>
-<div class="navbar navbar-default navbar-fixed-bottom">
-  <div class="container-fluid">
-    <ul class="nav pull-right">
-      <li><save-button get-promise="save()" class="btn navbar-btn btn-success save-button btn-sm"/></li>
-    </ul>
   </div>
 </div>

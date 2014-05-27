@@ -30,11 +30,9 @@ body { background-color: #F1F1F1; padding-top: 55px; }
 
     &.form-horizontal .control-group, &.form-horizontal legend { margin-bottom: 10px } }
 
-#logo { width: 35px; height: 35px; padding: 5px;
+#logo { height: auto; padding: 7px 8px;
 
-    img { width: 100%; height: 100%; } }
-
-.navbar-brand { padding: 0px; margin-left: 15px; }
+    img { max-height: 20px; } }
 
 #button-area { position: fixed; right: 25px; top: 25px; display: block; }
 
@@ -146,7 +144,25 @@ td.author { max-width: 150px; }
         button.go{ width: 100%; margin-top: 5px; } } }
 
 /* navbar */
-nav.navbar ul li:not(:first-child){ border-left: 1px solid #F1F1F1; }
+nav.navbar {
+
+    .navbar-toggle { margin-right: 1px; border: 0; border-radius: 0; padding: 10px; }
+
+    ul li {
+
+        &:not(:first-child){ border-left: 1px solid #F1F1F1; }
+
+        i { padding-right: 4px; margin-left: -4px; } }
+
+    .navbar-brand { padding: 0px; margin-left: 0; } }
+
+.navbar-save { font-size: inherit; line-height: inherit; margin: 1px;
+
+    &.visible-xs-inline { border-radius: 0; } }
+
+@media (min-width: 768px) { #save-article-btn { width: 100px; margin-right: 18px; margin-left: 3px; } }
+
+.changeable span { border-bottom: 1px dotted #777 !important; }
 
 .filterwidget { position: relative; }
 
@@ -198,35 +214,57 @@ nav.navbar ul li:not(:first-child){ border-left: 1px solid #F1F1F1; }
 
     .close { margin-top: 5px; } }
 
-.image-cropper-modal .modal-body {
+.jcrop-centered {
+  margin: 0 auto;
+}
 
-    .breather { padding-top: 20px; }
+.image-cropper-modal {
 
-    .more-breathing { padding-bottom: 20px }
+  &:focus { outline: none; }
 
-    .thumb-list li { display: inline-block; height: 180px; width: 180px; margin: 0 3px; position: relative;
+  .modal-body {
 
-        &.preview_thumb { height: 110px; width: 110px;
+    .crop-images-button { margin-top: -8px; }
 
-            .crop-overlay { display: block; background: rgba(0, 0, 0, 0.6);
+    .thumb-list {
 
-                .overlay-text { font-size: 20px; display: block; } }
+      margin-top: 30px;
+      padding-left: 0px;
 
-            &:hover .crop-overlay { background: rgba(0, 0, 0, 0.6);
+      li {
+        display: inline-block; margin: 0 3px; position: relative;
 
-                .overlay-text { display: block; } } }
+        height: 180px; width: 180px;
 
-        .crop-overlay { position: absolute; z-index: 2; top: 0; left: 0; right: 0; bottom: 0;
+        .cropped-thumb-container {
+          height: 180px;
+          width: 180px;
+          background-color: #dedede;
+          cursor: pointer;
+          &:hover { background-color: #777; }
+          .cropped-thumb { overflow: hidden; position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: 0 auto; }
+        }
+      }
+    }
 
-            .overlay-text { display: none; color: white; position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto; text-align: center; height: 64px; font-size: 40px; } }
+    .ratio-paginator span.fa {
+      cursor: pointer;
+      margin-top: 10px;
+      margin-right: 8px;
+      padding: 8px;
+      &.fa-circle-thin { color: #333; }
+      &.fa-check { color:#47a447; }
+      &:hover { background-color: #d9edf7; }
+    }
+  }
 
-        .cropped-thumb { overflow: hidden; position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: 0 auto; } }
+  .modal-footer {
+    .btn.btn-link {
+      i { margin-right: 3px; font-size: 16px; color: red;}
+    }
+  }
 
-    .actions { text-align: center;
-
-        button { width: 100%; margin-bottom: 5px; } }
-
-    .ratio-paginator span.fa-circle { margin: 0 8px; color: #dedede; } }
+}
 
 .edit-page bettyeditable .image-edit-container { padding: 10px;
 
@@ -293,6 +331,21 @@ nav.navbar ul li:not(:first-child){ border-left: 1px solid #F1F1F1; }
 .save-button { opacity: 0.8; margin-bottom:10px;
 
     &:hover { opacity: 1; } }
+
+.btn-clean { opacity: 0.5; }
+
+// workaround for https://github.com/twbs/bootstrap/issues/10263
+@media screen and (max-width: 768px) {
+    .visible-xs-inline {
+        display: inline-block !important;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .visible-xs-inline {
+        display: none !important;
+    }
+}
 
 .pnotify-error-icon {
   padding-top: 2px;
