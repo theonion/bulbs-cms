@@ -18,8 +18,8 @@ angular.module('bulbsCmsApp')
             scope.config = {
               idle: '<i class=\'glyphicon glyphicon-floppy-disk\'></i> Save',
               busy: 'Saving',
-              finished: 'Saved!',
-              error: 'Error!'
+              finished: 'Saved',
+              error: 'Error'
             };
           }
         });
@@ -43,7 +43,7 @@ angular.module('bulbsCmsApp')
               element
                 .prop('disabled', false)
                 .removeClass('btn-danger')
-                .html('<i class=\'fa fa-check\'></i> ' + scope.config.finished);
+                .html('<i class=\'glyphicon glyphicon-ok\'></i> ' + scope.config.finished);
 
               return $timeout(function () {
                 element.html(scope.config.idle);

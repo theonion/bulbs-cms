@@ -49,7 +49,7 @@ angular.module('bulbsCmsApp')
         };
 
         function saveArticle() {
-          $('button.go').html('<i class="fa fa-refresh fa-spin"></i> Going');
+          $('button.go').removeClass('btn-danger').addClass('btn-success').html('<i class="fa fa-refresh fa-spin"></i> Going');
           $http({
             url: '/cms/api/v1/content/?doctype=' + $scope.contentType,
             method: 'POST',
@@ -64,9 +64,9 @@ angular.module('bulbsCmsApp')
           }).error(function (data, status, headers, config) {
             if (status === 403) {
               $('button.go')
-                .html('<i class="fa fa-frown-o" style="color:red"></i> Please Login');
+                .html('<i class="glyphicon glyphicon-exclamation-sign"></i> Please Log In');
             } else {
-              $('button.go').html('<i class="fa fa-frown-o" style="color:red"></i> Error!');
+              $('button.go').removeClass('btn-success').addClass('btn-danger').html('<i class="glyphicon glyphicon-remove"></i> Error');
             }
             $scope.gotSave = false;
           });
