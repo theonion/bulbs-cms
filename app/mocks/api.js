@@ -118,6 +118,13 @@ angular.module('bulbsCmsApp.mockApi').run([
       .respond(mockApiData['bettycropper.updateSelection']);
     $httpBackend.when('POST', /^http:\/\/localimages\.avclub\.com\/api\/new$/)
       .respond(mockApiData['bettycropper.new']);
+
+    // send to webtech (fickle)
+    $httpBackend.whenPOST('/cms/api/v1/report-bug/').respond('');
+
+
+    // for anything that uses BC_ADMIN_URL
+    $httpBackend.when('GET', /^http:\/\/localimages\.avclub\.com\/avclub.*/).respond('');
   }
 ]).value('mockApiData', {
   // NOTE: double-quotes are used because JSON
