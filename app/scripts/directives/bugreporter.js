@@ -54,6 +54,15 @@ angular.module('bulbsCmsApp')
             });
         };
 
+        /*
+          Exposing this globally for PNotify.
+          Will revisit when we review how to
+          report bugs on the CMS.
+        */
+        $window.showBugReportModal = function() {
+          $scope.$apply($scope.showModal());
+        };
+
       },
       link: function (scope, element) {
 

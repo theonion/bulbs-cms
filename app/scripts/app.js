@@ -95,7 +95,8 @@ angular.module('bulbsCmsApp', [
               text: 'Report Bug',
               addClass: 'btn-danger pnotify-report-bug',
               click: function (notice) {
-
+                notice.remove();
+                $window.showBugReportModal(); // see bugreporter.js
               }
             }, {addClass: 'hidden'}] // removing the "Cancel" button
           },
