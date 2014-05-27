@@ -16,7 +16,7 @@ angular.module('bulbsCmsApp')
         attrs.$observe('config', function (val) {
           if (!angular.isDefined(val)) {
             scope.config = {
-              idle: 'Save',
+              idle: '<i class=\'glyphicon glyphicon-floppy-disk\'></i> Save',
               busy: 'Saving',
               finished: 'Saved!',
               error: 'Error!'
@@ -45,11 +45,12 @@ angular.module('bulbsCmsApp')
                 .removeClass('btn-danger')
                 .html('<i class=\'fa fa-check\'></i> ' + scope.config.finished);
 
-              $timeout(function () {
+              return $timeout(function () {
                 element.html(scope.config.idle);
-              }, 1000);
-
-              return result;
+              }, 1000)
+              .then(function () {
+                return result;
+              });
             },
             function (reason) {
               NProgress.done();

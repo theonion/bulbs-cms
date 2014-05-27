@@ -5,12 +5,8 @@
   <div class="row filter-shortcuts" role="navigation">
     <div class="navbar-btn navbar-left" role="toolbar">
       <create-content></create-content>
-      <div id="pubLevels" class="btn-group" data-toggle="buttons">
-        <a class="btn btn-default" href="/cms/app/list/draft/" ng-class="{ active: queue == 'draft' }" rel="keep-params">Draft</a>
-        <a class="btn btn-default" href="/cms/app/list/waiting/" ng-class="{ active: queue == 'waiting' }" rel="keep-params">Edit</a>
-        <a class="btn btn-default" href="/cms/app/list/published/" ng-class="{ active: queue == 'published' }" rel="keep-params">Published</a>
-        <a class="btn btn-default" href="/cms/app/list/scheduled/" ng-class="{ active: queue == 'scheduled' }" rel="keep-params">Scheduled</a>
-        <a class="btn btn-default" href="/cms/app/list/all/" ng-class="{ active: queue == 'all' }" rel="keep-params">All</a></div></div>
+      <status-filter></status-filter>
+    </div>
 
     <div class="navbar-btn navbar-right">
       <label class="btn btn-text btn-sm" for="meOnly">&nbsp; Show my articles only: </label>
@@ -76,3 +72,7 @@
 
     <div class="row">
       <pagination max-size="10" total-items="totalItems" page="pageNumber" items-per-page="20" on-select-page="goToPage(page);" boundary-links="true"></pagination></div></div>
+
+<script>
+  $('#meOnly').bootstrapSwitch();
+</script>

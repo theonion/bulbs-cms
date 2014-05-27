@@ -3,7 +3,7 @@
 angular.module('bulbsCmsApp')
   .controller('ContentlistCtrl', function (
     $scope, $http, $timeout, $location,
-    $routeParams, $window, $q, $, _, moment, ContentApi,
+    $window, $q, $, _, moment, ContentApi,
     LOADING_IMG_SRC, routes)
   {
     $scope.LOADING_IMG_SRC = LOADING_IMG_SRC;
@@ -12,7 +12,6 @@ angular.module('bulbsCmsApp')
 
     $scope.pageNumber = $location.search().page || '1';
     $scope.myStuff = false;
-    $scope.queue = $routeParams.queue || 'all';
     $scope.search = $location.search().search;
 
     var getContentCallback = function (data) {
@@ -24,17 +23,6 @@ angular.module('bulbsCmsApp')
         var params = {
           page: $scope.pageNumber
         };
-        if ($scope.queue !== 'all') {
-          if($scope.queue === 'published'){
-            params.before = moment().format('YYYY-MM-DDTHH:mmZ')
-          }else if($scope.queue === 'waiting'){
-            params.status = "Waiting for Editor"
-          }else if($scope.queue === 'draft'){
-            params.status = "Draft"
-          }else if($scope.queue === 'scheduled'){
-            params.after = moment().format('YYYY-MM-DDTHH:mmZ')
-          };
-        }
         var search = $location.search();
         for (var prop in search) {
           if (!search.hasOwnProperty(prop)) {
@@ -140,9 +128,7 @@ angular.module('bulbsCmsApp')
         $window.picturefill();
       });
 
-    $('body').on('shown.bs.collapse', 'table tr.panel', function(){ window.picturefill() });
-
-    $('#meOnly').bootstrapSwitch();
+    $('body').on('shown.bs.collapse', 'table tr.panel', function(){ $window.picturefill() });
 
   })
   .directive('ngConfirmClick', [ // Used on the unpublish button
