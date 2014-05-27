@@ -45,7 +45,6 @@ angular.module('bulbsCmsApp')
         selection.y1 = $scope.scaleNumber(s.y2, 1 / scale);
         selection.source = 'user';
 
-        console.log($scope.image.selections)
         $scope.image.selections[$scope.selectedCrop[0]] = selection;
         $scope.thumb_styles[$scope.selectedCrop[0]] = $scope.computeThumbStyle(
           $scope.image,
@@ -181,7 +180,6 @@ angular.module('bulbsCmsApp')
         $scope.selectedCrop[0],
         $scope.image.selections[$scope.selectedCrop[0]]
       ).success(function (data) {
-        console.log('in saveAndNext')
         if ($scope.uncomputedCrops.length) {
           $scope.setSelectedCrop(
             $scope.uncomputedCrops[0],
@@ -195,9 +193,6 @@ angular.module('bulbsCmsApp')
 
     $scope.$watchCollection('image.selections', function (newCollection, oldCollection) {
       var uncomputedCrops = [];
-      console.log('in watch: image', $scope.image)
-      console.log('newCollection', newCollection)
-      console.log('oldCollection', oldCollection)
       for (var ratio in newCollection) {
         if (newCollection[ratio].source != 'user') {
           uncomputedCrops.push(ratio);
@@ -245,8 +240,6 @@ angular.module('bulbsCmsApp')
           var cropper = angular.element('.image-cropper-modal');
           cropper.focus(); // for capturing key events
           cropper.on('keyup', function (e) {
-            console.log('cropMode', $scope.cropMode)
-            console.log('uncomputedCrops', $scope.uncomputedCrops)
             if (e.which === 13) {
               if ($scope.cropMode) {
                 if ($scope.uncomputedCrops.length) {
