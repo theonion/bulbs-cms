@@ -122,6 +122,15 @@ angular.module('bulbsCmsApp.mockApi').run([
     // send to webtech (fickle)
     $httpBackend.whenPOST('/cms/api/v1/report-bug/').respond('');
 
+    // user
+    $httpBackend.whenGET('/cms/api/v1/me/').respond({
+      id: 0,
+      username: 'admin',
+      email: 'webtech@theonion.com',
+      first_name: 'Herman',
+      last_name: 'Zweibel'
+    });
+
 
     // for anything that uses BC_ADMIN_URL
     $httpBackend.when('GET', /^http:\/\/localimages\.avclub\.com\/avclub.*/).respond('');
