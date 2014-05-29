@@ -18,8 +18,8 @@ angular.module('bulbsCmsApp')
             scope.config = {
               idle: '<i class=\'glyphicon glyphicon-floppy-disk\'></i> Save',
               busy: 'Saving',
-              finished: 'Saved!',
-              error: 'Error!'
+              finished: 'Saved',
+              error: 'Error'
             };
           }
         });
@@ -33,6 +33,7 @@ angular.module('bulbsCmsApp')
           element
             .prop('disabled', true)
             .removeClass('btn-danger')
+            .addClass('btn-success')
             .html('<i class=\'fa fa-refresh fa-spin\'></i> ' + scope.config.busy);
 
           var save_promise = scope.getPromise();
@@ -43,7 +44,8 @@ angular.module('bulbsCmsApp')
               element
                 .prop('disabled', false)
                 .removeClass('btn-danger')
-                .html('<i class=\'fa fa-check\'></i> ' + scope.config.finished);
+                .addClass('btn-success')
+                .html('<i class=\'glyphicon glyphicon-ok\'></i> ' + scope.config.finished);
 
               return $timeout(function () {
                 element.html(scope.config.idle);
@@ -56,8 +58,9 @@ angular.module('bulbsCmsApp')
               NProgress.done();
               element
                 .prop('disabled', false)
+                .removeClass('btn-success')
                 .addClass('btn-danger')
-                .html('<i class=\'fa fa-frown-o\' style=\'color:red\'></i> ' + scope.config.error);
+                .html('<i class=\'glyphicon glyphicon-remove\'></i> ' + scope.config.error);
 
               return $q.reject(reason);
             });
