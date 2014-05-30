@@ -10,10 +10,10 @@ angular.module('bulbsCmsApp')
         'getPromise': '&',
         'saveCbk': '&onSave',
         'config': '=?',
-        'styling': '@?addClasses'
+        'colors': '@?colorStyling'
       },
       link: function (scope, element, attrs) {
-        scope.styling_tmp = scope.styling;
+        scope.colors_tmp = scope.colors;
 
         attrs.$observe('config', function (val) {
           if (!angular.isDefined(val)) {
@@ -32,7 +32,7 @@ angular.module('bulbsCmsApp')
 
         scope.save = function () {
           NProgress.start();
-          scope.styling = scope.styling_tmp;
+          scope.colors = scope.colors_tmp;
           element
             .prop('disabled', true)
             .html('<i class=\'fa fa-refresh fa-spin\'></i> ' + scope.config.busy);
@@ -43,7 +43,7 @@ angular.module('bulbsCmsApp')
           .then(
             function (result) {
               NProgress.done();
-              scope.styling = scope.styling_tmp;
+              scope.colors = scope.colors_tmp;
               element
                 .prop('disabled', false)
                 .html('<i class=\'glyphicon glyphicon-ok\'></i> ' + scope.config.finished);
@@ -58,7 +58,7 @@ angular.module('bulbsCmsApp')
           .catch(
             function (reason) {
               NProgress.done();
-              scope.styling = 'btn-danger';
+              scope.colors = 'btn-danger';
               element
                 .prop('disabled', false)
                 .html('<i class=\'glyphicon glyphicon-remove\'></i> ' + scope.config.error);
