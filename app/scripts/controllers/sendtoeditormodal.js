@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('SendtoeditormodalCtrl', function ($scope, $http, $modalInstance, Login, article) {
+  .controller('SendtoeditormodalCtrl', function ($scope, $http, $modalInstance, EditorItems, Login, article) {
     $scope.buttonConfig = {
       idle: 'Send',
       busy: 'Sending',
@@ -15,6 +15,7 @@ angular.module('bulbsCmsApp')
         method: 'POST',
         data: {notes: $scope.noteToEditor}
       }).success(function (data) {
+        EditorItems.getItems(article.id);
         $scope.publishSuccessCbk({article: article, response: data});
         $modalInstance.close();
       }).error(function (error, status, data) {
