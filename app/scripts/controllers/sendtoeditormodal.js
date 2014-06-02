@@ -15,7 +15,6 @@ angular.module('bulbsCmsApp')
         method: 'POST',
         data: {notes: $scope.noteToEditor}
       }).success(function (data) {
-        console.log('here')
         EditorItems.getItems(article.id);
         $scope.publishSuccessCbk({article: article, response: data});
         $modalInstance.close();
