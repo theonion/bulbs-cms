@@ -82,6 +82,7 @@
     <script src="bower_components/onion-editor/build/onion-editor.min.js"></script>
     <script src="bower_components/lodash/dist/lodash.compat.js"></script>
     <script src="bower_components/restangular/dist/restangular.js"></script>
+    <script src="bower_components/Keypress/keypress.js"></script>
     <script src="bower_components/pnotify/pnotify.core.js"></script>
     <script src="bower_components/pnotify/pnotify.buttons.js"></script>
     <script src="bower_components/pnotify/pnotify.callbacks.js"></script>
@@ -89,7 +90,6 @@
     <script src="bower_components/pnotify/pnotify.desktop.js"></script>
     <script src="bower_components/pnotify/pnotify.history.js"></script>
     <script src="bower_components/pnotify/pnotify.nonblock.js"></script>
-    <script src="bower_components/Keypress/keypress.js"></script>
     <!-- endbower -->
     <script src="bower_components/jcrop/js/jquery.Jcrop.min.js"></script>
     <!-- endbuild -->
@@ -122,7 +122,9 @@
     <script src="scripts/directives/imagedrawer.js"></script>
     <script src="scripts/directives/listinput.js"></script>
     <script src="scripts/directives/video-upload.js"></script>
+    <script src="scripts/directives/logged-in-user.js"></script>
     <script src="scripts/directives/media-rating.js"></script>
+    <script src="scripts/directives/nav.js"></script>
     <script src="scripts/directives/responsive-image.js"></script>
     <script src="scripts/directives/save-button.js"></script>
     <script src="scripts/directives/slideshow-pane.js"></script>
@@ -139,6 +141,7 @@
     <script src="scripts/services/if-exists-else.js"></script>
     <script src="scripts/services/openimagecropmodal.js"></script>
     <script src="scripts/services/bulbsapi.js"></script>
+    <script src="scripts/services/currentuser.js"></script>
     <script src="scripts/services/contentapi.js"></script>
     <script src="scripts/services/reviewapi.js"></script>
     <script src="scripts/services/promotionapi.js"></script>
@@ -205,6 +208,8 @@
         angular.module('bulbsCmsApp').constant('promo_options', {
           upper_limits: {}
         });
+
+        angular.module('bulbsCmsApp').constant('navbar_options', {});
     </script>
 
     <script>
