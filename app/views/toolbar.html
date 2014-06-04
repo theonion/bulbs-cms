@@ -35,9 +35,6 @@
     </li>
   </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'unpublished'">
-        <a href="" ng-click="saveArticle().then(sendToEditorModal);">
-            <i class="glyphicon glyphicon-send"></i> Send to Editors...</a></li>
 
       <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'unpublished'">
         <a href="" ng-click="saveArticle().then(pubTimeModal);">
