@@ -14,7 +14,7 @@ angular.module('bulbsCmsApp')
         }
 
       },
-      scope: {},
+      scope: false,
       link: function (scope, element, attrs) {
         scope.NAV_LOGO = routes.NAV_LOGO;
       }
