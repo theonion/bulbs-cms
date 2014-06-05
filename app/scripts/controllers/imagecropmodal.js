@@ -217,13 +217,23 @@ angular.module('bulbsCmsApp')
       }
 
       if ($scope.image.selections[ratio].source == 'user') {
-        classes['fa-check'] = true;
+        classes['fa-check bootstrap-green'] = true;
       } else {
         classes['fa-circle-thin'] = true;
       }
 
       return classes;
     };
+
+    $scope.isCropDone = function (ratio) {
+      var classes = {};
+
+      if ($scope.image.selections[ratio].source == 'user') {
+        classes['fa-check bootstrap-green'] = true;
+      }
+
+      return classes;
+    }
 
     $scope.onInit = function () {
       BettyCropper.detail($scope.img_ref.id)

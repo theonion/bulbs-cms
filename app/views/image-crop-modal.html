@@ -17,10 +17,10 @@
             <div ng-style="thumb_styles.{{ ratio }}" class="cropped-thumb">
             </div>
           </div>
-          <span><strong>{{ ratio }}</strong></span>
+          <span class="fa" ng-class="isCropDone(ratio)"><strong>{{ ratio }}</strong></span>
         </li>
       </ul>
-      <div ng-show="img_ref.caption">
+      <div>
         <hr>
         <div class="row">
           <div class="form-group col-md-6">
