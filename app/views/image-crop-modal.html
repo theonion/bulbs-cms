@@ -17,7 +17,7 @@
             <div ng-style="thumb_styles.{{ ratio }}" class="cropped-thumb">
             </div>
           </div>
-          <span><strong>{{ ratio }}</strong></span>
+          <span class="fa" ng-class="isCropDone(ratio)"><strong>{{ ratio }}</strong></span>
         </li>
       </ul>
       <div>
