@@ -1,4 +1,5 @@
-<nav class="navbar navbar-default navbar-fixed-top" role="navigation" ng-controller="NavCtrl" ng-include="PARTIALS_URL + 'nav.html'" ></nav>
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation" view='nav' ></nav>
+
 <div class="wrapper container-fluid">
   <div class="promotion-container">
     <div class="promotion-area col-md-6">
@@ -8,7 +9,7 @@
         </select>
       </div>
       <div>
-        <save-button get-promise="save()" class="btn btn-success navbar-btn save-button form-control btn-sm" ng-class="{'btn-clean': !promotedArticlesDirty}"></save-button>
+        <save-button class="navbar-btn save-button form-control btn-sm" get-promise="save()" color-styling="btn-success" ng-class="{'btn-clean': !promotedArticlesDirty}"></save-button>
       </div>
       <div>
         <div class="article" ng-repeat="article in promotedArticles track by $index" data-index="{{$index}}">
