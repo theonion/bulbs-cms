@@ -12,7 +12,7 @@ angular.module('keypress', []).value('keypress', window.keypress);
 
 // ****** App Config ****** \\
 
-angular.module('bulbsCmsApp', [
+var appDependencies = [
   'ngCookies',
   'ngResource',
   'ngSanitize',
@@ -28,7 +28,13 @@ angular.module('bulbsCmsApp', [
   'moment',
   'PNotify',
   'keypress'
-])
+];
+// Potentially add app-specific dependencies
+if (window.additionalBulbsCMSDependencies) {
+  appDependencies = appDependencies.concat(window.additionalBulbsCMSDependencies);
+}
+
+angular.module('bulbsCmsApp', appDependencies)
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
 
