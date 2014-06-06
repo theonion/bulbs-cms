@@ -35,12 +35,32 @@ angular.module('bulbsCmsApp')
           article: function(){ return article; }
         }
       });
-    }
+    };
 
     $scope.changelogModal = function (article) {
       return $modal.open({
         templateUrl: routes.PARTIALS_URL + 'modals/changelog-modal.html',
         controller: 'ChangelogmodalCtrl',
+        scope: $scope,
+        resolve: {
+          article: function(){ return article; }
+        }
+      });
+    };
+
+    $scope.thumbnailModal = function (article) {
+      return $modal.open({
+        templateUrl: routes.PARTIALS_URL + 'modals/thumbnail-modal.html',
+        scope: $scope,
+        resolve: {
+          article: function(){ return article; }
+        }
+      });
+    };
+
+    $scope.sponsoredContentModal = function (article) {
+      return $modal.open({
+        templateUrl: routes.PARTIALS_URL + 'modals/sponsored-content-modal.html',
         scope: $scope,
         resolve: {
           article: function(){ return article; }
@@ -58,7 +78,7 @@ angular.module('bulbsCmsApp')
           article: function(){ return article; }
         }
       });
-    }
+    };
 
     $scope.getStatus = function (article) {
       if(!article || !article.published){
