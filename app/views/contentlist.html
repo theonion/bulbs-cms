@@ -6,12 +6,7 @@
     <div class="navbar-btn navbar-left" role="toolbar">
       <create-content></create-content>
       <status-filter></status-filter>
-    </div>
-
-    <div class="navbar-btn navbar-right">
-      <label class="btn btn-text btn-sm" for="meOnly">&nbsp; Show my articles only: </label>
-      <div class="btn btn-text" style="padding: 3px 0;"><input id="meOnly" type="checkbox" data-on-color="default" /></div>
-        <a href="#contentListAccordion" data-parent="#contentListAccordion" class="expcol btn btn-text" state="0"><i class="fa fa-plus-circle"></i> Expand all</a></div></div>
+    </div></div>
 
     <div class="row">
       <div class="col-xs-12 navbar-btn filterwidget-container" style="padding: 0;">
@@ -72,7 +67,3 @@
 
     <div class="row">
       <pagination max-size="10" total-items="totalItems" page="pageNumber" items-per-page="20" on-select-page="goToPage(page);" boundary-links="true"></pagination></div></div>
-
-<script>
-  $('#meOnly').bootstrapSwitch();
-</script>

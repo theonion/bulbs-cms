@@ -60,14 +60,6 @@ angular.module('bulbsCmsApp')
         updateIsMyStuff();
       });
 
-    $scope.$watch('myStuff', function () {
-        if ($scope.myStuff) {
-          $('#meOnly').bootstrapSwitch('setState', true, true);
-        } else {
-          $('#meOnly').bootstrapSwitch('setState', false, true);
-        }
-      });
-
     $('#meOnly').on('switch-change', function (e, data) {
         var value = data.value;
         if (value === true) {

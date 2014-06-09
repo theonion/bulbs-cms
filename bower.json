@@ -14,7 +14,6 @@
     "font-awesome": "~4.1.0",
     "nprogress": "rstacruz/nprogress#5dcb61e0bc0b2754613a3555974d1589313ae25a",
     "angular-bootstrap": "0.10.0",
-    "bootstrap-switch": "2.0.1",
     "raven-js": "1.1.11",
     "moment": "~2.5.1",
     "underscore": "1.6.0",
@@ -31,7 +30,6 @@
     "angular-scenario": "1.2.8"
   },
   "resolutions": {
-    "angular": "1.2.8",
-    "bootstrap": ">=3.0"
+    "angular": "1.2.8"
   }
 }

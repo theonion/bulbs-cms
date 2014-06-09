@@ -52,7 +52,6 @@ module.exports = function(config) {
       'app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'app/bower_components/nprogress/nprogress.js',
       'app/bower_components/restangular/dist/restangular.js',
-      'app/bower_components/bootstrap-switch/build/js/bootstrap-switch.js',
       //'app/bower_components/raven-js/dist/raven.js',
       'app/bower_components/restangular/dist/restangular.js',
       'app/bower_components/moment/moment.js',

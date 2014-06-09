@@ -3,7 +3,7 @@
 <div class="wrapper container-fluid">
   <div class="promotion-container">
     <div class="promotion-area col-md-6">
-      <h1 class="h4">Currently promoted</h1>
+      <h1 class="h4">Promoted Content</h1>
       <div>
         <select name="pzone" ng-model="pzone" ng-options="p.name for p in pzones | orderBy:'name'" class="form-control">
         </select>
@@ -21,7 +21,6 @@
       </div>
     </div>
     <div class="sidebar-articles-container col-md-6">
-      <devicepreview></devicepreview>
       <filterwidget></filterwidget>
       <div id="filter-accordion" class="panel-group">
         <div class="panel panel-default" ng-repeat="article in articles" ng-hide="articleIsInPromotedArticles(article.id);">
