@@ -20,7 +20,7 @@
           <span class="fa" ng-class="isCropDone(ratio)"><strong>{{ ratio }}</strong></span>
         </li>
       </ul>
-      <div ng-show="img_ref.caption">
+      <div ng-show="img_ref.hasOwnProperty('caption')">
         <hr>
         <div class="row">
           <div class="form-group col-md-6">
