@@ -15,10 +15,10 @@ This bridges the embed module that the editor exposes & our custom image impleme
             $(window).scroll(function() {
 
                 if (window.scrollY > toolbarPosition) {
-                    $("#content-body .document-tools").addClass("fixed")
+                    $("#content-body .document-tools").css("position", "fixed")
                 }
                 else {
-                    $("#content-body .document-tools").removeClass("fixed")
+                    $("#content-body .document-tools").css("position", "absolute")
                 }
             });
 
