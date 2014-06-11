@@ -22,7 +22,7 @@ angular.module('BettyCropper', [])
           uploadImageDeferred.reject('Not an image!');
         }
 
-        if (file.size > 6800000) {
+        if (file.size > 10*1024*1024) { //MAGIC!
           uploadImageDeferred.reject('The file is too large!')
         }
 
