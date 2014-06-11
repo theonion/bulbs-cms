@@ -63,7 +63,14 @@
                             },
                             success: function (res) {
                                 var imageData = res;
-                                computeStyle(tmp, imageData, imageData.selections[crop])
+                                if (crop === "original") {
+                                    $('>div', tmp).css({'padding-bottom': ((res.height / res.width) * 100) + '%'});
+                                    var cropDetails = {x0:0, x1:res.width, y0:0, y1:res.height};
+                                }
+                                else {
+                                    var cropDetails = imageData.selections[crop]
+                                }
+                                computeStyle(tmp, imageData, cropDetails )
                             }
                         });
                     }
@@ -78,7 +85,7 @@
         s_width = selection.x1 - selection.x0,
         s_height = selection.y1 - selection.y0,
         tmp_selection = selection;
-
+        
         if (!s_width || !s_height) {
           /*
               If we have bogus selections, make
@@ -107,6 +114,8 @@
         element.style.height = scaleNumber(s_height, scale) + 'px';
         element.style.width = scaleNumber(s_width, scale) + 'px';
         element.style.position = 'relative';
+
+
     }
 
     function scaleNumber(num, by_scale) {
