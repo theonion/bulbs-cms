@@ -12,9 +12,4 @@ describe('Directive: featuretypeField', function () {
     scope = $rootScope.$new();
   }));
 
-  it('should make hidden element visible', inject(function ($compile) {
-    element = angular.element('<featuretype-field></featuretype-field>');
-    element = $compile(element)(scope);
-    expect(element.text()).toBe('this is the featuretypeField directive');
-  }));
 });

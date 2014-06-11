@@ -4,11 +4,11 @@ angular.module('bulbsCmsApp')
   .provider('EditorOptions', function () {
     var _options = {
       "image": {
-        "size": ["huge", "big", "medium", "small", "tiny"],
+        "size": ["big", "medium", "small"],
         "crop": ["original", "16x9", "1x1", "3x1"],
         "defaults": {
           "size": "big",
-          "crop": "16x9",
+          "crop": "original",
           "image_id": 0,
           "caption": "",
           "url": ""
@@ -17,8 +17,8 @@ angular.module('bulbsCmsApp')
           "<div data-type=\"image\" class=\"onion-image image inline size-{{size}} crop-{{crop}}\" data-image-id=\"{{image_id}}\" data-size=\"{{size}}\" data-crop=\"{{crop}}\"> <div></div><span class=\"caption\">{{caption}}</span></div>"
       },
       "onion-video": {
-        "size": ["big", "small"],
-        "crop": ["16x9", "4x3"],
+        "size": ["big"],
+        "crop": ["16x9"],
         "defaults": {
           "size": "big",
           "crop": "16x9"
@@ -27,20 +27,20 @@ angular.module('bulbsCmsApp')
           "<div data-type=\"onion-video\" class=\"onion-video video inline size-{{size}} crop-{{crop}}\" data-video-id=\"{{image_id}}\" data-size=\"{{size}}\" data-crop=\"{{crop}}\"><iframe src=\"/videos/embed?id={{video_id}}\"></iframe></div>"
       },
       "embed": {
-        "size": ["big", "small"],
-        "crop": ["original","16x9", "4x3"],
+        "size": ["original", "big", "small"],
+        "crop": ["16x9", "4x3", "auto"],
         "defaults": {
-          "size":"big",
-          "crop": "16x9"
+          "size":"original",
+          "crop": "auto"
         },
         "template":
           "<div data-type=\"embed\" data-crop=\"{{crop}}\" class=\"inline embed size-{{size}} crop-{{crop}}\" data-source=\"{{source}}\"><div>{{embed_code}}</div><span class=\"caption\">{{caption}}</span><a class=\"source\" target=\"_blank\" href=\"{{source}}\">Source</a></div>"
       },
       "youtube": {
-        "size": ["big", "small"],
+        "size": ["big"],
         "crop": ["16x9", "4x3"],
         "defaults": {
-          "size": "small",
+          "size": "big",
           "crop": "16x9",
           "youtube_id": "foMQX9ZExsE",
           "caption": ""
