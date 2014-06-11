@@ -248,11 +248,11 @@ angular.module('bulbsCmsApp')
 
     $scope.$watch('articleIsDirty', function(){
       if($scope.articleIsDirty){
-        window.onbeforeunload = function () {
+        $window.onbeforeunload = function () {
           return 'You have unsaved changes. Do you want to continue?';
         };
       }else{
-        window.onbeforeunload = function () {};
+        $window.onbeforeunload = function () {};
       }
     });
 
