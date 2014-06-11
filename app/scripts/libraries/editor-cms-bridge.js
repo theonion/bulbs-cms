@@ -69,11 +69,11 @@ This bridges the embed module that the editor exposes & our custom image impleme
             instanceOptions.editImage({id: current_id, caption: '', alt: ''}).then(
                 function (image) {
                     if (image.id === null) {
-                        // delete image
+                        $(options.element).remove();
                     } else {
                         $(options.element).attr('data-image-id', image.id);
                         $(options.element).attr('data-alt', image.alt);
-                        // something with image.caption
+                        $(".caption", options.element).html(image.caption);
                     }
                     window.picturefill();
                 }
