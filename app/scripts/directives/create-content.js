@@ -79,18 +79,6 @@ angular.module('bulbsCmsApp')
         //TODO: This sucks!
         scope.panel = 1;
 
-        angular.element('#content-title .editor').bind('input', function () {
-          scope.$apply(function(){
-            scope.newTitle = angular.element('#content-title .editor').html();
-          });
-        });
-
-        scope.$watch('newTitle', function(newTitle){
-          var tmp = document.createElement("DIV");
-          tmp.innerHTML = scope.newTitle || "";
-          scope.newTitleText = (tmp.textContent || tmp.innerText || "").replace(/^\s+|\s+$/g, '');
-        });
-
         $(element).find('a.create-content').on('click', function (e) {
           $('a.create-content.active').removeClass('active');
           $(this).addClass('active');
@@ -102,7 +90,6 @@ angular.module('bulbsCmsApp')
           scope.init = $(this).data('init') || {};
           scope.tag = $(this).data('tag') || null;
           scope.rating_type = $(this).data('rating_type') || null;
-
           scope.$apply();
 
           if ($(this).hasClass('go-next')) {
@@ -117,14 +104,13 @@ angular.module('bulbsCmsApp')
           $('.new-title').focus();
         });
 
-        $(element).find('.editor').on('keydown', function (e) {
-          if (e.keyCode === 13 && scope.newTitleText) {
+        $(element).on('keydown', '.editor', function (e) {
+          if (e.keyCode === 13 && scope.newTitle) {
             $(element).find('.go').click();
           }
         });
 
         $('#create').on('hidden.bs.modal', function(){
-          $("#create #content-title .editor").html("<p><br></p>");
           scope.newTitle = "";
           scope.panel = 1;
         });

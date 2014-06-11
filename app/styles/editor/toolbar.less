@@ -1,7 +1,8 @@
 .edit-page{
 
     .inline-active .inline-tools.toolbar { display:block; }
-
+    .toolbar {
+        z-index: 50; }
     .add-feature-image,
     .image-edit-overlay button,
     .toolbar button {
@@ -46,7 +47,7 @@
         width: 100%;
         display:none;
         transition: opacity .3s ease-in-out; 
-
+        
         .embed-button span.fa { color: green; } 
 
         .embed-button span.btn-label { font-size:12px; } 

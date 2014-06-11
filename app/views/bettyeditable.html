@@ -1,6 +1,4 @@
-<button id="betty-editable-add-image" ng-hide="image && image.id" ng-class="addStyles"><span>{{placeholderText}}</span>
-    <input type="file" class="upload" style="display: none" />
-</button>
+<button id="betty-editable-add-image" ng-click="upload();" ng-hide="image && image.id" ng-class="addStyles"><span>{{placeholderText}}</span></button>
 <div ng-show="image && image.id" ng-style="imageStyling" class="image-edit-container">
         <div class="image-edit-overlay">
             <div class="remove">

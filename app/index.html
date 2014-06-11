@@ -93,6 +93,8 @@
     <!-- endbuild -->
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="scripts/libraries/editor-cms-bridge.js"></script>
+
     <script src="scripts/app.js"></script>
 
     <script src="scripts/controllers/contentlist.js"></script>
@@ -128,11 +130,11 @@
     <script src="scripts/directives/slideshow-pane.js"></script>
     <script src="scripts/directives/targeting.js"></script>
     <script src="scripts/directives/titleimage.js"></script>
+    <script src="scripts/directives/editor.js"></script>
 
     <script src="scripts/filters/truncateByCharacters.js"></script>
     <script src="scripts/filters/truncateByWords.js"></script>
 
-    <script src="scripts/libraries/editor-cms-bridge.js"></script>
 
     <script src="scripts/modules/betty-cropper.js"></script>
 
@@ -152,6 +154,13 @@
     <script src="scripts/controllers/lastmodifiedguardmodal.js"></script>
     <script src="scripts/filters/user.js"></script>
     <script src="scripts/directives/status-filter.js"></script>
+    <script src="scripts/services/zencoder.js"></script>
+    <script src="scripts/directives/authorsfield.js"></script>
+    <script src="scripts/directives/tagsfield.js"></script>
+    <script src="scripts/directives/featuretypefield.js"></script>
+    <script src="scripts/directives/sectionsfield.js"></script>
+    <script src="scripts/directives/videoembed.js"></script>
+    <script src="scripts/directives/videofield.js"></script>
     <!-- endbuild -->
 
     <script src="bower_components/angular-mocks/angular-mocks.js"></script>
@@ -195,6 +204,8 @@
         angular.module('bulbsCmsApp').constant('TIMEZONE_LABEL', 'CST');
         angular.module('bulbsCmsApp').constant('AUTO_ADD_AUTHOR', true);
         angular.module('bulbsCmsApp').constant('DEFAULT_IMAGE_WIDTH', 1200);
+        angular.module('bulbsCmsApp').constant('VIDEO_EMBED_URL', 'http://www.avclub.com/videos/embed?id=')
+
 
         // ****** CMS Plugins ****** \\
 

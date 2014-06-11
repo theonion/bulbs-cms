@@ -94,7 +94,7 @@
           </div>
           <section class="form-group enter-title" ng-show="panel == 2" id="createcontent-02">
             <h5>2. Enter a headline <small>(You'll be able to change this later.)</small></h5>
-            <div id="content-title" class="article-header heading title"></div>
+            <onion-editor id="content-title" class="article-header heading title new-title" role="singleline" ng-model="newTitle" ></onion-editor>
             <p class="text-muted small"><em>Adding placeholder title text helps you find this content while it's still in a draft state.</em></p>
           </section>
         </div>
@@ -102,30 +102,13 @@
           <button class="btn btn-default pull-left" ng-show="panel == 2" ng-click="panel = 1;" aria-hidden="true">Back</button>
           <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancel</button>
           <button class="btn btn-primary next-pane" aria-hidden="true" ng-show="panel == 1" ng-click="panel = 2;">Next <span class="fa fa-angle-double-right"></span></button>
-          <button type="button" class="btn btn-success go" ng-show="panel == 2" ng-class="{ disabled: !newTitleText || newTitleText.length === 0 }" ng-click="newArticle();">Create article</button>
+          <button type="button" class="btn btn-success go" ng-show="panel == 2" ng-class="{ disabled: !newTitle || newTitle.length === 0 }" ng-click="newArticle();">Create article </button>
         </div>
       </div>
   </div>
 </div>
 
 <script type="text/javascript">
-  window.Editor({
-    /* global options */
-    element:document.getElementById("content-title"),
-    placeholder: "Type your Headline",
-    allowNewline: false,
-    allowNbsp: false,
-    content: "",
-    characterLimit: 200,
-    settings: {
-        font: "title",
-        visualize: false
-    },
-    sanitize: {
-      elements: ['i', 'em'],
-      remove_contents: ['script', 'style', ],
-    }
-  });
   function showEnterTitle(){
       $("#create .choose-content-type").fadeOut(200, function(){
           $("#create .enter-title").fadeIn(200, function(){

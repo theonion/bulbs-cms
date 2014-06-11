@@ -44,10 +44,13 @@ angular.module('bulbsCmsApp.mockApi').run([
     // things
     $httpBackend.whenGET(/^\/cms\/api\/v1\/things.*/).respond(mockApiData['things.list']);
 
+    // tags
+    $httpBackend.whenGET(/^\/cms\/api\/v1\/tag.*/).respond(mockApiData['tags.list']);
+
     // change log
     $httpBackend.whenGET(/^\/cms\/api\/v1\/log.*/).respond(mockApiData['changelog']);
 
-    // users
+    // users detail
     $httpBackend.whenGET(/^\/cms\/api\/v1\/author\/\d+\/$/).respond(function(method, url, data) {
       var re = /^\/cms\/api\/v1\/author\/(\d+)\//;
       var index = re.exec(url)[1];
@@ -254,7 +257,7 @@ angular.module('bulbsCmsApp.mockApi').run([
       title: "This is a draft article",
       slug: "this-is-a-draft-article",
       feature_type: null,
-      body: "This is a draft article. It was written by First Last. It is a Feature Type article.",
+      body: "<p>This is a draft article. It was written by First Last. It is a Feature Type article.</p>",
       last_modified: "2015-04-08T15:35:15.118Z"
     }, {
       polymorphic_ctype: "content_content",
@@ -292,7 +295,7 @@ angular.module('bulbsCmsApp.mockApi').run([
       feature_type: "Feature Type 1",
       subhead: "",
       indexed: true,
-      body: "This is a body",
+      body: "<p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p>",
       client_pixel: null,
       sponsor_name: null
     }, {
@@ -345,12 +348,47 @@ angular.module('bulbsCmsApp.mockApi').run([
       description: "",
       subhead: "",
       indexed: true,
-      body: "This is a body",
+      body: "<p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p>",
+      client_pixel: null,
+      sponsor_name: null
+    }, {
+      id: 5,
+      title: "Behold: A Video",
+      feature_type: "Video Series",
+      slug: "behold-video-5",
+      polymorphic_ctype: "video",
+      tags: [{
+        slug: "film",
+        type: "core_section",
+        id: 22,
+        name: "Film"
+      }],
+      authors: [{
+        username: "reggie420",
+        first_name: "Reginald",
+        last_name: "Cunningham",
+        id: 420
+      }],
+      image: {
+        caption: null,
+        alt: null,
+        id: "1"
+      },
+      absolute_url: "/article/article-1",
+      video: 10118,
+      sponsor_image: null,
+      status: "Published",
+      published: "2001-09-03T16:20:00Z",
+      last_modified: "2001-09-03T16:00:00Z",
+      description: "",
+      subhead: "",
+      indexed: true,
+      body: "See that video up there? No? Oh.",
       client_pixel: null,
       sponsor_name: null
     }]
   },
-  "things.list": [
+  'things.list': [
     {"url": "/search?tags=so-you-think-you-can-dance", "param": "tags", "type": "tag", "name": "So You Think You Can Dance", "value": "so-you-think-you-can-dance"},
     {"url": "/search?feature_types=oscar-this", "param": "feature_types", "type": "feature_type", "name": "Oscar This", "value": "oscar-this"},
     {"url": "/search?feature_types=hear-this", "param": "feature_types", "type": "feature_type", "name": "Hear This", "value": "hear-this"},
@@ -361,6 +399,14 @@ angular.module('bulbsCmsApp.mockApi').run([
     {"url": "/search?feature_types=watch-this", "param": "feature_types", "type": "feature_type", "name": "Watch This", "value": "watch-this"},
     {"url": "/search?feature_types=what-are-you-playing-this-weekend", "param": "feature_types", "type": "feature_type", "name": "What Are You Playing This Weekend?", "value": "what-are-you-playing-this-weekend"},
     {"url": "/search?feature_types=i-watched-this-on-purpose", "param": "feature_types", "type": "feature_type", "name": "I Watched This On Purpose", "value": "i-watched-this-on-purpose"}
+  ],
+  'tags.list': [
+    {'id': 1, 'slug': 'tag-1', 'name': 'Tag 1', 'type': 'content_tag'},
+    {'id': 2, 'slug': 'tag-2', 'name': 'Tag 2', 'type': 'content_tag'},
+    {'id': 3, 'slug': 'tag-3', 'name': 'Tag 3', 'type': 'content_tag'},
+    {'id': 4, 'slug': 'tag-4', 'name': 'Tag 4', 'type': 'content_tag'},
+    {'id': 5, 'slug': 'tag-5', 'name': 'Tag 5', 'type': 'content_tag'},
+    {'id': 6, 'slug': 'tag-6', 'name': 'Tag 6', 'type': 'content_tag'}
   ],
   'contentlist.list': {
     'count': 5,

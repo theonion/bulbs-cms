@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Directive: imagedrawer', function () {
+describe('Directive: editor', function () {
 
   // load the directive's module
   beforeEach(module('bulbsCmsApp'));

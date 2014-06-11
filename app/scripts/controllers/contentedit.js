@@ -5,8 +5,7 @@ angular.module('bulbsCmsApp')
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, keypress,
-    IfExistsElse, Localstoragebackup, ContentApi, ReviewApi, Login,
-    routes)
+    IfExistsElse, Localstoragebackup, ContentApi, ReviewApi, Login, routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
@@ -22,17 +21,17 @@ angular.module('bulbsCmsApp')
       }
       $scope.last_saved_article = angular.copy(data);
 
-      $scope.$watch('article.detail_image.id', function (newVal, oldVal) {
+      $scope.$watch('article.image.id', function (newVal, oldVal) {
         if (!$scope.article) { return; }
         if (newVal && oldVal && newVal === oldVal) { return; }
 
-        if (newVal === null) { return; } //no image
+        if (newVal === null || newVal === undefined) { return; } //no image
 
-        if (!$scope.article.image || !$scope.article.image.id || //no thumbnail
-          (newVal && oldVal && $scope.article.image && $scope.article.image.id && oldVal === $scope.article.image.id) || //thumbnail is same
+        if (!$scope.article.thumbnail || !$scope.article.thumbnail.id || //no thumbnail
+          (newVal && oldVal && $scope.article.thumbnail && $scope.article.thumbnail.id && oldVal === $scope.article.thumbnail.id) || //thumbnail is same
           (!oldVal && newVal) //detail was trashed
         ) {
-          $scope.article.image = {id: newVal, alt: null, caption: null};
+          $scope.article.thumbnail = {id: newVal, alt: null, caption: null};
         }
 
 
@@ -84,60 +83,6 @@ angular.module('bulbsCmsApp')
       $(input).val('');
     };
 
-    $scope.removeTag = function (e) {
-      var tag = $(e.target).parents('[data-tag]').data('tag');
-      var name = tag.name;
-      var newtags = [];
-      for (var i in $scope.article.tags) {
-        if ($scope.article.tags[i].name !== name) {
-          newtags.push($scope.article.tags[i]);
-        }
-      }
-      $scope.article.tags = newtags;
-    };
-
-    $scope.removeAuthor = function (e) {
-      var author = $(e.target).parents('[data-author]').data('author');
-      var id = author.id;
-      var newauthors = [];
-      for (var i in $scope.article.authors) {
-        if ($scope.article.authors[i].id !== id) {
-          newauthors.push($scope.article.authors[i]);
-        }
-      }
-      $scope.article.authors = newauthors;
-    };
-
-    $scope.featureTypeDisplayFn = function (o) {
-      return o.name;
-    };
-
-    $scope.featureTypeCallback = function (o, input, freeForm) {
-      var fVal = freeForm ? o : o.name;
-      IfExistsElse.ifExistsElse(
-        ContentApi.all('things').getList({
-          type: 'feature_type',
-          q: fVal
-        }),
-        {name: fVal},
-        function (ft) { $scope.article.feature_type = ft.name; $('#feature-type-container').removeClass('newtag'); },
-        function (value) { $scope.article.feature_type = value.name; $('#feature-type-container').addClass('newtag'); },
-        function (data, status) { if (status === 403) { Login.showLoginModal(); } }
-      );
-    };
-
-    $scope.authorDisplayFn = function (o) {
-      return (o.first_name && o.last_name && o.first_name + ' ' + o.last_name) || 'username: ' + o.username;
-    };
-
-    $scope.authorCallback = function (o, input) {
-      for (var t in $scope.article.authors) {
-        if ($scope.article.authors[t].id === o.id) { return; }
-      }
-      $scope.article.authors.push(o);
-      $(input).val('');
-    };
-
     $scope.saveArticleDeferred = $q.defer();
     $scope.mediaItemCallbackCounter = undefined;
     $scope.$watch('mediaItemCallbackCounter', function () {
@@ -180,14 +125,8 @@ angular.module('bulbsCmsApp')
 
       var data = $scope.article;
 
-      $scope.article.title = $scope.editors.content_title_editor.getContent();
       if ($scope.article.status !== 'Published') {
         $scope.article.slug = $window.URLify($scope.article.title, 50);
-      }
-      $scope.article.subhead = $scope.editors.content_subhead_editor.getContent();
-
-      if ($scope.editors.content_body_editor) {
-        $scope.article.body = $scope.editors.content_body_editor.getContent();
       }
 
       //because media_items get saved to a different API,
@@ -299,10 +238,6 @@ angular.module('bulbsCmsApp')
       $scope.saveArticleDeferred.resolve(resp);
     }
 
-    $scope.displayAuthorAutocomplete = function (obj) {
-      return obj.first_name + ' ' + obj.last_name;
-    };
-
     $scope.$watch('article', function(){
       if(angular.equals($scope.article, $scope.last_saved_article)){
         $scope.articleIsDirty = false;
@@ -323,25 +258,6 @@ angular.module('bulbsCmsApp')
 
     $('#extra-info-modal').on('shown.bs.modal', function () { $window.picturefill(); });
 
-    $scope.initEditor = function (name, id, options, articleField) {
-      $scope.editors = $scope.editors || {};
-      $scope.editors[name] = new window.Editor(options);
-      angular.element(id + ' .editor').bind('input', function () {
-        $scope.article[articleField] = $scope.editors[name].getContent();
-        $scope.$apply();
-      });
-
-
-    };
-
-    //exporting this to global so editor snippets can self-instantiate
-    $window.initEditor = $scope.initEditor;
-
-    $scope.$on('$destroy', function () {
-      for (var editor in $scope.editors) {
-        $scope.editors[editor].destroy();
-      }
-    });
 
     $scope.addRating = function (type) {
       $scope.article.ratings.push({
