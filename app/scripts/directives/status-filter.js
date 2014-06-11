@@ -54,8 +54,7 @@ angular.module('bulbsCmsApp')
             value = getValue(option);
             search[option.key] = value;
           }
-          $location.search(search);
-          scope.getContent();
+          scope.getContent(search);
         };
 
         function getValue(option){

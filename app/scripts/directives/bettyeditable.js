@@ -130,10 +130,11 @@ angular.module('bulbsCmsApp')
 
         scope.editImage = function () {
           openImageCropModal(scope.image)
-          .then(function (result) {
-            if (result == 'delete') {
+          .then(function (image) {
+            if (image.id === null) {
               scope.image = null;
             } else {
+              scope.image = image;
               scope.getImageData();
             }
           })

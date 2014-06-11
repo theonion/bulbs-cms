@@ -133,6 +133,9 @@ angular.module('bulbsCmsApp')
         function read() {
           scope.$apply(function(){
             var html = editor.getContent();
+            if (html.trim() === defaultValue) {
+              html = ngModel.$viewValue;
+            }
             ngModel.$setViewValue(html);
           });
         }

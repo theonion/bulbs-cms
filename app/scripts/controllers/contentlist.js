@@ -19,21 +19,16 @@ angular.module('bulbsCmsApp')
         $scope.totalItems = data.metadata.count;
       };
 
-    $scope.getContent = function () {
-        var params = {
-          page: $scope.pageNumber
-        };
-        var search = $location.search();
-        for (var prop in search) {
-          if (!search.hasOwnProperty(prop)) {
-            continue;
-          }
-          var val = search[prop];
-          if (!val || val === 'false') {
-            continue;
-          }
-          params[prop] = val;
+    $scope.getContent = function (params, merge) {
+        params = params || {};
+        if(merge){
+          var curParams = $location.search();
+          params = $.extend(true, curParams, params);
         }
+
+        $location.search(params);
+        $scope.pageNumber = $location.search().page || '1';
+
         ContentApi.all('content').getList(params)
           .then(getContentCallback);
       };
@@ -63,25 +58,14 @@ angular.module('bulbsCmsApp')
     $('#meOnly').on('switch-change', function (e, data) {
         var value = data.value;
         if (value === true) {
-          $location.search().authors = [$window.current_user];
-          $scope.getContent();
+          $scope.getContent({authors: [$window.current_user]});
         } else if (value === false) {
-          delete $location.search().authors;
           $scope.getContent();
         }
       });
 
     $scope.goToPage = function (page) {
-        $location.search(_.extend($location.search(), {'page': page}));
-        $scope.getContent();
-      };
-
-    $scope.sort = function (sort) {
-        if ($location.search().ordering && $location.search().ordering.indexOf(sort) === 0) {
-          sort = '-' + sort;
-        }
-        $location.search(_.extend($location.search(), {'ordering': sort}));
-        $scope.getContent();
+        $scope.getContent({'page': page}, true);
       };
 
     $scope.publishSuccessCbk = function (data) {
