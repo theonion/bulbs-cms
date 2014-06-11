@@ -12,9 +12,4 @@ describe('Directive: sectionsField', function () {
     scope = $rootScope.$new();
   }));
 
-  it('should make hidden element visible', inject(function ($compile) {
-    element = angular.element('<sections-field></sections-field>');
-    element = $compile(element)(scope);
-    expect(element.text()).toBe('this is the sectionsField directive');
-  }));
 });

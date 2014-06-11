@@ -70,6 +70,7 @@ angular.module('bulbsCmsApp.mockApi').run([
       return [200]
     });
 
+    //current user
     $httpBackend.whenGET(/\/users\/me\/?/).respond({
       username: "JesseWoghin",
       first_name: "Jesse",
@@ -77,6 +78,30 @@ angular.module('bulbsCmsApp.mockApi').run([
       id: 35823,
       email: "jwoghin@theonion.com"
     });
+
+    //sponsors
+    $httpBackend.whenGET(/^\/cms\/api\/v1\/sponsor\/$/).respond([
+      {
+        "id": 1,
+        "name": "Sponsor 1",
+        "slug": "sponsor-1",
+        "image": "1",
+        "url": "",
+        "pixel": "",
+        "top_widget": "",
+        "bottom_widget": ""
+      },
+      {
+        "id": 2,
+        "name": "Sponsor 2",
+        "slug": "sponsor-2",
+        "image": "2",
+        "url": "",
+        "pixel": "",
+        "top_widget": "",
+        "bottom_widget": ""
+      },
+    ]);
 
     // promotions contentlist
     var contentlist = {
