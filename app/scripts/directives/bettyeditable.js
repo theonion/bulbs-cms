@@ -155,7 +155,7 @@ angular.module('bulbsCmsApp')
           })
         }
 
-        if (scope.image) {
+        if (scope.image && scope.image.id) {
           scope.showImage();
         }
 
