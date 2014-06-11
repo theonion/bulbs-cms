@@ -66,9 +66,15 @@ This bridges the embed module that the editor exposes & our custom image impleme
 
             current_id = options.element.getAttribute('data-image-id');
 
-            instanceOptions.editImage({id: current_id}).then(
-                function () {
-                    $(options.element).attr('data-image-id', current_id);
+            instanceOptions.editImage({id: current_id, caption: '', alt: ''}).then(
+                function (image) {
+                    if (image.id === null) {
+                        // delete image
+                    } else {
+                        $(options.element).attr('data-image-id', image.id);
+                        $(options.element).attr('data-alt', image.alt);
+                        // something with image.caption
+                    }
                     window.picturefill();
                 }
             );

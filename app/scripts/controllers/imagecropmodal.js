@@ -5,7 +5,7 @@ angular.module('bulbsCmsApp')
     $scope.cropMode = false;
     $scope.thumb = {height: 170, width: 170};
     $scope.crop_image = {height: 400, width: 550};
-    $scope.img_ref = img_ref;
+    $scope.img_ref = angular.copy(img_ref);
 
     $scope.image_url = BettyCropper.origJpg($scope.img_ref.id, DEFAULT_IMAGE_WIDTH);
 
