@@ -58,7 +58,7 @@
                         $.ajax({
                             url: w.BC_ADMIN_URL + '/api/' + id,
                             headers: {
-                                'X-Betty-Api-Key': 'c44027184faf2dc61d6660409dec817daaa75decfa853d68250cbe8e',
+                                'X-Betty-Api-Key': w.BC_API_KEY,
                                 'Content-Type': undefined
                             },
                             success: function (res) {
@@ -192,7 +192,7 @@
                     $.ajax({
                         url: w.BC_ADMIN_URL + '/api/' + id,
                         headers: {
-                            'X-Betty-Api-Key': 'c44027184faf2dc61d6660409dec817daaa75decfa853d68250cbe8e',
+                            'X-Betty-Api-Key': w.BC_API_KEY,
                             'Content-Type': undefined
                         },
                         success: function (res) {

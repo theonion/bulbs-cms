@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .factory('openImageCropModal', function ($window, $modal, routes) {
+  .factory('openImageCropModal', function ($modal, routes) {
     var openImageCropModal = function (image) {
 
       return $modal.open({
@@ -13,6 +13,6 @@ angular.module('bulbsCmsApp')
       }).result;
 
     };
-    $window.openImageCropModal = openImageCropModal; // for editor inline images
+
     return openImageCropModal;
   });

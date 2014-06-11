@@ -2,15 +2,20 @@
 
 angular.module('bulbsCmsApp')
   .directive('bulbsAutocomplete', function ($http, $location, $compile, $timeout, $, Login) {
+
+    var autocomplete_dropdown_template = '<div class="autocomplete dropdown" ng-show="autocomplete_list">\
+          <div class="entry" ng-repeat="option in autocomplete_list" ng-click="onClick(option)">\
+              {{display(option);}}\
+          </div>\
+      </div>'
+
     return {
-      restrict: 'A',
-      scope: true,
+      restrict: 'AC',
       link: function postLink(scope, element, attrs) {
-        scope.displayfn = scope[attrs.displayfn];
-        scope.callback = scope[attrs.callback];
         var $elem = $(element).find('input');
         $elem.attr('autocomplete', 'off');
-        var dropdown = $($compile($('#autocomplete-dropdown-template').html())(scope));
+        var dropdown = $($compile(autocomplete_dropdown_template)(scope));
+
         $(dropdown).css({
           position: 'absolute',
           top: $elem.position().top + $elem.outerHeight(),
@@ -47,7 +52,6 @@ angular.module('bulbsCmsApp')
             var val = $elem.val();
             if (val === '') {
               scope.autocomplete_list = [];
-              //if (!scope.$$phase) scope.$apply();
             } else {
               $timeout.cancel(inputTimeout);
               inputTimeout = $timeout(function () { getAutocompletes(val); }, 200);
@@ -65,7 +69,7 @@ angular.module('bulbsCmsApp')
           inputCounter = 0;
           $http({
             method: 'GET',
-            url: attrs.resourceUrl + val
+            url: scope.resourceUrl + val
           }).success(function (data) {
             var results = data.results || data;
             scope.autocomplete_list = results.splice(0, 5);
@@ -123,7 +127,7 @@ angular.module('bulbsCmsApp')
         });
 
         scope.onClick = function (o, freeForm) {
-          scope.callback(o, $elem, freeForm || false);
+          scope.add(o, $elem, freeForm || false);
           scope.autocomplete_list = [];
           //if (!scope.$$phase) scope.$apply();
         };

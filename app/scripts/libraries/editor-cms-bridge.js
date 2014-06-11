@@ -38,35 +38,25 @@ This bridges the embed module that the editor exposes & our custom image impleme
 
 (function(global) {
     'use strict';
-    var OnionImage = OnionImage || function(editor, options) {
+    var OnionImage = OnionImage || function(editor, instanceOptions) {
 
         editor.on("inline:edit:image", editImage);
         editor.on("inline:insert:image", uploadImage);
 
         function uploadImage(options) {
-            global.uploadImage({onProgress: onProgress,
-                                onSuccess: onSuccess,
-                                onError: onError,
-                                onCancel: onCancel})
-
-            // insert image status overlay.
-            function onProgress() {
-                //update an indicator
-            }
-
-            function onSuccess(data) {
-                //insert image.
-                options.onSuccess(options.block, {image_id: data.id});
-                window.picturefill();
-            }
-
-            function onError() {
-                //show msg, allow user to trigger upload again
-            }
-
-            function onCancel() {
-                //remove placeholder. Call it a day.
-            }
+            instanceOptions.uploadImage().then(
+                function(success){
+                    //insert image.
+                    options.onSuccess(options.block, {image_id: success.id});
+                    window.picturefill();
+                },
+                function(error){
+                    console.log(error);
+                },
+                function(progress){
+                    console.log(progress);
+                }
+            );
         }
 
         var activeElement,
@@ -75,27 +65,14 @@ This bridges the embed module that the editor exposes & our custom image impleme
         function editImage(options) {
 
             current_id = options.element.getAttribute('data-image-id');
-            openImageDrawer(current_id, onDrawerImageChange, onDrawerSave, onDrawerCancel);
 
-            // openImageCropModal(current_id).then(
-            //     function () {
-            //         $(options.element).attr('data-image-id', current_id);
-            //         window.picturefill();
-            //     }
-            // );
+            instanceOptions.editImage({id: current_id}).then(
+                function () {
+                    $(options.element).attr('data-image-id', current_id);
+                    window.picturefill();
+                }
+            );
 
-            function onDrawerImageChange(id) {
-                $(options.element).attr('data-image-id', id);
-                window.picturefill();
-            }
-
-            function onDrawerSave() {
-
-            }
-
-            function onDrawerCancel(oldId) {
-
-            }
         }
     }
     global.EditorModules.push(OnionImage);
@@ -103,7 +80,7 @@ This bridges the embed module that the editor exposes & our custom image impleme
 
 (function(global) {
     'use strict';
-    var OnionVideo = OnionVideo || function(editor, options) {
+    var OnionVideo = OnionVideo || function(editor, instanceOptions) {
 
         editor.on("inline:edit:onion-video", editVideo);
         editor.on("inline:insert:onion-video", uploadVideo);
@@ -129,24 +106,24 @@ This bridges the embed module that the editor exposes & our custom image impleme
         }
 
         function uploadVideo(options) {
-            //return an identifier, for cancelling?
-            var activeElement = options.onSuccess(options.block, {videoid:"NONE"});
-            global.uploadVideo(activeElement, {
-                onSuccess: setVideoID,
-                onProgess:onProgress,
-                onError:onError,
-                onCancel:onCancel
-            });
 
-            // insert image status overlay.
+            var activeElement = options.onSuccess(options.block, {videoid:"NONE"});
+            return instanceOptions.uploadVideo().then(
+                function(videoObject){
+                    setVideoID(videoObject.attrs.id);
+                }, function(error){
+                    onError(error);
+                }, function(progress){
+                    onProgress(progress);
+                }
+            );
 
             function onProgress() {
                 //update an indicator
             }
 
             function setVideoID(id) {
-                //insert image.
-                $("iframe", activeElement).attr("src", "/videos/embed?id=" + id);
+                $("iframe", activeElement).attr("src", instanceOptions.videoEmbedUrl + id);
                 $(activeElement).attr('data-videoid', id)
             }
 
@@ -157,6 +134,7 @@ This bridges the embed module that the editor exposes & our custom image impleme
             function onCancel() {
                 //remove placeholder. Call it a day.
             }
+
         }
 
         function editVideo(el) {

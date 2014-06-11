@@ -22,10 +22,8 @@
     overflow: hidden;
     margin: 0 0 10px 0;
     min-height: 3em;
-
-    &:hover { background-color: rgba(220,220,220, 0.4); }
-
-    &:focus { background-color: rgba(210,210,210,0.4); }
+    
+    &:hover, &:focus { background-color: rgba(210,210,210,0.4);}
 
     p { margin-bottom: 0; }
 
@@ -150,3 +148,16 @@
     font-family: monospace;
     line-height: 1.9em;
     padding: 10px; }
+
+/* Here's some basic inline styles. Override with your own inline.less */
+
+#content-body .editor {
+font-family: Georgia, sans-serif;
+line-height: 32px;
+font-size: 18px;
+}
+
+.editor blockquote, .editor ol, .editor p, .editor ul, .editor>div {
+    min-height: 24px;
+    margin: 1em 0;
+}

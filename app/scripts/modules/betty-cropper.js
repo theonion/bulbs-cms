@@ -1,11 +1,41 @@
 angular.module('BettyCropper', [])
-  .service('BettyCropper', function BettyCropper($http, $interpolate, IMAGE_SERVER_URL, BC_API_KEY) {
+  .service('BettyCropper', function BettyCropper($http, $interpolate, $q, IMAGE_SERVER_URL, BC_API_KEY) {
+    var fileInputId = '#bulbs-cms-hidden-image-file-input'
+    var inputTemplate = '<input id="bulbs-cms-hidden-image-file-input" type="file" accept="image/*" style="position: absolute; left:-99999px;" name="image" />'
 
-    /*\
+    this.upload = function () {
+      var uploadImageDeferred = $q.defer();
 
-      Betty Cropper API
+      angular.element(fileInputId).remove();
+      var fileInput = angular.element(inputTemplate);
+      var file;
+      angular.element('body').append(fileInput);
+      fileInput.click();
+      fileInput.unbind('change');
 
-    \*/
+      fileInput.bind('change', function(elem){
+        if (this.files.length != 1) {
+          uploadImageDeferred.reject('We need exactly one image!');
+        }
+        var file = this.files[0];
+        if (file.type.indexOf('image/') != 0) {
+          uploadImageDeferred.reject('Not an image!');
+        }
+
+        if (file.size > 6800000) {
+          uploadImageDeferred.reject('The file is too large!')
+        }
+
+        newImage(file).success(function(success){
+          uploadImageDeferred.resolve(success);
+        }).error(function(error){
+          uploadImageDeferred.reject(error);
+        });
+
+      });
+
+      return uploadImageDeferred.promise;
+    }
 
     this.detail = function (id) {
       return $http({
@@ -36,7 +66,7 @@ angular.module('BettyCropper', [])
       });
     };
 
-    this.new = function (image, name, credit) {
+    function newImage (image, name, credit) {
       var imageData = new FormData();
       imageData.append('image', image);
       if (name) { imageData.append('name', name); }
@@ -65,12 +95,6 @@ angular.module('BettyCropper', [])
         data: selections
       });
     };
-
-    /*\
-
-      Convenience Methods
-
-    \*/
 
     this.url = function (id, crop, width, format) {
       var exp = $interpolate(
