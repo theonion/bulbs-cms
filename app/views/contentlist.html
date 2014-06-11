@@ -14,6 +14,7 @@
 
     <div class="row">
       <table class="panel-group col-xs-12 table table-condensed table-bordered table-striped" id="contentListAccordion">
+        <tr ng-if="totalItems === 0"><td><h1 class="h4 text-center">No content here</h1></td></tr>
         <tr class="panel panel-default" ng-repeat="article in articles | filter:text_filter">
           <td>
             <div class="panel-heading row" data-toggle="collapse" href="#collapse-{{ article.id }}">
