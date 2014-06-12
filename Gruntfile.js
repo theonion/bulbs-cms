@@ -163,6 +163,15 @@ module.exports = function (grunt) {
       }
     },
 
+    shell: {
+      bower_install: {
+        command: 'bower install -F --production'
+      },
+      bower_update: {
+        command: 'bower update -F --production'
+      }
+    },
+
     // Automatically inject Bower components into the app
     'bower-install': {
       app: {
@@ -458,6 +467,8 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
+    'shell:bower_install',
+    'shell:bower_update',
     'bower-install',
     'ngtemplates',
     'useminPrepare',
