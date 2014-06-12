@@ -51,7 +51,9 @@
     "karma-cli": "~0.0.4",
     "protractor": "^0.22.0",
     "grunt-protractor-runner": "^0.2.4",
-    "grunt-shell": "~0.7.0"
+    "grunt-shell": "~0.7.0",
+    "grunt-release": "~0.7.0",
+    "shelljs": "~0.1.2"
   },
   "engines": {
     "node": ">=0.8.0"

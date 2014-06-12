@@ -432,8 +432,24 @@ module.exports = function (grunt) {
       },
     },
 
+    release: {
+      options: {
+        add: false,
+        commit: false,
+        file: 'bower.json',
+        npm: false,
+        tagMessage: '<%= version %>',
+        github: {
+          repo: 'theonion/bulbs-cms',
+          usernameVar: 'GITHUB_USERNAME',
+          passwordVar: 'GITHUB_TOKEN'
+        }
+      }
+    }
+
   });
 
+  var shell = require('shelljs');
 
   grunt.registerTask('serve', function (target) {
     if (target === 'dist') {
@@ -491,4 +507,27 @@ module.exports = function (grunt) {
     'test',
     'build'
   ]);
+
+  grunt.registerTask('publish', function() {
+    var branch = shell.exec(
+      'git symbolic-ref --short HEAD',
+      { silent:true }
+    ).output;
+
+    // check if you're on the 'release' branch
+    if (branch === 'release') {
+      var commands = ['build', 'release'];
+
+      // if you don't want to build, remove that command
+      var dont_build = grunt.options('no-build');
+      if (dont_build) {
+        commands.shift();
+      }
+
+      grunt.task.run(commands);
+    } else {
+      grunt.fail.fatal('You\'re not on the \"release\" branch!');
+    }
+
+  });
 };
