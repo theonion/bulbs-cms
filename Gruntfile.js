@@ -508,7 +508,7 @@ module.exports = function (grunt) {
     'build'
   ]);
 
-  grunt.registerTask('publish', function() {
+  grunt.registerTask('publish', function(release_args) {
     var branch = shell.exec(
       'git symbolic-ref --short HEAD',
       { silent:true }
@@ -516,7 +516,13 @@ module.exports = function (grunt) {
 
     // check if you're on the 'release' branch
     if (branch === 'release') {
-      var commands = ['build', 'release'];
+
+      var release = 'release';
+      if (arguments.length) {
+        release += ':' + release_args;
+      }
+
+      var commands = ['build', release];
 
       // if you don't want to build, remove that command
       var dont_build = grunt.options('no-build');
