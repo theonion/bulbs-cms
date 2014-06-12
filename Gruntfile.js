@@ -514,7 +514,6 @@ module.exports = function (grunt) {
       { silent:true }
     ).output;
 
-    // check if you're on the 'release' branch
     if (branch === 'release') {
 
       var release = 'release';
@@ -524,7 +523,7 @@ module.exports = function (grunt) {
 
       var commands = ['build', release];
 
-      // if you don't want to build, remove that command
+      // if you don't want to build, remove the 'build' command
       var dont_build = grunt.options('no-build');
       if (dont_build) {
         commands.shift();
