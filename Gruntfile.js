@@ -506,6 +506,13 @@ module.exports = function (grunt) {
     'build'
   ]);
 
+  grunt.registerTask('commitBuild', function() {
+    grunt.log.ok(shell.exec(
+      'git commit -am \'new build\'',
+      {silent: true}
+    ).output);
+  });
+
   grunt.registerTask('publish', function(release_args) {
     var branch = shell.exec(
       'git symbolic-ref --short HEAD',
@@ -519,11 +526,10 @@ module.exports = function (grunt) {
         release += ':' + release_args;
       }
 
+      // if you don't want to build, remove the 'build' command
       var dont_build = grunt.option('no-build');
-
       if (!dont_build) {
-        grunt.task.run(['build']);
-        grunt.log.ok(shell.exec('git commit -am \'new build\'', { silent:true }));
+        grunt.task.run(['build', 'commitBuild']);
       }
 
       grunt.task.run([release]);
