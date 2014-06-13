@@ -530,8 +530,8 @@ module.exports = function (grunt) {
       }
 
       grunt.task.run([
-        'build',
         'travis',
+        'build',
         'commitBuild',
         release
       ]);
