@@ -434,8 +434,6 @@ module.exports = function (grunt) {
 
     release: {
       options: {
-        add: false,
-        commit: false,
         file: 'bower.json',
         npm: false,
         tagMessage: '<%= version %>',
