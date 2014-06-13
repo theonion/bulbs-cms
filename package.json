@@ -52,8 +52,8 @@
     "protractor": "^0.22.0",
     "grunt-protractor-runner": "^0.2.4",
     "grunt-shell": "~0.7.0",
-    "grunt-release": "~0.7.0",
-    "shelljs": "~0.1.2"
+    "shelljs": "~0.1.2",
+    "grunt-release": "https://github.com/theonion/grunt-release/archive/0.7.0-1.tar.gz"
   },
   "engines": {
     "node": ">=0.8.0"

@@ -437,6 +437,7 @@ module.exports = function (grunt) {
         file: 'bower.json',
         npm: false,
         tagMessage: '<%= version %>',
+        branch: 'release',
         github: {
           repo: 'theonion/bulbs-cms',
           usernameVar: 'GITHUB_USERNAME',
@@ -500,18 +501,20 @@ module.exports = function (grunt) {
     'uglify'
   ]);
 
+  grunt.registerTask('commitBuild', function () {
+    var stdout = shell.exec('git commit -am \'new build\'', {silent: true});
+    if (stdout.code === 0) {
+      grunt.log.ok(stdout.output);
+    } else {
+      grunt.fail.fatal(stdout.output);
+    }
+  })
+
   grunt.registerTask('default', [
     'newer:jshint',
     'test',
     'build'
   ]);
-
-  grunt.registerTask('commitBuild', function() {
-    grunt.log.ok(shell.exec(
-      'git commit -am \'new build\'',
-      {silent: true}
-    ).output);
-  });
 
   grunt.registerTask('publish', function(release_args) {
     var branch = shell.exec(
@@ -526,13 +529,12 @@ module.exports = function (grunt) {
         release += ':' + release_args;
       }
 
-      // if you don't want to build, remove the 'build' command
-      var dont_build = grunt.option('no-build');
-      if (!dont_build) {
-        grunt.task.run(['build', 'commitBuild']);
-      }
-
-      grunt.task.run([release]);
+      grunt.task.run([
+        'build',
+        'travis',
+        'commitBuild',
+        release
+      ]);
 
     } else {
       grunt.fail.fatal('You\'re not on the \"release\" branch!');
