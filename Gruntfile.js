@@ -519,15 +519,15 @@ module.exports = function (grunt) {
         release += ':' + release_args;
       }
 
-      var commands = ['build', release];
-
-      // if you don't want to build, remove the 'build' command
       var dont_build = grunt.option('no-build');
-      if (dont_build) {
-        commands.shift();
+
+      if (!dont_build) {
+        grunt.task.run(['build']);
+        grunt.log.ok(shell.exec('git commit -am \'new build\'', { silent:true }));
       }
 
-      grunt.task.run(commands);
+      grunt.task.run([release]);
+
     } else {
       grunt.fail.fatal('You\'re not on the \"release\" branch!');
     }
