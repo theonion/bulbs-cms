@@ -163,6 +163,15 @@ module.exports = function (grunt) {
       }
     },
 
+    shell: {
+      bower_install: {
+        command: 'bower install -F --production'
+      },
+      bower_update: {
+        command: 'bower update -F --production'
+      }
+    },
+
     // Automatically inject Bower components into the app
     'bower-install': {
       app: {
@@ -423,8 +432,24 @@ module.exports = function (grunt) {
       },
     },
 
+    release: {
+      options: {
+        add: false,
+        commit: false,
+        file: 'bower.json',
+        npm: false,
+        tagMessage: '<%= version %>',
+        github: {
+          repo: 'theonion/bulbs-cms',
+          usernameVar: 'GITHUB_USERNAME',
+          passwordVar: 'GITHUB_TOKEN'
+        }
+      }
+    }
+
   });
 
+  var shell = require('shelljs');
 
   grunt.registerTask('serve', function (target) {
     if (target === 'dist') {
@@ -458,6 +483,8 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
+    'shell:bower_install',
+    'shell:bower_update',
     'bower-install',
     'ngtemplates',
     'useminPrepare',
@@ -480,4 +507,32 @@ module.exports = function (grunt) {
     'test',
     'build'
   ]);
+
+  grunt.registerTask('publish', function(release_args) {
+    var branch = shell.exec(
+      'git symbolic-ref --short HEAD',
+      { silent:true }
+    ).output;
+
+    if (branch === 'release') {
+
+      var release = 'release';
+      if (arguments.length) {
+        release += ':' + release_args;
+      }
+
+      var commands = ['build', release];
+
+      // if you don't want to build, remove the 'build' command
+      var dont_build = grunt.options('no-build');
+      if (dont_build) {
+        commands.shift();
+      }
+
+      grunt.task.run(commands);
+    } else {
+      grunt.fail.fatal('You\'re not on the \"release\" branch!');
+    }
+
+  });
 };
