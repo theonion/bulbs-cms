@@ -512,7 +512,7 @@ module.exports = function (grunt) {
     var branch = shell.exec(
       'git symbolic-ref --short HEAD',
       { silent:true }
-    ).output;
+    ).output.trim();
 
     if (branch === 'release') {
 
