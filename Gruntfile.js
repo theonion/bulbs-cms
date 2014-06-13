@@ -524,7 +524,7 @@ module.exports = function (grunt) {
       var commands = ['build', release];
 
       // if you don't want to build, remove the 'build' command
-      var dont_build = grunt.options('no-build');
+      var dont_build = grunt.option('no-build');
       if (dont_build) {
         commands.shift();
       }
