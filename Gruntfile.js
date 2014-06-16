@@ -503,11 +503,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('commitBuild', function () {
     var stdout = shell.exec('git commit -am \'new build\'', {silent: true});
-    if (stdout.code === 0) {
-      grunt.log.ok(stdout.output);
-    } else {
-      grunt.fail.fatal(stdout.output);
-    }
+    grunt.log.ok(stdout.output);
   })
 
   grunt.registerTask('default', [
@@ -530,8 +526,8 @@ module.exports = function (grunt) {
       }
 
       grunt.task.run([
-        'build',
         'travis',
+        'build',
         'commitBuild',
         release
       ]);
