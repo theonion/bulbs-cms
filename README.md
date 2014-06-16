@@ -35,4 +35,4 @@ export GITHUB_USERNAME=your-username-here
 export GITHUB_TOKEN=your-api-key-here
 ```
 
-Befpre you do use the `publish` command. You'll probably want to put those export commands in your `.bash_profile`
+You'll probably want to put those export commands in your `.bash_profile`
