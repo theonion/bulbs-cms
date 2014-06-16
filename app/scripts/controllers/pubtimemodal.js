@@ -90,6 +90,34 @@ angular.module('bulbsCmsApp')
         });
     };
 
+    $scope.unpubButton = {
+      idle: 'Unpublish',
+      busy: 'Unpublishing',
+      finished: 'Unpublished!',
+      error: 'Error'
+    };
+
+
+    $scope.unpublish = function () {
+      return $http({
+        url: '/cms/api/v1/content/' + $scope.article.id + '/publish/',
+        method: 'POST',
+        data: {published: false}
+      });
+    };
+
+    $scope.unpublishCbk = function (unpub_promise) {
+      unpub_promise
+        .then(function (result) {
+          $scope.publishSuccessCbk && $scope.publishSuccessCbk({article: $scope.article, response: result.data});
+          $modalInstance.close();
+        })
+        .catch(function (reason) {
+          $scope.publishSuccessCbk && $scope.publishSuccessCbk({article: $scope.article, response: reason.data});
+          $modalInstance.dismiss();
+        })
+    };
+
     if($scope.article.published){
       $scope.pickerValue = moment($scope.article.published);
     }else{
