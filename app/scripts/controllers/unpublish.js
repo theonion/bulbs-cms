@@ -12,18 +12,21 @@ angular.module('bulbsCmsApp')
 
 
     $scope.unpublish = function () {
-      var data = {published: false};
-      var deferred = $q.defer();
-      $http({
+      return $http({
         url: '/cms/api/v1/content/' + $scope.article.id + '/publish/',
         method: 'POST',
-        data: data
-      }).success(function(data){
-        deferred.resolve({article: $scope.article, response: data});
-      }).error(function(data){
-        deferred.reject(data);
+        data: {published: false}
       });
+    };
 
-      return deferred.promise;
-    }
+    $scope.unpublishCbk = function (unpub_promise) {
+      unpub_promise
+        .then(function (result) {
+          $scope.publishSuccessCbk && $scope.publishSuccessCbk({article: $scope.article, response: result.data});
+        })
+        .catch(function (reason) {
+          $scope.publishSuccessCbk && $scope.publishSuccessCbk({article: $scope.article, response: reason.data});
+        })
+    };
+
   });
