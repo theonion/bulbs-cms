@@ -3,15 +3,23 @@
 angular.module('bulbsCmsApp')
   .controller('UnpublishCtrl', function ($scope, $http, $q) {
 
-    $scope.unpublish = function (article) {
+    $scope.unpubButton = {
+      idle: 'Unpublish',
+      busy: 'Unpublishing',
+      finished: 'Unpublished!',
+      error: 'Error'
+    };
+
+
+    $scope.unpublish = function () {
       var data = {published: false};
       var deferred = $q.defer();
       $http({
-        url: '/cms/api/v1/content/' + article.id + '/publish/',
+        url: '/cms/api/v1/content/' + $scope.article.id + '/publish/',
         method: 'POST',
         data: data
       }).success(function(data){
-        deferred.resolve({article: article, response: data});
+        deferred.resolve({article: $scope.article, response: data});
       }).error(function(data){
         deferred.reject(data);
       });

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('saveButton', function ($q, $timeout, NProgress, routes) {
+  .directive('saveButton', function ($q, $timeout, $window, NProgress, routes) {
     return {
       replace: true,
       restrict: 'E',
@@ -31,6 +31,11 @@ angular.module('bulbsCmsApp')
         });
 
         scope.save = function () {
+          if (attrs.confirmClickWith) {
+            var message = attrs.confirmClickWith;
+            if (!$window.confirm(message)) { return; }
+          }
+
           NProgress.start();
           scope.colors = scope.colors_tmp;
           element
