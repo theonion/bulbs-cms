@@ -24,7 +24,7 @@ angular.module('bulbsCmsApp')
           "crop": "16x9"
         },
         "template":
-          "<div data-type=\"onion-video\" class=\"onion-video video inline size-{{size}} crop-{{crop}}\" data-video-id=\"{{image_id}}\" data-size=\"{{size}}\" data-crop=\"{{crop}}\"><iframe src=\"/videos/embed?id={{video_id}}\"></iframe></div>"
+          "<div data-type=\"onion-video\" class=\"onion-video video inline size-{{size}} crop-{{crop}}\" data-video-id=\"{{video_id}}\" data-size=\"{{size}}\" data-crop=\"{{crop}}\"><div><iframe src=\"/videos/embed?id={{video_id}}\"></iframe></div></div>"
       },
       "embed": {
         "size": ["original", "big", "small"],
