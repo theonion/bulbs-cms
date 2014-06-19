@@ -37,13 +37,14 @@
     </div>
 </div>
 <div class="modal-footer">
-  <button
+  <save-button
+    class="pull-left"
+    color-styling="btn-warning"
     ng-show="article.published"
-    class="btn btn-warning pull-left"
-    ng-controller="UnpublishCtrl"
-    confirmed-click="unpublish(article).then(publishSuccessCbk).then($dismiss);"
-    ng-confirm-click="Are you sure you want to unpublish this article?"
-    data-dismiss="modal">Unpublish</button>
+    get-promise="unpublish()"
+    on-save="unpublishCbk(promise)"
+    confirm-click-with="Are you sure you want to unpublish this article?"
+    config="unpubButton"></save-button>
   <button
     class="btn btn-danger pull-left"
     ng-hide="article.published"
