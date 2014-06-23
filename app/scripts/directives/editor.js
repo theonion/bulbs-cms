@@ -11,10 +11,11 @@ angular.module('bulbsCmsApp')
           "crop": "original",
           "image_id": 0,
           "caption": "",
-          "url": ""
+          "url": "",
+          "format": "jpg"
         },
         "template":
-          "<div data-type=\"image\" class=\"onion-image image inline size-{{size}} crop-{{crop}}\" data-image-id=\"{{image_id}}\" data-size=\"{{size}}\" data-crop=\"{{crop}}\" data-format=\"{{ format }}\"><div></div><span class=\"caption\">{{caption}}</span></div>"
+          "<div data-type=\"image\" class=\"onion-image image inline size-{{size}} crop-{{crop}}\" data-image-id=\"{{image_id}}\" data-size=\"{{size}}\" data-crop=\"{{crop}}\" data-format=\"{{format}}\"><div></div><span class=\"caption\">{{caption}}</span></div>"
       },
       "onion-video": {
         "size": ["big"],

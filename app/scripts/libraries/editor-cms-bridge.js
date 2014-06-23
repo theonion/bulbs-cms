@@ -46,7 +46,6 @@ This bridges the embed module that the editor exposes & our custom image impleme
         function uploadImage(options) {
             instanceOptions.uploadImage().then(
                 function(success){
-                    //deterimine format. Update this when api returns format and animated property
                     var format;
                     if (success.name.toUpperCase().indexOf("GIF") !== -1) {
                         format = "gif";
@@ -75,6 +74,7 @@ This bridges the embed module that the editor exposes & our custom image impleme
 
             instanceOptions.editImage({id: current_id, caption: '', alt: ''}).then(
                 function (image) {
+
                     if (image.id === null) {
                         $(options.element).remove();
                     } else {
