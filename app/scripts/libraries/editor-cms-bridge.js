@@ -46,8 +46,15 @@ This bridges the embed module that the editor exposes & our custom image impleme
         function uploadImage(options) {
             instanceOptions.uploadImage().then(
                 function(success){
-                    //insert image.
-                    options.onSuccess(options.block, {image_id: success.id});
+                    //deterimine format. Update this when api returns format and animated property
+                    var format;
+                    if (success.name.toUpperCase().indexOf("GIF") !== -1) {
+                        format = "gif";
+                    }
+                    else {
+                        format = "jpg";
+                    }
+                    options.onSuccess(options.block, {image_id: success.id, format: format});
                     window.picturefill();
                 },
                 function(error){
