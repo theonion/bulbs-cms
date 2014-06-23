@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ChangelogmodalCtrl', function ($scope, $http, $modalInstance, _, ContentApi, article) {
+  .controller('ChangelogmodalCtrl', function ($scope, $modalInstance, _, ContentApi, article) {
     $scope.article = article;
     $scope.users = {};
 

@@ -36,8 +36,8 @@
 
     <script type="text/javascript" src="image.js"></script>
     <script type="text/javascript">
-        var BC_ADMIN_URL = 'http://localimages.avclub.com/avclub/';
-        var IMAGE_URL = 'http://localimages.avclub.com/avclub/{{id}}/{{crop}}/{{width}}.{{format}}';
+        var BC_ADMIN_URL = 'http://clickholeimg.local';
+        var IMAGE_URL = 'http://clickholeimg.local/{{id}}/{{crop}}/{{width}}.{{format}}';
         var IMAGE_LISTENERS_DISABLED = true;
         var DEFAULT_IMAGE_ID = 0;
     </script>
@@ -99,9 +99,7 @@
 
     <script src="scripts/controllers/contentlist.js"></script>
     <script src="scripts/controllers/contentedit.js"></script>
-    <script src="scripts/controllers/nav.js"></script>
     <script src="scripts/controllers/promotion.js"></script>
-    <script src="scripts/controllers/pzone.js"></script>
     <script src="scripts/controllers/targeting.js"></script>
     <script src="scripts/controllers/contentworkflow.js"></script>
     <script src="scripts/controllers/trashcontentmodal.js"></script>
@@ -119,7 +117,6 @@
     <script src="scripts/directives/create-content.js"></script>
     <script src="scripts/directives/devicepreview.js"></script>
     <script src="scripts/directives/filterwidget.js"></script>
-    <script src="scripts/directives/imagedrawer.js"></script>
     <script src="scripts/directives/listinput.js"></script>
     <script src="scripts/directives/video-upload.js"></script>
     <script src="scripts/directives/logged-in-user.js"></script>
@@ -162,6 +159,8 @@
     <script src="scripts/directives/videoembed.js"></script>
     <script src="scripts/directives/videofield.js"></script>
     <script src="scripts/controllers/sponsormodal.js"></script>
+    <script src="scripts/controllers/videothumbnailmodal.js"></script>
+    <script src="scripts/directives/encode-status.js"></script>
     <!-- endbuild -->
 
     <script src="bower_components/angular-mocks/angular-mocks.js"></script>
@@ -174,12 +173,12 @@
         //but there probably isn't any reason for them to not be
         //so...
         // ¯\_(ツ)_/¯
-        angular.module('BettyCropper').constant('IMAGE_SERVER_URL', 'http://localimages.avclub.com');
-        angular.module('BettyCropper').constant('BC_API_KEY', 'http://localimages.avclub.com');
+        angular.module('BettyCropper').constant('IMAGE_SERVER_URL', 'http://clickholeimg.local');
+        angular.module('BettyCropper').constant('BC_API_KEY', 'http://clickholeimg.local');
 
         angular.module('bulbsCmsApp').constant('routes', {
-            IMAGE_SERVER_URL: 'http://localimages.avclub.com/avclub/',
-            BC_ADMIN_URL: 'http://localimages.avclub.com/avclub/',
+            IMAGE_SERVER_URL: 'http://clickholeimg.local',
+            BC_ADMIN_URL: 'http://clickholeimg.local',
             LOADING_IMG_SRC: '/images/loading.gif',
             STATIC_URL: '/static/',
             PARTIALS_URL: '/views/',
@@ -191,9 +190,8 @@
             CMS_NAMESPACE: 'Smoove'
         });
 
-        angular.module('bulbsCmsApp').constant('IMAGE_SERVER_URL', 'http://localimages.avclub.com');
-        angular.module('bulbsCmsApp').constant('BC_ADMIN_URL', 'http://localimages.avclub.com');
-        angular.module('bulbsCmsApp').constant('BC_API_KEY', 'c44027184faf2dc61d6660409dec817daaa75decfa853d68250cbe8e');
+        angular.module('bulbsCmsApp').constant('IMAGE_SERVER_URL', 'http://clickholeimg.local');
+        angular.module('bulbsCmsApp').constant('BC_ADMIN_URL', 'http://clickholeimg.local');
         angular.module('bulbsCmsApp').constant('LOADING_IMG_SRC', "/images/loading.gif");
         angular.module('bulbsCmsApp').constant('STATIC_URL', "/static/");
         angular.module('bulbsCmsApp').constant('PARTIALS_URL', "/views/");
@@ -205,7 +203,9 @@
         angular.module('bulbsCmsApp').constant('TIMEZONE_LABEL', 'CST');
         angular.module('bulbsCmsApp').constant('AUTO_ADD_AUTHOR', true);
         angular.module('bulbsCmsApp').constant('DEFAULT_IMAGE_WIDTH', 1200);
-        angular.module('bulbsCmsApp').constant('VIDEO_EMBED_URL', 'http://www.avclub.com/videos/embed?id=')
+        angular.module('bulbsCmsApp').constant('VIDEO_EMBED_URL', 'http://www.avclub.com/videos/embed?id=');
+        angular.module('bulbsCmsApp').constant('VIDEO_THUMBNAIL_URL', 'http://v.theonion.com/avclubmedia/video/{{video}}/frame_{{thumbnail}}.jpg');
+        angular.module('bulbsCmsApp').constant('STATIC_IMAGE_URL', 'http://chimg.onionstatic.com/{{image}}/16x9/600.jpg');
 
 
         // ****** CMS Plugins ****** \\
@@ -220,6 +220,8 @@
 
         angular.module('bulbsCmsApp').constant('navbar_options', {});
     </script>
+
+    <script src="keys.js"></script>
 
     <script>
         angular.module('bulbsCmsAppDev', ['bulbsCmsApp.mockApi', 'bulbsCmsApp'])

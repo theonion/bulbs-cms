@@ -147,6 +147,10 @@ angular.module('bulbsCmsApp.mockApi').run([
     $httpBackend.when('POST', /^http:\/\/localimages\.avclub\.com\/api\/new$/)
       .respond(mockApiData['bettycropper.new']);
 
+    $httpBackend.when('OPTIONS', /^http:\/\/clickholeimg.local.*/).passThrough();
+    $httpBackend.when('GET', /^http:\/\/clickholeimg.local.*/).passThrough();
+    $httpBackend.when('POST', /^http:\/\/clickholeimg.local.*/).passThrough();
+
     // send to webtech (fickle)
     $httpBackend.whenPOST('/cms/api/v1/report-bug/').respond('');
 

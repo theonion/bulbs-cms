@@ -1,6 +1,8 @@
 <div ng-if="article.video" class="video-embed-container" style="position: relative;">
   <video-embed video-id="{{article.video}}"></video-embed>
-  <button ng-click="removeVideo();" class="btn btn-danger" style="position: absolute; top: 2%; right: 1%;"><span class="fa fa-trash-o"></span></button>
+  <div style="position: absolute; top: 2%; right: 1%;">
+    <button ng-click="thumbnailModal();" class="btn btn-info"><span class="fa fa-picture-o"></span></button>
+    <button ng-click="removeVideo();" class="btn btn-danger"><span class="fa fa-trash-o"></span></button></div>
 </div>
 <div ng-if="!article.video && !uploadProgress" class="video-upload-container" style="position: relative;">
   <button ng-click="uploadVideo();" class="btn btn-success" style="width: 100%;"><span class="fa fa-film"></span> Upload Video</button>
