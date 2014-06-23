@@ -1,0 +1,9 @@
+<div ng-show="encodingVideos" style="position: fixed; left: 0px; top: 50%;">
+  <ul>
+    <li ng-repeat="video in encodingVideos" ng-show="video.job_status.state == 'processing' || video.job_status.state == 'waiting'">
+      <div>Video {{video.id}}</div>
+      <div ng-show="video.job_status.progress">{{video.job_status.progress | number:0}}%</div>
+      <div ng-show="video.job_status.state == 'waiting'">0%</div>
+    </li>
+  </ul>
+</div>

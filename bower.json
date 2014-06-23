@@ -30,6 +30,7 @@
     "angular-scenario": "1.2.8"
   },
   "resolutions": {
-    "angular": "1.2.8"
+    "moment": "^2.6.0",
+    "angular": "1.2.18"
   }
 }

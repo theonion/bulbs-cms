@@ -25,9 +25,14 @@ Deploying
 
 1. git checkout release
 2. git merge master
-3. grunt build
-4. git commit
-5. git push
-6. make a [release](https://github.com/theonion/bulbs-cms/releases)
-7. update [bower.json](https://github.com/theonion/bulbs-cms/blob/master/bower.json) with the new version number
-8. update bower versions elsewhere to deploy the new version
+3. grunt publish
+4. update bower versions on your site's bower.json
+
+In order to use `grunt publish`, you'll have to get a [GitHub access token](https://help.github.com/articles/creating-an-access-token-for-command-line-use), and do:
+
+```
+$ export GITHUB_USERNAME=your-username-here
+$ export GITHUB_TOKEN=your-access-token-here
+```
+
+You'll probably want to put those export commands in your `.bash_profile`

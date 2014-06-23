@@ -11,10 +11,11 @@ angular.module('bulbsCmsApp')
           "crop": "original",
           "image_id": 0,
           "caption": "",
-          "url": ""
+          "url": "",
+          "format": "jpg"
         },
         "template":
-          "<div data-type=\"image\" class=\"onion-image image inline size-{{size}} crop-{{crop}}\" data-image-id=\"{{image_id}}\" data-size=\"{{size}}\" data-crop=\"{{crop}}\"> <div></div><span class=\"caption\">{{caption}}</span></div>"
+          "<div data-type=\"image\" class=\"onion-image image inline size-{{size}} crop-{{crop}}\" data-image-id=\"{{image_id}}\" data-size=\"{{size}}\" data-crop=\"{{crop}}\" data-format=\"{{format}}\"><div></div><span class=\"caption\">{{caption}}</span></div>"
       },
       "onion-video": {
         "size": ["big"],
@@ -24,7 +25,7 @@ angular.module('bulbsCmsApp')
           "crop": "16x9"
         },
         "template":
-          "<div data-type=\"onion-video\" class=\"onion-video video inline size-{{size}} crop-{{crop}}\" data-video-id=\"{{image_id}}\" data-size=\"{{size}}\" data-crop=\"{{crop}}\"><iframe src=\"/videos/embed?id={{video_id}}\"></iframe></div>"
+          "<div data-type=\"onion-video\" class=\"onion-video video inline size-{{size}} crop-{{crop}}\" data-video-id=\"{{video_id}}\" data-size=\"{{size}}\" data-crop=\"{{crop}}\"><div><iframe src=\"/videos/embed?id={{video_id}}\"></iframe></div></div>"
       },
       "embed": {
         "size": ["original", "big", "small"],
@@ -134,7 +135,7 @@ angular.module('bulbsCmsApp')
           scope.$apply(function(){
             var html = editor.getContent();
             if (html.trim() === defaultValue) {
-              html = ngModel.$viewValue;
+              html = "";
             }
             ngModel.$setViewValue(html);
           });

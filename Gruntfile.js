@@ -163,6 +163,15 @@ module.exports = function (grunt) {
       }
     },
 
+    shell: {
+      bower_install: {
+        command: 'bower install -F --production'
+      },
+      bower_update: {
+        command: 'bower update -F --production'
+      }
+    },
+
     // Automatically inject Bower components into the app
     'bower-install': {
       app: {
@@ -423,8 +432,23 @@ module.exports = function (grunt) {
       },
     },
 
+    release: {
+      options: {
+        file: 'bower.json',
+        npm: false,
+        tagMessage: '<%= version %>',
+        branch: 'release',
+        github: {
+          repo: 'theonion/bulbs-cms',
+          usernameVar: 'GITHUB_USERNAME',
+          passwordVar: 'GITHUB_TOKEN'
+        }
+      }
+    }
+
   });
 
+  var shell = require('shelljs');
 
   grunt.registerTask('serve', function (target) {
     if (target === 'dist') {
@@ -458,6 +482,8 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
+    'shell:bower_install',
+    'shell:bower_update',
     'bower-install',
     'ngtemplates',
     'useminPrepare',
@@ -475,9 +501,40 @@ module.exports = function (grunt) {
     'uglify'
   ]);
 
+  grunt.registerTask('commitBuild', function () {
+    var stdout = shell.exec('git commit -am \'new build\'', {silent: true});
+    grunt.log.ok(stdout.output);
+  })
+
   grunt.registerTask('default', [
     'newer:jshint',
     'test',
     'build'
   ]);
+
+  grunt.registerTask('publish', function(release_args) {
+    var branch = shell.exec(
+      'git symbolic-ref --short HEAD',
+      { silent:true }
+    ).output.trim();
+
+    if (branch === 'release') {
+
+      var release = 'release';
+      if (arguments.length) {
+        release += ':' + release_args;
+      }
+
+      grunt.task.run([
+        'travis',
+        'build',
+        'commitBuild',
+        release
+      ]);
+
+    } else {
+      grunt.fail.fatal('You\'re not on the \"release\" branch!');
+    }
+
+  });
 };

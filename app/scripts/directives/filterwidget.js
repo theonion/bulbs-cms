@@ -127,7 +127,7 @@ angular.module('bulbsCmsApp')
         function applyFilterChange(filterObject) {
           filterObject.page = 1;
           $location.search(filterObject);
-          scope.getContent();
+          scope.getContent(filterObject);
           scope.autocompleteArray = [];
           $input.trigger('blur');
         }

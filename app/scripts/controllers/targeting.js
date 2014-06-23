@@ -52,6 +52,11 @@ angular.module('bulbsCmsApp')
         method: 'POST',
         url: tar_options.endpoint + '?url=' + $scope.url,
         data: data
+      }).success(function (data) {
+        $scope.targetingArray = [];
+        for (var k in data) {
+          $scope.targetingArray.push([k, data[k]]);
+        }
       });
 
     };

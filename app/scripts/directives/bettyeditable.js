@@ -125,11 +125,16 @@ angular.module('bulbsCmsApp')
         };
 
         scope.removeImage = function () {
-          scope.image = null;
+          scope.image.id = null;
         };
 
         scope.editImage = function () {
-          openImageCropModal(scope.image)
+          if(attrs.editRatios){
+            var editRatios = eval(attrs.editRatios);
+          }else{
+            var editRatios = false;
+          }
+          openImageCropModal(scope.image, editRatios)
           .then(function (image) {
             if (image.id === null) {
               scope.image = null;

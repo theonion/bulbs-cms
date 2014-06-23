@@ -1,0 +1,36 @@
+<div class="modal-header">
+  <button type="button" class="close" ng-click="$dismiss();" aria-hidden="true">&times;</button>
+  <h4 class="modal-title">Edit Video Poster</h4></div>
+
+<div class="modal-body">
+  <div class="text-center">
+    <h1 class="h6"><a href="" ng-click="mode = 'still'">Choose a still from the video</a> | <a href="" ng-click="mode = 'upload'">Upload an image</a></h1>
+    <div ng-show="mode == 'still'">
+      <div ng-show="inProgress">
+        <p>Video encoding in progress. Video stills are not available until the video is encoded.</p>
+      </div>
+      <div ng-hide="inProgress">
+        <img ng-show="currentThumbnail !== false" class="poster-preview" width="320" height="180" ng-src="{{video.poster}}" >
+        <div class="poster-buttons" style="margin-top:10px">
+          <button ng-show="currentThumbnail !== false" type="button" class="prev-thumb btn btn-primary btn-xs" ng-click="prevThumb();"><i class="fa fa-caret-left"></i></button>
+          <button ng-show="currentThumbnail !== false" type="button" class="next-thumb btn btn-primary btn-xs" ng-click="nextThumb();"><i class="fa fa-caret-right"></i></button>
+          <button ng-show="currentThumbnail === false" type="button" class="btn btn-primary btn-xs" ng-click="defaultThumb();">Default</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="text-center">
+    <div ng-show="mode == 'upload'">
+      <bettyeditable image="uploadedImage" ratio="16x9" placeholder-text="Upload Image" add-styles="fa fa-picture-o" edit-ratios="['16x9']"></bettyeditable>
+    </div>
+  </div>
+  <div style="margin-top:10px; margin-bottom: 10px;">
+    <label>Poster Image URL</label>
+    <input type="text" name="poster_url" class="text-input smooth-border smooth-bg" style=" width: 80%" ng-model="video.poster">
+  </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-warning pull-left" aria-hidden="true" ng-click="reencode();">Re-encode</button>
+    <button class="btn btn-default" aria-hidden="true" ng-click="$dismiss();">Cancel</button>
+    <button class="btn btn-success" aria-hidden="true" ng-click="setPoster();">Set Poster</button></div>
