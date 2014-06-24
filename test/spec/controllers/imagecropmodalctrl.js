@@ -47,6 +47,7 @@ describe('Controller: ImageCropModalCtrl', function () {
           caption: 'Taboola: The Uncut',
           alt: 'CMS, RMS, FreeMS'
         },
+        cropsToEdit: false
       }
     );
 

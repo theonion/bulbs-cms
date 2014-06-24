@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ImageCropModalCtrl', function ($scope, $timeout, $modalInstance, BettyCropper, img_ref, DEFAULT_IMAGE_WIDTH) {
+  .controller('ImageCropModalCtrl', function ($scope, $timeout, $modalInstance, BettyCropper, img_ref, cropsToEdit, DEFAULT_IMAGE_WIDTH) {
     $scope.cropMode = false;
     $scope.thumb = {height: 170, width: 170};
     $scope.crop_image = {height: 400, width: 550};
@@ -239,6 +239,9 @@ angular.module('bulbsCmsApp')
       BettyCropper.detail($scope.img_ref.id)
         .success(function (data) {
           $scope.image = data;
+          if(cropsToEdit){
+            $scope.image.selections = {'16x9': $scope.image.selections['16x9']};
+          }
           $scope.setThumbStyles($scope.image, $scope.image.selections);
           $scope.ratioOrder = Object.keys($scope.image.selections);
 
