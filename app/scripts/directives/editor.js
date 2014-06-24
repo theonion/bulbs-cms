@@ -32,10 +32,11 @@ angular.module('bulbsCmsApp')
         "crop": ["16x9", "4x3", "auto"],
         "defaults": {
           "size":"original",
-          "crop": "auto"
+          "crop": "auto",
+          "body": ""
         },
         "template":
-          "<div data-type=\"embed\" data-crop=\"{{crop}}\" class=\"inline embed size-{{size}} crop-{{crop}}\" data-source=\"{{source}}\"><div>{{embed_code}}</div><span class=\"caption\">{{caption}}</span><a class=\"source\" target=\"_blank\" href=\"{{source}}\">Source</a></div>"
+          "<div data-type=\"embed\" data-crop=\"{{crop}}\" class=\"inline embed size-{{size}} crop-{{crop}}\" data-source=\"{{source}}\" data-body=\"{{escapedbody}}\"><div>{{body}}</div><span class=\"caption\">{{caption}}</span></div>"
       },
       "youtube": {
         "size": ["big"],
