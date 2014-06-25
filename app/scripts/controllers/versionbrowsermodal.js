@@ -24,4 +24,9 @@ angular.module('bulbsCmsApp')
       var html = $window.localStorage.getItem(key);
       $scope.versionPreview = html;
     };
+
+    $scope.restoreSelected = function () {
+      $scope.article.body = $scope.versionPreview;
+      $modalInstance.close();
+    };
   });
