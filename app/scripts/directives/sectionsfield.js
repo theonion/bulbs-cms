@@ -5,6 +5,7 @@ angular.module('bulbsCmsApp')
     return {
       templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
+      replace: true,
       link: function postLink(scope, element, attrs) {
         scope.name = 'section';
         scope.label = 'Sections';

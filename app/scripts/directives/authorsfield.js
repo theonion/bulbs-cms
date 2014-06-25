@@ -12,7 +12,7 @@ angular.module('bulbsCmsApp')
         scope.name = 'author';
         scope.label = 'Authors';
         scope.placeholder = 'Authors';
-        scope.resourceUrl = '/cms/api/v1/tag/?ordering=name&types=content_tag&search=';
+        scope.resourceUrl = '/cms/api/v1/author/?ordering=name&search=';
         scope.display = userFilter;
 
         scope.$watch('article.authors', function(){
@@ -20,10 +20,10 @@ angular.module('bulbsCmsApp')
         }, true);
 
         scope.add = function (o, input) {
-          for (var t in $scope.article.authors) {
-            if ($scope.article.authors[t].id === o.id) { return; }
+          for (var t in scope.article.authors) {
+            if (scope.article.authors[t].id === o.id) { return; }
           }
-          $scope.article.authors.push(o);
+          scope.article.authors.push(o);
           $(input).val('');
         };
 

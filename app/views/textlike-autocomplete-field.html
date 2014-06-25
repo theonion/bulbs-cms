@@ -1,8 +1,8 @@
-<div class="row bulbs-autocomplete featuretype-container" style="padding-left: 15px; padding-right: 15px;">
+<div class="bulbs-autocomplete featuretype-container col-sm-4">
   <h1 class="h6"><label class="control-label" for="{{name}}-input">Feature Type</label></h1>
   <div class="tag taglikeobject" id="feature-type-container" ng-show="model">
     <span class="tagname">{{model}} </span>
     <a class="remove" ng-click='delete($event);'>
     <span class='glyphicon glyphicon-remove'></span></a></div>
-  <div class="col-sm-4 form-group">
+  <div class="col-sm-12 form-group">
     <input class="form-control row input-sm new-tag-input" id="{{name}}-input" name="{{name}}" type="text" placeholder="e.g. Newswire, TV Club" ng-hide="model" /></div></div>
