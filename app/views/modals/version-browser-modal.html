@@ -10,4 +10,5 @@
     <div class="version-preview" ng-bind-html="versionPreview"></div></div></div>
 
 <div class="modal-footer">
+    <button ng-show="versionPreview" class="btn btn-warning" aria-hidden="true" ng-click="restoreSelected();">Restore Selected Version</button>
     <button class="btn btn-default" aria-hidden="true" ng-click="$dismiss();">Close</button></div>

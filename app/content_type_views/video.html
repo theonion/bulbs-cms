@@ -1,10 +1,10 @@
 <section>
   <div class="metadata container-fluid">
     <div class="row">
-      <featuretype-field article="article"></featuretype-field>
-      <sections-field article="article"></sections-field></div>
+      <featuretype-field article="article" class="pull-left"></featuretype-field>
+      <sections-field article="article" class="pull-left"></sections-field></div>
 
-    <div class="content-edit-tags">
+    <div class="row">
       <tags-field article="article"></tags-field></div></div></section>
 
 <section class="main-image row">
@@ -16,6 +16,7 @@
   <onion-editor id="content-subhead" ng-model="article.subhead" role="singleline"></onion-editor></section>
 
 <section>
-  <authors-field article="article"></authors-field></section>
+  <div class="well clearfix">
+  <authors-field article="article"></authors-field></div></section>
 
 <onion-editor id="content-body" ng-model="article.body" role="multiline" inline-objects="PARTIALS_URL + 'inline.json'"/>
