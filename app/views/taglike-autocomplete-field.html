@@ -1,8 +1,8 @@
-<div class="input-list {{name}} bulbs-autocomplete {{div1classes}}">
-  <h1 class="{{h1classes}} {{name}}"><label for="{{name}}-input" class="control-label">{{label}}</label></h1>
-      <div class="{{div2classes}}">
+<div class="input-list {{name}} bulbs-autocomplete col-sm-8">
+  <h1 class="h6 col-xs-12 {{name}}"><label for="{{name}}-input" class="control-label">{{label}}</label></h1>
+      <div class="col-sm-4 form-group">
         <input id="{{name}}-input" name="{{name}}" type="text" class="new-tag-input form-control input-sm" placeholder="{{placeholder}}" /></div>
-      <div class="{{div3classes}}">
+      <div class="col-sm-8">
         <ul class="list-inline">
           <li class="label {{name}} tag taglikeobject" ng-repeat="object in objects" ng-class="{newtag: object.new}">
             <span class="{{name}}-span">

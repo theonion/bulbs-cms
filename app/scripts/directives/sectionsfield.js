@@ -46,11 +46,6 @@ angular.module('bulbsCmsApp')
           scope.article.tags = newtags;
         };
 
-        scope.div1classes = 'col-sm-8';
-        scope.h1classes = 'h6 col-xs-12';
-        scope.div2classes = 'col-sm-4 form-group';
-        scope.div3classes = 'col-sm-8';
-
       }
     };
   });

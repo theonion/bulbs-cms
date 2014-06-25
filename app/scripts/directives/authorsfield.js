@@ -5,6 +5,7 @@ angular.module('bulbsCmsApp')
     return {
       templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
+      replace: true,
       scope: {
         article: '='
       },
@@ -38,11 +39,6 @@ angular.module('bulbsCmsApp')
           }
           scope.article.authors = newauthors;
         };
-
-        scope.div1classes = 'well clearfix';
-        scope.h1classes = 'h5 col-sm-10 col-sm-push-1';
-        scope.div2classes = 'col-sm-3 col-sm-push-1';
-        scope.div3classes = 'col-sm-7 col-sm-push-1';
 
       }
     };
