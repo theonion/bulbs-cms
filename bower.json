@@ -13,9 +13,9 @@
     "angular-route": "~1.2.18",
     "font-awesome": "~4.1.0",
     "nprogress": "rstacruz/nprogress#5dcb61e0bc0b2754613a3555974d1589313ae25a",
-    "angular-bootstrap": "0.10.0",
+    "angular-bootstrap": "~0.11.0",
     "raven-js": "1.1.11",
-    "moment": "~2.5.1",
+    "moment": "~2.6.0",
     "underscore": "1.6.0",
     "jcrop": "0.9.12",
     "urlify": "theonion/urlify",
@@ -26,11 +26,7 @@
     "pnotify": "~2.0.0"
   },
   "devDependencies": {
-    "angular-mocks": "1.2.8",
-    "angular-scenario": "1.2.8"
-  },
-  "resolutions": {
-    "moment": "^2.6.0",
-    "angular": "1.2.18"
+    "angular-mocks": "~1.2.18",
+    "angular-scenario": "~1.2.18"
   }
 }

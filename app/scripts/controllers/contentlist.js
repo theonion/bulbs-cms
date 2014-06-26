@@ -64,8 +64,8 @@ angular.module('bulbsCmsApp')
         }
       });
 
-    $scope.goToPage = function (page) {
-        $scope.getContent({'page': page}, true);
+    $scope.goToPage = function () {
+        $scope.getContent({'page': $scope.pageNumber}, true);
       };
 
     $scope.publishSuccessCbk = function (data) {

@@ -67,4 +67,4 @@
                     <dd>{{ article.id }}</dd></dl></div></div></div></td></tr></table></div>
 
     <div class="row">
-      <pagination max-size="10" total-items="totalItems" page="pageNumber" items-per-page="20" on-select-page="goToPage(page);" boundary-links="true"></pagination></div></div>
+      <pagination max-size="10" total-items="totalItems" ng-model="pageNumber" items-per-page="20" ng-change="goToPage(page);" boundary-links="true"></pagination></div></div>
