@@ -420,6 +420,31 @@ angular.module('bulbsCmsApp.mockApi').run([
       body: "See that video up there? No? Oh.",
       client_pixel: null,
       sponsor_name: null
+    }, {
+      id: 6,
+      title: "No Thumbnail Here Folks",
+      feature_type: "Thumbnails On Holiday",
+      slug: "thumbnails-holiday-6",
+      polymorphic_ctype: "content_content",
+      tags: [],
+      authors: [{
+        username: "hsimpson",
+        first_name: "Homer",
+        last_name: "Simpson",
+        id: 16832
+      }],
+      thumbnail: null,
+      absolute_url: "/article/article-1",
+      sponsor_image: null,
+      status: "Published",
+      published: "2011-04-03T16:20:00Z",
+      last_modified: "2011-05-03T16:00:00Z",
+      description: "",
+      subhead: "",
+      indexed: true,
+      body: "There's no thumbnail here. Go away.",
+      client_pixel: null,
+      sponsor_name: null
     }]
   },
   'things.list': [
