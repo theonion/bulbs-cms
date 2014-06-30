@@ -1,13 +1,7 @@
 <div class="media article-container">
 
 	<div class="media-object pull-left img-thumbnail" style="width: 120px;">
-		<div ng-if="article.image.id" style="position: relative;">
-			<img class="loading-image" style="width: 100%;" ng-src="{{ LOADING_IMG_SRC }}">
-			<div data-type="image" class="image" style="position: absolute; top: 0; width: 100%; height: 100%;" data-format="jpg" data-alt="{{article.title}}" responsive-image image-id="{{ article.image.id }}" crop="16x9">
-				<div></div>
-			</div>
-		</div>
-		<span ng-if="!article.image.id" class="no-image text-large"><i class="fa-exclamation-triangle fa"></i><span>No image selected.</span></span>
+		<static-image image="article.thumbnail"></static-image>
 	</div>
 
 	<div class="inner media-body">

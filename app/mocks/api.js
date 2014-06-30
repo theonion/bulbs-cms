@@ -268,6 +268,7 @@ angular.module('bulbsCmsApp.mockApi').run([
         last_name: "Last",
         id: 1
       }],
+      thumbnail: {id: "1"},
       image: {
         caption: null,
         alt: null,
@@ -302,16 +303,17 @@ angular.module('bulbsCmsApp.mockApi').run([
         last_name: "Toast",
         id: 1111
       }],
+      thumbnail: {id: "2"},
       image: {
         caption: null,
         alt: null,
-        id: "1"
+        id: "2"
       },
       absolute_url: "/article/article-1",
       detail_image: {
         caption: null,
         alt: null,
-        id: "1"
+        id: "2"
       },
       sponsor_image: null,
       status: "Published",
@@ -338,8 +340,9 @@ angular.module('bulbsCmsApp.mockApi').run([
         first_name: "Bobby",
         last_name: "Nutson"
       }],
+      thumbnail: {id: "3"},
       image: {
-        id: "1"
+        id: "3"
       }
     }, {
       id: 4,
@@ -359,16 +362,17 @@ angular.module('bulbsCmsApp.mockApi').run([
         last_name: "Toast",
         id: 1
       }],
+      thumbnail: {id: "4"},
       image: {
         caption: null,
         alt: null,
-        id: "1"
+        id: "4"
       },
       absolute_url: "/article/article-1",
       detail_image: {
         caption: null,
         alt: null,
-        id: "1"
+        id: "4"
       },
       sponsor_image: null,
       status: "Published",
@@ -398,6 +402,7 @@ angular.module('bulbsCmsApp.mockApi').run([
         last_name: "Cunningham",
         id: 420
       }],
+      thumbnail: {id: "5"},
       image: {
         caption: null,
         alt: null,
@@ -413,6 +418,31 @@ angular.module('bulbsCmsApp.mockApi').run([
       subhead: "",
       indexed: true,
       body: "See that video up there? No? Oh.",
+      client_pixel: null,
+      sponsor_name: null
+    }, {
+      id: 6,
+      title: "No Thumbnail Here Folks",
+      feature_type: "Thumbnails On Holiday",
+      slug: "thumbnails-holiday-6",
+      polymorphic_ctype: "content_content",
+      tags: [],
+      authors: [{
+        username: "hsimpson",
+        first_name: "Homer",
+        last_name: "Simpson",
+        id: 16832
+      }],
+      thumbnail: null,
+      absolute_url: "/article/article-1",
+      sponsor_image: null,
+      status: "Published",
+      published: "2011-04-03T16:20:00Z",
+      last_modified: "2011-05-03T16:00:00Z",
+      description: "",
+      subhead: "",
+      indexed: true,
+      body: "There's no thumbnail here. Go away.",
       client_pixel: null,
       sponsor_name: null
     }]

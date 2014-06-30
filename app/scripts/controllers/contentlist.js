@@ -104,8 +104,6 @@ angular.module('bulbsCmsApp')
         $window.picturefill();
       });
 
-    $('body').on('shown.bs.collapse', 'table tr.panel', function(){ $window.picturefill() });
-
   })
   .directive('ngConfirmClick', [ // Used on the unpublish button
     function () {

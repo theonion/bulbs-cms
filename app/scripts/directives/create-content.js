@@ -38,7 +38,7 @@ angular.module('bulbsCmsApp')
 
           if(AUTO_ADD_AUTHOR){
             ContentApi.one('me').get().then(function(data){
-              $scope.init.authors = [data.data];
+              $scope.init.authors = [data];
               $scope.gotUser = true;
             });
           }else{

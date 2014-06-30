@@ -158,9 +158,4 @@ angular.module('bulbsCmsApp')
     };
 
 
-    $('body').on('shown.bs.collapse', '#page-prev .collapse', function () {
-      $window.picturefill();
-    });
-
-
   });
