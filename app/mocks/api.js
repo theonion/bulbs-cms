@@ -268,6 +268,7 @@ angular.module('bulbsCmsApp.mockApi').run([
         last_name: "Last",
         id: 1
       }],
+      thumbnail: {id: "1"},
       image: {
         caption: null,
         alt: null,
@@ -302,6 +303,7 @@ angular.module('bulbsCmsApp.mockApi').run([
         last_name: "Toast",
         id: 1111
       }],
+      thumbnail: {id: "2"},
       image: {
         caption: null,
         alt: null,
@@ -338,6 +340,7 @@ angular.module('bulbsCmsApp.mockApi').run([
         first_name: "Bobby",
         last_name: "Nutson"
       }],
+      thumbnail: {id: "3"},
       image: {
         id: "3"
       }
@@ -359,6 +362,7 @@ angular.module('bulbsCmsApp.mockApi').run([
         last_name: "Toast",
         id: 1
       }],
+      thumbnail: {id: "4"},
       image: {
         caption: null,
         alt: null,
@@ -398,6 +402,7 @@ angular.module('bulbsCmsApp.mockApi').run([
         last_name: "Cunningham",
         id: 420
       }],
+      thumbnail: {id: "5"},
       image: {
         caption: null,
         alt: null,
