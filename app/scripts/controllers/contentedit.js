@@ -256,9 +256,6 @@ angular.module('bulbsCmsApp')
       }
     });
 
-    $('#extra-info-modal').on('shown.bs.modal', function () { $window.picturefill(); });
-
-
     $scope.addRating = function (type) {
       $scope.article.ratings.push({
         grade: '',

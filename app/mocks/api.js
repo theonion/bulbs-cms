@@ -305,13 +305,13 @@ angular.module('bulbsCmsApp.mockApi').run([
       image: {
         caption: null,
         alt: null,
-        id: "1"
+        id: "2"
       },
       absolute_url: "/article/article-1",
       detail_image: {
         caption: null,
         alt: null,
-        id: "1"
+        id: "2"
       },
       sponsor_image: null,
       status: "Published",
@@ -339,7 +339,7 @@ angular.module('bulbsCmsApp.mockApi').run([
         last_name: "Nutson"
       }],
       image: {
-        id: "1"
+        id: "3"
       }
     }, {
       id: 4,
@@ -362,13 +362,13 @@ angular.module('bulbsCmsApp.mockApi').run([
       image: {
         caption: null,
         alt: null,
-        id: "1"
+        id: "4"
       },
       absolute_url: "/article/article-1",
       detail_image: {
         caption: null,
         alt: null,
-        id: "1"
+        id: "4"
       },
       sponsor_image: null,
       status: "Published",
