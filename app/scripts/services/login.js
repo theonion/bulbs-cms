@@ -6,8 +6,7 @@ angular.module('bulbsCmsApp')
     $rootScope.$watch(function () {
       return $cookies.csrftoken;
     }, function (newCsrf, oldCsrf) {
-      $http.defaults.headers.post['X-CSRFToken'] = newCsrf;
-      $http.defaults.headers.put['X-CSRFToken'] = newCsrf;
+      $http.defaults.headers.common['X-CSRFToken'] = newCsrf;
       $window.jqueryCsrfSetup && $window.jqueryCsrfSetup();
     });
 
