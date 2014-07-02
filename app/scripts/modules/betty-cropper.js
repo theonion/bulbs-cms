@@ -43,7 +43,8 @@ angular.module('BettyCropper', [])
         url: IMAGE_SERVER_URL + '/api/' + id,
         headers: {
           'X-Betty-Api-Key': BC_API_KEY,
-          'Content-Type': undefined
+          'Content-Type': undefined,
+          'X-CSRFToken': undefined
         },
         transformRequest: angular.identity
       });
@@ -55,7 +56,8 @@ angular.module('BettyCropper', [])
         url: IMAGE_SERVER_URL + '/api/' + id,
         headers: {
           'X-Betty-Api-Key': BC_API_KEY,
-          'Content-Type': undefined
+          'Content-Type': undefined,
+          'X-CSRFToken': undefined
         },
         data: {
           name: name,
@@ -77,7 +79,8 @@ angular.module('BettyCropper', [])
         url: IMAGE_SERVER_URL + '/api/new',
         headers: {
           'X-Betty-Api-Key': BC_API_KEY,
-          'Content-Type': undefined
+          'Content-Type': undefined,
+          'X-CSRFToken': undefined
         },
         data: imageData,
         transformRequest: angular.identity
@@ -90,7 +93,8 @@ angular.module('BettyCropper', [])
         url: IMAGE_SERVER_URL + '/api/' + id + "/" + ratio,
         headers: {
           'X-Betty-Api-Key': BC_API_KEY,
-          'Content-Type': undefined
+          'Content-Type': undefined,
+          'X-CSRFToken': undefined
         },
         data: selections
       });
