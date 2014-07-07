@@ -37,13 +37,14 @@ angular.module('bulbsCmsApp')
           return x.name;
         };
         $scope.tvShowCallback = function (x, input, freeForm) {
+          console.log("tvshowcallback")
           if (freeForm) {
             $scope.article.ratings[$scope.index].media_item.show = $(input).val();
           } else {
             $scope.article.ratings[$scope.index].media_item.show = x.name;
           }
         };
-        $scope.tvShowRemove = function(x) {
+        $scope.tvShowRemove = function (x) {
           $scope.article.ratings[$scope.index].media_item.show = null;
         }
       },
