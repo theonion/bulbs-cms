@@ -16,7 +16,8 @@ angular.module('bulbsCmsApp')
       $window.article = $scope.article = data; //exposing article on window for debugging
       if ($location.search().rating_type && (!data.ratings || data.ratings.length === 0)) {
         $scope.article.ratings = [{
-          type: $location.search().rating_type
+          type: $location.search().rating_type,
+          media_item: {}
         }];
       }
       $scope.last_saved_article = angular.copy(data);
