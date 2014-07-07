@@ -43,6 +43,9 @@ angular.module('bulbsCmsApp')
             $scope.article.ratings[$scope.index].media_item.show = x.name;
           }
         };
+        $scope.tvShowRemove = function(x) {
+          $scope.article.ratings[$scope.index].media_item.show = null;
+        }
       },
       link: function (scope, element, attrs) {
         var $element = $(element);
