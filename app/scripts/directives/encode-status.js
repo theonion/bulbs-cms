@@ -35,7 +35,10 @@ angular.module('bulbsCmsApp')
               if(Zencoder.encodingVideos[videoid].encode_status_endpoints && Zencoder.encodingVideos[videoid].encode_status_endpoints.json){
                 $http({
                   method: 'GET',
-                  url: Zencoder.encodingVideos[videoid].encode_status_endpoints.json
+                  url: Zencoder.encodingVideos[videoid].encode_status_endpoints.json,
+                  headers: {
+                    'X-CSRFToken': undefined
+                  },
                 }).success(function(data){
                   scope.encodingVideos[videoid].job_status = data;
                   if(data.state == "finished"){
