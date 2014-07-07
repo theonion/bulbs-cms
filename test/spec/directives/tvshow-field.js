@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Directive: staticImage', function () {
+describe('Directive: tvshowField', function () {
 
   // load the directive's module
   beforeEach(module('bulbsCmsApp'));
@@ -11,6 +11,5 @@ describe('Directive: staticImage', function () {
   beforeEach(inject(function ($rootScope) {
     scope = $rootScope.$new();
   }));
-
 
 });
