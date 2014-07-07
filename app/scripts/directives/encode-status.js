@@ -32,16 +32,18 @@ angular.module('bulbsCmsApp')
             if(scope.encodingVideos[i] && scope.encodingVideos[i].finished) continue;
             scope.encodingVideos[i] = Zencoder.encodingVideos[i];
             (function(videoid){
-              $http({
-                method: 'GET',
-                url: Zencoder.encodingVideos[videoid].encode_status_endpoints.json
-              }).success(function(data){
-                scope.encodingVideos[videoid].job_status = data;
-                if(data.state == "finished"){
-                  scope.encodingVideos[videoid].finished = true;
-                }
+              if(Zencoder.encodingVideos[videoid].encode_status_endpoints && Zencoder.encodingVideos[videoid].encode_status_endpoints.json){
+                $http({
+                  method: 'GET',
+                  url: Zencoder.encodingVideos[videoid].encode_status_endpoints.json
+                }).success(function(data){
+                  scope.encodingVideos[videoid].job_status = data;
+                  if(data.state == "finished"){
+                    scope.encodingVideos[videoid].finished = true;
+                  }
 
-              });
+                });
+              }
             })(i);
           }
         }
