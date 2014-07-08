@@ -124,6 +124,7 @@ angular.module('bulbsCmsApp')
         items.shift();
       }
 
+      var oldSaveHtml = $('.save-button').html();
       $('.save-button').html('<i class="fa fa-refresh fa-spin"></i> Saving');
 
       var payload = $scope.pzone;
@@ -136,6 +137,7 @@ angular.module('bulbsCmsApp')
       return pzone.put().then(function(data){
         $scope.lastSavedPromotedArticles = _.clone(data.content);
         $scope.promotedArticles = data.content;
+        $('.save-button').html(oldSaveHtml);
       });
     };
 

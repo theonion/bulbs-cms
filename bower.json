@@ -1,17 +1,17 @@
 {
   "name": "bulbs-cms",
-  "version": "0.8.16",
+  "version": "0.8.17",
   "dependencies": {},
   "devDependencies": {
     "json3": "~3.2.6",
     "es5-shim": "~2.1.0",
     "jquery": "~2.1.0",
     "bootstrap": "~3.1.1",
-    "angular": "~1.2.18",
-    "angular-resource": "~1.2.18",
-    "angular-cookies": "~1.2.18",
-    "angular-sanitize": "~1.2.18",
-    "angular-route": "~1.2.18",
+    "angular": "^1.2.18",
+    "angular-resource": "^1.2.18",
+    "angular-cookies": "^1.2.18",
+    "angular-sanitize": "^1.2.18",
+    "angular-route": "^1.2.18",
     "font-awesome": "~4.1.0",
     "nprogress": "rstacruz/nprogress#5dcb61e0bc0b2754613a3555974d1589313ae25a",
     "angular-bootstrap": "~0.11.0",
@@ -25,7 +25,11 @@
     "restangular": "~1.4.0",
     "Keypress": "~2.0.2",
     "pnotify": "~2.0.0",
-    "angular-mocks": "~1.2.18",
-    "angular-scenario": "~1.2.18"
+    "angular-mocks": "^1.2.18",
+    "angular-scenario": "^1.2.18"
+  },
+  "resolutions": {
+    "angular": "1.2.18",
+    "moment": "2.6.0"
   }
 }
