@@ -9,7 +9,7 @@
         </select>
       </div>
       <div>
-        <button class="navbar-btn button form-control btn-sm btn-success" ng-click="save()" ng-class="{'btn-clean': !promotedArticlesDirty}"><i class='glyphicon glyphicon-floppy-disk'></i> Save</button>
+        <button class="navbar-btn button form-control btn-sm btn-success save-button" ng-click="save()" ng-class="{'btn-clean': !promotedArticlesDirty}"><i class='glyphicon glyphicon-floppy-disk'></i> Save</button>
       </div>
       <div>
         <div class="article" ng-repeat="article in promotedArticles track by $index" data-index="{{$index}}">
