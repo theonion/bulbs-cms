@@ -27,9 +27,5 @@
     "pnotify": "~2.0.0",
     "angular-mocks": "^1.2.18",
     "angular-scenario": "^1.2.18"
-  },
-  "resolutions": {
-    "angular": "1.2.18",
-    "moment": "2.6.0"
   }
 }

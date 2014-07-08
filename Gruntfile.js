@@ -216,7 +216,7 @@ module.exports = function (grunt) {
         dest: '<%= yeoman.dist %>',
         flow: {
             steps: {
-              'js': ['concat', 'uglifyjs'],
+              'js': ['concat'],
               'css': ['concat', 'cssmin'],
             },
             post: {}
@@ -274,10 +274,18 @@ module.exports = function (grunt) {
     // Allow the use of non-minsafe AngularJS files. Automatically makes it
     // minsafe compatible so Uglify does not destroy the ng references
     ngmin: {
-      dist: {
+      templates: {
         files: [{
           expand: true,
           cwd: '.tmp/concat/scripts',
+          src: '*.js',
+          dest: '.tmp/concat/scripts'
+        }]
+      },
+      dist: {
+        files: [{
+          expand: true,
+          cwd: '<%= yeoman.dist %>/scripts',
           src: '*.js',
           dest: '.tmp/concat/scripts'
         }]
@@ -371,11 +379,15 @@ module.exports = function (grunt) {
     uglify: {
       options: {
         mangle: false, //https://github.com/theonion/bulbs-cms/issues/4
+        sourceMap: true
       },
-      templates: {
+      dist: {
         files: {
           '<%= yeoman.dist %>/scripts/templates.js': [
             '.tmp/concat/scripts/templates.js'
+          ],
+          '<%= yeoman.dist %>/scripts/scripts.min.js': [
+            '<%= yeoman.dist %>/scripts/scripts.js'
           ]
         }
       }
