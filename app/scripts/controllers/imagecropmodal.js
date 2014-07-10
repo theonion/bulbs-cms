@@ -39,10 +39,10 @@ angular.module('bulbsCmsApp')
           length = 'height';
         }
         var scale = $scope.crop_image[length] / $scope.image[length];
-        selection.x0 = $scope.scaleNumber(s.x, 1 / scale);
-        selection.y0 = $scope.scaleNumber(s.y, 1 / scale);
-        selection.x1 = $scope.scaleNumber(s.x2, 1 / scale);
-        selection.y1 = $scope.scaleNumber(s.y2, 1 / scale);
+        selection.x0 = roundSelection($scope.scaleNumber(s.x, 1 / scale), $scope.image.width);
+        selection.y0 = roundSelection($scope.scaleNumber(s.y, 1 / scale), $scope.image.height);
+        selection.x1 = roundSelection($scope.scaleNumber(s.x2, 1 / scale), $scope.image.width);
+        selection.y1 = roundSelection($scope.scaleNumber(s.y2, 1 / scale), $scope.image.height);
         selection.source = 'user';
 
         $scope.image.selections[$scope.selectedCrop[0]] = selection;
@@ -52,6 +52,12 @@ angular.module('bulbsCmsApp')
           selection
         );
       }
+    };
+
+    function roundSelection(number, max) {
+      if(number < 0) return 0;
+      if(number > max) return max;
+      return number;
     };
 
     $scope.setSelectedCrop = function (ratio, selection) {

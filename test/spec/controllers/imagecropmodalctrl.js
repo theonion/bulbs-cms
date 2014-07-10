@@ -86,6 +86,20 @@ describe('Controller: ImageCropModalCtrl', function () {
       expect(scope.thumb_styles['1x1']).not.toBe('you wanna piece o me?');
     });
 
+    it('should round selections to be within image bounds', function () {
+
+      scope.processJcropSelection({
+        x: -1, x2: scope.image.width + 1, y: -1, y2: scope.image.height + 1
+      });
+
+      expect(scope.image.selections['1x1'].x0).toBe(0);
+      expect(scope.image.selections['1x1'].x1).toBe(scope.image.width);
+      expect(scope.image.selections['1x1'].y0).toBe(0);
+      expect(scope.image.selections['1x1'].y1).toBe(scope.image.height);
+
+
+    });
+
   });
 
 
