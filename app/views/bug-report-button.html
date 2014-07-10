@@ -18,14 +18,12 @@
       </div>
       <div ng-show="showThankYou">
         <h6>Thanks for taking the time to fill out a bug report!</h6>
-        <h6>This let's us know what problems you're running into and how to reproduce them.</h6>
-        <h6>That way we can fix them as fast as possible.</h6>
-        <h6>We promise.</h6>
       </div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-sm btn-link" ng-click="dismissModal();">Cancel</button>
-      <save-button class="btn-sm" color-styling="btn-primary" get-promise="sendToWebtech();" on-save="sendToWebtechCbk(promise)" config="reportButton"></save-button>
+      <button ng-show="showThankYou" type="button" class="btn btn-sm btn-primary" ng-click="dismissModal();">OK</button>
+      <button ng-hide="showThankYou" type="button" class="btn btn-sm btn-link" ng-click="dismissModal();">Cancel</button>
+      <save-button ng-hide="showThankYou" class="btn-sm" color-styling="btn-primary" get-promise="sendToWebtech();" on-save="sendToWebtechCbk(promise)" config="reportButton"></save-button>
     </div>
   </div>
 </div>
