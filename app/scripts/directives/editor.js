@@ -49,6 +49,9 @@ angular.module('bulbsCmsApp')
         },
         "template":
         "<div data-type=\"youtube\" class=\"youtube inline size-{{size}} crop-{{crop}}\" data-youtube-id=\"{{youtube_id}}\" data-size=\"{{size}}\" data-crop=\"{{crop}}\"><div><img src=\"http://img.youtube.com/vi/{{youtube_id}}/hqdefault.jpg\"></div<span class=\"caption\">{{caption}}</span></div>"
+      },
+      "hr": {
+        "template":  "<hr/>"
       }
     };
 
