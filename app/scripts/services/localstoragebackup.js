@@ -46,7 +46,7 @@ angular.module('bulbsCmsApp')
 
         for(var keyIndex in localStorageKeys){
           var key = $window.localStorage.key(keyIndex);
-          if(key && key.split('.')[0] != keyPrefix){
+          if(!key || key && key.split('.')[0] != keyPrefix){
             continue;
           }
           var yesterday = moment().date(moment().date()-1).unix();
