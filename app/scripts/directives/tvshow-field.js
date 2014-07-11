@@ -20,6 +20,9 @@ angular.module('bulbsCmsApp')
         scope.add = scope.tvShowCallback;
         scope.delete = scope.tvShowRemove;
 
+        $(element).on('blur', 'input', function(){
+          scope.add($(element).find('input').val(), null, true);
+        });
       }
     };
   });
