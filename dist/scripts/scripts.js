@@ -3589,7 +3589,7 @@ angular.module('bulbsCmsApp')
 
         for(var keyIndex in localStorageKeys){
           var key = $window.localStorage.key(keyIndex);
-          if(key && key.split('.')[0] != keyPrefix){
+          if(!key || key && key.split('.')[0] != keyPrefix){
             continue;
           }
           var yesterday = moment().date(moment().date()-1).unix();
@@ -4031,6 +4031,10 @@ angular.module('bulbsCmsApp')
           article.feature_type = null;
         };
 
+        $(element).on('blur', 'input', function(){
+          scope.add($(element).find('input').val(), null, true);
+        });
+
       }
     };
   });
@@ -4337,6 +4341,9 @@ angular.module('bulbsCmsApp')
         scope.add = scope.tvShowCallback;
         scope.delete = scope.tvShowRemove;
 
+        $(element).on('blur', 'input', function(){
+          scope.add($(element).find('input').val(), null, true);
+        });
       }
     };
   });
