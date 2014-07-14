@@ -4,7 +4,7 @@ angular.module('bulbsCmsApp')
   .provider('EditorOptions', function () {
     var _options = {
       "image": {
-        "size": ["big", "medium", "small"],
+        "size": ["big", "medium", "small", "tiny"],
         "crop": ["original", "16x9", "1x1", "3x1"],
         "defaults": {
           "size": "big",
