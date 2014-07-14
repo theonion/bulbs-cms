@@ -41,10 +41,6 @@ angular.module('bulbsCmsApp')
           article.feature_type = null;
         };
 
-        $(element).on('blur', 'input', function(){
-          scope.add($(element).find('input').val(), null, true);
-        });
-
       }
     };
   });
