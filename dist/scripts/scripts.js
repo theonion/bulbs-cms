@@ -2978,7 +2978,7 @@ angular.module('bulbsCmsApp')
   .provider('EditorOptions', function () {
     var _options = {
       "image": {
-        "size": ["big", "medium", "small"],
+        "size": ["big", "medium", "small", "tiny"],
         "crop": ["original", "16x9", "1x1", "3x1"],
         "defaults": {
           "size": "big",
@@ -4031,10 +4031,6 @@ angular.module('bulbsCmsApp')
           article.feature_type = null;
         };
 
-        $(element).on('blur', 'input', function(){
-          scope.add($(element).find('input').val(), null, true);
-        });
-
       }
     };
   });
@@ -4341,9 +4337,6 @@ angular.module('bulbsCmsApp')
         scope.add = scope.tvShowCallback;
         scope.delete = scope.tvShowRemove;
 
-        $(element).on('blur', 'input', function(){
-          scope.add($(element).find('input').val(), null, true);
-        });
       }
     };
   });
