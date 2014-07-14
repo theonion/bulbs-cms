@@ -26,35 +26,3 @@ $(".image-modal").on("shown.bs.modal", function(){
     window.picturefill();
 });
 </script>
-
-
-<div id="embed-modal"
-    class="modal fade bs-modal-lg edit-page"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="extra-info"
-    aria-hidden="true"
-    data-backdrop="true">
-        <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Embed something</h4>
-            </div><!--/modal-header-->
-            <div class="modal-body">
-                <label style="display:none">Source URL</label>
-                <input type="text" style="display:none" class="embed-source"></input>
-                <label>Embed code</label>
-                <textarea class="embed-body"></textarea>
-                <div class="embed-error alert alert-danger" style="display:none"><strong>Can't embed nothin'</strong>. Be sure to enter something into the embed code field.</div>
-                <label>Caption (optional)</label>
-                <input type="text" class="embed-caption"></input>
-
-
-            </div><!--/modal-body-->
-            <div class="modal-footer">
-                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancel</button>
-                <button id="set-embed-button" class="btn btn-primary" aria-hidden="true">Embed</button>
-            </div><!--/modal-footer-->
-        </div><!--/modal-content-->
-    </div><!--/modal-dialog-->
-</div>

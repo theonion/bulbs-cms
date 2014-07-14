@@ -1,0 +1,41 @@
+{
+  "name": "onion-editor",
+  "version": "0.1.1",
+  "homepage": "https://github.com/theonion/editor",
+  "authors": [
+    "Mike Wnuk <mwnuk@theonion.com>"
+  ],
+  "description": "It's an HTML editor, now powered by the Guardian's Scribe.",
+  "main": "build/onion-editor.min.js",
+  "keywords": [
+    "editor"
+  ],  
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "public",
+    "examples",
+    "src"
+  ],
+  "dependencies": {
+  },
+  "devDependencies": {
+    "requirejs": "~2.1.9",
+    "scribe": "0.1.17",
+    "scribe-plugin-blockquote-command": "0.1.0",
+    "scribe-plugin-curly-quotes": "0.1.2",
+    "scribe-plugin-formatter-plain-text-convert-new-lines-to-html": "0.1.1",
+    "scribe-plugin-heading-command": "0.1.0",
+    "scribe-plugin-intelligent-unlink-command": "0.1.0",
+    "scribe-plugin-keyboard-shortcuts": "0.1.1",
+    "scribe-plugin-link-prompt-command": "0.1.0",
+    "scribe-plugin-sanitizer": "0.1.4",
+    "scribe-plugin-smart-lists": "0.1.4",
+    "scribe-plugin-toolbar": "0.1.0",
+    "almond": "0.2.9"
+  }
+}

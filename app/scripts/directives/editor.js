@@ -1,77 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .provider('EditorOptions', function () {
-    var _options = {
-      "image": {
-        "size": ["big", "medium", "small", "tiny"],
-        "crop": ["original", "16x9", "1x1", "3x1"],
-        "defaults": {
-          "size": "big",
-          "crop": "original",
-          "image_id": 0,
-          "caption": "",
-          "url": "",
-          "format": "jpg"
-        },
-        "template":
-          "<div data-type=\"image\" class=\"onion-image image inline size-{{size}} crop-{{crop}}\" data-image-id=\"{{image_id}}\" data-size=\"{{size}}\" data-crop=\"{{crop}}\" data-format=\"{{format}}\"><div></div><span class=\"caption\">{{caption}}</span></div>"
-      },
-      "onion-video": {
-        "size": ["big"],
-        "crop": ["16x9"],
-        "defaults": {
-          "size": "big",
-          "crop": "16x9"
-        },
-        "template":
-          "<div data-type=\"onion-video\" class=\"onion-video video inline size-{{size}} crop-{{crop}}\" data-video-id=\"{{video_id}}\" data-size=\"{{size}}\" data-crop=\"{{crop}}\"><div><iframe src=\"/videos/embed?id={{video_id}}\"></iframe></div></div>"
-      },
-      "embed": {
-        "size": ["original", "big", "small"],
-        "crop": ["16x9", "4x3", "auto"],
-        "defaults": {
-          "size":"original",
-          "crop": "auto",
-          "body": ""
-        },
-        "template":
-          "<div data-type=\"embed\" data-crop=\"{{crop}}\" class=\"inline embed size-{{size}} crop-{{crop}}\" data-source=\"{{source}}\" data-body=\"{{escapedbody}}\"><div>{{body}}</div><span class=\"caption\">{{caption}}</span></div>"
-      },
-      "youtube": {
-        "size": ["big"],
-        "crop": ["16x9", "4x3"],
-        "defaults": {
-          "size": "big",
-          "crop": "16x9",
-          "youtube_id": "foMQX9ZExsE",
-          "caption": ""
-        },
-        "template":
-        "<div data-type=\"youtube\" class=\"youtube inline size-{{size}} crop-{{crop}}\" data-youtube-id=\"{{youtube_id}}\" data-size=\"{{size}}\" data-crop=\"{{crop}}\"><div><img src=\"http://img.youtube.com/vi/{{youtube_id}}/hqdefault.jpg\"></div<span class=\"caption\">{{caption}}</span></div>"
-      },
-      "hr": {
-        "template":  "<hr/>"
-      }
-    };
-
-    this.setOptions = function(options) {
-      _options = options;
-    };
-
-    this.$get = function () {
-      return {
-        getOptions: function () {
-          return _options;
-        }
-      };
-    };
-
-  })
-  .directive('onionEditor', function (routes, $, Zencoder, BettyCropper, openImageCropModal, EditorOptions, VIDEO_EMBED_URL) {
-
-    /* Gab configuration out of .  */
-
+  .directive('onionEditor', function (routes, $, Zencoder, BettyCropper, openImageCropModal, VIDEO_EMBED_URL) {
     return {
       require: 'ngModel',
       replace: true,
@@ -84,31 +14,34 @@ angular.module('bulbsCmsApp')
           return;
         }
 
+        var formatting;
+        if (attrs.formatting) {
+          formatting = attrs.formatting.split(",");
+        }
+
         if (attrs.role == "multiline") {
-          var defaultValue = "<p><br></p>";
           var options = {
             /* global options */
-            element: element[0],
-            onContentChange: read,
-            toolbar: {
-              linkTools: $("#link-tools-template").html()
+            multiline: true,
+            formatting: formatting || ['link', 'bold','italic','blockquote','heading','list'],
+            placeholder: {
+              text: attrs.placeholder ||  "<p>Write here</p>",
+              container: $(".editorPlaceholder", element[0])[0],
             },
-            undoManager: new UndoManager(),
-            placeholder: attrs.placeholder ||  "Write here",
-            editSource: true,
-            // NOT SURE WHAT TO DO ABOUT THIS....
-            avlink: {
-              thingsUrl: "/cms/api/v1/things/",
-              contentUrl:"/cms/api/v1/content/",
-              host: "avclub.com"
+            link: {
+              domain: "avclub.com"
             },
             statsContainer: ".wordcount",
-            /* This probably deserves its own file */
-            inline: EditorOptions.getOptions(),
-            uploadImage: BettyCropper.upload,
-            editImage: openImageCropModal,
-            uploadVideo: Zencoder.onVideoFileUpload,
-            videoEmbedUrl: VIDEO_EMBED_URL
+            inlineObjects: attrs.inlineObjects,
+            image: {
+              insertDialog: BettyCropper.upload,
+              editDialog: openImageCropModal,
+            },
+            video: {
+              insertDialog: Zencoder.onVideoFileUpload,
+              editDialog: function() {},
+              videoEmbedUrl: VIDEO_EMBED_URL
+            }
           }
         }
         else {
@@ -116,37 +49,39 @@ angular.module('bulbsCmsApp')
           var defaultValue = "";
           var options = {
             /* global options */
-            element: element[0],
-            onContentChange: read,
-            placeholder: attrs.placeholder ||  "Type your Headline",
-            allowNewline: false,
-            allowNbsp: false,
-            characterLimit: 200,
-            sanitize: {
-              elements: ['i', 'em'],
-              remove_contents: ['script', 'style', ],
-            }
+            multiline: false,
+            placeholder: {
+              text: attrs.placeholder ||  "Write here",
+              container: $(".editorPlaceholder", element[0])[0],
+            },
+            formatting: formatting || []
           }
         }
 
-        var editor = new Editor(options);
+        var editor = new OnionEditor($(".editor", element[0])[0], options);
 
         ngModel.$render = function() {
           editor.setContent(ngModel.$viewValue || defaultValue);
+          // register on change here, after the initial load so angular doesn't get mad...
+          setTimeout(function() {
+            editor.setChangeHandler(read)
+          });
         }
+        
+
         // Write data to the model
         function read() {
           scope.$apply(function(){
             var html = editor.getContent();
-            if (html.trim() === defaultValue) {
-              html = "";
-            }
             ngModel.$setViewValue(html);
           });
         }
 
         scope.$watch(ngModel, function() {
           editor.setContent(ngModel.$viewValue || defaultValue);
+          if (window.picturefill) {
+            window.picturefill(element[0]);
+          }
         });
       }
     };

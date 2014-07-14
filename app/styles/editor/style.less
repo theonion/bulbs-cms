@@ -1,10 +1,9 @@
+/* This file has very little to do w/ the editor */
+
 #content-body .document-tools.fixed { position: fixed }
 
 .edit-page { clear: both }
 
-.drawer { position: fixed; left: 0; background-color: rgb(230, 230, 240); z-index: 250; -webkit-transition: margin 0.25s, padding 0.25s; }
-
-.bottom-drawer { display: none; bottom: 0px; margin-bottom: 0px; }
 
 #tag-list { margin: 0; display: block; }
 
@@ -48,12 +47,6 @@
 
 .status-bar { position: fixed; bottom: 0px; right: 0px; width: 60px; font-size: 14px; text-align: right; color: #666; padding: 15px 20px 15px 20px; background-color: #ddd; }
 
-#embed-modal {
-
-	textarea, input[type=text] { width: 100%; max-width: 100%; font-family: courier, fixed; font-size: 14px; padding: 5px; background-color: #F1F1F1; }
-
-	textarea { height: 200px; resize: vertical; } }
-
 section .h6, section .h5 { margin: 0px; font-weight: 700; }
 
 section .row .well { margin-bottom: 20px; }
@@ -67,3 +60,20 @@ section .row .well { margin-bottom: 20px; }
 #feature-type-container { display: block; margin: 5px 0px 0px; }
 
 .metadata label { margin-top: 10px; }
+
+
+
+ .editorPlaceholder {
+ 	color: #ccc;
+ }
+
+#content-title {
+    .editor, .editorPlaceholder { padding-top: 10px; min-height: 50px; }
+    .editor, .editorPlaceholder { font-size: 23px; line-height: 30px; font-weight: bold; } }
+
+#content-subhead {
+    .editor, .editorPlaceholder  { padding-top: 10px; }
+    .editor, .editorPlaceholder { font-size: 16px; line-height: 25px; font-weight: normal; } }
+
+#content-description {
+    .editor, .editorPlaceholder { font-weight: bold; font-style: italic; } }
