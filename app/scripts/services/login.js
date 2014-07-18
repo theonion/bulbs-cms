@@ -11,11 +11,18 @@ angular.module('bulbsCmsApp')
     });
 
     return {
-      showLoginModal: function () {
-        return $modal.open({
-          templateUrl: routes.PARTIALS_URL + 'modals/login-modal.html',
-          controller: 'LoginmodalCtrl'
-        });
+      showLoginModal: function (data) {
+        console.log(data)
+        if(data && data.data && data.data.detail && data.data.detail.indexOf("permission") > 0){
+          return $modal.open({
+            templateUrl: routes.PARTIALS_URL + 'modals/permission-denied-modal.html'
+          })
+        }else{
+          return $modal.open({
+            templateUrl: routes.PARTIALS_URL + 'modals/login-modal.html',
+            controller: 'LoginmodalCtrl'
+          });
+        }
       },
       login: function (username, password) {
         var data = $.param({username: username, password: password});

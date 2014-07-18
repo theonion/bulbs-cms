@@ -29,7 +29,7 @@ angular.module('bulbsCmsApp')
             {name: tagVal},
             function (tag) { scope.article.tags.push(tag); },
             function () { console.log('Can\'t create sections.'); },
-            function (data, status) { if (status === 403) { Login.showLoginModal(); } }
+            function (data, status) { if (status === 403) { Login.showLoginModal(data); } }
           );
           $(input).val('');
         };

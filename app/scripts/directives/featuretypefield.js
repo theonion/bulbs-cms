@@ -33,7 +33,7 @@ angular.module('bulbsCmsApp')
             {name: fVal},
             function (ft) { scope.article.feature_type = ft.name; $('#feature-type-container').removeClass('newtag'); },
             function (value) { scope.article.feature_type = value.name; $('#feature-type-container').addClass('newtag'); },
-            function (data, status) { if (status === 403) { Login.showLoginModal(); } }
+            function (data, status) { if (status === 403) { Login.showLoginModal(data); } }
           );
         };
 

@@ -30,7 +30,7 @@ angular.module('bulbsCmsApp')
               {slug: $scope.tag},
               function (tag) { $scope.init.tags = [tag]; $scope.gotTags = true; },
               function (value) { console.log('couldnt find tag ' + value.slug + ' for initial value'); },
-              function (data, status, headers, config) { if (status === 403) { Login.showLoginModal(); } }
+              function (data, status, headers, config) { if (status === 403) { Login.showLoginModal(data); } }
             );
           } else {
             $scope.gotTags = true;
