@@ -955,8 +955,8 @@ angular.module('bulbsCmsApp')
         $scope.lastSavedPromotedArticles = _.clone(data.content);
         $scope.promotedArticles = data.content;
         $('.save-button').html(oldSaveHtml);
-      }, function(data, status){
-        if(status === 403){
+      }, function(data){
+        if(data.status === 403){
           Login.showLoginModal(data);
         }
       });
