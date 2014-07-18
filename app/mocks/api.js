@@ -21,6 +21,10 @@ angular.module('bulbsCmsApp.mockApi').run([
     });
 
     $httpBackend.whenPUT(/^\/cms\/api\/v1\/content\/\d+\/$/).respond(function(method, url, data) {
+      var index = getContentId(url);
+      if(index == 7){
+        return [403, {detail: "You do not have permission to perform this action."}];
+      }
       return [200, data];
     });
 
@@ -443,6 +447,31 @@ angular.module('bulbsCmsApp.mockApi').run([
       subhead: "",
       indexed: true,
       body: "There's no thumbnail here. Go away.",
+      client_pixel: null,
+      sponsor_name: null
+    }, {
+      id: 7,
+      title: "You don't have permission here",
+      feature_type: "Locked it down here",
+      slug: "no-permission-7",
+      polymorphic_ctype: "content_content",
+      tags: [],
+      authors: [{
+        username: "special",
+        first_name: "Stephanie",
+        last_name: "Pecial",
+        id: 16832
+      }],
+      thumbnail: null,
+      absolute_url: "/article/article-1",
+      sponsor_image: null,
+      status: "Published",
+      published: "2017-07-25T16:20:00Z",
+      last_modified: "2012-05-03T16:00:00Z",
+      description: "",
+      subhead: "",
+      indexed: true,
+      body: "Go ahead, try saving. Not happening.",
       client_pixel: null,
       sponsor_name: null
     }]

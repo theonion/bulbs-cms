@@ -75,7 +75,7 @@ angular.module('bulbsCmsApp')
             scope.autocomplete_list = results.splice(0, 5);
           }).error(function (data, status, headers, config) {
             if (status === 403) {
-              Login.showLoginModal();
+              Login.showLoginModal(data);
             }
           });
         }

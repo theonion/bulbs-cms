@@ -84,7 +84,7 @@ angular.module('bulbsCmsApp')
         })
         .catch(function (reason) {
           if (reason.status === 403) {
-            Login.showLoginModal();
+            Login.showLoginModal(reason);
           }
           $modalInstance.dismiss();
         });

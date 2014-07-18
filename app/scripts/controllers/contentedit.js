@@ -64,7 +64,7 @@ angular.module('bulbsCmsApp')
         {name: tagVal},
         function (tag) { $scope.article.tags.push(tag); },
         function (value) { $scope.article.tags.push({name: value.name, type: 'content_tag', new: true}); },
-        function (data, status) { if (status === 403) { Login.showLoginModal(); } }
+        function (data, status) { if (status === 403) { Login.showLoginModal(data); } }
       );
       $(input).val('');
     };
@@ -79,7 +79,7 @@ angular.module('bulbsCmsApp')
         {name: tagVal},
         function (tag) { $scope.article.tags.push(tag); },
         function () { console.log('Can\'t create sections.'); },
-        function (data, status) { if (status === 403) { Login.showLoginModal(); } }
+        function (data, status) { if (status === 403) { Login.showLoginModal(data); } }
       );
       $(input).val('');
     };
@@ -216,7 +216,7 @@ angular.module('bulbsCmsApp')
     function saveArticleErrorCbk(data) {
       if (data.status === 403) {
         //gotta get them to log in
-        Login.showLoginModal();
+        Login.showLoginModal(data);
         $(navbarSave).html(saveHTML);
         return;
       }

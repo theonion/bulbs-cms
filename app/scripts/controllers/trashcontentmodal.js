@@ -32,7 +32,7 @@ angular.module('bulbsCmsApp')
             $scope.trashSuccessCbk();
             $modalInstance.close();
           } else if (status === 403) {
-            Login.showLoginModal();
+            Login.showLoginModal(reason);
             $modalInstance.dismiss();
           }
 
