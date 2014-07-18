@@ -589,7 +589,7 @@ angular.module('bulbsCmsApp')
         {name: tagVal},
         function (tag) { $scope.article.tags.push(tag); },
         function (value) { $scope.article.tags.push({name: value.name, type: 'content_tag', new: true}); },
-        function (data, status) { if (status === 403) { Login.showLoginModal(); } }
+        function (data, status) { if (status === 403) { Login.showLoginModal(data); } }
       );
       $(input).val('');
     };
@@ -604,7 +604,7 @@ angular.module('bulbsCmsApp')
         {name: tagVal},
         function (tag) { $scope.article.tags.push(tag); },
         function () { console.log('Can\'t create sections.'); },
-        function (data, status) { if (status === 403) { Login.showLoginModal(); } }
+        function (data, status) { if (status === 403) { Login.showLoginModal(data); } }
       );
       $(input).val('');
     };
@@ -741,7 +741,7 @@ angular.module('bulbsCmsApp')
     function saveArticleErrorCbk(data) {
       if (data.status === 403) {
         //gotta get them to log in
-        Login.showLoginModal();
+        Login.showLoginModal(data);
         $(navbarSave).html(saveHTML);
         return;
       }
@@ -818,7 +818,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('PromotionCtrl', function ($scope, $window, $location, $, _, ContentApi, PromotionApi, promo_options, routes) {
+  .controller('PromotionCtrl', function ($scope, $window, $location, $, _, ContentApi, PromotionApi, Login, promo_options, routes) {
     $window.document.title = routes.CMS_NAMESPACE + ' | Promotion Tool'; // set title
 
     $scope.$watch('pzone', function (pzone) {
@@ -955,6 +955,10 @@ angular.module('bulbsCmsApp')
         $scope.lastSavedPromotedArticles = _.clone(data.content);
         $scope.promotedArticles = data.content;
         $('.save-button').html(oldSaveHtml);
+      }, function(data, status){
+        if(status === 403){
+          Login.showLoginModal(data);
+        }
       });
     };
 
@@ -1198,7 +1202,7 @@ angular.module('bulbsCmsApp')
             $scope.trashSuccessCbk();
             $modalInstance.close();
           } else if (status === 403) {
-            Login.showLoginModal();
+            Login.showLoginModal(reason);
             $modalInstance.dismiss();
           }
 
@@ -1292,7 +1296,7 @@ angular.module('bulbsCmsApp')
         })
         .catch(function (reason) {
           if (reason.status === 403) {
-            Login.showLoginModal();
+            Login.showLoginModal(reason);
           }
           $modalInstance.dismiss();
         });
@@ -1776,7 +1780,7 @@ angular.module('bulbsCmsApp')
             scope.autocomplete_list = results.splice(0, 5);
           }).error(function (data, status, headers, config) {
             if (status === 403) {
-              Login.showLoginModal();
+              Login.showLoginModal(data);
             }
           });
         }
@@ -2131,7 +2135,7 @@ angular.module('bulbsCmsApp')
               {slug: $scope.tag},
               function (tag) { $scope.init.tags = [tag]; $scope.gotTags = true; },
               function (value) { console.log('couldnt find tag ' + value.slug + ' for initial value'); },
-              function (data, status, headers, config) { if (status === 403) { Login.showLoginModal(); } }
+              function (data, status, headers, config) { if (status === 403) { Login.showLoginModal(data); } }
             );
           } else {
             $scope.gotTags = true;
@@ -3454,11 +3458,18 @@ angular.module('bulbsCmsApp')
     });
 
     return {
-      showLoginModal: function () {
-        return $modal.open({
-          templateUrl: routes.PARTIALS_URL + 'modals/login-modal.html',
-          controller: 'LoginmodalCtrl'
-        });
+      showLoginModal: function (data) {
+        console.log(data)
+        if(data && data.data && data.data.detail && data.data.detail.indexOf("permission") > 0){
+          return $modal.open({
+            templateUrl: routes.PARTIALS_URL + 'modals/permission-denied-modal.html'
+          })
+        }else{
+          return $modal.open({
+            templateUrl: routes.PARTIALS_URL + 'modals/login-modal.html',
+            controller: 'LoginmodalCtrl'
+          });
+        }
       },
       login: function (username, password) {
         var data = $.param({username: username, password: password});
@@ -3967,7 +3978,7 @@ angular.module('bulbsCmsApp')
             {name: tagVal},
             function (tag) { scope.article.tags.push(tag); },
             function (value) { scope.article.tags.push({name: value.name, type: 'content_tag', new: true}); },
-            function (data, status) { if (status === 403) { Login.showLoginModal(); } }
+            function (data, status) { if (status === 403) { Login.showLoginModal(data); } }
           );
           $(input).val('');
         };
@@ -4023,7 +4034,7 @@ angular.module('bulbsCmsApp')
             {name: fVal},
             function (ft) { scope.article.feature_type = ft.name; $('#feature-type-container').removeClass('newtag'); },
             function (value) { scope.article.feature_type = value.name; $('#feature-type-container').addClass('newtag'); },
-            function (data, status) { if (status === 403) { Login.showLoginModal(); } }
+            function (data, status) { if (status === 403) { Login.showLoginModal(data); } }
           );
         };
 
@@ -4066,7 +4077,7 @@ angular.module('bulbsCmsApp')
             {name: tagVal},
             function (tag) { scope.article.tags.push(tag); },
             function () { console.log('Can\'t create sections.'); },
-            function (data, status) { if (status === 403) { Login.showLoginModal(); } }
+            function (data, status) { if (status === 403) { Login.showLoginModal(data); } }
           );
           $(input).val('');
         };
