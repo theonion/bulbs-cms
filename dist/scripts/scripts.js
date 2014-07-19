@@ -286,6 +286,7 @@ angular.module('jquery', []).value('$', window.$);
 angular.module('moment', []).value('moment', window.moment);
 angular.module('PNotify', []).value('PNotify', window.PNotify);
 angular.module('keypress', []).value('keypress', window.keypress);
+angular.module('Raven', []).value('Raven', window.Raven);
 
 // ****** App Config ****** \\
 
@@ -304,7 +305,8 @@ angular.module('bulbsCmsApp', [
   'URLify',
   'moment',
   'PNotify',
-  'keypress'
+  'keypress',
+  'Raven'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
@@ -390,6 +392,37 @@ angular.module('bulbsCmsApp', [
       }
     };
   });
+
+  /* helpful SO question on injecting $modal into interceptor-
+    http://stackoverflow.com/questions/14681654/i-need-two-instances-of-angularjs-http-service-or-what
+  */
+  $httpProvider.interceptors.push(function ($q, $injector, routes) {
+    return {
+      responseError: function (rejection) {
+        $injector.invoke(function($modal){
+          if (rejection.status == 403) {
+            if(rejection.detail && rejection.detail.indexOf("credentials") > 0){
+              $modal.open({
+                templateUrl: routes.PARTIALS_URL + 'modals/login-modal.html',
+                controller: 'LoginmodalCtrl'
+              });
+            }else{
+              var detail = rejection.data && rejection.data.detail || 'Forbidden';
+              $modal.open({
+                templateUrl: routes.PARTIALS_URL + 'modals/403-modal.html',
+                controller: 'ForbiddenmodalCtrl',
+                resolve: {
+                  detail: function(){ return detail; }
+                }
+              });
+            }
+          }
+          return $q.reject(rejection);
+        });
+      }
+    }
+  });
+
 })
 .run(function ($rootScope, $http, $cookies) {
   // set the CSRF token here
@@ -529,7 +562,7 @@ angular.module('bulbsCmsApp')
   .controller('ContenteditCtrl', function (
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
-    $, _, keypress,
+    $, _, keypress, Raven,
     IfExistsElse, Localstoragebackup, ContentApi, ReviewApi, Login, routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
@@ -577,36 +610,6 @@ angular.module('bulbsCmsApp')
 
     $scope.tagDisplayFn = function (o) {
       return o.name;
-    };
-
-    $scope.tagCallback = function (o, input, freeForm) {
-      var tagVal = freeForm ? o : o.name;
-      IfExistsElse.ifExistsElse(
-        ContentApi.all('tag').getList({
-          ordering: 'name',
-          search: tagVal
-        }),
-        {name: tagVal},
-        function (tag) { $scope.article.tags.push(tag); },
-        function (value) { $scope.article.tags.push({name: value.name, type: 'content_tag', new: true}); },
-        function (data, status) { if (status === 403) { Login.showLoginModal(data); } }
-      );
-      $(input).val('');
-    };
-
-    $scope.sectionCallback = function (o, input, freeForm) {
-      var tagVal = freeForm ? o : o.name;
-      IfExistsElse.ifExistsElse(
-        ContentApi.all('tag').getList({
-          ordering: 'name',
-          search: tagVal
-        }),
-        {name: tagVal},
-        function (tag) { $scope.article.tags.push(tag); },
-        function () { console.log('Can\'t create sections.'); },
-        function (data, status) { if (status === 403) { Login.showLoginModal(data); } }
-      );
-      $(input).val('');
     };
 
     $scope.saveArticleDeferred = $q.defer();
@@ -739,12 +742,7 @@ angular.module('bulbsCmsApp')
     }
 
     function saveArticleErrorCbk(data) {
-      if (data.status === 403) {
-        //gotta get them to log in
-        Login.showLoginModal(data);
-        $(navbarSave).html(saveHTML);
-        return;
-      }
+      console.log(data)
       $(navbarSave).html('<i class=\'glyphicon glyphicon-remove\'></i> Error');
       if (status === 400) {
         $scope.errors = data;
@@ -818,7 +816,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('PromotionCtrl', function ($scope, $window, $location, $, _, ContentApi, PromotionApi, Login, promo_options, routes) {
+  .controller('PromotionCtrl', function ($scope, $window, $location, $, _, ContentApi, PromotionApi, Login, promo_options, routes, Raven) {
     $window.document.title = routes.CMS_NAMESPACE + ' | Promotion Tool'; // set title
 
     $scope.$watch('pzone', function (pzone) {
@@ -956,9 +954,8 @@ angular.module('bulbsCmsApp')
         $scope.promotedArticles = data.content;
         $('.save-button').html(oldSaveHtml);
       }, function(data){
-        if(data.status === 403){
-          Login.showLoginModal(data);
-        }
+        Raven.captureMessage('Error Saving Pzone', {extra: data});
+        $('.save-button').html('<i class="fa fa-times-circle"></i> Error');
       });
     };
 
@@ -1171,7 +1168,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('TrashcontentmodalCtrl', function ($scope, $http, $modalInstance, $, Login, articleId) {
+  .controller('TrashcontentmodalCtrl', function ($scope, $http, $modalInstance, $, Login, articleId, Raven) {
     console.log('trash content modal ctrl here')
     console.log(articleId)
 
@@ -1201,11 +1198,10 @@ angular.module('bulbsCmsApp')
           if (reason.status === 404) {
             $scope.trashSuccessCbk();
             $modalInstance.close();
-          } else if (status === 403) {
-            Login.showLoginModal(reason);
-            $modalInstance.dismiss();
+            return;
           }
-
+          Raven.captureMessage('Error Deleting Article', {extra: reason});
+          $modalInstance.dismiss();
         });
     }
   });
@@ -1213,7 +1209,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance, $, moment, Login, routes, article, TIMEZONE_OFFSET) {
+  .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance, $, moment, Login, routes, article, TIMEZONE_OFFSET, Raven) {
     $scope.article = article;
 
     $scope.pubButton = {
@@ -1295,9 +1291,7 @@ angular.module('bulbsCmsApp')
           $modalInstance.close();
         })
         .catch(function (reason) {
-          if (reason.status === 403) {
-            Login.showLoginModal(reason);
-          }
+          Raven.captureMessage('Error Setting Pubtime', {extra: data});
           $modalInstance.dismiss();
         });
     };
@@ -1706,7 +1700,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('bulbsAutocomplete', function ($http, $location, $compile, $timeout, $, Login) {
+  .directive('bulbsAutocomplete', function ($http, $location, $compile, $timeout, $, Login, Raven) {
 
     var autocomplete_dropdown_template = '<div class="autocomplete dropdown" ng-show="autocomplete_list">\
           <div class="entry" ng-repeat="option in autocomplete_list" ng-click="onClick(option)">\
@@ -1779,9 +1773,7 @@ angular.module('bulbsCmsApp')
             var results = data.results || data;
             scope.autocomplete_list = results.splice(0, 5);
           }).error(function (data, status, headers, config) {
-            if (status === 403) {
-              Login.showLoginModal(data);
-            }
+            Raven.captureMessage('Error in getAutocompletes', {extra: data});
           });
         }
 
@@ -2106,7 +2098,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('createContent', function ($http, $window, $, IfExistsElse, Login, ContentApi, routes, AUTO_ADD_AUTHOR) {
+  .directive('createContent', function ($http, $window, $, IfExistsElse, Login, ContentApi, routes, AUTO_ADD_AUTHOR, Raven) {
     return {
       restrict: 'E',
       templateUrl:  routes.DIRECTIVE_PARTIALS_URL + 'create-content.html',
@@ -2135,7 +2127,7 @@ angular.module('bulbsCmsApp')
               {slug: $scope.tag},
               function (tag) { $scope.init.tags = [tag]; $scope.gotTags = true; },
               function (value) { console.log('couldnt find tag ' + value.slug + ' for initial value'); },
-              function (data, status, headers, config) { if (status === 403) { Login.showLoginModal(data); } }
+              function (data, status, headers, config) { Raven.captureMessage('Error Creating Article', {extra: data}); }
             );
           } else {
             $scope.gotTags = true;
@@ -3448,7 +3440,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .service('Login', function Login($rootScope, $http, $cookies, $window, $modal, $, routes) {
+  .service('Login', function Login($rootScope, $http, $cookies, $window, $, routes) {
 
     $rootScope.$watch(function () {
       return $cookies.csrftoken;
@@ -3458,27 +3450,14 @@ angular.module('bulbsCmsApp')
     });
 
     return {
-      showLoginModal: function (data) {
-        console.log(data)
-        if(data && data.data && data.data.detail && data.data.detail.indexOf("permission") > 0){
-          return $modal.open({
-            templateUrl: routes.PARTIALS_URL + 'modals/permission-denied-modal.html'
-          })
-        }else{
-          return $modal.open({
-            templateUrl: routes.PARTIALS_URL + 'modals/login-modal.html',
-            controller: 'LoginmodalCtrl'
-          });
-        }
-      },
       login: function (username, password) {
         var data = $.param({username: username, password: password});
         return $http({
-            method: 'POST',
-            url: '/login/',
-            data: data,
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-          })
+          method: 'POST',
+          url: '/login/',
+          data: data,
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        });
       }
     }
   });;
@@ -3947,7 +3926,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('tagsField', function (routes, _, IfExistsElse, ContentApi) {
+  .directive('tagsField', function (routes, _, IfExistsElse, ContentApi, Raven) {
     return {
       templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
@@ -3978,7 +3957,7 @@ angular.module('bulbsCmsApp')
             {name: tagVal},
             function (tag) { scope.article.tags.push(tag); },
             function (value) { scope.article.tags.push({name: value.name, type: 'content_tag', new: true}); },
-            function (data, status) { if (status === 403) { Login.showLoginModal(data); } }
+            function (data, status) { Raven.captureMessage('Error Adding Tag', {extra: data}); }
           );
           $(input).val('');
         };
@@ -4002,7 +3981,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('featuretypeField', function (routes, IfExistsElse, ContentApi) {
+  .directive('featuretypeField', function (routes, IfExistsElse, ContentApi, Raven) {
     return {
       templateUrl: routes.PARTIALS_URL + 'textlike-autocomplete-field.html',
       restrict: 'E',
@@ -4034,7 +4013,7 @@ angular.module('bulbsCmsApp')
             {name: fVal},
             function (ft) { scope.article.feature_type = ft.name; $('#feature-type-container').removeClass('newtag'); },
             function (value) { scope.article.feature_type = value.name; $('#feature-type-container').addClass('newtag'); },
-            function (data, status) { if (status === 403) { Login.showLoginModal(data); } }
+            function (data, status) { Raven.captureMessage('Error Adding Feature Type', {extra: data}); }
           );
         };
 
@@ -4049,7 +4028,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('sectionsField', function (routes, _, IfExistsElse, ContentApi) {
+  .directive('sectionsField', function (routes, _, IfExistsElse, ContentApi, Raven) {
     return {
       templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
@@ -4077,7 +4056,7 @@ angular.module('bulbsCmsApp')
             {name: tagVal},
             function (tag) { scope.article.tags.push(tag); },
             function () { console.log('Can\'t create sections.'); },
-            function (data, status) { if (status === 403) { Login.showLoginModal(data); } }
+            function (data, status) { Raven.captureMessage('Error Adding Section', {extra: data}); }
           );
           $(input).val('');
         };
@@ -4350,4 +4329,11 @@ angular.module('bulbsCmsApp')
 
       }
     };
+  });
+;
+'use strict';
+
+angular.module('bulbsCmsApp')
+  .controller('ForbiddenmodalCtrl', function ($scope, detail) {
+    $scope.detail = detail;
   });
