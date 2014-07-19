@@ -401,7 +401,7 @@ angular.module('bulbsCmsApp', [
       responseError: function (rejection) {
         $injector.invoke(function($modal){
           if (rejection.status == 403) {
-            if(rejection.detail && rejection.detail.indexOf("credentials") > 0){
+            if(rejection.data && rejection.data.detail && rejection.data.detail.indexOf("credentials") > 0){
               $modal.open({
                 templateUrl: routes.PARTIALS_URL + 'modals/login-modal.html',
                 controller: 'LoginmodalCtrl'
