@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('createContent', function ($http, $window, $, IfExistsElse, Login, ContentApi, routes, AUTO_ADD_AUTHOR) {
+  .directive('createContent', function ($http, $window, $, IfExistsElse, Login, ContentApi, routes, AUTO_ADD_AUTHOR, Raven) {
     return {
       restrict: 'E',
       templateUrl:  routes.DIRECTIVE_PARTIALS_URL + 'create-content.html',
@@ -30,7 +30,7 @@ angular.module('bulbsCmsApp')
               {slug: $scope.tag},
               function (tag) { $scope.init.tags = [tag]; $scope.gotTags = true; },
               function (value) { console.log('couldnt find tag ' + value.slug + ' for initial value'); },
-              function (data, status, headers, config) { if (status === 403) { Login.showLoginModal(data); } }
+              function (data, status, headers, config) { Raven.captureMessage('Error Creating Article', {extra: data}); }
             );
           } else {
             $scope.gotTags = true;

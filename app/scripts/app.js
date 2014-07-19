@@ -9,6 +9,7 @@ angular.module('jquery', []).value('$', window.$);
 angular.module('moment', []).value('moment', window.moment);
 angular.module('PNotify', []).value('PNotify', window.PNotify);
 angular.module('keypress', []).value('keypress', window.keypress);
+angular.module('Raven', []).value('Raven', window.Raven);
 
 // ****** App Config ****** \\
 
@@ -27,7 +28,8 @@ angular.module('bulbsCmsApp', [
   'URLify',
   'moment',
   'PNotify',
-  'keypress'
+  'keypress',
+  'Raven'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
@@ -113,6 +115,37 @@ angular.module('bulbsCmsApp', [
       }
     };
   });
+
+  /* helpful SO question on injecting $modal into interceptor-
+    http://stackoverflow.com/questions/14681654/i-need-two-instances-of-angularjs-http-service-or-what
+  */
+  $httpProvider.interceptors.push(function ($q, $injector, routes) {
+    return {
+      responseError: function (rejection) {
+        $injector.invoke(function($modal){
+          if (rejection.status == 403) {
+            if(rejection.detail && rejection.detail.indexOf("credentials") > 0){
+              $modal.open({
+                templateUrl: routes.PARTIALS_URL + 'modals/login-modal.html',
+                controller: 'LoginmodalCtrl'
+              });
+            }else{
+              var detail = rejection.data && rejection.data.detail || 'Forbidden';
+              $modal.open({
+                templateUrl: routes.PARTIALS_URL + 'modals/403-modal.html',
+                controller: 'ForbiddenmodalCtrl',
+                resolve: {
+                  detail: function(){ return detail; }
+                }
+              });
+            }
+          }
+          return $q.reject(rejection);
+        });
+      }
+    }
+  });
+
 })
 .run(function ($rootScope, $http, $cookies) {
   // set the CSRF token here

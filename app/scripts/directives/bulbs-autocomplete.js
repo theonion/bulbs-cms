@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('bulbsAutocomplete', function ($http, $location, $compile, $timeout, $, Login) {
+  .directive('bulbsAutocomplete', function ($http, $location, $compile, $timeout, $, Login, Raven) {
 
     var autocomplete_dropdown_template = '<div class="autocomplete dropdown" ng-show="autocomplete_list">\
           <div class="entry" ng-repeat="option in autocomplete_list" ng-click="onClick(option)">\
@@ -74,9 +74,7 @@ angular.module('bulbsCmsApp')
             var results = data.results || data;
             scope.autocomplete_list = results.splice(0, 5);
           }).error(function (data, status, headers, config) {
-            if (status === 403) {
-              Login.showLoginModal(data);
-            }
+            Raven.captureMessage('Error in getAutocompletes', {extra: data});
           });
         }
 

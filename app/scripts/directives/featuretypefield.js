@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('featuretypeField', function (routes, IfExistsElse, ContentApi) {
+  .directive('featuretypeField', function (routes, IfExistsElse, ContentApi, Raven) {
     return {
       templateUrl: routes.PARTIALS_URL + 'textlike-autocomplete-field.html',
       restrict: 'E',
@@ -33,7 +33,7 @@ angular.module('bulbsCmsApp')
             {name: fVal},
             function (ft) { scope.article.feature_type = ft.name; $('#feature-type-container').removeClass('newtag'); },
             function (value) { scope.article.feature_type = value.name; $('#feature-type-container').addClass('newtag'); },
-            function (data, status) { if (status === 403) { Login.showLoginModal(data); } }
+            function (data, status) { Raven.captureMessage('Error Adding Feature Type', {extra: data}); }
           );
         };
 

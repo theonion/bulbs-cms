@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('TrashcontentmodalCtrl', function ($scope, $http, $modalInstance, $, Login, articleId) {
+  .controller('TrashcontentmodalCtrl', function ($scope, $http, $modalInstance, $, Login, articleId, Raven) {
     console.log('trash content modal ctrl here')
     console.log(articleId)
 
@@ -31,11 +31,10 @@ angular.module('bulbsCmsApp')
           if (reason.status === 404) {
             $scope.trashSuccessCbk();
             $modalInstance.close();
-          } else if (status === 403) {
-            Login.showLoginModal(reason);
-            $modalInstance.dismiss();
+            return;
           }
-
+          Raven.captureMessage('Error Deleting Article', {extra: reason});
+          $modalInstance.dismiss();
         });
     }
   });
