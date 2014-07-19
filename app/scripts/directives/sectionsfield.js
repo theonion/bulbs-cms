@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('sectionsField', function (routes, _, IfExistsElse, ContentApi) {
+  .directive('sectionsField', function (routes, _, IfExistsElse, ContentApi, Raven) {
     return {
       templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
@@ -29,7 +29,7 @@ angular.module('bulbsCmsApp')
             {name: tagVal},
             function (tag) { scope.article.tags.push(tag); },
             function () { console.log('Can\'t create sections.'); },
-            function (data, status) { if (status === 403) { Login.showLoginModal(data); } }
+            function (data, status) { Raven.captureMessage('Error Adding Section', {extra: data}); }
           );
           $(input).val('');
         };

@@ -22,7 +22,7 @@ angular.module('bulbsCmsApp.mockApi').run([
 
     $httpBackend.whenPUT(/^\/cms\/api\/v1\/content\/\d+\/$/).respond(function(method, url, data) {
       var index = getContentId(url);
-      if(index == 7){
+      if(index == 7){ //todo: fix this
         return [403, {detail: "You do not have permission to perform this action."}];
       }
       return [200, data];

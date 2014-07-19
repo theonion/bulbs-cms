@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('tagsField', function (routes, _, IfExistsElse, ContentApi) {
+  .directive('tagsField', function (routes, _, IfExistsElse, ContentApi, Raven) {
     return {
       templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
@@ -32,7 +32,7 @@ angular.module('bulbsCmsApp')
             {name: tagVal},
             function (tag) { scope.article.tags.push(tag); },
             function (value) { scope.article.tags.push({name: value.name, type: 'content_tag', new: true}); },
-            function (data, status) { if (status === 403) { Login.showLoginModal(data); } }
+            function (data, status) { Raven.captureMessage('Error Adding Tag', {extra: data}); }
           );
           $(input).val('');
         };

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance, $, moment, Login, routes, article, TIMEZONE_OFFSET) {
+  .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance, $, moment, Login, routes, article, TIMEZONE_OFFSET, Raven) {
     $scope.article = article;
 
     $scope.pubButton = {
@@ -83,9 +83,7 @@ angular.module('bulbsCmsApp')
           $modalInstance.close();
         })
         .catch(function (reason) {
-          if (reason.status === 403) {
-            Login.showLoginModal(reason);
-          }
+          Raven.captureMessage('Error Setting Pubtime', {extra: data});
           $modalInstance.dismiss();
         });
     };
