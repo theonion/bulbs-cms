@@ -353,75 +353,8 @@ angular.module('bulbsCmsApp', [
     }
   });
 
-  $httpProvider.interceptors.push(function ($q, $window, PNotify) {
-    return {
-      responseError: function (rejection) {
-        if (rejection.status >= 500) {
-          var stack = {
-            animation: true,
-            dir1: 'up',
-            dir2: 'left'
-          };
-          new PNotify({
-            title: 'You found a bug!',
-            text:
-              'Looks like something just went wrong, and we need your help to fix it! \
-              Report it, and we\'ll make sure it never happens again.',
-            type: 'error',
-            confirm: {
-              confirm: true,
-              align: 'left',
-              buttons: [{
-                text: 'Report Bug',
-                addClass: 'btn-danger pnotify-report-bug',
-                click: function (notice) {
-                  notice.remove();
-                  $window.showBugReportModal(); // see bugreporter.js
-                }
-              }, {addClass: 'hidden'}] // removing the "Cancel" button
-            },
-            buttons: {
-              sticker: false
-            },
-            icon: 'fa fa-bug pnotify-error-icon',
-            addclass: "stack-bottomright",
-            stack: stack
-          });
-        }
-        return $q.reject(rejection);
-      }
-    };
-  });
-
-  /* helpful SO question on injecting $modal into interceptor-
-    http://stackoverflow.com/questions/14681654/i-need-two-instances-of-angularjs-http-service-or-what
-  */
-  $httpProvider.interceptors.push(function ($q, $injector, routes) {
-    return {
-      responseError: function (rejection) {
-        $injector.invoke(function($modal){
-          if (rejection.status == 403) {
-            if(rejection.data && rejection.data.detail && rejection.data.detail.indexOf("credentials") > 0){
-              $modal.open({
-                templateUrl: routes.PARTIALS_URL + 'modals/login-modal.html',
-                controller: 'LoginmodalCtrl'
-              });
-            }else{
-              var detail = rejection.data && rejection.data.detail || 'Forbidden';
-              $modal.open({
-                templateUrl: routes.PARTIALS_URL + 'modals/403-modal.html',
-                controller: 'ForbiddenmodalCtrl',
-                resolve: {
-                  detail: function(){ return detail; }
-                }
-              });
-            }
-          }
-          return $q.reject(rejection);
-        });
-      }
-    }
-  });
+  $httpProvider.interceptors.push('BugReportInterceptor');
+  $httpProvider.interceptors.push('PermissionsInterceptor');;
 
 })
 .run(function ($rootScope, $http, $cookies) {
@@ -4336,4 +4269,106 @@ angular.module('bulbsCmsApp')
 angular.module('bulbsCmsApp')
   .controller('ForbiddenmodalCtrl', function ($scope, detail) {
     $scope.detail = detail;
+  });
+;
+'use strict';
+
+angular.module('bulbsCmsApp')
+  .directive('hideIfForbidden', function ($http) {
+    function hideElement(element){
+      element.addClass('hidden');
+    }
+
+    return {
+      restrict: 'A',
+      link: function postLink(scope, element, attrs) {
+        $http({
+          method: 'OPTIONS',
+          url: attrs.optionsUrl,
+          noPermissionIntercept: true
+        }).success(function(data, status){
+          //I guess 403s aren't errors? I dont know.
+          if(status === 403){
+            hideElement(element);
+          }
+        }).error(function(data, status){
+          if(status === 403){
+            hideElement(element);
+          }
+        });
+      }
+    };
+  });
+;
+angular.module('bulbsCmsApp').factory('BugReportInterceptor', function ($q, $window, PNotify) {
+    return {
+      responseError: function (rejection) {
+        if (rejection.status >= 500) {
+          var stack = {
+            animation: true,
+            dir1: 'up',
+            dir2: 'left'
+          };
+          new PNotify({
+            title: 'You found a bug!',
+            text:
+              'Looks like something just went wrong, and we need your help to fix it! \
+              Report it, and we\'ll make sure it never happens again.',
+            type: 'error',
+            confirm: {
+              confirm: true,
+              align: 'left',
+              buttons: [{
+                text: 'Report Bug',
+                addClass: 'btn-danger pnotify-report-bug',
+                click: function (notice) {
+                  notice.remove();
+                  $window.showBugReportModal(); // see bugreporter.js
+                }
+              }, {addClass: 'hidden'}] // removing the "Cancel" button
+            },
+            buttons: {
+              sticker: false
+            },
+            icon: 'fa fa-bug pnotify-error-icon',
+            addclass: "stack-bottomright",
+            stack: stack
+          });
+        }
+        return $q.reject(rejection);
+      }
+    };
+  });;
+  /* helpful SO question on injecting $modal into interceptor and doing intercept pass-through
+    http://stackoverflow.com/questions/14681654/i-need-two-instances-of-angularjs-http-service-or-what
+  */
+angular.module('bulbsCmsApp').factory('PermissionsInterceptor', function ($q, $injector, routes) {
+    return {
+      responseError: function (rejection) {
+        if(rejection.config.noPermissionIntercept) {
+          return $q.when(rejection);
+        }else{
+          $injector.invoke(function($modal){
+            if (rejection.status == 403) {
+              if(rejection.data && rejection.data.detail && rejection.data.detail.indexOf("credentials") > 0){
+                $modal.open({
+                  templateUrl: routes.PARTIALS_URL + 'modals/login-modal.html',
+                  controller: 'LoginmodalCtrl'
+                });
+              }else{
+                var detail = rejection.data && rejection.data.detail || 'Forbidden';
+                $modal.open({
+                  templateUrl: routes.PARTIALS_URL + 'modals/403-modal.html',
+                  controller: 'ForbiddenmodalCtrl',
+                  resolve: {
+                    detail: function(){ return detail; }
+                  }
+                });
+              }
+            }
+            return $q.reject(rejection);
+          });
+        }
+      }
+    }
   });
