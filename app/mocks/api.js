@@ -8,6 +8,10 @@ angular.module('bulbsCmsApp.mockApi').run([
       return index;
     }
 
+    $httpBackend.when('OPTIONS', '/returns-a-403/').respond(function(){
+      return [403, {"detail": "No permission"}];
+    });
+
     $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/\d+\/$/).respond(function(method, url, data) {
       var index = getContentId(url);
 
