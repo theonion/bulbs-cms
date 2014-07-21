@@ -57,6 +57,8 @@
     <!-- Add your site or application content here -->
     <div ng-view=""></div>
 
+    <div hide-if-forbidden options-url="/returns-a-403/">You can't see this!</div>
+
     <!--[if lt IE 9]>
     <script src="bower_components/es5-shim/es5-shim.js"></script>
     <script src="bower_components/json3/lib/json3.min.js"></script>
@@ -164,6 +166,9 @@
     <script src="scripts/directives/static-image.js"></script>
     <script src="scripts/directives/tvshow-field.js"></script>
     <script src="scripts/controllers/forbiddenmodal.js"></script>
+    <script src="scripts/directives/hide-if-forbidden.js"></script>
+    <script src="scripts/services/bugreportinterceptor.js"></script>
+    <script src="scripts/services/permissionsinterceptor.js"></script>
     <!-- endbuild -->
 
     <script src="bower_components/angular-mocks/angular-mocks.js"></script>

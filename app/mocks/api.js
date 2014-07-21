@@ -1,14 +1,19 @@
 angular.module('bulbsCmsApp.mockApi').run([
   '$httpBackend', 'mockApiData',
   function($httpBackend, mockApiData) {
-    // content instance
+
+    $httpBackend.when('OPTIONS', '/returns-a-403/').respond(function(){ //just for testing
+      return [403, {"detail": "No permission"}];
+    });
+
+
+    detailRegex = /^\/cms\/api\/v1\/content\/(\d+)\/$/;
     function getContentId(url) {
-      var re = /^\/cms\/api\/v1\/content\/(\d+)\//;
-      var index = re.exec(url)[1];
+      var index = detailRegex.exec(url)[1];
       return index;
     }
 
-    $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/\d+\/$/).respond(function(method, url, data) {
+    function detailView(method, url, data) {
       var index = getContentId(url);
 
       var contentList = mockApiData['content.list'];
@@ -18,32 +23,36 @@ angular.module('bulbsCmsApp.mockApi').run([
       } else {
         return [404, {"detail": "Not found"}];
       }
-    });
+    }
+    $httpBackend.when('GET', detailRegex).respond(detailView);
 
-    $httpBackend.whenPUT(/^\/cms\/api\/v1\/content\/\d+\/$/).respond(function(method, url, data) {
+    function detailPut(method, url, data) {
       var index = getContentId(url);
       if(index == 7){ //todo: fix this
         return [403, {detail: "You do not have permission to perform this action."}];
       }
       return [200, data];
-    });
+    };
+    $httpBackend.when('OPTIONS', detailRegex).respond(detailPut);
+    $httpBackend.when('PUT', detailRegex).respond(detailPut);
 
     $httpBackend.whenPOST('/cms/api/v1/content/', mockApiData['content.create'])
       .respond(function(method, url, data) {
         return [201, mockApiData['content.create.response']];
       });
 
-    $httpBackend.whenPOST(/\/cms\/api\/v1\/content\/\d+\/trash\//)
-      .respond(mockApiData['content.trash.response']);
+    var trashRegex = /\/cms\/api\/v1\/content\/\d+\/trash\//;
+    $httpBackend.when('POST', trashRegex).respond(mockApiData['content.trash.response']);
+    $httpBackend.when('OPTIONS', trashRegex).respond(mockApiData['content.trash.response']);
 
-    $httpBackend.whenPOST(/\/cms\/api\/v1\/content\/\d+\/publish\//)
-      .respond(mockApiData['content.publish.response']);
+    var publishRegex = /\/cms\/api\/v1\/content\/\d+\/publish\//
+    $httpBackend.when('POST', publishRegex).respond(mockApiData['content.publish.response']);
+    $httpBackend.when('OPTIONS', publishRegex).respond(mockApiData['content.publish.response']);
 
     // content list
-    $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/$/).respond(mockApiData['content.list']);
-
-    // content list
-    $httpBackend.whenGET(/^\/cms\/api\/v1\/content\/(\?.*)?$/).respond(mockApiData['content.list']);
+    var listRegex = /^\/cms\/api\/v1\/content\/(\?.*)?$/
+    $httpBackend.when('GET', listRegex).respond(mockApiData['content.list']);
+    $httpBackend.when('OPTIONS', listRegex).respond(mockApiData['content.list']);
 
     // things
     $httpBackend.whenGET(/^\/cms\/api\/v1\/things.*/).respond(mockApiData['things.list']);
@@ -121,18 +130,23 @@ angular.module('bulbsCmsApp.mockApi').run([
       ]
     };
 
-    $httpBackend.whenGET('/cms/api/v1/contentlist/').respond(contentlist);
-    $httpBackend.whenGET('/cms/api/v1/contentlist/1/').respond(contentlist.results[0]);
-    $httpBackend.whenGET('/cms/api/v1/contentlist/2/').respond(contentlist.results[1]);
-    $httpBackend.whenGET('/cms/api/v1/contentlist/3/').respond(contentlist.results[2]);
-    $httpBackend.whenGET('/cms/api/v1/contentlist/4/').respond(contentlist.results[3]);
-    $httpBackend.whenGET('/cms/api/v1/contentlist/5/').respond(contentlist.results[4]);
 
-    $httpBackend.whenPUT('/cms/api/v1/contentlist/1/').respond(contentlist.results[0]);
-    $httpBackend.whenPUT('/cms/api/v1/contentlist/2/').respond(contentlist.results[1]);
-    $httpBackend.whenPUT('/cms/api/v1/contentlist/3/').respond(contentlist.results[2]);
-    $httpBackend.whenPUT('/cms/api/v1/contentlist/4/').respond(contentlist.results[3]);
-    $httpBackend.whenPUT('/cms/api/v1/contentlist/5/').respond(contentlist.results[4]);
+    var contentlistRegex = /^\/cms\/api\/v1\/contentlist\/(\d+)\/$/;
+    function getContentlistId(url) {
+      var index = contentlistRegex.exec(url)[1];
+      return index - 1;
+    }
+    function contentlistView(method, url, data){
+      var index = getContentlistId(url);
+      return [200, contentlist.results[index]];
+    }
+    $httpBackend.when('GET', '/cms/api/v1/contentlist/').respond(contentlist);
+    $httpBackend.when('OPTIONS', '/cms/api/v1/contentlist/').respond(contentlist);
+
+    $httpBackend.when('GET', contentlistRegex).respond(contentlistView);
+    $httpBackend.when('OPTIONS', contentlistRegex).respond(contentlistView);
+    $httpBackend.when('PUT', contentlistRegex).respond(contentlistView);
+
 
     // adding these into mockApiData for now. they'll be generated later.
     mockApiData['contentlist.list'] = contentlist;
@@ -167,6 +181,7 @@ angular.module('bulbsCmsApp.mockApi').run([
       last_name: 'Zweibel'
     });
 
+    $httpBackend.when('OPTIONS', '/ads/targeting/').respond('');
 
     // for anything that uses BC_ADMIN_URL
     $httpBackend.when('GET', /^http:\/\/localimages\.avclub\.com\/avclub.*/).respond('');
