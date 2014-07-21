@@ -3,7 +3,7 @@
 angular.module('bulbsCmsApp')
   .directive('hideIfForbidden', function ($http) {
     function hideElement(element){
-      element.css('visibility', 'hidden');
+      element.addClass('hidden');
     }
 
     return {

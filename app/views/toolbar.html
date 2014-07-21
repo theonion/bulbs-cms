@@ -6,7 +6,7 @@
     <span class="icon-bar"></span>
     <span class="icon-bar"></span>
   </button>
-  <a class="navbar-save btn btn-success navbar-btn visible-xs-inline pull-right" ng-class="{'btn-clean': !articleIsDirty}" href="" ng-click="saveArticle();">
+  <a class="navbar-save btn btn-success navbar-btn visible-xs-inline pull-right" ng-class="{'btn-clean': !articleIsDirty}" href="" ng-click="saveArticle();" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/">
       <i class="glyphicon glyphicon-floppy-disk"></i> Save</a>
 </div>
 
@@ -36,16 +36,16 @@
   </ul>
     <ul class="nav navbar-nav navbar-right">
 
-      <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'unpublished'">
+      <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'unpublished'" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/publish/">
         <a href="" ng-click="saveArticle().then(pubTimeModal);">
           <i class="glyphicon glyphicon-globe"></i> Publish...</a></li>
 
-      <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'published'">
+      <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'published'" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/publish/">
         <a href="" class="changeable" ng-click="saveArticle().then(pubTimeModal);">
           <i class="glyphicon glyphicon-calendar"></i>
           <span>Published: {{article.published|tzDate:"M/d/yy '@' h:mm a" }}</span></a></li>
 
-      <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'scheduled'">
+      <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'scheduled'" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/publish/">
         <a href="" class="changeable" ng-click="saveArticle().then(pubTimeModal);">
           <i class="glyphicon glyphicon-calendar"></i>
           <span>Scheduled: {{article.published|tzDate:"M/d/yy '@' h:mm a" }}</span></a></li>
@@ -54,7 +54,7 @@
         <a target="_blank" href="/r/{{article.id}}">
           <i class="glyphicon glyphicon-share-alt"></i> Preview</a></li>
 
-      <li class="hidden-xs">
+      <li class="hidden-xs" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/">
         <button id="save-article-btn" class="navbar-save btn btn-success btn-sm navbar-btn" ng-class="{'btn-clean': !articleIsDirty}" href="" ng-click="saveArticle();">
           <i class="glyphicon glyphicon-floppy-disk"></i> Save</button></li>
 
