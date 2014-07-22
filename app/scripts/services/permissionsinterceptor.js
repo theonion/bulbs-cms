@@ -25,8 +25,8 @@ angular.module('bulbsCmsApp').factory('PermissionsInterceptor', function ($q, $i
                 });
               }
             }
-            return $q.reject(rejection);
           });
+          return $q.reject(rejection);
         }
       }
     }
