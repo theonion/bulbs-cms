@@ -400,7 +400,7 @@ angular.module('bulbsCmsApp.mockApi').run([
       description: "",
       subhead: "",
       indexed: true,
-      body: "<p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p>",
+      body: "<p>This is a body</p><div data-type=\"image\" class=\"onion-image image inline crop-original size-medium\" data-image-id=\"1488\" data-size=\"medium\" data-crop=\"original\" data-format=\"jpg\" data-alt=\"\"><div><br></div><span class=\"caption\">Via Weadiamedia.com</span></div><p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p>",
       client_pixel: null,
       sponsor_name: null
     }, {

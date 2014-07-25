@@ -26,15 +26,22 @@
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" />
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css" />
-    <link rel="stylesheet" href="styles/editor/editor-base.css" />
-    <link rel="stylesheet" href="styles/editor/image.css" />
+
+    <link rel="stylesheet" href="bower_components/onion-editor/build/editor-main.css" />
+
     <link rel="stylesheet" href="styles/editor/style.css" />
+    
+    <!-- FEATURE IMAGE STUFF -->
     <link rel="stylesheet" href="styles/editor/toolbar.css" />
+
     <link rel="stylesheet" href="styles/version-browser.css" />
     <link rel="stylesheet" href="styles/last-modified-preview.css" />
     <!-- endbuild -->
 
-    <script type="text/javascript" src="image.js"></script>
+    <!-- don't bundle this -->
+    <link rel="stylesheet" href="bower_components/onion-editor/build/inline.css" />
+
+
     <script type="text/javascript">
         var BC_ADMIN_URL = 'http://clickholeimg.local';
         var IMAGE_URL = 'http://clickholeimg.local/{{id}}/{{crop}}/{{width}}.{{format}}';
@@ -47,7 +54,6 @@
             return;
         }
     </script>
-
   </head>
   <body ng-app="bulbsCmsAppDev">
     <!--[if lt IE 7]>
@@ -96,6 +102,8 @@
     <!-- endbuild -->
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="cms-image.js"></script>
+
     <script src="scripts/libraries/editor-cms-bridge.js"></script>
 
     <script src="scripts/app.js"></script>
