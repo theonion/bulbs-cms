@@ -1,3 +1,190 @@
+(function( w ){
+    /* We can request an image at every possible width, but let's limit it to a reasonable number
+       We can set these so they correspond to our more common sizes.
+    */
+    function tmpl(text, dict) {
+        for (var k in dict) {
+            text = text.replace("{{" + k + "}}", dict[k]);
+        }
+        return text;
+    }
+    w.picturefill = function(element) {
+        var ps;
+        if (element && element.getAttribute('data-type') === 'image') {
+          ps = [element];
+        }
+        else { 
+          if (typeof element === "undefined") {
+            element = w.document;
+          }
+          ps = element.getElementsByTagName( "div" );
+        }
+
+        var imageData = [];
+        for( var i = 0, il = ps.length; i < il; i++ ){
+            var el = ps[i];
+            if(el.getAttribute( "data-type" ) !== "image" ){
+                continue;
+            }
+            var div = el.getElementsByTagName( "div" )[0];
+            if( el.getAttribute( "data-image-id" ) !== null ){
+                var id = el.getAttribute( "data-image-id" ),
+                    crop = el.getAttribute( "data-crop" );
+                var _w = div.offsetWidth,
+                    _h = div.offsetHeight;
+
+                if (!crop || crop === "" || crop === "auto") {
+                    crop = computeAspectRatio(_w, _h);
+                }
+                if (el.getAttribute("data-format")) {
+                    format = el.getAttribute("data-format");
+                }
+                else {
+                    format = "jpg";
+                }
+
+                var element = div;
+                if (id) {
+                    $(".image-css-" + id).remove();
+                    $.ajax({
+                        url: w.BC_ADMIN_URL + '/api/' + id,
+                        headers: {
+                            'X-Betty-Api-Key': w.BC_API_KEY,
+                            'Content-Type': undefined
+                        },
+                        success: $.proxy(function (res) {
+                            var imageData = res;
+                            if (this.crop === "original") {
+                                createStyle('.image[data-image-id="' + this.id + '"]>div', {
+                                        'padding-bottom':  ((res.height / res.width) * 100) + '%'
+                                }, "image-css-" + this.id);
+
+                                var cropDetails = {x0:0, x1:res.width, y0:0, y1:res.height};
+                            }
+                            else {
+                                var cropDetails = imageData.selections[this.crop]
+                            }
+                            
+                            computeStyle(this.element, imageData, cropDetails)
+                        }, {element: element, id: id, crop:crop}),
+                        error: $.proxy(function() {
+                            if (this.crop === "original") {
+                                //default to 16x9
+                                createStyle('.image[data-image-id="' + this.id + '"]>div', {
+                                    'padding-bottom':  '56.25%', // default to 16x9 for errors
+                                    'background-color':'rgba(200, 0,0, .5)'
+                                }, "image-css-" + this.id);
+                            }
+                        }, {id: id, crop:crop})
+                    });
+                }
+            }
+        }
+    };
+
+    function computeStyle(element, image, selection) {
+        var selector = '.image[data-image-id="' + image.id + '"]>div';
+        var elementWidth = $(selector).width();
+
+        var scale, styles,
+        elementHeight = (image.height / image.width) * elementWidth,
+        s_width = selection.x1 - selection.x0,
+        s_height = selection.y1 - selection.y0,
+        tmp_selection = selection;
+        
+
+        if (!s_width || !s_height) {
+          /*
+              If we have bogus selections, make
+              the crop equal to the whole image
+          */
+          s_width = elementWidth;
+          s_height = elementHeight;
+          tmp_selection = {
+            'x0': 0,
+            'y0': 0,
+            'x1': s_width,
+            'y1': s_height
+          };
+        }
+
+        var imageUrl = w.BC_ADMIN_URL + '/' + image.id + '/original/1200.jpg';
+        scale = elementWidth / s_width;
+
+        var rules = {
+            'background-image': 'url(' + imageUrl +')',
+            'background-size': scaleNumber(image.width, scale) + 'px',
+            'background-position':
+              '-' + scaleNumber(tmp_selection.x0, scale) + 'px ' +
+              '-' + scaleNumber(tmp_selection.y0, scale) + 'px',
+            'background-repeat': 'no-repeat'
+          }
+        createStyle(selector, rules,  "image-css-" + image.id);
+    }
+
+    function createStyle(selector, rules, classname) {
+        var styleNode = document.createElement("style");
+        styleNode.type = "text/css";
+        styleNode.className = classname;
+        var css = "";
+        
+        var temp = "" + selector + '{';
+        for (var rule in rules) {
+            temp += rule + ':' + rules[rule] + ';';
+        }
+        temp += '}';
+        css += temp;
+    
+        if (styleNode.styleSheet) {
+            styleNode.styleSheet.cssText = css;
+        } else {
+            styleNode.appendChild(document.createTextNode(css));
+        }
+        $(document).find("head").append(styleNode);
+    }
+
+
+    function scaleNumber(num, by_scale) {
+      return Math.floor(num * by_scale);
+    };
+
+
+    function computeAspectRatio(_w, _h) {
+        if (_w !== 0 && _h !== 0) {
+            var aspectRatio = Math.ceil(_w/_h * 10);
+            //smooth out rounding issues.
+            switch (aspectRatio) {
+                case 30:
+                case 31:
+                    crop = "3x1";
+                    break;
+                case 20:
+                    crop = "2x1";
+                    break;
+                case 14:
+                    crop = "4x3";
+                    break;
+                case 18:
+                    crop = "16x9";
+                    break;
+                case 8:
+                    crop = "3x4";
+                    break;
+                case 10:
+                    crop = "1x1";
+                    break;
+                default:
+                    crop = "original";
+            }
+            return crop;
+        }
+        else {
+            return "16x9"
+        }
+    }
+
+
+}( this ));;;
 /*
 
 Image
@@ -6,252 +193,6 @@ This bridges the embed module that the editor exposes & our custom image impleme
 
 */
 
-(function(global) {
-   'use strict';
-    var OnionCmsUI = OnionCmsUI  || function(editor, options) {
-        var toolbarPosition;
-        function init() {
-            toolbarPosition = $("#content-body .document-tools").offset().top + 12;
-            $(window).scroll(function() {
-
-                if (window.scrollY > toolbarPosition) {
-                    $("#content-body .document-tools").css("position", "fixed")
-                }
-                else {
-                    $("#content-body .document-tools").css("position", "absolute")
-                }
-            });
-
-            key('⌘+s, ctrl+s', function(e) { e.preventDefault(); }); //SAVE })
-        }
-        function destroy() {
-            key.unbind('⌘+s, ctrl+s');
-        }
-        editor.on("init", init)
-    }
-    global.EditorModules.push(OnionCmsUI);
-})(this);
-
-
-
-
-
-(function(global) {
-    'use strict';
-    var OnionImage = OnionImage || function(editor, instanceOptions) {
-
-        editor.on("inline:edit:image", editImage);
-        editor.on("inline:insert:image", uploadImage);
-
-        function uploadImage(options) {
-            instanceOptions.uploadImage().then(
-                function(success){
-                    var format;
-                    if (success.name.toUpperCase().indexOf("GIF") !== -1) {
-                        format = "gif";
-                    }
-                    else {
-                        format = "jpg";
-                    }
-                    options.onSuccess(options.block, {image_id: success.id, format: format});
-                    window.picturefill();
-                },
-                function(error){
-                    console.log(error);
-                },
-                function(progress){
-                    console.log(progress);
-                }
-            );
-        }
-
-        var activeElement,
-            current_id;
-
-        function editImage(options) {
-
-            current_id = options.element.getAttribute('data-image-id');
-
-            instanceOptions.editImage({id: current_id, caption: '', alt: ''}).then(
-                function (image) {
-
-                    if (image.id === null) {
-                        $(options.element).remove();
-                    } else {
-                        $(options.element).attr('data-image-id', image.id);
-                        $(options.element).attr('data-alt', image.alt);
-                        $(".caption", options.element).html(image.caption);
-                    }
-                    window.picturefill();
-                }
-            );
-
-        }
-    }
-    global.EditorModules.push(OnionImage);
-})(this);
-
-(function(global) {
-    'use strict';
-    var OnionVideo = OnionVideo || function(editor, instanceOptions) {
-
-        editor.on("inline:edit:onion-video", editVideo);
-        editor.on("inline:insert:onion-video", uploadVideo);
-
-        editor.on("init", cleanup);
-
-        function cleanup() {
-            // hack alert: let's transform old embeds here. Not ideal, but whatever.
-            var old_embeds = $("[data-type=embed] iframe[src^='/videos/embed']").parents("div.embed");
-            for (var i = 0; i < old_embeds.length; i++) {
-                var id = $("iframe", old_embeds[i]).attr("src").split("=")[1]
-                $(old_embeds[i]).attr("data-videoid", id);
-            }
-            old_embeds
-                .attr("data-type", "onion-video")
-                .addClass("onion-video")
-                .attr("data-size", "big")
-                .attr("data-crop", "16x9")
-                .removeClass("size-")
-                .removeClass("crop-")
-                .addClass("crop-16x9")
-                .addClass("size-big");
-        }
-
-        function uploadVideo(options) {
-
-            var activeElement = options.onSuccess(options.block, {videoid:"NONE"});
-            return instanceOptions.uploadVideo().then(
-                function(videoObject){
-                    setVideoID(videoObject.attrs.id);
-                }, function(error){
-                    onError(error);
-                }, function(progress){
-                    onProgress(progress);
-                }
-            );
-
-            function onProgress() {
-                //update an indicator
-            }
-
-            function setVideoID(id) {
-                $("iframe", activeElement).attr("src", instanceOptions.videoEmbedUrl + id);
-                $(activeElement).attr('data-videoid', id)
-            }
-
-            function onError() {
-                //show msg, allow user to trigger upload again
-            }
-
-            function onCancel() {
-                //remove placeholder. Call it a day.
-            }
-
-        }
-
-        function editVideo(el) {
-            var id = $(el.element).data('videoid');
-            window.editVideo(id);
-        }
-    }
-    global.EditorModules.push(OnionVideo);
-})(this);
-
-(function(global) {
-    'use strict';
-    var ArticleList = ArticleList || function(editor, options) {
-        //editor.on("inline:edit:articlelist", editImage);
-        editor.on("inline:insert:articlelist", insert);
-        function insert(options) {
-            options.onSuccess(options.block, {})
-        }
-    }
-    global.EditorModules.push(ArticleList);
-})(this);
-
-
-
-(function(global) {
-    'use strict';
-    var Embed = Embed || function(editor, options) {
-        var self = this;
-        editor.on("inline:edit:embed", edit);
-        editor.on("inline:insert:embed", insert);
-
-        $("#embed-modal").on("hide.bs.modal", function() {
-            $("#set-embed-button").unbind("click");
-            $(".embed-error").hide();
-        });
-
-
-        function edit(opts) {
-            //populate modal contents
-
-            $("#embed-modal .embed-body").val(unescape($(opts.element).attr("data-body")));
-            $("#embed-modal .embed-source").val($(opts.element).attr("data-source"));
-            $("#embed-modal .embed-caption").val($(".caption", opts.element).text());
-
-
-            $("#embed-modal").modal("show");
-            $("#set-embed-button").click(function () {
-                var embed_body = $("#embed-modal .embed-body").val();
-                if (embed_body.trim() === "") {
-                     $(".embed-error").show();
-                }
-                else {
-                    $(".embed-error").hide();
-                    opts.onChange(opts.element,
-                        {body: embed_body,
-                        caption: $("#embed-modal .embed-caption").val(),
-                        source: $("#embed-modal .embed-source").val(),
-                        escapedbody: escape(embed_body)
-                    })
-                    $("#embed-modal").modal("hide");
-
-                }
-            });
-            $("#embed-modal").modal("show");
-        }
-
-        function insert(opts) {
-            $("#embed-modal input, #embed-modal textarea").val("")
-            $("#embed-modal").modal("show");
-
-            $("#set-embed-button").click(function () {
-                var embed_body = $("#embed-modal .embed-body").val();
-
-                if (embed_body.trim() === "") {
-                     $(".embed-error").show();
-                }
-                else {
-                    $(".embed-error").hide();
-                    opts.onSuccess(opts.block,
-                        {body: embed_body,
-                        caption: $("#embed-modal .embed-caption").val(),
-                        source: $("#embed-modal .embed-source").val(),
-                        escapedbody: escape(embed_body)
-                    })
-                    $("#embed-modal").modal("hide");
-                }
-            });
-        }
-    }
-    global.EditorModules.push(Embed);
-})(this);
-
-
-(function(global) {
-    'use strict';
-    var HR = HR || function(editor, options) {
-        //editor.on("inline:edit:articlelist", editImage);
-        editor.on("inline:insert:hr", insert);
-        function insert(options) {
-            $(options.block).before('<hr>');
-        }
-    }
-    global.EditorModules.push(HR);
-})(this);
 
 /* prevents backspace from accidentally triggering a back event */
 
@@ -2904,77 +2845,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .provider('EditorOptions', function () {
-    var _options = {
-      "image": {
-        "size": ["big", "medium", "small", "tiny"],
-        "crop": ["original", "16x9", "1x1", "3x1"],
-        "defaults": {
-          "size": "big",
-          "crop": "original",
-          "image_id": 0,
-          "caption": "",
-          "url": "",
-          "format": "jpg"
-        },
-        "template":
-          "<div data-type=\"image\" class=\"onion-image image inline size-{{size}} crop-{{crop}}\" data-image-id=\"{{image_id}}\" data-size=\"{{size}}\" data-crop=\"{{crop}}\" data-format=\"{{format}}\"><div></div><span class=\"caption\">{{caption}}</span></div>"
-      },
-      "onion-video": {
-        "size": ["big"],
-        "crop": ["16x9"],
-        "defaults": {
-          "size": "big",
-          "crop": "16x9"
-        },
-        "template":
-          "<div data-type=\"onion-video\" class=\"onion-video video inline size-{{size}} crop-{{crop}}\" data-video-id=\"{{video_id}}\" data-size=\"{{size}}\" data-crop=\"{{crop}}\"><div><iframe src=\"/videos/embed?id={{video_id}}\"></iframe></div></div>"
-      },
-      "embed": {
-        "size": ["original", "big", "small"],
-        "crop": ["16x9", "4x3", "auto"],
-        "defaults": {
-          "size":"original",
-          "crop": "auto",
-          "body": ""
-        },
-        "template":
-          "<div data-type=\"embed\" data-crop=\"{{crop}}\" class=\"inline embed size-{{size}} crop-{{crop}}\" data-source=\"{{source}}\" data-body=\"{{escapedbody}}\"><div>{{body}}</div><span class=\"caption\">{{caption}}</span></div>"
-      },
-      "youtube": {
-        "size": ["big"],
-        "crop": ["16x9", "4x3"],
-        "defaults": {
-          "size": "big",
-          "crop": "16x9",
-          "youtube_id": "foMQX9ZExsE",
-          "caption": ""
-        },
-        "template":
-        "<div data-type=\"youtube\" class=\"youtube inline size-{{size}} crop-{{crop}}\" data-youtube-id=\"{{youtube_id}}\" data-size=\"{{size}}\" data-crop=\"{{crop}}\"><div><img src=\"http://img.youtube.com/vi/{{youtube_id}}/hqdefault.jpg\"></div<span class=\"caption\">{{caption}}</span></div>"
-      },
-      "hr": {
-        "template":  "<hr/>"
-      }
-    };
-
-    this.setOptions = function(options) {
-      _options = options;
-    };
-
-    this.$get = function () {
-      return {
-        getOptions: function () {
-          return _options;
-        }
-      };
-    };
-
-  })
-  .directive('onionEditor', function (routes, $, Zencoder, BettyCropper, openImageCropModal, EditorOptions, VIDEO_EMBED_URL) {
-
-    /* Gab configuration out of .  */
-
+  .directive('onionEditor', function (routes, $, Zencoder, BettyCropper, openImageCropModal, VIDEO_EMBED_URL) {
     return {
       require: 'ngModel',
       replace: true,
@@ -2987,31 +2858,34 @@ angular.module('bulbsCmsApp')
           return;
         }
 
+        var formatting;
+        if (attrs.formatting) {
+          formatting = attrs.formatting.split(",");
+        }
+
         if (attrs.role == "multiline") {
-          var defaultValue = "<p><br></p>";
           var options = {
             /* global options */
-            element: element[0],
-            onContentChange: read,
-            toolbar: {
-              linkTools: $("#link-tools-template").html()
+            multiline: true,
+            formatting: formatting || ['link', 'bold','italic','blockquote','heading','list'],
+            placeholder: {
+              text: attrs.placeholder ||  "<p>Write here</p>",
+              container: $(".editorPlaceholder", element[0])[0],
             },
-            undoManager: new UndoManager(),
-            placeholder: attrs.placeholder ||  "Write here",
-            editSource: true,
-            // NOT SURE WHAT TO DO ABOUT THIS....
-            avlink: {
-              thingsUrl: "/cms/api/v1/things/",
-              contentUrl:"/cms/api/v1/content/",
-              host: "avclub.com"
+            link: {
+              domain: "avclub.com"
             },
             statsContainer: ".wordcount",
-            /* This probably deserves its own file */
-            inline: EditorOptions.getOptions(),
-            uploadImage: BettyCropper.upload,
-            editImage: openImageCropModal,
-            uploadVideo: Zencoder.onVideoFileUpload,
-            videoEmbedUrl: VIDEO_EMBED_URL
+            inlineObjects: attrs.inlineObjects,
+            image: {
+              insertDialog: BettyCropper.upload,
+              editDialog: openImageCropModal,
+            },
+            video: {
+              insertDialog: Zencoder.onVideoFileUpload,
+              editDialog: function() {},
+              videoEmbedUrl: VIDEO_EMBED_URL
+            }
           }
         }
         else {
@@ -3019,37 +2893,39 @@ angular.module('bulbsCmsApp')
           var defaultValue = "";
           var options = {
             /* global options */
-            element: element[0],
-            onContentChange: read,
-            placeholder: attrs.placeholder ||  "Type your Headline",
-            allowNewline: false,
-            allowNbsp: false,
-            characterLimit: 200,
-            sanitize: {
-              elements: ['i', 'em'],
-              remove_contents: ['script', 'style', ],
-            }
+            multiline: false,
+            placeholder: {
+              text: attrs.placeholder ||  "Write here",
+              container: $(".editorPlaceholder", element[0])[0],
+            },
+            formatting: formatting || []
           }
         }
 
-        var editor = new Editor(options);
+        var editor = new OnionEditor($(".editor", element[0])[0], options);
 
         ngModel.$render = function() {
           editor.setContent(ngModel.$viewValue || defaultValue);
+          // register on change here, after the initial load so angular doesn't get mad...
+          setTimeout(function() {
+            editor.setChangeHandler(read)
+          });
         }
+        
+
         // Write data to the model
         function read() {
           scope.$apply(function(){
             var html = editor.getContent();
-            if (html.trim() === defaultValue) {
-              html = "";
-            }
             ngModel.$setViewValue(html);
           });
         }
 
         scope.$watch(ngModel, function() {
           editor.setContent(ngModel.$viewValue || defaultValue);
+          if (window.picturefill) {
+            window.picturefill(element[0]);
+          }
         });
       }
     };
