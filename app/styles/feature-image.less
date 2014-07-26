@@ -1,4 +1,15 @@
-.add-feature-image button,.image-edit-overlay button {
+.image-edit-container { position: relative;
+
+    img { max-width: 100%; }
+
+    &:hover .image-edit-overlay { display: block }
+
+    & + div { margin-top: 10px; } }
+
+.image-edit-overlay { position: absolute; top: 0px; left: 0px; display: none; }
+
+
+.buttonStyles {
     border:1px transparent solid;
     color: #4A4A4A;
     background-clip: padding-box;
@@ -15,7 +26,8 @@
     width: 100%;
     text-align:left;
     padding:4px 8px;
-    height:auto; }
+    height:auto; 
+}
 
 .image-edit-overlay {
     position:absolute;
@@ -24,6 +36,7 @@
     z-index: 100;
 
     button {
+        .buttonStyles;
         display:inline-block;
         width:auto; }
 
@@ -71,6 +84,10 @@
     width: 400px;
     position:relative;
     line-height:48px;
+
+    button {
+        .buttonStyles
+    }
 
     >span {
         display:none;
