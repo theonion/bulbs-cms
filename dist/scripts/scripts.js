@@ -2873,7 +2873,9 @@ angular.module('bulbsCmsApp')
               container: $(".editorPlaceholder", element[0])[0],
             },
             link: {
-              domain: "avclub.com"
+              domain: attrs.linkDomain || false,
+              // Sean, you can figure out a nicer way to handle the search handler.
+              searchHandler: window[attrs.linkSearchHandler] || false
             },
             statsContainer: ".wordcount",
             inlineObjects: attrs.inlineObjects,

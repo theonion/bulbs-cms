@@ -235,6 +235,12 @@
         });
 
         angular.module('bulbsCmsApp').constant('navbar_options', {});
+
+
+        window.dummySearchHandler = function(term, resultsElement) {
+            resultsElement.html("<b>Searching for: " + term + "</b><br><a href='/fart/'>Fart</a><br><a href='/butt/'>Butt</a><br><a href='/dumb/'>Dumb</a><br>");
+          }
+
     </script>
 
     <script src="keys.js"></script>
