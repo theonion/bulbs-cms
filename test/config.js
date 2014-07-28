@@ -26,7 +26,7 @@ angular.module('bulbsCmsApp').constant('TIMEZONE_OFFSET', '-0500');
 angular.module('bulbsCmsApp').constant('TIMEZONE_LABEL', 'CST');
 angular.module('bulbsCmsApp').constant('AUTO_ADD_AUTHOR', false);
 angular.module('bulbsCmsApp').constant('DEFAULT_IMAGE_WIDTH', 1200);
-angular.module('bulbsCmsApp').constant('VIDEO_EMBED_URL', 'http://www.avclub.com/videos/embed?id=')
+angular.module('bulbsCmsApp').constant('VIDEO_EMBED_URL', 'http://www.avclub.com/video/embed?id=')
 
 angular.module('bulbsCmsApp').constant('tar_options', {
   namespace: 'Woodruff',
