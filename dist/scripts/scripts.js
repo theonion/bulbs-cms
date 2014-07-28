@@ -2363,7 +2363,7 @@ angular.module('bulbsCmsApp').directive(
         console.log(scope.video_id);
         scope.$watch('article.video', function () {
           if (scope.article.video) {
-            scope.embedUrl = $sce.trustAsUrl('/videos/embed?id=' + scope.article.video);
+            scope.embedUrl = $sce.trustAsUrl('/video/embed?id=' + scope.article.video);
             $http({
               method: 'GET',
               url: '/videos/api/video/' + scope.article.video + '/'
@@ -2867,7 +2867,7 @@ angular.module('bulbsCmsApp')
           var options = {
             /* global options */
             multiline: true,
-            formatting: formatting || ['link', 'bold','italic','blockquote','heading','list'],
+            formatting: formatting || ['link', 'bold','italic','blockquote','heading','list', 'strike'],
             placeholder: {
               text: attrs.placeholder ||  "<p>Write here</p>",
               container: $(".editorPlaceholder", element[0])[0],
