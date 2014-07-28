@@ -14,7 +14,7 @@ angular.module('bulbsCmsApp').directive(
         console.log(scope.video_id);
         scope.$watch('article.video', function () {
           if (scope.article.video) {
-            scope.embedUrl = $sce.trustAsUrl('/videos/embed?id=' + scope.article.video);
+            scope.embedUrl = $sce.trustAsUrl('/video/embed?id=' + scope.article.video);
             $http({
               method: 'GET',
               url: '/videos/api/video/' + scope.article.video + '/'
