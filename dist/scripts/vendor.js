@@ -53290,7 +53290,7 @@ define('scribe-plugin-link-ui',[],function () {
               .attr('href', linkVal)
               .removeClass('link-edit');
           }
-        });
+        }, false);
         $('body, .link-tools .close').unbind('click');
         $linkTools.hide();
       }
@@ -57226,8 +57226,14 @@ define('onion-editor',[
 
       The scroll stuff is a consequence of this. 
     */
-    scribe.updateContents = function(fn) {
-      //scribe._skipFormatters = true;
+    scribe.updateContents = function(fn, skipFormatters) {
+      // Default is to skipFormatters. Only place this needs to be set to false is when updating links. 
+      // We want formatters to run on links. Embeds & other shit seem to get sanitized 
+      // despite there being safegaurds for that.
+      if (typeof skipFormatters == "undefined") {
+        skipFormatters = true;
+      }
+      scribe._skipFormatters = skipFormatters;
       var scrollY = window.scrollY;
       setTimeout(function() {        
         scribe.el.focus();
