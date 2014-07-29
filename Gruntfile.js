@@ -394,7 +394,7 @@ module.exports = function (grunt) {
     },
     concat: {
       options: {
-        separator: ';' + grunt.util.linefeed,
+        separator: grunt.util.linefeed,
       }
     },
 

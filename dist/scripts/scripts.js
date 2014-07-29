@@ -184,7 +184,7 @@
     }
 
 
-}( this ));;;
+}( this ));;
 /*
 
 Image
@@ -215,7 +215,7 @@ $(document).unbind('keydown').bind('keydown', function (event) {
         event.preventDefault();
     }
 });
-;
+
 'use strict';
 
 // ****** External Libraries ****** \\
@@ -306,7 +306,7 @@ angular.module('bulbsCmsApp', [
   $http.defaults.headers.delete = deleteHeaders;
 });
 
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -429,7 +429,7 @@ angular.module('bulbsCmsApp')
       };
     }
   ]);
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -686,7 +686,7 @@ angular.module('bulbsCmsApp')
     })();
 
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -853,7 +853,7 @@ angular.module('bulbsCmsApp')
 
 
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -932,7 +932,7 @@ angular.module('bulbsCmsApp')
     }
   }
 );
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -1038,7 +1038,7 @@ angular.module('bulbsCmsApp')
     };
 
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -1079,7 +1079,7 @@ angular.module('bulbsCmsApp')
         });
     }
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -1205,7 +1205,7 @@ angular.module('bulbsCmsApp')
     }
 
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -1486,7 +1486,7 @@ angular.module('bulbsCmsApp')
     $scope.onInit();
 
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -1501,7 +1501,7 @@ angular.module('bulbsCmsApp')
     }
 
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -1534,7 +1534,7 @@ angular.module('bulbsCmsApp')
     };
 
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -1553,7 +1553,7 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -1570,7 +1570,7 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -1706,7 +1706,7 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -1778,7 +1778,7 @@ angular.module('bulbsCmsApp')
       }
     }
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -1933,7 +1933,7 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -1968,7 +1968,7 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -2090,7 +2090,7 @@ angular.module('bulbsCmsApp')
 
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -2120,7 +2120,7 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -2305,7 +2305,7 @@ angular.module('bulbsCmsApp')
 
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -2346,7 +2346,7 @@ angular.module('bulbsCmsApp')
 
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp').directive(
@@ -2509,7 +2509,7 @@ angular.module('bulbsCmsApp').directive(
 
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -2524,7 +2524,7 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -2643,7 +2643,7 @@ angular.module('bulbsCmsApp')
 
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -2666,7 +2666,7 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -2686,7 +2686,7 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -2766,7 +2766,7 @@ angular.module('bulbsCmsApp')
       }
     }
   })
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -2823,7 +2823,7 @@ angular.module('bulbsCmsApp')
 
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -2841,7 +2841,7 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -2931,7 +2931,7 @@ angular.module('bulbsCmsApp')
         });
       }
     };
-  });;
+  });
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -2961,7 +2961,7 @@ angular.module('bulbsCmsApp')
       return input;
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -2978,7 +2978,7 @@ angular.module('bulbsCmsApp')
       return input;
     };
   });
-;
+
 angular.module('BettyCropper', [])
   .service('BettyCropper', function BettyCropper($http, $interpolate, $q, IMAGE_SERVER_URL, BC_API_KEY) {
     var fileInputId = '#bulbs-cms-hidden-image-file-input'
@@ -3103,7 +3103,7 @@ angular.module('BettyCropper', [])
     };
 
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3137,7 +3137,7 @@ angular.module('bulbsCmsApp')
       }).catch(errorCbk);
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3157,7 +3157,7 @@ angular.module('bulbsCmsApp')
 
     return openImageCropModal;
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3183,7 +3183,7 @@ angular.module('bulbsCmsApp')
   })
   .constant('bulbsApiConfig', {
     requestSuffix: '/'
-  });;
+  });
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3199,7 +3199,7 @@ angular.module('bulbsCmsApp')
 
     this.getItems();
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3211,7 +3211,7 @@ angular.module('bulbsCmsApp')
   .constant('contentApiConfig', {
     baseUrl: '/cms/api/v1'
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3223,7 +3223,7 @@ angular.module('bulbsCmsApp')
   .constant('reviewApiConfig', {
     baseUrl: '/reviews/api/v1',
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3235,7 +3235,7 @@ angular.module('bulbsCmsApp')
   .constant('promotionApiConfig', {
     baseUrl: '/promotions/api'
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3247,7 +3247,7 @@ angular.module('bulbsCmsApp')
   .constant('adApiConfig', {
     baseUrl: '/ads'
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3271,7 +3271,7 @@ angular.module('bulbsCmsApp')
         });
       }
     }
-  });;
+  });
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3288,7 +3288,7 @@ angular.module('bulbsCmsApp')
       return formattedDate;
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3308,7 +3308,7 @@ angular.module('bulbsCmsApp')
     });
 
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3341,7 +3341,7 @@ angular.module('bulbsCmsApp')
       $modalInstance.close();
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3403,7 +3403,7 @@ angular.module('bulbsCmsApp')
     };
 
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3429,7 +3429,7 @@ angular.module('bulbsCmsApp')
     }
 
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3445,7 +3445,7 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3517,7 +3517,7 @@ angular.module('bulbsCmsApp')
 
       }
     };
-  });;
+  });
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3687,7 +3687,7 @@ angular.module('bulbsCmsApp')
     this.encodingVideos = _encodingVideos;
 
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3733,7 +3733,7 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3788,7 +3788,7 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3835,7 +3835,7 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3887,7 +3887,7 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3900,7 +3900,7 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3945,7 +3945,7 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3966,7 +3966,7 @@ angular.module('bulbsCmsApp')
 
 
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -4036,7 +4036,7 @@ angular.module('bulbsCmsApp')
       return s.substr(s.length-4);
     }
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -4093,7 +4093,7 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -4115,7 +4115,7 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -4141,14 +4141,14 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
   .controller('ForbiddenmodalCtrl', function ($scope, detail) {
     $scope.detail = detail;
   });
-;
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -4177,7 +4177,7 @@ angular.module('bulbsCmsApp')
       }
     };
   });
-;
+
 angular.module('bulbsCmsApp').factory('BugReportInterceptor', function ($q, $window, PNotify) {
     return {
       responseError: function (rejection) {
@@ -4216,7 +4216,7 @@ angular.module('bulbsCmsApp').factory('BugReportInterceptor', function ($q, $win
         return $q.reject(rejection);
       }
     };
-  });;
+  });
   /* helpful SO question on injecting $modal into interceptor and doing intercept pass-through
     http://stackoverflow.com/questions/14681654/i-need-two-instances-of-angularjs-http-service-or-what
   */
