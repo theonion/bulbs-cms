@@ -66,8 +66,11 @@ module.exports = function(config) {
     browsers: ['Chrome'],
 
     preprocessors: {
-      'app/views/**/*.html': 'ng-html2js'
+      'app/views/**/*.html': 'ng-html2js',
+      'app/scripts/**/*.js': 'coverage'
     },
+
+    reporters: ['progress', 'coverage'],
 
     ngHtml2JsPreprocessor: {
       // strip this from the file path
