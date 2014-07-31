@@ -10,7 +10,7 @@ angular.module('bulbsCmsApp')
       link: function postLink(scope, element, attrs) {
         scope.href = attrs.href;
         scope.label = attrs.label;
-        if($location.path().indexOf(scope.href) === 0){
+        if ($location.path().indexOf(scope.href) === 0) {
           element.addClass('active');
         }
       }

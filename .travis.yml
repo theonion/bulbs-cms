@@ -11,21 +11,5 @@ addons:
   sauce_connect: true
 env:
   global:
-  - secure: SMuB6bfiSZjhl/IWbborF+Zy2RVK1gHY6/Ps8bDGmETcK3La++KMneDK5aeJLCY4Hx3VuhAb5Da44M1tYT0oa8kcXaPguDULBIJEY/lTZWZZfq/kTAws/qBATcBe5LdYjpSSRUwsuPNzwgPbG+Ci6PilPd60oFtHir8uJ5FFLjg=
-  - secure: j38MkiQhTQPuA9fgfygYR9DOUmIAqjbOk+qIT5DoHhFYsYZrJwLMrQaF66RwzWmGEwtHdkXA6BI7tY/GhwnO46m6JAvhPT3ZNRGzd0d44VWE7FyhYvw0alZeY1MYM7mUZNsv7bET7/tvinYyfVNQiMvgRLk4a4kZL0e350TlHbQ=
-before_deploy:
-  - ./node_modules/.bin/grunt build
-  - mv dist bulbs-cms
-  - mkdir artifacts
-  - zip -r ./artifacts/bulbs-cms-$TRAVIS_BRANCH.zip ./bulbs-cms/ -x "*bower_components*" -x "robots.txt" -x "index.html" -x "404.html" -x "favicon.ico"
-deploy:
-  provider: s3
-  access_key_id: AKIAI4JLSCX5OZGZA6GQ
-  secret_access_key:
-    secure: L4XBzkzh0cNq5xNHOYG8/Ej3nYX5qMz/AN4HNcono+ByGbiDT0VfFJjBfVdyGDBXdnYsVKIwwfFQHzv8W9QWPmyLi/GWv2dsxH3zSuoccAt8XlM4HxTNTr250HA0xDiU90h+6k66ZeHYD+d6Tunsyd3SAZul4CvxLiiFavMsfgM=
-  bucket: onionwebtech
-  local-dir: artifacts
-  skip_cleanup: true
-  upload-dir: bower
-  on:
-    tags: true
+  - secure: bkbxH+K4szuz8OAwzRWbG+iO96y35GnkYJ7K/a6QryucuLj5+PPTqk6YxxhpXVm1cR7ICIMBLKkh/pWhRT1imkUB+VbYPRnZPlEwA4JZ5j/VgPfu+70bbUvrjHrJLhGpl0uNiNR2Lg2uFIF1p6vXyVsUATi4si14z5JGCRkN7sY=
+  - secure: JW05o/tUuzL/lY0fKLZfNZaFEvM8nKRxS+JA/Gpr/ouxuK6AqNoitp+269hTi5kKLXMTw0MNY30PVRd/jCtgk+AtTTRDx/6bVB75beHoR5B2GpztJe0i63vfyvIsgyuu4AGwzUVTyqTo/7NNDT/bPAOZVghppyFsqvWRFNWVRaM=

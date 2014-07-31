@@ -7,8 +7,8 @@ angular.module('bulbsCmsApp')
       replace: true,
       restrict: 'E',
       templateUrl: routes.PARTIALS_URL + 'editor.html',
-      scope: {ngModel:'='},
-      link: function(scope, element, attrs, ngModel) {
+      scope: {ngModel: '='},
+      link: function (scope, element, attrs, ngModel) {
 
         if (!ngModel) {
           return;
@@ -16,24 +16,26 @@ angular.module('bulbsCmsApp')
 
         var formatting;
         if (attrs.formatting) {
-          formatting = attrs.formatting.split(",");
+          formatting = attrs.formatting.split(',');
         }
 
-        if (attrs.role == "multiline") {
-          var options = {
-            /* global options */
+        var options = {};
+
+        if (attrs.role === 'multiline') {
+          options = {
+            // global options
             multiline: true,
-            formatting: formatting || ['link', 'bold','italic','blockquote','heading','list', 'strike'],
+            formatting: formatting || ['link', 'bold', 'italic', 'blockquote', 'heading', 'list', 'strike'],
             placeholder: {
-              text: attrs.placeholder ||  "<p>Write here</p>",
-              container: $(".editorPlaceholder", element[0])[0],
+              text: attrs.placeholder ||  '<p>Write here</p>',
+              container: $('.editorPlaceholder', element[0])[0],
             },
             link: {
               domain: attrs.linkDomain || false,
               // Sean, you can figure out a nicer way to handle the search handler.
               searchHandler: window[attrs.linkSearchHandler] || false
             },
-            statsContainer: ".wordcount",
+            statsContainer: '.wordcount',
             inlineObjects: attrs.inlineObjects,
             image: {
               insertDialog: BettyCropper.upload,
@@ -41,45 +43,45 @@ angular.module('bulbsCmsApp')
             },
             video: {
               insertDialog: Zencoder.onVideoFileUpload,
-              editDialog: function() {},
+              editDialog: function () {},
               videoEmbedUrl: VIDEO_EMBED_URL
             }
-          }
+          };
         }
         else {
-          $(".document-tools, .embed-tools", element).hide();
-          var defaultValue = "";
-          var options = {
-            /* global options */
+          $('.document-tools, .embed-tools', element).hide();
+          var defaultValue = '';
+          options = {
+            // global options
             multiline: false,
             placeholder: {
-              text: attrs.placeholder ||  "Write here",
-              container: $(".editorPlaceholder", element[0])[0],
+              text: attrs.placeholder || 'Write here',
+              container: $('.editorPlaceholder', element[0])[0],
             },
             formatting: formatting || []
-          }
+          };
         }
 
-        var editor = new OnionEditor($(".editor", element[0])[0], options);
+        var editor = new OnionEditor($('.editor', element[0])[0], options);
 
-        ngModel.$render = function() {
+        ngModel.$render = function () {
           editor.setContent(ngModel.$viewValue || defaultValue);
           // register on change here, after the initial load so angular doesn't get mad...
-          setTimeout(function() {
-            editor.setChangeHandler(read)
+          setTimeout(function () {
+            editor.setChangeHandler(read);
           });
-        }
+        };
         
 
         // Write data to the model
         function read() {
-          scope.$apply(function(){
+          scope.$apply(function () {
             var html = editor.getContent();
             ngModel.$setViewValue(html);
           });
         }
 
-        scope.$watch(ngModel, function() {
+        scope.$watch(ngModel, function () {
           editor.setContent(ngModel.$viewValue || defaultValue);
           if (window.picturefill) {
             window.picturefill(element[0]);

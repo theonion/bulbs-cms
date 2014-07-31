@@ -73,7 +73,7 @@ angular.module('bulbsCmsApp')
           if (scope.saveCbk) {
             scope.saveCbk({promise: promise});
           }
-        }
+        };
       }
-    }
-  })
+    };
+  });

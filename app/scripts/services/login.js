@@ -7,7 +7,9 @@ angular.module('bulbsCmsApp')
       return $cookies.csrftoken;
     }, function (newCsrf, oldCsrf) {
       $http.defaults.headers.common['X-CSRFToken'] = newCsrf;
-      $window.jqueryCsrfSetup && $window.jqueryCsrfSetup();
+      if ($window.jqueryCsrfSetup) {
+        $window.jqueryCsrfSetup();
+      }
     });
 
     return {
@@ -20,5 +22,5 @@ angular.module('bulbsCmsApp')
           headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         });
       }
-    }
+    };
   });

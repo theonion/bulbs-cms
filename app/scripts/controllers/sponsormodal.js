@@ -4,7 +4,7 @@ angular.module('bulbsCmsApp')
   .controller('SponsormodalCtrl', function ($scope, ContentApi, article) {
     $scope.article = article;
 
-    ContentApi.all('sponsor').getList().then(function(data){
+    ContentApi.all('sponsor').getList().then(function (data) {
       $scope.sponsors = data;
     });
 

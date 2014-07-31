@@ -12,7 +12,7 @@ angular.module('bulbsCmsApp')
         scope.placeholder = 'The Simpsons';
         scope.resourceUrl = '/reviews/api/v1/tvshow/?q=';
 
-        scope.$watch('article.ratings', function(){
+        scope.$watch('article.ratings', function () {
           scope.model = scope.article.ratings[scope.index].media_item.show;
         }, true);
 

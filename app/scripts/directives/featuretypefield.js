@@ -15,7 +15,7 @@ angular.module('bulbsCmsApp')
         scope.placeholder = 'Feature Type';
         scope.resourceUrl = '/cms/api/v1/things/?type=feature_type&q=';
 
-        scope.$watch('article.feature_type', function(){
+        scope.$watch('article.feature_type', function () {
           scope.model = scope.article.feature_type;
         });
 

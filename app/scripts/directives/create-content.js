@@ -36,12 +36,12 @@ angular.module('bulbsCmsApp')
             $scope.gotTags = true;
           }
 
-          if(AUTO_ADD_AUTHOR){
-            ContentApi.one('me').get().then(function(data){
+          if (AUTO_ADD_AUTHOR) {
+            ContentApi.one('me').get().then(function (data) {
               $scope.init.authors = [data];
               $scope.gotUser = true;
             });
-          }else{
+          } else {
             $scope.gotUser = true;
           }
 
@@ -110,8 +110,8 @@ angular.module('bulbsCmsApp')
           }
         });
 
-        $('#create').on('hidden.bs.modal', function(){
-          scope.newTitle = "";
+        $('#create').on('hidden.bs.modal', function () {
+          scope.newTitle = '';
           scope.panel = 1;
         });
 

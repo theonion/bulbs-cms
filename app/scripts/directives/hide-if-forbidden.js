@@ -2,7 +2,7 @@
 
 angular.module('bulbsCmsApp')
   .directive('hideIfForbidden', function ($http) {
-    function hideElement(element){
+    function hideElement(element) {
       element.addClass('hidden');
     }
 
@@ -13,13 +13,13 @@ angular.module('bulbsCmsApp')
           method: 'OPTIONS',
           url: attrs.optionsUrl,
           noPermissionIntercept: true
-        }).success(function(data, status){
+        }).success(function (data, status) {
           //I guess 403s aren't errors? I dont know.
-          if(status === 403){
+          if (status === 403) {
             hideElement(element);
           }
-        }).error(function(data, status){
-          if(status === 403){
+        }).error(function (data, status) {
+          if (status === 403) {
             hideElement(element);
           }
         });

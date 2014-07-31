@@ -16,7 +16,7 @@ angular.module('bulbsCmsApp')
 
         $scope.imageData = null;
 
-        function uploadSuccess(response){
+        function uploadSuccess(response) {
           if (!$scope.image) {
             $scope.image = {
               id: null,
@@ -30,16 +30,16 @@ angular.module('bulbsCmsApp')
           $scope.editImage();
         }
 
-        $scope.upload = function(e){
+        $scope.upload = function (e) {
           BettyCropper.upload().then(
-            function(success){
+            function (success) {
               uploadSuccess(success);
             },
-            function(error){
+            function (error) {
               console.log(error);
             },
-            function(progress){
-              console.log(error);
+            function (progress) {
+              console.log(progress);
             }
           );
         };
@@ -109,7 +109,7 @@ angular.module('bulbsCmsApp')
           ).success(function (response) {
             scope.imageData = response;
             scope.showImage();
-          }).error(function(data, status, headers, config){
+          }).error(function (data, status, headers, config) {
             if (status === 404) {
               var el_Height = (ratioHeight / ratioWidth) * $(element).parent().width();
               scope.imageStyling = {
@@ -129,10 +129,11 @@ angular.module('bulbsCmsApp')
         };
 
         scope.editImage = function () {
-          if(attrs.editRatios){
-            var editRatios = eval(attrs.editRatios);
-          }else{
-            var editRatios = false;
+          var editRatios;
+          if (attrs.editRatios) {
+            editRatios = eval(attrs.editRatios);
+          } else {
+            editRatios = false;
           }
           openImageCropModal(scope.image, editRatios)
           .then(function (image) {
@@ -142,8 +143,8 @@ angular.module('bulbsCmsApp')
               scope.image = image;
               scope.getImageData();
             }
-          })
-        }
+          });
+        };
 
         if (scope.image && scope.image.id) {
           scope.showImage();

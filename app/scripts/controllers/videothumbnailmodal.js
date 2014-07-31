@@ -8,41 +8,41 @@ angular.module('bulbsCmsApp')
     $scope.mode = 'still';
 
     Zencoder.getVideo(videoId).then(
-      function(response){
-        $scope.video = response.data
-        if(response.data.status == "In Progress"){
+      function (response) {
+        $scope.video = response.data;
+        if (response.data.status === 'In Progress') {
           $scope.inProgress = true;
           $scope.video.poster = $scope.video.poster || null;
-        }else{
+        } else {
           $scope.video.poster = $scope.video.poster || compilePosterUrl(DEFAULT_THUMBNAIL);
         }
       }
-    )
+    );
 
-    $scope.$watch('video.poster', function(){
-      if(!$scope.video || !$scope.video.poster) return;
+    $scope.$watch('video.poster', function () {
+      if (!$scope.video || !$scope.video.poster) { return; }
       var defaultUrl = VIDEO_THUMBNAIL_URL.replace('{{video}}', videoId);
       var thumbnailIndex = defaultUrl.indexOf('{{thumbnail}}');
-      if($scope.video.poster.indexOf(defaultUrl.substr(0, thumbnailIndex)) === 0){
+      if ($scope.video.poster.indexOf(defaultUrl.substr(0, thumbnailIndex)) === 0) {
         $scope.currentThumbnail = Number($scope.video.poster.substr(thumbnailIndex, 4));
         $scope.uploadedImage.id = null;
-      }else{
+      } else {
         $scope.currentThumbnail = false;
       }
     });
 
-    $scope.$watch('uploadedImage.id', function(){
-      if($scope.uploadedImage.id){
+    $scope.$watch('uploadedImage.id', function () {
+      if ($scope.uploadedImage.id) {
         $scope.video.poster = STATIC_IMAGE_URL.replace('{{image}}', $scope.uploadedImage.id);
       }
     });
 
     $scope.nextThumb = function () {
-      $scope.video.poster = compilePosterUrl($scope.currentThumbnail < MAX_THUMBNAIL ? $scope.currentThumbnail+1 : 0);
+      $scope.video.poster = compilePosterUrl($scope.currentThumbnail < MAX_THUMBNAIL ? $scope.currentThumbnail + 1 : 0);
     };
 
     $scope.prevThumb = function () {
-      $scope.video.poster = compilePosterUrl($scope.currentThumbnail > 0 ? $scope.currentThumbnail-1 : MAX_THUMBNAIL);
+      $scope.video.poster = compilePosterUrl($scope.currentThumbnail > 0 ? $scope.currentThumbnail - 1 : MAX_THUMBNAIL);
     };
 
     $scope.defaultThumb = function () {
@@ -56,14 +56,14 @@ angular.module('bulbsCmsApp')
 
     $scope.reencode = function () {
       Zencoder.encode(videoId);
-    }
+    };
 
     function compilePosterUrl(thumbnail) {
       return VIDEO_THUMBNAIL_URL.replace('{{video}}', videoId).replace('{{thumbnail}}', pad4(thumbnail));
     }
 
     function pad4(num) {
-      var s = "0000" + num;
-      return s.substr(s.length-4);
+      var s = '0000' + num;
+      return s.substr(s.length - 4);
     }
   });

@@ -1,41 +1,42 @@
+'use strict';
+
 angular.module('BettyCropper', [])
   .service('BettyCropper', function BettyCropper($http, $interpolate, $q, IMAGE_SERVER_URL, BC_API_KEY) {
-    var fileInputId = '#bulbs-cms-hidden-image-file-input'
-    var inputTemplate = '<input id="bulbs-cms-hidden-image-file-input" type="file" accept="image/*" style="position: absolute; left:-99999px;" name="image" />'
+    var fileInputId = '#bulbs-cms-hidden-image-file-input';
+    var inputTemplate = '<input id="bulbs-cms-hidden-image-file-input" type="file" accept="image/*" style="position: absolute; left:-99999px;" name="image" />';
 
     this.upload = function () {
       var uploadImageDeferred = $q.defer();
 
       angular.element(fileInputId).remove();
       var fileInput = angular.element(inputTemplate);
-      var file;
       angular.element('body').append(fileInput);
       fileInput.click();
       fileInput.unbind('change');
 
-      fileInput.bind('change', function(elem){
-        if (this.files.length != 1) {
+      fileInput.bind('change', function (elem) {
+        if (this.files.length !== 1) {
           uploadImageDeferred.reject('We need exactly one image!');
         }
         var file = this.files[0];
-        if (file.type.indexOf('image/') != 0) {
+        if (file.type.indexOf('image/') !== 0) {
           uploadImageDeferred.reject('Not an image!');
         }
 
-        if (file.size > 10*1024*1024) { //MAGIC!
-          uploadImageDeferred.reject('The file is too large!')
+        if (file.size > 10 * 1024 * 1024) { // MAGIC!
+          uploadImageDeferred.reject('The file is too large!');
         }
 
-        newImage(file).success(function(success){
+        newImage(file).success(function (success) {
           uploadImageDeferred.resolve(success);
-        }).error(function(error){
+        }).error(function (error) {
           uploadImageDeferred.reject(error);
         });
 
       });
 
       return uploadImageDeferred.promise;
-    }
+    };
 
     this.detail = function (id) {
       return $http({
@@ -68,7 +69,7 @@ angular.module('BettyCropper', [])
       });
     };
 
-    function newImage (image, name, credit) {
+    function newImage(image, name, credit) {
       var imageData = new FormData();
       imageData.append('image', image);
       if (name) { imageData.append('name', name); }
@@ -85,12 +86,12 @@ angular.module('BettyCropper', [])
         data: imageData,
         transformRequest: angular.identity
       });
-    };
+    }
 
     this.updateSelection = function (id, ratio, selections) {
       return $http({
         method: 'POST',
-        url: IMAGE_SERVER_URL + '/api/' + id + "/" + ratio,
+        url: IMAGE_SERVER_URL + '/api/' + id + '/' + ratio,
         headers: {
           'X-Betty-Api-Key': BC_API_KEY,
           'Content-Type': undefined,
@@ -102,7 +103,7 @@ angular.module('BettyCropper', [])
 
     this.url = function (id, crop, width, format) {
       var exp = $interpolate(
-        "{{ url }}/{{ id }}/{{ crop }}/{{ width }}.{{ format }}"
+        '{{ url }}/{{ id }}/{{ crop }}/{{ width }}.{{ format }}'
       );
       return exp({
         url: IMAGE_SERVER_URL,

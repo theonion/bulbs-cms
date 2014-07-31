@@ -7,7 +7,7 @@ angular.module('bulbsCmsApp')
           <div class="entry" ng-repeat="option in autocomplete_list" ng-click="onClick(option)">\
               {{display(option);}}\
           </div>\
-      </div>'
+      </div>';
 
     return {
       restrict: 'AC',
@@ -78,7 +78,6 @@ angular.module('bulbsCmsApp')
           });
         }
 
-        scope.blurTimeout;
         $elem.on('blur', function (e) {
           $(dropdown).fadeOut('fast');
         });
