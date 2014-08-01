@@ -130,7 +130,7 @@ angular.module('bulbsCmsApp')
             ReviewApi.all('tvepisode').getList({
               show: show,
               season: season,
-              episode: episode
+              episode: parseInt(episode)
             }),
             {show: show, season: season, episode: episode},
             mediaItemExistsCbkFactory(i),
