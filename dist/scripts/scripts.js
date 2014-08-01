@@ -562,9 +562,9 @@ angular.module('bulbsCmsApp')
             ReviewApi.all('tvepisode').getList({
               show: show,
               season: season,
-              episode: parseInt(episode)
+              episode: episode
             }),
-            {show: show, season: season, episode: episode},
+            {show: show, season: season, episode: parseInt(episode)},
             mediaItemExistsCbkFactory(i),
             mediaItemDoesNotExistCbkFactory(i),
             saveArticleErrorCbk
