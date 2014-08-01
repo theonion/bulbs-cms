@@ -132,7 +132,7 @@ angular.module('bulbsCmsApp')
               season: season,
               episode: episode
             }),
-            {show: show, season: season, episode: episode},
+            {show: show, season: season, episode: parseInt(episode)},
             mediaItemExistsCbkFactory(i),
             mediaItemDoesNotExistCbkFactory(i),
             saveArticleErrorCbk
