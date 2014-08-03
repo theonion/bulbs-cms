@@ -10,7 +10,8 @@ angular.module('bulbsCmsApp')
         resolve: {
           img_ref: function () { return image; },
           cropsToEdit: function () { return cropsToEdit || false; }
-        }
+        },
+        backdrop: 'static'
       }).result;
 
     };
