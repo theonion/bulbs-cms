@@ -137,7 +137,7 @@ BettyCropper.service('BettyCropper', function BettyCropper($http, $interpolate, 
       return uploadImageDeferred.promise;
     };
 
-    this.detail = function (id) {
+    this.get = function (id) {
       return $http({
         method: 'GET',
         url: IMAGE_SERVER_URL + '/api/' + id,
@@ -152,6 +152,8 @@ BettyCropper.service('BettyCropper', function BettyCropper($http, $interpolate, 
         }
       });
     };
+
+    this.detail = this.get;
 
     this.detailPatch = function (id, name, credit, selections) {
       return $http({
