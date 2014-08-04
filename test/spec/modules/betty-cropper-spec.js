@@ -67,16 +67,17 @@ describe('Image object', function () {
     // load the controller's module
   beforeEach(module('BettyCropper'));
 
-  var BettyImage, $httpBackend;
+  var BettyImage, $httpBackend, BettyCropper;
   beforeEach(inject(function ($controller, $injector) {
     BettyImage = $injector.get('BettyImage');
+    BettyCropper = $injector.get('BettyCropper');
     $httpBackend = $injector.get('$httpBackend');
     
     $httpBackend.when('OPTIONS', /^http:\/\/localimages\.avclub\.com.*/).respond('');
     $httpBackend.when('GET', /^http:\/\/localimages\.avclub\.com\/api\/\d+/).respond(function (method, url, data, headers) {
-      var id = url.substring(url.lastIndexOf('/'), url.length);
-      return {
-        'id': id,
+      var id = url.substring(url.lastIndexOf('/') + 1, url.length);
+      return [200, {
+        'id': parseInt(id, 10),
         'name': 'Lenna.png',
         'width': 512,
         'height': 512,
@@ -84,31 +85,40 @@ describe('Image object', function () {
           '1x1': {'y1': 512, 'y0': 0, 'x0': 0, 'x1': 512, 'source': 'auto'},
           '16x9': {'y1': 400, 'y0': 112, 'x0': 0, 'x1': 512, 'source': 'auto'}
         }
-      };
+      }, {}];
     });
   }));
 
   it('should load properly', function() {
     // console.log(BettyImage);
-    BettyImage.one('api', '9').get().then(function (data) {
-      console.log(data);
+
+    var prom = BettyCropper.detail(9);
+    $httpBackend.flush();
+    prom.then(function(response){
+      var image = response.data;
+      expect(image.id).toBe(9);
     });
 
   });
 
-  // it('should generate a proper url', function () {
-  //   var image = new BettyImage({
-  //     'id': 9,
-  //     'name': 'Lenna.jpg',
-  //     'width': 512,
-  //     'height': 512
-  //   });
+  it('should generate a proper url', function () {
+    var image = new BettyImage({
+      'id': 9,
+      'name': 'Lenna.jpg',
+      'width': 512,
+      'height': 512
+    });
 
-  //   expect(image.url('16x9', 200, 'jpg')).toBe('http://localimages.avclub.com/9/16x9/200.jpg');
+    expect(image.url('16x9', 200, 'jpg')).toBe('http://localimages.avclub.com/9/16x9/200.jpg');
 
-  //   image.id = 12345;
+    image.id = 12345;
     
-  //   expect(image.url('16x9', 200, 'jpg')).toBe('http://localimages.avclub.com/1234/5/16x9/200.jpg');
-  // });
+    expect(image.url('16x9', 200, 'jpg')).toBe('http://localimages.avclub.com/1234/5/16x9/200.jpg');
+  });
+
+  afterEach(function() {
+    $httpBackend.verifyNoOutstandingExpectation();
+    $httpBackend.verifyNoOutstandingRequest();
+  });
 
 });

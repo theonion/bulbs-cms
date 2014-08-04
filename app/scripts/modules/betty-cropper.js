@@ -40,75 +40,51 @@ BettyCropper.factory('Selection', function () {
   return Selection;
 });
 
-BettyCropper.factory('BettyImage', function ($interpolate, Restangular, IMAGE_SERVER_URL, BC_API_KEY) {
-  var api = Restangular.withConfig(function (RestangularConfigurer) {
-    RestangularConfigurer.setDefaultHttpFields({
-      'X-Betty-Api-Key': BC_API_KEY
-    });
-    // RestangularConfigurer.setBaseUrl(IMAGE_SERVER_URL);
-    // 
-
-    // RestangularConfigurer.extendModel('images', function (model) {
-    //   model.url = function (ratio, width, format) {
-    //     var exp = $interpolate('{{ base_url }}/{{ id }}/{{ ratio }}/{{ width }}.{{ format }}');
-    //     var idStr = this.id.toString();
-    //     var segmentedId = '';
-    //     for (var i=0; i < idStr.length; i++) {
-    //       if (i % 4 === 0 && i !== 0) {
-    //         segmentedId += '/';
-    //       }
-    //       segmentedId += idStr.substr(i, 1);
-    //     }
-    //     return exp({
-    //       base_url: IMAGE_SERVER_URL,
-    //       id: segmentedId,
-    //       ratio: ratio,
-    //       width: width,
-    //       format: format
-    //     });
-    //   };
-    // });
-
-  });
-  // api.allUrl('images', IMAGE_SERVER_URL + '/api/');
-  return api;
-});
-// BettyCropper.factory('BettyImage', function ($interpolate, IMAGE_SERVER_URL, Selection) {
-
-//   function BettyImage(data) {
-//     this.id = data.id;
-//     this.name = data.name;
-//     this.width = data.width;
-//     this.height = data.height;
-//     this.selections = {};
-//     for (var ratio in data.selections) {
-//       this.selections[ratio] = new Selection(data.selections[ratio]);
-//     }
-//   }
-
-//   BettyImage.prototype.url = function (ratio, width, format) {
-//     var exp = $interpolate(
-//       '{{ base_url }}/{{ id }}/{{ ratio }}/{{ width }}.{{ format }}'
-//     );
-//     var idStr = this.id.toString();
-//     var segmentedId = '';
-//     for (var i=0; i < idStr.length; i++) {
-//       if (i % 4 === 0 && i !== 0) {
-//         segmentedId += '/';
-//       }
-//       segmentedId += idStr.substr(i, 1);
-//     }
-//     return exp({
-//       base_url: IMAGE_SERVER_URL,
-//       id: segmentedId,
-//       ratio: ratio,
-//       width: width,
-//       format: format
+// BettyCropper.factory('BettyImage', function ($interpolate, Restangular, IMAGE_SERVER_URL, BC_API_KEY) {
+//   var api = Restangular.withConfig(function (RestangularConfigurer) {
+//     RestangularConfigurer.setDefaultHttpFields({
+//       'X-Betty-Api-Key': BC_API_KEY + '/'
 //     });
-//   };
-//   return BettyImage;
+//     RestangularConfigurer.setBaseUrl(IMAGE_SERVER_URL);
+//   });
+//   return api.service('api');
 // });
-BettyCropper.service('BettyCropper', function BettyCropper($http, $interpolate, $q, IMAGE_SERVER_URL, BC_API_KEY, Selection) {
+BettyCropper.factory('BettyImage', function ($interpolate, $http, IMAGE_SERVER_URL, BC_API_KEY, Selection) {
+
+  function BettyImage(data) {
+    this.id = data.id;
+    this.name = data.name;
+    this.width = data.width;
+    this.height = data.height;
+    this.selections = {};
+    for (var ratio in data.selections) {
+      this.selections[ratio] = new Selection(data.selections[ratio]);
+    }
+  }
+
+  BettyImage.prototype.url = function (ratio, width, format) {
+    var exp = $interpolate(
+      '{{ base_url }}/{{ id }}/{{ ratio }}/{{ width }}.{{ format }}'
+    );
+    var idStr = this.id.toString();
+    var segmentedId = '';
+    for (var i=0; i < idStr.length; i++) {
+      if (i % 4 === 0 && i !== 0) {
+        segmentedId += '/';
+      }
+      segmentedId += idStr.substr(i, 1);
+    }
+    return exp({
+      base_url: IMAGE_SERVER_URL,
+      id: segmentedId,
+      ratio: ratio,
+      width: width,
+      format: format
+    });
+  };
+  return BettyImage;
+});
+BettyCropper.service('BettyCropper', function BettyCropper($http, $interpolate, $q, IMAGE_SERVER_URL, BC_API_KEY, BettyImage) {
     var fileInputId = '#bulbs-cms-hidden-image-file-input';
     var inputTemplate = '<input id="bulbs-cms-hidden-image-file-input" type="file" accept="image/*" style="position: absolute; left:-99999px;" name="image" />';
 
@@ -147,7 +123,9 @@ BettyCropper.service('BettyCropper', function BettyCropper($http, $interpolate, 
           },
           data: imageData,
           transformRequest: angular.identity,
-          transformResponse: this.transformImageResponse
+          transformResponse: function (data, headersGetter) {
+            return new BettyImage(data);
+          }
         }).success(function (success) {
           uploadImageDeferred.resolve(success);
         }).error(function (error) {
@@ -157,14 +135,6 @@ BettyCropper.service('BettyCropper', function BettyCropper($http, $interpolate, 
       });
 
       return uploadImageDeferred.promise;
-    };
-
-    this.transformImageResponse = function(data, headersGetter){
-      for (var ratio in data.selections) {
-        var newSelection = new Selection(data.selections[ratio]);
-        data.selections[ratio] = newSelection;
-      }
-      return data;
     };
 
     this.detail = function (id) {
@@ -177,7 +147,9 @@ BettyCropper.service('BettyCropper', function BettyCropper($http, $interpolate, 
           'X-CSRFToken': undefined
         },
         transformRequest: angular.identity,
-        transformResponse: this.transformImageResponse
+        transformResponse: function (data, headersGetter) {
+          return new BettyImage(data);
+        }
       });
     };
 
@@ -196,7 +168,9 @@ BettyCropper.service('BettyCropper', function BettyCropper($http, $interpolate, 
           selections: selections
         },
         transformRequest: angular.identity,
-        transformResponse: this.transformImageResponse
+        transformResponse: function (data, headersGetter) {
+          return new BettyImage(data);
+        }
       });
     };
 
