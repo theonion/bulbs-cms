@@ -8,7 +8,6 @@ angular.module('bulbsCmsApp')
       link: function (scope, element, attrs) {
         var $element = $(element);
         var $input = $element.find('input');
-        scope.searchTerm;
 
         scope.autocompleteArray = [];
 
@@ -132,10 +131,10 @@ angular.module('bulbsCmsApp')
           $input.trigger('blur');
         }
 
-        function getFilterObjects () {
+        function getFilterObjects() {
           var search = $location.search();
           scope.filterObjects = {};
-          if (typeof(search) === 'undefined') { console.log("udnefined"); return; }
+          if (typeof(search) === 'undefined') { console.log('undefined'); return; }
           //TODO: this sucks
           var filterParamsToTypes = {'authors': 'author', 'tags': 'tag', 'feature_types': 'feature_type'};
           for (var filterParam in filterParamsToTypes) {

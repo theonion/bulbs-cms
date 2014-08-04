@@ -22,11 +22,15 @@ angular.module('bulbsCmsApp')
     $scope.unpublishCbk = function (unpub_promise) {
       unpub_promise
         .then(function (result) {
-          $scope.publishSuccessCbk && $scope.publishSuccessCbk({article: $scope.article, response: result.data});
+          if ($scope.publishSuccessCbk) {
+            $scope.publishSuccessCbk({article: $scope.article, response: result.data});
+          }
         })
         .catch(function (reason) {
-          $scope.publishSuccessCbk && $scope.publishSuccessCbk({article: $scope.article, response: reason.data});
-        })
+          if ($scope.publishSuccessCbk) {
+            $scope.publishSuccessCbk({article: $scope.article, response: reason.data});
+          }
+        });
     };
 
   });

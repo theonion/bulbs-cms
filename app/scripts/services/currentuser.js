@@ -6,7 +6,7 @@ angular.module('bulbsCmsApp')
     var self = this;
 
     this.getItems = function () {
-      ContentApi.one('me').get().then(function(data){
+      ContentApi.one('me').get().then(function (data) {
         self.data = data;
       });
     };

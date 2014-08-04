@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('bulbsCmsApp').factory('BugReportInterceptor', function ($q, $window, PNotify) {
     return {
       responseError: function (rejection) {
@@ -10,8 +12,7 @@ angular.module('bulbsCmsApp').factory('BugReportInterceptor', function ($q, $win
           new PNotify({
             title: 'You found a bug!',
             text:
-              'Looks like something just went wrong, and we need your help to fix it! \
-              Report it, and we\'ll make sure it never happens again.',
+              'Looks like something just went wrong, and we need your help to fix it! Report it, and we\'ll make sure it never happens again.',
             type: 'error',
             confirm: {
               confirm: true,
@@ -29,7 +30,7 @@ angular.module('bulbsCmsApp').factory('BugReportInterceptor', function ($q, $win
               sticker: false
             },
             icon: 'fa fa-bug pnotify-error-icon',
-            addclass: "stack-bottomright",
+            addclass: 'stack-bottomright',
             stack: stack
           });
         }

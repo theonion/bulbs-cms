@@ -55,10 +55,10 @@ angular.module('bulbsCmsApp')
     };
 
     function roundSelection(number, max) {
-      if(number < 0) return 0;
-      if(number > max) return max;
+      if (number < 0) { return 0; }
+      if (number > max) { return max; }
       return number;
-    };
+    }
 
     $scope.setSelectedCrop = function (ratio, selection) {
       $scope.cropMode = true;
@@ -83,7 +83,7 @@ angular.module('bulbsCmsApp')
           $scope.image.selections[$scope.ratioOrder[0]]
         );
       }
-    }
+    };
 
     $scope.$watch('selectedCrop', function (newVal) {
       if (angular.isUndefined(newVal)) {  return;  }
@@ -200,7 +200,7 @@ angular.module('bulbsCmsApp')
     $scope.$watchCollection('image.selections', function (newCollection, oldCollection) {
       var uncomputedCrops = [];
       for (var ratio in newCollection) {
-        if (newCollection[ratio].source != 'user') {
+        if (newCollection[ratio].source !== 'user') {
           uncomputedCrops.push(ratio);
         }
       }
@@ -222,7 +222,7 @@ angular.module('bulbsCmsApp')
         classes['bg-info'] = true;
       }
 
-      if ($scope.image.selections[ratio].source == 'user') {
+      if ($scope.image.selections[ratio].source === 'user') {
         classes['fa-check bootstrap-green'] = true;
       } else {
         classes['fa-circle-thin'] = true;
@@ -234,18 +234,18 @@ angular.module('bulbsCmsApp')
     $scope.isCropDone = function (ratio) {
       var classes = {};
 
-      if ($scope.image.selections[ratio].source == 'user') {
+      if ($scope.image.selections[ratio].source === 'user') {
         classes['fa-check bootstrap-green'] = true;
       }
 
       return classes;
-    }
+    };
 
     $scope.onInit = function () {
       BettyCropper.detail($scope.img_ref.id)
         .success(function (data) {
           $scope.image = data;
-          if(cropsToEdit){
+          if (cropsToEdit) {
             $scope.image.selections = {'16x9': $scope.image.selections['16x9']};
           }
           $scope.setThumbStyles($scope.image, $scope.image.selections);
@@ -273,7 +273,7 @@ angular.module('bulbsCmsApp')
           });
 
         });
-    }
+    };
 
     $scope.onInit();
 

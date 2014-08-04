@@ -15,30 +15,30 @@ angular.module('bulbsCmsApp')
 
         scope.uploadVideo = function () {
           Zencoder.onVideoFileUpload().then(
-            function(success){
+            function (success) {
               console.log(success);
               scope.article.video = success.attrs.id;
             },
             angular.noop,
-            function(progress){
+            function (progress) {
               console.log(progress);
               scope.uploadProgress = progress;
             }
           );
-        }
+        };
 
         scope.thumbnailModal = function () {
           Zencoder.openVideoThumbnailModal(article.video).result.then(
-            function(resolve){
-              console.log("thumbnail modal resolve")
+            function (resolve) {
+              console.log('thumbnail modal resolve');
               console.log(resolve);
               //article.poster_url = resolve;
             },
-            function(reject){
-              console.log("thumbnail modal rejected")
+            function (reject) {
+              console.log('thumbnail modal rejected');
             }
-          )
-        }
+          );
+        };
       }
     };
   });

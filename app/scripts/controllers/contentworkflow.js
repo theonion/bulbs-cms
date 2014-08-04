@@ -10,7 +10,7 @@ angular.module('bulbsCmsApp')
         controller: 'TrashcontentmodalCtrl',
         scope: $scope,
         resolve: {
-          articleId: function(){ return articleId; }
+          articleId: function () { return articleId; }
         }
       });
     };
@@ -21,7 +21,7 @@ angular.module('bulbsCmsApp')
         controller: 'PubtimemodalCtrl',
         scope: $scope,
         resolve: {
-          article: function(){ return article; }
+          article: function () { return article; }
         }
       });
     };
@@ -32,7 +32,7 @@ angular.module('bulbsCmsApp')
         controller: 'SendtoeditormodalCtrl',
         scope: $scope,
         resolve: {
-          article: function(){ return article; }
+          article: function () { return article; }
         }
       });
     };
@@ -43,7 +43,7 @@ angular.module('bulbsCmsApp')
         controller: 'ChangelogmodalCtrl',
         scope: $scope,
         resolve: {
-          article: function(){ return article; }
+          article: function () { return article; }
         }
       });
     };
@@ -53,7 +53,7 @@ angular.module('bulbsCmsApp')
         templateUrl: routes.PARTIALS_URL + 'modals/thumbnail-modal.html',
         scope: $scope,
         resolve: {
-          article: function(){ return article; }
+          article: function () { return article; }
         }
       });
     };
@@ -64,7 +64,7 @@ angular.module('bulbsCmsApp')
         templateUrl: routes.PARTIALS_URL + 'modals/sponsored-content-modal.html',
         scope: $scope,
         resolve: {
-          article: function(){ return article; }
+          article: function () { return article; }
         }
       });
     };
@@ -75,10 +75,10 @@ angular.module('bulbsCmsApp')
         scope: $scope,
         controller: 'SponsormodalCtrl',
         resolve: {
-          article: function(){ return article; }
+          article: function () { return article; }
         }
       });
-    }
+    };
 
     $scope.versionBrowserModal = function (article) {
       return $modal.open({
@@ -87,17 +87,17 @@ angular.module('bulbsCmsApp')
         scope: $scope,
         size: 'lg',
         resolve: {
-          article: function(){ return article; }
+          article: function () { return article; }
         }
       });
     };
 
     $scope.getStatus = function (article) {
-      if(!article || !article.published){
+      if (!article || !article.published) {
         return 'unpublished';
-      }else if(moment(article.published) > moment()){
+      } else if (moment(article.published) > moment()) {
         return 'scheduled';
-      }else{
+      } else {
         return 'published';
       }
     };

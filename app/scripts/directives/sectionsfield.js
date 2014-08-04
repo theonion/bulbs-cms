@@ -15,7 +15,7 @@ angular.module('bulbsCmsApp')
           return o.name;
         };
 
-        scope.$watch('article.tags', function(){
+        scope.$watch('article.tags', function () {
           scope.objects = _.where(article.tags, {type: 'core_section'});
         }, true);
 

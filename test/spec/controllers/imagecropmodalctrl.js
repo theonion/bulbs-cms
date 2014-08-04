@@ -97,7 +97,6 @@ describe('Controller: ImageCropModalCtrl', function () {
       expect(scope.image.selections['1x1'].y0).toBe(0);
       expect(scope.image.selections['1x1'].y1).toBe(scope.image.height);
 
-
     });
 
   });

@@ -9,10 +9,10 @@ angular.module('bulbsCmsApp')
         'image': '='
       },
       link: function postLink(scope, element, attrs) {
-        scope.$watch('image', function(){
-          if(scope.image && scope.image.id){
+        scope.$watch('image', function () {
+          if (scope.image && scope.image.id) {
             scope.imageUrl = STATIC_IMAGE_URL.replace('{{image}}', scope.image.id);
-          }else{
+          } else {
             scope.imageUrl = false;
           }
         });

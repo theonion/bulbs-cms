@@ -2,8 +2,8 @@
 
 angular.module('bulbsCmsApp')
   .controller('TrashcontentmodalCtrl', function ($scope, $http, $modalInstance, $, Login, articleId, Raven) {
-    console.log('trash content modal ctrl here')
-    console.log(articleId)
+    console.log('trash content modal ctrl here');
+    console.log(articleId);
 
     $scope.deleteButton = {
       idle: 'Delete',
@@ -13,7 +13,7 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.trashContent = function () {
-      console.log("trash content here");
+      console.log('trash content here');
       return $http({
         'method': 'POST',
         'url': '/cms/api/v1/content/' + articleId + '/trash/'
@@ -23,7 +23,7 @@ angular.module('bulbsCmsApp')
     $scope.trashCbk = function (trash_promise) {
       trash_promise
         .then(function (result) {
-          console.log("trash success")
+          console.log('trash success');
           $scope.trashSuccessCbk();
           $modalInstance.close();
         })
@@ -36,5 +36,5 @@ angular.module('bulbsCmsApp')
           Raven.captureMessage('Error Deleting Article', {extra: reason});
           $modalInstance.dismiss();
         });
-    }
+    };
   });

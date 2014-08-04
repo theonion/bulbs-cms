@@ -25,7 +25,7 @@ angular.module('bulbsCmsApp')
         $scope.dismissModal = function () {
           $scope.modalVisible = false;
           $scope.showThankYou = false;
-        }
+        };
 
         $scope.sendToWebtech = function () {
           var report =
@@ -45,10 +45,10 @@ angular.module('bulbsCmsApp')
           promise
             .then(function () {
               $scope.showThankYou = true;
-              $timeout(function() {
+              $timeout(function () {
                 $scope.dismissModal();
                 for (var entry in $scope.report) {
-                  $scope.report[entry] = "";
+                  $scope.report[entry] = '';
                 }
               }, 5000);
             });
@@ -59,7 +59,7 @@ angular.module('bulbsCmsApp')
           Will revisit when we review how to
           report bugs on the CMS.
         */
-        $window.showBugReportModal = function() {
+        $window.showBugReportModal = function () {
           $scope.$apply($scope.showModal());
         };
 
@@ -67,5 +67,5 @@ angular.module('bulbsCmsApp')
       link: function (scope, element) {
 
       }
-    }
+    };
   });

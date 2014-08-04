@@ -10,7 +10,7 @@ angular.module('bulbsCmsApp')
 
     var canceller;
     $scope.search = function (url) {
-      if(!url) { return; }
+      if (!url) { return; }
 
       if (typeof(canceller) === 'undefined') {
         canceller = $q.defer();
@@ -34,13 +34,13 @@ angular.module('bulbsCmsApp')
         }
         NProgress.done();
       }).error(function (data, status, headers, config) {
-        if (status == 404) {
+        if (status === 404) {
           $scope.targetingArray = [];
-          $scope.targetingArray.push(["", ""]);
+          $scope.targetingArray.push(['', '']);
           NProgress.done();
         }
       });
-    }
+    };
 
     $scope.save = function () {
       var data = {};
@@ -65,9 +65,9 @@ angular.module('bulbsCmsApp')
       if (event.keyCode === 13) { // enter
         this.search(url);
       } else if (event.keyCode === 27) { // escape
-        event.currentTarget.value = "";
+        event.currentTarget.value = '';
       }
-    }
+    };
 
     //grab url query key
     var search = $location.search();

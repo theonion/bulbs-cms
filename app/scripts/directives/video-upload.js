@@ -31,7 +31,6 @@ angular.module('bulbsCmsApp').directive(
 
         });
 
-        var button = element.find('label.btn');
         var progressEl = element.find('div.progress');
         var progressBar = element.find('div.progress-bar');
         var progressText = element.find('div.progress span');
@@ -70,7 +69,9 @@ angular.module('bulbsCmsApp').directive(
 
         function abortUpload() {
           setProgress(0);
-          scope.req && scope.req.abort();
+          if (scope.req) {
+            scope.req.abort();
+          }
           scope.video = {};
           setProgress(0);
         }

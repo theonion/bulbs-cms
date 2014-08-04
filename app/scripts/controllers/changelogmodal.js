@@ -9,7 +9,7 @@ angular.module('bulbsCmsApp')
       $scope.changelog = data;
 
       var userIds = _.unique(_.pluck(data, 'user'));
-      for(var i in userIds){
+      for (var i in userIds) {
         ContentApi.one('author', userIds[i]).get().then(function (data) {
           $scope.users[data.id] = data;
         });

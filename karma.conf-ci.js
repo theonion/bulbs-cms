@@ -23,11 +23,6 @@ module.exports = function(config) {
       browserName: 'safari',
       platform: 'OS X 10.9',
       version: '7'
-    },
-    'SL_iOS': {
-      base: 'SauceLabs',
-      platform: 'ios',
-      version: '7'
     }
   };
 
@@ -75,7 +70,8 @@ module.exports = function(config) {
 
     sauceLabs: {
       testName: 'Bulbs CMS Karma Tests',
-      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER
+      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
+      startConnect: false
     },
 
     // web server port

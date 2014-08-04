@@ -20,7 +20,7 @@ angular.module('bulbsCmsApp')
         var height = (scope.width * ratioHeight / ratioWidth) + 'px';
 
         element.css('width', scope.width + 'px');
-        element.css('height', (scope.width * ratioHeight / ratioWidth) + 'px');
+        element.css('height', height);
 
         var selection = scope.image.selections[scope.ratio];
         var selectionWidth = (selection.x1 - selection.x0);

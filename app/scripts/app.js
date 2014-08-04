@@ -61,23 +61,23 @@ angular.module('bulbsCmsApp', [
       redirectTo: '/cms/app/list/'
     });
 
-    //TODO: whitelist staticonion.
-    $sceProvider.enabled(false);
-    /*.resourceUrlWhitelist([
-    'self',
-    STATIC_URL + "**"]);*/
+  //TODO: whitelist staticonion.
+  $sceProvider.enabled(false);
+  /*.resourceUrlWhitelist([
+  'self',
+  STATIC_URL + "**"]);*/
 
 })
 .config(function ($provide, $httpProvider) {
-  $provide.decorator('$exceptionHandler', function($delegate) {
-    return function(exception, cause) {
+  $provide.decorator('$exceptionHandler', function ($delegate) {
+    return function (exception, cause) {
       $delegate(exception, cause);
       window.Raven.captureException(exception);
-    }
+    };
   });
 
   $httpProvider.interceptors.push('BugReportInterceptor');
-  $httpProvider.interceptors.push('PermissionsInterceptor');;
+  $httpProvider.interceptors.push('PermissionsInterceptor');
 
 })
 .run(function ($rootScope, $http, $cookies) {

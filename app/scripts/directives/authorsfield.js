@@ -16,7 +16,7 @@ angular.module('bulbsCmsApp')
         scope.resourceUrl = '/cms/api/v1/author/?ordering=name&search=';
         scope.display = userFilter;
 
-        scope.$watch('article.authors', function(){
+        scope.$watch('article.authors', function () {
           scope.objects = scope.article.authors;
         }, true);
 

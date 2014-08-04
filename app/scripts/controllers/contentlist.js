@@ -21,7 +21,7 @@ angular.module('bulbsCmsApp')
 
     $scope.getContent = function (params, merge) {
         params = params || {};
-        if(merge){
+        if (merge) {
           var curParams = $location.search();
           params = $.extend(true, curParams, params);
         }

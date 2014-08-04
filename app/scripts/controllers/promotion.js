@@ -17,10 +17,10 @@ angular.module('bulbsCmsApp')
       }
     });
 
-    $scope.$watch('promotedArticles', function(){
-      if(_.isEqual($scope.promotedArticles, $scope.lastSavedPromotedArticles)){
+    $scope.$watch('promotedArticles', function () {
+      if (_.isEqual($scope.promotedArticles, $scope.lastSavedPromotedArticles)) {
         $scope.promotedArticlesDirty = false;
-      }else{
+      } else {
         $scope.promotedArticlesDirty = true;
       }
     }, true);
@@ -134,11 +134,11 @@ angular.module('bulbsCmsApp')
         payload.content = $scope.promotedArticles;
       }
       var pzone = ContentApi.restangularizeElement(null, payload, 'contentlist');
-      return pzone.put().then(function(data){
+      return pzone.put().then(function (data) {
         $scope.lastSavedPromotedArticles = _.clone(data.content);
         $scope.promotedArticles = data.content;
         $('.save-button').html(oldSaveHtml);
-      }, function(data){
+      }, function (data) {
         Raven.captureMessage('Error Saving Pzone', {extra: data});
         $('.save-button').html('<i class="fa fa-times-circle"></i> Error');
       });

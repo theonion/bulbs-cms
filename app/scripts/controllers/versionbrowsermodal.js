@@ -5,9 +5,9 @@ angular.module('bulbsCmsApp')
     Localstoragebackup.backupToLocalStorage();
 
     var keys = _.keys($window.localStorage);
-    var timestamps = []
-    for(var i in keys){
-      if(keys[i] && (keys[i].split('.')[0] != Localstoragebackup.keyPrefix || keys[i].split('.')[2] != article.id)){
+    var timestamps = [];
+    for (var i in keys) {
+      if (keys[i] && (keys[i].split('.')[0] !== Localstoragebackup.keyPrefix || keys[i].split('.')[2] !== article.id)) {
         continue;
       }
       var timestamp = Number(keys[i].split('.')[1]) * 1000;
@@ -20,7 +20,7 @@ angular.module('bulbsCmsApp')
       $('.version-timestamp-list .active').removeClass('active');
       $($event.target).parent().addClass('active');
 
-      var key = Localstoragebackup.keyPrefix + '.' + timestamp/1000 + '.' + article.id + '.body';
+      var key = Localstoragebackup.keyPrefix + '.' + timestamp / 1000 + '.' + article.id + '.body';
       var html = $window.localStorage.getItem(key);
       $scope.versionPreview = html;
     };
