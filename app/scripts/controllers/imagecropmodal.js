@@ -7,7 +7,7 @@ angular.module('bulbsCmsApp')
     $scope.crop_image = {height: 400, width: 550};
     $scope.img_ref = angular.copy(img_ref);
 
-    $scope.image_url = BettyCropper.origJpg($scope.img_ref.id, DEFAULT_IMAGE_WIDTH);
+    $scope.image_url = $scope.image_url = BettyCropper.url($scope.img_ref.id, 'original', DEFAULT_IMAGE_WIDTH, 'jpg');
 
     var setupCropper = function () {
       $('#crop-image').Jcrop({
