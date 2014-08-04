@@ -7,7 +7,7 @@ angular.module('bulbsCmsApp')
     $scope.crop_image = {height: 400, width: 550};
     $scope.img_ref = angular.copy(img_ref);
 
-    $scope.image_url = $scope.image_url = BettyCropper.url($scope.img_ref.id, 'original', DEFAULT_IMAGE_WIDTH, 'jpg');
+    $scope.image_url = BettyCropper.url($scope.img_ref.id, 'original', DEFAULT_IMAGE_WIDTH, 'jpg');
 
     var setupCropper = function () {
       $('#crop-image').Jcrop({
@@ -116,7 +116,7 @@ angular.module('bulbsCmsApp')
     $scope.setThumbStyles = function (image, selections) {
       $scope.thumb_styles = $scope.thumb_styles || {};
 
-      for (var ratio in selections) {
+      for (var ratio in image.selections) {
         $scope.thumb_styles[ratio] = $scope.computeThumbStyle(
           image, $scope.thumb, selections[ratio]
         );
@@ -135,14 +135,17 @@ angular.module('bulbsCmsApp')
         selection_length = s_width;
       }
 
-      styles = {};
+      styles = {
+        'background-image': 'url(' + $scope.image.url('original', DEFAULT_IMAGE_WIDTH, 'jpg') + ')',
+        'background-repeat': 'no-repeat'
+      };
       scale = thumb[h_or_w] / selection_length;
-      styles['background'] = 'url(' + $scope.image_url + ')';
+      // styles['background'] = 'url(' + $scope.image_url + ')';
       styles['background-size'] = $scope.scaleNumber($scope.image.width, scale) + 'px';
       styles['background-position'] = '' +
         '-' + $scope.scaleNumber(selection.x0, scale) + 'px ' +
         '-' + $scope.scaleNumber(selection.y0, scale) + 'px';
-      styles['background-repeat'] = 'no-repeat';
+      // styles['background-repeat'] = 'no-repeat';
       styles['height'] = $scope.scaleNumber(s_height, scale) + 'px';
       styles['width'] = $scope.scaleNumber(s_width, scale) + 'px';
       styles['top'] = '50%';
@@ -245,6 +248,7 @@ angular.module('bulbsCmsApp')
       BettyCropper.detail($scope.img_ref.id)
         .success(function (data) {
           $scope.image = data;
+          // console.log($scope.image);
           if (cropsToEdit) {
             $scope.image.selections = {'16x9': $scope.image.selections['16x9']};
           }

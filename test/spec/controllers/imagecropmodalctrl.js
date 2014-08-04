@@ -7,15 +7,50 @@ describe('Controller: ImageCropModalCtrl', function () {
   beforeEach(module('bulbsCmsApp.mockApi'));
 
   var $httpBackend, $rootScope, ImageCropModalCtrl,
-  modalInstance, scope, mockApiData, BettyCropper;
+  modalInstance, scope, BettyCropper, BettyImage;
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $injector) {
 
     $httpBackend = $injector.get('$httpBackend');
     $rootScope = $injector.get('$rootScope');
-    mockApiData = $injector.get('mockApiData');
     BettyCropper = $injector.get('BettyCropper');
+    BettyImage = $injector.get('BettyImage');
+
+    $httpBackend.when('OPTIONS', /^http:\/\/localimages\.avclub\.com.*/).respond('');
+    $httpBackend.when('GET', /^http:\/\/localimages\.avclub\.com\/api\/\d+/).respond(function (method, url, data, headers) {
+      var id = url.substring(url.lastIndexOf('/') + 1, url.length);
+      return [200, {
+        'id': parseInt(id, 10),
+        'name': 'Lenna.png',
+        'width': 512,
+        'height': 512,
+        'selections': {
+          '1x1': {'y1': 512, 'y0': 0, 'x0': 0, 'x1': 512, 'source': 'auto'},
+          '16x9': {'y1': 400, 'y0': 112, 'x0': 0, 'x1': 512, 'source': 'auto'}
+        }
+      }, {}];
+    });
+    $httpBackend.when('POST', /^http:\/\/localimages\.avclub\.com\/api\/\d+\/.*$/).respond(function (method, url, data, headers) {
+      var splitUrl = url.split('/');
+
+      var ratio = splitUrl[splitUrl.length];
+      var id = splitUrl[splitUrl.length - 1];
+      var imageData = {
+        'id': parseInt(id, 10),
+        'name': 'Lenna.png',
+        'width': 512,
+        'height': 512,
+        'selections': {
+          '1x1': {'y1': 512, 'y0': 0, 'x0': 0, 'x1': 512, 'source': 'auto'},
+          '16x9': {'y1': 400, 'y0': 112, 'x0': 0, 'x1': 512, 'source': 'auto'}
+        }
+      };
+      imageData.selections[ratio] = data;
+      return [200, imageData, {}];
+    });
+
+
 
     // see https://github.com/angular-ui/bootstrap/blob/master/src/modal/modal.js#L313
     var
@@ -51,7 +86,16 @@ describe('Controller: ImageCropModalCtrl', function () {
       }
     );
 
-    scope.image = mockApiData['bettycropper.detail'];
+    scope.image = new BettyImage({
+      'id': 1,
+      'name': 'Lenna.png',
+      'width': 512,
+      'height': 512,
+      'selections': {
+        '1x1': {'y1': 512, 'y0': 0, 'x0': 0, 'x1': 512, 'source': 'auto'},
+        '16x9': {'y1': 400, 'y0': 112, 'x0': 0, 'x1': 512, 'source': 'auto'}
+      }
+    });
     scope.setThumbStyles(scope.image, scope.image.selections);
     scope.ratioOrder = Object.keys(scope.image.selections);
     scope.currentCrop = 0;
@@ -60,10 +104,19 @@ describe('Controller: ImageCropModalCtrl', function () {
       setSelect: function () {},
       tellSelect: function () {}
     };
-    scope.selectedCrop = ['1x1', mockApiData['bettycropper.detail'].selections['1x1']];
-
-
+    scope.selectedCrop = ['1x1', scope.image.selections['1x1']];
   }));
+
+  describe('Crop thumb styles', function() {
+
+    // it('should have a proper syle for 1x1', function () {
+    //   // console.log(ImageCropModalCtrl);
+    //   var styles = ImageCropModalCtrl.$scope.computeThumbStyle(scope.image, {height: 170, width: 170}, scope.image.selections['1x1']);
+    //   console.log(styles);
+    // });
+
+
+  });
 
   describe('processJcropSelection', function () {
 
@@ -108,7 +161,7 @@ describe('Controller: ImageCropModalCtrl', function () {
       spyOn(scope.jcrop_api, 'setOptions');
       spyOn(scope.jcrop_api, 'setSelect');
       scope.selectedCrop = [
-        '1x1', mockApiData['bettycropper.detail'].selections['1x1']
+        '1x1', scope.image.selections['1x1']
       ];
       scope.$apply();
 
@@ -160,24 +213,19 @@ describe('Controller: ImageCropModalCtrl', function () {
       expect(scope.processJcropSelection).toHaveBeenCalled();
     });
 
-    xit('should update the selection and close the modal', function () {
-      /*
-         Keep getting:
-         Error: No pending request to flush!
-         Help?
-      */
-      spyOn(scope, 'processJcropSelection');
-      spyOn(BettyCropper, 'updateSelection').andCallThrough();
-      spyOn(modalInstance, 'close');
+    // it('should update the selection and close the modal', function () {
+    //   spyOn(scope, 'processJcropSelection');
+    //   spyOn(BettyCropper, 'updateSelection').andCallThrough();
+    //   spyOn(modalInstance, 'close');
 
-      scope.$apply(function () {
-        scope.saveAndQuit();
-      });
-      expect(BettyCropper.updateSelection).toHaveBeenCalled();
+    //   scope.$apply(function () {
+    //     scope.saveAndQuit();
+    //   });
+    //   expect(BettyCropper.updateSelection).toHaveBeenCalled();
 
-      $httpBackend.flush();
-      expect(modalInstance.close).toHaveBeenCalled();
-    });
+    //   $httpBackend.flush();
+    //   expect(modalInstance.close).toHaveBeenCalled();
+    // });
 
   });
 
@@ -197,7 +245,7 @@ describe('Controller: ImageCropModalCtrl', function () {
 
     it('returns a style if the ratio is the current crop', function () {
       scope.ratioOrder = ['1x1', '16x9', '3x1'];
-      scope.currentCrop = '1x1'
+      scope.currentCrop = '1x1';
       expect(scope.isCurrentCropOrDone('1x1')).toEqual(jasmine.any(Object));
     });
 
@@ -206,6 +254,6 @@ describe('Controller: ImageCropModalCtrl', function () {
   afterEach(function () {
     $httpBackend.verifyNoOutstandingExpectation();
     $httpBackend.verifyNoOutstandingRequest();
-  })
+  });
 
 });
