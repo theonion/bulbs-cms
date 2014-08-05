@@ -154,10 +154,10 @@ angular.module('bulbsCmsApp')
       return styles;
     };
 
-    $scope.computeImageTagStyle = function (image, thumb) {
+    $scope.computeImageTagStyle = function (thumb) {
       var styles = {};
 
-      if (image.width > image.height) {
+      if ($scope.image.width > $scope.image.height) {
         styles.width = thumb.width;
       } else {
         styles.height = thumb.height;
@@ -248,7 +248,6 @@ angular.module('bulbsCmsApp')
       BettyCropper.detail($scope.img_ref.id)
         .success(function (data) {
           $scope.image = data;
-          // console.log($scope.image);
           if (cropsToEdit) {
             $scope.image.selections = {'16x9': $scope.image.selections['16x9']};
           }
@@ -256,25 +255,24 @@ angular.module('bulbsCmsApp')
           $scope.ratioOrder = Object.keys($scope.image.selections);
 
           $scope.crop_image_style = $scope.computeImageTagStyle(
-            angular.element('#crop-image img')[0],
             $scope.crop_image
           );
 
-          var cropper = angular.element('.image-cropper-modal');
-          cropper.focus(); // for capturing key events
-          cropper.on('keyup', function (e) {
-            if (e.which === 13) {
-              if ($scope.cropMode) {
-                if ($scope.uncomputedCrops.length) {
-                  $scope.saveAndNext();
-                } else {
-                  $scope.saveAndQuit();
-                }
-              } else if ($scope.finished) {
-                $modalInstance.close();
-              }
-            }
-          });
+          // var cropper = angular.element('.image-cropper-modal');
+          // cropper.focus(); // for capturing key events
+          // cropper.on('keyup', function (e) {
+          //   if (e.which === 13) {
+          //     if ($scope.cropMode) {
+          //       if ($scope.uncomputedCrops.length) {
+          //         $scope.saveAndNext();
+          //       } else {
+          //         $scope.saveAndQuit();
+          //       }
+          //     } else if ($scope.finished) {
+          //       $modalInstance.close();
+          //     }
+          //   }
+          // });
 
         });
     };

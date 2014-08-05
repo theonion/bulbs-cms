@@ -1,6 +1,7 @@
 'use strict';
 
 var BettyCropper = angular.module('BettyCropper', ['restangular']);
+BettyCropper.value('DEFAULT_IMAGE_WIDTH', 1200);
 BettyCropper.factory('Selection', function () {
 
   function Selection(data) {
@@ -20,19 +21,30 @@ BettyCropper.factory('Selection', function () {
   };
 
   Selection.prototype.scaleToFit = function (width, height) {
-    var fitRatio = width / height;
-    var thisRatio = this.width() / this.height();
+
     var scale;
-    if (fitRatio > thisRatio) {
-      scale = height/ this.height();
+    if (width && height) {
+      var fitRatio = width / height;
+      var thisRatio = this.width() / this.height();
+      if (fitRatio > thisRatio) {
+        scale = height/ this.height();
+      } else {
+        scale = width / this.width();
+      }
     } else {
-      scale = width / this.width();
+      if (width) {
+        scale = width / this.width();
+      }
+      if (height) {
+        scale = height/ this.height();
+      }
     }
+
     var scaledToFit = new Selection({
-      x0: Math.floor(this.x0 * scale),
-      x1: Math.floor(this.x1 * scale),
-      y0: Math.floor(this.y0 * scale),
-      y1: Math.floor(this.y1 * scale)
+      x0: Math.round(this.x0 * scale),
+      x1: Math.round(this.x1 * scale),
+      y0: Math.round(this.y0 * scale),
+      y1: Math.round(this.y1 * scale)
     });
     return scaledToFit;
   };
@@ -49,7 +61,7 @@ BettyCropper.factory('Selection', function () {
 //   });
 //   return api.service('api');
 // });
-BettyCropper.factory('BettyImage', function ($interpolate, $http, IMAGE_SERVER_URL, BC_API_KEY, Selection) {
+BettyCropper.factory('BettyImage', function ($interpolate, $http, IMAGE_SERVER_URL, BC_API_KEY, DEFAULT_IMAGE_WIDTH, Selection) {
 
   function BettyImage(data) {
     this.id = data.id;
@@ -61,6 +73,28 @@ BettyCropper.factory('BettyImage', function ($interpolate, $http, IMAGE_SERVER_U
       this.selections[ratio] = new Selection(data.selections[ratio]);
     }
   }
+
+  BettyImage.prototype.getStyles = function(element, ratio) {
+    var width = element.parent().width();
+    var height = element.parent().height();
+
+    if (height === 0) {
+      height = null;
+    }
+
+    var selection = this.selections[ratio];
+    var scaledSelection = selection.scaleToFit(width, height);
+
+    return {
+      'background-image': 'url(' + this.url('original', DEFAULT_IMAGE_WIDTH, 'jpg') + ')',
+      'background-size': Math.floor(scaledSelection.width() / selection.width()  * this.width) + 'px',
+      'background-position': '-' + scaledSelection.x0 + 'px -' + scaledSelection.y0 + 'px',
+      'height': scaledSelection.height() + 'px',
+      'width': scaledSelection.width() + 'px',
+      'background-repeat': 'no-repeat',
+      'position': 'relative'
+    };
+  };
 
   BettyImage.prototype.url = function (ratio, width, format) {
     var exp = $interpolate(

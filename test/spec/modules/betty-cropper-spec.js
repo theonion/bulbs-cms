@@ -65,39 +65,28 @@ describe('Selection Object', function () {
 
 describe('Image object', function () {
     // load the controller's module
-  beforeEach(module('BettyCropper'));
 
   var BettyImage, $httpBackend, BettyCropper;
-  beforeEach(inject(function ($controller, $injector) {
-    BettyImage = $injector.get('BettyImage');
-    BettyCropper = $injector.get('BettyCropper');
-    $httpBackend = $injector.get('$httpBackend');
-    
-    $httpBackend.when('OPTIONS', /^http:\/\/localimages\.avclub\.com.*/).respond('');
-    $httpBackend.when('GET', /^http:\/\/localimages\.avclub\.com\/api\/\d+/).respond(function (method, url, data, headers) {
-      var id = url.substring(url.lastIndexOf('/') + 1, url.length);
-      return [200, {
-        'id': parseInt(id, 10),
-        'name': 'Lenna.png',
-        'width': 512,
-        'height': 512,
-        'selections': {
-          '1x1': {'y1': 512, 'y0': 0, 'x0': 0, 'x1': 512, 'source': 'auto'},
-          '16x9': {'y1': 400, 'y0': 112, 'x0': 0, 'x1': 512, 'source': 'auto'}
-        }
-      }, {}];
+  beforeEach(function() {
+
+    module('BettyCropper');
+    module('BettyCropper.mockApi');
+    module('ng');
+
+    inject(function ($controller, $injector) {
+      BettyImage = $injector.get('BettyImage');
+      BettyCropper = $injector.get('BettyCropper');
+      $httpBackend = $injector.get('$httpBackend');
     });
-  }));
+  });
 
   it('should load properly', function() {
-    // console.log(BettyImage);
 
-    var prom = BettyCropper.detail(9);
-    $httpBackend.flush();
-    prom.then(function(response){
+    BettyCropper.get(9).then(function(response){
       var image = response.data;
       expect(image.id).toBe(9);
     });
+    $httpBackend.flush();
 
   });
 
@@ -114,6 +103,29 @@ describe('Image object', function () {
     image.id = 12345;
     
     expect(image.url('16x9', 200, 'jpg')).toBe('http://localimages.avclub.com/1234/5/16x9/200.jpg');
+  });
+
+  it('should generate proper styles', function () {
+    var image = new BettyImage({
+      'id': 518776,
+      'name': 'Franco.jpg',
+      'width': 1000,
+      'height': 667,
+      'selections': {
+        '16x9': {'y1': 566, 'y0': 54, 'x0': 89, 'x1': 1000, 'source': 'user'},
+        '3x1': {'y1': 398, 'y0': 63, 'x0': 87, 'x1': 1000, 'source': 'user'},
+        '1x1': {'y1': 667, 'y0': 20, 'x0': 267, 'x1': 934, 'source': 'user'}
+      },
+      'credit': null
+    });
+    var parentEl = $('<div class="parent" style="width: 400px; height: 900px;"><div class="child"></div></div>');
+    var childEl = parentEl.find('.child');
+    var styles = image.getStyles(childEl, '16x9');
+
+    expect(styles['background-size']).toBe('439px');
+    expect(styles['background-position']).toBe('-39px -24px');
+    expect(styles['height']).toBe('225px');
+    expect(styles['width']).toBe('400px');
   });
 
   afterEach(function() {

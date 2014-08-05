@@ -31,10 +31,13 @@ module.exports = function(config) {
       'app/bower_components/onion-editor/build/onion-editor.min.js',
       'app/bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js',
       'app/bower_components/Keypress/keypress.js',
-      'app/scripts/*.js',
-      'app/scripts/**/*.js',
+      
       'app/mocks/app.js',
       'app/mocks/api.js',
+      'app/mocks/betty.js',
+
+      'app/scripts/*.js',
+      'app/scripts/**/*.js',
       'test/spec/**/*.js',
       'test/config.js',
       'app/views/**/*.html'
