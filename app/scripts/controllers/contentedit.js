@@ -61,6 +61,19 @@ angular.module('bulbsCmsApp')
         saveToContentApi();
       }
     });
+    
+    $scope.saveArticleIfDirty = function () {
+      /*this is only for operations that trigger a saveArticle (e.g. send to editor)
+      if the article isn't dirty, we don't want to fire saveArticle
+      and possibly trigger the last-modified-guard or whatever else*/
+      if ($scope.articleIsDirty) {
+        return $scope.saveArticle();
+      } else {
+        //resolves immediately with article as the resolved value
+        //(saveArticle resolves to article as well)
+        return $q.when($scope.article);
+      }
+    };
 
     $scope.saveArticle = function () {
       Localstoragebackup.backupToLocalStorage();
