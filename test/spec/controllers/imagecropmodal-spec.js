@@ -53,6 +53,7 @@ describe('ImageCropModalCtrl', function () {
       }
     );
     $scope.onInit();
+    $httpBackend.flush();
     expect($scope.image.id).toBe(9);
 
     // ImageCropModalCtrl.scope.onInit();
