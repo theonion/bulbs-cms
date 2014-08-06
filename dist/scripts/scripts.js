@@ -261,6 +261,7 @@ angular.module('bulbsCmsApp', [
     .when('/cms/app/edit/:id/', {
       templateUrl: routes.PARTIALS_URL + 'contentedit.html',
       controller: 'ContenteditCtrl',
+      reloadOnSearch: false
     })
     .when('/cms/app/promotion/', {
       templateUrl:  routes.PARTIALS_URL + 'promotion.html',
@@ -296,6 +297,7 @@ angular.module('bulbsCmsApp', [
 
   $httpProvider.interceptors.push('BugReportInterceptor');
   $httpProvider.interceptors.push('PermissionsInterceptor');
+  $httpProvider.interceptors.push('BadRequestInterceptor');
 
 })
 .run(function ($rootScope, $http, $cookies) {
@@ -437,7 +439,7 @@ angular.module('bulbsCmsApp')
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, keypress, Raven,
-    IfExistsElse, Localstoragebackup, ContentApi, ReviewApi, Login, routes)
+    IfExistsElse, Localstoragebackup, ContentApi, Login, routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
@@ -446,12 +448,7 @@ angular.module('bulbsCmsApp')
 
     var getArticleCallback = function (data) {
       $window.article = $scope.article = data; //exposing article on window for debugging
-      if ($location.search().rating_type && (!data.ratings || data.ratings.length === 0)) {
-        $scope.article.ratings = [{
-          type: $location.search().rating_type,
-          media_item: {}
-        }];
-      }
+
       $scope.last_saved_article = angular.copy(data);
 
       $scope.$watch('article.image.id', function (newVal, oldVal) {
@@ -493,6 +490,19 @@ angular.module('bulbsCmsApp')
         saveToContentApi();
       }
     });
+    
+    $scope.saveArticleIfDirty = function () {
+      /*this is only for operations that trigger a saveArticle (e.g. send to editor)
+      if the article isn't dirty, we don't want to fire saveArticle
+      and possibly trigger the last-modified-guard or whatever else*/
+      if ($scope.articleIsDirty) {
+        return $scope.saveArticle();
+      } else {
+        //resolves immediately with article as the resolved value
+        //(saveArticle resolves to article as well)
+        return $q.when($scope.article);
+      }
+    };
 
     $scope.saveArticle = function () {
       Localstoragebackup.backupToLocalStorage();
@@ -525,88 +535,17 @@ angular.module('bulbsCmsApp')
     listener.simple_combo('ctrl s', function (e) { $scope.saveArticle(); });
 
     $scope.postValidationSaveArticle = function () {
-
       var data = $scope.article;
-
       if ($scope.article.status !== 'Published') {
         $scope.article.slug = $window.URLify($scope.article.title, 50);
       }
-
-      //because media_items get saved to a different API,
-      //have to save all unsaved media_items first
-      //then once thats done save the article.
-      //should probably use PROMISES here but for now
-      //using a good ol fashioned COUNTER
-      $scope.mediaItemCallbackCounter = (data.ratings && data.ratings.length) || saveToContentApi();
-      for (var i in data.ratings) {
-        var show;
-
-        if (data.ratings[i].type === 'tvseason') {
-          var identifier = data.ratings[i].media_item.identifier;
-          show = data.ratings[i].media_item.show;
-          IfExistsElse.ifExistsElse(
-            ReviewApi.all('tvseason').getList({
-              season: identifier,
-              show: show
-            }),
-            {identifier: identifier, show: show},
-            mediaItemExistsCbkFactory(i),
-            mediaItemDoesNotExistCbkFactory(i),
-            saveArticleErrorCbk
-          );
-        } else if (data.ratings[i].type === 'tvepisode') {
-          show = data.ratings[i].media_item.show;
-          var season = data.ratings[i].media_item.season;
-          var episode = data.ratings[i].media_item.episode;
-          IfExistsElse.ifExistsElse(
-            ReviewApi.all('tvepisode').getList({
-              show: show,
-              season: season,
-              episode: episode
-            }),
-            {show: show, season: season, episode: parseInt(episode)},
-            mediaItemExistsCbkFactory(i),
-            mediaItemDoesNotExistCbkFactory(i),
-            saveArticleErrorCbk
-          );
-        } else {
-          saveMediaItem(i);
-        }
-      }
+      saveToContentApi();
       return $scope.saveArticleDeferred.promise;
-    };
-
-    function mediaItemExistsCbkFactory(index) {
-      return function (media_item) {
-        $scope.article.ratings[index].media_item = media_item;
-        $scope.mediaItemCallbackCounter -= 1;
-      };
-    }
-
-    function mediaItemDoesNotExistCbkFactory(index) {
-      return function () {
-        saveMediaItem(index);
-      };
     }
 
     var saveHTML =  '<i class=\'glyphicon glyphicon-floppy-disk\'></i> Save';
     var navbarSave = '.navbar-save';
 
-    function saveMediaItem(index) {
-      var type = $scope.article.ratings[index].type;
-      var mediaItem = $scope.article.ratings[index].media_item;
-      mediaItem = ReviewApi.restangularizeElement(null, mediaItem, type);
-      var q;
-      if (mediaItem.id) {
-        q = mediaItem.put();
-      } else {
-        q = mediaItem.post();
-      }
-      q.then(function (resp) {
-        $scope.article.ratings[index].media_item = resp;
-        $scope.mediaItemCallbackCounter -= 1;
-      }).catch(saveArticleErrorCbk);
-    }
 
     function saveToContentApi() {
       $(navbarSave).html('<i class=\'glyphicon glyphicon-refresh fa-spin\'></i> Saving');
@@ -651,21 +590,6 @@ angular.module('bulbsCmsApp')
         $window.onbeforeunload = function () {};
       }
     });
-
-    $scope.addRating = function (type) {
-      $scope.article.ratings.push({
-        grade: '',
-        type: type,
-        media_item: {
-          'type': type
-        }
-      });
-      $('#add-review-modal').modal('hide');
-    };
-
-    $scope.deleteRating = function (index) {
-      $scope.article.ratings.splice(index, 1);
-    };
 
     $scope.publishSuccessCbk = function () {
       return getContent();
@@ -1933,9 +1857,11 @@ angular.module('bulbsCmsApp')
           });
         };
 
-        if (scope.image && scope.image.id) {
-          scope.showImage();
-        }
+        scope.$watch('image', function(){ 
+          if (scope.image && scope.image.id) {
+            scope.showImage();
+          }
+        }, true);
 
       }
     };
@@ -2314,47 +2240,6 @@ angular.module('bulbsCmsApp')
 
 'use strict';
 
-angular.module('bulbsCmsApp')
-  .directive('listinput', function ($, routes) {
-    return {
-      restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'listinput.html',
-      scope: {
-        'model': '='
-      },
-      link: function (scope, element, attrs) {
-        scope.label = attrs.label;
-        scope.noun = attrs.noun;
-        element.find('input')[0].setAttribute('name', attrs.noun);
-        element.find('input').bind('focus', function (e) {
-          $(element).find('.preview').hide();
-          $(element).find('.all-container').show();
-        });
-        element.find('input').bind('blur', function (e) {
-          $(element).find('.all-container').hide();
-          $(element).find('.preview').show();
-        });
-        element.find('input').bind('keyup', function (e) {
-          if (e.keyCode === 13) {
-            var value = $(this).val();
-            if (value.length > 0) {
-              if (!scope.model) {
-                scope.model = [];
-              }
-              scope.model.push($(this).val());
-              scope.$apply();
-              $(this).val('');
-            }
-
-          }
-        });
-      }
-
-    };
-  });
-
-'use strict';
-
 angular.module('bulbsCmsApp').directive(
   'videoUpload',
   function ($http, $window, $timeout, $sce, $, routes) {
@@ -2529,124 +2414,6 @@ angular.module('bulbsCmsApp')
       link: function (scope, element, attrs) {
         scope.current_user = CurrentUser;
       }
-    };
-  });
-
-'use strict';
-
-angular.module('bulbsCmsApp')
-  .directive('mediaRating', function ($http, $, routes) {
-    return {
-      restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'rating.html',
-      scope: true,
-      controller: function ($scope) {
-        $scope.search = function (el) {
-          $scope.searchTimeout = null;
-          var inputs = el.find('.media-field input');
-          var searchParams = {};
-          for (var i = 0;i < inputs.length;i++) {
-            if ($(inputs[i]).val() !== '') {
-              searchParams[$(inputs[i]).attr('name')] = $(inputs[i]).val();
-            }
-          }
-          $http({
-            method: 'GET',
-            url: '/reviews/api/v1/' + $scope.article.ratings[$scope.index].type + '/search',
-            params: searchParams
-          }).success(function (data) {
-            $scope.searchResults = [];
-            for (var key in data) {
-              for (var index in data[key]) {
-                $scope.searchResults.push(data[key][index]);
-              }
-            }
-          });
-        };
-
-        $scope.mediaItemTemplate = function () {
-          return $scope.MEDIA_ITEM_PARTIALS_URL + $scope.article.ratings[$scope.index].type.toLowerCase() + '.html' + $scope.CACHEBUSTER;
-        };
-        $scope.tvShowDisplay = function (x) {
-          return x.name;
-        };
-        $scope.tvShowCallback = function (x, input, freeForm) {
-          if (freeForm) {
-            $scope.article.ratings[$scope.index].media_item.show = $(input).val();
-          } else {
-            $scope.article.ratings[$scope.index].media_item.show = x.name;
-          }
-        };
-        $scope.tvShowRemove = function (x) {
-          $scope.article.ratings[$scope.index].media_item.show = null;
-        };
-      },
-      link: function (scope, element, attrs) {
-        var $element = $(element);
-        scope.index = attrs.index;
-        scope.searchResults = [];
-
-        $element.on('keypress', 'input.letter', function (e) {
-          var chars = {
-            65: 'A',
-            66: 'B',
-            67: 'C',
-            68: 'D',
-            70: 'F',
-            97: 'A',
-            98: 'B',
-            99: 'C',
-            100: 'D',
-            102: 'F'
-          };
-          var mods = {
-            45: '-',
-            95: '_',
-            43: '+',
-            61: '+'
-          };
-          if (e.charCode in chars || e.charCode in mods) {
-            var val = $(this).val();
-            var oldChar = val.match(/[ABCDF]/);
-            oldChar = oldChar ? oldChar[0] : '';
-            var oldMod = val.match(/[+-]/);
-            oldMod = oldMod ? oldMod[0] : '';
-            var newVal;
-            if (e.charCode in chars) {
-              newVal = chars[e.charCode] + oldMod;
-            }
-            if (e.charCode in mods) {
-              newVal = oldChar + mods[e.charCode];
-            }
-            $(this).val(newVal);
-            $(this).trigger('input');
-          }
-          return false;
-
-        });
-        scope.searchTimeout = null;
-        // $element.on('keydown', '.media-field input', function (e) {
-        //     if (scope.searchTimeout !== null) {
-        //         window.clearTimeout(scope.searchTimeout);
-        //     }
-        //     scope.searchTimeout = window.setTimeout(function () {
-        //         scope.search($element);
-        //     }, 250);
-        // });
-
-        $element.on('keyup', 'input[name="show"]', function (e) {
-          var val = $element.find('input[name="show"]').val();
-          $http({
-            method: 'GET',
-            url: '/reviews/api/v1/tvshow/?format=json',
-            params: {'q': val}
-          }).success(function (data) {
-            scope.shows = data.results;
-          });
-        });
-
-      }
-
     };
   });
 
@@ -3220,18 +2987,6 @@ angular.module('bulbsCmsApp')
   })
   .constant('contentApiConfig', {
     baseUrl: '/cms/api/v1'
-  });
-
-'use strict';
-
-angular.module('bulbsCmsApp')
-  .factory('ReviewApi', function (Restangular, reviewApiConfig) {
-    return Restangular.withConfig(function (RestangularConfigurer) {
-      RestangularConfigurer.setBaseUrl(reviewApiConfig.baseUrl);
-    });
-  })
-  .constant('reviewApiConfig', {
-    baseUrl: '/reviews/api/v1',
   });
 
 'use strict';
@@ -4015,7 +3770,7 @@ angular.module('bulbsCmsApp')
 
     $scope.$watch('uploadedImage.id', function () {
       if ($scope.uploadedImage.id) {
-        $scope.video.poster = STATIC_IMAGE_URL.replace('{{image}}', $scope.uploadedImage.id);
+        $scope.video.poster = STATIC_IMAGE_URL.replace('{{ratio}}', '16x9').replace('{{image}}', $scope.uploadedImage.id);
       }
     });
 
@@ -4120,39 +3875,18 @@ angular.module('bulbsCmsApp')
         'image': '='
       },
       link: function postLink(scope, element, attrs) {
+        if (attrs.ratio) {
+          var ratio = attrs.ratio;
+        } else {
+          var ratio = '16x9';
+        }
         scope.$watch('image', function () {
           if (scope.image && scope.image.id) {
-            scope.imageUrl = STATIC_IMAGE_URL.replace('{{image}}', scope.image.id);
+            scope.imageUrl = STATIC_IMAGE_URL.replace('{{ratio}}', ratio).replace('{{image}}', scope.image.id);
           } else {
             scope.imageUrl = false;
           }
         });
-      }
-    };
-  });
-
-'use strict';
-
-angular.module('bulbsCmsApp')
-  .directive('tvshowField', function (routes) {
-    return {
-      templateUrl: routes.PARTIALS_URL + 'textlike-autocomplete-field.html',
-      restrict: 'E',
-      replace: true,
-      link: function postLink(scope, element, attrs) {
-        scope.name = 'tvshow';
-        scope.label = 'Show';
-        scope.placeholder = 'The Simpsons';
-        scope.resourceUrl = '/reviews/api/v1/tvshow/?q=';
-
-        scope.$watch('article.ratings', function () {
-          scope.model = scope.article.ratings[scope.index].media_item.show;
-        }, true);
-
-        scope.display = scope.tvShowDisplay;
-        scope.add = scope.tvShowCallback;
-        scope.delete = scope.tvShowRemove;
-
       }
     };
   });
@@ -4267,3 +4001,28 @@ angular.module('bulbsCmsApp').factory('PermissionsInterceptor', function ($q, $i
     }
   };
 });
+angular.module('bulbsCmsApp').factory('BadRequestInterceptor', function ($q, $injector, routes) {
+    return {
+      responseError: function (rejection) {
+        $injector.invoke(function($modal){
+          if (rejection.status === 400) {
+            var detail = rejection.data || {'something': ['Something was wrong with your request.']};
+            $modal.open({
+              templateUrl: routes.PARTIALS_URL + 'modals/400-modal.html',
+              controller: 'BadrequestmodalCtrl',
+              resolve: {
+                detail: function(){ return detail; }
+              }
+            });
+          }
+        });
+        return $q.reject(rejection);
+      }
+    }
+  });
+'use strict';
+
+angular.module('bulbsCmsApp')
+  .controller('BadrequestmodalCtrl', function ($scope, $modalInstance, detail) {
+    $scope.detail = detail;
+  });
