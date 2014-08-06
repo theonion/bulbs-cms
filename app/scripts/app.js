@@ -43,6 +43,7 @@ angular.module('bulbsCmsApp', [
     .when('/cms/app/edit/:id/', {
       templateUrl: routes.PARTIALS_URL + 'contentedit.html',
       controller: 'ContenteditCtrl',
+      reloadOnSearch: false
     })
     .when('/cms/app/promotion/', {
       templateUrl:  routes.PARTIALS_URL + 'promotion.html',
@@ -78,6 +79,7 @@ angular.module('bulbsCmsApp', [
 
   $httpProvider.interceptors.push('BugReportInterceptor');
   $httpProvider.interceptors.push('PermissionsInterceptor');
+  $httpProvider.interceptors.push('BadRequestInterceptor');
 
 })
 .run(function ($rootScope, $http, $cookies) {

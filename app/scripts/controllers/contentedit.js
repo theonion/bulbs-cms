@@ -5,7 +5,7 @@ angular.module('bulbsCmsApp')
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, keypress, Raven,
-    IfExistsElse, Localstoragebackup, ContentApi, ReviewApi, Login, routes)
+    IfExistsElse, Localstoragebackup, ContentApi, Login, routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
@@ -14,12 +14,7 @@ angular.module('bulbsCmsApp')
 
     var getArticleCallback = function (data) {
       $window.article = $scope.article = data; //exposing article on window for debugging
-      if ($location.search().rating_type && (!data.ratings || data.ratings.length === 0)) {
-        $scope.article.ratings = [{
-          type: $location.search().rating_type,
-          media_item: {}
-        }];
-      }
+
       $scope.last_saved_article = angular.copy(data);
 
       $scope.$watch('article.image.id', function (newVal, oldVal) {
@@ -106,88 +101,17 @@ angular.module('bulbsCmsApp')
     listener.simple_combo('ctrl s', function (e) { $scope.saveArticle(); });
 
     $scope.postValidationSaveArticle = function () {
-
       var data = $scope.article;
-
       if ($scope.article.status !== 'Published') {
         $scope.article.slug = $window.URLify($scope.article.title, 50);
       }
-
-      //because media_items get saved to a different API,
-      //have to save all unsaved media_items first
-      //then once thats done save the article.
-      //should probably use PROMISES here but for now
-      //using a good ol fashioned COUNTER
-      $scope.mediaItemCallbackCounter = (data.ratings && data.ratings.length) || saveToContentApi();
-      for (var i in data.ratings) {
-        var show;
-
-        if (data.ratings[i].type === 'tvseason') {
-          var identifier = data.ratings[i].media_item.identifier;
-          show = data.ratings[i].media_item.show;
-          IfExistsElse.ifExistsElse(
-            ReviewApi.all('tvseason').getList({
-              season: identifier,
-              show: show
-            }),
-            {identifier: identifier, show: show},
-            mediaItemExistsCbkFactory(i),
-            mediaItemDoesNotExistCbkFactory(i),
-            saveArticleErrorCbk
-          );
-        } else if (data.ratings[i].type === 'tvepisode') {
-          show = data.ratings[i].media_item.show;
-          var season = data.ratings[i].media_item.season;
-          var episode = data.ratings[i].media_item.episode;
-          IfExistsElse.ifExistsElse(
-            ReviewApi.all('tvepisode').getList({
-              show: show,
-              season: season,
-              episode: episode
-            }),
-            {show: show, season: season, episode: parseInt(episode)},
-            mediaItemExistsCbkFactory(i),
-            mediaItemDoesNotExistCbkFactory(i),
-            saveArticleErrorCbk
-          );
-        } else {
-          saveMediaItem(i);
-        }
-      }
+      saveToContentApi();
       return $scope.saveArticleDeferred.promise;
-    };
-
-    function mediaItemExistsCbkFactory(index) {
-      return function (media_item) {
-        $scope.article.ratings[index].media_item = media_item;
-        $scope.mediaItemCallbackCounter -= 1;
-      };
-    }
-
-    function mediaItemDoesNotExistCbkFactory(index) {
-      return function () {
-        saveMediaItem(index);
-      };
     }
 
     var saveHTML =  '<i class=\'glyphicon glyphicon-floppy-disk\'></i> Save';
     var navbarSave = '.navbar-save';
 
-    function saveMediaItem(index) {
-      var type = $scope.article.ratings[index].type;
-      var mediaItem = $scope.article.ratings[index].media_item;
-      mediaItem = ReviewApi.restangularizeElement(null, mediaItem, type);
-      var q;
-      if (mediaItem.id) {
-        q = mediaItem.put();
-      } else {
-        q = mediaItem.post();
-      }
-      q.then(function (resp) {
-        $scope.article.ratings[index].media_item = resp;
-        $scope.mediaItemCallbackCounter -= 1;
-      }).catch(saveArticleErrorCbk);
-    }
 
     function saveToContentApi() {
       $(navbarSave).html('<i class=\'glyphicon glyphicon-refresh fa-spin\'></i> Saving');
@@ -232,21 +156,6 @@ angular.module('bulbsCmsApp')
         $window.onbeforeunload = function () {};
       }
     });
-
-    $scope.addRating = function (type) {
-      $scope.article.ratings.push({
-        grade: '',
-        type: type,
-        media_item: {
-          'type': type
-        }
-      });
-      $('#add-review-modal').modal('hide');
-    };
-
-    $scope.deleteRating = function (index) {
-      $scope.article.ratings.splice(index, 1);
-    };
 
     $scope.publishSuccessCbk = function () {
       return getContent();

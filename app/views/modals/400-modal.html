@@ -1,0 +1,13 @@
+<div class="modal-header">
+  <button type="button" class="close" ng-click="$dismiss();" aria-hidden="true">&times;</button>
+  <h4 class="modal-title">Bad Request</h4>
+</div><!--/modal-header-->
+<div class="modal-body">
+  <div ng-repeat="(field, errorList) in detail">
+    <h5>{{field}}</h5>
+    <p ng-repeat="error in errorList">{{error}}</p>
+  </div>
+</div><!--/modal-body-->
+<div class="modal-footer">
+    <button class="btn btn-default" aria-hidden="true" ng-click="$dismiss();">OK</button>
+</div><!--/modal-footer-->
