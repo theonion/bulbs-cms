@@ -80,16 +80,6 @@ describe('Image object', function () {
     });
   });
 
-  it('should load properly', function() {
-
-    BettyCropper.get(9).then(function(response){
-      var image = response.data;
-      expect(image.id).toBe(9);
-    });
-    $httpBackend.flush();
-
-  });
-
   it('should generate a proper url', function () {
     var image = new BettyImage({
       'id': 9,
@@ -131,6 +121,59 @@ describe('Image object', function () {
   afterEach(function() {
     $httpBackend.verifyNoOutstandingExpectation();
     $httpBackend.verifyNoOutstandingRequest();
+  });
+
+});
+
+describe('BettyCropper service', function () {
+  
+  var BettyImage, $httpBackend, BettyCropper;
+  beforeEach(function() {
+
+    module('BettyCropper');
+    module('BettyCropper.mockApi');
+
+    inject(function ($controller, $injector) {
+      BettyImage = $injector.get('BettyImage');
+      BettyCropper = $injector.get('BettyCropper');
+      $httpBackend = $injector.get('$httpBackend');
+    });
+  });
+
+  it('should be able to get an existing image', function () {
+    BettyCropper.get(9).then(function(response){
+      var image = response.data;
+      expect(image.id).toBe(9);
+    });
+    $httpBackend.flush();
+  });
+
+  it('should be able to get an upload a new image', function () {
+    BettyCropper.upload().then(function(image){
+      expect(image.id).toBe(12345);
+      expect(image.name).toBe('Lenna.png');
+    });
+
+    var file = {
+      name: 'Seanna.png',
+      size: 500001,
+      type: 'image/png'
+    };
+
+    var fileList = {
+      0: file,
+      length: 1,
+      item: function (index) { return file; }
+    };
+
+    var input = $('#bulbs-cms-hidden-image-file-input').first();
+    input.triggerHandler({
+      type: 'change',
+      target: {
+        files: fileList
+      }
+    });
+    $httpBackend.flush();
   });
 
 });

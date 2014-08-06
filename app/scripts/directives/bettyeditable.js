@@ -16,15 +16,12 @@ angular.module('bulbsCmsApp')
         $scope.upload = function (e) {
           BettyCropper.upload().then(
             function (success) {
-              if (!$scope.image) {
-                $scope.image = {
-                  id: null,
-                  caption: null,
-                  alt: null
-                };
-                $scope.image.id = success.id;
-                $scope.bettyImage = success;
-              }
+              $scope.image = {
+                id: null,
+                caption: null,
+                alt: null
+              };
+              $scope.bettyImage = success;
             },
             function (error) {
               console.log(error);
@@ -34,31 +31,38 @@ angular.module('bulbsCmsApp')
             }
           );
         };
+
+        $scope.edit = function (e) {
+          openImageCropModal($scope.image).then(function (image) {
+            if (image.id === null) {
+              $scope.image = null;
+            } else {
+              $scope.image = image;
+            }
+          });
+        };
       },
 
       link: function (scope, element, attrs) {
-        var ratioWidth = parseInt(scope.ratio.split('x')[0], 10);
-        var ratioHeight = parseInt(scope.ratio.split('x')[1], 10);
 
-        scope.imageStyling = {
-          'background-color': '#333',
-          'position': 'relative',
-          'width': element.parent().width(),
-          'height': Math.floor(element.parent().width() * ratioHeight / ratioWidth) + 'px',
-        };
-
-        if (scope.bettyImage) {
-          scope.setStyles();
-        } else {
-          BettyCropper.get(scope.image.id).then(function(response){
-            scope.bettyImage = response.data;
-            scope.setStyles();
-          });
+        if (scope.bettyImage === undefined) {
+          scope.bettyImage = null;
         }
 
-        scope.setStyles = function () {
-          scope.imageStyling = scope.bettyImage.getStyles(element, scope.ratio);
-        };
+        scope.$watch('bettyImage', function (oldValue, newValue) {
+          if (scope.bettyImage) {
+            scope.imageStyling = scope.bettyImage.getStyles(element, scope.ratio);
+          } else {
+            var ratioWidth = parseInt(scope.ratio.split('x')[0], 10);
+            var ratioHeight = parseInt(scope.ratio.split('x')[1], 10);
+            scope.imageStyling = {
+              'background-color': '#333',
+              'position': 'relative',
+              'width': element.parent().width(),
+              'height': Math.floor(element.parent().width() * ratioHeight / ratioWidth) + 'px',
+            };
+          }
+        }, true);
 
         scope.removeImage = function () {
           scope.image.id = null;
@@ -67,15 +71,15 @@ angular.module('bulbsCmsApp')
         scope.editImage = function () {
           openImageCropModal(scope.image)
           .then(function (image) {
-            if (image.id === null) {
-              scope.image = null;
-            } else {
-              scope.image = image;
-              scope.getImageData();
-            }
+
           });
         };
 
+        if (!scope.bettyImage && scope.image && scope.image.id) {
+          BettyCropper.get(scope.image.id).then(function(response){
+            scope.bettyImage = response.data;
+          });
+        }
       }
     };
   });

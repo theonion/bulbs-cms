@@ -14,6 +14,19 @@ angular.module('BettyCropper.mockApi', []).run(function ($httpBackend) {
       }
     }, {}];
   });
+  $httpBackend.when('POST', /^http:\/\/localimages\.avclub\.com\/api\/new/).respond(function (method, url, data, headers) {
+    var imageData = {
+      'id': 12345,
+      'name': 'Lenna.png',
+      'width': 512,
+      'height': 512,
+      'selections': {
+        '1x1': {'y1': 512, 'y0': 0, 'x0': 0, 'x1': 512, 'source': 'auto'},
+        '16x9': {'y1': 400, 'y0': 112, 'x0': 0, 'x1': 512, 'source': 'auto'}
+      }
+    };
+    return [200, imageData, {}];
+  });
   $httpBackend.when('POST', /^http:\/\/localimages\.avclub\.com\/api\/\d+\/.*$/).respond(function (method, url, data, headers) {
     var splitUrl = url.split('/');
     var ratio = splitUrl[splitUrl.length];

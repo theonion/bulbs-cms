@@ -131,11 +131,11 @@ BettyCropper.service('BettyCropper', function BettyCropper($http, $interpolate, 
       fileInput.click();
       fileInput.unbind('change');
 
-      fileInput.bind('change', function (elem) {
-        if (this.files.length !== 1) {
+      fileInput.bind('change', function (e) {
+        if (e.target.files.length !== 1) {
           uploadImageDeferred.reject('We need exactly one image!');
         }
-        var file = this.files[0];
+        var file = e.target.files[0];
         if (file.type.indexOf('image/') !== 0) {
           uploadImageDeferred.reject('Not an image!');
         }
@@ -235,13 +235,4 @@ BettyCropper.service('BettyCropper', function BettyCropper($http, $interpolate, 
         format: format
       });
     };
-
-    this.origJpg = function (id, width) {
-      return this.url(id, 'original', width, 'jpg');
-    };
-
-    this.origGif = function (id, width) {
-      return this.url(id, 'original', width, 'gif');
-    };
-
   });
