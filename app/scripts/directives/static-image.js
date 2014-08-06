@@ -9,9 +9,14 @@ angular.module('bulbsCmsApp')
         'image': '='
       },
       link: function postLink(scope, element, attrs) {
+        if (attrs.ratio) {
+          var ratio = attrs.ratio;
+        } else {
+          var ratio = '16x9';
+        }
         scope.$watch('image', function () {
           if (scope.image && scope.image.id) {
-            scope.imageUrl = STATIC_IMAGE_URL.replace('{{image}}', scope.image.id);
+            scope.imageUrl = STATIC_IMAGE_URL.replace('{{ratio}}', ratio).replace('{{image}}', scope.image.id);
           } else {
             scope.imageUrl = false;
           }

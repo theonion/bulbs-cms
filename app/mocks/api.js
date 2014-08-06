@@ -31,6 +31,9 @@ angular.module('bulbsCmsApp.mockApi').run([
       if(index == 7){ //todo: fix this
         return [403, {detail: "You do not have permission to perform this action."}];
       }
+      if(method == 'PUT' && index == 8){
+        return [400, {"season": ["This field is required."], "episode": ["This field is required."], "show": ["This field is required."]}];
+      }
       return [200, data];
     };
     $httpBackend.when('OPTIONS', detailRegex).respond(detailPut);
@@ -476,6 +479,31 @@ angular.module('bulbsCmsApp.mockApi').run([
         first_name: "Stephanie",
         last_name: "Pecial",
         id: 16832
+      }],
+      thumbnail: null,
+      absolute_url: "/article/article-1",
+      sponsor_image: null,
+      status: "Published",
+      published: "2017-07-25T16:20:00Z",
+      last_modified: "2012-05-03T16:00:00Z",
+      description: "",
+      subhead: "",
+      indexed: true,
+      body: "Go ahead, try saving. Not happening.",
+      client_pixel: null,
+      sponsor_name: null
+    }, {
+      id: 8,
+      title: "Bad Requests Here",
+      feature_type: "You can't do anything right",
+      slug: "bad-request-8",
+      polymorphic_ctype: "content_content",
+      tags: [],
+      authors: [{
+        username: "bbrian",
+        first_name: "Bad Luck",
+        last_name: "Brian",
+        id: 8410293
       }],
       thumbnail: null,
       absolute_url: "/article/article-1",
