@@ -33,7 +33,7 @@ angular.module('bulbsCmsApp')
 
     $scope.$watch('uploadedImage.id', function () {
       if ($scope.uploadedImage.id) {
-        $scope.video.poster = STATIC_IMAGE_URL.replace('{{image}}', $scope.uploadedImage.id);
+        $scope.video.poster = STATIC_IMAGE_URL.replace('{{ratio}}', '16x9').replace('{{image}}', $scope.uploadedImage.id);
       }
     });
 

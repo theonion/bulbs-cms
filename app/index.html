@@ -85,7 +85,7 @@
     <script src="bower_components/underscore/underscore.js"></script>
     <script src="bower_components/urlify/urlify.js"></script>
     <script src="bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js"></script>
-    <script src="bower_components/onion-editor/build/onion-editor.js"></script>
+    <script src="bower_components/onion-editor/build/onion-editor.min.js"></script>
     <script src="bower_components/lodash/dist/lodash.compat.js"></script>
     <script src="bower_components/restangular/dist/restangular.js"></script>
     <script src="bower_components/Keypress/keypress.js"></script>
@@ -129,10 +129,8 @@
     <script src="scripts/directives/create-content.js"></script>
     <script src="scripts/directives/devicepreview.js"></script>
     <script src="scripts/directives/filterwidget.js"></script>
-    <script src="scripts/directives/listinput.js"></script>
     <script src="scripts/directives/video-upload.js"></script>
     <script src="scripts/directives/logged-in-user.js"></script>
-    <script src="scripts/directives/media-rating.js"></script>
     <script src="scripts/directives/nav.js"></script>
     <script src="scripts/directives/responsive-image.js"></script>
     <script src="scripts/directives/save-button.js"></script>
@@ -151,7 +149,6 @@
     <script src="scripts/services/bulbsapi.js"></script>
     <script src="scripts/services/currentuser.js"></script>
     <script src="scripts/services/contentapi.js"></script>
-    <script src="scripts/services/reviewapi.js"></script>
     <script src="scripts/services/promotionapi.js"></script>
     <script src="scripts/services/adapi.js"></script>
     <script src="scripts/services/login.js"></script>
@@ -173,11 +170,12 @@
     <script src="scripts/controllers/videothumbnailmodal.js"></script>
     <script src="scripts/directives/encode-status.js"></script>
     <script src="scripts/directives/static-image.js"></script>
-    <script src="scripts/directives/tvshow-field.js"></script>
     <script src="scripts/controllers/forbiddenmodal.js"></script>
     <script src="scripts/directives/hide-if-forbidden.js"></script>
     <script src="scripts/services/bugreportinterceptor.js"></script>
     <script src="scripts/services/permissionsinterceptor.js"></script>
+    <script src="scripts/services/badrequestinterceptor.js"></script>
+    <script src="scripts/controllers/badrequestmodal.js"></script>
     <!-- endbuild -->
 
     <script src="bower_components/angular-mocks/angular-mocks.js"></script>
@@ -222,7 +220,7 @@
         angular.module('bulbsCmsApp').constant('DEFAULT_IMAGE_WIDTH', 1200);
         angular.module('bulbsCmsApp').constant('VIDEO_EMBED_URL', 'http://www.avclub.com/videos/embed?id=');
         angular.module('bulbsCmsApp').constant('VIDEO_THUMBNAIL_URL', 'http://v.theonion.com/avclubmedia/video/{{video}}/frame_{{thumbnail}}.jpg');
-        angular.module('bulbsCmsApp').constant('STATIC_IMAGE_URL', 'http://chimg.onionstatic.com/{{image}}/16x9/600.jpg');
+        angular.module('bulbsCmsApp').constant('STATIC_IMAGE_URL', 'http://chimg.onionstatic.com/{{image}}/{{ratio}}/600.jpg');
 
 
         // ****** CMS Plugins ****** \\
