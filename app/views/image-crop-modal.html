@@ -20,7 +20,7 @@
           <span class="fa" ng-class="isCropDone(ratio)"><strong>{{ ratio }}</strong></span>
         </li>
       </ul>
-      <div ng-show="img_ref.hasOwnProperty('caption')">
+      <div ng-show="imageData.hasOwnProperty('caption')">
         <hr>
         <div class="row">
           <div class="form-group col-md-6">
@@ -36,9 +36,7 @@
     </div>
     <div ng-show="cropMode">
       <div class="crop-image-container">
-        <div id="crop-image">
-          <img ng-src="{{ image_url }}" ng-style="crop_image_style">
-        </div>
+        <img ng-src="{{ image_url }}" />
       </div>
       <div class="ratio-paginator">
         <span
