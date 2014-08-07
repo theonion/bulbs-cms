@@ -8,12 +8,12 @@
     <div ng-hide="cropMode">
       <button
         class="btn btn-primary pull-right crop-images-button"
-        ng-click="setFirstUncomputedCrop()">Crop Images</button>
+        ng-click="selectCrop()">Crop Images</button>
 
       <h5>Set Image Crops</h5>
       <ul class="thumb-list">
-        <li ng-repeat="(ratio, selection) in image.selections">
-          <div class="cropped-thumb-container" ng-click="setSelectedCrop(ratio, selection)">
+        <li ng-repeat="ratio in ratios">
+          <div class="cropped-thumb-container" ng-click="selectCrop(ratio)">
             <div ng-style="thumb_styles.{{ ratio }}" class="cropped-thumb">
             </div>
           </div>
@@ -42,10 +42,10 @@
       </div>
       <div class="ratio-paginator">
         <span
-          ng-repeat="ratio in ratioOrder"
+          ng-repeat="ratio in ratios"
           ng-class="isCurrentCropOrDone(ratio)"
           class="fa"
-          ng-click="setSelectedCrop(ratio, image.selections[ratio])">{{ ratio }}</span>
+          ng-click="selectCrop(ratio)">{{ ratio }}</span>
 
       </div>
     </div>

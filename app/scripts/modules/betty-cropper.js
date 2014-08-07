@@ -74,10 +74,33 @@ BettyCropper.factory('BettyImage', function ($interpolate, $http, IMAGE_SERVER_U
     }
   }
 
-  BettyImage.prototype.getStyles = function(element, ratio) {
-    var width = element.parent().width();
-    var height = element.parent().height();
+  BettyImage.prototype.scaleToFit = function(width, height) {
+    var scale;
+    if (width && height) {
+      var fitRatio = width / height;
+      var thisRatio = this.width / this.height;
+      if (fitRatio > thisRatio) {
+        scale = height/ this.height;
+      } else {
+        scale = width / this.width;
+      }
+    } else {
+      if (width) {
+        scale = width / this.width;
+      }
+      if (height) {
+        scale = height/ this.height;
+      }
+    }
+    var scaled = {
+      width: this.width * scale,
+      height: this.height * scale,
+      scale: scale
+    };
+    return scaled;
+  };
 
+  BettyImage.prototype.getStyles = function(width, height, ratio) {
     if (height === 0) {
       height = null;
     }
@@ -158,7 +181,12 @@ BettyCropper.service('BettyCropper', function BettyCropper($http, $interpolate, 
           data: imageData,
           transformRequest: angular.identity,
           transformResponse: function (data, headersGetter) {
-            return new BettyImage(data);
+            // So, sometimes the browser doesn't think that JSON data is JSON.
+            if (typeof data === 'string') {
+              data = $.parseJSON(data);
+            }
+            var image = new BettyImage(data);
+            return image;
           }
         }).success(function (success) {
           uploadImageDeferred.resolve(success);
@@ -182,6 +210,9 @@ BettyCropper.service('BettyCropper', function BettyCropper($http, $interpolate, 
         },
         transformRequest: angular.identity,
         transformResponse: function (data, headersGetter) {
+          if (typeof data === 'string') {
+            data = $.parseJSON(data);
+          }
           return new BettyImage(data);
         }
       });
@@ -205,6 +236,9 @@ BettyCropper.service('BettyCropper', function BettyCropper($http, $interpolate, 
         },
         transformRequest: angular.identity,
         transformResponse: function (data, headersGetter) {
+          if (typeof data === 'string') {
+            data = $.parseJSON(data);
+          }
           return new BettyImage(data);
         }
       });

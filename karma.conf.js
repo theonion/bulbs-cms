@@ -2,6 +2,25 @@
 // http://karma-runner.github.io/0.10/config/configuration-file.html
 
 module.exports = function(config) {
+
+  var customLaunchers = {
+    'SL_Chrome': {
+      base: 'SauceLabs',
+      browserName: 'chrome'
+    },
+    'SL_Firefox': {
+      base: 'SauceLabs',
+      browserName: 'firefox',
+      version: '27'
+    },
+    'SL_Safari': {
+      base: 'SauceLabs',
+      browserName: 'safari',
+      platform: 'OS X 10.9',
+      version: '7'
+    }
+  };
+
   config.set({
     // base path, that will be used to resolve files and exclude
     basePath: '',
@@ -13,6 +32,7 @@ module.exports = function(config) {
     files: [
       'app/image.js',
       'app/bower_components/jquery/dist/jquery.js',
+      'app/bower_components/jcrop/js/jquery.Jcrop.js',
       'app/bower_components/bootstrap/dist/js/bootstrap.js',
       'app/bower_components/angular/angular.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
@@ -23,7 +43,6 @@ module.exports = function(config) {
       'app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'app/bower_components/nprogress/nprogress.js',
       'app/bower_components/restangular/dist/restangular.js',
-      //'app/bower_components/raven-js/dist/raven.js',
       'app/bower_components/restangular/dist/restangular.js',
       'app/bower_components/moment/moment.js',
       'app/bower_components/underscore/underscore.js',
@@ -55,7 +74,7 @@ module.exports = function(config) {
 
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: false,
+    autoWatch: true,
 
 
     // Start these browsers, currently available:

@@ -17,7 +17,7 @@ angular.module('bulbsCmsApp')
           BettyCropper.upload().then(
             function (success) {
               $scope.image = {
-                id: null,
+                id: success.id,
                 caption: null,
                 alt: null
               };
@@ -49,9 +49,9 @@ angular.module('bulbsCmsApp')
           scope.bettyImage = null;
         }
 
-        scope.$watch('bettyImage', function (oldValue, newValue) {
+        scope.setStyles = function () {
           if (scope.bettyImage) {
-            scope.imageStyling = scope.bettyImage.getStyles(element, scope.ratio);
+            scope.imageStyling = scope.bettyImage.getStyles(element.parent().width(), element.parent().height(), scope.ratio);
           } else {
             var ratioWidth = parseInt(scope.ratio.split('x')[0], 10);
             var ratioHeight = parseInt(scope.ratio.split('x')[1], 10);
@@ -62,7 +62,13 @@ angular.module('bulbsCmsApp')
               'height': Math.floor(element.parent().width() * ratioHeight / ratioWidth) + 'px',
             };
           }
+        };
+
+        scope.$watch('bettyImage', function (oldValue, newValue) {
+          scope.setStyles();
         }, true);
+
+        element.resize(scope.setStyles);
 
         scope.removeImage = function () {
           scope.image.id = null;
@@ -70,8 +76,8 @@ angular.module('bulbsCmsApp')
 
         scope.editImage = function () {
           openImageCropModal(scope.image)
-          .then(function (image) {
-
+          .then(function (success) {
+            console.log(success);
           });
         };
 

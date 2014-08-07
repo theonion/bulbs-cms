@@ -108,9 +108,7 @@ describe('Image object', function () {
       },
       'credit': null
     });
-    var parentEl = $('<div class="parent" style="width: 400px; height: 900px;"><div class="child"></div></div>');
-    var childEl = parentEl.find('.child');
-    var styles = image.getStyles(childEl, '16x9');
+    var styles = image.getStyles(400, 900, '16x9');
 
     expect(styles['background-size']).toBe('439px');
     expect(styles['background-position']).toBe('-39px -24px');
