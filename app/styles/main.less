@@ -254,9 +254,23 @@ nav.navbar {
       margin-top: 10px;
       margin-right: 8px;
       padding: 8px;
-      &.fa-circle-thin { color: #333; }
       &:hover { background-color: #d9edf7; }
     }
+
+    .ratio-paginator span.user {
+        color: #47a447;
+    }
+    .ratio-paginator span.user::before {
+        content: "\f00c";
+    }
+
+    .ratio-paginator span.auto {
+        color: #333;
+    }
+    .ratio-paginator span.auto::before {
+        content: "\f1db";
+    }
+
   }
 
   .modal-footer {

@@ -204,6 +204,35 @@
         format: format
       });
     };
+
+    BettyImage.prototype.updateSelection = function (ratio, selection) {
+      var data = {
+        x0: selection.x0,
+        x1: selection.x1,
+        y0: selection.y0,
+        y1: selection.y1
+      };
+      if (selection.source) {
+        data.source = selection.source;
+      }
+      return $http({
+        method: 'POST',
+        url: IMAGE_SERVER_URL + '/api/' + this.id + '/' + ratio,
+        headers: {
+          'X-Betty-Api-Key': BC_API_KEY,
+          'Content-Type': undefined,
+          'X-CSRFToken': undefined
+        },
+        data: data,
+        transformResponse: function (data, headersGetter) {
+          if (typeof data === 'string') {
+            data = $.parseJSON(data);
+          }
+          return [ratio, new Selection(data.selections[ratio])];
+        }
+      });
+    };
+
     return BettyImage;
   }
 
@@ -222,6 +251,16 @@
 
     Selection.prototype.height = function () {
       return this.y1 - this.y0;
+    };
+
+    Selection.prototype.scaleBy = function(scale) {
+      var scaledToFit = new Selection({
+        x0: Math.round(this.x0 * scale),
+        x1: Math.round(this.x1 * scale),
+        y0: Math.round(this.y0 * scale),
+        y1: Math.round(this.y1 * scale)
+      });
+      return scaledToFit;
     };
 
     Selection.prototype.scaleToFit = function (width, height) {
@@ -243,14 +282,7 @@
           scale = height/ this.height();
         }
       }
-
-      var scaledToFit = new Selection({
-        x0: Math.round(this.x0 * scale),
-        x1: Math.round(this.x1 * scale),
-        y0: Math.round(this.y0 * scale),
-        y1: Math.round(this.y1 * scale)
-      });
-      return scaledToFit;
+      return this.scaleBy(scale);
     };
 
     return Selection;

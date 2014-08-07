@@ -13,7 +13,7 @@
       <h5>Set Image Crops</h5>
       <ul class="thumb-list">
         <li ng-repeat="ratio in ratios">
-          <div class="cropped-thumb-container" ng-click="selectCrop(ratio)">
+          <div class="cropped-thumb-container" ng-style="thumb_container_styles.{{ ratio }}" ng-click="selectCrop(ratio)">
             <div ng-style="thumb_styles.{{ ratio }}" class="cropped-thumb">
             </div>
           </div>
@@ -36,12 +36,12 @@
     </div>
     <div ng-show="cropMode">
       <div class="crop-image-container">
-        <img ng-src="{{ image_url }}" />
+        <img ng-src="{{ image_url }}" width="{{ scaleData.width }}" height="{{ scaleData.height }}" />
       </div>
       <div class="ratio-paginator">
         <span
           ng-repeat="ratio in ratios"
-          ng-class="isCurrentCropOrDone(ratio)"
+          ng-class="image.selections[ratio].source"
           class="fa"
           ng-click="selectCrop(ratio)">{{ ratio }}</span>
 
@@ -50,8 +50,8 @@
   </div>
   <div class="modal-footer">
     <div ng-hide="cropMode">
-      <button class="btn btn-link pull-left" ng-click="$close({id:null});"><i class="fa fa-trash-o"></i>Delete</button>
-      <button class="btn btn-success" ng-click="$close(img_ref);">Done</button>
+<!--       <button class="btn btn-link pull-left" ng-click="$close({id:null});"><i class="fa fa-trash-o"></i>Delete</button>
+ -->      <button class="btn btn-success" ng-click="$close(img_ref);">Done</button>
     </div>
     <div ng-show="cropMode">
       <button class="btn btn-link" ng-click="saveAndQuit()" ng-hide="finished">Save and Finish</button>
