@@ -38,6 +38,10 @@ angular.module('bulbsCmsApp')
               $scope.image = null;
             } else {
               $scope.image = image;
+              BettyCropper.get($scope.image.id).then(function(response){
+                $scope.bettyImage = response.data;
+                $scope.setStyles();
+              });
             }
           });
         };

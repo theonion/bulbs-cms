@@ -6,9 +6,6 @@
   </div>
   <div class="modal-body">
     <div ng-hide="cropMode">
-      <button
-        class="btn btn-primary pull-right crop-images-button"
-        ng-click="selectCrop()">Crop Images</button>
 
       <h5>Set Image Crops</h5>
       <ul class="thumb-list">
@@ -20,16 +17,16 @@
           <span class="fa" ng-class="isCropDone(ratio)"><strong>{{ ratio }}</strong></span>
         </li>
       </ul>
-      <div ng-show="imageData.hasOwnProperty('caption')">
+      <div ng-show="imageData.hasOwnProperty('caption')" class="caption-container">
         <hr>
         <div class="row">
           <div class="form-group col-md-6">
             <label class="control-label small">Caption / Photo Credit</label>
-            <input type="text" class="form-control" placeholder="Brief explanation of image" ng-model="img_ref.caption" />
+            <input type="text" class="form-control" placeholder="Brief explanation of image" ng-model="imageData.caption" />
           </div>
           <div class="form-group col-md-6">
             <label class="control-label small">Alt Text</label>
-            <input type="text" class="form-control" placeholder="Describe image's contents" ng-model="img_ref.alt" />
+            <input type="text" class="form-control" placeholder="Describe image's contents" ng-model="imageData.alt" />
           </div>
         </div>
       </div>
@@ -50,8 +47,7 @@
   </div>
   <div class="modal-footer">
     <div ng-hide="cropMode">
-<!--       <button class="btn btn-link pull-left" ng-click="$close({id:null});"><i class="fa fa-trash-o"></i>Delete</button>
- -->      <button class="btn btn-success" ng-click="$close(img_ref);">Done</button>
+        <button class="btn btn-success" ng-click="$close(imageData);">Done</button>
     </div>
     <div ng-show="cropMode">
       <button class="btn btn-link" ng-click="saveAndQuit()" ng-hide="finished">Save and Finish</button>

@@ -7,6 +7,7 @@ angular.module('bulbsCmsApp')
     $scope.ratios = ratios;
     $scope.finished = false;
     $scope.thumb_container_styles = {};
+    $scope.imageData = imageData;
 
     if (!$scope.image) {
       $scope.image = null;
@@ -137,7 +138,7 @@ angular.module('bulbsCmsApp')
         $scope.image.selections[ratio] = selection;
       });
       $scope.cropMode = false;
-      $modalInstance.close();
+      $modalInstance.close(imageData);
     };
 
     $scope.saveAndNext = function () {
