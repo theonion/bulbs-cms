@@ -314,7 +314,7 @@ angular.module('bulbsCmsApp', [
 angular.module('bulbsCmsApp')
   .controller('ContentlistCtrl', function (
     $scope, $http, $timeout, $location,
-    $window, $q, $, _, moment, ContentApi,
+    $window, $q, $, ContentApi,
     LOADING_IMG_SRC, routes)
   {
     $scope.LOADING_IMG_SRC = LOADING_IMG_SRC;
@@ -324,6 +324,7 @@ angular.module('bulbsCmsApp')
     $scope.pageNumber = $location.search().page || '1';
     $scope.myStuff = false;
     $scope.search = $location.search().search;
+    $scope.collapse = {};
 
     var getContentCallback = function (data) {
         $scope.articles = data;
@@ -344,35 +345,10 @@ angular.module('bulbsCmsApp')
           .then(getContentCallback);
       };
 
-    function updateIsMyStuff() {
-        if (!$location.search().authors) {
-          $scope.myStuff = false;
-          return;
-        }
-        var authors = $location.search().authors;
-        if (typeof(authors) === 'string') {
-          authors = [authors];
-        }
-        if (authors.length === 1 && authors[0] === $window.current_user) {
-          $scope.myStuff = true;
-        } else {
-          $scope.myStuff = false;
-        }
-      }
-    updateIsMyStuff();
     $scope.getContent();
 
     $scope.$on('$routeUpdate', function () {
         updateIsMyStuff();
-      });
-
-    $('#meOnly').on('switch-change', function (e, data) {
-        var value = data.value;
-        if (value === true) {
-          $scope.getContent({authors: [$window.current_user]});
-        } else if (value === false) {
-          $scope.getContent();
-        }
       });
 
     $scope.goToPage = function () {
@@ -400,20 +376,10 @@ angular.module('bulbsCmsApp')
             $('#confirm-trash-modal').modal('hide');
           }, 1500);
       };
-
-    $('.expcol').click(function (e) {
-        e.preventDefault();
-        var nS = $(this).attr('state') === '1' ? '0' : '1',
-            i = nS ? 'minus' : 'plus',
-            t = nS ? 'Collapse' : 'Expand',
-            tP = $($(this).attr('href')).find('.panel-collapse');
-
-        if ($(this).attr('state') === '0') { tP.collapse('show'); }
-        else { tP.collapse('hide'); }
-        $(this).html('<i class=\"fa fa-' + i + '-circle\"></i> ' + t + ' all');
-        $(this).attr('state', nS);
-        $window.picturefill();
-      });
+      
+    $('body').on('shown.bs.collapse', '.panel-collapse', function(e){
+      $scope.$digest();
+    });
 
   })
   .directive('ngConfirmClick', [ // Used on the unpublish button
@@ -3969,4 +3935,61 @@ angular.module('bulbsCmsApp').factory('BadRequestInterceptor', function ($q, $in
 angular.module('bulbsCmsApp')
   .controller('BadrequestmodalCtrl', function ($scope, $modalInstance, detail) {
     $scope.detail = detail;
+  });
+
+'use strict';
+
+angular.module('bulbsCmsApp')
+  .directive('lazyInclude', function (routes, $, $compile, $q, $http, $templateCache, Gettemplate) {
+    /*
+      this is like ng-include but it doesn't compile/render the included template
+      until the child element is visible
+      intended to help with responsiveness by cutting down requests and rendering time
+    */
+
+    return {
+      restrict: 'A',
+      scope: true,
+      link: function(scope, element, attrs){
+        var templateUrl = routes.PARTIALS_URL + attrs.template;
+        var $element = $(element);
+        
+        scope.$evalAsync(function(){
+          scope.$watch(function(){
+            return $element.is(':visible');
+          }, function(visible){
+            if(visible && !scope.loaded){
+              scope.loaded = true;
+              Gettemplate.get(templateUrl).then(function(html){
+                var template = angular.element(html);
+                var compiledEl = $compile(template)(scope);
+                element.html(compiledEl);
+                element.css('height', 'auto');
+              });
+            }
+          });
+        });
+        
+      }
+    };
+  });
+
+'use strict';
+
+angular.module('bulbsCmsApp')
+  .service('Gettemplate', function Gettemplate($templateCache, $q, $http) {
+    this.get = function (templateUrl) {
+      var template = $templateCache.get(templateUrl);
+      if (template) {
+        return $q.when(template);
+      }else {
+        var deferred = $q.defer();
+        $http.get(templateUrl, {cache: true}).success(function (html) {
+          $templateCache.put(templateUrl, html);
+          deferred.resolve(html);
+        });
+        
+        return deferred.promise;
+      }
+    }
   });
