@@ -2,6 +2,25 @@
 // http://karma-runner.github.io/0.10/config/configuration-file.html
 
 module.exports = function(config) {
+
+  var customLaunchers = {
+    'SL_Chrome': {
+      base: 'SauceLabs',
+      browserName: 'chrome'
+    },
+    'SL_Firefox': {
+      base: 'SauceLabs',
+      browserName: 'firefox',
+      version: '27'
+    },
+    'SL_Safari': {
+      base: 'SauceLabs',
+      browserName: 'safari',
+      platform: 'OS X 10.9',
+      version: '7'
+    }
+  };
+
   config.set({
     // base path, that will be used to resolve files and exclude
     basePath: '',
@@ -52,7 +71,7 @@ module.exports = function(config) {
 
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: false,
+    autoWatch: true,
 
 
     // Start these browsers, currently available:
@@ -81,9 +100,31 @@ module.exports = function(config) {
       moduleName: 'jsTemplates'
     },
 
+    coverageReporter: {
+      type: 'lcov',
+      dir: 'coverage/'
+    },
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
     singleRun: false
   });
+
+  if (process.env.TRAVIS) {
+    var buildLabel = 'TRAVIS #' + process.env.TRAVIS_BUILD_NUMBER + ' (' + process.env.TRAVIS_BUILD_ID + ')';
+
+    config.captureTimeout = 0; // rely on SL timeout
+    config.singleRun = true;
+    config.sauceLabs = {
+      build: buildLabel,
+      startConnect: false,
+      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER
+    };
+
+    config.customLaunchers = customLaunchers;
+    config.browsers = Object.keys(customLaunchers);
+    config.singleRun = true;
+    config.reporters.push('saucelabs');
+  }
+
 };
