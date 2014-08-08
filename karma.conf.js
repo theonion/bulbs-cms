@@ -70,10 +70,6 @@ module.exports = function(config) {
     logLevel: config.LOG_INFO,
 
 
-    // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
-
-
     // Start these browsers, currently available:
     // - Chrome
     // - ChromeCanary
@@ -105,9 +101,6 @@ module.exports = function(config) {
       dir: 'coverage/'
     },
 
-    // Continuous Integration mode
-    // if true, it capture browsers, run tests and exit
-    singleRun: false
   });
 
   if (process.env.TRAVIS) {
@@ -115,6 +108,7 @@ module.exports = function(config) {
 
     config.captureTimeout = 0; // rely on SL timeout
     config.singleRun = true;
+    config.autoWatch = false;
     config.sauceLabs = {
       build: buildLabel,
       startConnect: false,
@@ -125,6 +119,9 @@ module.exports = function(config) {
     config.browsers = Object.keys(customLaunchers);
     config.singleRun = true;
     config.reporters.push('saucelabs');
+  } else {
+    config.singleRun = false;
+    config.autoWatch = true;
   }
 
 };
