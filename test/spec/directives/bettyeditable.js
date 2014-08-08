@@ -40,7 +40,7 @@ describe('Testing bettyeditable directive', function() {
     $httpBackend.flush();
 
     var imageContainer = elem.find('.image-edit-container');
-    expect(imageContainer[0].style['background-image']).toBe('url(http://localimages.avclub.com/60/original/1200.jpg)');
+    expect(imageContainer.css('background-image')).toContain('http://localimages.avclub.com/60/original/1200.jpg');
   });
 
   it('should load without an image', function () {
@@ -49,7 +49,7 @@ describe('Testing bettyeditable directive', function() {
     scope.$digest();
 
     var imageContainer = elem.find('.image-edit-container');
-    expect(imageContainer[0].style['background-image']).toBe('');
+    expect(['', 'none']).toContain(imageContainer.css('background-image'));
   });
 
   it('should update on upload', function () {
@@ -79,7 +79,7 @@ describe('Testing bettyeditable directive', function() {
     $httpBackend.flush();
 
     var imageContainer = elem.find('.image-edit-container');
-    expect(imageContainer[0].style['background-image']).toBe('url(http://localimages.avclub.com/1234/5/original/1200.jpg)');
+    expect(imageContainer.css('background-image')).toContain('http://localimages.avclub.com/1234/5/original/1200.jpg');
   });
 
 

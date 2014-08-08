@@ -20,26 +20,9 @@ describe('ImageCropModalCtrl', function () {
       BettyImage = $injector.get('BettyImage');
       routes = $injector.get('routes');
 
-      // see https://github.com/angular-ui/bootstrap/blob/master/src/modal/modal.js#L313
-      // var $modalStack = $injector.get('$modalStack'),
-      //     $q = $injector.get('$q'),
-      //     modalResultDeferred = $q.defer(),
-      //     modalOpenedDeffered = $q.defer();
-
       modalInstance = $modal.open({
         templateUrl: routes.PARTIALS_URL + 'image-crop-modal.html'
       });
-
-      // modalInstance = {
-      //   result: modalResultDeferred.promise,
-      //   opened: modalOpenedDeffered.promise,
-      //   close: function (result) {
-      //     $modalStack.close(modalInstance, result);
-      //   },
-      //   dismiss: function (reason) {
-      //     $modalStack.dismiss(modalInstance, reason);
-      //   }
-      // };
 
     });
   });

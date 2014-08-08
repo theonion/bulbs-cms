@@ -22,9 +22,8 @@
         angular.element(fileInputId).remove();
         var fileInput = angular.element(inputTemplate);
         angular.element('body').append(fileInput);
-        fileInput.click();
+        
         fileInput.unbind('change');
-
         fileInput.bind('change', function (e) {
           if (e.target.files.length !== 1) {
             uploadImageDeferred.reject('We need exactly one image!');
@@ -64,6 +63,8 @@
           }).error(function (error) {
             uploadImageDeferred.reject(error);
           });
+
+          fileInput.click();
 
         });
 
