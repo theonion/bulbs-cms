@@ -78,7 +78,6 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['Chrome'],
 
     preprocessors: {
       'app/views/**/*.html': 'ng-html2js',
@@ -122,6 +121,7 @@ module.exports = function(config) {
   } else {
     config.singleRun = false;
     config.autoWatch = true;
+    config.browsers = ['Chrome'];
   }
 
 };
