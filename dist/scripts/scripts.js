@@ -2524,6 +2524,8 @@ angular.module('bulbsCmsApp')
         var fileInput = angular.element(inputTemplate);
         angular.element('body').append(fileInput);
         
+        fileInput.click();
+
         fileInput.unbind('change');
         fileInput.bind('change', function (e) {
           if (e.target.files.length !== 1) {
@@ -2564,8 +2566,6 @@ angular.module('bulbsCmsApp')
           }).error(function (error) {
             uploadImageDeferred.reject(error);
           });
-
-          fileInput.click();
 
         });
 
