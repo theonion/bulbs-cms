@@ -1684,41 +1684,6 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('bettyimage', function ($http, routes) {
-    return {
-      replace: true,
-      restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'bettyimage.html',
-      scope: {
-        'image': '=',
-        'ratio': '=',
-        'width': '@'
-      },
-      controller: function ($scope) {
-      },
-      link: function (scope, element, attrs) {
-        scope.width = parseInt(scope.width, 10);
-        var ratioWidth = parseInt(scope.ratio.split('x')[0], 10);
-        var ratioHeight = parseInt(scope.ratio.split('x')[1], 10);
-        var height = (scope.width * ratioHeight / ratioWidth) + 'px';
-
-        element.css('width', scope.width + 'px');
-        element.css('height', height);
-
-        var selection = scope.image.selections[scope.ratio];
-        var selectionWidth = (selection.x1 - selection.x0);
-        var scale = scope.width / selectionWidth;
-
-        var requestWidth = Math.round((scale * (scope.image.width - selectionWidth)) + scope.width);
-        element.css('background-image', 'url(' + routes.IMAGE_SERVER_URL + '/' + scope.image.id + '/original/' + requestWidth + '.jpg)');
-        element.css('background-position', (scale * selection.x0 * -1) + 'px ' + (scale * selection.y0 * -1) + 'px');
-      }
-    };
-  });
-
-'use strict';
-
-angular.module('bulbsCmsApp')
   .directive('createContent', function ($http, $window, $, IfExistsElse, Login, ContentApi, routes, AUTO_ADD_AUTHOR, Raven) {
     return {
       restrict: 'E',
@@ -2592,9 +2557,8 @@ angular.module('bulbsCmsApp')
         angular.element(fileInputId).remove();
         var fileInput = angular.element(inputTemplate);
         angular.element('body').append(fileInput);
-        fileInput.click();
+        
         fileInput.unbind('change');
-
         fileInput.bind('change', function (e) {
           if (e.target.files.length !== 1) {
             uploadImageDeferred.reject('We need exactly one image!');
@@ -2634,6 +2598,8 @@ angular.module('bulbsCmsApp')
           }).error(function (error) {
             uploadImageDeferred.reject(error);
           });
+
+          fileInput.click();
 
         });
 
