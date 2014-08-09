@@ -118,10 +118,11 @@ module.exports = function(config) {
     config.browsers = Object.keys(customLaunchers);
     config.singleRun = true;
     config.reporters.push('saucelabs');
+    config.browserNoActivityTimeout = 20000;
   } else {
     config.singleRun = false;
     config.autoWatch = true;
-    config.browsers = ['Chrome'];
+    config.browsers = ['Chrome', 'Safari'];
   }
 
 };
