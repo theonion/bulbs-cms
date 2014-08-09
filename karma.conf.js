@@ -13,12 +13,12 @@ module.exports = function(config) {
       browserName: 'firefox',
       version: '27'
     },
-    'SL_Safari': {
-      base: 'SauceLabs',
-      browserName: 'safari',
-      platform: 'OS X 10.9',
-      version: '7'
-    }
+    // 'SL_Safari': {
+    //   base: 'SauceLabs',
+    //   browserName: 'safari',
+    //   platform: 'OS X 10.9',
+    //   version: '7'
+    // }
   };
 
   config.set({
@@ -118,7 +118,6 @@ module.exports = function(config) {
     config.browsers = Object.keys(customLaunchers);
     config.singleRun = true;
     config.reporters.push('saucelabs');
-    config.browserNoActivityTimeout = 20000;
   } else {
     config.singleRun = false;
     config.autoWatch = true;
