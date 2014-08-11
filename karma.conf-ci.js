@@ -103,4 +103,5 @@ module.exports = function(config) {
     captureTimeout: 120000,
     singleRun: true
   });
+
 };

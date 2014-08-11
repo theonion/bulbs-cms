@@ -13,12 +13,12 @@ module.exports = function(config) {
       browserName: 'firefox',
       version: '27'
     },
-    'SL_Safari': {
-      base: 'SauceLabs',
-      browserName: 'safari',
-      platform: 'OS X 10.9',
-      version: '7'
-    }
+    // 'SL_Safari': {
+    //   base: 'SauceLabs',
+    //   browserName: 'safari',
+    //   platform: 'OS X 10.9',
+    //   version: '7'
+    // }
   };
 
   config.set({
@@ -73,10 +73,6 @@ module.exports = function(config) {
     logLevel: config.LOG_INFO,
 
 
-    // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
-
-
     // Start these browsers, currently available:
     // - Chrome
     // - ChromeCanary
@@ -85,7 +81,6 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['Chrome'],
 
     preprocessors: {
       'app/views/**/*.html': 'ng-html2js',
@@ -103,9 +98,33 @@ module.exports = function(config) {
       moduleName: 'jsTemplates'
     },
 
+    coverageReporter: {
+      type: 'lcov',
+      dir: 'coverage/'
+    },
 
-    // Continuous Integration mode
-    // if true, it capture browsers, run tests and exit
-    singleRun: false
   });
+
+  if (process.env.TRAVIS) {
+    var buildLabel = 'TRAVIS #' + process.env.TRAVIS_BUILD_NUMBER + ' (' + process.env.TRAVIS_BUILD_ID + ')';
+
+    config.captureTimeout = 0; // rely on SL timeout
+    config.singleRun = true;
+    config.autoWatch = false;
+    config.sauceLabs = {
+      build: buildLabel,
+      startConnect: false,
+      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER
+    };
+
+    config.customLaunchers = customLaunchers;
+    config.browsers = Object.keys(customLaunchers);
+    config.singleRun = true;
+    config.reporters.push('saucelabs');
+  } else {
+    config.singleRun = false;
+    config.autoWatch = true;
+    config.browsers = ['Chrome', 'Safari'];
+  }
+
 };
