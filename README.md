@@ -1,4 +1,4 @@
-bulbs-cms
+bulbs-cms [![Build Status](https://travis-ci.org/theonion/bulbs-cms.svg?branch=master)](https://travis-ci.org/theonion/bulbs-cms) [![Coverage Status](https://img.shields.io/coveralls/theonion/bulbs-cms.svg)](https://coveralls.io/r/theonion/bulbs-cms?branch=master)
 =========
 
 `grunt build` to compile

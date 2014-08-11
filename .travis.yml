@@ -2,7 +2,9 @@ language: node_js
 before_script:
 - "./node_modules/.bin/bower install"
 script:
-- "./node_modules/.bin/karma start karma.conf-ci.js"
+- "./node_modules/.bin/grunt karma"
+after_script:
+- "./node_modules/.bin/grunt coveralls"
 cache:
   directories:
   - node_modules

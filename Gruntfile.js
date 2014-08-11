@@ -105,7 +105,7 @@ module.exports = function (grunt) {
             '.tmp',
             'test',
             '<%= yeoman.app %>'
-          ]
+          ],
         }
       },
       dist: {
@@ -363,6 +363,15 @@ module.exports = function (grunt) {
       ]
     },
 
+    coveralls: {
+      options: {
+        debug: true,
+        coverage_dir: 'coverage',
+        force: true,
+        recursive: true
+      }
+    },
+
     // By default, your `index.html`'s <!-- Usemin block --> will take care of
     // minification. These next options are pre-configured if you do not wish
     // to use the Usemin blocks.
@@ -401,6 +410,9 @@ module.exports = function (grunt) {
     // Test settings
     karma: {
       unit: {
+        configFile: 'karma.conf.js',
+      },
+      ci: {
         configFile: 'karma.conf.js',
         singleRun: true
       }
@@ -456,8 +468,18 @@ module.exports = function (grunt) {
           usernameVar: 'GITHUB_USERNAME',
           passwordVar: 'GITHUB_TOKEN'
         }
-      }
-    }
+      },
+    },
+
+    // travis: {
+    //   options: {
+    //     karma: {
+    //       unit: {
+    //         singleRun: true
+    //       }
+    //     }
+    //   }
+    // }
 
   });
 
@@ -490,7 +512,7 @@ module.exports = function (grunt) {
     'concurrent:test',
     'autoprefixer',
     'connect:test',
-    'karma'
+    'karma:ci'
   ]);
 
   grunt.registerTask('build', [
