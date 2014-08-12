@@ -36,10 +36,6 @@ angular.module('bulbsCmsApp')
 
     $scope.getContent();
 
-    $scope.$on('$routeUpdate', function () {
-        updateIsMyStuff();
-      });
-
     $scope.goToPage = function () {
         $scope.getContent({'page': $scope.pageNumber}, true);
       };

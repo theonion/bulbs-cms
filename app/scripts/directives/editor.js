@@ -43,7 +43,7 @@ angular.module('bulbsCmsApp')
             },
             video: {
               insertDialog: Zencoder.onVideoFileUpload,
-              editDialog: function () {},
+              editDialog: Zencoder.openVideoThumbnailModal,
               videoEmbedUrl: VIDEO_EMBED_URL
             }
           };
