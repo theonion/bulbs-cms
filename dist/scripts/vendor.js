@@ -57161,7 +57161,7 @@ define('scribe-plugin-onion-video',[],function () {
       }
 
       function edit(block, callback) {
-          var id = $(block).attr('data-video-id');
+          var id = $(block).attr('data-video-id') || $(block).attr('data-videoid');
           config.editDialog(id);
       }
     };
