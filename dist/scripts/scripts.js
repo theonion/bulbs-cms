@@ -2606,7 +2606,7 @@ angular.module('bulbsCmsApp')
           options = {
             // global options
             multiline: true,
-            formatting: formatting || ['link', 'bold', 'italic', 'blockquote', 'heading', 'list', 'strike'],
+            formatting: formatting || ['link', 'bold', 'italic', 'blockquote', 'heading', 'list', 'strike', 'underline'],
             placeholder: {
               text: attrs.placeholder ||  '<p>Write here</p>',
               container: $('.editorPlaceholder', element[0])[0],
