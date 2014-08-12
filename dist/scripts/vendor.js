@@ -57387,7 +57387,7 @@ define('onion-editor',[
 
   var defaults = {
     multiline: true,
-    formatting: ['link', 'bold', 'italic', 'blockquote', 'heading', 'list'],
+    formatting: ['link', 'bold', 'italic', 'blockquote', 'heading', 'list', 'underline'],
     link: {
       domain: 'avclub.com'
     },
@@ -57433,6 +57433,19 @@ define('onion-editor',[
       }
     };
     scribe.commandPatches['italic'] = italicCommand;
+    
+    var underlineCommand = new scribe.api.CommandPatch('underline');
+    underlineCommand.execute = function (value) {
+      if (this.selection === undefined) {
+        document.execCommand(this.commandName, false, value || null);
+      } else {
+        scribe.transactionManager.run(function () {
+          document.execCommand(this.commandName, false, value || null);
+        }.bind(this));
+      }
+    };
+    scribe.commandPatches['underline'] = underlineCommand;
+    // End horrible patches
 
     var keyCommands = {};
     var ctrlKey = function (event) { return event.metaKey || event.ctrlKey; };
@@ -57468,6 +57481,12 @@ define('onion-editor',[
     if (options.formatting.indexOf('strike') !== -1) {
       keyCommands.strikeThrough = function (event) { return event.altKey && event.shiftKey && event.keyCode === 83; }; // s
       tags.s = {};
+    }
+
+    // Underline 
+    if (options.formatting.indexOf('underline') !== -1) {
+      keyCommands.underline = function (event) { return event.metaKey && event.keyCode === 85; }; // u
+      tags.u = {};
     }
 
     // Remove formatting... 
