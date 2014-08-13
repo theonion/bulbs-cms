@@ -1,9 +1,9 @@
-<button id="betty-editable-add-image" ng-click="upload();" ng-hide="image && image.id" ng-class="addStyles"><span>{{placeholderText}}</span></button>
+<button class="betty-editable-add-image" ng-click="upload();" ng-hide="image && image.id" ng-class="addStyles"><span>{{placeholderText}}</span></button>
 <div ng-show="image && image.id" ng-style="imageStyling" class="image-edit-container">
-        <div class="image-edit-overlay">
-            <div class="remove">
-                <button ng-click="removeImage();" class="fa fa-trash-o"></button></div>
-            <div class="edit">
-                <button name="inline_edit" ng-click="editImage();">EDIT</button></div>
-        </div>
+    <div class="image-edit-overlay">
+        <div class="remove">
+            <button ng-click="removeImage();" class="fa fa-trash-o"></button></div>
+        <div class="edit">
+            <button name="inline_edit" ng-click="edit();">EDIT</button></div>
+    </div>
 </div>

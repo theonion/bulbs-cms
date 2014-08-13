@@ -2,14 +2,14 @@
 
 angular.module('bulbsCmsApp')
   .factory('openImageCropModal', function ($modal, routes) {
-    var openImageCropModal = function (image, cropsToEdit) {
+    var openImageCropModal = function (imageData, ratios) {
 
       return $modal.open({
         templateUrl: routes.PARTIALS_URL + 'image-crop-modal.html',
         controller: 'ImageCropModalCtrl',
         resolve: {
-          img_ref: function () { return image; },
-          cropsToEdit: function () { return cropsToEdit || false; }
+          imageData: function () { return imageData; },
+          ratios: function () { return ratios || false; }
         },
         backdrop: 'static'
       }).result;

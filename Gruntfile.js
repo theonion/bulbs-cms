@@ -105,7 +105,7 @@ module.exports = function (grunt) {
             '.tmp',
             'test',
             '<%= yeoman.app %>'
-          ],
+          ]
         }
       },
       dist: {
@@ -468,18 +468,8 @@ module.exports = function (grunt) {
           usernameVar: 'GITHUB_USERNAME',
           passwordVar: 'GITHUB_TOKEN'
         }
-      },
-    },
-
-    // travis: {
-    //   options: {
-    //     karma: {
-    //       unit: {
-    //         singleRun: true
-    //       }
-    //     }
-    //   }
-    // }
+      }
+    }
 
   });
 
