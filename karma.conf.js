@@ -32,6 +32,7 @@ module.exports = function(config) {
     files: [
       'app/image.js',
       'app/bower_components/jquery/dist/jquery.js',
+      'app/bower_components/jcrop/js/jquery.Jcrop.js',
       'app/bower_components/bootstrap/dist/js/bootstrap.js',
       'app/bower_components/angular/angular.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
@@ -42,7 +43,6 @@ module.exports = function(config) {
       'app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'app/bower_components/nprogress/nprogress.js',
       'app/bower_components/restangular/dist/restangular.js',
-      //'app/bower_components/raven-js/dist/raven.js',
       'app/bower_components/restangular/dist/restangular.js',
       'app/bower_components/moment/moment.js',
       'app/bower_components/underscore/underscore.js',
@@ -50,10 +50,13 @@ module.exports = function(config) {
       'app/bower_components/onion-editor/build/onion-editor.min.js',
       'app/bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js',
       'app/bower_components/Keypress/keypress.js',
-      'app/scripts/*.js',
-      'app/scripts/**/*.js',
+      
       'app/mocks/app.js',
       'app/mocks/api.js',
+      'app/mocks/betty.js',
+
+      'app/scripts/*.js',
+      'app/scripts/**/*.js',
       'test/spec/**/*.js',
       'test/config.js',
       'app/views/**/*.html'
