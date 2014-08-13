@@ -20,12 +20,14 @@ angular.module('bulbsCmsApp')
         }
 
         var options = {};
+        var defaultValue = '';
 
         if (attrs.role === 'multiline') {
+          defaultValue = '<p><br></p>';
           options = {
             // global options
             multiline: true,
-            formatting: formatting || ['link', 'bold', 'italic', 'blockquote', 'heading', 'list', 'strike'],
+            formatting: formatting || ['link', 'bold', 'italic', 'blockquote', 'heading', 'list', 'strike', 'underline'],
             placeholder: {
               text: attrs.placeholder ||  '<p>Write here</p>',
               container: $('.editorPlaceholder', element[0])[0],
@@ -43,14 +45,14 @@ angular.module('bulbsCmsApp')
             },
             video: {
               insertDialog: Zencoder.onVideoFileUpload,
-              editDialog: function () {},
+              editDialog: Zencoder.openVideoThumbnailModal,
               videoEmbedUrl: VIDEO_EMBED_URL
             }
           };
         }
         else {
           $('.document-tools, .embed-tools', element).hide();
-          var defaultValue = '';
+          defaultValue = '';
           options = {
             // global options
             multiline: false,
@@ -65,6 +67,7 @@ angular.module('bulbsCmsApp')
         var editor = new OnionEditor($('.editor', element[0])[0], options);
 
         ngModel.$render = function () {
+          var val = ngModel.$viewValue || defaultValue;
           editor.setContent(ngModel.$viewValue || defaultValue);
           // register on change here, after the initial load so angular doesn't get mad...
           setTimeout(function () {
@@ -72,11 +75,18 @@ angular.module('bulbsCmsApp')
           });
         };
         
+        // Redefine what empty looks like
+        ngModel.$isEmpty = function (value) {
+          return ! value || editor.scribe.allowsBlockElements() && value === defaultValue;
+        };
 
         // Write data to the model
         function read() {
-          scope.$apply(function () {
+          safeApply(scope, function () {
             var html = editor.getContent();
+            if (html === defaultValue) {
+              html = '';
+            }
             ngModel.$setViewValue(html);
           });
         }
@@ -90,3 +100,13 @@ angular.module('bulbsCmsApp')
       }
     };
   });
+
+function safeApply(scope, fn) {
+  if (scope.$$phase || scope.$root.$$phase) {
+    fn();
+  } else {
+    scope.$apply(function () {
+      fn();
+    });
+  }
+}
