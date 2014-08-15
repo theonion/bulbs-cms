@@ -10,28 +10,21 @@ angular.module('bulbsCmsApp')
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
     $scope.MEDIA_ITEM_PARTIALS_URL = routes.MEDIA_ITEM_PARTIALS_URL;
+
+    /*note on cachebuster:
+      contentedit ng-includes templates served by django
+      which are currently treated like templates
+      instead of static assets (which they are)
+      we're cachebuster those URLs because we've run into trouble 
+      with cached version in the past and it was a bludgeon solution
+        kill this someday! --SB
+    */
     $scope.CACHEBUSTER = routes.CACHEBUSTER;
 
     var getArticleCallback = function (data) {
       $window.article = $scope.article = data; //exposing article on window for debugging
 
       $scope.last_saved_article = angular.copy(data);
-
-      $scope.$watch('article.image.id', function (newVal, oldVal) {
-        if (!$scope.article) { return; }
-        if (newVal && oldVal && newVal === oldVal) { return; }
-
-        if (newVal === null || newVal === undefined) { return; } //no image
-
-        if (!$scope.article.thumbnail || !$scope.article.thumbnail.id || //no thumbnail
-          (newVal && oldVal && $scope.article.thumbnail && $scope.article.thumbnail.id && oldVal === $scope.article.thumbnail.id) || //thumbnail is same
-          (!oldVal && newVal) //detail was trashed
-        ) {
-          $scope.article.thumbnail = {id: newVal, alt: null, caption: null};
-        }
-
-
-      });
     };
 
     function getContent() {
@@ -43,19 +36,7 @@ angular.module('bulbsCmsApp')
       $window.document.title = routes.CMS_NAMESPACE + ' | Editing ' + ($scope.article && $('<span>' + $scope.article.title + '</span>').text());
     });
 
-    $('body').removeClass();
-
-    $scope.tagDisplayFn = function (o) {
-      return o.name;
-    };
-
     $scope.saveArticleDeferred = $q.defer();
-    $scope.mediaItemCallbackCounter = undefined;
-    $scope.$watch('mediaItemCallbackCounter', function () {
-      if ($scope.mediaItemCallbackCounter === 0) {
-        saveToContentApi();
-      }
-    });
     
     $scope.saveArticleIfDirty = function () {
       /*this is only for operations that trigger a saveArticle (e.g. send to editor)

@@ -133,13 +133,12 @@ angular.module('bulbsCmsApp')
       encode({attrs: {id: videoId}});
     };
 
-    this.openVideoThumbnailModal = function (videoId, posterUrl) {
+    this.openVideoThumbnailModal = function (videoId) {
       return $modal.open({
         templateUrl: routes.PARTIALS_URL + 'modals/video-thumbnail-modal.html',
         controller: 'VideothumbnailmodalCtrl',
         resolve: {
-          videoId: function () { return videoId; },
-          posterUrl: function () { return posterUrl || null; }
+          videoId: function () { return videoId; }
         }
       });
     };

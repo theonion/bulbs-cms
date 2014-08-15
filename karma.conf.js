@@ -124,7 +124,7 @@ module.exports = function(config) {
   } else {
     config.singleRun = false;
     config.autoWatch = true;
-    config.browsers = ['Chrome', 'Safari'];
+    config.browsers = ['Chrome'];
   }
 
 };

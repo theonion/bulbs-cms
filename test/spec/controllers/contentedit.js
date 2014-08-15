@@ -7,34 +7,129 @@ describe('Controller: ContenteditCtrl', function () {
   beforeEach(module('bulbsCmsApp.mockApi'));
 
   var ContenteditCtrl,
-    scope;
+    controller,
+    scope,
+    httpBackend,
+    routeParams,
+    mockArticle,
+    contentApi,
+    localStorageBackup,
+    modalService;
+    
+  var contentApiUrl = '/cms/api/v1/content/1/'; 
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope, mockApiData) {
+  beforeEach(inject(function ($controller, $rootScope, $httpBackend, _$routeParams_, mockApiData, ContentApi, Localstoragebackup, $modal) {
+    controller = $controller;
+    mockArticle = mockApiData['content.list'].results[0];
     scope = $rootScope.$new();
-    ContenteditCtrl = $controller('ContenteditCtrl', {
-      $scope: scope,
-      content: mockApiData['content.list'].results[0]
-    });
+    httpBackend = $httpBackend;
+    routeParams = _$routeParams_;
+    routeParams.id = 1;
+    contentApi = ContentApi;
+    localStorageBackup = Localstoragebackup;
+    modalService = $modal;
   }));
 
-  /*it('should attach a list of awesomeThings to the scope', function () {
-    expect(scope.awesomeThings.length).toBe(3);
-  });*/
-  it('should have string CONTENT_PARTIALS_URL in scope', function () {
-    expect(typeof scope.CONTENT_PARTIALS_URL).toBe('string');
+  describe('on instantiation', function () {
+    it('should retrieve the current article from the API', function () {
+      spyOn(contentApi, 'one').andCallThrough();
+      ContenteditCtrl = controller('ContenteditCtrl', {
+        $scope: scope,
+        $routeParams: routeParams,
+        ContentApi: contentApi
+      });
+      expect(contentApi.one).toHaveBeenCalledWith('content', 1);
+    });
+  });
+  
+  describe('after instantion', function () {
+    beforeEach(function () {
+      httpBackend.expectGET(contentApiUrl).respond(mockArticle);
+      ContenteditCtrl = controller('ContenteditCtrl', {
+        $scope: scope,
+        $routeParams: routeParams,
+        Localstoragebackup: localStorageBackup,
+        $modal: modalService
+      });
+      scope.$digest();
+      httpBackend.flush();
+    });
+    
+    afterEach (function () {
+      httpBackend.verifyNoOutstandingExpectation ();
+      httpBackend.verifyNoOutstandingRequest ();
+    });
+    
+    it('should have string CONTENT_PARTIALS_URL in scope', function () {
+      expect(typeof scope.CONTENT_PARTIALS_URL).toBe('string');
+    });
+
+    it('should have string MEDIA_ITEM_PARTIALS_URL in scope', function () {
+      expect(typeof scope.MEDIA_ITEM_PARTIALS_URL).toBe('string');
+    });
+
+    it('should have string CACHEBUSTER in scope', function () {
+      expect(typeof scope.CACHEBUSTER).toBe('string');
+    });
+    
+    it('should have a saveArticle function in scope', function () {
+      expect(scope.saveArticle).toBeDefined();
+    });
+    
+    it('should set articleIsDirty to true when article is dirty', function () {
+      scope.article.title = "some random title that isn not the same as the original";
+      scope.$digest();
+      expect(scope.articleIsDirty).toBe(true);
+    });
+    
+    describe('function: saveArticleIfDirty', function () {
+      it('should call saveArticle if article is dirty', function () {
+        scope.articleIsDirty = true;
+        spyOn(scope, 'saveArticle');
+        scope.saveArticleIfDirty();
+        expect(scope.saveArticle).toHaveBeenCalled();
+      });
+      
+      it('should not call saveArticle if article is not dirty', function () {
+        scope.articleIsDirty = false;
+        spyOn(scope, 'saveArticle');
+        scope.saveArticleIfDirty();
+        expect(scope.saveArticle).not.toHaveBeenCalled();
+      });
+    });
+    
+    describe('function: saveArticle', function () {
+      it('should call Localstoragebackup.backupToLocalStorage', function () {
+        spyOn(localStorageBackup, 'backupToLocalStorage');
+        scope.saveArticle();
+        expect(localStorageBackup.backupToLocalStorage).toHaveBeenCalled();
+      });
+    
+      it('should call postValidationSaveArticle if no last_modified discrepancy', function () {
+        httpBackend.expect('GET', '/cms/api/v1/content/1/').respond(mockArticle);
+        spyOn(scope, 'postValidationSaveArticle')
+        scope.saveArticle();
+        httpBackend.flush();
+        expect(scope.postValidationSaveArticle).toHaveBeenCalled();
+      });
+    
+      it('should open a modal if there is a last modified conflict', function () {
+        var newMockArticle = angular.copy(mockArticle);
+        newMockArticle.last_modified = '2999-04-08T15:35:15.118Z'; //last_modified FAR in the future
+        httpBackend.expect('GET', '/cms/api/v1/content/1/').respond(newMockArticle);
+        spyOn(scope, 'postValidationSaveArticle')
+        spyOn(modalService, 'open');
+        scope.saveArticle();
+        httpBackend.flush();
+        expect(modalService.open).toHaveBeenCalled();
+        expect(scope.postValidationSaveArticle).not.toHaveBeenCalled();
+      });
+    
+    });
+
   });
 
-  it('should have string MEDIA_ITEM_PARTIALS_URL in scope', function () {
-    expect(typeof scope.MEDIA_ITEM_PARTIALS_URL).toBe('string');
-  });
 
-  it('should have string CACHEBUSTER in scope', function () {
-    expect(typeof scope.CACHEBUSTER).toBe('string');
-  });
-
-  it('should have a saveArticle function in scope', function () {
-    expect(scope.saveArticle).toBeDefined();
-  });
 
 });

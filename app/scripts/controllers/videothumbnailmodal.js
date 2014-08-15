@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('VideothumbnailmodalCtrl', function ($scope, $http, $modalInstance, Zencoder, videoId, posterUrl, VIDEO_THUMBNAIL_URL, STATIC_IMAGE_URL) {
+  .controller('VideothumbnailmodalCtrl', function ($scope, $http, $modalInstance, Zencoder, videoId, VIDEO_THUMBNAIL_URL, STATIC_IMAGE_URL) {
     var DEFAULT_THUMBNAIL = 4;
     var MAX_THUMBNAIL = 19;
     $scope.uploadedImage = {id: null};
