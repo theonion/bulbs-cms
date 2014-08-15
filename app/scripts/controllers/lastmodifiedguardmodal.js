@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('LastmodifiedguardmodalCtrl', function ($scope, $route, $modalInstance, ContentApi, articleOnPage, articleOnServer) {
+  .controller('LastmodifiedguardmodalCtrl', function ($scope, $route, $modalInstance, _, ContentApi, articleOnPage, articleOnServer) {
     $scope.articleOnServer = articleOnServer;
 
     ContentApi.all('log').getList({content: article.id}).then(function (log) {
