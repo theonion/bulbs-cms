@@ -50205,7 +50205,7 @@ define('plugins/core/patches/commands/bold',[],function () {
 
         return scribe.api.CommandPatch.prototype.queryEnabled.apply(this, arguments) && ! headingNode;
       };
-      
+
       // TODO: We can't use STRONGs because this would mean we have to
       // re-implement the `queryState` command, which would be difficult.
 
@@ -57387,12 +57387,12 @@ define('onion-editor',[
 
   var defaults = {
     multiline: true,
-    formatting: ['link', 'bold', 'italic', 'blockquote', 'heading', 'list', 'underline'],
+    formatting: ['link', 'bold', 'italic', 'blockquote', 'heading', 'list'],
     link: {
       domain: 'avclub.com'
     },
     video: {
-      videoEmbedUrl: 'http://example.com?videoid=',
+      videoEmbedUrl: "http://example.com?videoid=",
       insertDialog: function() {  },
       editDialog: function() {  }
     },
@@ -57400,7 +57400,7 @@ define('onion-editor',[
       insertDialog: function() {  },
       editDialog: function() {  }
     }
-  };
+  }
 
   function OnionEditor(element, options) {
 
@@ -57412,41 +57412,6 @@ define('onion-editor',[
       scribe.use(scribePluginPlaceholder(options.placeholder));
     }
 
-    // For now, we need to patch some scribe commands, just in case.
-    scribe.commandPatches.bold.execute = function (value) {
-      if (this.selection === undefined) {
-        document.execCommand(this.commandName, false, value || null);
-      } else {
-        scribe.transactionManager.run(function () {
-          document.execCommand(this.commandName, false, value || null);
-        }.bind(this));
-      }
-    };
-    var italicCommand = new scribe.api.CommandPatch('italic');
-    italicCommand.execute = function (value) {
-      if (this.selection === undefined) {
-        document.execCommand(this.commandName, false, value || null);
-      } else {
-        scribe.transactionManager.run(function () {
-          document.execCommand(this.commandName, false, value || null);
-        }.bind(this));
-      }
-    };
-    scribe.commandPatches['italic'] = italicCommand;
-    
-    var underlineCommand = new scribe.api.CommandPatch('underline');
-    underlineCommand.execute = function (value) {
-      if (this.selection === undefined) {
-        document.execCommand(this.commandName, false, value || null);
-      } else {
-        scribe.transactionManager.run(function () {
-          document.execCommand(this.commandName, false, value || null);
-        }.bind(this));
-      }
-    };
-    scribe.commandPatches['underline'] = underlineCommand;
-    // End horrible patches
-
     var keyCommands = {};
     var ctrlKey = function (event) { return event.metaKey || event.ctrlKey; };
 
@@ -57454,7 +57419,7 @@ define('onion-editor',[
     var tags = {}, 
         /* if a node running throught the sanitizer passes this test, it won't get santized true */
         skipSanitization = function(node) {
-          return ($(node).is('div.inline'));
+          return ($(node).is("div.inline"));
         };
     
     // Multiline
@@ -57483,13 +57448,7 @@ define('onion-editor',[
       tags.s = {};
     }
 
-    // Underline 
-    if (options.formatting.indexOf('underline') !== -1) {
-      keyCommands.underline = function (event) { return event.metaKey && event.keyCode === 85; }; // u
-      tags.u = {};
-    }
-
-    // Remove formatting... 
+    //Remove formatting... 
     keyCommands.removeFormat = function (event) { return event.altKey && event.shiftKey && event.keyCode === 65; }; // a
 
     // Links
@@ -57499,7 +57458,7 @@ define('onion-editor',[
       scribe.use(scribePluginIntelligentUnlinkCommand());
       scribe.use(scribePluginLinkUI(options.link));
       scribe.use(linkFormatter(options.link));
-      tags.a = { href:true, target:true };
+      tags.a = { href:true, target:true }
     }
 
     // Lists
@@ -57573,7 +57532,7 @@ define('onion-editor',[
       // Default is to skipFormatters. Only place this needs to be set to false is when updating links. 
       // We want formatters to run on links. Embeds & other shit seem to get sanitized 
       // despite there being safegaurds for that.
-      if (typeof skipFormatters === 'undefined') {
+      if (typeof skipFormatters == "undefined") {
         skipFormatters = true;
       }
       scribe._skipFormatters = skipFormatters;
@@ -57581,14 +57540,14 @@ define('onion-editor',[
       setTimeout(function() {        
         scribe.el.focus();
         setTimeout(function() {
-          scribe.transactionManager.run(fn);
+          scribe.transactionManager.run(fn)
           window.scrollTo(0, scrollY);
 
           // This should notify any changes that happen outside of typing 
           scribe.trigger('content-changed');
         }, 20);
       }, 20);
-    };
+    }
     
     scribe.use(scribePluginCurlyQuotes());
     scribe.use(scribePluginKeyboardShortcuts(Object.freeze(keyCommands)));
@@ -57602,31 +57561,31 @@ define('onion-editor',[
     }
 
     // a little hacky to prevent deletion of images and other inline elements via the backspace key. 
-    scribe.el.addEventListener('keydown', function(event) {
+    scribe.el.addEventListener("keydown", function(event) {
       if (event.keyCode === 8) {
         // is the previous immediate child of editor an inline item?
         var sel = new scribe.api.Selection();
-        var prev = $(sel.selection.anchorNode).closest('.editor>*').prev();
-        if (prev.hasClass('inline') 
+        var prev = $(sel.selection.anchorNode).closest(".editor>*").prev();
+        if (prev.hasClass("inline") 
           && sel.selection.anchorOffset === 0 
           && sel.selection.isCollapsed) {
           event.preventDefault();
         }
       }
-    });
+    })
 
     scribe.use(scribePluginFormatterPlainTextConvertNewLinesToHtml());
 
     this.setChangeHandler = function(func) {
       scribe.on('content-changed', func); 
-    };
+    }
 
     this.setContent = function(content) {
       if (!content) {
-          content = '<p><br></p>';
+          content = "<p><br></p>";
       }
       scribe.setContent(content);
-    };
+    }
 
     this.getContent = function() {
       //todo: if multiline is false, only return contents of the paragraph
@@ -57635,7 +57594,7 @@ define('onion-editor',[
 
       // Allow any plugins to clean up markup. Main use case is for embed plugin, atm.
       return contents;
-    };
+    }
 
     this.scribe = scribe;
     return this;

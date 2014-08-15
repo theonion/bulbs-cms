@@ -406,28 +406,21 @@ angular.module('bulbsCmsApp')
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
     $scope.MEDIA_ITEM_PARTIALS_URL = routes.MEDIA_ITEM_PARTIALS_URL;
+
+    /*note on cachebuster:
+      contentedit ng-includes templates served by django
+      which are currently treated like templates
+      instead of static assets (which they are)
+      we're cachebuster those URLs because we've run into trouble 
+      with cached version in the past and it was a bludgeon solution
+        kill this someday! --SB
+    */
     $scope.CACHEBUSTER = routes.CACHEBUSTER;
 
     var getArticleCallback = function (data) {
       $window.article = $scope.article = data; //exposing article on window for debugging
 
       $scope.last_saved_article = angular.copy(data);
-
-      $scope.$watch('article.image.id', function (newVal, oldVal) {
-        if (!$scope.article) { return; }
-        if (newVal && oldVal && newVal === oldVal) { return; }
-
-        if (newVal === null || newVal === undefined) { return; } //no image
-
-        if (!$scope.article.thumbnail || !$scope.article.thumbnail.id || //no thumbnail
-          (newVal && oldVal && $scope.article.thumbnail && $scope.article.thumbnail.id && oldVal === $scope.article.thumbnail.id) || //thumbnail is same
-          (!oldVal && newVal) //detail was trashed
-        ) {
-          $scope.article.thumbnail = {id: newVal, alt: null, caption: null};
-        }
-
-
-      });
     };
 
     function getContent() {
@@ -439,19 +432,7 @@ angular.module('bulbsCmsApp')
       $window.document.title = routes.CMS_NAMESPACE + ' | Editing ' + ($scope.article && $('<span>' + $scope.article.title + '</span>').text());
     });
 
-    $('body').removeClass();
-
-    $scope.tagDisplayFn = function (o) {
-      return o.name;
-    };
-
     $scope.saveArticleDeferred = $q.defer();
-    $scope.mediaItemCallbackCounter = undefined;
-    $scope.$watch('mediaItemCallbackCounter', function () {
-      if ($scope.mediaItemCallbackCounter === 0) {
-        saveToContentApi();
-      }
-    });
     
     $scope.saveArticleIfDirty = function () {
       /*this is only for operations that trigger a saveArticle (e.g. send to editor)
@@ -927,9 +908,6 @@ angular.module('bulbsCmsApp')
 
 angular.module('bulbsCmsApp')
   .controller('TrashcontentmodalCtrl', function ($scope, $http, $modalInstance, $, Login, articleId, Raven) {
-    console.log('trash content modal ctrl here');
-    console.log(articleId);
-
     $scope.deleteButton = {
       idle: 'Delete',
       busy: 'Trashing',
@@ -938,7 +916,6 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.trashContent = function () {
-      console.log('trash content here');
       return $http({
         'method': 'POST',
         'url': '/cms/api/v1/content/' + articleId + '/trash/'
@@ -3007,12 +2984,14 @@ angular.module('bulbsCmsApp')
 
 angular.module('bulbsCmsApp')
   .controller('VersionbrowsermodalCtrl', function ($scope, $window, $modalInstance, _, moment, Localstoragebackup, article) {
+    /*This is a modal for browsing versions stored in localStorage by the Localstoragebackup service */
     Localstoragebackup.backupToLocalStorage();
 
     var keys = _.keys($window.localStorage);
+
     var timestamps = [];
     for (var i in keys) {
-      if (keys[i] && (keys[i].split('.')[0] !== Localstoragebackup.keyPrefix || keys[i].split('.')[2] !== article.id)) {
+      if (keys[i] && (keys[i].split('.')[0] !== Localstoragebackup.keyPrefix || Number(keys[i].split('.')[2]) !== article.id)) {
         continue;
       }
       var timestamp = Number(keys[i].split('.')[1]) * 1000;
@@ -3102,7 +3081,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('LastmodifiedguardmodalCtrl', function ($scope, $route, $modalInstance, ContentApi, articleOnPage, articleOnServer) {
+  .controller('LastmodifiedguardmodalCtrl', function ($scope, $route, $modalInstance, _, ContentApi, articleOnPage, articleOnServer) {
     $scope.articleOnServer = articleOnServer;
 
     ContentApi.all('log').getList({content: article.id}).then(function (log) {
@@ -3348,13 +3327,12 @@ angular.module('bulbsCmsApp')
       encode({attrs: {id: videoId}});
     };
 
-    this.openVideoThumbnailModal = function (videoId, posterUrl) {
+    this.openVideoThumbnailModal = function (videoId) {
       return $modal.open({
         templateUrl: routes.PARTIALS_URL + 'modals/video-thumbnail-modal.html',
         controller: 'VideothumbnailmodalCtrl',
         resolve: {
-          videoId: function () { return videoId; },
-          posterUrl: function () { return posterUrl || null; }
+          videoId: function () { return videoId; }
         }
       });
     };
@@ -3665,7 +3643,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('VideothumbnailmodalCtrl', function ($scope, $http, $modalInstance, Zencoder, videoId, posterUrl, VIDEO_THUMBNAIL_URL, STATIC_IMAGE_URL) {
+  .controller('VideothumbnailmodalCtrl', function ($scope, $http, $modalInstance, Zencoder, videoId, VIDEO_THUMBNAIL_URL, STATIC_IMAGE_URL) {
     var DEFAULT_THUMBNAIL = 4;
     var MAX_THUMBNAIL = 19;
     $scope.uploadedImage = {id: null};
