@@ -5,7 +5,7 @@
 angular.module('bulbsCmsApp').factory('PermissionsInterceptor', function ($q, $injector, routes) {
   return {
     responseError: function (rejection) {
-      if (rejection.config.noPermissionIntercept) {
+      if (rejection.config && rejection.config.noPermissionIntercept) {
         return $q.when(rejection);
       } else {
         $injector.invoke(function ($modal) {
