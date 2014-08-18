@@ -53588,6 +53588,11 @@ define('scribe-plugin-link-ui',[],function () {
     return blockElementNames.indexOf(node.nodeName) !== -1;
   }
 
+  var inlineElementNames = ['A', 'B', 'DEL', 'I', 'U'];
+  function nodeIsInlineElement(node) {
+    return inlineElementNames.indexOf(node.nodeName) !== -1;
+  }
+
   HTMLJanitor.prototype.clean = function (html) {
     var sandbox = document.createElement('div');
     sandbox.innerHTML = html;
@@ -53643,7 +53648,7 @@ define('scribe-plugin-link-ui',[],function () {
         break;
       }
 
-      var isInlineElement = nodeName === 'b';
+      var isInlineElement = nodeIsInlineElement(node);
       var containsBlockElement;
       if (isInlineElement) {
         containsBlockElement = Array.prototype.some.call(node.childNodes, isBlockElement);
@@ -56840,7 +56845,7 @@ define('scribe-plugin-inline-objects',[],function () {
             var caption = prompt('Caption',
               $('.caption', activeElement).html()
             );
-            if (caption) {
+            if (caption || caption === '') {
               scribe.updateContents(function() {
                 $('.caption', activeElement).html(caption);
               });
@@ -57341,6 +57346,211 @@ define('link-formatter',[
 
 });
 
+define('strip-newlines',[],function () {
+
+  
+
+  return function () {
+    return function (scribe) {
+      scribe.registerHTMLFormatter('normalize', function (html) {
+        return html.replace(/\n/g, ' ');
+      });
+    };
+  };
+
+});
+
+define('our-ensure-selectable-containers',[
+    'scribe-common/src/element',
+    'lodash-amd/modern/collections/contains'
+  ], function (
+    element,
+    contains
+  ) {
+
+  /**
+   * Chrome and Firefox: All elements need to contain either text or a `<br>` to
+   * remain selectable. (Unless they have a width and height explicitly set with
+   * CSS(?), as per: http://jsbin.com/gulob/2/edit?html,css,js,output)
+   */
+
+  /**
+   * It seems we don't want BRs inserted in html-inline elements (like I, B, A) nor
+   * our "inline objects" so we allow for an optional "skipElement" function in
+   * the config.
+   */
+
+  
+
+  // http://www.w3.org/TR/html-markup/syntax.html#syntax-elements
+  var html5VoidElements = ['AREA', 'BASE', 'BR', 'COL', 'COMMAND', 'EMBED', 'HR', 'IMG', 'INPUT', 'KEYGEN', 'LINK', 'META', 'PARAM', 'SOURCE', 'TRACK', 'WBR'];
+  var inlineElementNames = ['A', 'B', 'DEL', 'I', 'U'];
+  function nodeIsInlineElement(node) {
+    return inlineElementNames.indexOf(node.nodeName) !== -1;
+  }
+
+  function traverse(parentNode, config) {
+    // Instead of TreeWalker, which gets confused when the BR is added to the dom,
+    // we recursively traverse the tree to look for an empty node that can have childNodes
+
+    var node = parentNode.firstElementChild;
+
+    function isEmpty(node) {
+      return node.children.length === 0
+        || (node.children.length === 1
+            && element.isSelectionMarkerNode(node.children[0]));
+    }
+
+    while (node) {
+      if (!element.isSelectionMarkerNode(node)) {
+        // Find any node that contains no child *elements*, or just contains
+        // whitespace, and is not self-closing
+        // dont put BRs in inline elements, please.
+        if (isEmpty(node) &&
+          node.textContent.trim() === '' &&
+          !contains(html5VoidElements, node.nodeName) &&
+          element.isBlockElement(node)) {
+          node.appendChild(document.createElement('br'));
+        } else if (node.children.length > 0) {
+          if (!config.skipElement || !(config.skipElement && config.skipElement(node))) {
+            traverse(node, config);
+          }
+        }
+      }
+      node = node.nextElementSibling;
+    }
+  }
+
+  return function (config) {
+    return function (scribe) {
+
+      scribe.registerHTMLFormatter('normalize', function (html) {
+        var bin = document.createElement('div');
+        bin.innerHTML = html;
+
+        traverse(bin, config);
+
+        return bin.innerHTML;
+      });
+
+    };
+  };
+
+});
+
+define('enforce-p-elements',[
+  'lodash-amd/modern/arrays/last',
+  'scribe-common/src/element'
+], function (
+  last,
+  element
+) {
+
+  /**
+   * Chrome and Firefox: Upon pressing backspace inside of a P, the
+   * browser deletes the paragraph element, leaving the caret (and any
+   * content) outside of any P.
+   *
+   * Firefox: Erasing across multiple paragraphs, or outside of a
+   * whole paragraph (e.g. by ‘Select All’) will leave content outside
+   * of any P.
+   *
+   * Entering a new line in a pristine state state will insert
+   * `<div>`s (in Chrome) or `<br>`s (in Firefox) where previously we
+   * had `<p>`'s. This patches the behaviour of delete/backspace so
+   * that we do not end up in a pristine state.
+   */
+
+  
+
+  /**
+   * Wrap consecutive inline elements and text nodes in a P element.
+   */
+  function wrapChildNodes(parentNode) {
+    var groups = Array.prototype.reduce.call(parentNode.childNodes,
+                                             function (accumulator, binChildNode) {
+      var group = last(accumulator);
+      if (! group) {
+        startNewGroup();
+      } else {
+        var isBlockGroup = element.isBlockElement(group[0]);
+        if (isBlockGroup === element.isBlockElement(binChildNode)) {
+          group.push(binChildNode);
+        } else {
+          startNewGroup();
+        }
+      }
+
+      return accumulator;
+
+      function startNewGroup() {
+        var newGroup = [binChildNode];
+        accumulator.push(newGroup);
+      }
+    }, []);
+
+    var consecutiveInlineElementsAndTextNodes = groups.filter(function (group) {
+      var isBlockGroup = element.isBlockElement(group[0]);
+      return ! isBlockGroup;
+    });
+
+    consecutiveInlineElementsAndTextNodes.forEach(function (nodes) {
+      var pElement = document.createElement('p');
+      nodes[0].parentNode.insertBefore(pElement, nodes[0]);
+      nodes.forEach(function (node) {
+        pElement.appendChild(node);
+      });
+    });
+
+    parentNode._isWrapped = true;
+  }
+
+  // Traverse the tree, wrapping child nodes as we go.
+  function traverse(parentNode) {
+    var treeWalker = document.createTreeWalker(parentNode, NodeFilter.SHOW_ELEMENT);
+    var node = treeWalker.firstChild();
+
+    // FIXME: does this recurse down?
+
+    while (node) {
+      // TODO: At the moment we only support BLOCKQUOTEs. See failing
+      // tests.
+      if (node.nodeName === 'BLOCKQUOTE' && ! node._isWrapped) {
+        wrapChildNodes(node);
+        traverse(parentNode);
+        break;
+      }
+      node = treeWalker.nextSibling();
+    }
+  }
+
+  return function () {
+    return function (scribe) {
+
+      scribe.registerHTMLFormatter('normalize', function (html) {
+        /**
+         * Ensure P mode.
+         *
+         * Wrap any orphan text nodes in a P element.
+         */
+        // TODO: This should be configurable and also correct markup such as
+        // `<ul>1</ul>` to <ul><li>2</li></ul>`. See skipped tests.
+        // TODO: This should probably be a part of HTML Janitor, or some other
+        // formatter.
+        var bin = document.createElement('div');
+        bin.innerHTML = html;
+
+        wrapChildNodes(bin);
+        traverse(bin);
+
+        return bin.innerHTML;
+      });
+
+    };
+  };
+
+});
+
 define('onion-editor',[
   'scribe',
   'scribe-plugin-blockquote-command',
@@ -57360,7 +57570,11 @@ define('onion-editor',[
   'scribe-plugin-onion-video',
   'scribe-plugin-hr',
   'scribe-plugin-placeholder',
-  'link-formatter'
+  'link-formatter',
+  'strip-newlines',
+  // scribe core
+  'our-ensure-selectable-containers',
+  'enforce-p-elements'
 ], function (
   Scribe,
   scribePluginBlockquoteCommand,
@@ -57380,19 +57594,23 @@ define('onion-editor',[
   scribePluginOnionVideo,
   scribePluginHr,
   scribePluginPlaceholder,
-  linkFormatter
+  linkFormatter,
+  stripNewlines,
+  // scribe core
+  ourEnsureSelectableContainers,
+  enforcePElements
 ) {
 
   
 
   var defaults = {
     multiline: true,
-    formatting: ['link', 'bold', 'italic', 'blockquote', 'heading', 'list'],
+    formatting: ['link', 'bold', 'italic', 'blockquote', 'heading', 'list', 'underline'],
     link: {
       domain: 'avclub.com'
     },
     video: {
-      videoEmbedUrl: "http://example.com?videoid=",
+      videoEmbedUrl: 'http://example.com?videoid=',
       insertDialog: function() {  },
       editDialog: function() {  }
     },
@@ -57400,27 +57618,72 @@ define('onion-editor',[
       insertDialog: function() {  },
       editDialog: function() {  }
     }
-  }
+  };
 
   function OnionEditor(element, options) {
-
+    element.style.whiteSpace = 'pre-wrap';
     options = $.extend(defaults, options);
 
     var scribe = new Scribe(element, { allowBlockElements: options.multiline });      
+
+    /* if a node running through the sanitizer passes this test, it won't get sanitized true */
+    function skipSanitization(node) {
+      return ($(node).is('div.inline'));
+    };
+    // HACK: we reset the default htmlFormatters 'normalize' because
+    // they don't quite work with what we're doing and there's
+    // apparently no other way to override/remove the offending ones.
+    scribe._htmlFormatterFactory.formatters['normalize'] = [];
+    if (scribe.allowsBlockElements()) {
+      scribe.use(enforcePElements());
+      scribe.use(ourEnsureSelectableContainers({skipElement: skipSanitization}));
+    }
+    // ENDHACK
 
     if (options.placeholder) {
       scribe.use(scribePluginPlaceholder(options.placeholder));
     }
 
+    // For now, we need to patch some scribe commands, just in case.
+    scribe.commandPatches.bold.execute = function (value) {
+      if (this.selection === undefined) {
+        document.execCommand(this.commandName, false, value || null);
+      } else {
+        scribe.transactionManager.run(function () {
+          document.execCommand(this.commandName, false, value || null);
+        }.bind(this));
+      }
+    };
+    var italicCommand = new scribe.api.CommandPatch('italic');
+    italicCommand.execute = function (value) {
+      if (this.selection === undefined) {
+        document.execCommand(this.commandName, false, value || null);
+      } else {
+        scribe.transactionManager.run(function () {
+          document.execCommand(this.commandName, false, value || null);
+        }.bind(this));
+      }
+    };
+    scribe.commandPatches['italic'] = italicCommand;
+    
+    var underlineCommand = new scribe.api.CommandPatch('underline');
+    underlineCommand.execute = function (value) {
+      if (this.selection === undefined) {
+        document.execCommand(this.commandName, false, value || null);
+      } else {
+        scribe.transactionManager.run(function () {
+          document.execCommand(this.commandName, false, value || null);
+        }.bind(this));
+      }
+    };
+    scribe.commandPatches['underline'] = underlineCommand;
+    // End horrible patches
+
     var keyCommands = {};
     var ctrlKey = function (event) { return event.metaKey || event.ctrlKey; };
 
     // Allowable Tags
-    var tags = {}, 
-        /* if a node running throught the sanitizer passes this test, it won't get santized true */
-        skipSanitization = function(node) {
-          return ($(node).is("div.inline"));
-        };
+    var tags = {};
     
     // Multiline
     if (options.multiline) {
@@ -57448,7 +57711,13 @@ define('onion-editor',[
       tags.s = {};
     }
 
-    //Remove formatting... 
+    // Underline 
+    if (options.formatting.indexOf('underline') !== -1) {
+      keyCommands.underline = function (event) { return event.metaKey && event.keyCode === 85; }; // u
+      tags.u = {};
+    }
+
+    // Remove formatting... 
     keyCommands.removeFormat = function (event) { return event.altKey && event.shiftKey && event.keyCode === 65; }; // a
 
     // Links
@@ -57458,7 +57727,7 @@ define('onion-editor',[
       scribe.use(scribePluginIntelligentUnlinkCommand());
       scribe.use(scribePluginLinkUI(options.link));
       scribe.use(linkFormatter(options.link));
-      tags.a = { href:true, target:true }
+      tags.a = { href:true, target:true };
     }
 
     // Lists
@@ -57507,7 +57776,7 @@ define('onion-editor',[
       tags: tags,
       skipSanitization: skipSanitization
     }));
-
+    scribe.use(stripNewlines());
 
     // Word count 
     
@@ -57532,7 +57801,7 @@ define('onion-editor',[
       // Default is to skipFormatters. Only place this needs to be set to false is when updating links. 
       // We want formatters to run on links. Embeds & other shit seem to get sanitized 
       // despite there being safegaurds for that.
-      if (typeof skipFormatters == "undefined") {
+      if (typeof skipFormatters === 'undefined') {
         skipFormatters = true;
       }
       scribe._skipFormatters = skipFormatters;
@@ -57540,14 +57809,14 @@ define('onion-editor',[
       setTimeout(function() {        
         scribe.el.focus();
         setTimeout(function() {
-          scribe.transactionManager.run(fn)
+          scribe.transactionManager.run(fn);
           window.scrollTo(0, scrollY);
 
           // This should notify any changes that happen outside of typing 
           scribe.trigger('content-changed');
         }, 20);
       }, 20);
-    }
+    };
     
     scribe.use(scribePluginCurlyQuotes());
     scribe.use(scribePluginKeyboardShortcuts(Object.freeze(keyCommands)));
@@ -57561,31 +57830,31 @@ define('onion-editor',[
     }
 
     // a little hacky to prevent deletion of images and other inline elements via the backspace key. 
-    scribe.el.addEventListener("keydown", function(event) {
+    scribe.el.addEventListener('keydown', function(event) {
       if (event.keyCode === 8) {
         // is the previous immediate child of editor an inline item?
         var sel = new scribe.api.Selection();
-        var prev = $(sel.selection.anchorNode).closest(".editor>*").prev();
-        if (prev.hasClass("inline") 
+        var prev = $(sel.selection.anchorNode).closest('.editor>*').prev();
+        if (prev.hasClass('inline') 
           && sel.selection.anchorOffset === 0 
           && sel.selection.isCollapsed) {
           event.preventDefault();
         }
       }
-    })
+    });
 
     scribe.use(scribePluginFormatterPlainTextConvertNewLinesToHtml());
 
     this.setChangeHandler = function(func) {
       scribe.on('content-changed', func); 
-    }
+    };
 
     this.setContent = function(content) {
       if (!content) {
-          content = "<p><br></p>";
+          content = '<p><br></p>';
       }
       scribe.setContent(content);
-    }
+    };
 
     this.getContent = function() {
       //todo: if multiline is false, only return contents of the paragraph
@@ -57594,7 +57863,7 @@ define('onion-editor',[
 
       // Allow any plugins to clean up markup. Main use case is for embed plugin, atm.
       return contents;
-    }
+    };
 
     this.scribe = scribe;
     return this;
