@@ -57354,7 +57354,7 @@ define('link-formatter',[
 
 });
 
-define('strip-newlines',[],function () {
+define('paste-strip-newlines',[],function () {
 
   
 
@@ -57362,6 +57362,20 @@ define('strip-newlines',[],function () {
     return function (scribe) {
       scribe.registerHTMLFormatter('paste', function (html) {
         return html.replace(/\n/g, ' ');
+      });
+    };
+  };
+
+});
+
+define('paste-strip-nbsps',[],function () {
+
+  
+
+  return function () {
+    return function (scribe) {
+      scribe.registerHTMLFormatter('paste', function (html) {
+        return html.replace(/&nbsp;/g, ' ');
       });
     };
   };
@@ -57579,7 +57593,8 @@ define('onion-editor',[
   'scribe-plugin-hr',
   'scribe-plugin-placeholder',
   'link-formatter',
-  'strip-newlines',
+  'paste-strip-newlines',
+  'paste-strip-nbsps',
   // scribe core
   'our-ensure-selectable-containers',
   'enforce-p-elements'
@@ -57603,7 +57618,8 @@ define('onion-editor',[
   scribePluginHr,
   scribePluginPlaceholder,
   linkFormatter,
-  stripNewlines,
+  pasteStripNewlines,
+  pasteStripNbsps,
   // scribe core
   ourEnsureSelectableContainers,
   enforcePElements
@@ -57784,8 +57800,8 @@ define('onion-editor',[
       tags: tags,
       skipSanitization: skipSanitization
     }));
-    scribe.use(stripNewlines());
-
+    scribe.use(pasteStripNewlines());
+    scribe.use(pasteStripNbsps());
     // Word count 
     
     if (options.statsContainer) {
