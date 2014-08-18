@@ -57645,9 +57645,9 @@ define('onion-editor',[
   };
 
   function OnionEditor(element, options) {
-    element.style.whiteSpace = 'pre-wrap';
     options = $.extend(defaults, options);
-
+    $('.inline', element).attr('contenteditable', 'false');
+  
     var scribe = new Scribe(element, { allowBlockElements: options.multiline });      
 
     /* if a node running through the sanitizer passes this test, it won't get sanitized true */
