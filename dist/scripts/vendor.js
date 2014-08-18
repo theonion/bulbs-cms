@@ -57735,7 +57735,7 @@ define('onion-editor',[
       keyCommands.insertUnorderedList = function (event) { return event.altKey && event.shiftKey && event.keyCode === 66; }; // b
       keyCommands.insertOrderedList = function (event) { return event.altKey && event.shiftKey && event.keyCode === 78; }; // n
       
-      //scribe.use(scribePluginSmartLists());
+      scribe.use(scribePluginSmartLists());
       tags.ol = {};
       tags.ul = {};
       tags.li = {};
