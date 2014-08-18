@@ -1,6 +1,6 @@
 {
   "name": "bulbs-cms",
-  "version": "0.9.37",
+  "version": "0.9.38",
   "dependencies": {},
   "devDependencies": {
     "json3": "~3.2.6",
