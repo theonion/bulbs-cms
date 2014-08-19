@@ -50875,6 +50875,9 @@ define('api/selection',[],function () {
     }
 
     Selection.prototype.getContaining = function (nodeFilter) {
+      if (!this.range) {
+        return;
+      }
       var node = new scribe.api.Node(this.range.commonAncestorContainer);
       var isTopContainerElement = node.node && node.node.attributes
          && node.node.attributes.getNamedItem('contenteditable');
@@ -50883,6 +50886,9 @@ define('api/selection',[],function () {
     };
 
     Selection.prototype.placeMarkers = function () {
+      if (!this.range) {
+        return;
+      }
       var startMarker = document.createElement('em');
       startMarker.classList.add('scribe-marker');
       var endMarker = document.createElement('em');
