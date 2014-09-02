@@ -50232,36 +50232,6 @@ define('plugins/core/inline-elements-mode',[],function () {
   };
 });
 
-define('plugins/core/patches/commands/bold',[],function () {
-
-  
-
-  return function () {
-    return function (scribe) {
-      var boldCommand = new scribe.api.CommandPatch('bold');
-
-      /**
-       * Chrome: Executing the bold command inside a heading corrupts the markup.
-       * Disabling for now.
-       */
-      boldCommand.queryEnabled = function () {
-        var selection = new scribe.api.Selection();
-        var headingNode = selection.getContaining(function (node) {
-          return (/^(H[1-6])$/).test(node.nodeName);
-        });
-
-        return scribe.api.CommandPatch.prototype.queryEnabled.apply(this, arguments) && ! headingNode;
-      };
-
-      // TODO: We can't use STRONGs because this would mean we have to
-      // re-implement the `queryState` command, which would be difficult.
-
-      scribe.commandPatches.bold = boldCommand;
-    };
-  };
-
-});
-
 define('plugins/core/patches/commands/indent',[],function () {
 
   /**
@@ -50726,7 +50696,6 @@ define('plugins/core/patches/events',['scribe-common/src/element'], function (el
 });
 
 define('plugins/core/patches',[
-  './patches/commands/bold',
   './patches/commands/indent',
   './patches/commands/insert-html',
   './patches/commands/insert-list',
@@ -50734,7 +50703,6 @@ define('plugins/core/patches',[
   './patches/commands/create-link',
   './patches/events'
 ], function (
-  boldCommand,
   indentCommand,
   insertHTMLCommand,
   insertListCommands,
@@ -50753,7 +50721,6 @@ define('plugins/core/patches',[
 
   return {
     commands: {
-      bold: boldCommand,
       indent: indentCommand,
       insertHTML: insertHTMLCommand,
       insertList: insertListCommands,
@@ -51512,7 +51479,6 @@ define('scribe',[
 
 
     // Patches
-    this.use(patches.commands.bold());
     this.use(patches.commands.indent());
     this.use(patches.commands.insertHTML());
     this.use(patches.commands.insertList());
@@ -57871,7 +57837,8 @@ define('onion-editor',[
     }
 
     // For now, we need to patch some scribe commands, just in case.
-    scribe.commandPatches.bold.execute = function (value) {
+    var boldCommand = new scribe.api.CommandPatch('bold');
+    boldCommand.execute = function (value) {
       if (this.selection === undefined) {
         document.execCommand(this.commandName, false, value || null);
       } else {
@@ -57880,6 +57847,8 @@ define('onion-editor',[
         }.bind(this));
       }
     };
+    scribe.commandPatches['bold'] = boldCommand;
+
     var italicCommand = new scribe.api.CommandPatch('italic');
     italicCommand.execute = function (value) {
       if (this.selection === undefined) {
