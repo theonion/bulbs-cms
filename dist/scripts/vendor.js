@@ -49641,12 +49641,19 @@ define('plugins/core/events',[
        * I also don't like how it has the authority to perform `event.preventDefault`.
        */
 
+      function agentIsSafari() {
+        var ua = navigator.userAgent;
+        return ua.search('Safari') >= 0 && ua.search('Chrome') < 0;
+      }
+
       scribe.el.addEventListener('paste', function handlePaste(event) {
         /**
          * Browsers without the Clipboard API (specifically `ClipboardEvent.clipboardData`)
-         * will execute the second branch here.
+         * and Safari will execute the second branch here.
          */
-        if (event.clipboardData) {
+        if (event.clipboardData
+          && (contains(event.clipboardData.types, 'text/html') || !agentIsSafari())
+        ) {
           event.preventDefault();
 
           if (contains(event.clipboardData.types, 'text/html')) {
@@ -57368,12 +57375,6 @@ define('link-formatter',[
       function traverse(parentNode) {
         var node = parentNode.firstElementChild;
 
-        function isEmpty(node) {
-          return node.children.length === 0
-            || (node.children.length === 1
-                && element.isSelectionMarkerNode(node.children[0]));
-        }
-
         while (node) {
           if (node.nodeName === 'A') {
             if (node.hasAttribute('href')) {
@@ -57443,6 +57444,134 @@ define('paste-strip-nbsps',[],function () {
       });
       scribe.registerHTMLFormatter('normalize', function (html) {
         return html.replace(/&nbsp;/g, ' ');
+      });
+    };
+  };
+
+});
+
+define('paste-from-word',['scribe-common/src/element'], function (scribeElement) {
+
+  
+
+  return function () {
+    return function (scribe) {
+
+      // Flagrantly lifted from TinyMCE
+      function isWordContent(html) {
+        return (
+          (/<font face="Times New Roman"|class="?Mso|style="[^"]*\bmso-|style='[^'']*\bmso-|w:WordDocument/i).test(html) ||
+          (/class="OutlineElement/).test(html) ||
+          (/id="?docs\-internal\-guid\-/.test(html))
+        );
+      }
+
+      function traverse(parentNode) {
+        var node = parentNode.firstElementChild;
+        
+        while (node) {
+          var nextNode = node.nextElementSibling;
+
+          // Kill "Mso*" class names
+          if (node.className.indexOf('Mso') === 0) {
+            node.className = null;
+          }
+
+          if (node.hasAttribute('style')) {
+            node.removeAttribute('style');
+          }
+
+          if (node.children.length > 0) {
+            traverse(node);
+          }
+
+          // Kill bullshit a tags
+          if (node.nodeName === 'A') {
+            if (!node.href) {  // There are a bunch of tags taht are basically bookmarks. We don't need 'em.
+              scribeElement.unwrap(parentNode, node);
+            }
+          }
+
+          node = nextNode;
+        }
+      }
+
+      scribe.registerHTMLFormatter('paste', function (html) {
+        if (!isWordContent(html)) {
+          // We only want to fuck with word docs. Word docs are crazy.
+          return html;
+        }
+
+        // Word comments like conditional comments etc
+        html = html.replace(/<!--[\s\S]+?-->/gi, '');
+
+        // Remove comments, scripts (e.g., msoShowComment), XML tag, VML content,
+        // MS Office namespaced tags, and a few other tags
+        html = html.replace(/<(!|script[^>]*>.*?<\/script(?=[>\s])|\/?(\?xml(:\w+)?|img|meta|link|style|\w:\w+)(?=[\s\/>]))[^>]*>/gi, '');
+        
+        // Now let's use this thing as a doc.
+        var bin = document.createElement('div');
+        bin.innerHTML = html;
+
+        traverse(bin);
+
+        // In the end, we really only care about the body.
+        return bin.innerHTML;
+      });
+    };
+  };
+
+});
+define('paste-sanitize',['scribe-common/src/element'], function (scribeElement) {
+
+  
+
+  return function () {
+    return function (scribe) {
+
+      function traverse(parentNode) {
+        var node = parentNode.firstElementChild;
+        
+        while (node) {
+          var nextNode = node.nextElementSibling;
+
+          if (node.children.length > 0) {
+            traverse(node);
+          }
+
+          if (node.hasAttribute('style')) {
+            node.removeAttribute('style');
+          }
+
+          // There seem to be a bunch of empty p tags, that cause all kinds of trouble.
+          if (node.nodeName === 'P' && node.textContent.trim() === '') {
+            parentNode.removeChild(node); // Kill these empty p tagz
+          }
+
+          // FUCK YO SPANS
+          if (node.nodeName === 'SPAN') {
+            scribeElement.unwrap(parentNode, node);
+          }
+
+          node = nextNode;
+        }
+      }
+
+      scribe.registerHTMLFormatter('paste', function (html) {
+
+        var bin = document.createElement('div');
+        bin.innerHTML = html;
+
+        var childNodes = [].slice.call(bin.childNodes);
+        childNodes.forEach(function(childNode) {
+          if (childNode.nodeType === 3 && childNode.textContent.trim() === '') {
+            // Kill all empty spaces between tags.
+            bin.removeChild(childNode);
+          }
+        });
+
+        traverse(bin);
+        return bin.innerHTML;
       });
     };
   };
@@ -57663,6 +57792,8 @@ define('onion-editor',[
   'only-trailing-brs',
   'paste-strip-newlines',
   'paste-strip-nbsps',
+  'paste-from-word',
+  'paste-sanitize',
   // scribe core
   'our-ensure-selectable-containers',
   'enforce-p-elements'
@@ -57689,6 +57820,8 @@ define('onion-editor',[
   onlyTrailingBrs,
   pasteStripNewlines,
   pasteStripNbsps,
+  pasteFromWord,
+  pasteSanitize,
   // scribe core
   ourEnsureSelectableContainers,
   enforcePElements
@@ -57784,8 +57917,8 @@ define('onion-editor',[
       tags.br = {};
       tags.hr = {};
     } else {
-      tags.br = {};
-      scribe.use(onlyTrailingBrs());
+      // tags.br = {};
+      // scribe.use(onlyTrailingBrs());
     }
 
     // Bold
@@ -57872,6 +58005,8 @@ define('onion-editor',[
       tags: tags,
       skipSanitization: skipSanitization
     }));
+    scribe.use(pasteFromWord());
+    scribe.use(pasteSanitize());
     scribe.use(pasteStripNewlines());
     scribe.use(pasteStripNbsps());
     // Word count 
