@@ -1537,8 +1537,10 @@ angular.module('bulbsCmsApp')
         'placeholderText': '@',
         'hideMetas': '=',
         'ratio': '@',
+        'editable': '=?'
       },
       controller: function ($scope, $element) {
+        $scope.editable = angular.isDefined($scope.editable) ? $scope.editable : true;
         $scope.upload = function (e) {
           BettyCropper.upload().then(
             function (success) {
