@@ -53,6 +53,10 @@ describe('Controller: ContentworkflowCtrl', function () {
       scope.versionBrowserModal();
       expect(modalService.open).toHaveBeenCalled();
     });
+    it('descriptionModal', function () {
+      scope.descriptionModal();
+      expect(modalService.open).toHaveBeenCalled();
+    });
   });
 
   describe('function getStatus is a utility function for determining if an article is unpublished/scheduled/published', function () {

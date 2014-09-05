@@ -1,0 +1,23 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="$dismiss();" aria-hidden="true">&times;</button>
+    <h4 class="modal-title">Edit Article Description</h4>
+</div><!--/modal-header-->
+
+<div class="modal-body description-modal-body">
+    <div class="form-group">
+        <p class="help-block">Edit this article's description. Must be 200 characters or less.</p>
+        <textarea class="form-control" ng-model="article.description" maxlength="200"></textarea>
+        <span class="pull-right text-success bg-success" ng-class="{ 'text-success bg-success': article.description.length < 200, 'text-danger bg-danger': article.description.length >= 200 }">
+            <span ng-show="article.description.length >= 200;">
+                Max characters reached!
+            </span>
+            <span>
+                {{ article.description.length || 0 }}/200
+            </span>
+        </span>
+    </div>
+</div><!--/modal-body-->
+
+<div class="modal-footer">
+    <button class="btn btn-success" ng-click="$dismiss();" aria-hidden="true">Done</button>
+</div><!--/modal-footer-->

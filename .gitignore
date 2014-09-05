@@ -6,3 +6,4 @@ app/bower_components
 app/styles/**/*.css
 app/keys.js
 coverage
+.idea/
