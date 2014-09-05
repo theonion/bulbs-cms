@@ -892,6 +892,18 @@ angular.module('bulbsCmsApp')
       });
     };
 
+    $scope.descriptionModal = function (article) {
+      return $modal.open({
+        templateUrl: routes.PARTIALS_URL + 'modals/description-modal.html',
+        controller: 'DescriptionModalCtrl',
+        scope: $scope,
+        size: 'lg',
+        resolve: {
+          article: function () { return article; }
+        }
+      });
+    };
+
     $scope.getStatus = function (article) {
       if (!article || !article.published) {
         return 'unpublished';
@@ -903,6 +915,15 @@ angular.module('bulbsCmsApp')
     };
 
   });
+
+'use strict';
+
+angular.module('bulbsCmsApp')
+    .controller('DescriptionModalCtrl', function ($scope, $modalInstance, article) {
+
+        $scope.article = article;
+
+    });
 
 'use strict';
 
