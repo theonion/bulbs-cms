@@ -29,7 +29,8 @@ angular.module('bulbsCmsApp', [
   'moment',
   'PNotify',
   'keypress',
-  'Raven'
+  'Raven',
+  'firebase'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);

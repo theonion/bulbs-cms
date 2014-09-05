@@ -5,7 +5,7 @@ angular.module('bulbsCmsApp')
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, keypress, Raven,
-    IfExistsElse, Localstoragebackup, ContentApi, Login, routes)
+    IfExistsElse, Localstoragebackup, ContentApi, FirebaseApi, Login, routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
@@ -25,6 +25,10 @@ angular.module('bulbsCmsApp')
       $window.article = $scope.article = data; //exposing article on window for debugging
 
       $scope.last_saved_article = angular.copy(data);
+
+      // register the current user as viewing this article
+      FirebaseApi.registerCurrentUserViewingArticle($scope.article.id);
+
     };
 
     function getContent() {
@@ -88,7 +92,7 @@ angular.module('bulbsCmsApp')
       }
       saveToContentApi();
       return $scope.saveArticleDeferred.promise;
-    }
+    };
 
     var saveHTML =  '<i class=\'glyphicon glyphicon-floppy-disk\'></i> Save';
     var navbarSave = '.navbar-save';
@@ -134,7 +138,7 @@ angular.module('bulbsCmsApp')
           return 'You have unsaved changes. Do you want to continue?';
         };
       } else {
-        $window.onbeforeunload = function () {};
+        $window.onbeforeunload = function() {};
       }
     });
 
