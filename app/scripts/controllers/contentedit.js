@@ -27,7 +27,10 @@ angular.module('bulbsCmsApp')
       $scope.last_saved_article = angular.copy(data);
 
       // register the current user as viewing this article
-      FirebaseApi.registerCurrentUserViewingArticle($scope.article.id);
+      FirebaseApi.registerCurrentUserActive($scope.article.id);
+
+      // sync this article variable with the currently active users
+      $scope.article.activeUsers = FirebaseApi.getActiveUsers($scope.article.id);
 
     };
 

@@ -7,22 +7,39 @@ angular.module('bulbsCmsApp')
 
         return {
 
-            getUsersViewingArticle: function (articleId) {
+            /**
+             * Return a firebase array of all users currently viewing a given article.
+             *
+             * @param articleId     ID of article to get users for.
+             * @returns {*}         AngularFire $FirebaseArray object.
+             */
+            getActiveUsers: function (articleId) {
 
                 return $firebase(ref.child('articles/' + articleId + '/users')).$asArray();
 
             },
 
-            registerCurrentUserViewingArticle: function (articleId) {
+            /**
+             * Register a user as viewing given article.
+             *
+             * @param articleId     ID of article that user is viewing.
+             */
+            registerCurrentUserActive: function (articleId) {
 
-                this.getUsersViewingArticle(articleId).$add({
-                    id: CurrentUser.data.id,
-                    fullName: CurrentUser.data.first_name + ' ' + CurrentUser.data.last_name
-                }).then(function (ref) {
+                if (CurrentUser.data.length > 0) {
 
-                    ref.onDisconnect().remove();
+                    this.getActiveUsers(articleId).$add({
+                        id: CurrentUser.data.id,
+                        fullName: CurrentUser.data.first_name + ' ' + CurrentUser.data.last_name,
+                        color: Math.floor(Math.random() * 16777215).toString(16)
+                    }).then(function (ref) {
 
-                });
+                        // ensure user is removed once they leave this article
+                        ref.onDisconnect().remove();
+
+                    });
+
+                }
 
             },
 
