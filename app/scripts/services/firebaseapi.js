@@ -36,7 +36,7 @@ angular.module('bulbsCmsApp')
                         // ensure user is removed once they leave this article
                         ref.onDisconnect().remove();
 
-                    });]
+                    });
 
                 }
 
