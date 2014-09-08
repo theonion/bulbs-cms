@@ -50,8 +50,5 @@ angular.module('bulbsCmsApp')
 
         };
 
-    })
-    .constant('firebaseApiConfig', {
-        FIREBASE_ROOT: 'bulbs-cms-test',
-        FIREBASE_URL: 'https://luminous-fire-8340.firebaseio.com/'
     });
+
