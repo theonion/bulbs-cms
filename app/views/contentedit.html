@@ -17,13 +17,6 @@
             <div ng-if="article.polymorphic_ctype" ng-include="CONTENT_PARTIALS_URL + article.polymorphic_ctype + '.html' + CACHEBUSTER"></div>
             <h4 ng-if="!article.polymorphic_ctype" style="text-align:center;">Error: article has no content type.</h4>
         </div>
-        <div class="active-users">
-            <ul>
-                <li ng-repeat="user in article.activeUsers" style="background-color: #{{ user.color }}">
-                    {{ user.fullName }}
-                </li>
-            </ul>
-        </div>
         <div class="status-bar">
             <span class="wordcount"></span>
         </div>

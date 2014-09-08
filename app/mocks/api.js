@@ -193,10 +193,10 @@ angular.module('bulbsCmsApp.mockApi').run([
         },
         {
             id: 2,
-            username: 'bdole',
+            username: 'bdoledoledoledoledoledole',
             email: 'bdole@theonion.com',
             first_name: 'Bob',
-            last_name: 'Dole'
+            last_name: 'Dole Dole Dole Dole Dole Dole'
         }
     ];
     var userIndex = Math.floor(Math.random() * users.length);

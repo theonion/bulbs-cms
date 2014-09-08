@@ -26,12 +26,11 @@ angular.module('bulbsCmsApp')
              */
             registerCurrentUserActive: function (articleId) {
 
-                if (CurrentUser.data.length > 0) {
+                if ('id' in CurrentUser.data) {
 
                     this.getActiveUsers(articleId).$add({
                         id: CurrentUser.data.id,
-                        fullName: CurrentUser.data.first_name + ' ' + CurrentUser.data.last_name,
-                        color: Math.floor(Math.random() * 16777215).toString(16)
+                        fullName: CurrentUser.data.first_name + ' ' + CurrentUser.data.last_name
                     }).then(function (ref) {
 
                         // ensure user is removed once they leave this article
