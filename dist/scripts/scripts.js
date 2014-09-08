@@ -3004,9 +3004,15 @@ angular.module('bulbsCmsApp')
 
                 if ('id' in CurrentUser.data) {
 
+                    // try to show first/last name, if not try username, then email
+                    var displayName =
+                            CurrentUser.data.first_name && CurrentUser.data.last_name
+                                ? CurrentUser.data.first_name + ' ' + CurrentUser.data.last_name
+                                    : (CurrentUser.data.username || CurrentUser.data.email);
+
                     this.getActiveUsers(articleId).$add({
                         id: CurrentUser.data.id,
-                        fullName: CurrentUser.data.first_name + ' ' + CurrentUser.data.last_name
+                        fullName: displayName
                     }).then(function (ref) {
 
                         // ensure user is removed once they leave this article
