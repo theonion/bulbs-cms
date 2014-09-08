@@ -3,7 +3,7 @@
 angular.module('bulbsCmsApp')
     .factory('FirebaseApi', function ($firebase, CurrentUser, firebaseApiConfig) {
 
-        var ref = new Firebase(firebaseApiConfig.FIREBASE_URL);
+        var ref = new Firebase(firebaseApiConfig.FIREBASE_URL + firebaseApiConfig.FIREBASE_ROOT);
 
         return {
 
@@ -36,15 +36,16 @@ angular.module('bulbsCmsApp')
                         // ensure user is removed once they leave this article
                         ref.onDisconnect().remove();
 
-                    });
+                    });]
 
                 }
 
-            },
+            }
 
         };
 
     })
     .constant('firebaseApiConfig', {
+        FIREBASE_ROOT: 'bulbs-cms-test',
         FIREBASE_URL: 'https://luminous-fire-8340.firebaseio.com/'
     });
