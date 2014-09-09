@@ -247,7 +247,8 @@ angular.module('bulbsCmsApp', [
   'moment',
   'PNotify',
   'keypress',
-  'Raven'
+  'Raven',
+  'firebase'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
@@ -401,7 +402,7 @@ angular.module('bulbsCmsApp')
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, keypress, Raven,
-    IfExistsElse, Localstoragebackup, ContentApi, Login, routes)
+    IfExistsElse, Localstoragebackup, ContentApi, FirebaseApi, Login, routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
@@ -421,6 +422,13 @@ angular.module('bulbsCmsApp')
       $window.article = $scope.article = data; //exposing article on window for debugging
 
       $scope.last_saved_article = angular.copy(data);
+
+      // register the current user as viewing this article
+      FirebaseApi.registerCurrentUserActive($scope.article.id);
+
+      // sync this article variable with the currently active users
+      $scope.activeUsers = FirebaseApi.getActiveUsers($scope.article.id);
+
     };
 
     function getContent() {
@@ -484,7 +492,7 @@ angular.module('bulbsCmsApp')
       }
       saveToContentApi();
       return $scope.saveArticleDeferred.promise;
-    }
+    };
 
     var saveHTML =  '<i class=\'glyphicon glyphicon-floppy-disk\'></i> Save';
     var navbarSave = '.navbar-save';
@@ -530,7 +538,7 @@ angular.module('bulbsCmsApp')
           return 'You have unsaved changes. Do you want to continue?';
         };
       } else {
-        $window.onbeforeunload = function () {};
+        $window.onbeforeunload = function() {};
       }
     });
 
@@ -2966,6 +2974,61 @@ angular.module('bulbsCmsApp')
       }
     };
   });
+'use strict';
+
+angular.module('bulbsCmsApp')
+    .factory('FirebaseApi', function ($firebase, CurrentUser, firebaseApiConfig) {
+
+        var ref = new Firebase(firebaseApiConfig.FIREBASE_URL + firebaseApiConfig.FIREBASE_ROOT);
+
+        return {
+
+            /**
+             * Return a firebase array of all users currently viewing a given article.
+             *
+             * @param articleId     ID of article to get users for.
+             * @returns {*}         AngularFire $FirebaseArray object.
+             */
+            getActiveUsers: function (articleId) {
+
+                return $firebase(ref.child('articles/' + articleId + '/users')).$asArray();
+
+            },
+
+            /**
+             * Register a user as viewing given article.
+             *
+             * @param articleId     ID of article that user is viewing.
+             */
+            registerCurrentUserActive: function (articleId) {
+
+                if ('id' in CurrentUser.data) {
+
+                    // try to show first/last name, if not try username, then email
+                    var displayName =
+                            CurrentUser.data.first_name && CurrentUser.data.last_name
+                                ? CurrentUser.data.first_name + ' ' + CurrentUser.data.last_name
+                                    : (CurrentUser.data.username || CurrentUser.data.email);
+
+                    this.getActiveUsers(articleId).$add({
+                        id: CurrentUser.data.id,
+                        fullName: displayName
+                    }).then(function (ref) {
+
+                        // ensure user is removed once they leave this article
+                        ref.onDisconnect().remove();
+
+                    });
+
+                }
+
+            }
+
+        };
+
+    });
+
+
 'use strict';
 
 angular.module('bulbsCmsApp')

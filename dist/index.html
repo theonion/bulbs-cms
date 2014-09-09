@@ -96,6 +96,7 @@
     <script src="bower_components/pnotify/pnotify.desktop.js"></script>
     <script src="bower_components/pnotify/pnotify.history.js"></script>
     <script src="bower_components/pnotify/pnotify.nonblock.js"></script>
+    <script src="bower_components/firebase/firebase.js"></script>
     <!-- endbower -->
     <script src="bower_components/jcrop/js/jquery.Jcrop.min.js"></script>
     <!-- endbuild -->
@@ -153,6 +154,7 @@
     <script src="scripts/services/promotionapi.js"></script>
     <script src="scripts/services/adapi.js"></script>
     <script src="scripts/services/login.js"></script>
+    <script src="scripts/services/firebaseapi.js"></script>
     <script src="scripts/filters/tzdate.js"></script>
     <script src="scripts/controllers/changelogmodal.js"></script>
     <script src="scripts/controllers/versionbrowsermodal.js"></script>
@@ -225,6 +227,10 @@
         angular.module('bulbsCmsApp').constant('VIDEO_THUMBNAIL_URL', 'http://v.theonion.com/avclubmedia/video/{{video}}/frame_{{thumbnail}}.jpg');
         angular.module('bulbsCmsApp').constant('STATIC_IMAGE_URL', 'http://chimg.onionstatic.com/{{image}}/{{ratio}}/600.jpg');
 
+        angular.module('bulbsCmsApp').constant('firebaseApiConfig', {
+          FIREBASE_ROOT: 'bulbs-cms-test',
+          FIREBASE_URL: 'https://luminous-fire-8340.firebaseio.com/'
+        });
 
         // ****** CMS Plugins ****** \\
 
