@@ -30,7 +30,7 @@ angular.module('bulbsCmsApp')
       FirebaseApi.registerCurrentUserActive($scope.article.id);
 
       // sync this article variable with the currently active users
-      $scope.article.activeUsers = FirebaseApi.getActiveUsers($scope.article.id);
+      $scope.activeUsers = FirebaseApi.getActiveUsers($scope.article.id);
 
     };
 
