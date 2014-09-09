@@ -26,6 +26,7 @@
     "Keypress": "~2.0.2",
     "pnotify": "~2.0.0",
     "angular-mocks": "^1.2.18",
-    "angular-scenario": "^1.2.18"
+    "angular-scenario": "^1.2.18",
+    "firebase": "1.0.21"
   }
 }

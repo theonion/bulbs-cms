@@ -175,14 +175,32 @@ angular.module('bulbsCmsApp.mockApi').run([
     // send to webtech (fickle)
     $httpBackend.whenPOST('/cms/api/v1/report-bug/').respond('');
 
-    // user
-    $httpBackend.whenGET('/cms/api/v1/me/').respond({
-      id: 0,
-      username: 'admin',
-      email: 'webtech@theonion.com',
-      first_name: 'Herman',
-      last_name: 'Zweibel'
-    });
+    // user, log in as a random user
+    var users = [
+        {
+            id: 0,
+            username: 'admin',
+            email: 'webtech@theonion.com',
+            first_name: 'Herman',
+            last_name: 'Zweibel'
+        },
+        {
+            id: 1,
+            username: 'jadams',
+            email: 'jadams@theonion.com',
+            first_name: 'John',
+            last_name: 'Adams'
+        },
+        {
+            id: 2,
+            username: 'bdoledoledoledoledoledole',
+            email: 'bdole@theonion.com',
+            first_name: 'Bob',
+            last_name: 'Dole Dole Dole Dole Dole Dole'
+        }
+    ];
+    var userIndex = Math.floor(Math.random() * users.length);
+    $httpBackend.whenGET('/cms/api/v1/me/').respond(users[userIndex]);
 
     $httpBackend.when('OPTIONS', '/ads/targeting/').respond('');
 

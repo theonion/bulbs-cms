@@ -39,6 +39,20 @@
   </ul>
     <ul class="nav navbar-nav navbar-right">
 
+      <li class="content-status" ng-controller="ContentworkflowCtrl" ng-init="showActiveUsers = false;">
+        <a href="" ng-mouseenter="showActiveUsers = true;" ng-mouseleave="showActiveUsers = false;">
+          <i class="glyphicon glyphicon-eye-open"></i>
+          <span class="active-users-btn-text">Active Users ({{ activeUsers.length }})</span>
+        </a>
+        <div class="active-users" ng-show="showActiveUsers">
+            <ul>
+                <li ng-repeat="user in activeUsers">
+                    {{ user.fullName }}
+                </li>
+            </ul>
+        </div>
+      </li>
+
       <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'unpublished'" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/publish/">
         <a href="" ng-click="saveArticle().then(pubTimeModal);">
           <i class="glyphicon glyphicon-globe"></i> Publish...</a></li>
