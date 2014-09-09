@@ -1,7 +1,9 @@
 {
   "name": "bulbs-cms",
-  "version": "0.9.1",
-  "dependencies": {},
+  "version": "0.9.50",
+  "dependencies": {
+    "angularfire": "~0.8.2"
+  },
   "devDependencies": {
     "json3": "~3.2.6",
     "es5-shim": "~2.1.0",
@@ -26,6 +28,7 @@
     "Keypress": "~2.0.2",
     "pnotify": "~2.0.0",
     "angular-mocks": "^1.2.18",
-    "angular-scenario": "^1.2.18"
+    "angular-scenario": "^1.2.18",
+    "firebase": "1.0.21"
   }
 }
