@@ -3000,10 +3000,12 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-    .factory('FirebaseApi', function ($firebase, CurrentUser, firebaseApiConfig) {
+  .value('FIREBASE_URL', 'https://luminous-fire-8340.firebaseio.com/')
+  .value('FIREBASE_ROOT', 'a-site-is-not-configured')
+    .factory('FirebaseApi', function ($firebase, CurrentUser, FIREBASE_URL, FIREBASE_ROOT) {
 
         // get firebase references
-        var rootRef = new Firebase(firebaseApiConfig.FIREBASE_URL + 'sites/' + firebaseApiConfig.FIREBASE_ROOT);
+        var rootRef = new Firebase(FIREBASE_URL + 'sites/' + FIREBASE_ROOT);
 
         // authorization utility function
         var authed = false;
@@ -3029,7 +3031,7 @@ angular.module('bulbsCmsApp')
         };
 
         // ensure user is unauthed when they disconnect
-        var connectedRef = new Firebase(firebaseApiConfig.FIREBASE_URL + '.info/connected');
+        var connectedRef = new Firebase(FIREBASE_URL + '.info/connected');
         connectedRef.on('value', function (connected) {
 
           if (!connected.val()) {
