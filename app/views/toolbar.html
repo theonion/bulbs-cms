@@ -39,7 +39,7 @@
   </ul>
     <ul class="nav navbar-nav navbar-right">
 
-      <li class="content-status" ng-controller="ContentworkflowCtrl" ng-init="showActiveUsers = false;">
+      <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="activeUsers.length > 0" ng-init="showActiveUsers = false;">
         <a href="" ng-mouseenter="showActiveUsers = true;" ng-mouseleave="showActiveUsers = false;">
           <i class="glyphicon glyphicon-eye-open"></i>
           <span class="active-users-btn-text">Active Users ({{ activeUsers.length }})</span>
@@ -47,7 +47,7 @@
         <div class="active-users" ng-show="showActiveUsers">
             <ul>
                 <li ng-repeat="user in activeUsers">
-                    {{ user.fullName }}
+                    <span>{{ user.displayName }}</span><span ng-show="user.count > 1"> ({{ user.count }})</span>
                 </li>
             </ul>
         </div>
