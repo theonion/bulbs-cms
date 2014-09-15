@@ -26,11 +26,34 @@ angular.module('bulbsCmsApp')
 
       $scope.last_saved_article = angular.copy(data);
 
+      // log in to firebase
+      FirebaseApi.login();
+
       // register the current user as viewing this article
       FirebaseApi.registerCurrentUserActive($scope.article.id);
 
       // sync this article variable with the currently active users
-      $scope.activeUsers = FirebaseApi.getActiveUsers($scope.article.id);
+      FirebaseApi.getActiveUsers($scope.article.id, function (activeUsers) {
+
+//        $scope.activeUsers = activeUsers.$asArray();
+        var $activeUsers = activeUsers.$asArray();
+        $activeUsers.$watch(function () {
+
+          // do some unionizng on activeUsers data when it changes
+          $scope.activeUsers =
+            _.chain($activeUsers)
+              .groupBy(function (user) { return user.id; })
+              .map(function (group) {
+                var groupedUser = group[0];
+                groupedUser.count = group.length;
+                return groupedUser;
+              })
+              .sortBy(function (user) { return user.displayName; })
+              .value();
+
+        });
+
+      });
 
     };
 
