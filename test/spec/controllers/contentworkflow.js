@@ -6,8 +6,8 @@ describe('Controller: ContentworkflowCtrl', function () {
   beforeEach(module('bulbsCmsApp'));
 
   var ContentworkflowCtrl,
-    scope,
-    modalService;
+      scope,
+      modalService;
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $rootScope, $modal) {

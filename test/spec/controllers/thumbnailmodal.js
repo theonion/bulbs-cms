@@ -66,7 +66,7 @@ describe('Controller: ThumbnailModalCtrl', function () {
     expect(thumbnailObj.id).toBe(2);
   });
 
-  it('should not choose a new thumbnail and close', function () {
+  it('should not choose a new thumbnail when thumbnail has not changed and close', function () {
     scope.thumbnail_temp = {id: 3};
     scope.article.thumbnail = {id: 3};
     scope.chooseThumbnail();
