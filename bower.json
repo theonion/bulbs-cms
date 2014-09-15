@@ -1,6 +1,6 @@
 {
   "name": "bulbs-cms",
-  "version": "0.9.56",
+  "version": "0.9.57",
   "dependencies": {},
   "devDependencies": {
     "firebase-token-generator": "~1.1.3",
