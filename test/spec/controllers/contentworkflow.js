@@ -17,7 +17,11 @@ describe('Controller: ContentworkflowCtrl', function () {
       $scope: scope,
       $modal: modalService
     });
-    spyOn(modalService, 'open');
+    spyOn(modalService, 'open').andReturn({
+      result: {
+        then: function () {}
+      }
+    });
   }));
   
   describe('should contain modal opening functions for various modals:', function () {

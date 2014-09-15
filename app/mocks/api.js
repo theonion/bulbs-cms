@@ -535,6 +535,32 @@ angular.module('bulbsCmsApp.mockApi').run([
       body: "Go ahead, try saving. Not happening.",
       client_pixel: null,
       sponsor_name: null
+    }, {
+      id: 9,
+      feature_type: "Thumbnail Override Testing",
+      title: "Overridden Thumbnail",
+      slug: "overridden-thumbnail-9",
+      polymorphic_ctype: "content_content",
+      tags: [],
+      authors: [],
+      thumbnail: {id: "1"},
+      thumbnail_override: {id: "1"},
+      image: {
+        caption: null,
+        alt: null,
+        id: "3"
+      },
+      absolute_url: "/article/article-1",
+      sponsor_image: null,
+      status: "Published",
+      published: "2017-07-25T16:20:00Z",
+      last_modified: "2012-05-03T16:00:00Z",
+      description: "",
+      subhead: "",
+      indexed: true,
+      body: "This article has a thumbnail override field.",
+      client_pixel: null,
+      sponsor_name: null
     }]
   },
   'things.list': [

@@ -5,9 +5,24 @@
 <div class="modal-body edit-page">
     <div class="main-image thumbnail-image extra-info-section">
         <label>Thumbnail Image</label>
-        <bettyeditable image="article.thumbnail" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
+        <div ng-init="hasOverride = !!(article.thumbnail_override && article.thumbnail_override.id)">
+            <p ng-show="!hasOverride">
+                <span>You are currently viewing the default thumbnail based off the article's image. Choose new thumbnail image if you'd like to show a custom thumbnail:</span>
+                <button class="btn btn-xs btn-primary" ng-click="selectCustomThumbnail();">
+                    <i class="glyphicon glyphicon-picture"></i>
+                    Choose Thumbnail
+                </button>
+            </p>
+            <div ng-show="article.thumbnail">
+                <bettyeditable image="thumbnail_temp" editable="hasOverride" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
+            </div>
+        </div>
     </div>
 </div><!--/modal-body-->
 <div class="modal-footer">
-    <button class="btn btn-default" ng-click="$dismiss();" aria-hidden="true">Done</button>
+    <button class="btn btn-success" ng-click="chooseThumbnail();">
+        <i class="glyphicon glyphicon-ok"></i>
+        Set Thumbnail
+    </button>
+    <button class="btn btn-danger" ng-click="$dismiss();" aria-hidden="true">Cancel</button>
 </div><!--/modal-footer-->
