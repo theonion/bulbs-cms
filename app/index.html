@@ -72,6 +72,7 @@
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/firebase-token-generator/build/firebase-token-generator.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/firebase/firebase.js"></script>
@@ -229,11 +230,6 @@
         angular.module('bulbsCmsApp').constant('VIDEO_EMBED_URL', 'http://www.avclub.com/videos/embed?id=');
         angular.module('bulbsCmsApp').constant('VIDEO_THUMBNAIL_URL', 'http://v.theonion.com/avclubmedia/video/{{video}}/frame_{{thumbnail}}.jpg');
         angular.module('bulbsCmsApp').constant('STATIC_IMAGE_URL', 'http://chimg.onionstatic.com/{{image}}/{{ratio}}/600.jpg');
-
-        angular.module('bulbsCmsApp').constant('firebaseApiConfig', {
-          FIREBASE_ROOT: 'bulbs-cms-test',
-          FIREBASE_URL: 'https://luminous-fire-8340.firebaseio.com/'
-        });
 
         // ****** CMS Plugins ****** \\
 
