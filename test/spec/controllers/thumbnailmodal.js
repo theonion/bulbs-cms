@@ -47,7 +47,8 @@ describe('Controller: ThumbnailModalCtrl', function () {
 
   it('should select a custom thumbnail', function () {
     scope.selectCustomThumbnail();
-    expect(scope.thumbnail_temp.id).toBe(1)
+    expect(scope.thumbnail_temp.id).toBe(1);
+    expect(scope.thumbnailChanged).toBe(true);
   });
 
   it('should choose a new thumbnail when there is no article thumbnail and close', function () {

@@ -13,8 +13,11 @@
                     Choose Thumbnail
                 </button>
             </p>
-            <div ng-show="thumbnail_temp">
+            <div ng-show="thumbnail_temp && !thumbnailChanged">
                 <bettyeditable image="thumbnail_temp" editable="hasOverride" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
+            </div>
+            <div ng-show="thumbnailChanged">
+                <p class="text-success">You have selected a new thumbnail! To edit your thumbnail, click "Done", save the article, then reopen this modal.</p>
             </div>
         </div>
     </div>
@@ -22,7 +25,10 @@
 <div class="modal-footer">
     <button class="btn btn-success" ng-click="chooseThumbnail();">
         <i class="glyphicon glyphicon-ok"></i>
-        Set Thumbnail
+        Done
     </button>
-    <button class="btn btn-danger" ng-click="$dismiss();" aria-hidden="true">Cancel</button>
+    <button class="btn btn-danger" ng-click="$dismiss();" aria-hidden="true">
+        <i class="glyphicon glyphicon-remove"></i>
+        Cancel
+    </button>
 </div><!--/modal-footer-->
