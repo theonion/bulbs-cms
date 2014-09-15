@@ -961,24 +961,27 @@ angular.module('bulbsCmsApp')
     $scope.thumbnail_temp = $scope.article.thumbnail_override && $scope.article.thumbnail_override.id
                               ? $scope.article.thumbnail_override : $scope.article.thumbnail;
 
+    // keep track of if any changes to thumbnail have been made
+    $scope.thumbnailChanged = false;
+
     /**
      * Upload a new image to BettyCropper and set the scope's thumbnail_temp to that new image.
      */
     $scope.selectCustomThumbnail = function () {
 
       // allow user to choose a custom thumbnail
-      BettyCropper.upload().then(
-        function (success) {
+      BettyCropper.upload().then(function (success) {
+
           $scope.thumbnail_temp = {
             id: success.id,
             caption: null,
             alt: null
           };
-        },
-        function (error) {
+
+          $scope.thumbnailChanged = true;
+        }, function (error) {
           console.log(error);
-        },
-        function (progress) {
+        }, function (progress) {
           console.log(progress);
         }
       );
