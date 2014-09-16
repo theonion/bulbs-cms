@@ -57,9 +57,7 @@ angular.module('bulbsCmsApp')
       });
       // if user chooses a thumbnail, set that to the article's thumbnail override (user wants their own thumbnail)
       modalInst.result.then(function (chosenThumbnail) {
-        if (chosenThumbnail) {
-          $scope.article.thumbnail_override = chosenThumbnail;
-        }
+        $scope.article.thumbnail_override = chosenThumbnail;
       });
     };
 

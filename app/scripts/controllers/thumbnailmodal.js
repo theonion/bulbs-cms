@@ -56,7 +56,7 @@ angular.module('bulbsCmsApp')
         // here user has chosen a new override, close it with actual thumbnail data
         $modalInstance.close($scope.thumbnailTemp);
       } else {
-        // here user has not chosen any new thumbnail data, close it with no data
+        // here user has not chosen any new thumbnail data, or has cleared out the thumbnail, close it with no data
         $modalInstance.close(null);
       }
 
