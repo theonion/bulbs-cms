@@ -14,11 +14,9 @@
                     Choose Thumbnail
                 </button>
             </p>
-            <div ng-show="article.thumbnail_override && article.thumbnail_override.id !== null">
-                <bettyeditable image="article.thumbnail_override" editable="true" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
-            </div>
-            <div ng-show="(!article.thumbnail_override || article.thumbnail_override.id === null) && article.thumbnail && $scope.article.thumbnail !== null">
-                <bettyeditable image="article.thumbnail" editable="false" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
+            <div class="thumbnail-modal-image">
+                <bettyeditable ng-show="article.thumbnail_override && article.thumbnail_override.id !== null" image="article.thumbnail_override" editable="true" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o"/>
+                <bettyeditable ng-show="(!article.thumbnail_override || article.thumbnail_override.id === null) && article.thumbnail && $scope.article.thumbnail !== null" image="article.thumbnail" editable="false" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o"/>
             </div>
         </div>
     </div>
