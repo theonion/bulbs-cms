@@ -70,6 +70,11 @@ angular.module('bulbsCmsApp')
           }
         };
 
+        scope.$watch('image', function (oldValue, newValue) {
+          BettyCropper.get(newValue).then(function(response){
+            scope.bettyImage = response.data;
+          });
+        });
         scope.$watch('bettyImage', function (oldValue, newValue) {
           scope.setStyles();
         }, true);
