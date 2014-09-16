@@ -27,7 +27,6 @@ describe('Testing bettyeditable directive', function() {
   });
 
   it('should properly load the image data', function () {
-
     scope.image = {
       id: 60,
       caption: null,
@@ -41,6 +40,31 @@ describe('Testing bettyeditable directive', function() {
 
     var imageContainer = elem.find('.image-edit-container');
     expect(imageContainer.css('background-image')).toContain('http://localimages.avclub.com/60/original/1200.jpg');
+  });
+
+  it('should allow an external image update', function () {
+    scope.image = {
+      id: 60,
+      caption: null,
+      alt: null
+    };
+
+    elem = angular.element(html);
+    compiled = $compile(elem)(scope);
+    scope.$digest();
+    $httpBackend.flush();
+
+    var imageContainer = elem.find('.image-edit-container');
+    expect(imageContainer.css('background-image')).toContain('http://localimages.avclub.com/60/original/1200.jpg');
+
+    scope.image = {
+      id: 66,
+      caption: null,
+      alt: null
+    }
+    $httpBackend.flush();
+    imageContainer = elem.find('.image-edit-container');
+    expect(imageContainer.css('background-image')).toContain('http://localimages.avclub.com/66/original/1200.jpg');
   });
 
   it('should load without an image', function () {
