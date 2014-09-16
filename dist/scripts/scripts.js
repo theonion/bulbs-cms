@@ -981,6 +981,7 @@ angular.module('bulbsCmsApp')
           };
 
           $scope.thumbnailChanged = true;
+
         }, function (error) {
           console.log(error);
         }, function (progress) {
@@ -997,8 +998,8 @@ angular.module('bulbsCmsApp')
     $scope.chooseThumbnail = function () {
 
       // when thumbnail is chosen, close modal with thumbnail data
-      if (($scope.thumbnailTemp && !$scope.article.thumbnail)
-          || ($scope.article.thumbnail && $scope.thumbnailTemp.id !== $scope.article.thumbnail.id)) {
+      if ($scope.thumbnailTemp && $scope.thumbnailTemp.id !== null
+          && (!$scope.article.thumbnail || ($scope.thumbnailTemp.id !== $scope.article.thumbnail.id))) {
         // here user has chosen a new override, close it with actual thumbnail data
         $modalInstance.close($scope.thumbnailTemp);
       } else {
