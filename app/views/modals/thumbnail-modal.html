@@ -6,32 +6,26 @@
     <div class="main-image thumbnail-image extra-info-section">
         <label>Thumbnail Image</label>
         <div>
-            <p ng-show="!hasOverride || !(thumbnailTemp && thumbnailTemp.id)">
-                <!-- show when there is no override, or no thumbnail temp -->
-                <span>You are currently viewing the default thumbnail based off the article's image. Choose new thumbnail image if you'd like to show a custom thumbnail:</span>
+            <p ng-show="!hasOverride">
+                <span ng-show="hasDefault">You are currently viewing the default thumbnail based off the article's image. Choose new thumbnail image if you'd like to show a custom thumbnail:</span>
+                <span ng-show="!hasDefault">There is currently no main image or thumbnail set. Choose a new thumbnail if you'd like to show a custom thumbnail.</span>
                 <button class="btn btn-xs btn-primary" ng-click="selectCustomThumbnail();">
                     <i class="glyphicon glyphicon-picture"></i>
                     Choose Thumbnail
                 </button>
             </p>
-            <div ng-show="!thumbnailChanged && thumbnailTemp && thumbnailTemp.id">
-                <!-- show when there's a thumbnail temp and thumbnail has not changed (because image won't show up otherwise) -->
-                <bettyeditable image="thumbnailTemp" editable="hasOverride" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
+            <div ng-show="hasOverride || !hasDefault">
+                <bettyeditable image="article.thumbnail_override" editable="true" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
             </div>
-            <div ng-show="thumbnailChanged && thumbnailTemp && thumbnailTemp.id">
-                <!-- show when thumbnail has changed and there is a thumbnail temp -->
-                <p class="text-success">You have selected a new thumbnail! To edit your thumbnail, click "Done", save the article, then reopen this modal.</p>
+            <div ng-show="!hasOverride && hasDefault">
+                <bettyeditable image="article.thumbnail" editable="false" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
             </div>
         </div>
     </div>
 </div><!--/modal-body-->
 <div class="modal-footer">
-    <button class="btn btn-success" ng-click="chooseThumbnail();">
+    <button class="btn btn-success" ng-click="$dismiss();">
         <i class="glyphicon glyphicon-ok"></i>
         Done
-    </button>
-    <button class="btn btn-danger" ng-click="$dismiss();" aria-hidden="true">
-        <i class="glyphicon glyphicon-remove"></i>
-        Cancel
     </button>
 </div><!--/modal-footer-->
