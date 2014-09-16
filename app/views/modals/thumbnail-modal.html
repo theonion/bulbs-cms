@@ -6,7 +6,7 @@
     <div class="main-image thumbnail-image extra-info-section">
         <label>Thumbnail Image</label>
         <div>
-            <p ng-show="!hasOverride || !thumbnailTemp">
+            <p ng-show="!hasOverride || !(thumbnailTemp && thumbnailTemp.id)">
                 <!-- show when there is no override, or no thumbnail temp -->
                 <span>You are currently viewing the default thumbnail based off the article's image. Choose new thumbnail image if you'd like to show a custom thumbnail:</span>
                 <button class="btn btn-xs btn-primary" ng-click="selectCustomThumbnail();">
@@ -14,7 +14,7 @@
                     Choose Thumbnail
                 </button>
             </p>
-            <div ng-show="thumbnailTemp && !thumbnailChanged">
+            <div ng-show="thumbnailTemp && !(thumbnailTemp && thumbnailTemp.id)">
                 <!-- show when there's a thumbnail temp and thumbnail has not changed (because image won't show up otherwise) -->
                 <bettyeditable image="thumbnailTemp" editable="hasOverride" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
             </div>
