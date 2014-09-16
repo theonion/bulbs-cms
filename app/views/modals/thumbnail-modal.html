@@ -6,18 +6,18 @@
     <div class="main-image thumbnail-image extra-info-section">
         <label>Thumbnail Image</label>
         <div>
-            <p ng-show="!hasOverride">
-                <span ng-show="hasDefault">You are currently viewing the default thumbnail based off the article's image. Choose new thumbnail image if you'd like to show a custom thumbnail:</span>
-                <span ng-show="!hasDefault">There is currently no main image or thumbnail set. Choose a new thumbnail if you'd like to show a custom thumbnail.</span>
+            <p ng-show="!($scope.article.thumbnail_override && $scope.article.thumbnail_override.id !== null)">
+                <span ng-show="$scope.article.thumbnail && $scope.article.thumbnail !== null">You are currently viewing the default thumbnail based off the article's image. Choose new thumbnail image if you'd like to show a custom thumbnail:</span>
+                <span ng-show="!($scope.article.thumbnail && $scope.article.thumbnail !== null)">There is currently no main image or thumbnail set. Choose a new thumbnail if you'd like to show a custom thumbnail.</span>
                 <button class="btn btn-xs btn-primary" ng-click="selectCustomThumbnail();">
                     <i class="glyphicon glyphicon-picture"></i>
                     Choose Thumbnail
                 </button>
             </p>
-            <div ng-show="hasOverride || !hasDefault">
+            <div ng-show="($scope.article.thumbnail_override && $scope.article.thumbnail_override.id !== null) || !($scope.article.thumbnail && $scope.article.thumbnail !== null)">
                 <bettyeditable image="article.thumbnail_override" editable="true" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
             </div>
-            <div ng-show="!hasOverride && hasDefault">
+            <div ng-show="!($scope.article.thumbnail_override && $scope.article.thumbnail_override.id !== null) && $scope.article.thumbnail && $scope.article.thumbnail !== null">
                 <bettyeditable image="article.thumbnail" editable="false" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
             </div>
         </div>
