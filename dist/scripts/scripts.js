@@ -957,22 +957,24 @@ angular.module('bulbsCmsApp')
 angular.module('bulbsCmsApp')
   .controller('ThumbnailModalCtrl', function ($scope, BettyCropper, $modalInstance) {
 
+    // keep track of if there is an override or not
+    $scope.hasOverride = !!($scope.article.thumbnail_override && $scope.article.thumbnail_override.id);
+
     // decide what temporary thumbnail to display
-    $scope.thumbnail_temp = $scope.article.thumbnail_override && $scope.article.thumbnail_override.id
-                              ? $scope.article.thumbnail_override : $scope.article.thumbnail;
+    $scope.thumbnailTemp = $scope.hasOverride ? $scope.article.thumbnail_override : $scope.article.thumbnail;
 
     // keep track of if any changes to thumbnail have been made
     $scope.thumbnailChanged = false;
 
     /**
-     * Upload a new image to BettyCropper and set the scope's thumbnail_temp to that new image.
+     * Upload a new image to BettyCropper and set the scope's thumbnailTemp to that new image.
      */
     $scope.selectCustomThumbnail = function () {
 
       // allow user to choose a custom thumbnail
       BettyCropper.upload().then(function (success) {
 
-          $scope.thumbnail_temp = {
+          $scope.thumbnailTemp = {
             id: success.id,
             caption: null,
             alt: null
@@ -995,10 +997,10 @@ angular.module('bulbsCmsApp')
     $scope.chooseThumbnail = function () {
 
       // when thumbnail is chosen, close modal with thumbnail data
-      if (($scope.thumbnail_temp && !$scope.article.thumbnail)
-          || ($scope.article.thumbnail && $scope.thumbnail_temp.id !== $scope.article.thumbnail.id)) {
+      if (($scope.thumbnailTemp && !$scope.article.thumbnail)
+          || ($scope.article.thumbnail && $scope.thumbnailTemp.id !== $scope.article.thumbnail.id)) {
         // here user has chosen a new override, close it with actual thumbnail data
-        $modalInstance.close($scope.thumbnail_temp);
+        $modalInstance.close($scope.thumbnailTemp);
       } else {
         // here user has not chosen any new thumbnail data, close it with no data
         $modalInstance.close(null);

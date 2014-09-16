@@ -47,13 +47,13 @@ describe('Controller: ThumbnailModalCtrl', function () {
 
   it('should select a custom thumbnail', function () {
     scope.selectCustomThumbnail();
-    expect(scope.thumbnail_temp.id).toBe(1);
+    expect(scope.thumbnailTemp.id).toBe(1);
     expect(scope.thumbnailChanged).toBe(true);
   });
 
   it('should choose a new thumbnail when there is no article thumbnail and close', function () {
     scope.article.thumbnail = null;
-    scope.thumbnail_temp = {id: 2};
+    scope.thumbnailTemp = {id: 2};
     scope.chooseThumbnail();
     expect(mockModalInstance.close).toHaveBeenCalled();
     expect(thumbnailObj.id).toBe(2);
@@ -61,14 +61,14 @@ describe('Controller: ThumbnailModalCtrl', function () {
 
   it('should choose a new thumbnail when article does have a thumbnail and close', function () {
     scope.article.thumbnail = {id: 1};
-    scope.thumbnail_temp = {id: 2};
+    scope.thumbnailTemp = {id: 2};
     scope.chooseThumbnail();
     expect(mockModalInstance.close).toHaveBeenCalled();
     expect(thumbnailObj.id).toBe(2);
   });
 
   it('should not choose a new thumbnail when thumbnail has not changed and close', function () {
-    scope.thumbnail_temp = {id: 3};
+    scope.thumbnailTemp = {id: 3};
     scope.article.thumbnail = {id: 3};
     scope.chooseThumbnail();
     expect(mockModalInstance.close).toHaveBeenCalled();

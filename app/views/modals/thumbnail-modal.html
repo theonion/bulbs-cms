@@ -5,18 +5,21 @@
 <div class="modal-body edit-page">
     <div class="main-image thumbnail-image extra-info-section">
         <label>Thumbnail Image</label>
-        <div ng-init="hasOverride = !!(article.thumbnail_override && article.thumbnail_override.id)">
-            <p ng-show="!hasOverride">
+        <div>
+            <p ng-show="!hasOverride || !thumbnailTemp">
+                <!-- show when there is no override, or no thumbnail temp -->
                 <span>You are currently viewing the default thumbnail based off the article's image. Choose new thumbnail image if you'd like to show a custom thumbnail:</span>
                 <button class="btn btn-xs btn-primary" ng-click="selectCustomThumbnail();">
                     <i class="glyphicon glyphicon-picture"></i>
                     Choose Thumbnail
                 </button>
             </p>
-            <div ng-show="thumbnail_temp && !thumbnailChanged">
-                <bettyeditable image="thumbnail_temp" editable="hasOverride" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
+            <div ng-show="thumbnailTemp && !thumbnailChanged">
+                <!-- show when there's a thumbnail temp and thumbnail has not changed (because image won't show up otherwise) -->
+                <bettyeditable image="thumbnailTemp" editable="hasOverride" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
             </div>
-            <div ng-show="thumbnailChanged">
+            <div ng-show="thumbnailChanged && thumbnailTemp">
+                <!-- show when thumbnail has changed and there is a thumbnail temp -->
                 <p class="text-success">You have selected a new thumbnail! To edit your thumbnail, click "Done", save the article, then reopen this modal.</p>
             </div>
         </div>
