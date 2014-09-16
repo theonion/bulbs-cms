@@ -963,7 +963,12 @@ angular.module('bulbsCmsApp')
                             && $scope.article.thumbnail_override.id !== null;
 
     // decide what temporary thumbnail to display
-    $scope.thumbnailTemp = $scope.hasOverride ? $scope.article.thumbnail_override : $scope.article.thumbnail;
+    $scope.thumbnailTemp = {id: null};
+    if ($scope.hasOverride) {
+      $scope.thumbnailTemp.id = $scope.article.thumbnail_override.id;
+    } else if ($scope.article.thumbnail && 'id' in $scope.article.thumbnail) {
+      $scope.thumbnailTemp.id = $scope.article.thumbnail.id;
+    }
 
     // keep track of if any changes to thumbnail have been made
     $scope.thumbnailChanged = false;
