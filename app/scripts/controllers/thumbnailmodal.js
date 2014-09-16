@@ -13,18 +13,13 @@ angular.module('bulbsCmsApp')
       // user is choosing a custom thumbnail
       BettyCropper.upload().then(function (success) {
 
-          $scope.article.thumbnail_override = {
-            id: success.id,
-            caption: null,
-            alt: null
-          };
+        $scope.article.thumbnail_override = success
 
-        }, function (error) {
-          console.log(error);
-        }, function (progress) {
-          console.log(progress);
-        }
-      );
+      }, function (error) {
+        console.log(error);
+      }, function (progress) {
+        console.log(progress);
+      });
 
     };
 
