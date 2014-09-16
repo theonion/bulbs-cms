@@ -1677,12 +1677,15 @@ angular.module('bulbsCmsApp')
           }
         };
 
-        scope.$watch('image', function (oldValue, newValue) {
-          BettyCropper.get(newValue).then(function(response){
-            scope.bettyImage = response.data;
-          });
+        scope.$watch('image', function (newImage, oldImage) {
+          if (newImage && newImage.id) {
+            BettyCropper.get(newImage.id).then(function(response){
+              scope.bettyImage = response.data;
+            });
+          }
         });
-        scope.$watch('bettyImage', function (oldValue, newValue) {
+
+        scope.$watch('bettyImage', function (newImage, oldImage) {
           scope.setStyles();
         }, true);
 
@@ -1699,11 +1702,6 @@ angular.module('bulbsCmsApp')
           });
         };
 
-        if (!scope.bettyImage && scope.image && scope.image.id) {
-          BettyCropper.get(scope.image.id).then(function(response){
-            scope.bettyImage = response.data;
-          });
-        }
       }
     };
   });
