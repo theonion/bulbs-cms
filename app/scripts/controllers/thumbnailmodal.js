@@ -62,8 +62,7 @@ angular.module('bulbsCmsApp')
         // thumbnail not changed, and no override, return null
         $modalInstance.close(null);
 
-      } else if ((!$scope.thumbnailTemp || $scope.thumbnailTemp.id === null)
-          && ($scope.article.thumbnail && $scope.article.thumbnail.id !== null)) {
+      } else if ($scope.thumbnailTemp && $scope.thumbnailTemp.id === null) {
 
         // user has explicitly cleared the thumbnail, return empty image, this must go before the case of not changing
         $modalInstance.close({
