@@ -977,9 +977,6 @@ angular.module('bulbsCmsApp')
     // keep track of if any changes to thumbnail have been made
     $scope.thumbnailChanged = false;
 
-    // keep track of id for display purposes
-    $scope.thumbnailTempId = $scope.thumbnailTemp.id;
-
     /**
      * Upload a new image to BettyCropper and set the scope's thumbnailTemp to that new image.
      */
@@ -994,7 +991,6 @@ angular.module('bulbsCmsApp')
             alt: null
           };
 
-          $scope.thumbnailTempId = $scope.thumbnailTemp.id;
           $scope.thumbnailChanged = true;
 
         }, function (error) {

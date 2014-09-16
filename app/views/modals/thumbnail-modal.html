@@ -17,7 +17,7 @@
             <!--div ng-show="!thumbnailChanged && thumbnailTemp && thumbnailTemp.id"-->
             <div ng-show="thumbnailTemp && thumbnailTemp.id">
                 <!-- show when there's a thumbnail temp and thumbnail has not changed (because image won't show up otherwise) -->
-                <bettyeditable image="thumbnailTempId" editable="true" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
+                <bettyeditable image="thumbnailTemp" editable="true" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
             </div>
             <div ng-show="article.thumbnail && article.thumbnail.id && (!thumbnailTemp || !thumbnailTemp.id)">
                 <bettyeditable image="article.thumbnail" editable="false" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
