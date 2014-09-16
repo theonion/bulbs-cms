@@ -4,7 +4,7 @@ angular.module('bulbsCmsApp')
   .controller('ThumbnailModalCtrl', function ($scope, BettyCropper, $modalInstance) {
 
     // keep track of if there is an override or not
-    $scope.hasOverride = 'thumbnail_override' in $scope.article
+    $scope.hasOverride = $scope.article.thumbnail_override
                             && 'id' in $scope.article.thumbnail_override
                             && $scope.article.thumbnail_override.id !== null;
 
