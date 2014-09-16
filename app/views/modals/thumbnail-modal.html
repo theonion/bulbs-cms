@@ -14,14 +14,18 @@
                     Choose Thumbnail
                 </button>
             </p>
-            <div ng-show="!thumbnailChanged && thumbnailTemp && thumbnailTemp.id">
+            <!--div ng-show="!thumbnailChanged && thumbnailTemp && thumbnailTemp.id"-->
+            <div ng-show="thumbnailTemp && thumbnailTemp.id">
                 <!-- show when there's a thumbnail temp and thumbnail has not changed (because image won't show up otherwise) -->
-                <bettyeditable image="thumbnailTemp" editable="hasOverride" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
+                <bettyeditable image="thumbnailTemp" editable="true" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
             </div>
-            <div ng-show="thumbnailChanged && thumbnailTemp && thumbnailTemp.id">
-                <!-- show when thumbnail has changed and there is a thumbnail temp -->
+            <div ng-show="!hasOverride || !thumbnailTemp || !thumbnailTemp.id">
+                <bettyeditable image="article.thumbnail" editable="false" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
+            </div>
+            <!--div ng-show="thumbnailChanged && thumbnailTemp && thumbnailTemp.id">
+                <!-- show when thumbnail has changed and there is a thumbnail temp>
                 <p class="text-success">You have selected a new thumbnail! To edit your thumbnail, click "Done", save the article, then reopen this modal.</p>
-            </div>
+            </div-->
         </div>
     </div>
 </div><!--/modal-body-->
