@@ -889,6 +889,11 @@ angular.module('bulbsCmsApp')
       // if user chooses a thumbnail, set that to the article's thumbnail override (user wants their own thumbnail)
       modalInst.result.then(function (chosenThumbnail) {
         $scope.article.thumbnail_override = chosenThumbnail;
+
+        if (chosenThumbnail && chosenThumbnail.id === null) {
+          // this has explicitly been cleared, clear the article's thumbnail for display purposes
+          $scope.article.thumbnail = null;
+        }
       });
     };
 
@@ -957,11 +962,12 @@ angular.module('bulbsCmsApp')
 
     // keep track of if there is an override or not
     $scope.hasOverride = $scope.article.thumbnail_override
-                            && 'id' in $scope.article.thumbnail_override
                             && $scope.article.thumbnail_override.id !== null;
 
     // decide what temporary thumbnail to display
-    $scope.thumbnailTemp = {id: null};
+    $scope.thumbnailTemp = {
+      id: null
+    };
     if ($scope.hasOverride) {
       $scope.thumbnailTemp.id = $scope.article.thumbnail_override.id;
     } else if ($scope.article.thumbnail && 'id' in $scope.article.thumbnail) {
@@ -998,18 +1004,40 @@ angular.module('bulbsCmsApp')
 
     /**
      * Close the modal with whatever thumbnail data has been chosen. External controller must capture this data and
-     *  decide what to do with it. Modal will close with null if no new thumbnail has been chosen.
+     *  decide what to do with it.
      */
     $scope.chooseThumbnail = function () {
 
-      // when thumbnail is chosen, close modal with thumbnail data
-      if ($scope.thumbnailTemp && $scope.thumbnailTemp.id !== null
-          && (!$scope.article.thumbnail || ($scope.thumbnailTemp.id !== $scope.article.thumbnail.id))) {
-        // here user has chosen a new override, close it with actual thumbnail data
+      if ($scope.thumbnailChanged && $scope.thumbnailTemp && $scope.thumbnailTemp.id !== null) {
+
+        // user has explicitly changed the thumbnail to a new thumbnail, send thumbnail as result
         $modalInstance.close($scope.thumbnailTemp);
-      } else {
-        // here user has not chosen any new thumbnail data, or has cleared out the thumbnail, close it with no data
+
+      } else if (!$scope.thumbnailChanged
+          && (!$scope.article.thumbnail_override || $scope.article.thumbnail_override.id === null)) {
+
+        // thumbnail not changed, and no override, return null
         $modalInstance.close(null);
+
+      } else if ((!$scope.thumbnailTemp || $scope.thumbnailTemp.id === null)
+          && ($scope.article.thumbnail && $scope.article.thumbnail.id !== null)) {
+
+        // user has explicitly cleared the thumbnail, return empty image, this must go before the case of not changing
+        $modalInstance.close({
+          id: null
+        });
+
+      } else if (!$scope.thumbnailChanged
+          && $scope.article.thumbnail_override && $scope.article.thumbnail_override.id !== null) {
+
+        // user has not changed the thumbnail, but there is an override, so just send back out the override
+        $modalInstance.close($scope.article.thumbnail_override);
+
+      } else {
+
+        // this isn't a valid state, but just return null anyways
+        $modalInstance.close(null);
+
       }
 
     };

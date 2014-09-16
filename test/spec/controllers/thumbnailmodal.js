@@ -54,22 +54,43 @@ describe('Controller: ThumbnailModalCtrl', function () {
   it('should choose a new thumbnail when there is no article thumbnail and close', function () {
     scope.article.thumbnail = null;
     scope.thumbnailTemp = {id: 2};
+    scope.thumbnailChanged = true;
     scope.chooseThumbnail();
     expect(mockModalInstance.close).toHaveBeenCalled();
     expect(thumbnailObj.id).toBe(2);
   });
 
+  it('should remove the thumbnail override when explicitly cleared', function () {
+    scope.article.thumbnail = {id: 1};
+    scope.article.thumbnail_override = {id: 1};
+    scope.thumbnailTemp = {id: null};
+    scope.chooseThumbnail();
+    expect(mockModalInstance.close).toHaveBeenCalled();
+    expect(thumbnailObj.id).toBe(null);
+  });
+
   it('should choose a new thumbnail when article does have a thumbnail and close', function () {
     scope.article.thumbnail = {id: 1};
     scope.thumbnailTemp = {id: 2};
+    scope.thumbnailChanged = true;
     scope.chooseThumbnail();
     expect(mockModalInstance.close).toHaveBeenCalled();
     expect(thumbnailObj.id).toBe(2);
   });
 
   it('should not choose a new thumbnail when thumbnail has not changed and close', function () {
-    scope.thumbnailTemp = {id: 3};
     scope.article.thumbnail = {id: 3};
+    scope.article.thumbnail_override = {id: 3};
+    scope.thumbnailTemp = {id: 3};
+    scope.chooseThumbnail();
+    expect(mockModalInstance.close).toHaveBeenCalled();
+    expect(thumbnailObj.id).toBe(3);
+  });
+
+  it('should return null when thumbnail has not changed and there is no override', function () {
+    scope.article.thumbnail = {id: 3};
+    scope.article.thumbnail_override = null;
+    scope.article.thumbnailChanged = false;
     scope.chooseThumbnail();
     expect(mockModalInstance.close).toHaveBeenCalled();
     expect(thumbnailObj).toBe(null);
