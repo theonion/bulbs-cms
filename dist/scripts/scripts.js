@@ -879,20 +879,14 @@ angular.module('bulbsCmsApp')
       });
     };
 
-    $scope.thumbnailModal = function () {
+    $scope.thumbnailModal = function (article) {
       // open thumbnail modal along with its controller
-      var modalInst = $modal.open({
+      return $modal.open({
         templateUrl: routes.PARTIALS_URL + 'modals/thumbnail-modal.html',
         controller: 'ThumbnailModalCtrl',
-        scope: $scope
-      });
-      // if user chooses a thumbnail, set that to the article's thumbnail override (user wants their own thumbnail)
-      modalInst.result.then(function (chosenThumbnail) {
-        $scope.article.thumbnail_override = chosenThumbnail;
-
-        if (chosenThumbnail && chosenThumbnail.id === null) {
-          // this has explicitly been cleared, clear the article's thumbnail for display purposes
-          $scope.article.thumbnail = null;
+        scope: $scope,
+        resolve: {
+          article: function () { return article; }
         }
       });
     };
@@ -958,40 +952,30 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ThumbnailModalCtrl', function ($scope, BettyCropper, $modalInstance) {
+  .controller('ThumbnailModalCtrl', function ($scope, BettyCropper, $modalInstance, article) {
 
-    // keep track of if there is an override or not
-    $scope.hasOverride = $scope.article.thumbnail_override
-                            && $scope.article.thumbnail_override.id !== null;
+    $scope.article = article;
 
-    // decide what temporary thumbnail to display
-    $scope.thumbnailTemp = {
-      id: null
-    };
-    if ($scope.hasOverride) {
-      $scope.thumbnailTemp.id = $scope.article.thumbnail_override.id;
-    } else if ($scope.article.thumbnail && 'id' in $scope.article.thumbnail) {
-      $scope.thumbnailTemp.id = $scope.article.thumbnail.id;
-    }
-
-    // keep track of if any changes to thumbnail have been made
-    $scope.thumbnailChanged = false;
+    // keep track of the kinds of thumbnails we have
+    $scope.hasOverride = $scope.article.thumbnail_override && $scope.article.thumbnail_override.id !== null;
+    $scope.hasDefault = $scope.article.thumbnail && $scope.article.thumbnail !== null;
 
     /**
      * Upload a new image to BettyCropper and set the scope's thumbnailTemp to that new image.
      */
     $scope.selectCustomThumbnail = function () {
 
-      // allow user to choose a custom thumbnail
+      // user is choosing a custom thumbnail
       BettyCropper.upload().then(function (success) {
 
-          $scope.thumbnailTemp = {
+          $scope.article.thumbnail_override = {
             id: success.id,
             caption: null,
             alt: null
           };
 
-          $scope.thumbnailChanged = true;
+          $scope.hasOverride = $scope.article.thumbnail_override
+                                && $scope.article.thumbnail_override.id !== null;
 
         }, function (error) {
           console.log(error);
@@ -999,45 +983,6 @@ angular.module('bulbsCmsApp')
           console.log(progress);
         }
       );
-
-    };
-
-    /**
-     * Close the modal with whatever thumbnail data has been chosen. External controller must capture this data and
-     *  decide what to do with it.
-     */
-    $scope.chooseThumbnail = function () {
-
-      if ($scope.thumbnailChanged && $scope.thumbnailTemp && $scope.thumbnailTemp.id !== null) {
-
-        // user has explicitly changed the thumbnail to a new thumbnail, send thumbnail as result
-        $modalInstance.close($scope.thumbnailTemp);
-
-      } else if (!$scope.thumbnailChanged
-          && (!$scope.article.thumbnail_override || $scope.article.thumbnail_override.id === null)) {
-
-        // thumbnail not changed, and no override, return null
-        $modalInstance.close(null);
-
-      } else if ($scope.thumbnailTemp && $scope.thumbnailTemp.id === null) {
-
-        // user has explicitly cleared the thumbnail, return empty image, this must go before the case of not changing
-        $modalInstance.close({
-          id: null
-        });
-
-      } else if (!$scope.thumbnailChanged
-          && $scope.article.thumbnail_override && $scope.article.thumbnail_override.id !== null) {
-
-        // user has not changed the thumbnail, but there is an override, so just send back out the override
-        $modalInstance.close($scope.article.thumbnail_override);
-
-      } else {
-
-        // this isn't a valid state, but just return null anyways
-        $modalInstance.close(null);
-
-      }
 
     };
 
