@@ -11,23 +11,23 @@ angular.module('bulbsCmsApp')
     // get root reference in firebase for this site
     var rootRef = new Firebase(FIREBASE_URL + 'sites/' + FIREBASE_ROOT);
 
-    // set up a promise for authorization, never resolves if user doesn't have firebase token
+    // set up a promise for authorization
     var authDefer = $q.defer(),
         $authorize = authDefer.promise;
 
     // set up catch all for logging auth errors
     $authorize.catch(function (error) {
 
-      // error occurred, say why
-      console.error(error);
+      // if there's an error message log it
+      error && console.error('Firebase login failed:', error);
 
     });
 
     // log current session in when their current user data is available
     CurrentUser.$retrieveData.then(function (user) {
 
-      // attempt to login if user has firebase token, if they don't auth promise will not resolve which is okay if
-      //  we're in an environment where firebase isn't set up yet
+      // attempt to login if user has firebase token, if they don't auth promise will reject with no error message
+      //  which is okay if we're in an environment where firebase isn't set up yet
       if ('firebase_token' in user && user.firebase_token) {
 
         // authorize user
@@ -36,7 +36,7 @@ angular.module('bulbsCmsApp')
           if (error) {
 
             // authorization failed
-            authDefer.reject('Firebase login failed: ' + error);
+            authDefer.reject(error);
 
           } else {
 
@@ -46,6 +46,11 @@ angular.module('bulbsCmsApp')
           }
 
         });
+
+      } else {
+
+        // user doesn't have a firebase token, reject authorization without an error message
+        authDefer.reject();
 
       }
 
