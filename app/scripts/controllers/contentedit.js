@@ -5,7 +5,7 @@ angular.module('bulbsCmsApp')
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, keypress, Raven,
-    IfExistsElse, Localstoragebackup, ContentApi, FirebaseArticleFactory, Login, routes)
+    IfExistsElse, VersionStorageApi, ContentApi, FirebaseArticleFactory, Login, routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
@@ -28,7 +28,7 @@ angular.module('bulbsCmsApp')
 
       // get article and active users, register current user as active
       FirebaseArticleFactory
-        .$retrieveArticle($scope.article.id)
+        .$retrieveCurrentArticle()
           .then(function ($article) {
 
             // register a watch on active users so we can update the list in real time
@@ -93,7 +93,7 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.saveArticle = function () {
-      Localstoragebackup.backupToLocalStorage();
+      VersionStorageApi.create($scope.article.body);
 
       ContentApi.one('content', $routeParams.id).get().then(function (data) {
         if (data.last_modified &&
@@ -106,7 +106,7 @@ angular.module('bulbsCmsApp')
             scope: $scope,
             resolve: {
               articleOnPage: function () { return $scope.article; },
-              articleOnServer: function () { return data; },
+              articleOnServer: function () { return data; }
             }
           });
         } else {
@@ -189,10 +189,5 @@ angular.module('bulbsCmsApp')
         $window.history.back();
       }, 1500);
     };
-
-    var backupInterval = (function () {
-      var interval = 60000; //1 minute
-      return $interval(Localstoragebackup.backupToLocalStorage, interval);
-    })();
 
   });

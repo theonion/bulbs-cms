@@ -24,7 +24,7 @@ angular.module('bulbsCmsApp')
     var keyPrefix = this.keyPrefix;
     var keySuffix = this.keySuffix;
 
-    this.backupToLocalStorage = function () {
+    this.backupToLocalStorage = function (content) {
       var localStorageKeys = Object.keys($window.localStorage);
       var mostRecentTimestamp = 0;
       for (var keyIndex in localStorageKeys) {
@@ -34,12 +34,23 @@ angular.module('bulbsCmsApp')
         }
       }
       var mostRecentValue = $window.localStorage.getItem(keyPrefix + '.' + mostRecentTimestamp + keySuffix);
-      if (mostRecentValue === $('#content-body .editor').html()) {
-        return;
+      if (mostRecentValue === content) {
+        return {
+          timestamp: mostRecentTimestamp,
+          content: mostRecentValue
+        };
       }
       if ($window.localStorage) {
         try {
-          $window.localStorage.setItem(keyPrefix + '.' + moment().unix() + keySuffix, $('#content-body .editor').html()); //TODO: this is gonna break
+          var version = {
+            versionTimestamp: keyPrefix + '.' + moment().unix() + keySuffix,
+            content: content
+          };
+
+          $window.localStorage.setItem(version.timestamp, version.content); //TODO: this is gonna break
+
+          return version;
+
         } catch (error) {
           console.log('Caught localStorage Error ' + error);
           console.log('Trying to prune old entries');
@@ -57,6 +68,41 @@ angular.module('bulbsCmsApp')
           }
         }
       }
+
+      // shouldn't get here... but who knows?
+      return null;
+
+    };
+
+    /**
+     * Get all versions for this article in local storage.
+     *
+     * @returns   An array of versions sorted by their timestamps. Objects returned contain a timestamp and a
+     *  content variable which holds the version's content.
+     */
+    this.getVersions = function () {
+
+      return _.chain($window.localStorage)
+        // pick only those items in local storage whose keys start with backup prefix
+        .pick(function (stored, key) {
+          var keySplit = key.split('.');
+          return keySplit.length === 4 && keySplit[0] === keyPrefix && keySplit[2] === $routeParams.id;
+        })
+        // map versions to an array, give each version its timestamp
+        .map(function (stored, key) {
+          var keySplit = key.split('.');
+          return {
+            timestamp: Number(keySplit[1]),
+            content: stored
+          };
+        })
+        // order by timestamp desc
+        .sortBy(function (stored) {
+          return -stored.timestamp;
+        })
+        // resolve this into an array
+        .value();
+
     };
 
   });

@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Module for authenticating and interacting with the root of this site in firebase.
+ * Service for authenticating and interacting with the root of this site in firebase.
  */
 angular.module('bulbsCmsApp')
   .value('FIREBASE_URL', 'https://luminous-fire-8340.firebaseio.com/')
