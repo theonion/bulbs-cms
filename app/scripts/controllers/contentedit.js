@@ -26,34 +26,34 @@ angular.module('bulbsCmsApp')
 
       $scope.last_saved_article = angular.copy(data);
 
-      // log in to firebase
       FirebaseApi.login();
+      FirebaseApi.getActiveUsers($scope.article.Id)
+        .then(function ($activeUsers) {
 
-      // register the current user as viewing this article
-      FirebaseApi.registerCurrentUserActive($scope.article.id);
+          $activeUsers.$watch(function () {
 
-      // sync this article variable with the currently active users
-      FirebaseApi.getActiveUsers($scope.article.id, function (activeUsers) {
+            // do some unionizng on activeUsers data when it changes
+            $scope.activeUsers =
+              _.chain($activeUsers)
+                .groupBy(function (user) {
+                  return user.id;
+                })
+                .map(function (group) {
+                  var groupedUser = group[0];
+                  groupedUser.count = group.length;
+                  return groupedUser;
+                })
+                .sortBy(function (user) {
+                  return user.displayName;
+                })
+                .value();
 
-//        $scope.activeUsers = activeUsers.$asArray();
-        var $activeUsers = activeUsers.$asArray();
-        $activeUsers.$watch(function () {
+          });
 
-          // do some unionizng on activeUsers data when it changes
-          $scope.activeUsers =
-            _.chain($activeUsers)
-              .groupBy(function (user) { return user.id; })
-              .map(function (group) {
-                var groupedUser = group[0];
-                groupedUser.count = group.length;
-                return groupedUser;
-              })
-              .sortBy(function (user) { return user.displayName; })
-              .value();
+          return $activeUsers;
 
-        });
-
-      });
+        })
+        .then(FirebaseApi.registerCurrentUserActive);
 
     };
 

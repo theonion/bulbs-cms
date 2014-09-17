@@ -3,33 +3,22 @@
 angular.module('bulbsCmsApp')
   .value('FIREBASE_URL', 'https://luminous-fire-8340.firebaseio.com/')
   .value('FIREBASE_ROOT', 'a-site-is-not-configured')
-  .factory('FirebaseApi', function ($firebase, CurrentUser, FIREBASE_URL, FIREBASE_ROOT) {
+  .factory('FirebaseApi', function ($firebase, $q, CurrentUser, FIREBASE_URL, FIREBASE_ROOT) {
 
-    // get firebase references
+    // get root reference in firebase for this site
     var rootRef = new Firebase(FIREBASE_URL + 'sites/' + FIREBASE_ROOT);
 
-    // authorization utility function
-    var authed = false;
-    var afterAuthQueue = [];
-    var authFn = function (fn, args, scope) {
+    // set up a promise for authorization, never resolves if user doesn't have firebase token
+    var authDefer = $q.defer(),
+        authorize = authDefer.promise;
 
-      if (!authed) {
+    // set up catch all for logging auth errors
+    authorize.catch(function (error) {
 
-        // not authorized yet, keep track of functions to call when we are authed
-        afterAuthQueue.push({
-          fn: fn,
-          args: args,
-          scope: scope
-        });
+      // error occurred, say why
+      console.error(error);
 
-      } else {
-
-        // we are authorized, just call the function normally
-        fn.apply(scope, args);
-
-      }
-
-    };
+    });
 
     // ensure user is unauthed when they disconnect
     var connectedRef = new Firebase(FIREBASE_URL + '.info/connected');
@@ -44,40 +33,30 @@ angular.module('bulbsCmsApp')
 
     });
 
-    var buildDisplayName = function () {
-
-      // try to show first/last name, if not try email, then username
-      return CurrentUser.data.first_name && CurrentUser.data.last_name
-        ? CurrentUser.data.first_name + ' ' + CurrentUser.data.last_name
-        : (CurrentUser.data.email || CurrentUser.data.username);
-
-    };
-
     return {
 
+      /**
+       * Login function for authorizing with firebase. Must be called someplace where CurrentUser.data is populated with
+       *  current user's data.
+       */
       login: function () {
 
-        // just skip this whole thing if we're already authed
-        if (!authed && 'firebase_token' in CurrentUser.data && CurrentUser.data.firebase_token) {
+        // attempt to login if user has firebase token, if they don't auth promise will not resolve which is okay if
+        //  we're in an environment where firebase isn't set up yet
+        if ('firebase_token' in CurrentUser.data && CurrentUser.data.firebase_token) {
 
           // authorize user
           rootRef.auth(CurrentUser.data.firebase_token, function (error) {
 
             if (error) {
 
-              // authorization failed, log an error
-              console.error('Firebase login failed:', error);
+              // authorization failed
+              authDefer.reject('Firebase login failed: ' + error);
 
             } else {
 
-              // user now authorized, call all the queued functions
-              authed = true;
-              for (var i = 0; i < afterAuthQueue.length; i++) {
-
-                var param = afterAuthQueue[i];
-                authFn(param.fn, param.args, param.scope);
-
-              }
+              // authorization success, resolve deferred authorization
+              authDefer.resolve();
 
             }
 
@@ -85,37 +64,38 @@ angular.module('bulbsCmsApp')
 
         }
 
-      },
-
-      getActiveUsers: function (articleId, callback) {
-
-        // use auth wrapper to ensure this function succeeds
-        authFn(function (callbackArg) {
-
-          callbackArg($firebase(rootRef.child('articles/' + articleId + '/users')));
-
-        }, [callback], this);
+        return authorize;
 
       },
 
-      registerCurrentUserActive: function (articleId) {
+      getActiveUsers: function (articleId) {
 
-        // get active users then add current user
-        this.getActiveUsers(articleId, function (activeUsers) {
+        return authorize.then(function () {
 
-          var rawUser = {
+          return $firebase(rootRef.child('articles/' + articleId + '/users')).$asArray();
+
+        });
+
+      },
+
+      registerCurrentUserActive: function ($activeUsers) {
+
+        var displayName = CurrentUser.data.first_name && CurrentUser.data.last_name
+                            ? CurrentUser.data.first_name + ' ' + CurrentUser.data.last_name
+                              : (CurrentUser.data.email || CurrentUser.data.username);
+
+        return $activeUsers
+          .$add({
             id: CurrentUser.data.id,
-            displayName: buildDisplayName()
-          };
-
-          activeUsers.$asArray().$add(rawUser).then(function (userRef) {
+            displayName: displayName
+          })
+          .then(function (userRef) {
 
             // ensure user is removed on disconnect
             userRef.onDisconnect().remove();
+            return userRef;
 
           });
-
-        });
 
       }
 
