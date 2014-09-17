@@ -10,13 +10,41 @@ angular.module('bulbsCmsApp')
 
     // set up a promise for authorization, never resolves if user doesn't have firebase token
     var authDefer = $q.defer(),
-        authorize = authDefer.promise;
+        $authorize = authDefer.promise;
 
     // set up catch all for logging auth errors
-    authorize.catch(function (error) {
+    $authorize.catch(function (error) {
 
       // error occurred, say why
       console.error(error);
+
+    });
+
+    // long current user in when their data is available
+    CurrentUser.$retrieveData.then(function (user) {
+
+      // attempt to login if user has firebase token, if they don't auth promise will not resolve which is okay if
+        //  we're in an environment where firebase isn't set up yet
+        if ('firebase_token' in user && user.firebase_token) {
+
+          // authorize user
+          rootRef.auth(user.firebase_token, function (error) {
+
+            if (error) {
+
+              // authorization failed
+              authDefer.reject('Firebase login failed: ' + error);
+
+            } else {
+
+              // authorization success, resolve deferred authorization
+              authDefer.resolve();
+
+            }
+
+          });
+
+        }
 
     });
 
@@ -35,42 +63,9 @@ angular.module('bulbsCmsApp')
 
     return {
 
-      /**
-       * Login function for authorizing with firebase. Must be called someplace where CurrentUser.data is populated with
-       *  current user's data.
-       */
-      login: function () {
+      $retrieveActiveUsers: function (articleId) {
 
-        // attempt to login if user has firebase token, if they don't auth promise will not resolve which is okay if
-        //  we're in an environment where firebase isn't set up yet
-        if ('firebase_token' in CurrentUser.data && CurrentUser.data.firebase_token) {
-
-          // authorize user
-          rootRef.auth(CurrentUser.data.firebase_token, function (error) {
-
-            if (error) {
-
-              // authorization failed
-              authDefer.reject('Firebase login failed: ' + error);
-
-            } else {
-
-              // authorization success, resolve deferred authorization
-              authDefer.resolve();
-
-            }
-
-          });
-
-        }
-
-        return authorize;
-
-      },
-
-      getActiveUsers: function (articleId) {
-
-        return authorize.then(function () {
+        return $authorize.then(function () {
 
           return $firebase(rootRef.child('articles/' + articleId + '/users')).$asArray();
 
@@ -84,7 +79,7 @@ angular.module('bulbsCmsApp')
                             ? CurrentUser.data.first_name + ' ' + CurrentUser.data.last_name
                               : (CurrentUser.data.email || CurrentUser.data.username);
 
-        return $activeUsers
+        $activeUsers
           .$add({
             id: CurrentUser.data.id,
             displayName: displayName
