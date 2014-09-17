@@ -31,27 +31,37 @@ angular.module('bulbsCmsApp')
         .$retrieveArticle($scope.article.id)
           .then(function ($article) {
 
+            // register a watch on active users so we can update the list in real time
             $article.$activeUsers.$watch(function () {
 
-              // do some unionizng on activeUsers data when it changes
+              // unionize user data so that we don't have a bunch of the same users in the list
               $scope.activeUsers =
                 _.chain($article.$activeUsers)
+                  // group users by their id
                   .groupBy(function (user) {
                     return user.id;
                   })
+                  // take first user in grouping and use that data along with a count of the number of times they show
+                  //  up in the list (number of sessions they have running)
                   .map(function (group) {
                     var groupedUser = group[0];
                     groupedUser.count = group.length;
                     return groupedUser;
                   })
+                  // sort users by their display names
                   .sortBy(function (user) {
                     return user.displayName;
                   })
+                  // now we have a list of unique users along with the number of sessions they have running, sorted by
+                  //  their display names
                   .value();
 
             });
+
+            // register current user active with this article
             $article.$registerCurrentUserActive();
 
+            // who knows what kind of promises you might have in the future? so return the article object for chains
             return $article;
 
           });

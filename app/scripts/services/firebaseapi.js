@@ -27,27 +27,27 @@ angular.module('bulbsCmsApp')
     CurrentUser.$retrieveData.then(function (user) {
 
       // attempt to login if user has firebase token, if they don't auth promise will not resolve which is okay if
-        //  we're in an environment where firebase isn't set up yet
-        if ('firebase_token' in user && user.firebase_token) {
+      //  we're in an environment where firebase isn't set up yet
+      if ('firebase_token' in user && user.firebase_token) {
 
-          // authorize user
-          rootRef.auth(user.firebase_token, function (error) {
+        // authorize user
+        rootRef.auth(user.firebase_token, function (error) {
 
-            if (error) {
+          if (error) {
 
-              // authorization failed
-              authDefer.reject('Firebase login failed: ' + error);
+            // authorization failed
+            authDefer.reject('Firebase login failed: ' + error);
 
-            } else {
+          } else {
 
-              // authorization success, resolve deferred authorization with rootRef
-              authDefer.resolve(rootRef);
+            // authorization success, resolve deferred authorization with rootRef
+            authDefer.resolve(rootRef);
 
-            }
+          }
 
-          });
+        });
 
-        }
+      }
 
     });
 
