@@ -27,7 +27,7 @@ angular.module('bulbsCmsApp')
       $scope.last_saved_article = angular.copy(data);
 
       FirebaseApi.login();
-      FirebaseApi.getActiveUsers($scope.article.Id)
+      FirebaseApi.getActiveUsers($scope.article.id)
         .then(function ($activeUsers) {
 
           $activeUsers.$watch(function () {
