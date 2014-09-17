@@ -79,7 +79,7 @@ angular.module('bulbsCmsApp')
                             ? CurrentUser.data.first_name + ' ' + CurrentUser.data.last_name
                               : (CurrentUser.data.email || CurrentUser.data.username);
 
-        $activeUsers
+        return $activeUsers
           .$add({
             id: CurrentUser.data.id,
             displayName: displayName
