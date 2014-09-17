@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * Module for authenticating and interacting with the root of this site in firebase.
+ */
 angular.module('bulbsCmsApp')
   .value('FIREBASE_URL', 'https://luminous-fire-8340.firebaseio.com/')
   .value('FIREBASE_ROOT', 'a-site-is-not-configured')
@@ -20,7 +23,7 @@ angular.module('bulbsCmsApp')
 
     });
 
-    // long current user in when their data is available
+    // log current session in when their current user data is available
     CurrentUser.$retrieveData.then(function (user) {
 
       // attempt to login if user has firebase token, if they don't auth promise will not resolve which is okay if
@@ -37,8 +40,8 @@ angular.module('bulbsCmsApp')
 
             } else {
 
-              // authorization success, resolve deferred authorization
-              authDefer.resolve();
+              // authorization success, resolve deferred authorization with rootRef
+              authDefer.resolve(rootRef);
 
             }
 
@@ -48,7 +51,7 @@ angular.module('bulbsCmsApp')
 
     });
 
-    // ensure user is unauthed when they disconnect
+    // ensure session is unauthed when they disconnect
     var connectedRef = new Firebase(FIREBASE_URL + '.info/connected');
     connectedRef.on('value', function (connected) {
 
@@ -63,36 +66,11 @@ angular.module('bulbsCmsApp')
 
     return {
 
-      $retrieveActiveUsers: function (articleId) {
-
-        return $authorize.then(function () {
-
-          return $firebase(rootRef.child('articles/' + articleId + '/users')).$asArray();
-
-        });
-
-      },
-
-      registerCurrentUserActive: function ($activeUsers) {
-
-        var displayName = CurrentUser.data.first_name && CurrentUser.data.last_name
-                            ? CurrentUser.data.first_name + ' ' + CurrentUser.data.last_name
-                              : (CurrentUser.data.email || CurrentUser.data.username);
-
-        return $activeUsers
-          .$add({
-            id: CurrentUser.data.id,
-            displayName: displayName
-          })
-          .then(function (userRef) {
-
-            // ensure user is removed on disconnect
-            userRef.onDisconnect().remove();
-            return userRef;
-
-          });
-
-      }
+      /**
+       * Authorization deferred promise that resolves with the root firebase reference, or rejects with an error
+       *  message.
+       */
+      $authorize: $authorize
 
     };
 

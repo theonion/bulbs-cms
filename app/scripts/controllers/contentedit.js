@@ -5,7 +5,7 @@ angular.module('bulbsCmsApp')
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, keypress, Raven,
-    IfExistsElse, Localstoragebackup, ContentApi, FirebaseApi, Login, routes)
+    IfExistsElse, Localstoragebackup, ContentApi, FirebaseArticleFactory, Login, routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
@@ -26,33 +26,35 @@ angular.module('bulbsCmsApp')
 
       $scope.last_saved_article = angular.copy(data);
 
-      FirebaseApi.$retrieveActiveUsers($scope.article.id)
-        .then(function ($activeUsers) {
+      // get article and active users, register current user as active
+      FirebaseArticleFactory
+        .$retrieveArticle($scope.article.id)
+          .then(function ($article) {
 
-          $activeUsers.$watch(function () {
+            $article.$activeUsers.$watch(function () {
 
-            // do some unionizng on activeUsers data when it changes
-            $scope.activeUsers =
-              _.chain($activeUsers)
-                .groupBy(function (user) {
-                  return user.id;
-                })
-                .map(function (group) {
-                  var groupedUser = group[0];
-                  groupedUser.count = group.length;
-                  return groupedUser;
-                })
-                .sortBy(function (user) {
-                  return user.displayName;
-                })
-                .value();
+              // do some unionizng on activeUsers data when it changes
+              $scope.activeUsers =
+                _.chain($article.$activeUsers)
+                  .groupBy(function (user) {
+                    return user.id;
+                  })
+                  .map(function (group) {
+                    var groupedUser = group[0];
+                    groupedUser.count = group.length;
+                    return groupedUser;
+                  })
+                  .sortBy(function (user) {
+                    return user.displayName;
+                  })
+                  .value();
+
+            });
+            $article.$registerCurrentUserActive();
+
+            return $article;
 
           });
-
-          return $activeUsers;
-
-        })
-        .then(FirebaseApi.registerCurrentUserActive);
 
     };
 
