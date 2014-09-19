@@ -40,12 +40,12 @@ angular.module('bulbsCmsApp')
 
           // create new version object
           version = {
-            versionTimestamp: keyPrefix + '.' + moment().unix() + keySuffix,
+            timestamp: keyPrefix + '.' + moment().valueOf() + keySuffix,
             content: articleData
           };
 
           // create new local storage item with verion content
-          $window.localStorage.setItem(version.timestamp, version.content);
+          $window.localStorage.setItem(version.timestamp, JSON.stringify(version.content));
 
         } catch (error) {
 
@@ -97,7 +97,7 @@ angular.module('bulbsCmsApp')
           var keySplit = key.split('.');
           return {
             timestamp: Number(keySplit[1]),
-            content: stored
+            content: JSON.parse(stored)
           };
         })
         // resolve this into an array

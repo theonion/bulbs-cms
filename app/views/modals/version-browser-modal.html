@@ -22,11 +22,11 @@
 
 <div class="modal-footer">
     <span ng-show="articleIsDirty" class="text-danger version-browser-dirty-warning">
-        <i class="glyphicon glyphicon-exclamation-sign"></i>
+        <i class="glyphicon glyphicon-warning-sign"></i>
         You have unsaved changes that will be overwritten by restoring an old version!
     </span>
     <button ng-show="selectedVersion" class="btn" ng-class="{'btn-danger': articleIsDirty, 'btn-success': !articleIsDirty}" aria-hidden="true" ng-click="restoreSelected();">
-        <i class="glyphicon" ng-class="{'glyphicon-exclamation-sign': articleIsDirty, 'glyphicon-open': !articleIsDirty}"></i>
+        <i class="glyphicon" ng-class="{'glyphicon-warning-sign': articleIsDirty, 'glyphicon-open': !articleIsDirty}"></i>
         Restore Selected Version
     </button>
     <button class="btn btn-default" aria-hidden="true" ng-click="$dismiss();">
