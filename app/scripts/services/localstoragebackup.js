@@ -60,7 +60,7 @@ angular.module('bulbsCmsApp')
               var keep = false,
                   keySplit = key.split('.');
               if (keySplit.length === 4) {
-                var yesterday = moment().date(moment().date() - 1).unix(),
+                var yesterday = moment().subtract({days: 1}).unix(),
                     keyTime = Number(keySplit[1]);
                 keep = keyTime < yesterday;
               }

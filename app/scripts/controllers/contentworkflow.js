@@ -83,7 +83,7 @@ angular.module('bulbsCmsApp')
     $scope.versionBrowserModal = function (article) {
       return $modal.open({
         templateUrl: routes.PARTIALS_URL + 'modals/version-browser-modal.html',
-        controller: 'VersionbrowsermodalCtrl',
+        controller: 'VersionBrowserModalCtrl',
         scope: $scope,
         size: 'lg',
         resolve: {

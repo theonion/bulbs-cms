@@ -4,13 +4,16 @@
  * This is a modal for browsing versions stored in localStorage by the Localstoragebackup service.
  */
 angular.module('bulbsCmsApp')
-  .controller('VersionbrowsermodalCtrl', function ($scope, $window, $modalInstance, _, moment, VersionStorageApi) {
+  .controller('VersionBrowserModalCtrl', function ($scope, $modalInstance, _, moment, VersionStorageApi) {
 
     VersionStorageApi.all()
       .then(function (versions) {
 
+        // doubley ensure timestamp in desc since modal functionality depends on it
+        var sortedVersions = _.sortBy(versions, function (version) { return -version.timestamp; });
+
         // create timestamp displays
-        $scope.timestamps = _.chain(versions)
+        $scope.timestamps = _.chain(sortedVersions)
           // pull out timestamp info
           .pluck('timestamp')
           // transform timestamps to human readable versions
@@ -24,11 +27,11 @@ angular.module('bulbsCmsApp')
           .value();
 
         // set initial preview to top item which should be the most recent
-        $scope.selectedVersion = versions[0];
+        $scope.selectedVersion = sortedVersions[0];
 
         // set preview in modal window based on timestamp
         $scope.setPreview = function (timestamp) {
-          $scope.selectedVersion = _.find(versions, function (version) {
+          $scope.selectedVersion = _.find(sortedVersions, function (version) {
             return version.timestamp === timestamp;
           });
         };
