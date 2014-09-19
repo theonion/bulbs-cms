@@ -17,7 +17,7 @@ angular.module('bulbsCmsApp')
           .map(function (timestamp) {
             return {
               ms: timestamp,
-              display: moment(timestamp).format('ddd, MMM Do YYYY, h:ma')
+              display: moment(timestamp).format('ddd, MMM Do YYYY, h:mma')
             };
           })
           // resolve this chain to an array of objects for the chooser
