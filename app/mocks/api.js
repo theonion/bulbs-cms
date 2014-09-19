@@ -175,28 +175,6 @@ angular.module('bulbsCmsApp.mockApi').run([
     // send to webtech (fickle)
     $httpBackend.whenPOST('/cms/api/v1/report-bug/').respond('');
 
-
-
-
-
-
-
-// TODO NO!
-// TODO REMOVE IT ALL including users
-        var tokenGenerator = new FirebaseTokenGenerator("bRXGZMHmDw1fipuuvSi8apVfUAdfe1op0Al0oKaG");
-
-
-// TODO NO!
-
-
-
-
-
-
-
-
-
-
     // user, log in as a random user
     var users = [
         {
@@ -204,39 +182,21 @@ angular.module('bulbsCmsApp.mockApi').run([
             username: 'admin',
             email: 'webtech@theonion.com',
             first_name: 'Herman',
-            last_name: 'Zweibel',
-            firebase_token: tokenGenerator.createToken({
-              id: 0,
-              username: 'admin',
-              email: 'webtech@theonion.com',
-              is_staff: true
-            })
+            last_name: 'Zweibel'
         },
         {
             id: 1,
             username: 'jadams',
             email: 'jadams@theonion.com',
             first_name: 'John',
-            last_name: 'Adams',
-            firebase_token: tokenGenerator.createToken({
-              id: 1,
-              username: 'jadams',
-              email: 'jadams@theonion.com',
-              is_staff: true
-            })
+            last_name: 'Adams'
         },
         {
             id: 2,
             username: 'bdoledoledoledoledoledole',
             email: 'bdole@theonion.com',
             first_name: 'Bob',
-            last_name: 'Dole Dole Dole Dole Dole Dole',
-            firebase_token: tokenGenerator.createToken({
-              id: 2,
-              username: 'bdoledoledoledoledoledole',
-              email: 'bdole@theonion.com',
-              is_staff: true
-            })
+            last_name: 'Dole Dole Dole Dole Dole Dole'
         }
     ];
     var userIndex = Math.floor(Math.random() * users.length);
