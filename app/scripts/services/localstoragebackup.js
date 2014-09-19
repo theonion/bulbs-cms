@@ -11,7 +11,6 @@ angular.module('bulbsCmsApp')
     TODO: add tests
     TODO: make configurable
     TODO: apply to other fields
-    TODO: don't use $().html() to capture the value
     TODO: capture routeChange and cancel the interval
       (this works for now because we're doing a full teardown on route change
       if we ever go back to a real 'single page app' this will fuck up)
@@ -24,53 +23,58 @@ angular.module('bulbsCmsApp')
     var keyPrefix = this.keyPrefix;
     var keySuffix = this.keySuffix;
 
-    this.backupToLocalStorage = function (content) {
-      var localStorageKeys = Object.keys($window.localStorage);
-      var mostRecentTimestamp = 0;
-      for (var keyIndex in localStorageKeys) {
-        var key = $window.localStorage.key(keyIndex);
-        if (key && key.split('.')[2] === $routeParams.id && Number(key.split('.')[1]) > mostRecentTimestamp) {
-          mostRecentTimestamp = Number(key.split('.')[1]);
-        }
-      }
-      var mostRecentValue = $window.localStorage.getItem(keyPrefix + '.' + mostRecentTimestamp + keySuffix);
-      if (mostRecentValue === content) {
-        return {
-          timestamp: mostRecentTimestamp,
-          content: mostRecentValue
-        };
-      }
+    /**
+     * Save content to local storage.
+     *
+     * @param articleData   Content to save to local storage.
+     * @return New version data or null if no version was created.
+     */
+    this.createVersion = function (articleData) {
+
+      var version = null;
+
+      // check if we have local storage
       if ($window.localStorage) {
+
         try {
-          var version = {
+
+          // create new version object
+          version = {
             versionTimestamp: keyPrefix + '.' + moment().unix() + keySuffix,
-            content: content
+            content: articleData
           };
 
-          $window.localStorage.setItem(version.timestamp, version.content); //TODO: this is gonna break
-
-          return version;
+          // create new local storage item with verion content
+          $window.localStorage.setItem(version.timestamp, version.content);
 
         } catch (error) {
-          console.log('Caught localStorage Error ' + error);
-          console.log('Trying to prune old entries');
 
-          for (var keyIndex in localStorageKeys) {
-            var key = $window.localStorage.key(keyIndex);
-            if (!key || key && key.split('.')[0] !== keyPrefix) {
-              continue;
-            }
-            var yesterday = moment().date(moment().date() - 1).unix();
-            var keyStamp = Number(key.split('.')[1]);
-            if (keyStamp < yesterday) {
+          // some error occurred, prune entries older than yesterday
+          console.log('Caught localStorage Error ' + error);
+          console.log('Trying to prune old entries...');
+
+          // remove all items older than yesterday from local storage
+          _.chain($window.localStorage)
+            // find all saved articles older than yesterday
+            .every(function (stored, key) {
+              var keep = false,
+                  keySplit = key.split('.');
+              if (keySplit.length === 4) {
+                var yesterday = moment().date(moment().date() - 1).unix(),
+                    keyTime = Number(keySplit[1]);
+                keep = keyTime < yesterday;
+              }
+              return keep;
+            })
+            // remove each item from local storage
+            .each(function (stored, key) {
               $window.localStorage.removeItem(key);
-            }
-          }
+            });
+
         }
       }
 
-      // shouldn't get here... but who knows?
-      return null;
+      return version;
 
     };
 
@@ -95,10 +99,6 @@ angular.module('bulbsCmsApp')
             timestamp: Number(keySplit[1]),
             content: stored
           };
-        })
-        // order by timestamp desc
-        .sortBy(function (stored) {
-          return -stored.timestamp;
         })
         // resolve this into an array
         .value();

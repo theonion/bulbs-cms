@@ -40,12 +40,12 @@ angular.module('bulbsCmsApp')
     /**
      * Create a new version in a particular versions list, most likely assoicated with an article.
      *
-     * @param $versions   Article's versions list.
-     * @param content     Content to store in the version.
+     * @param $versions     Article's versions list.
+     * @param articleData   Content to store in the version.
      * @returns   deferred promise that will resolve with the version reference as added to the versions list. Promise
      *  is rejected if for some reason create did not occur (eg nothing changed since last version).
      */
-    var createVersion = function ($versions, content) {
+    var createVersion = function ($versions, articleData) {
 
       // defer for creation of version
       var createDefer = $q.defer(),
@@ -54,22 +54,13 @@ angular.module('bulbsCmsApp')
       // make version data
       var versionData = {
         timestamp: moment().valueOf(),
-        content: content
+        content: articleData
       };
 
-      // sort by time desc and see if most recent content is different than most recent version's content
-      var sortedVersions = _.sortBy($versions, function (version) {
-        return -version.timestamp;
-      });
-      var newContent = sortedVersions.length < 1 || sortedVersions[0].content !== content;
-
-      if (newContent) {
-        // there is new content, so add then forward data on to create defer
-        $versions.$add(versionData).then(createDefer.resolve);
-      } else {
-        // no new content, reject this create
-        createDefer.reject();
-      }
+      // add version to version data
+      $versions.$add(versionData)
+        .then(createDefer.resolve)
+        .catch(createDefer.reject);
 
       return $createPromise;
 

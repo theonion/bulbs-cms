@@ -100,10 +100,10 @@ describe('Controller: ContenteditCtrl', function () {
     });
     
     describe('function: saveArticle', function () {
-      it('should call Localstoragebackup.backupToLocalStorage', function () {
-        spyOn(localStorageBackup, 'backupToLocalStorage');
+      it('should call Localstoragebackup.createVersion', function () {
+        spyOn(localStorageBackup, 'createVersion');
         scope.saveArticle();
-        expect(localStorageBackup.backupToLocalStorage).toHaveBeenCalled();
+        expect(localStorageBackup.createVersion).toHaveBeenCalled();
       });
     
       it('should call postValidationSaveArticle if no last_modified discrepancy', function () {

@@ -93,7 +93,7 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.saveArticle = function () {
-      VersionStorageApi.create($scope.article.body);
+      VersionStorageApi.create($scope.article, $scope.articleIsDirty);
 
       ContentApi.one('content', $routeParams.id).get().then(function (data) {
         if (data.last_modified &&
@@ -156,17 +156,16 @@ angular.module('bulbsCmsApp')
         }, 2500);
       $window.article = $scope.article = resp;
       $scope.last_saved_article = angular.copy(resp);
+      $scope.articleIsDirty = false;
       $scope.errors = null;
       $location.search('rating_type', null); //maybe just kill the whole query string with $location.url($location.path())
       $scope.saveArticleDeferred.resolve(resp);
     }
 
+    // keep track of if article is dirty or not
+    $scope.articleIsDirty = false;
     $scope.$watch('article', function () {
-      if (angular.equals($scope.article, $scope.last_saved_article)) {
-        $scope.articleIsDirty = false;
-      } else {
-        $scope.articleIsDirty = true;
-      }
+      $scope.articleIsDirty = !angular.equals($scope.article, $scope.last_saved_article);
     }, true);
 
     $scope.$watch('articleIsDirty', function () {

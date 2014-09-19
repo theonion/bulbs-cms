@@ -85,10 +85,10 @@ describe('Service: Localstoragebackup', function () {
     expect(Localstoragebackup.keyPrefix).toBe('articleBodyBackup');
   });
 
-  describe('function backupToLocalStorage', function () {
+  describe('function createVersion', function () {
 
     it('should insert into localStorage', function () {
-      Localstoragebackup.backupToLocalStorage();
+      Localstoragebackup.createVersion();
       expect(mockWindow.localStorage.setItem).toHaveBeenCalled();
     })
 
