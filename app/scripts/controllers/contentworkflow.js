@@ -10,7 +10,7 @@ angular.module('bulbsCmsApp')
         controller: 'TrashcontentmodalCtrl',
         scope: $scope,
         resolve: {
-          articleId: function () { return articleId; }
+          articleId: function () {}
         }
       });
     };
@@ -48,12 +48,20 @@ angular.module('bulbsCmsApp')
       });
     };
 
-    $scope.thumbnailModal = function (article) {
-      return $modal.open({
+    $scope.thumbnailModal = function () {
+      // open thumbnail modal along with its controller
+      var modalInst = $modal.open({
         templateUrl: routes.PARTIALS_URL + 'modals/thumbnail-modal.html',
-        scope: $scope,
-        resolve: {
-          article: function () { return article; }
+        controller: 'ThumbnailModalCtrl',
+        scope: $scope
+      });
+      // if user chooses a thumbnail, set that to the article's thumbnail override (user wants their own thumbnail)
+      modalInst.result.then(function (chosenThumbnail) {
+        $scope.article.thumbnail_override = chosenThumbnail;
+
+        if (chosenThumbnail && chosenThumbnail.id === null) {
+          // this has explicitly been cleared, clear the article's thumbnail for display purposes
+          $scope.article.thumbnail = null;
         }
       });
     };

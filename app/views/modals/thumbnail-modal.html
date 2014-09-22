@@ -5,9 +5,37 @@
 <div class="modal-body edit-page">
     <div class="main-image thumbnail-image extra-info-section">
         <label>Thumbnail Image</label>
-        <bettyeditable image="article.thumbnail" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
+        <div>
+            <p ng-show="!hasOverride || !(thumbnailTemp && thumbnailTemp.id)">
+                <!-- show when there is no override, or no thumbnail temp -->
+                <span>You are currently viewing the default thumbnail based off the article's image. Choose new thumbnail image if you'd like to show a custom thumbnail:</span>
+                <button class="btn btn-xs btn-primary" ng-click="selectCustomThumbnail();">
+                    <i class="glyphicon glyphicon-picture"></i>
+                    Choose Thumbnail
+                </button>
+            </p>
+            <!--div ng-show="!thumbnailChanged && thumbnailTemp && thumbnailTemp.id"-->
+            <div ng-show="thumbnailTemp && thumbnailTemp.id">
+                <!-- show when there's a thumbnail temp and thumbnail has not changed (because image won't show up otherwise) -->
+                <bettyeditable image="thumbnailTemp" editable="true" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
+            </div>
+            <div ng-show="article.thumbnail && article.thumbnail.id && (!thumbnailTemp || !thumbnailTemp.id)">
+                <bettyeditable image="article.thumbnail" editable="false" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o add-feature-image"/>
+            </div>
+            <!--div ng-show="thumbnailChanged && thumbnailTemp && thumbnailTemp.id">
+                <!-- show when thumbnail has changed and there is a thumbnail temp>
+                <p class="text-success">You have selected a new thumbnail! To edit your thumbnail, click "Done", save the article, then reopen this modal.</p>
+            </div-->
+        </div>
     </div>
 </div><!--/modal-body-->
 <div class="modal-footer">
-    <button class="btn btn-default" ng-click="$dismiss();" aria-hidden="true">Done</button>
+    <button class="btn btn-success" ng-click="chooseThumbnail();">
+        <i class="glyphicon glyphicon-ok"></i>
+        Done
+    </button>
+    <button class="btn btn-danger" ng-click="$dismiss();" aria-hidden="true">
+        <i class="glyphicon glyphicon-remove"></i>
+        Cancel
+    </button>
 </div><!--/modal-footer-->

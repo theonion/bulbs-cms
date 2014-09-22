@@ -6,8 +6,8 @@ describe('Controller: ContentworkflowCtrl', function () {
   beforeEach(module('bulbsCmsApp'));
 
   var ContentworkflowCtrl,
-    scope,
-    modalService;
+      scope,
+      modalService;
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $rootScope, $modal) {
@@ -17,7 +17,11 @@ describe('Controller: ContentworkflowCtrl', function () {
       $scope: scope,
       $modal: modalService
     });
-    spyOn(modalService, 'open');
+    spyOn(modalService, 'open').andReturn({
+      result: {
+        then: function () {}
+      }
+    });
   }));
   
   describe('should contain modal opening functions for various modals:', function () {
