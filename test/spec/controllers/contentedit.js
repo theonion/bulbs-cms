@@ -30,12 +30,12 @@ describe('Controller: ContenteditCtrl', function () {
     modalService = $modal;
 
     VersionStorageApiMock = {
-      create: function() {
+      $create: function() {
         return true;
       }
     };
 
-    spyOn(VersionStorageApiMock, 'create');
+    spyOn(VersionStorageApiMock, '$create');
 
   }));
 
