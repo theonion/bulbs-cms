@@ -8,12 +8,13 @@
  *
  *  {
  *    timestamp: Number   - timestamp in ms for this version
- *    content: String     - content this version holds
+ *    content: Object     - content this version holds, which in this case is an article object
  *  }
  */
 angular.module('bulbsCmsApp')
-  .factory('VersionStorageApi', function ($q, FirebaseApi, FirebaseArticleFactory, Localstoragebackup) {
+  .factory('VersionStorageApi', function ($q, FirebaseApi, FirebaseArticleFactory, LocalStorageBackup) {
 
+    // set up a promise for checking if we can authorize with firebase
     var firebaseAvailableDefer = $q.defer(),
         $firebaseAvailable = firebaseAvailableDefer.promise;
     FirebaseApi.$authorize
@@ -31,7 +32,7 @@ angular.module('bulbsCmsApp')
       });
 
     /**
-     * Keepy only the data we want to persist for an article
+     * Keep only the data we want to persist for an article
      *
      * @param articleData   article data to persist.
      */
@@ -53,7 +54,15 @@ angular.module('bulbsCmsApp')
 
     return {
 
-      create: function (rawArticleData, articleIsDirty) {
+      /**
+       * Create a new version either in firebase or in local storage.
+       *
+       * @param rawArticleData  raw article data to copy and transform before saving.
+       * @param articleIsDirty  true if the article has unsaved changes, false otherwise.
+       * @return  a promise that resolves on creation with a version object that contains timestamp and content
+       *  properties.
+       */
+      $create: function (rawArticleData, articleIsDirty) {
 
         // get article data that we want to save
         var articleData = scrubArticle(rawArticleData);
@@ -91,13 +100,13 @@ angular.module('bulbsCmsApp')
           .catch(function () {
 
             // if article is dirty or there are no versions, attempt to create one using local storage
-            if (articleIsDirty || Localstoragebackup.getVersions().length < 1) {
+            if (articleIsDirty || LocalStorageBackup.getVersions().length < 1) {
 
-              var version = Localstoragebackup.createVersion(articleData);
-
-              if (version !== null) {
+              // create version with local storage
+              var versionData = LocalStorageBackup.createVersion(articleData);
+              if (versionData !== null) {
                 // version was created, resolve create defer with version data
-                createDefer.resolve(version);
+                createDefer.resolve(versionData);
               } else {
                 // version wasn't created, reject promise
                 createDefer.reject();
@@ -116,7 +125,11 @@ angular.module('bulbsCmsApp')
         return createPromise;
 
       },
-      all: function () {
+      /**
+       * Retrieve all versions either from firebase or local storage.
+       * @return  list of version objects sorted by timestamp descending.
+       */
+      $all: function () {
 
         // set up deferred objects for all retrieval
         var allDefer = $q.defer(),
@@ -137,7 +150,7 @@ angular.module('bulbsCmsApp')
           .catch(function () {
 
             // we don't have firebase so use local storage
-            allDefer.resolve(Localstoragebackup.getVersions());
+            allDefer.resolve(LocalStorageBackup.getVersions());
 
           });
 

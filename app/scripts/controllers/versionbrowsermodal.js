@@ -1,12 +1,12 @@
 'use strict';
 
 /**
- * This is a modal for browsing versions stored in localStorage by the Localstoragebackup service.
+ * This is a modal for browsing versions stored in localStorage by the LocalStorageBackup service.
  */
 angular.module('bulbsCmsApp')
   .controller('VersionBrowserModalCtrl', function ($scope, $modalInstance, _, moment, VersionStorageApi) {
 
-    VersionStorageApi.all()
+    VersionStorageApi.$all()
       .then(function (versions) {
 
         // doubley ensure timestamp in desc since modal functionality depends on it

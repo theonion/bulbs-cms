@@ -93,8 +93,17 @@ angular.module('bulbsCmsApp')
 
           return {
 
+            /**
+             * Raw firebase article reference.
+             */
             ref: articleRef,
+            /**
+             * Get angularfire live array of article's currently active users.
+             */
             $activeUsers: $firebase(articleRef.child('users')).$asArray(),
+            /**
+             * Get angularfire live array of article versions. No guarantee of order.
+             */
             $versions: $firebase(articleRef.child('versions')).$asArray(),
             $registerCurrentUserActive: function () { return registerActiveUser(this.$activeUsers); },
             $createVersion: function (content) { return createVersion(this.$versions, content) }

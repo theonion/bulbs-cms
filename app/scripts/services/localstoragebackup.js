@@ -1,107 +1,103 @@
 'use strict';
 
+/**
+ * Methods to create and retrieve versions in local storage. Articles are stored as json strings under the keys
+ *  'article.{timestamp}.{article id}'. When local storage is full, it will attempt to remove values older than
+ *  yesterday.
+ */
 angular.module('bulbsCmsApp')
-  .service('Localstoragebackup', function Localstoragebackup($routeParams, $window, moment, $, _) {
+  .factory('LocalStorageBackup', function ($routeParams, $window, moment, _) {
 
-    /*
-    hacky first version of local storage backup
-    this is for backing up body contents to local storage
-    for now this is just keying to articleBodyBackup.<timestamp>.<article id>.body
-    if LS is full, it tries deleting old backups
-    TODO: add tests
-    TODO: make configurable
-    TODO: apply to other fields
-    TODO: capture routeChange and cancel the interval
-      (this works for now because we're doing a full teardown on route change
-      if we ever go back to a real 'single page app' this will fuck up)
-    TODO: lots of stuff
-    */
+    var keyPrefixArticle = 'article';
+    var keyPrefix = keyPrefixArticle + '.' + $routeParams.id + '.';
 
-    this.keyPrefix = 'articleBodyBackup';
-    this.keySuffix = '.' + $routeParams.id + '.body';
+    return {
 
-    var keyPrefix = this.keyPrefix;
-    var keySuffix = this.keySuffix;
+      /**
+       * Save content to local storage.
+       *
+       * @param articleData   Content to save to local storage.
+       * @return New version data or null if no version was created.
+       */
+      create: function (articleData) {
 
-    /**
-     * Save content to local storage.
-     *
-     * @param articleData   Content to save to local storage.
-     * @return New version data or null if no version was created.
-     */
-    this.createVersion = function (articleData) {
+        var version = null;
 
-      var version = null;
-
-      // check if we have local storage
-      if ($window.localStorage) {
-
-        try {
+        // check if we have local storage
+        if ($window.localStorage) {
 
           // create new version object
           version = {
-            timestamp: keyPrefix + '.' + moment().valueOf() + keySuffix,
+            timestamp: moment().valueOf(),
             content: articleData
           };
 
-          // create new local storage item with verion content
-          $window.localStorage.setItem(version.timestamp, JSON.stringify(version.content));
+          try {
 
-        } catch (error) {
+            // create new local storage item with version content
+            $window.localStorage.setItem(keyPrefix + moment().valueOf(), JSON.stringify(version));
 
-          // some error occurred, prune entries older than yesterday
-          console.log('Caught localStorage Error ' + error);
-          console.log('Trying to prune old entries...');
+          } catch (error) {
 
-          // remove all items older than yesterday from local storage
-          _.chain($window.localStorage)
-            // find all saved articles older than yesterday
-            .every(function (stored, key) {
-              var keep = false,
-                  keySplit = key.split('.');
-              if (keySplit.length === 4) {
-                var yesterday = moment().subtract({days: 1}).unix(),
-                    keyTime = Number(keySplit[1]);
-                keep = keyTime < yesterday;
+            // some error occurred, prune entries older than yesterday
+            console.log('Caught localStorage error: ' +  error);
+            console.log('Pruning old entries...');
+
+            // loop through local storage keys and see if they're old
+            var keysToRemove = [];
+            _.each(_.keys($window.localStorage), function (key) {
+
+              // check if this key is older than yesterday, if so add it to list of keys to remove
+              var keySplit = key.split('.');
+              if (keySplit.length === 3 && keySplit[0] === keyPrefixArticle) {
+                var yesterday = moment().subtract({days: 1}).valueOf(),
+                    keyTime = Number(keySplit[2]);
+                if (keyTime < yesterday) {
+                  // don't keep this one, too old
+                  keysToRemove.push(key);
+                }
               }
-              return keep;
-            })
-            // remove each item from local storage
-            .each(function (stored, key) {
+
+            });
+
+            // remove each identified key from local storage
+            _.each(keysToRemove, function (key) {
               $window.localStorage.removeItem(key);
             });
 
+            // now try to add entry again
+            try {
+              $window.localStorage.setItem(version.timestamp, JSON.stringify(version.content));
+            } catch (error) {
+              console.log('Failed again at adding entry, no more retries: ' + error);
+            }
+
+          }
         }
+      },
+      /**
+       * Get all versions for this article in local storage. No guarantee of order.
+       *
+       * @return  objects returned contain a timestamp and a content variable which holds the version's content.
+       */
+      versions: function () {
+
+        var versions = [];
+        _.each(_.keys($window.localStorage), function (key) {
+
+          // check if this entry should be added to the versions list
+          var keySplit = key.split('.'),
+              isVersionKey = (keySplit.length === 3 && keySplit[0] === keyPrefixArticle
+                                && Number(keySplit[1]) === $routeParams.id);
+          if (isVersionKey) {
+            versions.push(JSON.parse($window.localStorage[key]));
+          }
+
+        });
+
+        return versions;
+
       }
-
-      return version;
-
-    };
-
-    /**
-     * Get all versions for this article in local storage.
-     *
-     * @returns   An array of versions sorted by their timestamps. Objects returned contain a timestamp and a
-     *  content variable which holds the version's content.
-     */
-    this.getVersions = function () {
-
-      return _.chain($window.localStorage)
-        // pick only those items in local storage whose keys start with backup prefix
-        .pick(function (stored, key) {
-          var keySplit = key.split('.');
-          return keySplit.length === 4 && keySplit[0] === keyPrefix && keySplit[2] === $routeParams.id;
-        })
-        // map versions to an array, give each version its timestamp
-        .map(function (stored, key) {
-          var keySplit = key.split('.');
-          return {
-            timestamp: Number(keySplit[1]),
-            content: JSON.parse(stored)
-          };
-        })
-        // resolve this into an array
-        .value();
 
     };
 

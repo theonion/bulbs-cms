@@ -1,98 +1,138 @@
 'use strict';
 
-describe('Service: Localstoragebackup', function () {
+describe('Service: LocalStorageBackup', function () {
+
   beforeEach(module('bulbsCmsApp'));
 
-  var Localstoragebackup,
-    mockMoment,
-    mockWindow,
-    mockJquery;
+  var LocalStorageBackupTest,
+      mockWindow;
 
-  var mockTodayTimestamp = 1399492663000;
-
-  var localStorageMockKeys = [
-    'articleBodyBackup.1.1.body',
-    'articleBodyBackup.2.1.body',
-    'articleBodyBackup.5.2.body',
-    'articleBodyBackup.6.2.body',
-  ]
-
-  var localStorageMockObject = {
-    'articleBodyBackup.1.1.body': 'Article 1 Body at Time 1',
-    'articleBodyBackup.2.1.body': 'Article 1 Body at Time 2',
-    'articleBodyBackup.5.2.body': 'Article 2 Body at Time 5',
-    'articleBodyBackup.6.2.body': 'Article 2 Body at Time 6'
-  }
-
-  beforeEach(function () {
-
-    mockMoment = function(param) {
-      if(param){
-        return moment(param);
-      }else{
-        return moment(mockTodayTimestamp);
-      }
-    }
-
-    module(function ($provide) {
-      $provide.value('moment', mockMoment);
+  // inject mock dependencies
+  beforeEach(module(function ($provide) {
+    $provide.service('$routeParams', function () {
+      return {id: 2}
     });
-
-    mockWindow = {}
-    mockWindow.localStorage = {
-      key: function(index){
-        return Object.keys(localStorageMockObject)[index];
-      },
-      getItem: function(key){
-        return localStorageMockObject[key];
-      },
-      setItem: function(key, value){
-        return true;
-      },
-      removeItem: function(key){
-        return true;
-      }
-    }
-
-    spyOn(mockWindow.localStorage, 'key');
-    spyOn(mockWindow.localStorage, 'getItem');
-    spyOn(mockWindow.localStorage, 'setItem');
-    spyOn(mockWindow.localStorage, 'removeItem');
-
-    module(function ($provide) {
-      $provide.value('$window', mockWindow);
-    });
-
-    mockJquery = function () {
-      return {
-        html: function () {
-          return "Great"
+    $provide.service('moment', function () {
+      return function () {
+        return {
+          // return some ms
+          valueOf: function () {
+            return 5;
+          },
+          // subtraction just returns ms from "yesterday"
+          subtract: function () {
+            return {
+              valueOf: function () {
+                return 4;
+              }
+            };
+          }
         }
       }
-    }
-
-    module(function ($provide) {
-      $provide.value('$', mockJquery);
     });
+    $provide.service('$window', function () {
+      return {
+        localStorage: {
+          'article.1.1': JSON.stringify({
+            timestamp: 1,
+            content: {
+              title: 'Some Article',
+              body: 'Something'
+            }
+          }),
+          'article.1.2': JSON.stringify({
+            timestamp: 2,
+            content: {
+              title: 'Some Article Has Changes',
+              body: 'Whatever balh balh balhb.'
+            }
+          }),
+          'article.2.3': JSON.stringify({
+            timestamp: 3,
+            content: {
+              title: 'This Is A Different Article',
+              body: 'I am NOT article 1.'
+            }
+          }),
+          // not an actual property, but we can use it for testing
+          itemCount: 3,
+          setItem: function (key, value) {
+            // set a simulated maximum size on local storage (4 items) we can test pruning
+            if (this.itemCount >= 4) {
+              throw 'Too many things in here.'
+            } else {
+              this.itemCount++;
+            }
 
-  });
-
-  beforeEach(inject(function (_Localstoragebackup_) {
-    Localstoragebackup = _Localstoragebackup_;
+            // otherwise just set the key, value
+            this[key] = value;
+          },
+          removeItem: function (key) {
+            // remove item and delete key
+            this.itemCount--;
+            delete this[key];
+          }
+        }
+      };
+    });
   }));
 
-  it('should set keyPrefix', function () {
-    expect(Localstoragebackup.keyPrefix).toBe('articleBodyBackup');
+  beforeEach(inject(function (LocalStorageBackup, $window) {
+
+    mockWindow = $window;
+    LocalStorageBackupTest = LocalStorageBackup;
+
+  }));
+
+  it('should create a new version in local storage', function () {
+
+    // add new article
+    var article = {
+      title: 'Some New Article',
+      body: 'Batman is the man.'
+    };
+    LocalStorageBackupTest.create(article);
+
+    // see if it got stored properly in local storage
+    expect(mockWindow.localStorage['article.2.5']).toBe(JSON.stringify({timestamp: 5, content: article}));
+
   });
 
-  describe('function createVersion', function () {
+  it('should log an error and prune old entries when local storage is full', function () {
 
-    it('should insert into localStorage', function () {
-      Localstoragebackup.createVersion();
-      expect(mockWindow.localStorage.setItem).toHaveBeenCalled();
-    })
+    // shut off logging for this one so we don't see the error message in testing logs
+    spyOn(console, 'log').andCallFake(function () {});
 
+    // local storage mock can hold a max of 4 entries, 5th entry will trigger an error and then a read
+    // add two new entries, according to the rules of the mock local storage, both of these will have a timestamp of 5
+    LocalStorageBackupTest.create({ title: 'New Article 1', body: 'New article 1...'});
+    LocalStorageBackupTest.create({ title: 'New Article 2', body: 'New article 2...'});
+
+    // entries already in local storage have values less than 4, those three are removed and only 2 new ones remain
+    expect(mockWindow.localStorage.itemCount).toBe(2);
   });
 
+  it('should provide a list of versions in local storage', function () {
+
+    // simulate adding a new article 2 version
+    var article = {
+      title: 'Some New Article',
+      body: 'Batman is the man.'
+    };
+    LocalStorageBackupTest.create(article);
+
+    // sort the output versions
+    var versions = _.sortBy(LocalStorageBackupTest.versions(), function (version) {
+      return -version.timestamp;
+    });
+
+    // test output versions
+    expect(versions.length).toBe(2);
+    expect(versions[0].content.title).toBe(article.title);
+    expect(versions[0].content.body).toBe(article.body);
+    expect(versions[1].content.title).toBe('This Is A Different Article');
+    expect(versions[1].content.body).toBe('I am NOT article 1.');
+
+  });
 
 });

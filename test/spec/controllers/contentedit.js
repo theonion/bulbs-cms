@@ -108,9 +108,9 @@ describe('Controller: ContenteditCtrl', function () {
     });
     
     describe('function: saveArticle', function () {
-      it('should call VersionStorageApi.create to create a new version', function () {
+      it('should call VersionStorageApi.$create to create a new version', function () {
         scope.saveArticle();
-        expect(VersionStorageApiMock.create).toHaveBeenCalled();
+        expect(VersionStorageApiMock.$create).toHaveBeenCalled();
       });
     
       it('should call postValidationSaveArticle if no last_modified discrepancy', function () {

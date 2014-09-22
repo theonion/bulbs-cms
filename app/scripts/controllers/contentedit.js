@@ -93,7 +93,7 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.saveArticle = function () {
-      VersionStorageApi.create($scope.article, $scope.articleIsDirty);
+      VersionStorageApi.$create($scope.article, $scope.articleIsDirty);
 
       ContentApi.one('content', $routeParams.id).get().then(function (data) {
         if (data.last_modified &&
