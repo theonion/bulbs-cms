@@ -11331,7 +11331,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap\'s JavaScript re
 }(jQuery);
 
 /**
- * @license AngularJS v1.2.24
+ * @license AngularJS v1.2.25
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -11400,7 +11400,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.24/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.25/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -13319,11 +13319,11 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.24',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.25',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
-  dot: 24,
-  codeName: 'static-levitation'
+  dot: 25,
+  codeName: 'hypnotic-gesticulation'
 };
 
 
@@ -30453,14 +30453,13 @@ var forceAsyncEvents = {
 };
 forEach(
   'click dblclick mousedown mouseup mouseover mouseout mousemove mouseenter mouseleave keydown keyup keypress submit focus blur copy cut paste'.split(' '),
-  function(name) {
-    var directiveName = directiveNormalize('ng-' + name);
+  function(eventName) {
+    var directiveName = directiveNormalize('ng-' + eventName);
     ngEventDirectives[directiveName] = ['$parse', '$rootScope', function($parse, $rootScope) {
       return {
         compile: function($element, attr) {
           var fn = $parse(attr[directiveName]);
           return function ngEventHandler(scope, element) {
-            var eventName = lowercase(name);
             element.on(eventName, function(event) {
               var callback = function() {
                 fn(scope, {$event:event});
@@ -31987,8 +31986,8 @@ var ngRepeatDirective = ['$parse', '$animate', function($parse, $animate) {
  *
  * @description
  * The `ngShow` directive shows or hides the given HTML element based on the expression
- * provided to the ngShow attribute. The element is shown or hidden by removing or adding
- * the `ng-hide` CSS class onto the element. The `.ng-hide` CSS class is predefined
+ * provided to the `ngShow` attribute. The element is shown or hidden by removing or adding
+ * the `.ng-hide` CSS class onto the element. The `.ng-hide` CSS class is predefined
  * in AngularJS and sets the display style to none (using an !important flag).
  * For CSP mode please add `angular-csp.css` to your html file (see {@link ng.directive:ngCsp ngCsp}).
  *
@@ -32000,8 +31999,8 @@ var ngRepeatDirective = ['$parse', '$animate', function($parse, $animate) {
  * <div ng-show="myValue" class="ng-hide"></div>
  * ```
  *
- * When the ngShow expression evaluates to false then the ng-hide CSS class is added to the class attribute
- * on the element causing it to become hidden. When true, the ng-hide CSS class is removed
+ * When the `ngShow` expression evaluates to false then the `.ng-hide` CSS class is added to the class attribute
+ * on the element causing it to become hidden. When true, the `.ng-hide` CSS class is removed
  * from the element causing the element not to appear hidden.
  *
  * <div class="alert alert-warning">
@@ -32011,7 +32010,7 @@ var ngRepeatDirective = ['$parse', '$animate', function($parse, $animate) {
  *
  * ## Why is !important used?
  *
- * You may be wondering why !important is used for the .ng-hide CSS class. This is because the `.ng-hide` selector
+ * You may be wondering why !important is used for the `.ng-hide` CSS class. This is because the `.ng-hide` selector
  * can be easily overridden by heavier selectors. For example, something as simple
  * as changing the display style on a HTML list item would make hidden elements appear visible.
  * This also becomes a bigger issue when dealing with CSS frameworks.
@@ -32020,7 +32019,7 @@ var ngRepeatDirective = ['$parse', '$animate', function($parse, $animate) {
  * specificity (when !important isn't used with any conflicting styles). If a developer chooses to override the
  * styling to change how to hide an element then it is just a matter of using !important in their own CSS code.
  *
- * ### Overriding .ng-hide
+ * ### Overriding `.ng-hide`
  *
  * By default, the `.ng-hide` class will style the element with `display:none!important`. If you wish to change
  * the hide behavior with ngShow/ngHide then this can be achieved by restating the styles for the `.ng-hide`
@@ -32038,7 +32037,7 @@ var ngRepeatDirective = ['$parse', '$animate', function($parse, $animate) {
  *
  * By default you don't need to override in CSS anything and the animations will work around the display style.
  *
- * ## A note about animations with ngShow
+ * ## A note about animations with `ngShow`
  *
  * Animations in ngShow/ngHide work with the show and hide events that are triggered when the directive expression
  * is true and false. This system works like the animation system present with ngClass except that
@@ -32063,8 +32062,8 @@ var ngRepeatDirective = ['$parse', '$animate', function($parse, $animate) {
  * property to block during animation states--ngAnimate will handle the style toggling automatically for you.
  *
  * @animations
- * addClass: .ng-hide - happens after the ngShow expression evaluates to a truthy value and the just before contents are set to visible
- * removeClass: .ng-hide - happens after the ngShow expression evaluates to a non truthy value and just before the contents are set to hidden
+ * addClass: `.ng-hide` - happens after the `ngShow` expression evaluates to a truthy value and the just before contents are set to visible
+ * removeClass: `.ng-hide` - happens after the `ngShow` expression evaluates to a non truthy value and just before the contents are set to hidden
  *
  * @element ANY
  * @param {expression} ngShow If the {@link guide/expression expression} is truthy
@@ -32144,7 +32143,7 @@ var ngShowDirective = ['$animate', function($animate) {
  *
  * @description
  * The `ngHide` directive shows or hides the given HTML element based on the expression
- * provided to the ngHide attribute. The element is shown or hidden by removing or adding
+ * provided to the `ngHide` attribute. The element is shown or hidden by removing or adding
  * the `ng-hide` CSS class onto the element. The `.ng-hide` CSS class is predefined
  * in AngularJS and sets the display style to none (using an !important flag).
  * For CSP mode please add `angular-csp.css` to your html file (see {@link ng.directive:ngCsp ngCsp}).
@@ -32157,8 +32156,8 @@ var ngShowDirective = ['$animate', function($animate) {
  * <div ng-hide="myValue"></div>
  * ```
  *
- * When the ngHide expression evaluates to true then the .ng-hide CSS class is added to the class attribute
- * on the element causing it to become hidden. When false, the ng-hide CSS class is removed
+ * When the `.ngHide` expression evaluates to true then the `.ng-hide` CSS class is added to the class attribute
+ * on the element causing it to become hidden. When false, the `.ng-hide` CSS class is removed
  * from the element causing the element not to appear hidden.
  *
  * <div class="alert alert-warning">
@@ -32168,7 +32167,7 @@ var ngShowDirective = ['$animate', function($animate) {
  *
  * ## Why is !important used?
  *
- * You may be wondering why !important is used for the .ng-hide CSS class. This is because the `.ng-hide` selector
+ * You may be wondering why !important is used for the `.ng-hide` CSS class. This is because the `.ng-hide` selector
  * can be easily overridden by heavier selectors. For example, something as simple
  * as changing the display style on a HTML list item would make hidden elements appear visible.
  * This also becomes a bigger issue when dealing with CSS frameworks.
@@ -32177,7 +32176,7 @@ var ngShowDirective = ['$animate', function($animate) {
  * specificity (when !important isn't used with any conflicting styles). If a developer chooses to override the
  * styling to change how to hide an element then it is just a matter of using !important in their own CSS code.
  *
- * ### Overriding .ng-hide
+ * ### Overriding `.ng-hide`
  *
  * By default, the `.ng-hide` class will style the element with `display:none!important`. If you wish to change
  * the hide behavior with ngShow/ngHide then this can be achieved by restating the styles for the `.ng-hide`
@@ -32195,7 +32194,7 @@ var ngShowDirective = ['$animate', function($animate) {
  *
  * By default you don't need to override in CSS anything and the animations will work around the display style.
  *
- * ## A note about animations with ngHide
+ * ## A note about animations with `ngHide`
  *
  * Animations in ngShow/ngHide work with the show and hide events that are triggered when the directive expression
  * is true and false. This system works like the animation system present with ngClass, except that the `.ng-hide`
@@ -32219,8 +32218,8 @@ var ngShowDirective = ['$animate', function($animate) {
  * property to block during animation states--ngAnimate will handle the style toggling automatically for you.
  *
  * @animations
- * removeClass: .ng-hide - happens after the ngHide expression evaluates to a truthy value and just before the contents are set to hidden
- * addClass: .ng-hide - happens after the ngHide expression evaluates to a non truthy value and just before the contents are set to visible
+ * removeClass: `.ng-hide` - happens after the `ngHide` expression evaluates to a truthy value and just before the contents are set to hidden
+ * addClass: `.ng-hide` - happens after the `ngHide` expression evaluates to a non truthy value and just before the contents are set to visible
  *
  * @element ANY
  * @param {expression} ngHide If the {@link guide/expression expression} is truthy then
@@ -33073,6 +33072,19 @@ var selectDirective = ['$compile', '$parse', function($compile,   $parse) {
         ctrl.$render = render;
 
         scope.$watchCollection(valuesFn, render);
+        scope.$watchCollection(function () {
+          var locals = {},
+              values = valuesFn(scope);
+          if (values) {
+            var toDisplay = new Array(values.length);
+            for (var i = 0, ii = values.length; i < ii; i++) {
+              locals[valueName] = values[i];
+              toDisplay[i] = displayFn(scope, locals);
+            }
+            return toDisplay;
+          }
+        }, render);
+
         if ( multiple ) {
           scope.$watchCollection(function() { return ctrl.$modelValue; }, render);
         }
@@ -33535,13 +33547,13 @@ fb.simplelogin.util.json.parse(decodeURIComponent(e[n]));d=a}catch(q){}d&&d.toke
 fb.simplelogin.Errors.format=function(a,d){var e,f,g={},h=arguments;if(2===h.length)e=h[0],f=h[1];else if(1===h.length)if("object"===typeof h[0]&&h[0].code&&h[0].message){if(0===h[0].message.indexOf(messagePrefix))return h[0];e=h[0].code;f=h[0].message;g=h[0].data}else"string"===typeof h[0]&&(e=h[0],f=errors[e]);else e="UNKNOWN_ERROR",f=errors[e];f=Error(messagePrefix+f);f.code=e;g&&(f.data=g);return f};var RELAY_FRAME_NAME="__winchan_relay_frame",CLOSE_CMD="die";function addListener(a,d,e){a.attachEvent?a.attachEvent("on"+d,e):a.addEventListener&&a.addEventListener(d,e,!1)}function removeListener(a,d,e){a.detachEvent?a.detachEvent("on"+d,e):a.removeEventListener&&a.removeEventListener(d,e,!1)}function extractOrigin(a){/^https?:\/\//.test(a)||(a=window.location.href);var d=/^(https?:\/\/[\-_a-zA-Z\.0-9:]+)/.exec(a);return d?d[1]:a}
 function findRelay(){for(var a=window.location,d=window.opener.frames,a=a.protocol+"//"+a.host,e=d.length-1;0<=e;e--)try{if(0===d[e].location.href.indexOf(a)&&d[e].name===RELAY_FRAME_NAME)return d[e]}catch(f){}}
 var isInternetExplorer=function(){var a,d=-1,e=navigator.userAgent;"Microsoft Internet Explorer"===navigator.appName?(a=/MSIE ([0-9]{1,}[\.0-9]{0,})/,(a=e.match(a))&&1<a.length&&(d=parseFloat(a[1]))):-1<e.indexOf("Trident")&&(a=/rv:([0-9]{2,2}[\.0-9]{0,})/,(a=e.match(a))&&1<a.length&&(d=parseFloat(a[1])));return 8<=d}();fb.simplelogin.transports.WinChan_=function(){};
-fb.simplelogin.transports.WinChan_.prototype.open=function(a,d,e){function f(){k&&document.body.removeChild(k);k=void 0;s&&(s=clearInterval(s));removeListener(window,"message",g);removeListener(window,"unload",f);if(q)try{q.close()}catch(a){n.postMessage(CLOSE_CMD,l)}q=n=void 0}function g(a){if(a.origin===l)try{var d=fb.simplelogin.util.json.parse(a.data);"ready"===d.a?n.postMessage(m,l):"error"===d.a?(f(),e&&(e(d.d),e=null)):"response"===d.a&&(f(),e&&(e(null,d.d),e=null))}catch(g){}}if(!e)throw"missing required callback argument";
-d.url=a;var h;d.url||(h="missing required 'url' parameter");d.relay_url||(h="missing required 'relay_url' parameter");h&&setTimeout(function(){e(h)},0);d.window_name||(d.window_name=null);if(!d.window_features||fb.simplelogin.util.env.isFennec())d.window_features=void 0;var k,l=extractOrigin(d.url);if(l!==extractOrigin(d.relay_url))return setTimeout(function(){e("invalid arguments: origin of url and relay_url must match")},0);var n;isInternetExplorer&&(k=document.createElement("iframe"),k.setAttribute("src",
-d.relay_url),k.style.display="none",k.setAttribute("name",RELAY_FRAME_NAME),document.body.appendChild(k),n=k.contentWindow);var q=window.open(d.url,d.window_name,d.window_features);n||(n=q);var s=setInterval(function(){q&&q.closed&&(f(),e&&(e("unknown closed window"),e=null))},500),m=fb.simplelogin.util.json.stringify({a:"request",d:d.params});addListener(window,"unload",f);addListener(window,"message",g);return{close:f,focus:function(){if(q)try{q.focus()}catch(a){}}}};
+fb.simplelogin.transports.WinChan_.prototype.open=function(a,d,e){function f(a){k&&document.body.removeChild(k);k=void 0;s&&(s=clearInterval(s));removeListener(window,"message",g);removeListener(window,"unload",f);if(q&&!a)try{q.close()}catch(d){n.postMessage(CLOSE_CMD,l)}q=n=void 0}function g(a){if(a.origin===l)try{var d=fb.simplelogin.util.json.parse(a.data);"ready"===d.a?n.postMessage(m,l):"error"===d.a?(f(),e&&(e(d.d),e=null)):"response"===d.a&&(f(d.forceKeepWindowOpen),e&&(e(null,d.d),e=null))}catch(g){}}
+if(!e)throw"missing required callback argument";d.url=a;var h;d.url||(h="missing required 'url' parameter");d.relay_url||(h="missing required 'relay_url' parameter");h&&setTimeout(function(){e(h)},0);d.window_name||(d.window_name=null);if(!d.window_features||fb.simplelogin.util.env.isFennec())d.window_features=void 0;var k,l=extractOrigin(d.url);if(l!==extractOrigin(d.relay_url))return setTimeout(function(){e("invalid arguments: origin of url and relay_url must match")},0);var n;isInternetExplorer&&
+(k=document.createElement("iframe"),k.setAttribute("src",d.relay_url),k.style.display="none",k.setAttribute("name",RELAY_FRAME_NAME),document.body.appendChild(k),n=k.contentWindow);var q=window.open(d.url,d.window_name,d.window_features);n||(n=q);var s=setInterval(function(){q&&q.closed&&(f(),e&&(e("unknown closed window"),e=null))},500),m=fb.simplelogin.util.json.stringify({a:"request",d:d.params});addListener(window,"unload",f);addListener(window,"message",g);return{close:f,focus:function(){if(q)try{q.focus()}catch(a){}}}};
 goog.exportSymbol("fb.simplelogin.transports.WinChan_.prototype.open",fb.simplelogin.transports.WinChan_.prototype.open);
-fb.simplelogin.transports.WinChan_.prototype.onOpen=function(a){function d(a){a=fb.simplelogin.util.json.stringify(a);isInternetExplorer?h.doPost(a,g):h.postMessage(a,g)}function e(f){var h;try{h=fb.simplelogin.util.json.parse(f.data)}catch(n){}h&&"request"===h.a&&(removeListener(window,"message",e),g=f.origin,a&&setTimeout(function(){a(g,h.d,function(e,f){k=!f;a=void 0;d({a:"response",d:e})})},0))}function f(a){if(k&&a.data===CLOSE_CMD)try{window.close()}catch(d){}}var g="*",h=isInternetExplorer?
-findRelay():window.opener,k=!0;if(!h)throw"can't find relay frame";addListener(isInternetExplorer?h:window,"message",e);addListener(isInternetExplorer?h:window,"message",f);try{d({a:"ready"})}catch(l){addListener(h,"load",function(a){d({a:"ready"})})}var n=function(){try{removeListener(isInternetExplorer?h:window,"message",f)}catch(e){}a&&d({a:"error",d:"client closed window"});a=void 0;try{window.close()}catch(g){}};addListener(window,"unload",n);return{detach:function(){removeListener(window,"unload",
-n)}}};goog.exportSymbol("fb.simplelogin.transports.WinChan_.prototype.onOpen",fb.simplelogin.transports.WinChan_.prototype.onOpen);fb.simplelogin.transports.WinChan_.prototype.isAvailable=function(){return fb.simplelogin.util.json&&fb.simplelogin.util.json.parse&&fb.simplelogin.util.json.stringify&&window.postMessage};fb.simplelogin.transports.WinChan=new fb.simplelogin.transports.WinChan_;fb.simplelogin.transports.TriggerIoTab_=function(){};
+fb.simplelogin.transports.WinChan_.prototype.onOpen=function(a){function d(a){a=fb.simplelogin.util.json.stringify(a);isInternetExplorer?h.doPost(a,g):h.postMessage(a,g)}function e(f){var h;try{h=fb.simplelogin.util.json.parse(f.data)}catch(n){}h&&"request"===h.a&&(removeListener(window,"message",e),g=f.origin,a&&setTimeout(function(){a(g,h.d,function(e,f){k=!f;a=void 0;d({a:"response",d:e,forceKeepWindowOpen:f})})},0))}function f(a){if(k&&a.data===CLOSE_CMD)try{window.close()}catch(d){}}var g="*",
+h=isInternetExplorer?findRelay():window.opener,k=!0;if(!h)throw"can't find relay frame";addListener(isInternetExplorer?h:window,"message",e);addListener(isInternetExplorer?h:window,"message",f);try{d({a:"ready"})}catch(l){addListener(h,"load",function(a){d({a:"ready"})})}var n=function(){try{removeListener(isInternetExplorer?h:window,"message",f)}catch(e){}a&&d({a:"error",d:"client closed window"});a=void 0;try{window.close()}catch(g){}};addListener(window,"unload",n);return{detach:function(){removeListener(window,
+"unload",n)}}};goog.exportSymbol("fb.simplelogin.transports.WinChan_.prototype.onOpen",fb.simplelogin.transports.WinChan_.prototype.onOpen);fb.simplelogin.transports.WinChan_.prototype.isAvailable=function(){return fb.simplelogin.util.json&&fb.simplelogin.util.json.parse&&fb.simplelogin.util.json.stringify&&window.postMessage};fb.simplelogin.transports.WinChan=new fb.simplelogin.transports.WinChan_;fb.simplelogin.transports.TriggerIoTab_=function(){};
 fb.simplelogin.transports.TriggerIoTab_.prototype.open=function(a,d,e){callbackInvoked=!1;var f=function(){var a=Array.prototype.slice.apply(arguments);callbackInvoked||(callbackInvoked=!0,e.apply(null,a))};forge.tabs.openWithOptions({url:a+"&transport=internal-redirect-hash",pattern:fb.simplelogin.Vars.getApiHost()+"/blank/page*"},function(a){var d;if(a&&a.url)try{var e=fb.simplelogin.util.misc.parseUrl(a.url),l=fb.simplelogin.util.misc.parseQuerystring(e.hash);a={};for(var n in l)a[n]=fb.simplelogin.util.json.parse(decodeURIComponent(l[n]));
 d=a}catch(q){}d&&d.token&&d.user?f(null,d):d&&d.error?f(d.error):f({code:"RESPONSE_PAYLOAD_ERROR",message:"Unable to parse response payload for Trigger.io."})},function(a){f({code:"UNKNOWN_ERROR",message:"An unknown error occurred for Trigger.io."})})};fb.simplelogin.transports.TriggerIoTab=new fb.simplelogin.transports.TriggerIoTab_;var b,c;
 !function(){var a={},d={};b=function(d,f,g){a[d]={deps:f,callback:g}};c=function(e){function f(a){if("."!==a.charAt(0))return a;a=a.split("/");for(var d=e.split("/").slice(0,-1),f=0,g=a.length;g>f;f++){var k=a[f];".."===k?d.pop():"."!==k&&d.push(k)}return d.join("/")}if(d[e])return d[e];if(d[e]={},!a[e])throw Error("Could not find module "+e);for(var g,h=a[e],k=h.deps,h=h.callback,l=[],n=0,q=k.length;q>n;n++)l.push("exports"===k[n]?g={}:c(f(k[n])));k=h.apply(this,l);return d[e]=g||k};c.entries=a}();
@@ -33577,9 +33589,9 @@ fb.simplelogin.util.env.hasSessionStorage=function(a){try{if(sessionStorage){ses
 fb.simplelogin.util.env.isMobileTriggerIoTab=function(){return window.forge&&/ios|iphone|ipod|ipad|android/i.test(navigator.userAgent)};fb.simplelogin.util.env.isWindowsMetro=function(){return!!window.Windows&&/^ms-appx:/.test(location.href)};fb.simplelogin.util.env.isChromeiOS=function(){return!!navigator.userAgent.match(/CriOS/)};fb.simplelogin.util.env.isTwitteriOS=function(){return!!navigator.userAgent.match(/Twitter for iPhone/)};fb.simplelogin.util.env.isFacebookiOS=function(){return!!navigator.userAgent.match(/FBAN\/FBIOS/)};
 fb.simplelogin.util.env.isWindowsPhone=function(){return!!navigator.userAgent.match(/Windows Phone/)};fb.simplelogin.util.env.isStandaloneiOS=function(){return!!window.navigator.standalone};fb.simplelogin.util.env.isPhantomJS=function(){return!!navigator.userAgent.match(/PhantomJS/)};
 fb.simplelogin.util.env.isIeLT10=function(){var a,d=-1,e=navigator.userAgent;return"Microsoft Internet Explorer"===navigator.appName&&(a=/MSIE ([0-9]{1,}[\.0-9]{0,})/,(a=e.match(a))&&1<a.length&&(d=parseFloat(a[1])),10>d)?!0:!1};fb.simplelogin.util.env.isFennec=function(){try{var a=navigator.userAgent;return-1!=a.indexOf("Fennec/")||-1!=a.indexOf("Firefox/")&&-1!=a.indexOf("Android")}catch(d){}return!1};fb.simplelogin.transports.XHR_=function(){};
-fb.simplelogin.transports.XHR_.prototype.open=function(a,d,e){var f={contentType:"application/json"},g=new XMLHttpRequest,h=(f.method||"GET").toUpperCase(),k=f.contentType||"application/x-www-form-urlencoded",l=!1,n;g.onreadystatechange=function(){if(!l&&4===g.readyState){l=!0;var a,d;try{a=fb.simplelogin.util.json.parse(g.responseText),d=a.error||null,delete a.error}catch(f){}return e&&e(d,a)}};d&&("GET"===h?(-1===a.indexOf("?")&&(a+="?"),a+=this.formatQueryString(d),d=null):("application/json"===
-k&&(d=fb.simplelogin.util.json.stringify(d)),"application/x-www-form-urlencoded"===k&&(d=this.formatQueryString(d))));g.open(h,a,!0);a={"X-Requested-With":"XMLHttpRequest",Accept:"application/json;text/plain","Content-Type":k};f.headers=f.headers||{};for(n in f.headers)a[n]=f.headers[n];for(n in a)g.setRequestHeader(n,a[n]);g.send(d)};fb.simplelogin.transports.XHR_.prototype.isAvailable=function(){return window.XMLHttpRequest&&"function"===typeof window.XMLHttpRequest&&!fb.simplelogin.util.env.isIeLT10()};
-fb.simplelogin.transports.XHR_.prototype.formatQueryString=function(a){if(!a)return"";var d=[],e;for(e in a)d.push(encodeURIComponent(e)+"="+encodeURIComponent(a[e]));return d.join("&")};fb.simplelogin.transports.XHR=new fb.simplelogin.transports.XHR_;fb.simplelogin.util.validation={};var VALID_EMAIL_REGEX_=/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,6})+$/;fb.simplelogin.util.validation.validateArgCount=function(a,d,e,f){var g;f<d?g="at least "+d:f>e&&(g=0===e?"none":"no more than "+e);if(g)throw Error(a+" failed: Was called with "+f+(1===f?" argument.":" arguments.")+" Expects "+g+".");};fb.simplelogin.util.validation.isValidEmail=function(a){return goog.isString(a)&&VALID_EMAIL_REGEX_.test(a)};
+fb.simplelogin.transports.XHR_.prototype.open=function(a,d,e){var f={contentType:"application/json"},g=new XMLHttpRequest,h=(f.method||"GET").toUpperCase(),k=f.contentType||"application/x-www-form-urlencoded",l=!1,n;g.onreadystatechange=function(){if(!l&&4===g.readyState){var a,d;l=!0;if(200<=g.status&&300>g.status||304==g.status||1223==g.status)try{a=fb.simplelogin.util.json.parse(g.responseText),d=a.error||null,delete a.error}catch(f){d="UNKNOWN_ERROR"}else d="RESPONSE_PAYLOAD_ERROR";return e&&
+e(d,a)}};d&&("GET"===h?(-1===a.indexOf("?")&&(a+="?"),a+=this.formatQueryString(d),d=null):("application/json"===k&&(d=fb.simplelogin.util.json.stringify(d)),"application/x-www-form-urlencoded"===k&&(d=this.formatQueryString(d))));g.open(h,a,!0);a={"X-Requested-With":"XMLHttpRequest",Accept:"application/json;text/plain","Content-Type":k};f.headers=f.headers||{};for(n in f.headers)a[n]=f.headers[n];for(n in a)g.setRequestHeader(n,a[n]);g.send(d)};
+fb.simplelogin.transports.XHR_.prototype.isAvailable=function(){return window.XMLHttpRequest&&"function"===typeof window.XMLHttpRequest&&!fb.simplelogin.util.env.isIeLT10()};fb.simplelogin.transports.XHR_.prototype.formatQueryString=function(a){if(!a)return"";var d=[],e;for(e in a)d.push(encodeURIComponent(e)+"="+encodeURIComponent(a[e]));return d.join("&")};fb.simplelogin.transports.XHR=new fb.simplelogin.transports.XHR_;fb.simplelogin.util.validation={};var VALID_EMAIL_REGEX_=/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,6})+$/;fb.simplelogin.util.validation.validateArgCount=function(a,d,e,f){var g;f<d?g="at least "+d:f>e&&(g=0===e?"none":"no more than "+e);if(g)throw Error(a+" failed: Was called with "+f+(1===f?" argument.":" arguments.")+" Expects "+g+".");};fb.simplelogin.util.validation.isValidEmail=function(a){return goog.isString(a)&&VALID_EMAIL_REGEX_.test(a)};
 fb.simplelogin.util.validation.isValidPassword=function(a){return goog.isString(a)};fb.simplelogin.util.validation.isValidNamespace=function(a){return goog.isString(a)};
 fb.simplelogin.util.validation.errorPrefix_=function(a,d,e){var f="";switch(d){case 1:f=e?"first":"First";break;case 2:f=e?"second":"Second";break;case 3:f=e?"third":"Third";break;case 4:f=e?"fourth":"Fourth";break;default:fb.core.util.validation.assert(!1,"errorPrefix_ called with argumentNumber > 4.  Need to update it?")}return a=a+" failed: "+(f+" argument ")};
 fb.simplelogin.util.validation.validateNamespace=function(a,d,e,f){if((!f||goog.isDef(e))&&!goog.isString(e))throw Error(fb.simplelogin.util.validation.errorPrefix_(a,d,f)+"must be a valid firebase namespace.");};fb.simplelogin.util.validation.validateCallback=function(a,d,e,f){if((!f||goog.isDef(e))&&!goog.isFunction(e))throw Error(fb.simplelogin.util.validation.errorPrefix_(a,d,f)+"must be a valid function.");};
@@ -33618,7 +33630,7 @@ goog.string.compareVersions=function(a,d){for(var e=0,f=goog.string.trim(String(
 m[2].length,0==p[2].length)||goog.string.compareElements_(m[2],p[2])}while(0==e)}return e};goog.string.compareElements_=function(a,d){return a<d?-1:a>d?1:0};goog.string.HASHCODE_MAX_=4294967296;goog.string.hashCode=function(a){for(var d=0,e=0;e<a.length;++e)d=31*d+a.charCodeAt(e),d%=goog.string.HASHCODE_MAX_;return d};goog.string.uniqueStringCounter_=2147483648*Math.random()|0;goog.string.createUniqueString=function(){return"goog_"+goog.string.uniqueStringCounter_++};
 goog.string.toNumber=function(a){var d=Number(a);return 0==d&&goog.string.isEmpty(a)?NaN:d};goog.string.isLowerCamelCase=function(a){return/^[a-z]+([A-Z][a-z]*)*$/.test(a)};goog.string.isUpperCamelCase=function(a){return/^([A-Z][a-z]*)+$/.test(a)};goog.string.toCamelCase=function(a){return String(a).replace(/\-([a-z])/g,function(a,e){return e.toUpperCase()})};goog.string.toSelectorCase=function(a){return String(a).replace(/([A-Z])/g,"-$1").toLowerCase()};
 goog.string.toTitleCase=function(a,d){var e=goog.isString(d)?goog.string.regExpEscape(d):"\\s";return a.replace(RegExp("(^"+(e?"|["+e+"]+":"")+")([a-z])","g"),function(a,d,e){return d+e.toUpperCase()})};goog.string.parseInt=function(a){isFinite(a)&&(a=String(a));return goog.isString(a)?/^\s*-?0x/i.test(a)?parseInt(a,16):parseInt(a,10):NaN};goog.string.splitLimit=function(a,d,e){a=a.split(d);for(var f=[];0<e&&a.length;)f.push(a.shift()),e--;a.length&&f.push(a.join(d));return f};var sessionPersistentStorageKey="firebaseSession",hasLocalStorage=fb.simplelogin.util.env.hasLocalStorage();fb.simplelogin.SessionStore_=function(){};fb.simplelogin.SessionStore_.prototype.set=function(a,d){if(hasLocalStorage)try{localStorage.setItem(sessionPersistentStorageKey,fb.simplelogin.util.json.stringify(a))}catch(e){}};fb.simplelogin.SessionStore_.prototype.get=function(){if(hasLocalStorage){try{var a=localStorage.getItem(sessionPersistentStorageKey);if(a)return fb.simplelogin.util.json.parse(a)}catch(d){}return null}};
-fb.simplelogin.SessionStore_.prototype.clear=function(){hasLocalStorage&&localStorage.removeItem(sessionPersistentStorageKey)};fb.simplelogin.SessionStore=new fb.simplelogin.SessionStore_;var CLIENT_VERSION="1.6.3";
+fb.simplelogin.SessionStore_.prototype.clear=function(){hasLocalStorage&&localStorage.removeItem(sessionPersistentStorageKey)};fb.simplelogin.SessionStore=new fb.simplelogin.SessionStore_;var CLIENT_VERSION="1.6.4";
 fb.simplelogin.client=function(a,d,e,f){function g(a,d,e){setTimeout(function(){a(d,e)},0)}this.mRef=a;this.mNamespace=fb.simplelogin.util.misc.parseSubdomain(a.toString());this.sessionLengthDays=null;window._FirebaseSimpleLogin=window._FirebaseSimpleLogin||{};window._FirebaseSimpleLogin.callbacks=window._FirebaseSimpleLogin.callbacks||[];window._FirebaseSimpleLogin.callbacks.push({cb:d,ctx:e});"file:"!==window.location.protocol||fb.simplelogin.util.env.isPhantomJS()||fb.simplelogin.util.env.isMobileCordovaInAppBrowser()||fb.simplelogin.util.misc.warn("FirebaseSimpleLogin(): Due to browser security restrictions, loading applications via `file://*` URLs will prevent popup-based authentication providers from working properly. When testing locally, you'll need to run a barebones webserver on your machine rather than loading your test files via `file://*`. The easiest way to run a barebones server on your local machine is to `cd` to the root directory of your code and run `python -m SimpleHTTPServer`, which will allow you to access your content via `http://127.0.0.1:8000/*`.");
 f&&fb.simplelogin.Vars.setApiHost(f);this.mLoginStateChange=function(a,d){var e=window._FirebaseSimpleLogin.callbacks||[];Array.prototype.slice.apply(arguments);for(var f=0;f<e.length;f++){var q=e[f],s=!!a||"undefined"===typeof q.user;if(!s){var m,p;q.user&&q.user.firebaseAuthToken&&(m=q.user.firebaseAuthToken);d&&d.firebaseAuthToken&&(p=d.firebaseAuthToken);s=(m||p)&&m!==p}window._FirebaseSimpleLogin.callbacks[f].user=d||null;s&&g(goog.bind(q.cb,q.ctx),a,d)}};this.resumeSession()};
 fb.simplelogin.client.prototype.setApiHost=function(a){fb.simplelogin.Vars.setApiHost(a)};goog.exportSymbol("fb.simplelogin.client.prototype.setApiHost",fb.simplelogin.client.prototype.setApiHost);
@@ -43863,7 +43875,7 @@ exports.MockFirebaseSimpleLogin = MockFirebaseSimpleLogin;
  */
 !function(a){"use strict";angular.module("firebase",[]).value("Firebase",a.Firebase).value("firebaseBatchDelay",50)}(window),function(){"use strict";angular.module("firebase").factory("$FirebaseArray",["$log","$firebaseUtils",function(a,b){function c(a,c,d){var e=this;return this._observers=[],this.$list=[],this._inst=a,this._promise=d,this._destroyFn=c,b.getPublicMethods(e,function(a,b){e.$list[b]=a.bind(e)}),this.$list}return c.prototype={$add:function(a){return this._assertNotDestroyed("$add"),this.$inst().$push(b.toJSON(a))},$save:function(a){this._assertNotDestroyed("$save");var c=this,d=c._resolveItem(a),e=c.$keyAt(d);return null!==e?c.$inst().$set(e,b.toJSON(d)).then(function(a){return c._notify("child_changed",e),a}):b.reject("Invalid record; could determine its key: "+a)},$remove:function(a){this._assertNotDestroyed("$remove");var c=this.$keyAt(a);return null!==c?this.$inst().$remove(c):b.reject("Invalid record; could not find key: "+a)},$keyAt:function(a){var b=this._resolveItem(a);return this._getKey(b)},$indexFor:function(a){var b=this;return this.$list.findIndex(function(c){return b._getKey(c)===a})},$loaded:function(a,b){var c=this._promise;return arguments.length&&(c=c.then.call(c,a,b)),c},$inst:function(){return this._inst},$watch:function(a,b){var c=this._observers;return c.push([a,b]),function(){var d=c.findIndex(function(c){return c[0]===a&&c[1]===b});d>-1&&c.splice(d,1)}},$destroy:function(b){this._isDestroyed||(this._isDestroyed=!0,this.$list.length=0,a.debug("destroy called for FirebaseArray: "+this.$inst().$ref().toString()),this._destroyFn(b))},$getRecord:function(a){var b=this.$indexFor(a);return b>-1?this.$list[b]:null},$$added:function(a,c){var d=this.$indexFor(a.name());if(-1===d){var e=a.val();angular.isObject(e)||(e={$value:e}),e.$id=a.name(),e.$priority=a.getPriority(),b.applyDefaults(e,this.$$defaults),this._process("child_added",e,c)}},$$removed:function(a){var b=this.$getRecord(a.name());angular.isObject(b)&&this._process("child_removed",b)},$$updated:function(a){var c=this.$getRecord(a.name());if(angular.isObject(c)){var d=b.updateRec(c,a);b.applyDefaults(c,this.$$defaults),d&&this._process("child_changed",c)}},$$moved:function(a,b){var c=this.$getRecord(a.name());angular.isObject(c)&&(c.$priority=a.getPriority(),this._process("child_moved",c,b))},$$error:function(b){a.error(b),this.$destroy(b)},_getKey:function(a){return angular.isObject(a)?a.$id:null},_process:function(a,b,c){var d,e=this._getKey(b),f=!1;switch(a){case"child_added":d=this.$indexFor(e);break;case"child_moved":d=this.$indexFor(e),this._spliceOut(e);break;case"child_removed":f=null!==this._spliceOut(e);break;case"child_changed":f=!0}return angular.isDefined(d)&&(f=this._addAfter(b,c)!==d),f&&this._notify(a,e,c),f},_notify:function(a,b,c){var d={event:a,key:b};angular.isDefined(c)&&(d.prevChild=c),angular.forEach(this._observers,function(a){a[0].call(a[1],d)})},_addAfter:function(a,b){var c;return null===b?c=0:(c=this.$indexFor(b)+1,0===c&&(c=this.$list.length)),this.$list.splice(c,0,a),c},_spliceOut:function(a){var b=this.$indexFor(a);return b>-1?this.$list.splice(b,1)[0]:null},_resolveItem:function(a){var b=this.$list;if(angular.isNumber(a)&&a>=0&&b.length>=a)return b[a];if(angular.isObject(a))for(var c=b.length;c--;)if(b[c]===a)return a;return null},_assertNotDestroyed:function(a){if(this._isDestroyed)throw new Error("Cannot call "+a+" method on a destroyed $FirebaseArray object")}},c.$extendFactory=function(a,d){return 1===arguments.length&&angular.isObject(a)&&(d=a,a=function(){return c.apply(this,arguments)}),b.inherit(a,c,d)},c}])}(),function(){"use strict";angular.module("firebase").factory("$FirebaseObject",["$parse","$firebaseUtils","$log","$interval",function(a,b,c,d){function e(a,c,d){this.$$conf={promise:d,inst:a,binding:new f(this),destroyFn:c,listeners:[]},Object.defineProperty(this,"$$conf",{value:this.$$conf}),this.$id=a.$ref().ref().name(),this.$priority=null,b.applyDefaults(this,this.$$defaults)}function f(a){this.subs=[],this.scope=null,this.name=null,this.rec=a}return e.prototype={$save:function(){var a=this;return a.$inst().$set(b.toJSON(a)).then(function(b){return a.$$notify(),b})},$loaded:function(a,b){var c=this.$$conf.promise;return arguments.length&&(c=c.then.call(c,a,b)),c},$inst:function(){return this.$$conf.inst},$bindTo:function(a,b){var c=this;return c.$loaded().then(function(){return c.$$conf.binding.bindTo(a,b)})},$watch:function(a,b){var c=this.$$conf.listeners;return c.push([a,b]),function(){var d=c.findIndex(function(c){return c[0]===a&&c[1]===b});d>-1&&c.splice(d,1)}},$destroy:function(a){var c=this;c.$isDestroyed||(c.$isDestroyed=!0,c.$$conf.binding.destroy(),b.each(c,function(a,b){delete c[b]}),c.$$conf.destroyFn(a))},$$updated:function(a){var c=b.updateRec(this,a);b.applyDefaults(this,this.$$defaults),c&&this.$$notify()},$$error:function(a){c.error(a),this.$destroy(a)},$$scopeUpdated:function(a){return this.$inst().$set(b.toJSON(a))},$$notify:function(){var a=this,b=this.$$conf.listeners.slice();angular.forEach(b,function(b){b[0].call(b[1],{event:"value",key:a.$id})})},forEach:function(a,c){return b.each(this,a,c)}},e.$extendFactory=function(a,c){return 1===arguments.length&&angular.isObject(a)&&(c=a,a=function(){e.apply(this,arguments)}),b.inherit(a,e,c)},f.prototype={assertNotBound:function(a){if(this.scope){var d="Cannot bind to "+a+" because this instance is already bound to "+this.name+"; one binding per instance (call unbind method or create another $firebase instance)";return c.error(d),b.reject(d)}},bindTo:function(c,e){function f(f){function g(a){var c=h(),d=b.scopeData(a);return angular.equals(c,d)&&c.$priority===a.$priority&&c.$value===a.$value}function h(){return b.scopeData(l(c))}function i(a){l.assign(c,b.scopeData(a))}function j(){var a=l(c);(a.$value!==m.$value||a.$priority!==m.$priority)&&n()}var k=!1,l=a(e),m=f.rec;f.scope=c,f.varName=e;var n=function(){var a=b.debounce(function(){m.$$scopeUpdated(h())["finally"](function(){k=!1})},50,500);g(m)||(k=!0,a())},o=function(){k||g(m)||i(m)};return function(){var a="_firebaseCounterForVar"+e;c[a]=0;var b=d(function(){c[a]++},51,0,!1);f.subs.push(c.$watch(a,j)),f.subs.push(function(){d.cancel(b),delete c[a]})}(),i(m),f.subs.push(c.$on("$destroy",f.unbind.bind(f))),f.subs.push(c.$watch(e,n,!0)),f.subs.push(m.$watch(o)),f.unbind.bind(f)}return this.assertNotBound(e)||f(this)},unbind:function(){this.scope&&(angular.forEach(this.subs,function(a){a()}),this.subs=[],this.scope=null,this.name=null)},destroy:function(){this.unbind(),this.rec=null}},e}])}(),function(){"use strict";angular.module("firebase").factory("$firebase",["$firebaseUtils","$firebaseConfig",function(a,b){function c(a,d){return this instanceof c?(this._config=b(d),this._ref=a,this._arraySync=null,this._objectSync=null,void this._assertValidConfig(a,this._config)):new c(a,d)}function d(b,c){function d(a){q.isDestroyed=!0;var c=b.$ref();c.off("child_added",k),c.off("child_moved",m),c.off("child_changed",l),c.off("child_removed",n),i=null,p(a||"destroyed")}function e(){var a=b.$ref();a.on("child_added",k,o),a.on("child_moved",m,o),a.on("child_changed",l,o),a.on("child_removed",n,o),a.once("value",function(){p(null)},p)}function f(a){h&&(a?h.reject(a):h.resolve(i),h=null)}function g(a){if(!angular.isArray(a)){var b=Object.prototype.toString.call(a);throw new Error('arrayFactory must return a valid array that passes angular.isArray and Array.isArray, but received "'+b+'"')}}var h=a.defer(),i=new c(b,d,h.promise),j=a.batch(),k=j(i.$$added,i),l=j(i.$$updated,i),m=j(i.$$moved,i),n=j(i.$$removed,i),o=j(i.$$error,i),p=j(f),q=this;q.isDestroyed=!1,q.getArray=function(){return i},g(i),e()}function e(b,c){function d(a){n.isDestroyed=!0,i.off("value",k),h=null,m(a||"destroyed")}function e(){i.on("value",k,l),i.once("value",function(){m(null)},m)}function f(a){g&&(a?g.reject(a):g.resolve(h),g=null)}var g=a.defer(),h=new c(b,d,g.promise),i=b.$ref(),j=a.batch(),k=j(h.$$updated,h),l=j(h.$$error,h),m=j(f),n=this;n.isDestroyed=!1,n.getObject=function(){return h},e()}return c.prototype={$ref:function(){return this._ref},$push:function(b){var c=a.defer(),d=this._ref.ref().push(),e=this._handle(c,d);return arguments.length>0?d.set(b,e):e(),c.promise},$set:function(b,c){var d=this._ref,e=a.defer();if(arguments.length>1?d=d.ref().child(b):c=b,angular.isFunction(d.set)||!angular.isObject(c))d.ref().set(c,this._handle(e,d));else{var f=angular.extend({},c);d.once("value",function(a){a.forEach(function(a){f.hasOwnProperty(a.name())||(f[a.name()]=null)}),d.ref().update(f,this._handle(e,d))},this)}return e.promise},$remove:function(b){var c,d=this._ref,e=this,f=a.defer();if(arguments.length>0&&(d=d.ref().child(b)),angular.isFunction(d.remove))d.remove(e._handle(f,d)),c=f.promise;else{var g=[];d.once("value",function(b){b.forEach(function(b){var c=a.defer();g.push(c),b.ref().remove(e._handle(c,b.ref()))},e)}),c=a.allPromises(g).then(function(){return d})}return c},$update:function(b,c){var d=this._ref.ref(),e=a.defer();return arguments.length>1?d=d.child(b):c=b,d.update(c,this._handle(e,d)),e.promise},$transaction:function(b,c,d){var e=this._ref.ref();angular.isFunction(b)?(d=c,c=b):e=e.child(b),d=!!d;var f=a.defer();return e.transaction(c,function(a,b,c){a?f.reject(a):f.resolve(b?c:null)},d),f.promise},$asObject:function(){return(!this._objectSync||this._objectSync.isDestroyed)&&(this._objectSync=new e(this,this._config.objectFactory)),this._objectSync.getObject()},$asArray:function(){return(!this._arraySync||this._arraySync.isDestroyed)&&(this._arraySync=new d(this,this._config.arrayFactory)),this._arraySync.getArray()},_handle:function(a){var b=Array.prototype.slice.call(arguments,1);return function(c){c?a.reject(c):a.resolve.apply(a,b)}},_assertValidConfig:function(b,c){if(a.assertValidRef(b,"Must pass a valid Firebase reference to $firebase (not a string or URL)"),!angular.isFunction(c.arrayFactory))throw new Error("config.arrayFactory must be a valid function");if(!angular.isFunction(c.objectFactory))throw new Error("config.objectFactory must be a valid function")}},c}])}(),function(){"use strict";var a;angular.module("firebase").factory("$firebaseSimpleLogin",["$q","$timeout","$rootScope",function(b,c,d){return function(e){var f=new a(b,c,d,e);return f.construct()}}]),a=function(a,b,c,d){if(this._q=a,this._timeout=b,this._rootScope=c,this._loginDeferred=null,this._getCurrentUserDeferred=[],this._currentUserData=void 0,"string"==typeof d)throw new Error("Please provide a Firebase reference instead of a URL, eg: new Firebase(url)");this._fRef=d},a.prototype={construct:function(){var a={user:null,$login:this.login.bind(this),$logout:this.logout.bind(this),$createUser:this.createUser.bind(this),$changePassword:this.changePassword.bind(this),$removeUser:this.removeUser.bind(this),$getCurrentUser:this.getCurrentUser.bind(this),$sendPasswordResetEmail:this.sendPasswordResetEmail.bind(this)};if(this._object=a,!window.FirebaseSimpleLogin){var b=new Error("FirebaseSimpleLogin is undefined. Did you forget to include firebase-simple-login.js?");throw this._rootScope.$broadcast("$firebaseSimpleLogin:error",b),b}var c=new FirebaseSimpleLogin(this._fRef,this._onLoginEvent.bind(this));return this._authClient=c,this._object},login:function(a,b){var c=this._q.defer(),d=this;return this.getCurrentUser().then(function(){d._loginDeferred=c,d._authClient.login(a,b)}),c.promise},logout:function(){this._authClient.logout(),delete this._currentUserData},createUser:function(a,b){var c=this,d=this._q.defer();return c._authClient.createUser(a,b,function(a,b){a?(c._rootScope.$broadcast("$firebaseSimpleLogin:error",a),d.reject(a)):d.resolve(b)}),d.promise},changePassword:function(a,b,c){var d=this,e=this._q.defer();return d._authClient.changePassword(a,b,c,function(a){a?(d._rootScope.$broadcast("$firebaseSimpleLogin:error",a),e.reject(a)):e.resolve()}),e.promise},getCurrentUser:function(){var a=this,b=this._q.defer();return void 0!==a._currentUserData?b.resolve(a._currentUserData):a._getCurrentUserDeferred.push(b),b.promise},removeUser:function(a,b){var c=this,d=this._q.defer();return c._authClient.removeUser(a,b,function(a){a?(c._rootScope.$broadcast("$firebaseSimpleLogin:error",a),d.reject(a)):d.resolve()}),d.promise},sendPasswordResetEmail:function(a){var b=this,c=this._q.defer();return b._authClient.sendPasswordResetEmail(a,function(a){a?(b._rootScope.$broadcast("$firebaseSimpleLogin:error",a),c.reject(a)):c.resolve()}),c.promise},_onLoginEvent:function(a,b){if(this._currentUserData!==b||null!==a){var c=this;a?(c._loginDeferred&&(c._loginDeferred.reject(a),c._loginDeferred=null),c._rootScope.$broadcast("$firebaseSimpleLogin:error",a)):(this._currentUserData=b,c._timeout(function(){for(c._object.user=b,b?c._rootScope.$broadcast("$firebaseSimpleLogin:login",b):c._rootScope.$broadcast("$firebaseSimpleLogin:logout"),c._loginDeferred&&(c._loginDeferred.resolve(b),c._loginDeferred=null);c._getCurrentUserDeferred.length>0;){var a=c._getCurrentUserDeferred.pop();a.resolve(b)}}))}}}}(),Array.prototype.indexOf||(Array.prototype.indexOf=function(a,b){if(void 0===this||null===this)throw new TypeError("'this' is null or not defined");var c=this.length>>>0;for(b=+b||0,1/0===Math.abs(b)&&(b=0),0>b&&(b+=c,0>b&&(b=0));c>b;b++)if(this[b]===a)return b;return-1}),Function.prototype.bind||(Function.prototype.bind=function(a){if("function"!=typeof this)throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");var b=Array.prototype.slice.call(arguments,1),c=this,d=function(){},e=function(){return c.apply(this instanceof d&&a?this:a,b.concat(Array.prototype.slice.call(arguments)))};return d.prototype=this.prototype,e.prototype=new d,e}),Array.prototype.findIndex||Object.defineProperty(Array.prototype,"findIndex",{enumerable:!1,configurable:!0,writable:!0,value:function(a){if(null==this)throw new TypeError("Array.prototype.find called on null or undefined");if("function"!=typeof a)throw new TypeError("predicate must be a function");for(var b,c=Object(this),d=c.length>>>0,e=arguments[1],f=0;d>f;f++)if(f in c&&(b=c[f],a.call(e,b,f,c)))return f;return-1}}),"function"!=typeof Object.create&&!function(){var a=function(){};Object.create=function(b){if(arguments.length>1)throw new Error("Second argument not supported");if(null===b)throw new Error("Cannot set a null [[Prototype]]");if("object"!=typeof b)throw new TypeError("Argument must be an object");return a.prototype=b,new a}}(),Object.keys||(Object.keys=function(){"use strict";var a=Object.prototype.hasOwnProperty,b=!{toString:null}.propertyIsEnumerable("toString"),c=["toString","toLocaleString","valueOf","hasOwnProperty","isPrototypeOf","propertyIsEnumerable","constructor"],d=c.length;return function(e){if("object"!=typeof e&&("function"!=typeof e||null===e))throw new TypeError("Object.keys called on non-object");var f,g,h=[];for(f in e)a.call(e,f)&&h.push(f);if(b)for(g=0;d>g;g++)a.call(e,c[g])&&h.push(c[g]);return h}}()),"function"!=typeof Object.getPrototypeOf&&(Object.getPrototypeOf="object"==typeof"test".__proto__?function(a){return a.__proto__}:function(a){return a.constructor.prototype}),function(){"use strict";function a(b){if(!angular.isObject(b))return b;var c=angular.isArray(b)?[]:{};return angular.forEach(b,function(b,d){("string"!=typeof d||"$"!==d.charAt(0))&&(c[d]=a(b))}),c}angular.module("firebase").factory("$firebaseConfig",["$FirebaseArray","$FirebaseObject","$injector",function(a,b,c){return function(d){var e=angular.extend({},d);return"string"==typeof e.objectFactory&&(e.objectFactory=c.get(e.objectFactory)),"string"==typeof e.arrayFactory&&(e.arrayFactory=c.get(e.arrayFactory)),angular.extend({arrayFactory:a,objectFactory:b},e)}}]).factory("$firebaseUtils",["$q","$timeout","firebaseBatchDelay",function(b,c,d){var e={batch:function(a,b){function c(a,b){if("function"!=typeof a)throw new Error("Must provide a function to be batched. Got "+a);return function(){var c=Array.prototype.slice.call(arguments,0);j.push([a,b,c]),f()}}function f(){i&&(i(),i=null),h&&Date.now()-h>b?e.compile(g):(h||(h=Date.now()),i=e.wait(g,a))}function g(){i=null,h=null;var a=j.slice(0);j=[],angular.forEach(a,function(a){a[0].apply(a[1],a[2])})}a=d,b||(b=10*a||100);var h,i,j=[];return c},debounce:function(a,b,c,d){function f(){j&&(j(),j=null),i&&Date.now()-i>d?e.compile(g):(i||(i=Date.now()),j=e.wait(g,c))}function g(){j=null,i=null,a.apply(b,k)}function h(){k=Array.prototype.slice.call(arguments,0),f()}var i,j,k;if("number"==typeof b&&(d=c,c=b,b=null),"number"!=typeof c)throw new Error("Must provide a valid integer for wait. Try 0 for a default");if("function"!=typeof a)throw new Error("Must provide a valid function to debounce");return d||(d=10*c||100),h.running=function(){return i>0},h},assertValidRef:function(a,b){if(!angular.isObject(a)||"function"!=typeof a.ref||"function"!=typeof a.ref().transaction)throw new Error(b||"Invalid Firebase reference")},inherit:function(a,b,c){var d=a.prototype;return a.prototype=Object.create(b.prototype),a.prototype.constructor=a,angular.forEach(Object.keys(d),function(b){a.prototype[b]=d[b]}),angular.isObject(c)&&angular.extend(a.prototype,c),a},getPrototypeMethods:function(a,b,c){for(var d={},e=Object.getPrototypeOf({}),f=angular.isFunction(a)&&angular.isObject(a.prototype)?a.prototype:Object.getPrototypeOf(a);f&&f!==e;){for(var g in f)f.hasOwnProperty(g)&&!d.hasOwnProperty(g)&&(d[g]=!0,b.call(c,f[g],g,f));f=Object.getPrototypeOf(f)}},getPublicMethods:function(a,b,c){e.getPrototypeMethods(a,function(a,d){"function"==typeof a&&"_"!==d.charAt(0)&&b.call(c,a,d)})},defer:function(){return b.defer()},reject:function(a){var b=e.defer();return b.reject(a),b.promise},resolve:function(){var a=e.defer();return a.resolve.apply(a,arguments),a.promise},wait:function(a,b){var d=c(a,b||0);return function(){d&&(c.cancel(d),d=null)}},compile:function(a){return c(a||function(){})},deepCopy:function(a){if(!angular.isObject(a))return a;var b=angular.isArray(a)?a.slice():angular.extend({},a);for(var c in b)b.hasOwnProperty(c)&&angular.isObject(b[c])&&(b[c]=e.deepCopy(b[c]));return b},trimKeys:function(a,b){e.each(a,function(c,d){b.hasOwnProperty(d)||delete a[d]})},extendData:function(a,b){return e.each(b,function(b,c){a[c]=e.deepCopy(b)}),a},scopeData:function(a){var b={$id:a.$id,$priority:a.$priority};return a.hasOwnProperty("$value")&&(b.$value=a.$value),e.extendData(b,a)},updateRec:function(a,b){var c=b.val(),d=angular.extend({},a);return angular.isObject(c)?delete a.$value:(a.$value=c,c={}),e.trimKeys(a,c),angular.extend(a,c),a.$priority=b.getPriority(),!angular.equals(d,a)||d.$value!==a.$value||d.$priority!==a.$priority},applyDefaults:function(a,b){return angular.isObject(b)&&angular.forEach(b,function(b,c){a.hasOwnProperty(c)||(a[c]=b)}),a},dataKeys:function(a){var b=[];return e.each(a,function(a,c){b.push(c)}),b},each:function(a,b,c){if(angular.isObject(a)){for(var d in a)if(a.hasOwnProperty(d)){var e=d.charAt(0);"_"!==e&&"$"!==e&&"."!==e&&b.call(c,a[d],d,a)}}else if(angular.isArray(a))for(var f=0,g=a.length;g>f;f++)b.call(c,a[f],f,a);return a},toJSON:function(b){var c;return angular.isObject(b)||(b={$value:b}),angular.isFunction(b.toJSON)?c=b.toJSON():(c={},e.each(b,function(b,d){c[d]=a(b)})),angular.isDefined(b.$value)&&0===Object.keys(c).length&&null!==b.$value&&(c[".value"]=b.$value),angular.isDefined(b.$priority)&&Object.keys(c).length>0&&null!==b.$priority&&(c[".priority"]=b.$priority),angular.forEach(c,function(a,b){if(b.match(/[.$\[\]#\/]/)&&".value"!==b&&".priority"!==b)throw new Error("Invalid key "+b+" (cannot contain .$[]#)");if(angular.isUndefined(a))throw new Error("Key "+b+" was undefined. Cannot pass undefined in JSON. Use null instead.")}),c},batchDelay:d,allPromises:b.all.bind(b)};return e}])}();
 /**
- * @license AngularJS v1.2.24
+ * @license AngularJS v1.2.25
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -43993,10 +44005,16 @@ function shallowClearAndCopy(src, dst) {
  *     `{function(data, headersGetter)|Array.<function(data, headersGetter)>}` –
  *     transform function or an array of such functions. The transform function takes the http
  *     request body and headers and returns its transformed (typically serialized) version.
+ *     By default, transformRequest will contain one function that checks if the request data is
+ *     an object and serializes to using `angular.toJson`. To prevent this behavior, set
+ *     `transformRequest` to an empty array: `transformRequest: []`
  *   - **`transformResponse`** –
  *     `{function(data, headersGetter)|Array.<function(data, headersGetter)>}` –
  *     transform function or an array of such functions. The transform function takes the http
  *     response body and headers and returns its transformed (typically deserialized) version.
+ *     By default, transformResponse will contain one function that checks if the response looks like
+ *     a JSON string and deserializes it using `angular.fromJson`. To prevent this behavior, set
+ *     `transformResponse` to an empty array: `transformResponse: []`
  *   - **`cache`** – `{boolean|Cache}` – If true, a default $http cache will be used to cache the
  *     GET request, otherwise if a cache instance built with
  *     {@link ng.$cacheFactory $cacheFactory}, this cache will be used for
@@ -44485,7 +44503,7 @@ angular.module('ngResource', ['ng']).
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.2.24
+ * @license AngularJS v1.2.25
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -44692,7 +44710,7 @@ angular.module('ngCookies', ['ng']).
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.2.24
+ * @license AngularJS v1.2.25
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -45340,7 +45358,7 @@ angular.module('ngSanitize').filter('linky', ['$sanitize', function($sanitize) {
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.2.24
+ * @license AngularJS v1.2.25
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -46112,7 +46130,6 @@ ngRouteModule.directive('ngView', ngViewFillContentFactory);
                   controllerAs: 'chapter'
                 });
 
-              // configure html5 to get links working on jsfiddle
               $locationProvider.html5Mode(true);
           }])
           .controller('MainCtrl', ['$route', '$routeParams', '$location',
@@ -67443,7 +67460,6 @@ define('scribe-plugin-inline-objects',[],function () {
         });
 
         scribe.el.parentNode.addEventListener('mouseleave', function (event) {
-          hideToolbar();
           $('.embed-tools', editorEl).removeClass('active');
         });
 
@@ -68190,74 +68206,6 @@ define('paste-sanitize',['scribe-common/src/element'], function (scribeElement) 
 
 });
 
-define('remove-a-styles',['scribe-common/src/element'], function (scribeElement) {
-
-  
-
-  return function () {
-    return function (scribe) {
-
-      function traverse(parentNode) {
-        var node = parentNode.firstElementChild;
-
-        while (node) {
-          if (node.nodeName === 'A' && node.hasAttribute('style')) {
-            node.removeAttribute('style');
-          }
-          else if (node.children.length > 0) {
-            traverse(node);
-          }
-          node = node.nextElementSibling;
-        }
-      }
-
-      scribe.registerHTMLFormatter('sanitize', function (html) {
-
-        var bin = document.createElement('div');
-        bin.innerHTML = html;
-
-        traverse(bin);
-        return bin.innerHTML;
-      });
-    };
-  };
-
-});
-
-define('strip-bold-in-headings',['scribe-common/src/element'], function (scribeElement) {
-
-  
-
-  return function () {
-    return function (scribe) {
-
-      function traverse(parentNode) {
-        var node = parentNode.firstElementChild;
-
-        while (node) {
-          if (node.nodeName === 'B' && (/^(H[1-6])$/).test(parentNode.nodeName)) {
-            scribeElement.unwrap(parentNode, node);
-          }
-          else if (node.children.length > 0) {
-            traverse(node);
-          }
-          node = node.nextElementSibling;
-        }
-      }
-
-      scribe.registerHTMLFormatter('sanitize', function (html) {
-
-        var bin = document.createElement('div');
-        bin.innerHTML = html;
-
-        traverse(bin);
-        return bin.innerHTML;
-      });
-    };
-  };
-
-});
-
 define('our-ensure-selectable-containers',[
     'scribe-common/src/element',
     'lodash-amd/modern/collections/contains'
@@ -68474,8 +68422,6 @@ define('onion-editor',[
   'paste-strip-nbsps',
   'paste-from-word',
   'paste-sanitize',
-  'remove-a-styles',
-  'strip-bold-in-headings',
   // scribe core
   'our-ensure-selectable-containers',
   'enforce-p-elements'
@@ -68504,8 +68450,6 @@ define('onion-editor',[
   pasteStripNbsps,
   pasteFromWord,
   pasteSanitize,
-  removeAStyles,
-  stripBoldInHeadings,
   // scribe core
   ourEnsureSelectableContainers,
   enforcePElements
@@ -68548,46 +68492,6 @@ define('onion-editor',[
       scribe.use(enforcePElements());
       scribe.use(ourEnsureSelectableContainers({skipElement: skipSanitization}));
     }
-
-    // MO' HACKZ: We don't want to kill SPANS inside our inline divs
-    var insertHTMLCommandPatch = new scribe.api.CommandPatch('insertHTML');
-    insertHTMLCommandPatch.execute = function (value) {
-      scribe.transactionManager.run(function () {
-        scribe.api.CommandPatch.prototype.execute.call(this, value);
-
-        sanitize(scribe.el);
-
-        function sanitize(parentNode) {
-          var treeWalker = document.createTreeWalker(parentNode, NodeFilter.SHOW_ELEMENT);
-          var node = treeWalker.firstChild();
-          if (!node) { return; }
-
-          do {
-            if (node.nodeName === 'SPAN' && node.className.indexOf('inline') === -1) {
-              element.unwrap(parentNode, node);
-            } else {
-              /**
-               * If the list item contains inline elements such as
-               * A, B, or I, Chrome will also append an inline style for
-               * `line-height` on those elements, so we remove it here.
-               */
-              node.style.lineHeight = null;
-
-              // There probably wasn’t a `style` attribute before, so
-              // remove it if it is now empty.
-              if (node.getAttribute('style') === '') {
-                node.removeAttribute('style');
-              }
-            }
-
-            // Sanitize children
-            sanitize(node);
-          } while ((node = treeWalker.nextSibling()));
-        }
-      }.bind(this));
-    };
-    scribe.commandPatches.insertHTML = insertHTMLCommandPatch;
-
     // ENDHACK
 
     if (options.placeholder) {
@@ -68726,8 +68630,6 @@ define('onion-editor',[
       scribe.use(scribePluginEmbed());
       scribe.use(scribePluginHr());
       scribe.use(scribePluginOnionVideo(options.video));
-      scribe.use(removeAStyles());
-      scribe.use(stripBoldInHeadings());
     }
 
     scribe.use(scribePluginSanitizer({
