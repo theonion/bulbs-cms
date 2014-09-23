@@ -88,7 +88,7 @@ angular.module('bulbsCmsApp')
           // check if this entry should be added to the versions list
           var keySplit = key.split('.'),
               isVersionKey = (keySplit.length === 3 && keySplit[0] === keyPrefixArticle
-                                && Number(keySplit[1]) === $routeParams.id);
+                                && keySplit[1] === $routeParams.id);
           if (isVersionKey) {
             versions.push(JSON.parse($window.localStorage[key]));
           }

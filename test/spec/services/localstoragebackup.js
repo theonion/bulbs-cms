@@ -10,7 +10,7 @@ describe('Service: LocalStorageBackup', function () {
   // provide mock dependencies
   beforeEach(module(function ($provide) {
     $provide.service('$routeParams', function () {
-      return {id: 2}
+      return {id: '2'}
     });
     $provide.service('moment', function () {
       return function () {
