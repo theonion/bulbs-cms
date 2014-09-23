@@ -10,7 +10,7 @@ angular.module('bulbsCmsApp')
         controller: 'TrashcontentmodalCtrl',
         scope: $scope,
         resolve: {
-          articleId: function () { return articleId; }
+          articleId: function () {}
         }
       });
     };
@@ -49,8 +49,10 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.thumbnailModal = function (article) {
+      // open thumbnail modal along with its controller
       return $modal.open({
         templateUrl: routes.PARTIALS_URL + 'modals/thumbnail-modal.html',
+        controller: 'ThumbnailModalCtrl',
         scope: $scope,
         resolve: {
           article: function () { return article; }
