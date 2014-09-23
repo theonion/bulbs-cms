@@ -87,7 +87,7 @@ angular.module('bulbsCmsApp')
        */
       $retrieveArticle: function (articleId) {
 
-        return FirebaseApi.$authorize.then(function (rootRef) {
+        return FirebaseApi.$authorize().then(function (rootRef) {
 
           var articleRef = rootRef.child('articles/' + articleId);
 
@@ -100,13 +100,13 @@ angular.module('bulbsCmsApp')
             /**
              * Get angularfire live array of article's currently active users.
              */
-            $activeUsers: $firebase(articleRef.child('users')).$asArray(),
+            $activeUsers: function () { return $firebase(articleRef.child('users')).$asArray(); },
             /**
              * Get angularfire live array of article versions. No guarantee of order.
              */
-            $versions: $firebase(articleRef.child('versions')).$asArray(),
-            $registerCurrentUserActive: function () { return registerActiveUser(this.$activeUsers); },
-            $createVersion: function (content) { return createVersion(this.$versions, content) }
+            $versions: function () { return $firebase(articleRef.child('versions')).$asArray(); },
+            $registerCurrentUserActive: function () { return registerActiveUser(this.$activeUsers()); },
+            $createVersion: function (content) { return createVersion(this.$versions(), content) }
 
           };
 

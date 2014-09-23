@@ -7,7 +7,7 @@ describe('Service: LocalStorageBackup', function () {
   var LocalStorageBackupTest,
       mockWindow;
 
-  // inject mock dependencies
+  // provide mock dependencies
   beforeEach(module(function ($provide) {
     $provide.service('$routeParams', function () {
       return {id: 2}
@@ -77,6 +77,7 @@ describe('Service: LocalStorageBackup', function () {
     });
   }));
 
+  // grab dependencies we need to be able to test
   beforeEach(inject(function (LocalStorageBackup, $window) {
 
     mockWindow = $window;

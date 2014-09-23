@@ -75,7 +75,7 @@ angular.module('bulbsCmsApp')
        * Authorization deferred promise that resolves with the root firebase reference, or rejects with an error
        *  message.
        */
-      $authorize: $authorize
+      $authorize: function () { return $authorize; }
 
     };
 

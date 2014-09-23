@@ -17,7 +17,7 @@ angular.module('bulbsCmsApp')
     // set up a promise for checking if we can authorize with firebase
     var firebaseAvailableDefer = $q.defer(),
         $firebaseAvailable = firebaseAvailableDefer.promise;
-    FirebaseApi.$authorize
+    FirebaseApi.$authorize()
       .then(function () {
 
         // we have a firebase connection, use firebase for versioning
@@ -76,7 +76,7 @@ angular.module('bulbsCmsApp')
           .then(function ($currentArticle) {
 
             // if article is dirty or there are no versions, attempt to create one using firebase
-            if (articleIsDirty || $currentArticle.$versions.length < 1) {
+            if (articleIsDirty || $currentArticle.$versions().length < 1) {
 
               // we do have firebase, so use firebase
               $currentArticle.$createVersion(articleData)
@@ -100,10 +100,10 @@ angular.module('bulbsCmsApp')
           .catch(function () {
 
             // if article is dirty or there are no versions, attempt to create one using local storage
-            if (articleIsDirty || LocalStorageBackup.getVersions().length < 1) {
+            if (articleIsDirty || LocalStorageBackup.versions().length < 1) {
 
               // create version with local storage
-              var versionData = LocalStorageBackup.createVersion(articleData);
+              var versionData = LocalStorageBackup.create(articleData);
               if (versionData !== null) {
                 // version was created, resolve create defer with version data
                 createDefer.resolve(versionData);
@@ -140,7 +140,7 @@ angular.module('bulbsCmsApp')
           .then(function ($currentArticle) {
 
             // we do have firebase, so use firebase
-            $currentArticle.$versions.$loaded(function (versions) {
+            $currentArticle.$versions().$loaded(function (versions) {
 
               allDefer.resolve(versions);
 
@@ -150,7 +150,7 @@ angular.module('bulbsCmsApp')
           .catch(function () {
 
             // we don't have firebase so use local storage
-            allDefer.resolve(LocalStorageBackup.getVersions());
+            allDefer.resolve(LocalStorageBackup.versions());
 
           });
 
