@@ -56,6 +56,7 @@ module.exports = function(config) {
       'app/mocks/app.js',
       'app/mocks/api.js',
       'app/mocks/betty.js',
+      'app/mocks/firebaseapi.js',
 
       'app/scripts/*.js',
       'app/scripts/**/*.js',

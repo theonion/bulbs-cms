@@ -3,13 +3,13 @@
 describe('Service: VersionStorageApi', function () {
 
   beforeEach(module('bulbsCmsApp'));
+  beforeEach(module('bulbsCmsApp.mockApi'));
 
   var VersionStorageApiTest,
       liveArticleMock,
       localStorageBackupMock,
       $q,
-      $rootScope,
-      hasFirebase = false;
+      $rootScope;
 
   // provide mock dependencies
   beforeEach(module(function ($provide) {
@@ -41,24 +41,6 @@ describe('Service: VersionStorageApi', function () {
         length: liveArticleMock.versions.length,
         $loaded: function (cb) {
           return cb(liveArticleMock.versions);
-        }
-      };
-    });
-    $provide.service('FirebaseApi', function ($q) {
-      return {
-        $authorize: function () {
-          // mock authorization with firebase
-          var firebaseAvailableDefer = $q.defer(),
-              $firebaseAvailable = firebaseAvailableDefer.promise;
-
-          // use toggle to determine if we want to pretend we have firebase or not
-          if (hasFirebase) {
-            firebaseAvailableDefer.resolve();
-          } else {
-            firebaseAvailableDefer.reject();
-          }
-
-          return $firebaseAvailable;
         }
       };
     });
@@ -100,8 +82,8 @@ describe('Service: VersionStorageApi', function () {
   describe('when a user has firebase', function () {
 
     // inject hasFirebase before injecting version storage API so that it resolves to the correct value on init
-    beforeEach(inject(function () {
-      hasFirebase = true;
+    beforeEach(inject(function (FirebaseApi) {
+      FirebaseApi.hasFirebase = true;
     }));
 
     beforeEach(inject(function (VersionStorageApi) {
@@ -204,8 +186,8 @@ describe('Service: VersionStorageApi', function () {
   describe('when a user is using local storage', function () {
 
     // inject hasFirebase before injecting version storage API so that it resolves to the correct value on init
-    beforeEach(inject(function () {
-      hasFirebase = false;
+    beforeEach(inject(function (FirebaseApi) {
+      FirebaseApi.hasFirebase = false;
     }));
 
     beforeEach(inject(function (VersionStorageApi) {
