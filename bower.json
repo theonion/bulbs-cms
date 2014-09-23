@@ -19,7 +19,7 @@
     "angular-bootstrap": "~0.11.0",
     "raven-js": "1.1.11",
     "moment": "~2.6.0",
-    "underscore": "1.6.0",
+    "lodash": "2.4.1",
     "jcrop": "0.9.12",
     "urlify": "theonion/urlify",
     "angular-bootstrap-datetimepicker": "~0.2.2",
