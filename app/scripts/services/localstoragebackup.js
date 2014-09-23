@@ -44,32 +44,31 @@ angular.module('bulbsCmsApp')
             console.log('Pruning old entries...');
 
             // loop through local storage keys and see if they're old
-            var keysToRemove = [];
-            _.each(_.keys($window.localStorage), function (key) {
-
-              // check if this key is older than yesterday, if so add it to list of keys to remove
-              var keySplit = key.split('.');
-              if (keySplit.length === 3 && keySplit[0] === keyPrefixArticle) {
-                var yesterday = moment().subtract({days: 1}).valueOf(),
-                    keyTime = Number(keySplit[2]);
-                if (keyTime < yesterday) {
-                  // don't keep this one, too old
-                  keysToRemove.push(key);
+            _.chain($window.localStorage)
+              // pick keys that are articles and that are older than yesterday
+              .pick(function (value, key) {
+                var keySplit = key.split('.'),
+                    pickForRemoval = false;
+                // check that this is an article in storage
+                if (keySplit.length === 3 && keySplit[0] === keyPrefixArticle) {
+                  var yesterday = moment().subtract({days: 1}).valueOf(),
+                      keyTime = Number(keySplit[2]);
+                  // if older than yesterday, pick the key for removal
+                  pickForRemoval = keyTime < yesterday;
                 }
-              }
-
-            });
-
-            // remove each identified key from local storage
-            _.each(keysToRemove, function (key) {
-              $window.localStorage.removeItem(key);
-            });
+                // return our result
+                return pickForRemoval;
+              })
+              // these keys should be removed from local storage
+              .each(function (value, key) {
+                $window.localStorage.removeItem(key);
+              });
 
             // now try to add entry again
             try {
               $window.localStorage.setItem(version.timestamp, JSON.stringify(version.content));
             } catch (error) {
-              console.log('Failed again at adding entry, no more retries: ' + error);
+              console.log('Maybe you\'ve been saving too much? Failed again at adding entry, no more retries: ' + error);
             }
 
           }
@@ -82,20 +81,20 @@ angular.module('bulbsCmsApp')
        */
       versions: function () {
 
-        var versions = [];
-        _.each(_.keys($window.localStorage), function (key) {
-
-          // check if this entry should be added to the versions list
-          var keySplit = key.split('.'),
-              isVersionKey = (keySplit.length === 3 && keySplit[0] === keyPrefixArticle
-                                && keySplit[1] === $routeParams.id);
-          if (isVersionKey) {
-            versions.push(JSON.parse($window.localStorage[key]));
-          }
-
-        });
-
-        return versions;
+        return _
+          // loop through entries of local storage
+          .chain($window.localStorage)
+            // pick only entries that are for this particular article
+            .pick(function (stored, key) {
+              var keySplit = key.split('.');
+              return keySplit.length === 3 && keySplit[0] === keyPrefixArticle && keySplit[1] === $routeParams.id;
+            })
+            // parse and map these entries into an array
+            .map(function (stored) {
+              return JSON.parse(stored);
+            })
+          // return the array of version objects
+          .value();
 
       }
 
