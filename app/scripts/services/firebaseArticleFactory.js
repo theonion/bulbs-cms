@@ -7,62 +7,94 @@ angular.module('bulbsCmsApp')
   .factory('FirebaseArticleFactory', function ($q, FirebaseApi, $firebase, $routeParams, CurrentUser) {
 
     /**
-     * Register a user as active with a particular list of active users, most likely associated with an article.
+     * Create a new article.
      *
-     * @param $activeUsers  Article's active user list.
-     * @returns   deferred promise that will resolve with the user reference as added to the active user list.
+     * @param rootRef     root reference of firebase db.
+     * @param articleId   id of article to create.
+     * @return  article object.
      */
-    var registerActiveUser = function ($activeUsers) {
+    var createArticle = function (rootRef, articleId) {
 
-      return CurrentUser.$retrieveData.then(function (user) {
+      var articleRef = rootRef.child('articles/' + articleId),
+          $activeUsers = $firebase(articleRef.child('users')).$asArray(),
+          $versions = $firebase(articleRef.child('versions')).$asArray();
 
-        var displayName = user.first_name && user.last_name
-                            ? user.first_name + ' ' + user.last_name
-                              : (user.email || user.username);
+      var registerActiveUser = function () {
 
-        return $activeUsers
-          .$add({
-            id: user.id,
-            displayName: displayName
-          })
-          .then(function (userRef) {
+        return CurrentUser.$retrieveData.then(function (user) {
 
-            // ensure user is removed on disconnect
-            userRef.onDisconnect().remove();
-            return userRef;
+          var displayName = user.first_name && user.last_name
+                              ? user.first_name + ' ' + user.last_name
+                                : (user.email || user.username);
 
-          });
+          return $activeUsers
+            .$add({
+              id: user.id,
+              displayName: displayName
+            })
+            .then(function (userRef) {
 
-      });
+              // ensure user is removed on disconnect
+              userRef.onDisconnect().remove();
+              return userRef;
 
-    };
+            });
 
-    /**
-     * Create a new version in a particular versions list, most likely assoicated with an article.
-     *
-     * @param $versions     Article's versions list.
-     * @param articleData   Content to store in the version.
-     * @returns   deferred promise that will resolve with the version reference as added to the versions list. Promise
-     *  is rejected if for some reason create did not occur (eg nothing changed since last version).
-     */
-    var createVersion = function ($versions, articleData) {
+        });
 
-      // defer for creation of version
-      var createDefer = $q.defer(),
-          $createPromise = createDefer.promise;
-
-      // make version data
-      var versionData = {
-        timestamp: moment().valueOf(),
-        content: articleData
       };
 
-      // add version to version data
-      $versions.$add(versionData)
-        .then(createDefer.resolve)
-        .catch(createDefer.reject);
+      var createVersion = function (articleData) {
 
-      return $createPromise;
+        // defer for creation of version
+        var createDefer = $q.defer(),
+            $createPromise = createDefer.promise;
+
+        // make version data
+        var versionData = {
+          timestamp: moment().valueOf(),
+          content: articleData
+        };
+
+        // add version to version data
+        $versions.$add(versionData)
+          .then(createDefer.resolve)
+          .catch(createDefer.reject);
+
+        return $createPromise;
+
+      };
+
+      return {
+
+        /**
+         * Raw firebase article reference.
+         */
+        ref: articleRef,
+        /**
+         * Get angularfire live array of article's currently active users.
+         */
+        $activeUsers: function () { return $activeUsers; },
+        /**
+         * Get angularfire live array of article versions.
+         */
+        $versions: function () { return $versions; },
+        /**
+         * Register a user as active with this article.
+         *
+         * @returns   deferred promise that will resolve with the user reference as added to the active user list.
+         */
+        $registerCurrentUserActive: registerActiveUser,
+        /**
+         * Create a new version for this article.
+         *
+         * @param articleData   Content to store in the version.
+         * @returns   deferred promise that will resolve with the version reference as added to the versions list. Promise
+         *  is rejected if for some reason create did not occur (eg nothing changed since last version).
+         */
+        $createVersion: createVersion
+
+      };
 
     };
 
@@ -89,26 +121,7 @@ angular.module('bulbsCmsApp')
 
         return FirebaseApi.$authorize().then(function (rootRef) {
 
-          var articleRef = rootRef.child('articles/' + articleId);
-
-          return {
-
-            /**
-             * Raw firebase article reference.
-             */
-            ref: articleRef,
-            /**
-             * Get angularfire live array of article's currently active users.
-             */
-            $activeUsers: function () { return $firebase(articleRef.child('users')).$asArray(); },
-            /**
-             * Get angularfire live array of article versions. No guarantee of order.
-             */
-            $versions: function () { return $firebase(articleRef.child('versions')).$asArray(); },
-            $registerCurrentUserActive: function () { return registerActiveUser(this.$activeUsers()); },
-            $createVersion: function (content) { return createVersion(this.$versions(), content) }
-
-          };
+          return createArticle(rootRef, articleId);
 
         });
 

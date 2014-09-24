@@ -31,12 +31,14 @@ angular.module('bulbsCmsApp')
         .$retrieveCurrentArticle()
           .then(function ($article) {
 
+            var $activeUsers = $article.$activeUsers();
+
             // register a watch on active users so we can update the list in real time
-            $article.$activeUsers().$watch(function () {
+            $activeUsers.$watch(function () {
 
               // unionize user data so that we don't have a bunch of the same users in the list
               $scope.activeUsers =
-                _.chain($article.$activeUsers())
+                _.chain($activeUsers)
                   // group users by their id
                   .groupBy(function (user) {
                     return user.id;
