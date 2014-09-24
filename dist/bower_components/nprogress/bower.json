@@ -1,0 +1,25 @@
+{
+  "name": "nprogress",
+  "repo": "rstacruz/nprogress",
+  "description": "slim progress bar",
+  "version": "0.1.3",
+  "keywords": [
+    "progress",
+    "bar",
+    "spinner"
+  ],
+  "license": "MIT",
+  "main": "nprogress.js",
+  "scripts": [
+    "nprogress.js"
+  ],
+  "styles": [
+    "nprogress.css"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components",
+    "package.json"
+  ]
+}
