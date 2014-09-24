@@ -4,7 +4,7 @@
  * Api for saving article versions. Will automatically detect and attempt to use firebase, otherwise local storage
  *  will be used for versions.
  *
- * This API expects all version objects to be in the following form:
+ * This API expects all version objects to be in at least the following form:
  *
  *  {
  *    timestamp: Number   - timestamp in ms for this version

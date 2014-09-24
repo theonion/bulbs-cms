@@ -17,4 +17,25 @@ angular.module('bulbsCmsApp')
     };
 
     this.getItems();
+
+    /**
+     * Create a simplified version of this user for storage.
+     */
+    this.$simplified = function () {
+
+      return this.$retrieveData.then(function () {
+
+        var displayName = user.first_name && user.last_name
+                            ? user.first_name + ' ' + user.last_name
+                              : (user.email || user.username);
+
+        return {
+          id: user.id,
+          displayName: displayName
+        }
+
+      });
+
+    }
+
   });
