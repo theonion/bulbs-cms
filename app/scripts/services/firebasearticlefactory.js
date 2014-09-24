@@ -4,7 +4,7 @@
  * Factory for getting references to articles as they are stored in firebase.
  */
 angular.module('bulbsCmsApp')
-  .value('FIREBASE_ARTICLE_MAX_VERSIONS', 5)
+  .value('FIREBASE_ARTICLE_MAX_VERSIONS', 25)
   .factory('FirebaseArticleFactory', function ($q, $firebase, $routeParams, FirebaseApi, CurrentUser,
                                                 FIREBASE_ARTICLE_MAX_VERSIONS) {
 
