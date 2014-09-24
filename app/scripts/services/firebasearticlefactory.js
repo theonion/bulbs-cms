@@ -23,19 +23,33 @@ angular.module('bulbsCmsApp')
 
       var registerActiveUser = function () {
 
-        return CurrentUser.$simplified().then(function (user) {
+        var registeredDeferred = $q.defer(),
+            registeredPromise = registeredDeferred.promise;
 
-          return $activeUsers
-            .$add(user)
-            .then(function (userRef) {
+        CurrentUser.$simplified()
+          .then(function (user) {
 
-              // ensure user is removed on disconnect
-              userRef.onDisconnect().remove();
-              return userRef;
+            $activeUsers
+              .$add(user)
+              .then(function (userRef) {
 
-            });
+                // ensure user is removed on disconnect
+                userRef.onDisconnect().remove();
 
-        });
+                // resolve registration
+                registeredDeferred.resolve(user);
+
+              })
+              .catch(function (error) {
+                registeredDeferred.reject(error);
+              });
+
+          })
+          .catch(function (error) {
+            registeredDeferred.reject(error);
+          });
+
+        return registeredPromise;
 
       };
 
