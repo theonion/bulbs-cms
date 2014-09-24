@@ -7,13 +7,20 @@
     <div class="version-browser-left">
         <div class="version-browser-header">Versions</div>
         <ul class="version-timestamp-list nav nav-pills nav-stacked">
-          <li ng-repeat="timestamp in timestamps" ng-click="setPreview(timestamp.ms)" ng-class="{active: selectedVersion.timestamp === timestamp.ms}">
+          <li ng-repeat="timestamp in timestamps" ng-click="setPreview(timestamp)" ng-class="{active: selectedVersion.timestamp === timestamp.ms}">
             <a href="">{{ timestamp.display }}</a>
           </li>
         </ul>
     </div>
     <div class="version-browser-right">
-        <div class="version-browser-header">Preview</div>
+        <div class="version-browser-header">
+            <div class="version-preview-header">Preview</div>
+            <div class="version-by">
+                <span>created</span>
+                <span ng-show="selectedVersion.user">by {{ selectedVersion.user.displayName }}</span>
+                <span>on {{selectedTimestamp.display}}</span>
+            </div>
+        </div>
         <div class="version-preview" ng-bind-html="selectedVersion.content.body">
     </div>
     </div>

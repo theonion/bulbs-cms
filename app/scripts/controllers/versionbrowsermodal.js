@@ -28,11 +28,13 @@ angular.module('bulbsCmsApp')
 
         // set initial preview to top item which should be the most recent
         $scope.selectedVersion = sortedVersions[0];
+        $scope.selectedTimestamp = $scope.timestamps[0];
 
         // set preview in modal window based on timestamp
         $scope.setPreview = function (timestamp) {
+          $scope.selectedTimestamp = timestamp;
           $scope.selectedVersion = _.find(sortedVersions, function (version) {
-            return version.timestamp === timestamp;
+            return version.timestamp === timestamp.ms;
           });
         };
 

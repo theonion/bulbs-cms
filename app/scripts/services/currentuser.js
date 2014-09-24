@@ -23,7 +23,7 @@ angular.module('bulbsCmsApp')
      */
     this.$simplified = function () {
 
-      return this.$retrieveData.then(function () {
+      return this.$retrieveData.then(function (user) {
 
         var displayName = user.first_name && user.last_name
                             ? user.first_name + ' ' + user.last_name
