@@ -2977,6 +2977,27 @@ angular.module('bulbsCmsApp')
     };
 
     this.getItems();
+
+    /**
+     * Create a simplified version of this user for storage.
+     */
+    this.$simplified = function () {
+
+      return this.$retrieveData.then(function (user) {
+
+        var displayName = user.first_name && user.last_name
+                            ? user.first_name + ' ' + user.last_name
+                              : (user.email || user.username);
+
+        return {
+          id: user.id,
+          displayName: displayName
+        }
+
+      });
+
+    }
+
   });
 
 'use strict';
@@ -3150,17 +3171,10 @@ angular.module('bulbsCmsApp')
 
       var registerActiveUser = function () {
 
-        return CurrentUser.$retrieveData.then(function (user) {
-
-          var displayName = user.first_name && user.last_name
-                              ? user.first_name + ' ' + user.last_name
-                                : (user.email || user.username);
+        return CurrentUser.$simplified().then(function (user) {
 
           return $activeUsers
-            .$add({
-              id: user.id,
-              displayName: displayName
-            })
+            .$add(user)
             .then(function (userRef) {
 
               // ensure user is removed on disconnect
@@ -3179,33 +3193,40 @@ angular.module('bulbsCmsApp')
         var createDefer = $q.defer(),
             $createPromise = createDefer.promise;
 
-        // if we will have more than the max versions allowed, delete until we're one below the max
-        var numVersions = $versions.length;
-        if (numVersions + 1 > FIREBASE_ARTICLE_MAX_VERSIONS) {
-          _.chain($versions)
-            // sort oldest to newest
-            .sortBy(function (version) {
-              return version.timestamp;
-            })
-            // remove oldest versions until we're 1 below max versions
-            .every(function (version) {
-              $versions.$remove(version);
-              numVersions--;
-              return numVersions + 1 > FIREBASE_ARTICLE_MAX_VERSIONS;
-            });
-        }
+        // get simplified version of user then use that when creating version
+        CurrentUser.$simplified().then(function (user) {
 
-        // make version data
-        var versionData = {
-          timestamp: moment().valueOf(),
-          content: articleData
-        };
+          // if we will have more than the max versions allowed, delete until we're one below the max
+          var numVersions = $versions.length;
+          if (numVersions + 1 > FIREBASE_ARTICLE_MAX_VERSIONS) {
+            _.chain($versions)
+              // sort oldest to newest
+              .sortBy(function (version) {
+                return version.timestamp;
+              })
+              // remove oldest versions until we're 1 below max versions
+              .every(function (version) {
+                $versions.$remove(version);
+                numVersions--;
+                return numVersions + 1 > FIREBASE_ARTICLE_MAX_VERSIONS;
+              });
+          }
 
-        // add version to version data
-        $versions.$add(versionData)
-          .then(createDefer.resolve)
-          .catch(createDefer.reject);
+          // make version data
+          var versionData = {
+            timestamp: moment().valueOf(),
+            user: user,
+            content: articleData
+          };
 
+          // add version to version data
+          $versions.$add(versionData)
+            .then(createDefer.resolve)
+            .catch(createDefer.reject);
+
+        });
+
+        // return promise for this create
         return $createPromise;
 
       };
@@ -3281,7 +3302,7 @@ angular.module('bulbsCmsApp')
  * Api for saving article versions. Will automatically detect and attempt to use firebase, otherwise local storage
  *  will be used for versions.
  *
- * This API expects all version objects to be in the following form:
+ * This API expects all version objects to be in at least the following form:
  *
  *  {
  *    timestamp: Number   - timestamp in ms for this version
@@ -3510,11 +3531,13 @@ angular.module('bulbsCmsApp')
 
         // set initial preview to top item which should be the most recent
         $scope.selectedVersion = sortedVersions[0];
+        $scope.selectedTimestamp = $scope.timestamps[0];
 
         // set preview in modal window based on timestamp
         $scope.setPreview = function (timestamp) {
+          $scope.selectedTimestamp = timestamp;
           $scope.selectedVersion = _.find(sortedVersions, function (version) {
-            return version.timestamp === timestamp;
+            return version.timestamp === timestamp.ms;
           });
         };
 
