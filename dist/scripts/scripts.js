@@ -423,12 +423,36 @@ angular.module('bulbsCmsApp')
 
       $scope.last_saved_article = angular.copy(data);
 
-      // get article and active users, register current user as active
       FirebaseArticleFactory
         .$retrieveCurrentArticle()
           .then(function ($article) {
 
-            var $activeUsers = $article.$activeUsers();
+            var $activeUsers = $article.$activeUsers(),
+                $versions = $article.$versions(),
+                currentUser;
+
+            $versions.$loaded(function () {
+              $versions.$watch(function (e) {
+                if (e.event === 'child_added') {
+                  // order versions newest to oldest then grab the top one which should be the new version
+                  var newVersion = _.sortBy($versions, function (version) {
+                    return -version.timestamp;
+                  })[0];
+
+                  if (currentUser && newVersion.user.id !== currentUser.id) {
+
+                    // this isn't the current user that saved, so someone else must have saved, notify this user
+                    new PNotify({
+                      title: 'Another User Saved!',
+                      text: '<b>'+ newVersion.user.displayName + '</b> has saved a version of this article! If you' +
+                        ' have unsaved changes, resolve their changes before saving your own version. If you have' +
+                        ' no unsaved changes, reload the page to see the newest version.',
+                      type: 'error'
+                    });
+                  }
+                }
+              });
+            });
 
             // register a watch on active users so we can update the list in real time
             $activeUsers.$watch(function () {
@@ -445,11 +469,16 @@ angular.module('bulbsCmsApp')
                   .map(function (group) {
                     var groupedUser = group[0];
                     groupedUser.count = group.length;
+
+                    if (currentUser && groupedUser.id === currentUser.id) {
+                      groupedUser.displayName = 'You';
+                    }
+
                     return groupedUser;
                   })
                   // sort users by their display names
                   .sortBy(function (user) {
-                    return user.displayName;
+                    return user.displayName === 'You' ? '' : user.displayName;
                   })
                   // now we have a list of unique users along with the number of sessions they have running, sorted by
                   //  their display names
@@ -458,7 +487,10 @@ angular.module('bulbsCmsApp')
             });
 
             // register current user active with this article
-            $article.$registerCurrentUserActive();
+            $article.$registerCurrentUserActive()
+              .then(function (user) {
+                currentUser = user;
+              });
 
             // who knows what kind of promises you might have in the future? so return the article object for chains
             return $article;
@@ -3171,19 +3203,33 @@ angular.module('bulbsCmsApp')
 
       var registerActiveUser = function () {
 
-        return CurrentUser.$simplified().then(function (user) {
+        var registeredDeferred = $q.defer(),
+            registeredPromise = registeredDeferred.promise;
 
-          return $activeUsers
-            .$add(user)
-            .then(function (userRef) {
+        CurrentUser.$simplified()
+          .then(function (user) {
 
-              // ensure user is removed on disconnect
-              userRef.onDisconnect().remove();
-              return userRef;
+            $activeUsers
+              .$add(user)
+              .then(function (userRef) {
 
-            });
+                // ensure user is removed on disconnect
+                userRef.onDisconnect().remove();
 
-        });
+                // resolve registration
+                registeredDeferred.resolve(user);
+
+              })
+              .catch(function (error) {
+                registeredDeferred.reject(error);
+              });
+
+          })
+          .catch(function (error) {
+            registeredDeferred.reject(error);
+          });
+
+        return registeredPromise;
 
       };
 
