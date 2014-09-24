@@ -4,7 +4,9 @@
  * Factory for getting references to articles as they are stored in firebase.
  */
 angular.module('bulbsCmsApp')
-  .factory('FirebaseArticleFactory', function ($q, FirebaseApi, $firebase, $routeParams, CurrentUser) {
+  .value('FIREBASE_ARTICLE_MAX_VERSIONS', 5)
+  .factory('FirebaseArticleFactory', function ($q, $firebase, $routeParams, FirebaseApi, CurrentUser,
+                                                FIREBASE_ARTICLE_MAX_VERSIONS) {
 
     /**
      * Create a new article.
@@ -50,6 +52,22 @@ angular.module('bulbsCmsApp')
         var createDefer = $q.defer(),
             $createPromise = createDefer.promise;
 
+        // if we will have more than the max versions allowed, delete until we're one below the max
+        var numVersions = $versions.length;
+        if (numVersions + 1 > FIREBASE_ARTICLE_MAX_VERSIONS) {
+          _.chain($versions)
+            // sort oldest to newest
+            .sortBy(function (version) {
+              return version.timestamp;
+            })
+            // remove oldest versions until we're 1 below max versions
+            .every(function (version) {
+              $versions.$remove(version);
+              numVersions--;
+              return numVersions + 1 > FIREBASE_ARTICLE_MAX_VERSIONS;
+            });
+        }
+
         // make version data
         var versionData = {
           timestamp: moment().valueOf(),
@@ -89,8 +107,8 @@ angular.module('bulbsCmsApp')
          * Create a new version for this article.
          *
          * @param articleData   Content to store in the version.
-         * @returns   deferred promise that will resolve with the version reference as added to the versions list. Promise
-         *  is rejected if for some reason create did not occur (eg nothing changed since last version).
+         * @returns   deferred promise that will resolve with the version reference as added to the versions list.
+         *  Promise is rejected if for some reason create did not occur (eg nothing changed since last version).
          */
         $createVersion: createVersion
 
