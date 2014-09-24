@@ -109,9 +109,9 @@ describe('Controller: VersionBrowserModalCtrl', function () {
     expect(scope.setPreview).not.toBeUndefined();
 
     // select the 3rd preview which will actually be the top item in the unsorted versions list
-    scope.setPreview(moment('2013-10-21T16:09').valueOf());
+    scope.setPreview({ ms: dates[0].valueOf(), display: dates[0].format(displayFormat) });
 
-    expect(scope.selectedVersion).toEqual(versions[0]);
+    expect(scope.selectedVersion).toEqual(versions[1]);
   });
   
   it('should have a function to restore the selected version that will modify the article in scope', function () {

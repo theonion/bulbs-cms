@@ -32,23 +32,57 @@ angular.module('bulbsCmsApp')
       });
 
     /**
-     * Keep only the data we want to persist for an article
+     * Recursively scrub object of functions and turn undefines into null, makes object valid for saving in firebase.
      *
-     * @param articleData   article data to persist.
+     * @param obj   object to recurse through
+     */
+    var _deepScrub = function (obj) {
+
+      var clone, transValue,
+          omit = function (value) { return _.isFunction(value);};
+
+      if (_.isUndefined(obj)) {
+        // turn undefineds into nulls, this allows deletion of property values
+        clone = null;
+      } else if (_.isPlainObject(obj)) {
+        // this is an object, use omit to recurse through its members
+        clone = {};
+        _.forOwn(obj, function (value, key) {
+          // run value through recursive omit call
+          transValue = _deepScrub(value);
+          // check if this should be omitted, if not clone it over
+          if (!omit(transValue)) {
+            clone[key] = transValue;
+          }
+        });
+      } else if (_.isArray(obj)) {
+        // this is an array, loop through items use omit to decide what to do with them
+        clone = [];
+        _.each(obj, function (value) {
+          // run value through recursive omit call
+          transValue = _deepScrub(value);
+          // check if this should be omitted, if not clone over
+          if (!omit(transValue)) {
+            clone.push(transValue);
+          }
+        });
+      } else {
+        // not a special case, just return object
+        clone = obj;
+      }
+
+      return clone;
+
+    };
+
+    /**
+     * Keep only the data we want to persist for an article. Does a deep clone to scrub sub-objects.
+     *
+     * @param articleData   data to scrub.
      */
     var scrubArticle = function (articleData) {
 
-      return _.chain(articleData)
-        // knock out any object values that are functions
-        .omit(function (value) {
-          return _.isFunction(value);
-        })
-        // make undefineds null
-        .each(function (value, key, obj) {
-          if (_.isUndefined(value)) {
-            obj[key] = null;
-          }
-        }).value();
+      return _deepScrub(articleData);
 
     };
 
