@@ -1,12 +1,15 @@
 <div class="modal-header">
   <button type="button" class="close" ng-click="$dismiss();" aria-hidden="true">&times;</button>
-  <h4 class="modal-title">Version Browser</h4></div>
+  <h4 class="modal-title">Version Browser</h4>
+</div>
 
 <div class="modal-body">
   <div ng-show="timestamps.length > 0">
       <div class="version-browser-container">
         <div class="version-browser-left">
-            <div class="version-browser-header">Versions</div>
+            <div class="version-browser-header">
+                <span class="version-browser-header-main">Versions</span>
+            </div>
             <ul class="version-timestamp-list nav nav-pills nav-stacked">
               <li ng-repeat="timestamp in timestamps" ng-click="setPreview(timestamp)" ng-class="{active: selectedVersion.timestamp === timestamp.ms}">
                 <a href="">{{ timestamp.display }}</a>
@@ -15,8 +18,8 @@
         </div>
         <div class="version-browser-right">
             <div class="version-browser-header">
-                <div class="version-preview-header">Preview</div>
-                <div class="version-by">
+                <div class="version-browser-header-main">Preview</div>
+                <div class="version-browser-header-subtext">
                     <span>created</span>
                     <span ng-show="selectedVersion.user">by {{ selectedVersion.user.displayName }}</span>
                     <span>on {{selectedTimestamp.display}}</span>
@@ -28,7 +31,7 @@
       </div>
   </div>
   <div ng-show="timestamps.length < 1">
-      No versions yet, save your article to create the first version!
+      No versions yet, save your article to create the version!
   </div>
 </div>
 
