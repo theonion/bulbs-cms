@@ -6,10 +6,10 @@
 angular.module('bulbsCmsApp')
   .value('FIREBASE_URL', 'https://luminous-fire-8340.firebaseio.com/')
   .value('FIREBASE_ROOT', 'a-site-is-not-configured')
-  .factory('FirebaseApi', function ($firebase, $q, CurrentUser, FIREBASE_URL, FIREBASE_ROOT) {
+  .factory('FirebaseApi', function (FirebaseRefFactory, $firebase, $q, CurrentUser, FIREBASE_URL, FIREBASE_ROOT) {
 
     // get root reference in firebase for this site
-    var rootRef = new Firebase(FIREBASE_URL + 'sites/' + FIREBASE_ROOT);
+    var rootRef = FirebaseRefFactory.newRef(FIREBASE_URL + 'sites/' + FIREBASE_ROOT);
 
     // set up a promise for authorization
     var authDefer = $q.defer(),
@@ -24,7 +24,7 @@ angular.module('bulbsCmsApp')
     });
 
     // log current session in when their current user data is available
-    CurrentUser.$retrieveData.then(function (user) {
+    CurrentUser.$retrieveData().then(function (user) {
 
       // attempt to login if user has firebase token, if they don't auth promise will reject with no error message
       //  which is okay if we're in an environment where firebase isn't set up yet
@@ -57,7 +57,7 @@ angular.module('bulbsCmsApp')
     });
 
     // ensure session is unauthed when they disconnect
-    var connectedRef = new Firebase(FIREBASE_URL + '.info/connected');
+    var connectedRef = FirebaseRefFactory.newRef(FIREBASE_URL + '.info/connected');
     connectedRef.on('value', function (connected) {
 
       if (!connected.val()) {
