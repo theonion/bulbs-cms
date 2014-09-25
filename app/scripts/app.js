@@ -55,6 +55,10 @@ angular.module('bulbsCmsApp', [
       templateUrl: routes.PARTIALS_URL + 'targeting-editor.html',
       controller: 'TargetingCtrl'
     })
+    .when('/cms/app/notifications/', {
+      templateUrl: routes.PARTIALS_URL + 'notifications.html',
+      controller: 'NotificationsCtrl'
+    })
     .when('/cms/app/pzones/', {
       templateUrl: routes.PARTIALS_URL + 'pzones.html',
       controller: 'PzoneCtrl'
