@@ -3431,25 +3431,30 @@ angular.module('bulbsCmsApp')
           })
           .catch(function () {
 
-            // if article is dirty or there are no versions, attempt to create one using local storage
-            if (articleIsDirty || LocalStorageBackup.versions().length < 1) {
+            LocalStorageBackup.$versions().then(function (versions) {
 
-              // create version with local storage
-              var versionData = LocalStorageBackup.create(articleData);
-              if (versionData !== null) {
-                // version was created, resolve create defer with version data
-                createDefer.resolve(versionData);
+              // if article is dirty or there are no versions, attempt to create one using local storage
+              if (articleIsDirty || versions.length < 1) {
+
+                // create version with local storage
+                LocalStorageBackup.$create(articleData)
+                  .then(function (versionData) {
+                    // version was created, resolve create defer with version data
+                    createDefer.resolve(versionData);
+                  })
+                  .catch(function (error) {
+                    // version was not created, pass on error
+                    createDefer.reject(error);
+                  });
+
               } else {
-                // version wasn't created, reject promise
+
+                // article is not dirty, reject create
                 createDefer.reject();
+
               }
 
-            } else {
-
-              // article is not dirty, reject create
-              createDefer.reject();
-
-            }
+            });
 
           });
 
@@ -3473,16 +3478,18 @@ angular.module('bulbsCmsApp')
 
             // we do have firebase, so use firebase
             $currentArticle.$versions().$loaded(function (versions) {
-
               allDefer.resolve(versions);
-
             });
 
           })
           .catch(function () {
 
             // we don't have firebase so use local storage
-            allDefer.resolve(LocalStorageBackup.versions());
+            LocalStorageBackup.$versions().then(function (versions) {
+              allDefer.resolve(versions);
+            }).catch(function (error) {
+              allDefer.reject(error);
+            });
 
           });
 
@@ -3541,38 +3548,36 @@ angular.module('bulbsCmsApp')
  * This is a modal for browsing versions stored in localStorage by the LocalStorageBackup service.
  */
 angular.module('bulbsCmsApp')
-  .controller('VersionBrowserModalCtrl', function ($scope, $modalInstance, _, moment, VersionStorageApi) {
+  .controller('VersionBrowserModalCtrl', function ($scope, $modalInstance, _, moment, VersionStorageApi,
+                                                   FirebaseApi, FIREBASE_ARTICLE_MAX_VERSIONS) {
+
+    // if we have fire base, show the maximum number of versions allowed
+    FirebaseApi.$authorize().then(function () {
+      $scope.maxVersions =  FIREBASE_ARTICLE_MAX_VERSIONS;
+    });
 
     VersionStorageApi.$all()
       .then(function (versions) {
 
-        // doubley ensure timestamp in desc since modal functionality depends on it
-        var sortedVersions = _.sortBy(versions, function (version) { return -version.timestamp; });
-
-        // create timestamp displays
-        $scope.timestamps = _.chain(sortedVersions)
-          // pull out timestamp info
-          .pluck('timestamp')
-          // transform timestamps to human readable versions
-          .map(function (timestamp) {
-            return {
-              ms: timestamp,
-              display: moment(timestamp).format('ddd, MMM Do YYYY, h:mma')
-            };
-          })
-          // resolve this chain to an array of objects for the chooser
+        // doubley ensure timestamp in desc since modal functionality depends on it, add some extra display stuff
+        $scope.versions =
+          _.chain(versions)
+            // loop through each version and add timestamp display property
+            .each(function (version) {
+              version.timestamp_display = moment(version.timestamp).format('MMM Do YYYY, h:mma')
+            })
+            // sort by timestamps desc, so most recent is on top
+            .sortBy(function (version) {
+              return -version.timestamp;
+            })
           .value();
 
         // set initial preview to top item which should be the most recent
-        $scope.selectedVersion = sortedVersions[0];
-        $scope.selectedTimestamp = $scope.timestamps[0];
+        $scope.selectedVersion = $scope.versions[0];
 
         // set preview in modal window based on timestamp
-        $scope.setPreview = function (timestamp) {
-          $scope.selectedTimestamp = timestamp;
-          $scope.selectedVersion = _.find(sortedVersions, function (version) {
-            return version.timestamp === timestamp.ms;
-          });
+        $scope.setPreview = function (version) {
+          $scope.selectedVersion = version;
         };
 
         // restore selected version preview
@@ -3602,7 +3607,7 @@ angular.module('bulbsCmsApp')
  *  yesterday.
  */
 angular.module('bulbsCmsApp')
-  .factory('LocalStorageBackup', function ($routeParams, $window, moment, _) {
+  .factory('LocalStorageBackup', function ($q, $routeParams, $window, moment, _, CurrentUser) {
 
     var keyPrefixArticle = 'article';
     var keyPrefix = keyPrefixArticle + '.' + $routeParams.id + '.';
@@ -3615,82 +3620,103 @@ angular.module('bulbsCmsApp')
        * @param articleData   Content to save to local storage.
        * @return New version data or null if no version was created.
        */
-      create: function (articleData) {
+      $create: function (articleData) {
 
-        var version = null;
+        var createDefer = $q.defer(),
+            createPromise = createDefer.promise;
 
         // check if we have local storage
         if ($window.localStorage) {
+          CurrentUser.$simplified().then(function (user) {
 
-          // create new version object
-          version = {
-            timestamp: moment().valueOf(),
-            content: articleData
-          };
+            // create new version object
+            var version = {
+              timestamp: moment().valueOf(),
+              user: user,
+              content: articleData
+            };
 
-          try {
-
-            // create new local storage item with version content
-            $window.localStorage.setItem(keyPrefix + moment().valueOf(), JSON.stringify(version));
-
-          } catch (error) {
-
-            // some error occurred, prune entries older than yesterday
-            console.log('Caught localStorage error: ' +  error);
-            console.log('Pruning old entries...');
-
-            // loop through local storage keys and see if they're old
-            _.chain($window.localStorage)
-              // pick keys that are articles and that are older than yesterday
-              .pick(function (value, key) {
-                var keySplit = key.split('.'),
-                    pickForRemoval = false;
-                // check that this is an article in storage
-                if (keySplit.length === 3 && keySplit[0] === keyPrefixArticle) {
-                  var yesterday = moment().subtract({days: 1}).valueOf(),
-                      keyTime = Number(keySplit[2]);
-                  // if older than yesterday, pick the key for removal
-                  pickForRemoval = keyTime < yesterday;
-                }
-                // return our result
-                return pickForRemoval;
-              })
-              // these keys should be removed from local storage
-              .each(function (value, key) {
-                $window.localStorage.removeItem(key);
-              });
-
-            // now try to add entry again
             try {
-              $window.localStorage.setItem(version.timestamp, JSON.stringify(version.content));
-            } catch (error) {
-              console.log('Maybe you\'ve been saving too much? Failed again at adding entry, no more retries: ' + error);
-            }
 
-          }
+              // create new local storage item with version content
+              $window.localStorage.setItem(keyPrefix + moment().valueOf(), JSON.stringify(version));
+              createDefer.resolve(version);
+
+            } catch (error) {
+
+              // some error occurred, prune entries older than yesterday
+              console.log('Caught localStorage error: ' +  error);
+              console.log('Pruning old entries...');
+
+              // loop through local storage keys and see if they're old
+              _.chain($window.localStorage)
+                // pick keys that are articles and that are older than yesterday
+                .pick(function (value, key) {
+                  var keySplit = key.split('.'),
+                    pickForRemoval = false;
+                  // check that this is an article in storage
+                  if (keySplit.length === 3 && keySplit[0] === keyPrefixArticle) {
+                    var yesterday = moment().subtract({days: 1}).valueOf(),
+                      keyTime = Number(keySplit[2]);
+                    // if older than yesterday, pick the key for removal
+                    pickForRemoval = keyTime < yesterday;
+                  }
+                  // return our result
+                  return pickForRemoval;
+                })
+                // these keys should be removed from local storage
+                .each(function (value, key) {
+                  $window.localStorage.removeItem(key);
+                });
+
+              // now try to add entry again
+              try {
+                $window.localStorage.setItem(version.timestamp, JSON.stringify(version.content));
+                createDefer.resolve(version);
+              } catch (error) {
+                // total failure, reject with an error.
+                console.log('Maybe you\'ve been saving too much? Failed again at adding entry, no more retries: ' + error);
+                createDefer.reject('Maybe you\'ve been saving too much? Failed again at adding entry, no more retries: ' + error);
+              }
+            }
+          });
+
+        } else {
+          // no local storage, why are we here?
+          createDefer.reject('You don\'t have local storage capabilities in your browser. Use a better browser.');
         }
+
+        return createPromise;
+
       },
       /**
        * Get all versions for this article in local storage. No guarantee of order.
        *
        * @return  objects returned contain a timestamp and a content variable which holds the version's content.
        */
-      versions: function () {
+      $versions: function () {
 
-        return _
-          // loop through entries of local storage
-          .chain($window.localStorage)
-            // pick only entries that are for this particular article
-            .pick(function (stored, key) {
-              var keySplit = key.split('.');
-              return keySplit.length === 3 && keySplit[0] === keyPrefixArticle && keySplit[1] === $routeParams.id;
-            })
-            // parse and map these entries into an array
-            .map(function (stored) {
-              return JSON.parse(stored);
-            })
-          // return the array of version objects
-          .value();
+        // note: using a promise here to better match the version api functionality
+        var retrieveDefer = $q.defer(),
+            retrievePromise = retrieveDefer.promise,
+            versions =
+              // loop through entries of local storage
+              _.chain($window.localStorage)
+                // pick only entries that are for this particular article
+                .pick(function (stored, key) {
+                  var keySplit = key.split('.');
+                  return keySplit.length === 3 && keySplit[0] === keyPrefixArticle && keySplit[1] === $routeParams.id;
+                })
+                // parse and map these entries into an array
+                .map(function (stored) {
+                  return JSON.parse(stored);
+                })
+              // return the array of version objects
+              .value();
+
+        retrieveDefer.resolve(versions);
+
+        return retrievePromise;
 
       }
 
