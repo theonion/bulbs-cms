@@ -5,12 +5,13 @@
 <div class="modal-body">
   <div ng-show="versions.length > 0">
     <p class="text-info">
-      <i class="glyphicon glyphicon-info-sign"></i>
-      <span ng-show="maxVersions">
+      <span ng-show="maxVersions && versions.length == maxVersions">
+        <i class="glyphicon glyphicon-info-sign"></i>
         You are storing versions remotely, a maximum of {{ maxVersions }} versions may be stored. The oldest version,
         even if saved by someone else, will be deleted when you save and the maximum is reached.
       </span>
       <span ng-show="!maxVersions">
+        <i class="glyphicon glyphicon-info-sign"></i>
         You are storing versions locally. If you run out of storage locally, all versions older than yesterday will be
         deleted.
       </span>
