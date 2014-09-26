@@ -133,25 +133,30 @@ angular.module('bulbsCmsApp')
           })
           .catch(function () {
 
-            // if article is dirty or there are no versions, attempt to create one using local storage
-            if (articleIsDirty || LocalStorageBackup.versions().length < 1) {
+            LocalStorageBackup.$versions().then(function (versions) {
 
-              // create version with local storage
-              var versionData = LocalStorageBackup.create(articleData);
-              if (versionData !== null) {
-                // version was created, resolve create defer with version data
-                createDefer.resolve(versionData);
+              // if article is dirty or there are no versions, attempt to create one using local storage
+              if (articleIsDirty || versions.length < 1) {
+
+                // create version with local storage
+                LocalStorageBackup.$create(articleData)
+                  .then(function (versionData) {
+                    // version was created, resolve create defer with version data
+                    createDefer.resolve(versionData);
+                  })
+                  .catch(function (error) {
+                    // version was not created, pass on error
+                    createDefer.reject(error);
+                  });
+
               } else {
-                // version wasn't created, reject promise
+
+                // article is not dirty, reject create
                 createDefer.reject();
+
               }
 
-            } else {
-
-              // article is not dirty, reject create
-              createDefer.reject();
-
-            }
+            });
 
           });
 
@@ -175,16 +180,18 @@ angular.module('bulbsCmsApp')
 
             // we do have firebase, so use firebase
             $currentArticle.$versions().$loaded(function (versions) {
-
               allDefer.resolve(versions);
-
             });
 
           })
           .catch(function () {
 
             // we don't have firebase so use local storage
-            allDefer.resolve(LocalStorageBackup.versions());
+            LocalStorageBackup.$versions().then(function (versions) {
+              allDefer.resolve(versions);
+            }).catch(function (error) {
+              allDefer.reject(error);
+            });
 
           });
 

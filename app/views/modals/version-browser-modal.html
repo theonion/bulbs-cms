@@ -3,31 +3,38 @@
   <h4 class="modal-title">Version Browser</h4></div>
 
 <div class="modal-body">
-  <div ng-show="timestamps.length > 0">
-      <div class="version-browser-container">
-        <div class="version-browser-left">
-            <div class="version-browser-header">Versions</div>
-            <ul class="version-timestamp-list nav nav-pills nav-stacked">
-              <li ng-repeat="timestamp in timestamps" ng-click="setPreview(timestamp)" ng-class="{active: selectedVersion.timestamp === timestamp.ms}">
-                <a href="">{{ timestamp.display }}</a>
-              </li>
-            </ul>
-        </div>
-        <div class="version-browser-right">
-            <div class="version-browser-header">
-                <div class="version-preview-header">Preview</div>
-                <div class="version-by">
-                    <span>created</span>
-                    <span ng-show="selectedVersion.user">by {{ selectedVersion.user.displayName }}</span>
-                    <span>on {{selectedTimestamp.display}}</span>
-                </div>
-            </div>
-            <div class="version-preview" ng-bind-html="selectedVersion.content.body">
-        </div>
-        </div>
+  <div ng-show="versions.length > 0">
+    <p class="text-info">
+      <i class="glyphicon glyphicon-info-sign"></i>
+      <span ng-show="maxVersions">
+        You are storing versions remotely, a maximum of {{ maxVersions }} versions may be stored. The oldest version,
+        even if saved by someone else, will be deleted when you save and the maximum is reached.
+      </span>
+      <span ng-show="!maxVersions">
+        You are storing versions locally. If you run out of storage locally, all versions older than yesterday will be
+        deleted.
+      </span>
+    </p>
+    <div class="version-browser-container">
+      <div class="version-browser-left">
+          <div class="version-browser-header">Versions</div>
+          <ul class="version-timestamp-list nav nav-pills nav-stacked">
+            <li ng-repeat="version in versions" ng-click="setPreview(version)" ng-class="{active: selectedVersion === version}">
+              <a href="">
+                <span class="version-timestamp">{{ version.timestamp_display }}</span><br>
+                <span class="version-by" ng-show="version.user.displayName">{{ version.user.displayName }}</span>
+              </a>
+            </li>
+          </ul>
       </div>
+      <div class="version-browser-right">
+          <div class="version-browser-header">Preview</div>
+          <div class="version-preview" ng-bind-html="selectedVersion.content.body">
+      </div>
+      </div>
+    </div>
   </div>
-  <div ng-show="timestamps.length < 1">
+  <div ng-show="versions.length < 1">
       No versions yet, save your article to create the first version!
   </div>
 </div>
