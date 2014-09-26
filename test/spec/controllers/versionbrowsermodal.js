@@ -3,7 +3,8 @@
 describe('Controller: VersionBrowserModalCtrl', function () {
 
   // load the controller's module
-  beforeEach(module('bulbsCmsApp'));
+  beforeEach(module('bulbsCmsApp'))
+  beforeEach(module('bulbsCmsApp.mockApi'));
   beforeEach(module('jsTemplates'));
 
   var VersionBrowserModalCtrl,
@@ -48,11 +49,10 @@ describe('Controller: VersionBrowserModalCtrl', function () {
             body: 'Just starting this thing out'
           }
         }
-      ],
-      displayFormat = 'ddd, MMM Do YYYY, h:mma';
+      ];
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($q, $controller, $rootScope, $modal, routes) {
+  beforeEach(inject(function ($q, $controller, $rootScope, $modal, routes, FirebaseApi) {
 
     rootScope = $rootScope;
     scope = rootScope.$new();
@@ -86,7 +86,9 @@ describe('Controller: VersionBrowserModalCtrl', function () {
     VersionBrowserModalCtrl = $controller('VersionBrowserModalCtrl', {
       $scope: scope,
       $modalInstance: modal,
-      VersionStorageApi: VersionStorageApiMock
+      VersionStorageApi: VersionStorageApiMock,
+      FirebaseApi: FirebaseApi,
+      FIREBASE_ARTICLE_MAX_VERSIONS: 0
     });
 
     $rootScope.$apply();
