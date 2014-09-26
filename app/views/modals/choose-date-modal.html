@@ -45,12 +45,6 @@
     on-save="unpublishCbk(promise)"
     confirm-click-with="Are you sure you want to unpublish this article?"
     config="unpubButton"></save-button>
-  <button
-    class="btn btn-danger pull-left"
-    ng-hide="article.published"
-    ng-controller="ContentworkflowCtrl"
-    role="button" ng-click="$dismiss(); trashContentModal(article.id);"
-    data-dismiss="modal">Delete</button>
 
   <button class="btn btn-link" ng-click="$dismiss();">Cancel</button>
   <save-button color-styling="btn-primary" get-promise="setPubTime()" on-save="setPubTimeCbk(promise)" config="pubButton"/>
