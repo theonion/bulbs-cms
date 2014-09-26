@@ -1,0 +1,20 @@
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation" view='nav' ></nav>
+
+<div id="content-wrapper" class="container cms-notifications">
+  <h2 class="heading">Notifications</h2>
+
+  <div class="row well well-sm">
+    <div class="add-notification clearfix">
+      <button class="btn btn-success btn-xs pull-right">
+        <i class="glyphicon glyphicon-plus"></i>
+        New Notification
+      </button>
+    </div>
+    <div class="col-md-12 panel-group">
+      <div ng-repeat="notification in notifications">
+        <cms-notification notification="notification"></cms-notification>
+      </div>
+   </div>
+  </div>
+
+</div>
