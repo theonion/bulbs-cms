@@ -9,8 +9,8 @@
         <div class="input-group">
           <input readonly class="form-control disabled uneditable-input" value="{{ tempDatetime | tzDate: 'shortDate' }}">
           <div class="input-group-btn">
-            <a class="btn-default btn" ng-click="setDateToday();">Today</a>
-            <a class="btn-default btn" ng-click="setDateTomorrow();">Tomorrow</a>
+            <a class="btn-default btn" ng-click="setDateToday()">Today</a>
+            <a class="btn-default btn" ng-click="setDateTomorrow()">Tomorrow</a>
             <a class="btn btn-default dropdown-toggle" data-toggle="dropdown">
               <i class="glyphicon glyphicon-calendar"></i>
             </a>
@@ -31,23 +31,20 @@
         </div>
         <div class="col-sm-8 col-xs-12">
           <div class="btn-group" style="margin-top: 34px;">
-            <a class="btn-default btn" ng-click="setTimeNow();">Now</a>
-            <a class="btn-default btn" ng-click="setTimeMidnight();">Midnight</a>
+            <a class="btn-default btn" ng-click="setTimeNow()">Now</a>
+            <a class="btn-default btn" ng-click="setTimeMidnight()">Midnight</a>
           </div>
         </div>
       </div>
     </div>
 </div>
 <div class="modal-footer">
-  <ng-include ng-if="customFooterTemplatePath" src="customFooterTemplatePath"></ng-include>
-  <div ng-if="!customFooterTemplatePath">
-    <button class="btn btn-success" ng-click="chooseDatetime()">
-      <i class="glyphicon glyphicon-ok"></i>
-      Done
-    </button>
-    <button class="btn btn-danger" ng-click="$dismiss();">
-      <i class="glyphicon glyphicon-remove"></i>
-      Cancel
-    </button>
-  </div>
+  <button class="btn btn-success" ng-click="chooseDatetime()">
+    <i class="glyphicon glyphicon-ok"></i>
+    Done
+  </button>
+  <button class="btn btn-danger" ng-click="$dismiss();">
+    <i class="glyphicon glyphicon-remove"></i>
+    Cancel
+  </button>
 </div>

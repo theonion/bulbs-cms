@@ -10,9 +10,9 @@ angular.module('bulbsCmsApp')
       restrict: 'A',
       scope: {
         modDatetime: '=ngModel',
-        modalTitle: '@modalTitle',
-        customFooterTemplatePath: '@customFooterTemplatePath',
-        closeCallback: '@closeCallback'
+        modalTitle: '@',
+        beforeOpenCallback: '@',
+        closeCallback: '@'
       },
       require: '^ngModel',
       link: function (scope, element) {

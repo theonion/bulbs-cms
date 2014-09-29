@@ -1,6 +1,7 @@
 <div class="cms-notification panel panel-default">
   <div class="panel-heading">
     <h4>
+      <span>{{ formatMomentDate(notification.post_date) }} - </span>
       <onion-editor
         ng-model="notification.title"
         role="singleline"
@@ -30,12 +31,18 @@
       <div class="form-inline">
         <div class="form-group">
           <label>Post on</label>
-          <i class="glyphicon glyphicon-calendar" datetime-selection-modal-opener ng-model="notification.post_date"></i>
+          <i class="glyphicon glyphicon-calendar"
+             datetime-selection-modal-opener
+             ng-model="notification.post_date"
+             modal-title="Choose Date to Post"></i>
           {{ formatMomentDate(notification.post_date, 'YYYY-MM-DD hh:mm a') }}
         </div>
         <div class="form-group">
           <label>and end notifications on</label>
-          <i class="glyphicon glyphicon-calendar" datetime-selection-modal-opener ng-model="notification.notify_end_date"></i>
+          <i class="glyphicon glyphicon-calendar"
+             datetime-selection-modal-opener
+             ng-model="notification.notify_end_date"
+             modal-title="Choose Date to End Notifications"></i>
           {{ formatMomentDate(notification.notify_end_date, 'YYYY-MM-DD hh:mm a') }}
         </div>
       </div>
