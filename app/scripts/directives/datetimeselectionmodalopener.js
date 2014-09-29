@@ -11,8 +11,8 @@ angular.module('bulbsCmsApp')
       scope: {
         modDatetime: '=ngModel',
         modalTitle: '@modalTitle',
-        customFooterTemplatePath: '@customFooterTemplatePath'
-// TODO : timezone customization here
+        customFooterTemplatePath: '@customFooterTemplatePath',
+        closeCallback: '@closeCallback'
       },
       require: '^ngModel',
       link: function (scope, element) {
@@ -26,7 +26,11 @@ angular.module('bulbsCmsApp')
             });
           modalInstance.result
             .then(function (newDate) {
-              scope.modDatetime = newDate;
+              if (scope.closeCallback) {
+                scope.closeCallback(newDate)
+              } else {
+                scope.modDatetime = newDate;
+              }
             });
         });
       }

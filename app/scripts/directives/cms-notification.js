@@ -8,11 +8,6 @@ angular.module('bulbsCmsApp')
       scope: {
         notification: '=notification'
       },
-      controller: 'CmsNotificationCtrl',
-      link: function (scope) {
-        scope.formatDate = function (date) {
-          return moment(date).format('ddd, MMM Do, YYYY');
-        };
-      }
+      controller: 'CmsNotificationCtrl'
     }
   });

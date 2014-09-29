@@ -9,12 +9,11 @@ angular.module('bulbsCmsApp')
     ContentApi.all('notifications').getList().then(function (notifications) {
 
       _.each(notifications, function (notification) {
-        notification.post_date = new Date(notification.post_date);
-        notification.notify_end_date = new Date(notification.notify_end_date);
+        notification.post_date = moment(notification.post_date);
+        notification.notify_end_date = moment(notification.notify_end_date);
       });
 
       $scope.notifications = notifications;
     });
-
 
   });
