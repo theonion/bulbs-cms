@@ -34,7 +34,7 @@ describe('Controller: PubtimemodalCtrl', function () {
   beforeEach(inject(function ($controller, $rootScope, $httpBackend, $modal, moment, routes) {
     httpBackend = $httpBackend;
 
-    var modalUrl = routes.PARTIALS_URL + 'modals/choose-date-modal.html';
+    var modalUrl = routes.PARTIALS_URL + 'modals/publish-date-modal.html';
     modal = $modal.open({
       templateUrl: modalUrl
     })
