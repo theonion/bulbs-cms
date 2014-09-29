@@ -85,7 +85,7 @@ angular.module('bulbsCmsApp.mockApi').run([
       return [200]
     });
 
-    $httpBackend.whenGET('/cms/api/v1/notifications/').respond([
+    mockApiData.notifications = [
       {
         title: 'We\'ve Made An Update!',
         description: 'There were some updates made to the site!',
@@ -93,7 +93,8 @@ angular.module('bulbsCmsApp.mockApi').run([
         post_date: '2014-09-25T16:00:00Z',
         notify_end_date: '2014-09-28T16:00:00Z'
       }
-    ]);
+    ];
+    $httpBackend.whenGET('/cms/api/v1/notifications/').respond(mockApiData.notifications);
 
     //current user
     $httpBackend.whenGET(/\/users\/me\/?/).respond({

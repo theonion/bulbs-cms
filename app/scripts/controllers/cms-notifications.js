@@ -7,7 +7,6 @@ angular.module('bulbsCmsApp')
     $window.document.title = routes.CMS_NAMESPACE + ' | Notifications';
 
     ContentApi.all('notifications').getList().then(function (notifications) {
-
       _.each(notifications, function (notification) {
         notification.post_date = moment(notification.post_date);
         notification.notify_end_date = moment(notification.notify_end_date);
@@ -15,5 +14,14 @@ angular.module('bulbsCmsApp')
 
       $scope.notifications = notifications;
     });
+
+    $scope.newNotification = function () {
+
+      $scope.notifications.unshift({
+        post_date: null,
+        notify_end_date: null
+      });
+
+    };
 
   });
