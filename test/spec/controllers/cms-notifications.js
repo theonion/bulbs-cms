@@ -6,17 +6,12 @@ describe('Controller: CmsNotificationsCtrl', function () {
   beforeEach(module('bulbsCmsApp.mockApi'));
 
   var CmsNotificationsCtrl,
-      ContentApi,
-      $rootScope,
-      $scope,
-      $httpBackend;
+      $scope;
 
-  beforeEach(inject(function (_$rootScope_, $controller, _$httpBackend_, _ContentApi_, $window, routes, mockApiData) {
+  beforeEach(inject(function ($rootScope, $controller, $httpBackend, CmsNotificationsApi, $window, routes,
+                              mockApiData) {
 
-    $rootScope = _$rootScope_;
     $scope = $rootScope.$new();
-    $httpBackend = _$httpBackend_;
-    ContentApi = _ContentApi_;
 
     $httpBackend.expectGET('/cms/api/v1/notifications/').respond(mockApiData.notifications);
 
@@ -24,7 +19,7 @@ describe('Controller: CmsNotificationsCtrl', function () {
       $window: $window,
       $scope: $scope,
       routes: routes,
-      ContentApi: ContentApi
+      CmsNotificationsApi: CmsNotificationsApi
     });
 
     $httpBackend.flush();

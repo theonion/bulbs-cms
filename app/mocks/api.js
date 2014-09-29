@@ -87,6 +87,7 @@ angular.module('bulbsCmsApp.mockApi').run([
 
     mockApiData.notifications = [
       {
+        id: 0,
         title: 'We\'ve Made An Update!',
         description: 'There were some updates made to the site!',
         body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin quis aliquet risus, eget vulputate nibh. Fusce egestas porttitor libero in faucibus. Aliquam at orci eget massa tristique condimentum vel sit amet ipsum. Nulla tincidunt arcu tortor, a pulvinar mauris convallis id. Quisque imperdiet id ex ac fringilla. Aliquam fringilla dolor nec enim iaculis iaculis sed ac lacus. Nulla id condimentum magna. Aliquam dictum justo tortor, vitae blandit odio aliquet sagittis.',
@@ -94,7 +95,11 @@ angular.module('bulbsCmsApp.mockApi').run([
         notify_end_date: '2014-09-28T16:00:00Z'
       }
     ];
-    $httpBackend.whenGET('/cms/api/v1/notifications/').respond(mockApiData.notifications);
+    $httpBackend.whenGET('/cms/api/v1/notifications/$').respond(mockApiData.notifications);
+
+    var currId = mockApiData.length;
+    $httpBackend.whenPOST('/cms/api/v1/notifications/$').respond(200, ++currId);
+    $httpBackend.whenDELETE(/\/cms\/api\/v1\/notifications\/(\d+)\/$/).respond(200);
 
     //current user
     $httpBackend.whenGET(/\/users\/me\/?/).respond({
