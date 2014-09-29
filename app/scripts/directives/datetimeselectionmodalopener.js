@@ -15,6 +15,7 @@ angular.module('bulbsCmsApp')
       require: '^ngModel',
       link: function (scope, element) {
         var modalInstance = null;
+        element.addClass('datetime-selection-modal-opener');
         element.on('click', function () {
           modalInstance = $modal
             .open({
