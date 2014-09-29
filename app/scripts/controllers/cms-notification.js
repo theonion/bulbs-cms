@@ -12,11 +12,11 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.saveNotification = function () {
-// TODO
+// TODO : with tests
     };
 
     $scope.deleteNotification = function () {
-// TODO
+// TODO : with tests
     };
 
   });
