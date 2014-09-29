@@ -9189,32 +9189,6 @@ return jQuery;
 
 }));
 
-(function() {var h=!0,i=null,m=!1,n=n||{},o=this;function q(a,c,b){a=a.split(".");b=b||o;!(a[0]in b)&&b.execScript&&b.execScript("var "+a[0]);for(var d;a.length&&(d=a.shift());)!a.length&&void 0!==c?b[d]=c:b=b[d]?b[d]:b[d]={}}q("goog.LOCALE","en");q("goog.TRUSTED_SITE",h);q("goog.ENABLE_DEBUG_LOADER",h);
-function r(a){var c=typeof a;if("object"==c)if(a){if(a instanceof Array)return"array";if(a instanceof Object)return c;var b=Object.prototype.toString.call(a);if("[object Window]"==b)return"object";if("[object Array]"==b||"number"==typeof a.length&&"undefined"!=typeof a.splice&&"undefined"!=typeof a.propertyIsEnumerable&&!a.propertyIsEnumerable("splice"))return"array";if("[object Function]"==b||"undefined"!=typeof a.call&&"undefined"!=typeof a.propertyIsEnumerable&&!a.propertyIsEnumerable("call"))return"function"}else return"null";
-else if("function"==c&&"undefined"==typeof a.call)return"object";return c}Math.random();var t={};q("goog.json.USE_NATIVE_JSON",m);var ba={}.$?o.JSON.stringify:function(a,c){var b=[];u(new aa(c),a,b);return b.join("")};function aa(a){this.i=a}
-function u(a,c,b){switch(typeof c){case "string":v(c,b);break;case "number":b.push(isFinite(c)&&!isNaN(c)?c:"null");break;case "boolean":b.push(c);break;case "undefined":b.push("null");break;case "object":if(c==i){b.push("null");break}if("array"==r(c)){var d=c.length;b.push("[");for(var e="",f=0;f<d;f++)b.push(e),e=c[f],u(a,a.i?a.i.call(c,String(f),e):e,b),e=",";b.push("]");break}b.push("{");d="";for(f in c)Object.prototype.hasOwnProperty.call(c,f)&&(e=c[f],"function"!=typeof e&&(b.push(d),v(f,b),
-b.push(":"),u(a,a.i?a.i.call(c,f,e):e,b),d=","));b.push("}");break;case "function":break;default:throw Error("Unknown type: "+typeof c);}}var x={'"':'\\"',"\\":"\\\\","/":"\\/","\b":"\\b","\f":"\\f","\n":"\\n","\r":"\\r","\t":"\\t","\x0B":"\\u000b"},ca=/\uffff/.test("\uffff")?/[\\\"\x00-\x1f\x7f-\uffff]/g:/[\\\"\x00-\x1f\x7f-\xff]/g;
-function v(a,c){c.push('"',a.replace(ca,function(a){if(a in x)return x[a];var c=a.charCodeAt(0),e="\\u";16>c?e+="000":256>c?e+="00":4096>c&&(e+="0");return x[a]=e+c.toString(16)}),'"')};function y(a){return"undefined"!==typeof JSON&&void 0!==JSON.stringify?JSON.stringify(a):ba(a)};var z=Math,A={},B=A.p={};function da(){}
-var C=B.z={extend:function(a){da.prototype=this;var c=new da;a&&c.U(a);c.q=this;return c},create:function(){var a=this.extend();a.h.apply(a,arguments);return a},h:function(){},U:function(a){for(var c in a)a.hasOwnProperty(c)&&(this[c]=a[c]);a.hasOwnProperty("toString")&&(this.toString=a.toString)},c:function(){return this.q.extend(this)}},D=B.G=C.extend({h:function(a,c){a=this.b=a||[];this.a=void 0!=c?c:4*a.length},toString:function(a){return(a||ea).stringify(this)},concat:function(a){var c=this.b,
-b=a.b,d=this.a,a=a.a;this.P();if(d%4)for(var e=0;e<a;e++)c[d+e>>>2]|=(b[e>>>2]>>>24-8*(e%4)&255)<<24-8*((d+e)%4);else if(65535<b.length)for(e=0;e<a;e+=4)c[d+e>>>2]=b[e>>>2];else c.push.apply(c,b);this.a+=a;return this},P:function(){var a=this.b,c=this.a;a[c>>>2]&=4294967295<<32-8*(c%4);a.length=z.ceil(c/4)},c:function(){var a=C.c.call(this);a.b=this.b.slice(0);return a},random:function(a){for(var c=[],b=0;b<a;b+=4)c.push(4294967296*z.random()|0);return D.create(c,a)}}),E=A.S={},ea=E.X={stringify:function(a){for(var c=
-a.b,a=a.a,b=[],d=0;d<a;d++){var e=c[d>>>2]>>>24-8*(d%4)&255;b.push((e>>>4).toString(16));b.push((e&15).toString(16))}return b.join("")},parse:function(a){for(var c=a.length,b=[],d=0;d<c;d+=2)b[d>>>3]|=parseInt(a.substr(d,2),16)<<24-4*(d%8);return D.create(b,c/2)}},fa=E.Y={stringify:function(a){for(var c=a.b,a=a.a,b=[],d=0;d<a;d++)b.push(String.fromCharCode(c[d>>>2]>>>24-8*(d%4)&255));return b.join("")},parse:function(a){for(var c=a.length,b=[],d=0;d<c;d++)b[d>>>2]|=(a.charCodeAt(d)&255)<<24-8*(d%
-4);return D.create(b,c)}},ga=E.F={stringify:function(a){try{return decodeURIComponent(escape(fa.stringify(a)))}catch(c){throw Error("Malformed UTF-8 data");}},parse:function(a){return fa.parse(unescape(encodeURIComponent(a)))}},F=B.W=C.extend({reset:function(){this.f=D.create();this.k=0},l:function(a){"string"==typeof a&&(a=ga.parse(a));this.f.concat(a);this.k+=a.a},m:function(a){var c=this.f,b=c.b,d=c.a,e=this.o,f=d/(4*e),f=a?z.ceil(f):z.max((f|0)-this.N,0),a=f*e,d=z.min(4*a,d);if(a){for(var g=0;g<
-a;g+=e)this.K(b,g);g=b.splice(0,a);c.a-=d}return D.create(g,d)},c:function(){var a=C.c.call(this);a.f=this.f.c();return a},N:0});B.B=F.extend({h:function(){this.reset()},reset:function(){F.reset.call(this);this.L()},update:function(a){this.l(a);this.m();return this},e:function(a){a&&this.l(a);this.J();return this.g},c:function(){var a=F.c.call(this);a.g=this.g.c();return a},o:16,H:function(a){return function(c,b){return a.create(b).e(c)}},I:function(a){return function(c,b){return ha.A.create(a,b).e(c)}}});
-for(var ha=A.n={},G=Math,H=A.p,ia=H.G,H=H.B,I=A.n,ja=[],ka=[],J=2,K=0;64>K;){var L;a:{for(var la=J,ma=G.sqrt(la),M=2;M<=ma;M++)if(!(la%M)){L=m;break a}L=h}L&&(8>K&&(ja[K]=4294967296*(G.pow(J,0.5)-(G.pow(J,0.5)|0))|0),ka[K]=4294967296*(G.pow(J,1/3)-(G.pow(J,1/3)|0))|0,K++);J++}
-var N=[],I=I.D=H.extend({L:function(){this.g=ia.create(ja.slice(0))},K:function(a,c){for(var b=this.g.b,d=b[0],e=b[1],f=b[2],g=b[3],j=b[4],k=b[5],w=b[6],S=b[7],l=0;64>l;l++){if(16>l)N[l]=a[c+l]|0;else{var p=N[l-15],s=N[l-2];N[l]=((p<<25|p>>>7)^(p<<14|p>>>18)^p>>>3)+N[l-7]+((s<<15|s>>>17)^(s<<13|s>>>19)^s>>>10)+N[l-16]}p=S+((j<<26|j>>>6)^(j<<21|j>>>11)^(j<<7|j>>>25))+(j&k^~j&w)+ka[l]+N[l];s=((d<<30|d>>>2)^(d<<19|d>>>13)^(d<<10|d>>>22))+(d&e^d&f^e&f);S=w;w=k;k=j;j=g+p|0;g=f;f=e;e=d;d=p+s|0}b[0]=b[0]+
-d|0;b[1]=b[1]+e|0;b[2]=b[2]+f|0;b[3]=b[3]+g|0;b[4]=b[4]+j|0;b[5]=b[5]+k|0;b[6]=b[6]+w|0;b[7]=b[7]+S|0},J:function(){var a=this.f,c=a.b,b=8*this.k,d=8*a.a;c[d>>>5]|=128<<24-d%32;c[(d+64>>>9<<4)+15]=b;a.a=4*c.length;this.m()}});A.D=H.H(I);A.C=H.I(I);var na=A.S.F;
-A.n.A=A.p.z.extend({h:function(a,c){a=this.j=a.create();"string"==typeof c&&(c=na.parse(c));var b=a.o,d=4*b;c.a>d&&(c=a.e(c));for(var e=this.O=c.c(),f=this.M=c.c(),g=e.b,j=f.b,k=0;k<b;k++)g[k]^=1549556828,j[k]^=909522486;e.a=f.a=d;this.reset()},reset:function(){var a=this.j;a.reset();a.update(this.M)},update:function(a){this.j.update(a);return this},e:function(a){var c=this.j,a=c.e(a);c.reset();return c.e(this.O.c().concat(a))}});function oa(a,c,b){var d;1>b?d="at least 1":b>c&&(d=0===c?"none":"no more than "+c);if(d)throw Error(a+" failed: Was called with "+b+(1===b?" argument.":" arguments.")+" Expects "+d+".");}function pa(a,c,b){var d="";switch(c){case 1:d=b?"first":"First";break;case 2:d=b?"second":"Second";break;case 3:d=b?"third":"Third";break;case 4:d=b?"fourth":"Fourth";break;default:t.Q.V.aa.assert(m,"errorPrefix_ called with argumentNumber > 4.  Need to update it?")}return a+" failed: "+(d+" argument ")}
-function O(a,c,b,d){if(typeof c!==b||"number"===b&&isNaN(c))throw Error('FirebaseTokenGenerator.createToken option "'+a+'" must be '+d+", instead got "+c);};Math.random();q("goog.asserts.ENABLE_ASSERTS",h);q("goog.NATIVE_ARRAY_PROTOTYPES",n.Z);q("goog.array.ASSUME_NATIVE_FUNCTIONS",m);var P={},Q,R,T,U;q("goog.userAgent.ASSUME_IE",m);q("goog.userAgent.ASSUME_GECKO",m);q("goog.userAgent.ASSUME_WEBKIT",m);q("goog.userAgent.ASSUME_MOBILE_WEBKIT",m);q("goog.userAgent.ASSUME_OPERA",m);q("goog.userAgent.ASSUME_ANY_VERSION",m);var V=P.s||P.r||P.t||P.w||P.u;function qa(){return o.navigator?o.navigator.userAgent:i}
-if(!V){U=T=R=Q=m;var W;if(!V&&(W=qa())){var ra=o.navigator;Q=0==W.lastIndexOf("Opera",0);R=!Q&&(-1!=W.indexOf("MSIE")||-1!=W.indexOf("Trident"));T=!Q&&-1!=W.indexOf("WebKit");U=!Q&&!T&&!R&&"Gecko"==ra.product}}var sa=V?P.u:Q,ta=V?P.s:R,ua=V?P.r:U,va=V?P.w||P.t:T;q("goog.userAgent.ASSUME_MAC",m);q("goog.userAgent.ASSUME_WINDOWS",m);q("goog.userAgent.ASSUME_LINUX",m);q("goog.userAgent.ASSUME_X11",m);q("goog.userAgent.ASSUME_ANDROID",m);q("goog.userAgent.ASSUME_IPHONE",m);
-q("goog.userAgent.ASSUME_IPAD",m);var X;if(sa&&o.opera){var wa=o.opera.version;"function"==typeof wa&&wa()}else ua?X=/rv\:([^\);]+)(\)|;)/:ta?X=/\b(?:MSIE|rv)[: ]([^\);]+)(\)|;)/:va&&(X=/WebKit\/(\S+)/),X&&X.exec(qa());var Y=i,Z=i;
-function xa(a){var c=r(a);if(!("array"==c||"object"==c&&"number"==typeof a.length))throw Error("encodeByteArray takes an array as a parameter");if(!Y){Y={};Z={};for(c=0;65>c;c++)Y[c]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".charAt(c),Z[c]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.".charAt(c)}for(var c=Z,b=[],d=0;d<a.length;d+=3){var e=a[d],f=d+1<a.length,g=f?a[d+1]:0,j=d+2<a.length,k=j?a[d+2]:0,w=e>>2,e=(e&3)<<4|g>>4,g=(g&15)<<2|k>>6,k=k&63;j||(k=
-64,f||(g=64));b.push(c[w],c[e],c[g],c[k])}return b.join("")};function $(a){oa("new FirebaseTokenGenerator",1,arguments.length);if("string"!=typeof a)throw Error(pa("new FirebaseTokenGenerator",1,m)+"must be a valid firebase namespace secret.");this.T=a}q("FirebaseTokenGenerator",$,void 0);
-$.prototype.R=function(a,c){oa("FirebaseTokenGenerator.createToken",2,arguments.length);if(void 0!==c&&(c===i||"object"!=typeof c))throw Error(pa("FirebaseTokenGenerator.createToken",2,h)+"must be a dictionary of token options.");var c=c||{},b;if(b=ya(a))if(!(b=ya(c))){var d;a:{b=["admin","debug","simulate"];for(d in b)if(Object.prototype.hasOwnProperty.call(c,b[d])){d=h;break a}d=m}b=!d}if(b)throw Error("FirebaseTokenGenerator.createToken: data is empty and no options are set.  This token will have no effect on Firebase.");
-b=c;d={};for(var e in b)switch(e){case "expires":case "notBefore":var f="notBefore"==e?"nbf":"exp";b[e]instanceof Date?d[f]=Math.round(b[e].getTime()/1E3):(O(e,b[e],"number","a number"),d[f]=b[e]);break;case "admin":O(e,b[e],"boolean","a boolean");d.admin=b[e];break;case "debug":O(e,b[e],"boolean","a boolean");d.debug=b[e];break;case "simulate":O(e,b[e],"boolean","a boolean");d.simulate=b[e];break;case "iat":O(e,b[e],"number","a number");d.iat=b[e];break;default:throw Error('FirebaseTokenGenerator.createToken: unrecognized "'+
-e+'" option');}d.v=0;d.d=a;d.iat||(d.iat=Math.floor((new Date).getTime()/1E3));e=za(y({typ:"JWT",alg:"HS256"}));d=za(y(d));b=A.C(e+"."+d,this.T).toString();for(var f=[],g=0;g<b.length;g+=2)f.push(parseInt(b.substr(g,2),16));b=xa(f);b=Aa(b);return e+"."+d+"."+b};$.prototype.createToken=$.prototype.R;
-function za(a){for(var c=[],b=0,d=0;d<a.length;d++){var e=a.charCodeAt(d);55296<=e&&56319>=e&&(e-=55296,d++,t.Q.V.assert(d<a.length,"Surrogate pair missing trail surrogate."),e=65536+(e<<10)+(a.charCodeAt(d)-56320));128>e?c[b++]=e:(2048>e?c[b++]=e>>6|192:(65536>e?c[b++]=e>>12|224:(c[b++]=e>>18|240,c[b++]=e>>12&63|128),c[b++]=e>>6&63|128),c[b++]=e&63|128)}a=xa(c);return Aa(a)}function Aa(a){var c=a.indexOf(".");return 0<=c?a.substring(0,c):a}
-function ya(a){if("object"!==typeof a)return m;if(a===i)return h;for(var c in a)if(Object.prototype.hasOwnProperty.call(a,c))return m;return h};})();
-
 /*!
  * Bootstrap v3.2.0 (http://getbootstrap.com)
  * Copyright 2011-2014 Twitter, Inc.
@@ -46758,7 +46732,7 @@ function ngViewFillContentFactory($compile, $controller, $route) {
  * angular-ui-bootstrap
  * http://angular-ui.github.io/bootstrap/
 
- * Version: 0.11.0 - 2014-05-01
+ * Version: 0.11.2 - 2014-09-26
  * License: MIT
  */
 angular.module("ui.bootstrap", ["ui.bootstrap.tpls", "ui.bootstrap.transition","ui.bootstrap.collapse","ui.bootstrap.accordion","ui.bootstrap.alert","ui.bootstrap.bindHtml","ui.bootstrap.buttons","ui.bootstrap.carousel","ui.bootstrap.dateparser","ui.bootstrap.position","ui.bootstrap.datepicker","ui.bootstrap.dropdown","ui.bootstrap.modal","ui.bootstrap.pagination","ui.bootstrap.tooltip","ui.bootstrap.popover","ui.bootstrap.progressbar","ui.bootstrap.rating","ui.bootstrap.tabs","ui.bootstrap.timepicker","ui.bootstrap.typeahead"]);
@@ -47503,7 +47477,7 @@ angular.module('ui.bootstrap.dateparser', [])
     }
   };
 
-  this.createParser = function(format) {
+  function createParser(format) {
     var map = [], regex = format.split('');
 
     angular.forEach(formatCodeToRegex, function(data, code) {
@@ -47528,17 +47502,17 @@ angular.module('ui.bootstrap.dateparser', [])
       regex: new RegExp('^' + regex.join('') + '$'),
       map: orderByFilter(map, 'index')
     };
-  };
+  }
 
   this.parse = function(input, format) {
-    if ( !angular.isString(input) ) {
+    if ( !angular.isString(input) || !format ) {
       return input;
     }
 
     format = $locale.DATETIME_FORMATS[format] || format;
 
     if ( !this.parsers[format] ) {
-      this.parsers[format] = this.createParser(format);
+      this.parsers[format] = createParser(format);
     }
 
     var parser = this.parsers[format],
@@ -47764,7 +47738,7 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
     self[key] = angular.isDefined($attrs[key]) ? (index < 8 ? $interpolate($attrs[key])($scope.$parent) : $scope.$parent.$eval($attrs[key])) : datepickerConfig[key];
   });
 
-  // Watchable attributes
+  // Watchable date attributes
   angular.forEach(['minDate', 'maxDate'], function( key ) {
     if ( $attrs[key] ) {
       $scope.$parent.$watch($parse($attrs[key]), function(value) {
@@ -48211,12 +48185,24 @@ function ($compile, $parse, $document, $position, dateFilter, dateParser, datepi
         });
       }
 
-      angular.forEach(['minDate', 'maxDate'], function( key ) {
+      scope.watchData = {};
+      angular.forEach(['minDate', 'maxDate', 'datepickerMode'], function( key ) {
         if ( attrs[key] ) {
-          scope.$parent.$watch($parse(attrs[key]), function(value){
-            scope[key] = value;
+          var getAttribute = $parse(attrs[key]);
+          scope.$parent.$watch(getAttribute, function(value){
+            scope.watchData[key] = value;
           });
-          datepickerEl.attr(cameltoDash(key), key);
+          datepickerEl.attr(cameltoDash(key), 'watchData.' + key);
+
+          // Propagate changes from datepicker to outside
+          if ( key === 'datepickerMode' ) {
+            var setAttribute = getAttribute.assign;
+            scope.$watch('watchData.' + key, function(value, oldvalue) {
+              if ( value !== oldvalue ) {
+                setAttribute(scope.$parent, value);
+              }
+            });
+          }
         }
       });
       if (attrs.dateDisabled) {
@@ -48327,6 +48313,9 @@ function ($compile, $parse, $document, $position, dateFilter, dateParser, datepi
       };
 
       var $popup = $compile(popupEl)(scope);
+      // Prevent jQuery cache memory leak (template is now redundant after linking)
+      popupEl.remove();
+
       if ( appendToBody ) {
         $document.find('body').append($popup);
       } else {
@@ -48388,7 +48377,8 @@ angular.module('ui.bootstrap.dropdown', [])
   };
 
   var closeDropdown = function( evt ) {
-    if (evt && evt.isDefaultPrevented()) {
+    var toggleElement = openScope.getToggleElement();
+    if ( evt && toggleElement && toggleElement[0].contains(evt.target) ) {
         return;
     }
 
@@ -48433,6 +48423,10 @@ angular.module('ui.bootstrap.dropdown', [])
   // Allow other directives to watch status
   this.isOpen = function() {
     return scope.isOpen;
+  };
+
+  scope.getToggleElement = function() {
+    return self.toggleElement;
   };
 
   scope.focusToggleElement = function() {
@@ -48576,7 +48570,8 @@ angular.module('ui.bootstrap.modal', ['ui.bootstrap.transition'])
       restrict: 'EA',
       replace: true,
       templateUrl: 'template/modal/backdrop.html',
-      link: function (scope) {
+      link: function (scope, element, attrs) {
+        scope.backdropClass = attrs.backdropClass || '';
 
         scope.animate = false;
 
@@ -48607,8 +48602,18 @@ angular.module('ui.bootstrap.modal', ['ui.bootstrap.transition'])
         $timeout(function () {
           // trigger CSS transitions
           scope.animate = true;
-          // focus a freshly-opened modal
-          element[0].focus();
+
+          /**
+           * Auto-focusing of a freshly-opened modal element causes any child elements
+           * with the autofocus attribute to loose focus. This is an issue on touch
+           * based devices which will show and then hide the onscreen keyboard.
+           * Attempts to refocus the autofocus element via JavaScript will not reopen
+           * the onscreen keyboard. Fixed by updated the focusing logic to only autofocus
+           * the modal element if the modal does not contain an autofocus element.
+           */
+          if (!element[0].querySelectorAll('[autofocus]').length) {
+            element[0].focus();
+          }
         });
 
         scope.close = function (evt) {
@@ -48622,6 +48627,17 @@ angular.module('ui.bootstrap.modal', ['ui.bootstrap.transition'])
       }
     };
   }])
+
+  .directive('modalTransclude', function () {
+    return {
+      link: function($scope, $element, $attrs, controller, $transclude) {
+        $transclude($scope.$parent, function(clone) {
+          $element.empty();
+          $element.append(clone);
+        });
+      }
+    };
+  })
 
   .factory('$modalStack', ['$transition', '$timeout', '$document', '$compile', '$rootScope', '$$stackedMap',
     function ($transition, $timeout, $document, $compile, $rootScope, $$stackedMap) {
@@ -48694,7 +48710,7 @@ angular.module('ui.bootstrap.modal', ['ui.bootstrap.transition'])
           });
         } else {
           // Ensure this call is async
-          $timeout(afterAnimating, 0);
+          $timeout(afterAnimating);
         }
 
         function afterAnimating() {
@@ -48739,7 +48755,9 @@ angular.module('ui.bootstrap.modal', ['ui.bootstrap.transition'])
         if (currBackdropIndex >= 0 && !backdropDomEl) {
           backdropScope = $rootScope.$new(true);
           backdropScope.index = currBackdropIndex;
-          backdropDomEl = $compile('<div modal-backdrop></div>')(backdropScope);
+          var angularBackgroundDomEl = angular.element('<div modal-backdrop></div>');
+          angularBackgroundDomEl.attr('backdrop-class', modal.backdropClass);
+          backdropDomEl = $compile(angularBackgroundDomEl)(backdropScope);
           body.append(backdropDomEl);
         }
 
@@ -48759,17 +48777,17 @@ angular.module('ui.bootstrap.modal', ['ui.bootstrap.transition'])
       };
 
       $modalStack.close = function (modalInstance, result) {
-        var modalWindow = openedWindows.get(modalInstance).value;
+        var modalWindow = openedWindows.get(modalInstance);
         if (modalWindow) {
-          modalWindow.deferred.resolve(result);
+          modalWindow.value.deferred.resolve(result);
           removeModalWindow(modalInstance);
         }
       };
 
       $modalStack.dismiss = function (modalInstance, reason) {
-        var modalWindow = openedWindows.get(modalInstance).value;
+        var modalWindow = openedWindows.get(modalInstance);
         if (modalWindow) {
-          modalWindow.deferred.reject(reason);
+          modalWindow.value.deferred.reject(reason);
           removeModalWindow(modalInstance);
         }
       };
@@ -48803,14 +48821,15 @@ angular.module('ui.bootstrap.modal', ['ui.bootstrap.transition'])
 
           function getTemplatePromise(options) {
             return options.template ? $q.when(options.template) :
-              $http.get(options.templateUrl, {cache: $templateCache}).then(function (result) {
-                return result.data;
+              $http.get(angular.isFunction(options.templateUrl) ? (options.templateUrl)() : options.templateUrl,
+                {cache: $templateCache}).then(function (result) {
+                  return result.data;
               });
           }
 
           function getResolvePromises(resolves) {
             var promisesArr = [];
-            angular.forEach(resolves, function (value, key) {
+            angular.forEach(resolves, function (value) {
               if (angular.isFunction(value) || angular.isArray(value)) {
                 promisesArr.push($q.when($injector.invoke(value)));
               }
@@ -48866,6 +48885,9 @@ angular.module('ui.bootstrap.modal', ['ui.bootstrap.transition'])
                 });
 
                 ctrlInstance = $controller(modalOptions.controller, ctrlLocals);
+                if (modalOptions.controllerAs) {
+                  modalScope[modalOptions.controllerAs] = ctrlInstance;
+                }
               }
 
               $modalStack.open(modalInstance, {
@@ -48874,6 +48896,7 @@ angular.module('ui.bootstrap.modal', ['ui.bootstrap.transition'])
                 content: tplAndVars[0],
                 backdrop: modalOptions.backdrop,
                 keyboard: modalOptions.keyboard,
+                backdropClass: modalOptions.backdropClass,
                 windowClass: modalOptions.windowClass,
                 windowTemplateUrl: modalOptions.windowTemplateUrl,
                 size: modalOptions.size
@@ -50184,7 +50207,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
   .factory('typeaheadParser', ['$parse', function ($parse) {
 
   //                      00000111000000000000022200000000000000003333333333333330000000000044000
-  var TYPEAHEAD_REGEXP = /^\s*(.*?)(?:\s+as\s+(.*?))?\s+for\s+(?:([\$\w][\$\w\d]*))\s+in\s+(.*)$/;
+  var TYPEAHEAD_REGEXP = /^\s*([\s\S]+?)(?:\s+as\s+([\s\S]+?))?\s+for\s+(?:([\$\w][\$\w\d]*))\s+in\s+([\s\S]+?)$/;
 
   return {
     parse:function (input) {
@@ -50350,6 +50373,18 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
       //Declare the timeout promise var outside the function scope so that stacked calls can be cancelled later 
       var timeoutPromise;
 
+      var scheduleSearchWithTimeout = function(inputValue) {
+        timeoutPromise = $timeout(function () {
+          getMatchesAsync(inputValue);
+        }, waitTime);
+      };
+
+      var cancelPreviousTimeout = function() {
+        if (timeoutPromise) {
+          $timeout.cancel(timeoutPromise);
+        }
+      };
+
       //plug into $parsers pipeline to open a typeahead on view changes initiated from DOM
       //$parsers kick-in on all the changes coming from the view as well as manually triggered by $setViewValue
       modelCtrl.$parsers.unshift(function (inputValue) {
@@ -50358,17 +50393,14 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
 
         if (inputValue && inputValue.length >= minSearch) {
           if (waitTime > 0) {
-            if (timeoutPromise) {
-              $timeout.cancel(timeoutPromise);//cancel previous timeout
-            }
-            timeoutPromise = $timeout(function () {
-              getMatchesAsync(inputValue);
-            }, waitTime);
+            cancelPreviousTimeout();
+            scheduleSearchWithTimeout(inputValue);
           } else {
             getMatchesAsync(inputValue);
           }
         } else {
           isLoadingSetter(originalScope, false);
+          cancelPreviousTimeout();
           resetMatches();
         }
 
@@ -50576,7 +50608,7 @@ angular.module("template/accordion/accordion.html", []).run(["$templateCache", f
 
 angular.module("template/alert/alert.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/alert/alert.html",
-    "<div class=\"alert\" ng-class=\"{'alert-{{type || 'warning'}}': true, 'alert-dismissable': closeable}\" role=\"alert\">\n" +
+    "<div class=\"alert\" ng-class=\"['alert-' + (type || 'warning'), closeable ? 'alert-dismissable' : null]\" role=\"alert\">\n" +
     "    <button ng-show=\"closeable\" type=\"button\" class=\"close\" ng-click=\"close()\">\n" +
     "        <span aria-hidden=\"true\">&times;</span>\n" +
     "        <span class=\"sr-only\">Close</span>\n" +
@@ -50705,7 +50737,7 @@ angular.module("template/datepicker/year.html", []).run(["$templateCache", funct
 
 angular.module("template/modal/backdrop.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/modal/backdrop.html",
-    "<div class=\"modal-backdrop fade\"\n" +
+    "<div class=\"modal-backdrop fade {{ backdropClass }}\"\n" +
     "     ng-class=\"{in: animate}\"\n" +
     "     ng-style=\"{'z-index': 1040 + (index && 1 || 0) + index*10}\"\n" +
     "></div>\n" +
@@ -50715,7 +50747,7 @@ angular.module("template/modal/backdrop.html", []).run(["$templateCache", functi
 angular.module("template/modal/window.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/modal/window.html",
     "<div tabindex=\"-1\" role=\"dialog\" class=\"modal fade\" ng-class=\"{in: animate}\" ng-style=\"{'z-index': 1050 + index*10, display: 'block'}\" ng-click=\"close($event)\">\n" +
-    "    <div class=\"modal-dialog\" ng-class=\"{'modal-sm': size == 'sm', 'modal-lg': size == 'lg'}\"><div class=\"modal-content\" ng-transclude></div></div>\n" +
+    "    <div class=\"modal-dialog\" ng-class=\"{'modal-sm': size == 'sm', 'modal-lg': size == 'lg'}\"><div class=\"modal-content\" modal-transclude></div></div>\n" +
     "</div>");
 }]);
 
@@ -50803,16 +50835,8 @@ angular.module("template/tabs/tab.html", []).run(["$templateCache", function($te
     "");
 }]);
 
-angular.module("template/tabs/tabset-titles.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("template/tabs/tabset-titles.html",
-    "<ul class=\"nav {{type && 'nav-' + type}}\" ng-class=\"{'nav-stacked': vertical}\">\n" +
-    "</ul>\n" +
-    "");
-}]);
-
 angular.module("template/tabs/tabset.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/tabs/tabset.html",
-    "\n" +
     "<div>\n" +
     "  <ul class=\"nav nav-{{type || 'tabs'}}\" ng-class=\"{'nav-stacked': vertical, 'nav-justified': justified}\" ng-transclude></ul>\n" +
     "  <div class=\"tab-content\">\n" +
@@ -50864,11 +50888,12 @@ angular.module("template/typeahead/typeahead-match.html", []).run(["$templateCac
 
 angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/typeahead/typeahead-popup.html",
-    "<ul class=\"dropdown-menu\" ng-if=\"isOpen()\" ng-style=\"{top: position.top+'px', left: position.left+'px'}\" style=\"display: block;\" role=\"listbox\" aria-hidden=\"{{!isOpen()}}\">\n" +
+    "<ul class=\"dropdown-menu\" ng-show=\"isOpen()\" ng-style=\"{top: position.top+'px', left: position.left+'px'}\" style=\"display: block;\" role=\"listbox\" aria-hidden=\"{{!isOpen()}}\">\n" +
     "    <li ng-repeat=\"match in matches track by $index\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index)\" role=\"option\" id=\"{{match.id}}\">\n" +
     "        <div typeahead-match index=\"$index\" match=\"match\" query=\"query\" template-url=\"templateUrl\"></div>\n" +
     "    </li>\n" +
-    "</ul>");
+    "</ul>\n" +
+    "");
 }]);
 
 /*! Raven.js 1.1.11 (11645a0) | github.com/getsentry/raven-js */
@@ -78674,6 +78699,32 @@ license GPL/LGPL/MPL
 		}
 	};
 }));
+
+(function() {var h=!0,i=null,m=!1,n=n||{},o=this;function q(a,c,b){a=a.split(".");b=b||o;!(a[0]in b)&&b.execScript&&b.execScript("var "+a[0]);for(var d;a.length&&(d=a.shift());)!a.length&&void 0!==c?b[d]=c:b=b[d]?b[d]:b[d]={}}q("goog.LOCALE","en");q("goog.TRUSTED_SITE",h);q("goog.ENABLE_DEBUG_LOADER",h);
+function r(a){var c=typeof a;if("object"==c)if(a){if(a instanceof Array)return"array";if(a instanceof Object)return c;var b=Object.prototype.toString.call(a);if("[object Window]"==b)return"object";if("[object Array]"==b||"number"==typeof a.length&&"undefined"!=typeof a.splice&&"undefined"!=typeof a.propertyIsEnumerable&&!a.propertyIsEnumerable("splice"))return"array";if("[object Function]"==b||"undefined"!=typeof a.call&&"undefined"!=typeof a.propertyIsEnumerable&&!a.propertyIsEnumerable("call"))return"function"}else return"null";
+else if("function"==c&&"undefined"==typeof a.call)return"object";return c}Math.random();var t={};q("goog.json.USE_NATIVE_JSON",m);var ba={}.$?o.JSON.stringify:function(a,c){var b=[];u(new aa(c),a,b);return b.join("")};function aa(a){this.i=a}
+function u(a,c,b){switch(typeof c){case "string":v(c,b);break;case "number":b.push(isFinite(c)&&!isNaN(c)?c:"null");break;case "boolean":b.push(c);break;case "undefined":b.push("null");break;case "object":if(c==i){b.push("null");break}if("array"==r(c)){var d=c.length;b.push("[");for(var e="",f=0;f<d;f++)b.push(e),e=c[f],u(a,a.i?a.i.call(c,String(f),e):e,b),e=",";b.push("]");break}b.push("{");d="";for(f in c)Object.prototype.hasOwnProperty.call(c,f)&&(e=c[f],"function"!=typeof e&&(b.push(d),v(f,b),
+b.push(":"),u(a,a.i?a.i.call(c,f,e):e,b),d=","));b.push("}");break;case "function":break;default:throw Error("Unknown type: "+typeof c);}}var x={'"':'\\"',"\\":"\\\\","/":"\\/","\b":"\\b","\f":"\\f","\n":"\\n","\r":"\\r","\t":"\\t","\x0B":"\\u000b"},ca=/\uffff/.test("\uffff")?/[\\\"\x00-\x1f\x7f-\uffff]/g:/[\\\"\x00-\x1f\x7f-\xff]/g;
+function v(a,c){c.push('"',a.replace(ca,function(a){if(a in x)return x[a];var c=a.charCodeAt(0),e="\\u";16>c?e+="000":256>c?e+="00":4096>c&&(e+="0");return x[a]=e+c.toString(16)}),'"')};function y(a){return"undefined"!==typeof JSON&&void 0!==JSON.stringify?JSON.stringify(a):ba(a)};var z=Math,A={},B=A.p={};function da(){}
+var C=B.z={extend:function(a){da.prototype=this;var c=new da;a&&c.U(a);c.q=this;return c},create:function(){var a=this.extend();a.h.apply(a,arguments);return a},h:function(){},U:function(a){for(var c in a)a.hasOwnProperty(c)&&(this[c]=a[c]);a.hasOwnProperty("toString")&&(this.toString=a.toString)},c:function(){return this.q.extend(this)}},D=B.G=C.extend({h:function(a,c){a=this.b=a||[];this.a=void 0!=c?c:4*a.length},toString:function(a){return(a||ea).stringify(this)},concat:function(a){var c=this.b,
+b=a.b,d=this.a,a=a.a;this.P();if(d%4)for(var e=0;e<a;e++)c[d+e>>>2]|=(b[e>>>2]>>>24-8*(e%4)&255)<<24-8*((d+e)%4);else if(65535<b.length)for(e=0;e<a;e+=4)c[d+e>>>2]=b[e>>>2];else c.push.apply(c,b);this.a+=a;return this},P:function(){var a=this.b,c=this.a;a[c>>>2]&=4294967295<<32-8*(c%4);a.length=z.ceil(c/4)},c:function(){var a=C.c.call(this);a.b=this.b.slice(0);return a},random:function(a){for(var c=[],b=0;b<a;b+=4)c.push(4294967296*z.random()|0);return D.create(c,a)}}),E=A.S={},ea=E.X={stringify:function(a){for(var c=
+a.b,a=a.a,b=[],d=0;d<a;d++){var e=c[d>>>2]>>>24-8*(d%4)&255;b.push((e>>>4).toString(16));b.push((e&15).toString(16))}return b.join("")},parse:function(a){for(var c=a.length,b=[],d=0;d<c;d+=2)b[d>>>3]|=parseInt(a.substr(d,2),16)<<24-4*(d%8);return D.create(b,c/2)}},fa=E.Y={stringify:function(a){for(var c=a.b,a=a.a,b=[],d=0;d<a;d++)b.push(String.fromCharCode(c[d>>>2]>>>24-8*(d%4)&255));return b.join("")},parse:function(a){for(var c=a.length,b=[],d=0;d<c;d++)b[d>>>2]|=(a.charCodeAt(d)&255)<<24-8*(d%
+4);return D.create(b,c)}},ga=E.F={stringify:function(a){try{return decodeURIComponent(escape(fa.stringify(a)))}catch(c){throw Error("Malformed UTF-8 data");}},parse:function(a){return fa.parse(unescape(encodeURIComponent(a)))}},F=B.W=C.extend({reset:function(){this.f=D.create();this.k=0},l:function(a){"string"==typeof a&&(a=ga.parse(a));this.f.concat(a);this.k+=a.a},m:function(a){var c=this.f,b=c.b,d=c.a,e=this.o,f=d/(4*e),f=a?z.ceil(f):z.max((f|0)-this.N,0),a=f*e,d=z.min(4*a,d);if(a){for(var g=0;g<
+a;g+=e)this.K(b,g);g=b.splice(0,a);c.a-=d}return D.create(g,d)},c:function(){var a=C.c.call(this);a.f=this.f.c();return a},N:0});B.B=F.extend({h:function(){this.reset()},reset:function(){F.reset.call(this);this.L()},update:function(a){this.l(a);this.m();return this},e:function(a){a&&this.l(a);this.J();return this.g},c:function(){var a=F.c.call(this);a.g=this.g.c();return a},o:16,H:function(a){return function(c,b){return a.create(b).e(c)}},I:function(a){return function(c,b){return ha.A.create(a,b).e(c)}}});
+for(var ha=A.n={},G=Math,H=A.p,ia=H.G,H=H.B,I=A.n,ja=[],ka=[],J=2,K=0;64>K;){var L;a:{for(var la=J,ma=G.sqrt(la),M=2;M<=ma;M++)if(!(la%M)){L=m;break a}L=h}L&&(8>K&&(ja[K]=4294967296*(G.pow(J,0.5)-(G.pow(J,0.5)|0))|0),ka[K]=4294967296*(G.pow(J,1/3)-(G.pow(J,1/3)|0))|0,K++);J++}
+var N=[],I=I.D=H.extend({L:function(){this.g=ia.create(ja.slice(0))},K:function(a,c){for(var b=this.g.b,d=b[0],e=b[1],f=b[2],g=b[3],j=b[4],k=b[5],w=b[6],S=b[7],l=0;64>l;l++){if(16>l)N[l]=a[c+l]|0;else{var p=N[l-15],s=N[l-2];N[l]=((p<<25|p>>>7)^(p<<14|p>>>18)^p>>>3)+N[l-7]+((s<<15|s>>>17)^(s<<13|s>>>19)^s>>>10)+N[l-16]}p=S+((j<<26|j>>>6)^(j<<21|j>>>11)^(j<<7|j>>>25))+(j&k^~j&w)+ka[l]+N[l];s=((d<<30|d>>>2)^(d<<19|d>>>13)^(d<<10|d>>>22))+(d&e^d&f^e&f);S=w;w=k;k=j;j=g+p|0;g=f;f=e;e=d;d=p+s|0}b[0]=b[0]+
+d|0;b[1]=b[1]+e|0;b[2]=b[2]+f|0;b[3]=b[3]+g|0;b[4]=b[4]+j|0;b[5]=b[5]+k|0;b[6]=b[6]+w|0;b[7]=b[7]+S|0},J:function(){var a=this.f,c=a.b,b=8*this.k,d=8*a.a;c[d>>>5]|=128<<24-d%32;c[(d+64>>>9<<4)+15]=b;a.a=4*c.length;this.m()}});A.D=H.H(I);A.C=H.I(I);var na=A.S.F;
+A.n.A=A.p.z.extend({h:function(a,c){a=this.j=a.create();"string"==typeof c&&(c=na.parse(c));var b=a.o,d=4*b;c.a>d&&(c=a.e(c));for(var e=this.O=c.c(),f=this.M=c.c(),g=e.b,j=f.b,k=0;k<b;k++)g[k]^=1549556828,j[k]^=909522486;e.a=f.a=d;this.reset()},reset:function(){var a=this.j;a.reset();a.update(this.M)},update:function(a){this.j.update(a);return this},e:function(a){var c=this.j,a=c.e(a);c.reset();return c.e(this.O.c().concat(a))}});function oa(a,c,b){var d;1>b?d="at least 1":b>c&&(d=0===c?"none":"no more than "+c);if(d)throw Error(a+" failed: Was called with "+b+(1===b?" argument.":" arguments.")+" Expects "+d+".");}function pa(a,c,b){var d="";switch(c){case 1:d=b?"first":"First";break;case 2:d=b?"second":"Second";break;case 3:d=b?"third":"Third";break;case 4:d=b?"fourth":"Fourth";break;default:t.Q.V.aa.assert(m,"errorPrefix_ called with argumentNumber > 4.  Need to update it?")}return a+" failed: "+(d+" argument ")}
+function O(a,c,b,d){if(typeof c!==b||"number"===b&&isNaN(c))throw Error('FirebaseTokenGenerator.createToken option "'+a+'" must be '+d+", instead got "+c);};Math.random();q("goog.asserts.ENABLE_ASSERTS",h);q("goog.NATIVE_ARRAY_PROTOTYPES",n.Z);q("goog.array.ASSUME_NATIVE_FUNCTIONS",m);var P={},Q,R,T,U;q("goog.userAgent.ASSUME_IE",m);q("goog.userAgent.ASSUME_GECKO",m);q("goog.userAgent.ASSUME_WEBKIT",m);q("goog.userAgent.ASSUME_MOBILE_WEBKIT",m);q("goog.userAgent.ASSUME_OPERA",m);q("goog.userAgent.ASSUME_ANY_VERSION",m);var V=P.s||P.r||P.t||P.w||P.u;function qa(){return o.navigator?o.navigator.userAgent:i}
+if(!V){U=T=R=Q=m;var W;if(!V&&(W=qa())){var ra=o.navigator;Q=0==W.lastIndexOf("Opera",0);R=!Q&&(-1!=W.indexOf("MSIE")||-1!=W.indexOf("Trident"));T=!Q&&-1!=W.indexOf("WebKit");U=!Q&&!T&&!R&&"Gecko"==ra.product}}var sa=V?P.u:Q,ta=V?P.s:R,ua=V?P.r:U,va=V?P.w||P.t:T;q("goog.userAgent.ASSUME_MAC",m);q("goog.userAgent.ASSUME_WINDOWS",m);q("goog.userAgent.ASSUME_LINUX",m);q("goog.userAgent.ASSUME_X11",m);q("goog.userAgent.ASSUME_ANDROID",m);q("goog.userAgent.ASSUME_IPHONE",m);
+q("goog.userAgent.ASSUME_IPAD",m);var X;if(sa&&o.opera){var wa=o.opera.version;"function"==typeof wa&&wa()}else ua?X=/rv\:([^\);]+)(\)|;)/:ta?X=/\b(?:MSIE|rv)[: ]([^\);]+)(\)|;)/:va&&(X=/WebKit\/(\S+)/),X&&X.exec(qa());var Y=i,Z=i;
+function xa(a){var c=r(a);if(!("array"==c||"object"==c&&"number"==typeof a.length))throw Error("encodeByteArray takes an array as a parameter");if(!Y){Y={};Z={};for(c=0;65>c;c++)Y[c]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".charAt(c),Z[c]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.".charAt(c)}for(var c=Z,b=[],d=0;d<a.length;d+=3){var e=a[d],f=d+1<a.length,g=f?a[d+1]:0,j=d+2<a.length,k=j?a[d+2]:0,w=e>>2,e=(e&3)<<4|g>>4,g=(g&15)<<2|k>>6,k=k&63;j||(k=
+64,f||(g=64));b.push(c[w],c[e],c[g],c[k])}return b.join("")};function $(a){oa("new FirebaseTokenGenerator",1,arguments.length);if("string"!=typeof a)throw Error(pa("new FirebaseTokenGenerator",1,m)+"must be a valid firebase namespace secret.");this.T=a}q("FirebaseTokenGenerator",$,void 0);
+$.prototype.R=function(a,c){oa("FirebaseTokenGenerator.createToken",2,arguments.length);if(void 0!==c&&(c===i||"object"!=typeof c))throw Error(pa("FirebaseTokenGenerator.createToken",2,h)+"must be a dictionary of token options.");var c=c||{},b;if(b=ya(a))if(!(b=ya(c))){var d;a:{b=["admin","debug","simulate"];for(d in b)if(Object.prototype.hasOwnProperty.call(c,b[d])){d=h;break a}d=m}b=!d}if(b)throw Error("FirebaseTokenGenerator.createToken: data is empty and no options are set.  This token will have no effect on Firebase.");
+b=c;d={};for(var e in b)switch(e){case "expires":case "notBefore":var f="notBefore"==e?"nbf":"exp";b[e]instanceof Date?d[f]=Math.round(b[e].getTime()/1E3):(O(e,b[e],"number","a number"),d[f]=b[e]);break;case "admin":O(e,b[e],"boolean","a boolean");d.admin=b[e];break;case "debug":O(e,b[e],"boolean","a boolean");d.debug=b[e];break;case "simulate":O(e,b[e],"boolean","a boolean");d.simulate=b[e];break;case "iat":O(e,b[e],"number","a number");d.iat=b[e];break;default:throw Error('FirebaseTokenGenerator.createToken: unrecognized "'+
+e+'" option');}d.v=0;d.d=a;d.iat||(d.iat=Math.floor((new Date).getTime()/1E3));e=za(y({typ:"JWT",alg:"HS256"}));d=za(y(d));b=A.C(e+"."+d,this.T).toString();for(var f=[],g=0;g<b.length;g+=2)f.push(parseInt(b.substr(g,2),16));b=xa(f);b=Aa(b);return e+"."+d+"."+b};$.prototype.createToken=$.prototype.R;
+function za(a){for(var c=[],b=0,d=0;d<a.length;d++){var e=a.charCodeAt(d);55296<=e&&56319>=e&&(e-=55296,d++,t.Q.V.assert(d<a.length,"Surrogate pair missing trail surrogate."),e=65536+(e<<10)+(a.charCodeAt(d)-56320));128>e?c[b++]=e:(2048>e?c[b++]=e>>6|192:(65536>e?c[b++]=e>>12|224:(c[b++]=e>>18|240,c[b++]=e>>12&63|128),c[b++]=e>>6&63|128),c[b++]=e&63|128)}a=xa(c);return Aa(a)}function Aa(a){var c=a.indexOf(".");return 0<=c?a.substring(0,c):a}
+function ya(a){if("object"!==typeof a)return m;if(a===i)return h;for(var c in a)if(Object.prototype.hasOwnProperty.call(a,c))return m;return h};})();
 
 /**
  * jquery.Jcrop.min.js v0.9.12 (build:20130202)

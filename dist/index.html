@@ -36,6 +36,7 @@
 
     <link rel="stylesheet" href="styles/version-browser.css" />
     <link rel="stylesheet" href="styles/last-modified-preview.css" />
+    <link rel="stylesheet" href="styles/cms-notifications.css"/>
     <!-- endbuild -->
 
     <!-- don't bundle this -->
@@ -72,7 +73,6 @@
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/firebase-token-generator/build/firebase-token-generator.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/firebase/firebase.js"></script>
@@ -100,6 +100,7 @@
     <script src="bower_components/pnotify/pnotify.desktop.js"></script>
     <script src="bower_components/pnotify/pnotify.history.js"></script>
     <script src="bower_components/pnotify/pnotify.nonblock.js"></script>
+    <script src="bower_components/firebase-token-generator/build/firebase-token-generator.js"></script>
     <!-- endbower -->
     <script src="bower_components/jcrop/js/jquery.Jcrop.min.js"></script>
     <!-- endbuild -->
@@ -125,6 +126,9 @@
     <script src="scripts/controllers/imagecropmodal.js"></script>
     <script src="scripts/controllers/loginmodal.js"></script>
     <script src="scripts/controllers/unpublish.js"></script>
+    <script src="scripts/controllers/cms-notifications.js"></script>
+    <script src="scripts/controllers/cms-notification.js"></script>
+    <script src="scripts/controllers/datetimeselectionmodal.js"></script>
 
     <script src="scripts/directives/activenav.js"></script>
     <script src="scripts/directives/articlecontainer.js"></script>
@@ -143,13 +147,15 @@
     <script src="scripts/directives/slideshow-pane.js"></script>
     <script src="scripts/directives/targeting.js"></script>
     <script src="scripts/directives/editor.js"></script>
+    <script src="scripts/directives/cms-notification.js"></script>
+    <script src="scripts/directives/datetimeselectionmodalopener.js"></script>
 
     <script src="scripts/filters/truncateByCharacters.js"></script>
     <script src="scripts/filters/truncateByWords.js"></script>
 
-
     <script src="scripts/modules/betty-cropper.js"></script>
 
+    <script src="scripts/services/firebasereffactory.js"></script>
     <script src="scripts/services/if-exists-else.js"></script>
     <script src="scripts/services/openimagecropmodal.js"></script>
     <script src="scripts/services/bulbsapi.js"></script>
@@ -231,6 +237,7 @@
         angular.module('bulbsCmsApp').constant('VIDEO_EMBED_URL', 'http://www.avclub.com/videos/embed?id=');
         angular.module('bulbsCmsApp').constant('VIDEO_THUMBNAIL_URL', 'http://v.theonion.com/avclubmedia/video/{{video}}/frame_{{thumbnail}}.jpg');
         angular.module('bulbsCmsApp').constant('STATIC_IMAGE_URL', 'http://chimg.onionstatic.com/{{image}}/{{ratio}}/600.jpg');
+        angular.module('bulbsCmsApp').constant('FIREBASE_ROOT', 'bulbs-cms-testing');
 
         // ****** CMS Plugins ****** \\
 
@@ -270,7 +277,8 @@
           $(this).attr("target", "_self");
         });
     </script>
-    <bug-reporter/>
+    <bug-reporter></bug-reporter>
+    <firebase-save-reporter></firebase-save-reporter>
 
 </body>
 </html>
