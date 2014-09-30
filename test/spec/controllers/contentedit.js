@@ -108,17 +108,18 @@ describe('Controller: ContenteditCtrl', function () {
     });
     
     describe('function: saveArticle', function () {
-      it('should call VersionStorageApi.$create to create a new version', function () {
-        scope.saveArticle();
-        expect(VersionStorageApiMock.$create).toHaveBeenCalled();
-      });
-    
-      it('should call postValidationSaveArticle if no last_modified discrepancy', function () {
+
+      it('should call postValidationSaveArticle and create a version if no last_modified discrepancy', function () {
         httpBackend.expect('GET', '/cms/api/v1/content/1/').respond(mockArticle);
-        spyOn(scope, 'postValidationSaveArticle')
+        httpBackend.expect('PUT', '/cms/api/v1/content/1/').respond(mockArticle);
+
+        spyOn(scope, 'postValidationSaveArticle').andCallThrough();
+
         scope.saveArticle();
         httpBackend.flush();
+
         expect(scope.postValidationSaveArticle).toHaveBeenCalled();
+        expect(VersionStorageApiMock.$create).toHaveBeenCalled();
       });
     
       it('should open a modal if there is a last modified conflict', function () {
