@@ -1,0 +1,485 @@
+/* embed modal */
+.embed-modal textarea {
+  width: 100%;
+  max-width: 100%;
+  font-family: courier, fixed;
+  font-size: 14px;
+  padding: 5px;
+  background-color: #F1F1F1;
+}
+.embed-modal .embed-caption {
+  width: 100%;
+}
+.embed-modal textarea {
+  height: 200px;
+  resize: vertical;
+}
+/* embed toolbar */
+.embed-tools {
+  visibility: hidden;
+  height: 100%;
+  position: absolute;
+  margin: 12px 0;
+  padding: 0px 0px;
+  width: 100%;
+  opacity: 0;
+  transition: opacity 0.1s ease-in-out visibility 0.1s;
+  transition-delay: 1s;
+}
+.embed-tools.active {
+  visibility: visible;
+  display: block;
+  opacity: 1;
+  transition-delay: 0s;
+}
+.embed-tools .embed-button span.fa {
+  color: #333;
+}
+.embed-tools .embed-button span.btn-label {
+  font-size: 12px;
+}
+.embed-tools button {
+  width: 100%;
+  display: block;
+}
+.embed-tools.active .embed-button:hover {
+  transition: opacity .2 linear;
+  opacity: 1;
+}
+.embed-tools .embed-button {
+  display: block;
+  opacity: .5;
+}
+.embed-tools.embed-underlay {
+  border-top: 1px #111 solid;
+  border-bottom: 1px #111 solid;
+  background-color: red;
+  z-index: 10;
+  width: auto;
+}
+.embed-tools.embed-overlay {
+  z-index: 300;
+  width: 100px;
+}
+.embed-tools .embed-button {
+  right: -20px;
+  width: 30px;
+  line-height: 24px;
+  border: 1px #ccc solid;
+  font-size: 16px;
+  border-radius: 15px;
+  background-color: #eee;
+}
+.embed-tools .insert-above {
+  top: -24px;
+  position: absolute;
+  right: 0px;
+}
+.embed-tools .insert-below {
+  bottom: -24px;
+  position: absolute;
+  right: 0px;
+}
+.embed-fly-out {
+  width: auto;
+  height: auto;
+  position: absolute;
+  top: 200px;
+  z-index: 400;
+  border: 1px #ccc solid;
+  background-color: #ddd;
+  padding: 5px;
+  left: 100px;
+  text-align: center;
+}
+.embed-fly-out button:hover {
+  background-color: #333;
+  color: #fff;
+}
+.embed-fly-out button {
+  float: left;
+  border: 1px #ddd solid;
+  width: 80px;
+  height: 80px;
+  background-color: #eee;
+  margin: 3px;
+}
+.embed-fly-out button span.fa {
+  font-size: 24px;
+  display: block;
+}
+.embed-fly-out button span.btn-label {
+  font-size: 12px;
+}
+
+div[data-picture] img {
+  display: block;
+  width: 100%;
+}
+div[data-picture] {
+  overflow: hidden;
+  width: auto;
+  max-width: 100%;
+}
+div[data-picture] > div {
+  position: relative;
+  padding-bottom: 56.25%;
+  /* default is 16x9 */
+  height: 0;
+  overflow: hidden;
+}
+div[data-picture] img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+}
+
+.link-tools {
+  padding: 4px;
+  position: fixed;
+  z-index: 100;
+  top: 20px;
+  right: 20px;
+  width: auto;
+  display: none;
+  border-radius: 4px;
+  white-space: nowrap;
+  width: 400px;
+  background-color: #ddd;
+  border: 1px #ccc solid;
+}
+.link-tools .link-view-dialog {
+  width: auto;
+}
+.link-tools .link-edit-dialog {
+  width: 410px;
+}
+.toolbar.link-tools button {
+  display: inline-block;
+  width: auto;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+.link-tools input {
+  padding: 8px;
+  margin-top: 4px;
+  width: 280px;
+  border-radius: 4px;
+  background-color: #f1f1f1;
+  border: 1px #ddd solid;
+}
+.link-search-results ul {
+  margin-bottom: 0px;
+}
+
+* {
+  margin: 0px;
+  padding: 0px;
+}
+a {
+  cursor: pointer;
+}
+input,
+textarea,
+button,
+.editor:focus {
+  outline: none;
+}
+::selection {
+  background-color: #FEFEBA;
+}
+body {
+  font-family: Helvetica, Arial, sans-serif;
+  background-color: #eee;
+}
+.editor-wrapper {
+  margin: 0px auto;
+  position: relative;
+}
+.editorPlaceholder,
+.editor {
+  position: relative;
+  z-index: 20;
+  width: auto;
+  margin: 0px;
+  padding: 30px 100px;
+}
+.editorPlaceholder {
+  z-index: 10;
+  position: absolute;
+}
+.editorPlaceholder p,
+.editor blockquote,
+.editor ul,
+.editor ol,
+.editor p,
+.editor > div {
+  min-height: 24px;
+  margin: 24px 0;
+}
+.editor blockquote {
+  clear: both;
+  padding: 0 30px;
+  border-left: 5px solid #ddd;
+}
+.editor ul,
+.editor ol {
+  clear: both;
+  padding-left: 45px;
+  padding-right: 45px;
+}
+.editor li {
+  margin-bottom: 4px;
+}
+.editor h3 {
+  margin-top: 16px;
+  margin-bottom: 12px;
+  font-size: 32px;
+  font-weight: normal;
+}
+.editor h4 {
+  margin-top: 16px;
+  font-size: 24px;
+  font-weight: normal;
+}
+#content-wrapper {
+  margin-top: 100px;
+  margin: 20px auto 0;
+  border: 1px #ddd solid;
+}
+#content-wrapper.container {
+  max-width: 820px;
+  min-width: 400px;
+  width: auto;
+  padding: 0px;
+}
+.label {
+  opacity: .7;
+}
+/* status bar */
+#statusbar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 100px;
+  height: 40px;
+  background-color: #ddd;
+  border-top: 1px #ccc solid;
+  border-left: 1px #ccc solid;
+  border-top-left-radius: 4px;
+  padding: 4px;
+  font-size: 12px;
+  color: #333;
+}
+#statusbar button {
+  display: inline-block;
+  width: auto;
+  text-align: center;
+}
+
+/* Menus + Buttons */
+.inline-active .toolbar {
+  /*display:none; */
+}
+.inline-active .inline-tools.toolbar {
+  display: block;
+}
+.toolbar-contents {
+  position: absolute;
+  z-index: 100;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: moz-none;
+  -ms-user-select: none;
+  user-select: none;
+  padding: 4px 4px;
+  font-size: 12px;
+  background-color: #EEEEEE;
+  border: 1px #DADADA solid;
+  border-radius: 4px;
+  width: auto;
+  white-space: nowrap;
+}
+.toolbar button {
+  border: 1px transparent solid;
+  color: #4A4A4A;
+  background-clip: padding-box;
+  background-color: transparent;
+  border-radius: 2px;
+  text-align: center;
+  display: inline-block;
+  line-height: 25px;
+  font-size: 14px;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+.toolbar button.text {
+  font-size: 11px;
+  width: auto;
+  padding: 0 4px;
+}
+.toolbar button {
+  width: auto;
+  display: block;
+  font-size: 14px;
+  width: 100%;
+  text-align: left;
+  padding: 4px 8px;
+  height: auto;
+}
+.heading-icon {
+  font-family: Georgia;
+  text-align: center;
+  width: 20px;
+  font-size: 15px;
+}
+.heading-icon sub {
+  bottom: 0px;
+}
+.toolbar .hiddenbydefault {
+  display: none;
+}
+.toolbar:hover .hiddenbydefault {
+  display: block;
+}
+.toolbar button.active {
+  display: block;
+  background-color: #ddd;
+}
+.toolbar button:hover {
+  background-color: #ccc;
+}
+.toolbar button:hover.active {
+  display: block;
+  background-color: #333;
+  color: #f1f1f1;
+}
+.toolbar .btn-label {
+  display: none;
+}
+.toolbar:hover .btn-label {
+  display: inline;
+  margin-left: 10px;
+  font-size: 12px;
+  line-height: 16px;
+}
+.document-tools > .toolbar-contents {
+  top: 100px;
+  position: fixed;
+  left: 50%;
+  text-align: center;
+  margin-left: -480px;
+  display: block;
+  opacity: 1;
+}
+.toolbar button [class^="icon-"],
+.toolbar button [class*=" icon-"] {
+  width: 15px;
+  display: inline-block;
+  text-align: center;
+}
+.toolbar-contents .primary {
+  font-size: 14px;
+  color: #4A4A4A;
+  float: right;
+  position: relative;
+  z-index: 100;
+  background-color: #EEEEEE;
+}
+/* inline tools */
+.inline-tools {
+  position: absolute;
+  display: none;
+  /*background-color: rgba(200,200,200,.5);*/
+  z-index: 100;
+}
+.inline-tools button {
+  display: inline-block;
+  width: auto;
+}
+.inline-tools span.inline-attribute {
+  font-size: 11px;
+  text-transform: uppercase;
+}
+.inline-tools .remove {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  background-color: #930900;
+  border-radius: 4px;
+}
+.inline-tools .edit button,
+.inline-tools .remove button {
+  color: white;
+}
+.inline-tools .remove button:hover {
+  background-color: #C70A00;
+}
+.inline-tools .edit {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  border-radius: 4px;
+  background-color: #333;
+  color: white;
+}
+.inline-tools .edit button:hover {
+  background-color: #444;
+}
+.inline-tools .toolbar-contents {
+  margin-top: 20px;
+  left: 50%;
+  margin-left: -96px;
+}
+/* Customize toolbar for various object types */
+.inline-tools[data-type="hr"] .edit,
+.inline-tools[data-type="hr"] .size,
+.inline-tools[data-type="hr"] .crop {
+  display: none;
+}
+/* size and crop are handled inside of the embed modal, for simplictiy */
+.inline-tools[data-type="embed"] .size,
+.inline-tools[data-type="embed"] .crop {
+  display: none;
+}
+span.highlight {
+  background-color: #EC7000;
+}
+.find-replace-dialog {
+  position: fixed;
+  width: 820px;
+  margin: 0 auto;
+  height: 56px;
+  top: 0px;
+  left: 50%;
+  margin-left: -410px;
+  background-color: #EEEEEE;
+  border: 1px #DADADA solid;
+  border-radius: 4px;
+  z-index: 10000;
+  padding: 10px 20px;
+  box-shadow: 1px 3px 5px 0px rgba(50, 50, 50, 0.3);
+}
+.find-replace-dialog > .btn {
+  margin-top: -3px;
+}
+.find-replace-dialog input {
+  width: 200px;
+  font-size: 14px;
+  padding: 3px;
+}
+.editor span.searchResult {
+  background-color: #FFBB03;
+}
+.editor [contenteditable=false] span.searchResult {
+  background-color: transparent;
+}
+.document-tools,
+embed-tools {
+  font-family: Helvetica, Arial, sans-serif;
+}
