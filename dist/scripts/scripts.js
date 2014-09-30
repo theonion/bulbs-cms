@@ -3341,7 +3341,12 @@ angular.module('bulbsCmsApp')
     var _deepScrub = function (obj) {
 
       var clone, transValue,
-          omit = function (value) { return _.isFunction(value);};
+          omit = function (value, key) {
+            return _.isFunction(value)
+                    || _.find(key, function (c) {
+                        return c === '.' || c === '#' || c === '$' || c === '/' || c === '[' || c === ']';
+                       });
+          };
 
       if (_.isUndefined(obj)) {
         // turn undefineds into nulls, this allows deletion of property values
@@ -3353,7 +3358,7 @@ angular.module('bulbsCmsApp')
           // run value through recursive omit call
           transValue = _deepScrub(value);
           // check if this should be omitted, if not clone it over
-          if (!omit(transValue)) {
+          if (!omit(transValue, key)) {
             clone[key] = transValue;
           }
         });
@@ -3364,7 +3369,7 @@ angular.module('bulbsCmsApp')
           // run value through recursive omit call
           transValue = _deepScrub(value);
           // check if this should be omitted, if not clone over
-          if (!omit(transValue)) {
+          if (!omit(transValue, key)) {
             clone.push(transValue);
           }
         });
