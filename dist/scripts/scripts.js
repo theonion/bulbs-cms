@@ -402,7 +402,7 @@ angular.module('bulbsCmsApp')
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, keypress, Raven,
-    IfExistsElse, Localstoragebackup, ContentApi, FirebaseApi, Login, routes)
+    IfExistsElse, VersionStorageApi, ContentApi, FirebaseArticleFactory, Login, routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
@@ -423,34 +423,47 @@ angular.module('bulbsCmsApp')
 
       $scope.last_saved_article = angular.copy(data);
 
-      // log in to firebase
-      FirebaseApi.login();
+      // get article and active users, register current user as active
+      FirebaseArticleFactory
+        .$retrieveCurrentArticle()
+          .then(function ($article) {
 
-      // register the current user as viewing this article
-      FirebaseApi.registerCurrentUserActive($scope.article.id);
+            var $activeUsers = $article.$activeUsers();
 
-      // sync this article variable with the currently active users
-      FirebaseApi.getActiveUsers($scope.article.id, function (activeUsers) {
+            // register a watch on active users so we can update the list in real time
+            $activeUsers.$watch(function () {
 
-//        $scope.activeUsers = activeUsers.$asArray();
-        var $activeUsers = activeUsers.$asArray();
-        $activeUsers.$watch(function () {
+              // unionize user data so that we don't have a bunch of the same users in the list
+              $scope.activeUsers =
+                _.chain($activeUsers)
+                  // group users by their id
+                  .groupBy(function (user) {
+                    return user.id;
+                  })
+                  // take first user in grouping and use that data along with a count of the number of times they show
+                  //  up in the list (number of sessions they have running)
+                  .map(function (group) {
+                    var groupedUser = group[0];
+                    groupedUser.count = group.length;
+                    return groupedUser;
+                  })
+                  // sort users by their display names
+                  .sortBy(function (user) {
+                    return user.displayName;
+                  })
+                  // now we have a list of unique users along with the number of sessions they have running, sorted by
+                  //  their display names
+                  .value();
 
-          // do some unionizng on activeUsers data when it changes
-          $scope.activeUsers =
-            _.chain($activeUsers)
-              .groupBy(function (user) { return user.id; })
-              .map(function (group) {
-                var groupedUser = group[0];
-                groupedUser.count = group.length;
-                return groupedUser;
-              })
-              .sortBy(function (user) { return user.displayName; })
-              .value();
+            });
 
-        });
+            // register current user active with this article
+            $article.$registerCurrentUserActive();
 
-      });
+            // who knows what kind of promises you might have in the future? so return the article object for chains
+            return $article;
+
+          });
 
     };
 
@@ -479,7 +492,7 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.saveArticle = function () {
-      Localstoragebackup.backupToLocalStorage();
+      VersionStorageApi.$create($scope.article, $scope.articleIsDirty);
 
       ContentApi.one('content', $routeParams.id).get().then(function (data) {
         if (data.last_modified &&
@@ -492,7 +505,7 @@ angular.module('bulbsCmsApp')
             scope: $scope,
             resolve: {
               articleOnPage: function () { return $scope.article; },
-              articleOnServer: function () { return data; },
+              articleOnServer: function () { return data; }
             }
           });
         } else {
@@ -542,17 +555,16 @@ angular.module('bulbsCmsApp')
         }, 2500);
       $window.article = $scope.article = resp;
       $scope.last_saved_article = angular.copy(resp);
+      $scope.articleIsDirty = false;
       $scope.errors = null;
       $location.search('rating_type', null); //maybe just kill the whole query string with $location.url($location.path())
       $scope.saveArticleDeferred.resolve(resp);
     }
 
+    // keep track of if article is dirty or not
+    $scope.articleIsDirty = false;
     $scope.$watch('article', function () {
-      if (angular.equals($scope.article, $scope.last_saved_article)) {
-        $scope.articleIsDirty = false;
-      } else {
-        $scope.articleIsDirty = true;
-      }
+      $scope.articleIsDirty = !angular.equals($scope.article, $scope.last_saved_article);
     }, true);
 
     $scope.$watch('articleIsDirty', function () {
@@ -575,11 +587,6 @@ angular.module('bulbsCmsApp')
         $window.history.back();
       }, 1500);
     };
-
-    var backupInterval = (function () {
-      var interval = 60000; //1 minute
-      return $interval(Localstoragebackup.backupToLocalStorage, interval);
-    })();
 
   });
 
@@ -916,7 +923,7 @@ angular.module('bulbsCmsApp')
     $scope.versionBrowserModal = function (article) {
       return $modal.open({
         templateUrl: routes.PARTIALS_URL + 'modals/version-browser-modal.html',
-        controller: 'VersionbrowsermodalCtrl',
+        controller: 'VersionBrowserModalCtrl',
         scope: $scope,
         size: 'lg',
         resolve: {
@@ -2954,17 +2961,43 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .service('CurrentUser', function EditorItems(ContentApi) {
-    this.data = [];
-    var self = this;
+  .service('CurrentUser', function EditorItems(ContentApi, $q) {
 
+    var userDefer = $q.defer();
+
+    this.data = [];
+    this.$retrieveData = userDefer.promise;
+
+    var self = this;
     this.getItems = function () {
       ContentApi.one('me').get().then(function (data) {
         self.data = data;
+        userDefer.resolve(data);
       });
     };
 
     this.getItems();
+
+    /**
+     * Create a simplified version of this user for storage.
+     */
+    this.$simplified = function () {
+
+      return this.$retrieveData.then(function (user) {
+
+        var displayName = user.first_name && user.last_name
+                            ? user.first_name + ' ' + user.last_name
+                              : (user.email || user.username);
+
+        return {
+          id: user.id,
+          displayName: displayName
+        }
+
+      });
+
+    }
+
   });
 
 'use strict';
@@ -3031,132 +3064,447 @@ angular.module('bulbsCmsApp')
   });
 'use strict';
 
+/**
+ * Service for authenticating and interacting with the root of this site in firebase.
+ */
 angular.module('bulbsCmsApp')
   .value('FIREBASE_URL', 'https://luminous-fire-8340.firebaseio.com/')
   .value('FIREBASE_ROOT', 'a-site-is-not-configured')
-    .factory('FirebaseApi', function ($firebase, CurrentUser, FIREBASE_URL, FIREBASE_ROOT) {
+  .factory('FirebaseApi', function ($firebase, $q, CurrentUser, FIREBASE_URL, FIREBASE_ROOT) {
 
-        // get firebase references
-        var rootRef = new Firebase(FIREBASE_URL + 'sites/' + FIREBASE_ROOT);
+    // get root reference in firebase for this site
+    var rootRef = new Firebase(FIREBASE_URL + 'sites/' + FIREBASE_ROOT);
 
-        // authorization utility function
-        var authed = false;
-        var afterAuthQueue = [];
-        var authFn = function (fn, args, scope) {
+    // set up a promise for authorization
+    var authDefer = $q.defer(),
+        $authorize = authDefer.promise;
 
-          if (!authed) {
+    // set up catch all for logging auth errors
+    $authorize.catch(function (error) {
 
-            // not authorized yet, keep track of functions to call when we are authed
-            afterAuthQueue.push({
-              fn: fn,
-              args: args,
-              scope: scope
-            });
+      // if there's an error message log it
+      error && console.error('Firebase login failed:', error);
+
+    });
+
+    // log current session in when their current user data is available
+    CurrentUser.$retrieveData.then(function (user) {
+
+      // attempt to login if user has firebase token, if they don't auth promise will reject with no error message
+      //  which is okay if we're in an environment where firebase isn't set up yet
+      if ('firebase_token' in user && user.firebase_token) {
+
+        // authorize user
+        rootRef.auth(user.firebase_token, function (error) {
+
+          if (error) {
+
+            // authorization failed
+            authDefer.reject(error);
 
           } else {
 
-            // we are authorized, just call the function normally
-            fn.apply(scope, args);
-
-          }
-
-        };
-
-        // ensure user is unauthed when they disconnect
-        var connectedRef = new Firebase(FIREBASE_URL + '.info/connected');
-        connectedRef.on('value', function (connected) {
-
-          if (!connected.val()) {
-
-            // user is no longer connected, unauthorize them from the server
-            rootRef.unauth();
+            // authorization success, resolve deferred authorization with rootRef
+            authDefer.resolve(rootRef);
 
           }
 
         });
 
-        var buildDisplayName = function () {
+      } else {
 
-          // try to show first/last name, if not try email, then username
-          return CurrentUser.data.first_name && CurrentUser.data.last_name
-                      ? CurrentUser.data.first_name + ' ' + CurrentUser.data.last_name
-                        : (CurrentUser.data.email || CurrentUser.data.username);
+        // user doesn't have a firebase token, reject authorization without an error message
+        authDefer.reject();
 
-        };
-
-        return {
-
-            login: function () {
-
-              // just skip this whole thing if we're already authed
-              if (!authed && 'firebase_token' in CurrentUser.data && CurrentUser.data.firebase_token) {
-
-                // authorize user
-                rootRef.auth(CurrentUser.data.firebase_token, function (error) {
-
-                  if (error) {
-
-                    // authorization failed, log an error
-                    console.error('Firebase login failed:', error);
-
-                  } else {
-
-                    // user now authorized, call all the queued functions
-                    authed = true;
-                    for (var i = 0; i < afterAuthQueue.length; i++) {
-
-                      var param = afterAuthQueue[i];
-                      authFn(param.fn, param.args, param.scope);
-
-                    }
-
-                  }
-
-                });
-
-              }
-
-            },
-
-            getActiveUsers: function (articleId, callback) {
-
-              // use auth wrapper to ensure this function succeeds
-              authFn(function (callbackArg) {
-
-                callbackArg($firebase(rootRef.child('articles/' + articleId + '/users')));
-
-              }, [callback], this);
-
-            },
-
-            registerCurrentUserActive: function (articleId) {
-
-              // TODO : make sure firebase_token is avaiable
-
-              // get active users then add current user
-              this.getActiveUsers(articleId, function (activeUsers) {
-
-                  var rawUser = {
-                    id: CurrentUser.data.id,
-                    displayName: buildDisplayName()
-                  };
-
-                  activeUsers.$asArray().$add(rawUser).then(function (userRef) {
-
-                    // ensure user is removed on disconnect
-                    userRef.onDisconnect().remove();
-
-                  });
-
-              });
-
-            }
-
-        };
+      }
 
     });
 
+    // ensure session is unauthed when they disconnect
+    var connectedRef = new Firebase(FIREBASE_URL + '.info/connected');
+    connectedRef.on('value', function (connected) {
 
+      if (!connected.val()) {
+
+        // user is no longer connected, unauthorize them from the server
+        rootRef.unauth();
+
+      }
+
+    });
+
+    return {
+
+      /**
+       * Authorization deferred promise that resolves with the root firebase reference, or rejects with an error
+       *  message.
+       */
+      $authorize: function () { return $authorize; }
+
+    };
+
+  });
+
+
+'use strict';
+
+/**
+ * Factory for getting references to articles as they are stored in firebase.
+ */
+angular.module('bulbsCmsApp')
+  .value('FIREBASE_ARTICLE_MAX_VERSIONS', 25)
+  .factory('FirebaseArticleFactory', function ($q, $firebase, $routeParams, FirebaseApi, CurrentUser,
+                                                FIREBASE_ARTICLE_MAX_VERSIONS) {
+
+    /**
+     * Create a new article.
+     *
+     * @param rootRef     root reference of firebase db.
+     * @param articleId   id of article to create.
+     * @return  article object.
+     */
+    var createArticle = function (rootRef, articleId) {
+
+      var articleRef = rootRef.child('articles/' + articleId),
+          $activeUsers = $firebase(articleRef.child('users')).$asArray(),
+          $versions = $firebase(articleRef.child('versions')).$asArray();
+
+      var registerActiveUser = function () {
+
+        return CurrentUser.$simplified().then(function (user) {
+
+          return $activeUsers
+            .$add(user)
+            .then(function (userRef) {
+
+              // ensure user is removed on disconnect
+              userRef.onDisconnect().remove();
+              return userRef;
+
+            });
+
+        });
+
+      };
+
+      var createVersion = function (articleData) {
+
+        // defer for creation of version
+        var createDefer = $q.defer(),
+            $createPromise = createDefer.promise;
+
+        // get simplified version of user then use that when creating version
+        CurrentUser.$simplified().then(function (user) {
+
+          // if we will have more than the max versions allowed, delete until we're one below the max
+          var numVersions = $versions.length;
+          if (numVersions + 1 > FIREBASE_ARTICLE_MAX_VERSIONS) {
+            _.chain($versions)
+              // sort oldest to newest
+              .sortBy(function (version) {
+                return version.timestamp;
+              })
+              // remove oldest versions until we're 1 below max versions
+              .every(function (version) {
+                $versions.$remove(version);
+                numVersions--;
+                return numVersions + 1 > FIREBASE_ARTICLE_MAX_VERSIONS;
+              });
+          }
+
+          // make version data
+          var versionData = {
+            timestamp: moment().valueOf(),
+            user: user,
+            content: articleData
+          };
+
+          // add version to version data
+          $versions.$add(versionData)
+            .then(createDefer.resolve)
+            .catch(createDefer.reject);
+
+        });
+
+        // return promise for this create
+        return $createPromise;
+
+      };
+
+      return {
+
+        /**
+         * Raw firebase article reference.
+         */
+        ref: articleRef,
+        /**
+         * Get angularfire live array of article's currently active users.
+         */
+        $activeUsers: function () { return $activeUsers; },
+        /**
+         * Get angularfire live array of article versions.
+         */
+        $versions: function () { return $versions; },
+        /**
+         * Register a user as active with this article.
+         *
+         * @returns   deferred promise that will resolve with the user reference as added to the active user list.
+         */
+        $registerCurrentUserActive: registerActiveUser,
+        /**
+         * Create a new version for this article.
+         *
+         * @param articleData   Content to store in the version.
+         * @returns   deferred promise that will resolve with the version reference as added to the versions list.
+         *  Promise is rejected if for some reason create did not occur (eg nothing changed since last version).
+         */
+        $createVersion: createVersion
+
+      };
+
+    };
+
+    return {
+
+      /**
+       * Retrieve current article object that is connected to firebase.
+       *
+       * @returns   deferred promise that will resolve with the current article object.
+       */
+      $retrieveCurrentArticle: function () {
+
+        return this.$retrieveArticle($routeParams.id);
+
+      },
+
+      /**
+       * Retrieve an article object that is connected to firebase.
+       *
+       * @param articleId   id of article to retrieve.
+       * @returns   deferred promise that will resolve with the article object.
+       */
+      $retrieveArticle: function (articleId) {
+
+        return FirebaseApi.$authorize().then(function (rootRef) {
+
+          return createArticle(rootRef, articleId);
+
+        });
+
+      }
+
+    };
+
+  });
+'use strict';
+
+/**
+ * Api for saving article versions. Will automatically detect and attempt to use firebase, otherwise local storage
+ *  will be used for versions.
+ *
+ * This API expects all version objects to be in at least the following form:
+ *
+ *  {
+ *    timestamp: Number   - timestamp in ms for this version
+ *    content: Object     - content this version holds, which in this case is an article object
+ *  }
+ */
+angular.module('bulbsCmsApp')
+  .factory('VersionStorageApi', function ($q, FirebaseApi, FirebaseArticleFactory, LocalStorageBackup) {
+
+    // set up a promise for checking if we can authorize with firebase
+    var firebaseAvailableDefer = $q.defer(),
+        $firebaseAvailable = firebaseAvailableDefer.promise;
+    FirebaseApi.$authorize()
+      .then(function () {
+
+        // we have a firebase connection, use firebase for versioning
+        firebaseAvailableDefer.resolve(FirebaseArticleFactory.$retrieveCurrentArticle());
+
+      })
+      .catch(function () {
+
+        // we don't have a firebase connection, use local storage for versioning
+        firebaseAvailableDefer.reject();
+
+      });
+
+    /**
+     * Recursively scrub object of functions and turn undefines into null, makes object valid for saving in firebase.
+     *
+     * @param obj   object to recurse through
+     */
+    var _deepScrub = function (obj) {
+
+      var clone, transValue,
+          omit = function (value) { return _.isFunction(value);};
+
+      if (_.isUndefined(obj)) {
+        // turn undefineds into nulls, this allows deletion of property values
+        clone = null;
+      } else if (_.isPlainObject(obj)) {
+        // this is an object, use omit to recurse through its members
+        clone = {};
+        _.forOwn(obj, function (value, key) {
+          // run value through recursive omit call
+          transValue = _deepScrub(value);
+          // check if this should be omitted, if not clone it over
+          if (!omit(transValue)) {
+            clone[key] = transValue;
+          }
+        });
+      } else if (_.isArray(obj)) {
+        // this is an array, loop through items use omit to decide what to do with them
+        clone = [];
+        _.each(obj, function (value) {
+          // run value through recursive omit call
+          transValue = _deepScrub(value);
+          // check if this should be omitted, if not clone over
+          if (!omit(transValue)) {
+            clone.push(transValue);
+          }
+        });
+      } else {
+        // not a special case, just return object
+        clone = obj;
+      }
+
+      return clone;
+
+    };
+
+    /**
+     * Keep only the data we want to persist for an article. Does a deep clone to scrub sub-objects.
+     *
+     * @param articleData   data to scrub.
+     */
+    var scrubArticle = function (articleData) {
+
+      return _deepScrub(articleData);
+
+    };
+
+    return {
+
+      /**
+       * Create a new version either in firebase or in local storage.
+       *
+       * @param rawArticleData  raw article data to copy and transform before saving.
+       * @param articleIsDirty  true if the article has unsaved changes, false otherwise.
+       * @return  a promise that resolves on creation with a version object that contains timestamp and content
+       *  properties.
+       */
+      $create: function (rawArticleData, articleIsDirty) {
+
+        // get article data that we want to save
+        var articleData = scrubArticle(rawArticleData);
+
+        // create deferred to return
+        var createDefer = $q.defer(),
+            createPromise = createDefer.promise;
+
+        // article is dirty and should be saved, check if firebase is being used
+        $firebaseAvailable
+          .then(function ($currentArticle) {
+
+            // if article is dirty or there are no versions, attempt to create one using firebase
+            if (articleIsDirty || $currentArticle.$versions().length < 1) {
+
+              // we do have firebase, so use firebase
+              $currentArticle.$createVersion(articleData)
+                .then(function (versionData) {
+                  // create occurred, resolve it with new version data
+                  createDefer.resolve(versionData);
+                })
+                .catch(function () {
+                  // create didn't occur, reject promise
+                  createDefer.reject();
+                });
+
+            } else {
+
+              // article is not dirty, reject create
+              createDefer.reject();
+
+            }
+
+          })
+          .catch(function () {
+
+            LocalStorageBackup.$versions().then(function (versions) {
+
+              // if article is dirty or there are no versions, attempt to create one using local storage
+              if (articleIsDirty || versions.length < 1) {
+
+                // create version with local storage
+                LocalStorageBackup.$create(articleData)
+                  .then(function (versionData) {
+                    // version was created, resolve create defer with version data
+                    createDefer.resolve(versionData);
+                  })
+                  .catch(function (error) {
+                    // version was not created, pass on error
+                    createDefer.reject(error);
+                  });
+
+              } else {
+
+                // article is not dirty, reject create
+                createDefer.reject();
+
+              }
+
+            });
+
+          });
+
+        // return create promise
+        return createPromise;
+
+      },
+      /**
+       * Retrieve all versions either from firebase or local storage.
+       * @return  list of version objects sorted by timestamp descending.
+       */
+      $all: function () {
+
+        // set up deferred objects for all retrieval
+        var allDefer = $q.defer(),
+            allPromise = allDefer.promise;
+
+        // check if we have firebase
+        $firebaseAvailable
+          .then(function ($currentArticle) {
+
+            // we do have firebase, so use firebase
+            $currentArticle.$versions().$loaded(function (versions) {
+              allDefer.resolve(versions);
+            });
+
+          })
+          .catch(function () {
+
+            // we don't have firebase so use local storage
+            LocalStorageBackup.$versions().then(function (versions) {
+              allDefer.resolve(versions);
+            }).catch(function (error) {
+              allDefer.reject(error);
+            });
+
+          });
+
+        // ensure versions are ordered by timestamp desc when they return
+        return allPromise.then(function (versions) {
+            return _.sortBy(versions, function (version) {
+              return -version.timestamp;
+            });
+          });
+
+      }
+
+    };
+
+  });
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -3196,98 +3544,182 @@ angular.module('bulbsCmsApp')
 
 'use strict';
 
+/**
+ * This is a modal for browsing versions stored in localStorage by the LocalStorageBackup service.
+ */
 angular.module('bulbsCmsApp')
-  .controller('VersionbrowsermodalCtrl', function ($scope, $window, $modalInstance, _, moment, Localstoragebackup, article) {
-    /*This is a modal for browsing versions stored in localStorage by the Localstoragebackup service */
-    Localstoragebackup.backupToLocalStorage();
+  .controller('VersionBrowserModalCtrl', function ($scope, $modalInstance, _, moment, VersionStorageApi,
+                                                   FirebaseApi, FIREBASE_ARTICLE_MAX_VERSIONS) {
 
-    var keys = _.keys($window.localStorage);
+    // if we have fire base, show the maximum number of versions allowed
+    FirebaseApi.$authorize().then(function () {
+      $scope.maxVersions =  FIREBASE_ARTICLE_MAX_VERSIONS;
+    });
 
-    var timestamps = [];
-    for (var i in keys) {
-      if (keys[i] && (keys[i].split('.')[0] !== Localstoragebackup.keyPrefix || Number(keys[i].split('.')[2]) !== article.id)) {
-        continue;
-      }
-      var timestamp = Number(keys[i].split('.')[1]) * 1000;
-      timestamps.push(timestamp);
-    }
-    $scope.timestamps = timestamps.sort().reverse();
+    VersionStorageApi.$all()
+      .then(function (versions) {
 
-    $scope.preview = function (timestamp, $event) {
-      //manipulating dom in a controller is gross! bad!
-      $('.version-timestamp-list .active').removeClass('active');
-      $($event.target).parent().addClass('active');
+        // doubley ensure timestamp in desc since modal functionality depends on it, add some extra display stuff
+        $scope.versions =
+          _.chain(versions)
+            // loop through each version and add timestamp display property
+            .each(function (version) {
+              version.timestamp_display = moment(version.timestamp).format('MMM Do YYYY, h:mma')
+            })
+            // sort by timestamps desc, so most recent is on top
+            .sortBy(function (version) {
+              return -version.timestamp;
+            })
+          .value();
 
-      var key = Localstoragebackup.keyPrefix + '.' + timestamp / 1000 + '.' + article.id + '.body';
-      var html = $window.localStorage.getItem(key);
-      $scope.versionPreview = html;
-    };
+        // set initial preview to top item which should be the most recent
+        $scope.selectedVersion = $scope.versions[0];
 
-    $scope.restoreSelected = function () {
-      $scope.article.body = $scope.versionPreview;
-      $modalInstance.close();
-    };
+        // set preview in modal window based on timestamp
+        $scope.setPreview = function (version) {
+          $scope.selectedVersion = version;
+        };
+
+        // restore selected version preview
+        $scope.restoreSelected = function () {
+
+          // loop through each key of selected version and replace corresponding value in article
+          _.each($scope.selectedVersion.content, function (value, key) {
+            $scope.article[key] = value;
+          });
+
+          // mark article as dirty now that we've restored an old version
+          $scope.articleIsDirty = true;
+
+          // close modal
+          $modalInstance.close();
+        };
+
+      });
+
   });
 
 'use strict';
 
+/**
+ * Methods to create and retrieve versions in local storage. Articles are stored as json strings under the keys
+ *  'article.{timestamp}.{article id}'. When local storage is full, it will attempt to remove values older than
+ *  yesterday.
+ */
 angular.module('bulbsCmsApp')
-  .service('Localstoragebackup', function Localstoragebackup($routeParams, $window, moment, $, _) {
+  .factory('LocalStorageBackup', function ($q, $routeParams, $window, moment, _, CurrentUser) {
 
-    /*
-    hacky first version of local storage backup
-    this is for backing up body contents to local storage
-    for now this is just keying to articleBodyBackup.<timestamp>.<article id>.body
-    if LS is full, it tries deleting old backups
-    TODO: add tests
-    TODO: make configurable
-    TODO: apply to other fields
-    TODO: don't use $().html() to capture the value
-    TODO: capture routeChange and cancel the interval
-      (this works for now because we're doing a full teardown on route change
-      if we ever go back to a real 'single page app' this will fuck up)
-    TODO: lots of stuff
-    */
+    var keyPrefixArticle = 'article';
+    var keyPrefix = keyPrefixArticle + '.' + $routeParams.id + '.';
 
-    this.keyPrefix = 'articleBodyBackup';
-    this.keySuffix = '.' + $routeParams.id + '.body';
+    return {
 
-    var keyPrefix = this.keyPrefix;
-    var keySuffix = this.keySuffix;
+      /**
+       * Save content to local storage.
+       *
+       * @param articleData   Content to save to local storage.
+       * @return New version data or null if no version was created.
+       */
+      $create: function (articleData) {
 
-    this.backupToLocalStorage = function () {
-      var localStorageKeys = Object.keys($window.localStorage);
-      var mostRecentTimestamp = 0;
-      for (var keyIndex in localStorageKeys) {
-        var key = $window.localStorage.key(keyIndex);
-        if (key && key.split('.')[2] === $routeParams.id && Number(key.split('.')[1]) > mostRecentTimestamp) {
-          mostRecentTimestamp = Number(key.split('.')[1]);
-        }
-      }
-      var mostRecentValue = $window.localStorage.getItem(keyPrefix + '.' + mostRecentTimestamp + keySuffix);
-      if (mostRecentValue === $('#content-body .editor').html()) {
-        return;
-      }
-      if ($window.localStorage) {
-        try {
-          $window.localStorage.setItem(keyPrefix + '.' + moment().unix() + keySuffix, $('#content-body .editor').html()); //TODO: this is gonna break
-        } catch (error) {
-          console.log('Caught localStorage Error ' + error);
-          console.log('Trying to prune old entries');
+        var createDefer = $q.defer(),
+            createPromise = createDefer.promise;
 
-          for (var keyIndex in localStorageKeys) {
-            var key = $window.localStorage.key(keyIndex);
-            if (!key || key && key.split('.')[0] !== keyPrefix) {
-              continue;
+        // check if we have local storage
+        if ($window.localStorage) {
+          CurrentUser.$simplified().then(function (user) {
+
+            // create new version object
+            var version = {
+              timestamp: moment().valueOf(),
+              user: user,
+              content: articleData
+            };
+
+            try {
+
+              // create new local storage item with version content
+              $window.localStorage.setItem(keyPrefix + moment().valueOf(), JSON.stringify(version));
+              createDefer.resolve(version);
+
+            } catch (error) {
+
+              // some error occurred, prune entries older than yesterday
+              console.log('Caught localStorage error: ' +  error);
+              console.log('Pruning old entries...');
+
+              // loop through local storage keys and see if they're old
+              _.chain($window.localStorage)
+                // pick keys that are articles and that are older than yesterday
+                .pick(function (value, key) {
+                  var keySplit = key.split('.'),
+                    pickForRemoval = false;
+                  // check that this is an article in storage
+                  if (keySplit.length === 3 && keySplit[0] === keyPrefixArticle) {
+                    var yesterday = moment().subtract({days: 1}).valueOf(),
+                      keyTime = Number(keySplit[2]);
+                    // if older than yesterday, pick the key for removal
+                    pickForRemoval = keyTime < yesterday;
+                  }
+                  // return our result
+                  return pickForRemoval;
+                })
+                // these keys should be removed from local storage
+                .each(function (value, key) {
+                  $window.localStorage.removeItem(key);
+                });
+
+              // now try to add entry again
+              try {
+                $window.localStorage.setItem(version.timestamp, JSON.stringify(version.content));
+                createDefer.resolve(version);
+              } catch (error) {
+                // total failure, reject with an error.
+                console.log('Maybe you\'ve been saving too much? Failed again at adding entry, no more retries: ' + error);
+                createDefer.reject('Maybe you\'ve been saving too much? Failed again at adding entry, no more retries: ' + error);
+              }
             }
-            var yesterday = moment().date(moment().date() - 1).unix();
-            var keyStamp = Number(key.split('.')[1]);
-            if (keyStamp < yesterday) {
-              $window.localStorage.removeItem(key);
-            }
-          }
+          });
+
+        } else {
+          // no local storage, why are we here?
+          createDefer.reject('You don\'t have local storage capabilities in your browser. Use a better browser.');
         }
+
+        return createPromise;
+
+      },
+      /**
+       * Get all versions for this article in local storage. No guarantee of order.
+       *
+       * @return  objects returned contain a timestamp and a content variable which holds the version's content.
+       */
+      $versions: function () {
+
+        // note: using a promise here to better match the version api functionality
+        var retrieveDefer = $q.defer(),
+            retrievePromise = retrieveDefer.promise,
+            versions =
+              // loop through entries of local storage
+              _.chain($window.localStorage)
+                // pick only entries that are for this particular article
+                .pick(function (stored, key) {
+                  var keySplit = key.split('.');
+                  return keySplit.length === 3 && keySplit[0] === keyPrefixArticle && keySplit[1] === $routeParams.id;
+                })
+                // parse and map these entries into an array
+                .map(function (stored) {
+                  return JSON.parse(stored);
+                })
+              // return the array of version objects
+              .value();
+
+        retrieveDefer.resolve(versions);
+
+        return retrievePromise;
+
       }
+
     };
 
   });
