@@ -3,7 +3,8 @@
 describe('Controller: VersionBrowserModalCtrl', function () {
 
   // load the controller's module
-  beforeEach(module('bulbsCmsApp'));
+  beforeEach(module('bulbsCmsApp'))
+  beforeEach(module('bulbsCmsApp.mockApi'));
   beforeEach(module('jsTemplates'));
 
   var VersionBrowserModalCtrl,
@@ -48,11 +49,10 @@ describe('Controller: VersionBrowserModalCtrl', function () {
             body: 'Just starting this thing out'
           }
         }
-      ],
-      displayFormat = 'ddd, MMM Do YYYY, h:mma';
+      ];
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($q, $controller, $rootScope, $modal, routes) {
+  beforeEach(inject(function ($q, $controller, $rootScope, $modal, routes, FirebaseApi) {
 
     rootScope = $rootScope;
     scope = rootScope.$new();
@@ -86,18 +86,20 @@ describe('Controller: VersionBrowserModalCtrl', function () {
     VersionBrowserModalCtrl = $controller('VersionBrowserModalCtrl', {
       $scope: scope,
       $modalInstance: modal,
-      VersionStorageApi: VersionStorageApiMock
+      VersionStorageApi: VersionStorageApiMock,
+      FirebaseApi: FirebaseApi,
+      FIREBASE_ARTICLE_MAX_VERSIONS: 0
     });
 
     $rootScope.$apply();
 
   }));
-  
-  it('should have a scope property called timestamps, which contains the ms value and display value', function () {
-    expect(scope.timestamps[0]).toEqual({ ms: dates[0].valueOf(), display: dates[0].format(displayFormat) });
-    expect(scope.timestamps[1]).toEqual({ ms: dates[1].valueOf(), display: dates[1].format(displayFormat) });
-    expect(scope.timestamps[2]).toEqual({ ms: dates[2].valueOf(), display: dates[2].format(displayFormat) });
-    expect(scope.timestamps[3]).toEqual({ ms: dates[3].valueOf(), display: dates[3].format(displayFormat) });
+
+  it('should have a scope property called versions, which contains each version sorted by timestamp', function () {
+    expect(scope.versions[0]).toEqual(versions[1]);
+    expect(scope.versions[1]).toEqual(versions[2]);
+    expect(scope.versions[2]).toEqual(versions[0]);
+    expect(scope.versions[3]).toEqual(versions[3]);
   });
 
   it('should have a scope property called selectedVersion that is the latest version', function () {
@@ -109,7 +111,7 @@ describe('Controller: VersionBrowserModalCtrl', function () {
     expect(scope.setPreview).not.toBeUndefined();
 
     // select the 3rd preview which will actually be the top item in the unsorted versions list
-    scope.setPreview({ ms: dates[0].valueOf(), display: dates[0].format(displayFormat) });
+    scope.setPreview(versions[1]);
 
     expect(scope.selectedVersion).toEqual(versions[1]);
   });

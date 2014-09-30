@@ -127,8 +127,6 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.saveArticle = function () {
-      VersionStorageApi.$create($scope.article, $scope.articleIsDirty);
-
       ContentApi.one('content', $routeParams.id).get().then(function (data) {
         if (data.last_modified &&
           $scope.article.last_modified &&
@@ -183,7 +181,13 @@ angular.module('bulbsCmsApp')
       $scope.saveArticleDeferred.reject();
     }
 
+    /**
+     * Last thing to happen on a successful save.
+     */
     function saveArticleSuccessCbk(resp) {
+      // store a version with version api
+      VersionStorageApi.$create($scope.article, $scope.articleIsDirty);
+
       $(navbarSave).html('<i class=\'glyphicon glyphicon-ok\'></i> Saved!');
       setTimeout(function () {
           $(navbarSave).html(saveHTML);

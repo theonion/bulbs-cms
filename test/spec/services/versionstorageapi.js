@@ -52,22 +52,30 @@ describe('Service: VersionStorageApi', function () {
     $provide.service('LocalStorageBackup', function () {
       localStorageBackupMock = {
         versionsBack: [],
-        create: function () {},
-        versions: function () {}
+        $create: function () {},
+        $versions: function () {}
       };
-      spyOn(localStorageBackupMock, 'create').andCallFake(function (articleData) {
-        var versionData = null;
+      spyOn(localStorageBackupMock, '$create').andCallFake(function (articleData) {
+        var versionData = null,
+            createDefer = $q.defer(),
+            createPromise = createDefer.promise;
 
         // let's cheat here and say if articleData has error property, we reject createDeferred so we can test reject
         if (!('hasAnError' in articleData)) {
           versionData = {timestamp: localStorageBackupMock.versionsBack.length + 1, content: articleData};
           localStorageBackupMock.versionsBack.push(versionData);
+          createDefer.resolve(versionData);
+        } else {
+          createDefer.reject('Some error happened.');
         }
 
-        return versionData;
+        return createPromise;
       });
-      spyOn(localStorageBackupMock, 'versions').andCallFake(function () {
-        return localStorageBackupMock.versionsBack;
+      spyOn(localStorageBackupMock, '$versions').andCallFake(function () {
+        var versionsDefer = $q.defer(),
+            versionsPromise = versionsDefer.promise;
+        versionsDefer.resolve(localStorageBackupMock.versionsBack);
+        return versionsPromise;
       });
       return localStorageBackupMock
     });
@@ -210,7 +218,7 @@ describe('Service: VersionStorageApi', function () {
       // cause promises to fire
       $rootScope.$apply();
 
-      expect(localStorageBackupMock.create).toHaveBeenCalled();
+      expect(localStorageBackupMock.$create).toHaveBeenCalled();
       expect(versionData.content).toEqual(article);
 
     });
@@ -223,7 +231,7 @@ describe('Service: VersionStorageApi', function () {
       // cause promises to fire
       $rootScope.$apply();
 
-      expect(localStorageBackupMock.create).toHaveBeenCalled();
+      expect(localStorageBackupMock.$create).toHaveBeenCalled();
       expect(localStorageBackupMock.versionsBack.length).toBe(2);
 
     });
@@ -239,7 +247,7 @@ describe('Service: VersionStorageApi', function () {
       // cause promises to fire
       $rootScope.$apply();
 
-      expect(localStorageBackupMock.create).toHaveBeenCalled();
+      expect(localStorageBackupMock.$create).toHaveBeenCalled();
       expect(localStorageBackupMock.versionsBack.length).toBe(0);
       expect(creationFailed).toBe(true);
 
@@ -258,7 +266,7 @@ describe('Service: VersionStorageApi', function () {
       // cause promises to fire
       $rootScope.$apply();
 
-      expect(localStorageBackupMock.create).toHaveBeenCalled();
+      expect(localStorageBackupMock.$create).toHaveBeenCalled();
       expect(localStorageBackupMock.versionsBack.length).toBe(1);
       expect(creationFailed).toBe(true);
 
@@ -278,7 +286,7 @@ describe('Service: VersionStorageApi', function () {
       // cause promises to fire
       $rootScope.$apply();
 
-      expect(localStorageBackupMock.versions).toHaveBeenCalled();
+      expect(localStorageBackupMock.$versions).toHaveBeenCalled();
       expect(versions.length).toBe(3);
       expect(versions[0].content.body).toBe('B3');
 

@@ -4,38 +4,36 @@
  * This is a modal for browsing versions stored in localStorage by the LocalStorageBackup service.
  */
 angular.module('bulbsCmsApp')
-  .controller('VersionBrowserModalCtrl', function ($scope, $modalInstance, _, moment, VersionStorageApi) {
+  .controller('VersionBrowserModalCtrl', function ($scope, $modalInstance, _, moment, VersionStorageApi,
+                                                   FirebaseApi, FIREBASE_ARTICLE_MAX_VERSIONS) {
+
+    // if we have fire base, show the maximum number of versions allowed
+    FirebaseApi.$authorize().then(function () {
+      $scope.maxVersions =  FIREBASE_ARTICLE_MAX_VERSIONS;
+    });
 
     VersionStorageApi.$all()
       .then(function (versions) {
 
-        // doubley ensure timestamp in desc since modal functionality depends on it
-        var sortedVersions = _.sortBy(versions, function (version) { return -version.timestamp; });
-
-        // create timestamp displays
-        $scope.timestamps = _.chain(sortedVersions)
-          // pull out timestamp info
-          .pluck('timestamp')
-          // transform timestamps to human readable versions
-          .map(function (timestamp) {
-            return {
-              ms: timestamp,
-              display: moment(timestamp).format('ddd, MMM Do YYYY, h:mma')
-            };
-          })
-          // resolve this chain to an array of objects for the chooser
+        // doubley ensure timestamp in desc since modal functionality depends on it, add some extra display stuff
+        $scope.versions =
+          _.chain(versions)
+            // loop through each version and add timestamp display property
+            .each(function (version) {
+              version.timestamp_display = moment(version.timestamp).format('MMM Do YYYY, h:mma')
+            })
+            // sort by timestamps desc, so most recent is on top
+            .sortBy(function (version) {
+              return -version.timestamp;
+            })
           .value();
 
         // set initial preview to top item which should be the most recent
-        $scope.selectedVersion = sortedVersions[0];
-        $scope.selectedTimestamp = $scope.timestamps[0];
+        $scope.selectedVersion = $scope.versions[0];
 
         // set preview in modal window based on timestamp
-        $scope.setPreview = function (timestamp) {
-          $scope.selectedTimestamp = timestamp;
-          $scope.selectedVersion = _.find(sortedVersions, function (version) {
-            return version.timestamp === timestamp.ms;
-          });
+        $scope.setPreview = function (version) {
+          $scope.selectedVersion = version;
         };
 
         // restore selected version preview
