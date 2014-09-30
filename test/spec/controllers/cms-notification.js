@@ -53,60 +53,6 @@ describe('Controller: CmsNotificationCtrl', function () {
 
     expect($scope.notificationDirty).toBe(true);
 
-  });
-
-  // TODO : remove this stuff
-//
-//  it('should have a function to save the state of the current notification', function () {
-//
-//    expect($scope.notificationDirty).toBe(false);
-//
-//    $scope.notification.title = 'Some New Title';
-//    $scope.$apply();
-//
-//    expect($scope.notificationDirty).toBe(true);
-//
-//    $scope.saveNotification();
-//
-//    expect($scope.notification.put).toHaveBeenCalled();
-//
-//  });
-//
-//  it('should save notification with a new id if it\'s a new notification', function () {
-//
-//    $httpBackend.expectPOST('/cms/api/v1/notifications/').respond(200, $scope.notifications.length + 1);
-//
-//    var now = moment();
-//    $scope.notification =  {
-//      post_date: now,
-//      notify_end_date: now.add({day : 1})
-//    };
-//    $scope.$apply();
-//
-//    expect($scope.notificationDirty).toBe(true);
-//    expect($scope.notification.id).toBeUndefined();
-//
-//    $scope.saveNotification();
-//    $httpBackend.flush();
-//
-//    expect($scope.notifications.post).toHaveBeenCalled();
-//    expect($scope.notificationDirty).toBe(false);
-//    expect($scope.notification.id).toBeDefined();
-//
-//  });
-//
-//  it('should have a function to delete the current notification', function () {
-//
-//    $httpBackend.expectDELETE('/cms/api/v1/notifications/0/').respond(200);
-//
-//    var notificationsLength = $scope.notifications.length;
-//
-//    $scope.deleteNotification();
-//    $httpBackend.flush();
-//
-//    expect($scope.notification.remove).toHaveBeenCalled();
-//    expect($scope.notifications.length).toBe(notificationsLength - 1);
-//
-//  });
+  })
 
 });
