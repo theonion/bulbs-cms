@@ -492,8 +492,6 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.saveArticle = function () {
-      VersionStorageApi.$create($scope.article, $scope.articleIsDirty);
-
       ContentApi.one('content', $routeParams.id).get().then(function (data) {
         if (data.last_modified &&
           $scope.article.last_modified &&
@@ -548,7 +546,13 @@ angular.module('bulbsCmsApp')
       $scope.saveArticleDeferred.reject();
     }
 
+    /**
+     * Last thing to happen on a successful save.
+     */
     function saveArticleSuccessCbk(resp) {
+      // store a version with version api
+      VersionStorageApi.$create($scope.article, $scope.articleIsDirty);
+
       $(navbarSave).html('<i class=\'glyphicon glyphicon-ok\'></i> Saved!');
       setTimeout(function () {
           $(navbarSave).html(saveHTML);
@@ -3330,14 +3334,27 @@ angular.module('bulbsCmsApp')
       });
 
     /**
+     * Memoized omitting function for deep scrubbing.
+     */
+    var _omitter = _.memoize(
+      function (value, key) {
+        return _.isFunction(value)
+                || _.find(key, function (c) {
+                    return c === '.' || c === '#' || c === '$' || c === '/' || c === '[' || c === ']';
+                   });
+      },
+      function (value, key) {
+        return [key, value];
+      });
+
+    /**
      * Recursively scrub object of functions and turn undefines into null, makes object valid for saving in firebase.
      *
      * @param obj   object to recurse through
      */
     var _deepScrub = function (obj) {
 
-      var clone, transValue,
-          omit = function (value) { return _.isFunction(value);};
+      var clone, transValue;
 
       if (_.isUndefined(obj)) {
         // turn undefineds into nulls, this allows deletion of property values
@@ -3349,18 +3366,18 @@ angular.module('bulbsCmsApp')
           // run value through recursive omit call
           transValue = _deepScrub(value);
           // check if this should be omitted, if not clone it over
-          if (!omit(transValue)) {
+          if (!_omitter(transValue, key)) {
             clone[key] = transValue;
           }
         });
       } else if (_.isArray(obj)) {
         // this is an array, loop through items use omit to decide what to do with them
         clone = [];
-        _.each(obj, function (value) {
+        _.each(obj, function (value, key) {
           // run value through recursive omit call
           transValue = _deepScrub(value);
           // check if this should be omitted, if not clone over
-          if (!omit(transValue)) {
+          if (!_omitter(transValue, key)) {
             clone.push(transValue);
           }
         });
