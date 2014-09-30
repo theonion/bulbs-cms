@@ -5,7 +5,7 @@ angular.module('bulbsCmsApp')
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, keypress, Raven,
-    IfExistsElse, Localstoragebackup, ContentApi, FirebaseApi, Login, routes)
+    IfExistsElse, VersionStorageApi, ContentApi, FirebaseArticleFactory, Login, routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
@@ -26,34 +26,47 @@ angular.module('bulbsCmsApp')
 
       $scope.last_saved_article = angular.copy(data);
 
-      // log in to firebase
-      FirebaseApi.login();
+      // get article and active users, register current user as active
+      FirebaseArticleFactory
+        .$retrieveCurrentArticle()
+          .then(function ($article) {
 
-      // register the current user as viewing this article
-      FirebaseApi.registerCurrentUserActive($scope.article.id);
+            var $activeUsers = $article.$activeUsers();
 
-      // sync this article variable with the currently active users
-      FirebaseApi.getActiveUsers($scope.article.id, function (activeUsers) {
+            // register a watch on active users so we can update the list in real time
+            $activeUsers.$watch(function () {
 
-//        $scope.activeUsers = activeUsers.$asArray();
-        var $activeUsers = activeUsers.$asArray();
-        $activeUsers.$watch(function () {
+              // unionize user data so that we don't have a bunch of the same users in the list
+              $scope.activeUsers =
+                _.chain($activeUsers)
+                  // group users by their id
+                  .groupBy(function (user) {
+                    return user.id;
+                  })
+                  // take first user in grouping and use that data along with a count of the number of times they show
+                  //  up in the list (number of sessions they have running)
+                  .map(function (group) {
+                    var groupedUser = group[0];
+                    groupedUser.count = group.length;
+                    return groupedUser;
+                  })
+                  // sort users by their display names
+                  .sortBy(function (user) {
+                    return user.displayName;
+                  })
+                  // now we have a list of unique users along with the number of sessions they have running, sorted by
+                  //  their display names
+                  .value();
 
-          // do some unionizng on activeUsers data when it changes
-          $scope.activeUsers =
-            _.chain($activeUsers)
-              .groupBy(function (user) { return user.id; })
-              .map(function (group) {
-                var groupedUser = group[0];
-                groupedUser.count = group.length;
-                return groupedUser;
-              })
-              .sortBy(function (user) { return user.displayName; })
-              .value();
+            });
 
-        });
+            // register current user active with this article
+            $article.$registerCurrentUserActive();
 
-      });
+            // who knows what kind of promises you might have in the future? so return the article object for chains
+            return $article;
+
+          });
 
     };
 
@@ -82,7 +95,7 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.saveArticle = function () {
-      Localstoragebackup.backupToLocalStorage();
+      VersionStorageApi.$create($scope.article, $scope.articleIsDirty);
 
       ContentApi.one('content', $routeParams.id).get().then(function (data) {
         if (data.last_modified &&
@@ -95,7 +108,7 @@ angular.module('bulbsCmsApp')
             scope: $scope,
             resolve: {
               articleOnPage: function () { return $scope.article; },
-              articleOnServer: function () { return data; },
+              articleOnServer: function () { return data; }
             }
           });
         } else {
@@ -145,17 +158,16 @@ angular.module('bulbsCmsApp')
         }, 2500);
       $window.article = $scope.article = resp;
       $scope.last_saved_article = angular.copy(resp);
+      $scope.articleIsDirty = false;
       $scope.errors = null;
       $location.search('rating_type', null); //maybe just kill the whole query string with $location.url($location.path())
       $scope.saveArticleDeferred.resolve(resp);
     }
 
+    // keep track of if article is dirty or not
+    $scope.articleIsDirty = false;
     $scope.$watch('article', function () {
-      if (angular.equals($scope.article, $scope.last_saved_article)) {
-        $scope.articleIsDirty = false;
-      } else {
-        $scope.articleIsDirty = true;
-      }
+      $scope.articleIsDirty = !angular.equals($scope.article, $scope.last_saved_article);
     }, true);
 
     $scope.$watch('articleIsDirty', function () {
@@ -178,10 +190,5 @@ angular.module('bulbsCmsApp')
         $window.history.back();
       }, 1500);
     };
-
-    var backupInterval = (function () {
-      var interval = 60000; //1 minute
-      return $interval(Localstoragebackup.backupToLocalStorage, interval);
-    })();
 
   });

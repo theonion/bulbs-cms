@@ -6,7 +6,6 @@ angular.module('bulbsCmsApp.mockApi').run([
       return [403, {"detail": "No permission"}];
     });
 
-
     detailRegex = /^\/cms\/api\/v1\/content\/(\d+)\/$/;
     function getContentId(url) {
       var index = detailRegex.exec(url)[1];
@@ -85,6 +84,16 @@ angular.module('bulbsCmsApp.mockApi').run([
     $httpBackend.whenGET('/users/logout/').respond(function(method, url, data){
       return [200]
     });
+
+    $httpBackend.whenGET('/cms/api/v1/notifications/').respond([
+      {
+        title: 'We\'ve Made An Update!',
+        description: 'There were some updates made to the site!',
+        body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin quis aliquet risus, eget vulputate nibh. Fusce egestas porttitor libero in faucibus. Aliquam at orci eget massa tristique condimentum vel sit amet ipsum. Nulla tincidunt arcu tortor, a pulvinar mauris convallis id. Quisque imperdiet id ex ac fringilla. Aliquam fringilla dolor nec enim iaculis iaculis sed ac lacus. Nulla id condimentum magna. Aliquam dictum justo tortor, vitae blandit odio aliquet sagittis.',
+        post_date: '2014-09-25T16:00:00Z',
+        notify_end_date: '2014-09-28T16:00:00Z'
+      }
+    ]);
 
     //current user
     $httpBackend.whenGET(/\/users\/me\/?/).respond({
@@ -175,29 +184,49 @@ angular.module('bulbsCmsApp.mockApi').run([
     // send to webtech (fickle)
     $httpBackend.whenPOST('/cms/api/v1/report-bug/').respond('');
 
+    //var tokenGenerator = new FirebaseTokenGenerator('');
+
     // user, log in as a random user
     var users = [
-        {
-            id: 0,
-            username: 'admin',
-            email: 'webtech@theonion.com',
-            first_name: 'Herman',
-            last_name: 'Zweibel'
-        },
-        {
-            id: 1,
-            username: 'jadams',
-            email: 'jadams@theonion.com',
-            first_name: 'John',
-            last_name: 'Adams'
-        },
-        {
-            id: 2,
-            username: 'bdoledoledoledoledoledole',
-            email: 'bdole@theonion.com',
-            first_name: 'Bob',
-            last_name: 'Dole Dole Dole Dole Dole Dole'
-        }
+      {
+        id: 0,
+        username: 'admin',
+        email: 'webtech@theonion.com',
+        first_name: 'Herman',
+        last_name: 'Zweibel',
+//        firebase_token: tokenGenerator.createToken({
+//          id: 0,
+//          username: 'admin',
+//          email: 'webtech@theonion.com',
+//          is_staff: true
+//        })
+      },
+      {
+        id: 1,
+        username: 'jadams',
+        email: 'jadams@theonion.com',
+        first_name: 'John',
+        last_name: 'Adams',
+//        firebase_token: tokenGenerator.createToken({
+//          id: 1,
+//          username: 'jadams',
+//          email: 'jadams@theonion.com',
+//          is_staff: true
+//        })
+      },
+      {
+        id: 2,
+        username: 'bdoledoledoledoledoledole',
+        email: 'bdole@theonion.com',
+        first_name: 'Bob',
+        last_name: 'Dole Dole Dole Dole Dole Dole',
+//        firebase_token: tokenGenerator.createToken({
+//          id: 2,
+//          username: 'bdoledoledoledoledoledole',
+//          email: 'bdole@theonion.com',
+//          is_staff: true
+//        })
+      }
     ];
     var userIndex = Math.floor(Math.random() * users.length);
     $httpBackend.whenGET('/cms/api/v1/me/').respond(users[userIndex]);

@@ -36,6 +36,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'app/cms-image.js',
+      'app/bower_components/lodash/dist/lodash.js',
       'app/bower_components/jquery/dist/jquery.js',
       'app/bower_components/jcrop/js/jquery.Jcrop.js',
       'app/bower_components/bootstrap/dist/js/bootstrap.js',
@@ -52,7 +53,6 @@ module.exports = function(config) {
       'app/bower_components/restangular/dist/restangular.js',
       'app/bower_components/restangular/dist/restangular.js',
       'app/bower_components/moment/moment.js',
-      'app/bower_components/underscore/underscore.js',
       'app/bower_components/urlify/urlify.js',
       'app/bower_components/onion-editor/build/onion-editor.min.js',
       'app/bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js',
@@ -61,6 +61,7 @@ module.exports = function(config) {
       'app/mocks/app.js',
       'app/mocks/api.js',
       'app/mocks/betty.js',
+      'app/mocks/firebaseapi.js',
 
       'app/scripts/*.js',
       'app/scripts/**/*.js',

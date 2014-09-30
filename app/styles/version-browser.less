@@ -1,15 +1,44 @@
-.version-browser-container{
+.version-browser-container {
   height: 500px;
-  ul{
+
+  .version-browser-header {
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  div.version-browser-left {
     float: left;
-    font-size: 12px;
-    width: 200px;
-    list-style-type: none;
+    width: 25%;
     height: 100%;
-    overflow-y: scroll;
+    ul.version-timestamp-list {
+      overflow-y: scroll;
+      height: 95%;
+      font-size: 12px;
+      list-style-type: none;
+      padding-right: 10px;
+      li {
+        text-align: center;
+        .version-timestamp {
+          font-weight: bold;
+        }
+        .version-by {
+          font-style: italic;
+        }
+      }
+    }
   }
-  div{
+
+  div.version-browser-right {
     height: 100%;
-    overflow-y: scroll;
+    div.version-preview {
+      padding: 0 10px;
+      height: 95%;
+      overflow-y: scroll;
+    }
   }
+
+}
+
+.version-browser-dirty-warning {
+  margin-right: 10px;
 }
