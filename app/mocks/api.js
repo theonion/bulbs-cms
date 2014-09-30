@@ -95,11 +95,11 @@ angular.module('bulbsCmsApp.mockApi').run([
         notify_end_date: '2014-09-28T16:00:00Z'
       }
     ];
-    $httpBackend.whenGET('/cms/api/v1/notifications/$').respond(mockApiData.notifications);
+    $httpBackend.whenGET('/cms/api/v1/notifications/').respond(mockApiData.notifications);
 
-    var currId = mockApiData.length;
-    $httpBackend.whenPOST('/cms/api/v1/notifications/$').respond(200, ++currId);
-    $httpBackend.whenDELETE(/\/cms\/api\/v1\/notifications\/(\d+)\/$/).respond(200);
+    var currId = mockApiData.notifications.length;
+    $httpBackend.whenPOST('/cms/api/v1/notifications/').respond(200, ++currId);
+    $httpBackend.whenDELETE(/\/cms\/api\/v1\/notifications\/(\d+)\//).respond(200);
 
     //current user
     $httpBackend.whenGET(/\/users\/me\/?/).respond({
