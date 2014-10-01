@@ -62,7 +62,7 @@
     </div>
     <div class="pull-right">
       <div class="btn-group">
-        <button class="btn btn-success btn-xs" ng-click="saveNotification()">
+        <button class="btn btn-success btn-xs" ng-disabled="!notificationDirty" ng-click="saveNotification()">
           <i class="glyphicon glyphicon-save"></i>
           Save
         </button>

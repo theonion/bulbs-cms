@@ -25,6 +25,9 @@ angular.module('bulbsCmsApp')
       }
     }, true);
 
+    /**
+     * Save this notification using the parent scope.
+     */
     $scope.saveNotification = function () {
 
       if ($scope.notificationDirty) {
@@ -33,26 +36,23 @@ angular.module('bulbsCmsApp')
           .then(function (newNotification) {
             $scope.notification = newNotification;
             $scope.notificationDirty = false;
-            $scope.saveFailed = false;
           })
           .catch(function (error) {
             console.log('Notification save failed', error);
-            $scope.saveFailed = true;
           });
 
       }
 
     };
 
+    /**
+     * Delete this notification using the parent scope.
+     */
     $scope.deleteNotification = function () {
 
       $scope.$parent.$deleteNotification($scope.notification)
-        .then(function () {
-          $scope.deleteFailed = false;
-        })
         .catch(function (error) {
           console.log('Notification delete failed', error);
-          $scope.deleteFailed = true;
         });
 
     };
