@@ -2,6 +2,7 @@
   <div class="panel-heading">
     <h4>
         <span
+            ng-if="notification.editable"
             datetime-selection-modal-opener
             ng-model="postDate"
             modal-title="Choose Date to Post"
@@ -13,8 +14,10 @@
             <span ng-if="!postDate">&lt;choose a post date&gt;</span>
         </span>
       </span>
+      <span ng-if="!notification.editable">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
       -
       <span
+          ng-if="notification.editable"
           tooltip="{{ !titleValid ? 'Title must be between 0 and 110 characters!' : '' }}"
           tooltip-placement="bottom">
         <onion-editor
@@ -24,16 +27,19 @@
           ng-class="{'bg-danger text-danger': !titleValid}">
         </onion-editor>
       </span>
+      <span ng-if="!notification.editable">{{ notification.title }}</span>
     </h4>
   </div>
   <div class="panel-body">
     <onion-editor
+      ng-if="notification.editable"
       ng-model="notification.body"
       role="multiline"
       placeholder="Write here">
     </onion-editor>
+    <span ng-if="!notification.editable">{{ notification.body }}</span>
   </div>
-  <div class="panel-footer clearfix">
+  <div ng-if="notification.editable" class="panel-footer clearfix">
     <div class="pull-left">
       <div class="form-inline">
         <div class="form-group">
