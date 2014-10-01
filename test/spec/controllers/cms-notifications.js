@@ -59,7 +59,6 @@ describe('Controller: CmsNotificationsCtrl', function () {
         newNotifyEndDate = moment('2014-09-28T16:00:00-0500');
 
     notificationToSave.title = 'A New Notification';
-    notificationToSave.description = 'Hello';
     notificationToSave.body = 'Whatever balhb alhblahb.';
     notificationToSave.post_date = newPostDate;
     notificationToSave.notify_end_date = newNotifyEndDate;

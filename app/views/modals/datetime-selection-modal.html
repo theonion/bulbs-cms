@@ -14,10 +14,11 @@
             <a class="btn btn-default dropdown-toggle" data-toggle="dropdown">
               <i class="glyphicon glyphicon-calendar"></i>
             </a>
-            <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dLabel">
+            <ul class="dropdown-menu pull-right calendar-dropdown" role="menu" aria-labelledby="dLabel">
               <datetimepicker
                 ng-model="tempDatetime"
-                datetimepicker-config="{ dropdownSelector: '#dateDropdown', minView: 'day' }"></datetimepicker>
+                on-set-time="setDate"
+                datetimepicker-config="{ dropdownSelector: '.calendar-dropdown', minView: 'day' }"></datetimepicker>
             </ul>
           </div>
         </div>

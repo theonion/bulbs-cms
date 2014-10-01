@@ -84,15 +84,14 @@ angular.module('bulbsCmsApp.mockApi').run([
     $httpBackend.whenGET('/users/logout/').respond(function(method, url, data){
       return [200]
     });
-
+// TODO : add in info about if user is super user or not
     mockApiData.notifications = [
       {
         id: 0,
         title: 'We\'ve Made An Update!',
-        description: 'There were some updates made to the site!',
         body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin quis aliquet risus, eget vulputate nibh. Fusce egestas porttitor libero in faucibus. Aliquam at orci eget massa tristique condimentum vel sit amet ipsum. Nulla tincidunt arcu tortor, a pulvinar mauris convallis id. Quisque imperdiet id ex ac fringilla. Aliquam fringilla dolor nec enim iaculis iaculis sed ac lacus. Nulla id condimentum magna. Aliquam dictum justo tortor, vitae blandit odio aliquet sagittis.',
-        post_date: '2014-09-25T16:00:00Z',
-        notify_end_date: '2014-09-28T16:00:00Z'
+        post_date: '2014-09-25T16:00:00-0500',
+        notify_end_date: '2014-09-28T16:00:00-0500'
       }
     ];
     $httpBackend.whenGET('/cms/api/v1/notifications/').respond(mockApiData.notifications);

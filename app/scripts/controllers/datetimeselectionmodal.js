@@ -12,6 +12,11 @@ angular.module('bulbsCmsApp')
       return moment().zone(TIMEZONE_OFFSET);
     };
 
+    // callback function for using datetime calendar because it doesn't work at all in a sensible way
+    $scope.setDate = function (newDate) {
+      $scope.tempDatetime = moment(newDate);
+    };
+
     $scope.setDateToday = function () {
       var now = timeNowWithOffset();
       $scope.tempDatetime = moment().year(now.year()).month(now.month()).date(now.date());

@@ -3,6 +3,15 @@
 angular.module('bulbsCmsApp')
   .controller('CmsNotificationCtrl', function ($scope, moment) {
 
+    var valid = function () {
+      $scope.postDateValid = $scope.postDate && (!$scope.notifyEndDate || $scope.postDate < $scope.notifyEndDate);
+      $scope.notifyEndDateValid = $scope.notifyEndDate && $scope.postDate && $scope.notifyEndDate > $scope.postDate;
+      $scope.titleValid = $scope.notification.title && $scope.notification.title.length > 0
+        && $scope.notification.title.length <= 110;
+
+      $scope.notificationValid = $scope.postDateValid && $scope.notifyEndDateValid && $scope.titleValid;
+    };
+
     // Note: use middle man for handling dates since a bug in angular.js version causes moment to not work with
     //  angular.copy. So instead of keeping notification dates as moments, keep them as strings and use moment objects
     //  for interactions.
@@ -22,15 +31,22 @@ angular.module('bulbsCmsApp')
     $scope.$watch('notification', function (newValue, oldValue) {
       if (!angular.equals(newValue, oldValue)) {
         $scope.notificationDirty = true;
+
+        // do some validation here
+        valid();
+
       }
     }, true);
+
+    // do initial validation
+    valid();
 
     /**
      * Save this notification using the parent scope.
      */
     $scope.saveNotification = function () {
 
-      if ($scope.notificationDirty) {
+      if ($scope.notificationDirty && $scope.notificationValid) {
 
         $scope.$parent.$saveNotification($scope.notification)
           .then(function (newNotification) {

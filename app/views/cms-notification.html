@@ -1,32 +1,32 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <h4>
-      <span
-          datetime-selection-modal-opener
-          ng-model="postDate"
-          modal-title="Choose Date to Post">
-        <span ng-if="postDate">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
-        <span ng-if="!postDate">&lt;choose a post date&gt;</span>
-        -
+        <span
+            datetime-selection-modal-opener
+            ng-model="postDate"
+            modal-title="Choose Date to Post"
+            ng-class="{'bg-danger text-danger': !postDateValid}">
+          <span
+              tooltip="{{ !postDateValid ? 'This date must occur before notification end date!' : '' }}"
+              tooltip-placement="bottom">
+            <span ng-if="postDate">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
+            <span ng-if="!postDate">&lt;choose a post date&gt;</span>
+        </span>
       </span>
-      <onion-editor
-        ng-model="notification.title"
-        role="singleline"
-        placeholder="Title">
-      </onion-editor>
+      -
+      <span
+          tooltip="{{ !titleValid ? 'Title must be between 0 and 110 characters!' : '' }}"
+          tooltip-placement="bottom">
+        <onion-editor
+          ng-model="notification.title"
+          role="singleline"
+          placeholder="Title"
+          ng-class="{'bg-danger text-danger': !titleValid}">
+        </onion-editor>
+      </span>
     </h4>
   </div>
   <div class="panel-body">
-    <span class="post-date-and-description">
-      <div class="post-description">
-        <onion-editor
-          ng-model="notification.description"
-          role="singleline"
-          formatting="italic"
-          placeholder="Description">
-        </onion-editor>
-      </div>
-    </span>
     <onion-editor
       ng-model="notification.body"
       role="multiline"
@@ -39,38 +39,49 @@
         <div class="form-group">
           <label>Post on</label>
           <span
-             datetime-selection-modal-opener
-             ng-model="postDate"
-             modal-title="Choose Date to Post">
-            <i class="glyphicon glyphicon-calendar"></i>
-            <span ng-if="postDate">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
-            <span ng-if="!postDate">&lt;choose a post date&gt;</span>
+              datetime-selection-modal-opener
+              ng-model="postDate"
+              modal-title="Choose Date to Post"
+              ng-class="{'bg-danger text-danger': !postDateValid}">
+            <span
+                tooltip="{{ !postDateValid ? 'This date must occur before notification end date!' : '' }}"
+                tooltip-placement="bottom">
+              <i class="glyphicon glyphicon-calendar"></i>
+              <span ng-if="postDate">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
+              <span ng-if="!postDate">&lt;choose a post date&gt;</span>
+            </span>
           </span>
         </div>
         <div class="form-group" >
           <label>and end notifications</label>
           <span
-             datetime-selection-modal-opener
-             ng-model="notifyEndDate"
-             modal-title="Choose Date to End Notifications">
-            <i class="glyphicon glyphicon-calendar"></i>
-            <span ng-if="notifyEndDate">{{ notifyEndDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
-            <span ng-if="!notifyEndDate">&lt;choose an end notification date&gt;</span>
+              datetime-selection-modal-opener
+              ng-model="notifyEndDate"
+              modal-title="Choose Date to End Notifications"
+              ng-class="{'bg-danger text-danger': !notifyEndDateValid}">
+            <span
+                tooltip="{{ !notifyEndDateValid ? 'This date must occur after post date!' : '' }}"
+                tooltip-placement="bottom">
+              <i class="glyphicon glyphicon-calendar"></i>
+              <span ng-if="notifyEndDate">{{ notifyEndDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
+              <span ng-if="!notifyEndDate">&lt;choose an end notification date&gt;</span>
+            </span>
           </span>
         </div>
       </div>
     </div>
-    <div class="pull-right">
-      <div class="btn-group">
-        <button class="btn btn-success btn-xs" ng-disabled="!notificationDirty" ng-click="saveNotification()">
-          <i class="glyphicon glyphicon-save"></i>
-          Save
-        </button>
-        <button class="btn btn-danger btn-xs" ng-click="deleteNotification()">
-          <i class="glyphicon glyphicon-remove"></i>
-          Delete
-        </button>
-      </div>
+    <div class="pull-right btn-group">
+      <button
+          class="btn btn-success btn-xs"
+          ng-disabled="!notificationDirty || !notificationValid"
+          ng-click="saveNotification()">
+        <i class="glyphicon glyphicon-save"></i>
+        Save
+      </button>
+      <button class="btn btn-danger btn-xs" ng-click="deleteNotification()">
+        <i class="glyphicon glyphicon-remove"></i>
+        Delete
+      </button>
     </div>
   </div>
 </div>
