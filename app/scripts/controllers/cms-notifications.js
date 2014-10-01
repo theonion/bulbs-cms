@@ -6,15 +6,16 @@ angular.module('bulbsCmsApp')
     // set title
     $window.document.title = routes.CMS_NAMESPACE + ' | Notifications';
 
+    // get list of notifications
     CmsNotificationsApi.getList().then(function (notifications) {
-      _.each(notifications, function (notification) {
-        notification.post_date = moment(notification.post_date);
-        notification.notify_end_date = moment(notification.notify_end_date);
-      });
-
       $scope.notifications = notifications;
     });
 
+    /**
+     * Create a new notification, plain old object since we don't want to save invalid objects to the db.
+     *
+     * @return  new notification with only nulled date properties.
+     */
     $scope.newNotification = function () {
 
       var notification = {
@@ -28,22 +29,22 @@ angular.module('bulbsCmsApp')
 
     };
 
+    /**
+     * Save given notification to the database.
+     *
+     * @param notification  Notification to save.
+     * @return  promise that resolves when notification is saved.
+     */
     $scope.$saveNotification = function (notification) {
 
       var saveDefer = $q.defer(),
           savePromise = saveDefer.promise;
 
-      // transform moments into iso strings
-      notification.post_date = notification.post_date.format();
-      notification.notify_end_date = notification.notify_end_date.format();
-
       $scope.notifications.post(notification)
         .then(function (newNotification) {
-
-          // transform iso strings back into moments
-          newNotification.post_date = moment(newNotification.post_date);
-          newNotification.notify_end_date = moment(newNotification.notify_end_date);
-
+          // save succeeded, replace notification with restangularized notification
+          var i = $scope.notifications.indexOf(notification);
+          $scope.notifications[i] = newNotification;
           saveDefer.resolve(newNotification);
         })
         .catch(function (error) {
@@ -54,21 +55,40 @@ angular.module('bulbsCmsApp')
 
     };
 
+    /**
+     * Delete given notification from the database.
+     *
+     * @param notification  Notification to delete.
+     * @return  promise that resolves when notification is deleted.
+     */
     $scope.$deleteNotification = function (notification) {
 
       var deleteDefer = $q.defer(),
-          deletePromise = deleteDefer.promise;
+          deletePromise = deleteDefer.promise,
+          removeFromList = function (index) {
+            $scope.notifications.splice(index, 1);
+            deleteDefer.resolve();
+          };
 
+      // find notification in list
       var i = $scope.notifications.indexOf(notification);
       if (i > -1) {
-        notification.remove()
-          .then(function () {
-            $scope.notifications.splice(i, 1);
-            deleteDefer.resolve();
-          })
-          .catch(function (error) {
-            deleteDefer.reject(error);
-          });
+        // notification in list, check if it is a restangular object and has a remove function
+        if (_.isFunction(notification.remove)) {
+          // has remove, call it and resolve promise
+          notification.remove()
+            .then(function () {
+              removeFromList(i)
+            })
+            .catch(function (error) {
+              deleteDefer.reject(error);
+            });
+        } else {
+          // does not have remove, this is a previously unsaved notification, just remove it from list
+          removeFromList(i);
+        }
+      } else {
+        deleteDefer.reject('Cannot find notification in notification list. Unable to delete.');
       }
 
       return deletePromise;

@@ -37,22 +37,27 @@ describe('Controller: CmsNotificationCtrl', function () {
 
   }));
 
-  it('should have a scope level variable that contains current time', function () {
-
-    expect($scope.today).toBeDefined();
-    expect(moment.isMoment($scope.today)).toBe(true);
-
-  });
-
   it('should have a scope level variable to track if a notification is dirty', function () {
 
     expect($scope.notificationDirty).toBe(false);
 
+    $scope.$apply();
     $scope.notification.title = 'Some New Title';
     $scope.$apply();
 
     expect($scope.notificationDirty).toBe(true);
 
-  })
+  });
+
+  it('should have a function to save itself using the parent scope\'s save function', function () {
+// TODO
+    throw 'implement this';
+
+  });
+
+  it('should have a function to delete itself using the parent scope\'s remove function', function () {
+// TODO
+    throw 'implement this';
+  });
 
 });

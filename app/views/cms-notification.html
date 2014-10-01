@@ -3,10 +3,10 @@
     <h4>
       <span
           datetime-selection-modal-opener
-          ng-model="notification.post_date"
+          ng-model="postDate"
           modal-title="Choose Date to Post">
-        <span ng-if="notification.post_date">{{ formatMomentDate(notification.post_date) }}</span>
-        <span ng-if="!notification.post_date">&lt;choose a post date&gt;</span>
+        <span ng-if="postDate">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
+        <span ng-if="!postDate">&lt;choose a post date&gt;</span>
         -
       </span>
       <onion-editor
@@ -40,30 +40,22 @@
           <label>Post on</label>
           <span
              datetime-selection-modal-opener
-             ng-model="notification.post_date"
+             ng-model="postDate"
              modal-title="Choose Date to Post">
             <i class="glyphicon glyphicon-calendar"></i>
-            <span ng-if="notification.post_date">
-              {{ formatMomentDate(notification.post_date, 'YYYY-MM-DD hh:mm a') }}
-            </span>
-            <span ng-if="!notification.post_date">
-              &lt;choose a post date&gt;
-            </span>
+            <span ng-if="postDate">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
+            <span ng-if="!postDate">&lt;choose a post date&gt;</span>
           </span>
         </div>
         <div class="form-group" >
           <label>and end notifications</label>
           <span
              datetime-selection-modal-opener
-             ng-model="notification.notify_end_date"
+             ng-model="notifyEndDate"
              modal-title="Choose Date to End Notifications">
             <i class="glyphicon glyphicon-calendar"></i>
-            <span ng-if="notification.notify_end_date">
-              {{ formatMomentDate(notification.notify_end_date, 'YYYY-MM-DD hh:mm a') }}
-            </span>
-            <span ng-if="!notification.notify_end_date">
-              &lt;choose an end notification date&gt;
-            </span>
+            <span ng-if="notifyEndDate">{{ notifyEndDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
+            <span ng-if="!notifyEndDate">&lt;choose an end notification date&gt;</span>
           </span>
         </div>
       </div>

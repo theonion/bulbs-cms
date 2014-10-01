@@ -98,7 +98,14 @@ angular.module('bulbsCmsApp.mockApi').run([
     $httpBackend.whenGET('/cms/api/v1/notifications/').respond(mockApiData.notifications);
 
     var currId = mockApiData.notifications.length;
-    $httpBackend.whenPOST('/cms/api/v1/notifications/').respond(200, ++currId);
+    $httpBackend.whenPOST('/cms/api/v1/notifications/').respond(200, {
+      id: 1,
+      title: 'New Notification',
+      description: 'Balh lbha blah blahb lahb.',
+      body: 'Ipsum ipsum ipsum.',
+      post_date: '2014-09-25T16:00:00Z',
+      notify_end_date: '2014-09-28T16:00:00Z'
+    });
     $httpBackend.whenDELETE(/\/cms\/api\/v1\/notifications\/(\d+)\//).respond(200);
 
     //current user

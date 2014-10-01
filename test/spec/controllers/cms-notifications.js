@@ -29,11 +29,9 @@ describe('Controller: CmsNotificationsCtrl', function () {
 
   }));
 
-  it('should initialize with notifications from backend, transforming dates to moment objects', function () {
+  it('should initialize with notifications from backend', function () {
 
     expect($scope.notifications[0].title).toBe('We\'ve Made An Update!');
-    expect(moment.isMoment($scope.notifications[0].post_date)).toBe(true);
-    expect(moment.isMoment($scope.notifications[0].notify_end_date)).toBe(true);
 
   });
 
