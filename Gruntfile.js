@@ -530,7 +530,9 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('commitBuild', function () {
-    var stdout = shell.exec('git commit -am \'new build\'', {silent: true});
+    var stdout = shell.exec('git add dist/scripts/scripts.min.js.*.map dist/scripts/templates.js.*.map;' +
+                            'git commit -am \'new build\'',
+      {silent: true});
     grunt.log.ok(stdout.output);
   })
 
