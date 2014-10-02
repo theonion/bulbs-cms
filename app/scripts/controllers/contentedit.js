@@ -55,7 +55,6 @@ angular.module('bulbsCmsApp')
                       title: 'Another User Saved!',
                       text: msg,
                       type: 'error',
-                      hide: false,
                       confirm: {
                         confirm: true,
                         buttons: [{
