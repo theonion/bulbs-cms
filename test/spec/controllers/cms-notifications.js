@@ -116,13 +116,13 @@ describe('Controller: CmsNotificationsCtrl', function () {
         {
           id: 0,
           title: 'I Should be Listed',
-          post_date: today.subtract({days: 1}).format(),
+          post_date: today.clone().subtract({days: 1}).format(),
           editable: false
         },
         {
           id: 1,
           title: 'I Should Not be Listed',
-          post_date: today.add({days: 2}).format(),
+          post_date: today.clone().add({days: 1}).format(),
           editable: false
         }
       ]);

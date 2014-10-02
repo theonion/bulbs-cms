@@ -1,6 +1,6 @@
 angular.module('bulbsCmsApp.mockApi').run([
-  '$httpBackend', 'mockApiData',
-  function($httpBackend, mockApiData) {
+  '$httpBackend', 'mockApiData', 'moment',
+  function($httpBackend, mockApiData, moment) {
 
     $httpBackend.when('OPTIONS', '/returns-a-403/').respond(function(){ //just for testing
       return [403, {"detail": "No permission"}];
@@ -86,14 +86,30 @@ angular.module('bulbsCmsApp.mockApi').run([
     });
 
     // notifications
+    var today = moment();
     mockApiData.notifications = [
       {
         id: 0,
         title: 'We\'ve Made An Update!',
         body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin quis aliquet risus, eget vulputate nibh. Fusce egestas porttitor libero in faucibus. Aliquam at orci eget massa tristique condimentum vel sit amet ipsum. Nulla tincidunt arcu tortor, a pulvinar mauris convallis id. Quisque imperdiet id ex ac fringilla. Aliquam fringilla dolor nec enim iaculis iaculis sed ac lacus. Nulla id condimentum magna. Aliquam dictum justo tortor, vitae blandit odio aliquet sagittis.',
-        post_date: '2014-09-25T16:00:00-0500',
-        notify_end_date: '2014-09-28T16:00:00-0500',
+        post_date: today.format(),
+        notify_end_date: today.clone().add({days: 3}).format(),
         editable: true
+      },
+      {
+        id: 1,
+        title: 'You Can\'t Edit Me',
+        body: 'something something',
+        post_date: today.format(),
+        notify_end_date: today.clone().add({days: 3}).format(),
+        editable: false
+      },
+      {
+        id: 2,
+        title: 'I\'m Not Visible',
+        post_date: today.clone().add({days: 1}).format(),
+        notify_end_date: today.clone().add({days: 3}).format(),
+        editable: false
       }
     ];
     $httpBackend.whenGET('/cms/api/v1/notifications/').respond(mockApiData.notifications);
@@ -101,8 +117,8 @@ angular.module('bulbsCmsApp.mockApi').run([
       id: 1,
       title: 'New Notification',
       body: 'Ipsum ipsum ipsum.',
-      post_date: '2014-09-25T16:00:00-0500',
-      notify_end_date: '2014-09-28T16:00:00-0500',
+      post_date: today.clone().add({days: 1}).format(),
+      notify_end_date: today.clone().add({days: 4}).format(),
       editable: true
     });
     $httpBackend.whenDELETE(/\/cms\/api\/v1\/notifications\/(\d+)\//).respond(200);
