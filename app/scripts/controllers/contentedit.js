@@ -5,7 +5,7 @@ angular.module('bulbsCmsApp')
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, keypress, Raven,
-    IfExistsElse, VersionStorageApi, ContentApi, FirebaseArticleFactory, Login, routes)
+    IfExistsElse, VersionStorageApi, ContentApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener, routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
@@ -44,13 +44,34 @@ angular.module('bulbsCmsApp')
 
                   if (currentUser && newVersion.user.id !== currentUser.id) {
 
+                    var msg = '<b>'+ newVersion.user.displayName + '</b> just saved their own version of this article!';
+                    if ($scope.articleIsDirty) {
+                      msg += ' You have unsaved changes that may conflict when you save.'
+                    }
+                    msg += ' Open the version browser to see their latest version.';
+
                     // this isn't the current user that saved, so someone else must have saved, notify this user
                     new PNotify({
                       title: 'Another User Saved!',
-                      text: '<b>'+ newVersion.user.displayName + '</b> has saved a version of this article! If you' +
-                        ' have unsaved changes, resolve their changes before saving your own version. If you have' +
-                        ' no unsaved changes, reload the page to see the newest version.',
-                      type: 'error'
+                      text: msg,
+                      type: 'error',
+                      hide: false,
+                      confirm: {
+                        confirm: true,
+                        buttons: [{
+                          text: 'Open Version Browser',
+                          addClass: 'btn-info',
+                          click: function (notice) {
+                            notice.remove();
+                            VersionBrowserModalOpener.open($scope, $scope.article);
+                          }
+                        }, {
+                          addClass: 'hide'
+                        }]
+                      },
+                      buttons: {
+                        sticker: false
+                      }
                     });
                   }
                 }

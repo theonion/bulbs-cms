@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ContentworkflowCtrl', function ($scope, $http, $modal, $window, moment, routes, TIMEZONE_LABEL) {
+  .controller('ContentworkflowCtrl', function ($scope, $http, $modal, $window, moment, routes,
+                                               VersionBrowserModalOpener, TIMEZONE_LABEL) {
     $scope.TIMEZONE_LABEL = TIMEZONE_LABEL;
 
     $scope.trashContentModal = function (articleId) {
@@ -83,15 +84,7 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.versionBrowserModal = function (article) {
-      return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'modals/version-browser-modal.html',
-        controller: 'VersionBrowserModalCtrl',
-        scope: $scope,
-        size: 'lg',
-        resolve: {
-          article: function () { return article; }
-        }
-      });
+      VersionBrowserModalOpener.open($scope, article);
     };
 
     $scope.descriptionModal = function (article) {
