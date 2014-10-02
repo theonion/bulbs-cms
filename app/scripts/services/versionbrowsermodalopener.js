@@ -5,20 +5,25 @@ angular.module('bulbsCmsApp')
     var modal = null;
     return {
       open: function ($scope, article) {
-        // ensure any version browser modals are closed before opening a new one
-        if (modal) {
-          modal.close();
-        }
+        // ensure only one version browser modal is open at a time
+        if (modal === null) {
+          modal = $modal.open({
+            templateUrl: routes.PARTIALS_URL + 'modals/version-browser-modal.html',
+            controller: 'VersionBrowserModalCtrl',
+            scope: $scope,
+            size: 'lg',
+            resolve: {
+              article: function () {
+                return article;
+              }
+            }
+          });
 
-        modal = $modal.open({
-          templateUrl: routes.PARTIALS_URL + 'modals/version-browser-modal.html',
-          controller: 'VersionBrowserModalCtrl',
-          scope: $scope,
-          size: 'lg',
-          resolve: {
-            article: function () { return article; }
-          }
-        });
+          // when modal closes null out reference
+          modal.result.then(function () {
+            modal = null;
+          });
+        }
 
         return modal;
       }
