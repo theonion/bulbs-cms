@@ -388,7 +388,10 @@ module.exports = function (grunt) {
     uglify: {
       options: {
         mangle: false, //https://github.com/theonion/bulbs-cms/issues/4
-        sourceMap: true
+        sourceMap: true,
+        sourceMapName: function (path) {
+          return path + '.' + Date.now() + '.map';
+        }
       },
       dist: {
         files: {
