@@ -7,10 +7,10 @@ angular.module('bulbsCmsApp')
       open: function ($scope, article) {
         // ensure any version browser modals are closed before opening a new one
         if (modal) {
-          $modal.close();
+          modal.close();
         }
 
-        modal =  $modal.open({
+        modal = $modal.open({
           templateUrl: routes.PARTIALS_URL + 'modals/version-browser-modal.html',
           controller: 'VersionBrowserModalCtrl',
           scope: $scope,
