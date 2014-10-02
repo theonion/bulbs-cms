@@ -56,7 +56,7 @@ angular.module('bulbsCmsApp')
                   userRef.onDisconnect().remove();
 
                   // resolve registration
-                  registeredDeferred.resolve(userRef);
+                  registeredDeferred.resolve(user);
 
                 })
                 .catch(function (error) {
