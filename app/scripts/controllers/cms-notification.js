@@ -46,7 +46,7 @@ angular.module('bulbsCmsApp')
      */
     $scope.saveNotification = function () {
 
-      if ($scope.notificationDirty && $scope.notificationValid) {
+      if ($scope.notification.editable && $scope.notificationDirty && $scope.notificationValid) {
 
         $scope.$parent.$saveNotification($scope.notification)
           .then(function (newNotification) {
@@ -66,10 +66,14 @@ angular.module('bulbsCmsApp')
      */
     $scope.deleteNotification = function () {
 
-      $scope.$parent.$deleteNotification($scope.notification)
-        .catch(function (error) {
-          console.log('Notification delete failed', error);
-        });
+      if ($scope.notification.editable) {
+
+        $scope.$parent.$deleteNotification($scope.notification)
+          .catch(function (error) {
+            console.log('Notification delete failed', error);
+          });
+
+      }
 
     };
 

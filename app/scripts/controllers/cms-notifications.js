@@ -8,6 +8,14 @@ angular.module('bulbsCmsApp')
 
     // get list of notifications
     CmsNotificationsApi.getList().then(function (notifications) {
+      // filter out notifications that are not editable and have a post date in the future
+      var removalIndicies = [];
+      _.each(notifications, function (notification, i) {
+        if (!notification.editable && moment(notification.post_date).isAfter(moment())) {
+          notifications.splice(i, 1);
+        }
+      });
+
       $scope.notifications = notifications;
     });
 

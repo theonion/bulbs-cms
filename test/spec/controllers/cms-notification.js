@@ -103,6 +103,21 @@ describe('Controller: CmsNotificationCtrl', function () {
 
     });
 
+    it('should not be able to save or delete if not editable', function () {
+
+      $scope.notification.editable = false;
+      $scope.notificationDirty = true;
+      $scope.notificationValid = true;
+
+      $scope.saveNotification();
+      $scope.deleteNotification();
+      $scope.$apply();
+
+      expect($scope.$parent.$saveNotification).not.toHaveBeenCalled();
+      expect($scope.$parent.$deleteNotification).not.toHaveBeenCalled();
+
+    });
+
   });
 
 });
