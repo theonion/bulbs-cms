@@ -5,7 +5,7 @@
 
   <div class="row well well-sm">
     <div
-        ng-if="_.find(notifications, {'editable': true})"
+        ng-if="showAddButton"
         class="add-notification clearfix">
       <span ng-if="notifications.length < 1" class="pull-left text-info">
         <i class="glyphicon glyphicon-info-sign"></i>

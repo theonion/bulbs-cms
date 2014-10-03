@@ -12,6 +12,8 @@ angular.module('bulbsCmsApp')
       _.each(notifications, function (notification, i) {
         if (!notification.editable && moment(notification.post_date).isAfter(moment())) {
           notifications.splice(i, 1);
+        } else if (notification.editable) {
+          $scope.showAddButton = true;
         }
       });
 
@@ -27,7 +29,8 @@ angular.module('bulbsCmsApp')
 
       var notification = {
         post_date: null,
-        notify_end_date: null
+        notify_end_date: null,
+        editable: true
       };
 
       $scope.notifications.unshift(notification);

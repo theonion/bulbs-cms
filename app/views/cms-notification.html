@@ -1,23 +1,8 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <h4>
-        <span
-            ng-if="notification.editable"
-            datetime-selection-modal-opener
-            ng-model="postDate"
-            modal-title="Choose Date to Post"
-            ng-class="{'bg-danger text-danger': !postDateValid}">
-          <span
-              tooltip="{{ !postDateValid ? 'This date must occur before notification end date!' : '' }}"
-              tooltip-placement="bottom">
-            <span ng-if="postDate">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
-            <span ng-if="!postDate">&lt;choose a post date&gt;</span>
-        </span>
-      </span>
-      <span ng-if="!notification.editable">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
-      -
-      <span
-          ng-if="notification.editable"
+      <div
+          ng-show="notification.editable"
           tooltip="{{ !titleValid ? 'Title must be between 0 and 110 characters!' : '' }}"
           tooltip-placement="bottom">
         <onion-editor
@@ -26,20 +11,34 @@
           placeholder="Title"
           ng-class="{'bg-danger text-danger': !titleValid}">
         </onion-editor>
-      </span>
-      <span ng-if="!notification.editable">{{ notification.title }}</span>
+      </div>
+      <div ng-show="!notification.editable">{{ notification.title }}</div>
+      <div
+          ng-show="notification.editable"
+          datetime-selection-modal-opener
+          ng-model="postDate"
+          modal-title="Choose Date to Post">
+        <span
+            tooltip="{{ !postDateValid ? 'This date must occur before notification end date!' : '' }}"
+            tooltip-placement="bottom"
+            ng-class="{'bg-danger text-danger': !postDateValid}">
+          <span ng-show="postDate">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
+          <span ng-show="!postDate">&lt;choose a post date&gt;</span>
+        </span>
+      </div>
+      <div ng-show="!notification.editable">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</div>
     </h4>
   </div>
   <div class="panel-body">
     <onion-editor
-      ng-if="notification.editable"
+      ng-show="notification.editable"
       ng-model="notification.body"
       role="multiline"
       placeholder="Write here">
     </onion-editor>
-    <span ng-if="!notification.editable">{{ notification.body }}</span>
+    <span ng-show="!notification.editable">{{ notification.body }}</span>
   </div>
-  <div ng-if="notification.editable" class="panel-footer clearfix">
+  <div ng-show="notification.editable" class="panel-footer clearfix">
     <div class="pull-left">
       <div class="form-inline">
         <div class="form-group">
@@ -53,8 +52,8 @@
                 tooltip="{{ !postDateValid ? 'This date must occur before notification end date!' : '' }}"
                 tooltip-placement="bottom">
               <i class="glyphicon glyphicon-calendar"></i>
-              <span ng-if="postDate">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
-              <span ng-if="!postDate">&lt;choose a post date&gt;</span>
+              <span ng-show="postDate">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
+              <span ng-show="!postDate">&lt;choose a post date&gt;</span>
             </span>
           </span>
         </div>
@@ -69,8 +68,8 @@
                 tooltip="{{ !notifyEndDateValid ? 'This date must occur after post date!' : '' }}"
                 tooltip-placement="bottom">
               <i class="glyphicon glyphicon-calendar"></i>
-              <span ng-if="notifyEndDate">{{ notifyEndDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
-              <span ng-if="!notifyEndDate">&lt;choose an end notification date&gt;</span>
+              <span ng-show="notifyEndDate">{{ notifyEndDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
+              <span ng-show="!notifyEndDate">&lt;choose an end notification date&gt;</span>
             </span>
           </span>
         </div>
