@@ -18,7 +18,14 @@ angular.module('bulbsCmsApp')
 
     $scope.postDate = $scope.notification.post_date ? moment($scope.notification.post_date) : null;
     $scope.$watch('postDate', function () {
-      $scope.notification.post_date = $scope.postDate ? $scope.postDate.format() : null;
+      if ($scope.postDate) {
+        // set notification's post date as the string version of the moment object
+        $scope.notification.post_date = $scope.postDate.format();
+        // automatically set the notify end date as 3 days after post date
+        $scope.notifyEndDate = $scope.postDate.clone().add({days: 3});
+      } else {
+        $scope.notification.post_date = null;
+      }
     });
 
     $scope.notifyEndDate = $scope.notification.notify_end_date ? moment($scope.notification.notify_end_date) : null;
