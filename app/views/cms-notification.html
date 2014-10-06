@@ -20,14 +20,16 @@
             ng-model="postDate"
             modal-title="Choose Date to Post">
           <span
-              tooltip="{{ !postDateValid ? 'This date must occur before notification end date!' : '' }}"
+              tooltip="{{ !postDateValid ? 'This date must occur before promotion end date!' : '' }}"
               tooltip-placement="bottom"
               ng-class="{'bg-danger text-danger': !postDateValid}">
             <span ng-show="postDate" class="header-post-date">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
             <span ng-show="!postDate" class="header-post-date">&lt;choose date&gt;</span>
           </span>
         </span>
-        <div ng-show="!notification.editable">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</div>
+        <div ng-show="!notification.editable" class="header-post-date">
+          {{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}
+        </div>
       </div>
     </h4>
   </div>
@@ -50,7 +52,7 @@
               modal-title="Choose Date to Post"
               ng-class="{'bg-danger text-danger': !postDateValid}">
             <span
-                tooltip="{{ !postDateValid ? 'This date must occur before notification end date!' : '' }}"
+                tooltip="{{ !postDateValid ? 'This date must occur before promotion end date!' : '' }}"
                 tooltip-placement="bottom">
               <i class="glyphicon glyphicon-calendar"></i>
               <span ng-show="postDate">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>

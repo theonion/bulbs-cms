@@ -87,34 +87,44 @@ angular.module('bulbsCmsApp.mockApi').run([
 
     // notifications
     var today = moment();
-    mockApiData.notifications = [
-      {
+    mockApiData.notifications = [{
         id: 0,
         title: 'We\'ve Made An Update!',
         body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin quis aliquet risus, eget vulputate nibh. Fusce egestas porttitor libero in faucibus. Aliquam at orci eget massa tristique condimentum vel sit amet ipsum. Nulla tincidunt arcu tortor, a pulvinar mauris convallis id. Quisque imperdiet id ex ac fringilla. Aliquam fringilla dolor nec enim iaculis iaculis sed ac lacus. Nulla id condimentum magna. Aliquam dictum justo tortor, vitae blandit odio aliquet sagittis.',
         post_date: today.format(),
         notify_end_date: today.clone().add({days: 3}).format(),
         editable: true
-      },
-      {
+      },{
         id: 1,
         title: 'You Can\'t Edit Me',
         body: 'something something',
         post_date: today.format(),
         notify_end_date: today.clone().add({days: 3}).format(),
         editable: false
-      },
-      {
+      },{
         id: 2,
         title: 'I\'m Not Visible',
         post_date: today.clone().add({days: 1}).format(),
         notify_end_date: today.clone().add({days: 3}).format(),
         editable: false
-      }
-    ];
+      },{
+        id: 3,
+        title: 'Another Update!',
+        body: 'Something something.',
+        post_date: today.format(),
+        notify_end_date: today.clone().add({days: 3}).format(),
+        editable: true
+      },{
+        id: 4,
+        title: 'Update Update Update!',
+        body: 'All sorts of stuff added to the CMS.',
+        post_date: today.format(),
+        notify_end_date: today.clone().add({days: 3}).format(),
+        editable: true
+    }];
     $httpBackend.whenGET('/cms/api/v1/notifications/').respond(mockApiData.notifications);
     $httpBackend.whenPOST('/cms/api/v1/notifications/').respond(200, {
-      id: 1,
+      id: 5,
       title: 'New Notification',
       body: 'Ipsum ipsum ipsum.',
       post_date: today.clone().add({days: 1}).format(),
