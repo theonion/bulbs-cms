@@ -13,7 +13,14 @@ angular.module('bulbsCmsApp')
     });
 
     $scope.loadFromServer = function () {
-      $route.reload();
+
+//      $route.reload();
+
+_.each($scope.articleOnServer, function (value, key) {
+$scope.article[key] = value;
+});
+$scope.articleIsDirty = true;
+
       $modalInstance.close();
     };
 

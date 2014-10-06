@@ -37,6 +37,7 @@ angular.module('bulbsCmsApp')
             $versions.$loaded(function () {
               $versions.$watch(function (e) {
                 if (e.event === 'child_added') {
+
                   // order versions newest to oldest then grab the top one which should be the new version
                   var newVersion = _.sortBy($versions, function (version) {
                     return -version.timestamp;
