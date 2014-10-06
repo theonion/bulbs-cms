@@ -1,7 +1,10 @@
 'use strict';
 
+/**
+ * Controller for notifications bar that is displayed to users.
+ */
 angular.module('bulbsCmsApp')
-  .controller('CmsNotifyBarCtrl', function ($cookies, $scope, ipCookie, moment, CmsNotificationsApi) {
+  .controller('CmsNotifyBarCtrl', function ($scope, ipCookie, moment, CmsNotificationsApi) {
 
     var genCookieKey = function (id) {
       return 'dismissed-cms-notification-' + id;
@@ -24,10 +27,17 @@ angular.module('bulbsCmsApp')
      * @param notification  Notification to dismiss.
      */
     $scope.dismissNotification = function (notification) {
+
+      // add dismiss cookie
       var cookieKey = URLify(genCookieKey(notification.id));
       ipCookie(cookieKey, true, {
         expires: moment(notification.notify_end_date).add({days: 1}).diff(moment(), 'days')
       });
+
+      // remove notification from bar
+      var i = $scope.notifications.indexOf(notification);
+      $scope.notifications.splice(i, 1);
+
     };
 
   });
