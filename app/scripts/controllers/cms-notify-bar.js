@@ -31,7 +31,8 @@ angular.module('bulbsCmsApp')
       // add dismiss cookie
       var cookieKey = URLify(genCookieKey(notification.id));
       ipCookie(cookieKey, true, {
-        expires: moment(notification.notify_end_date).add({days: 1}).diff(moment(), 'days')
+        expires: moment(notification.notify_end_date).add({days: 1}).diff(moment(), 'days'),
+        path: '/cms/app'
       });
 
       // remove notification from bar

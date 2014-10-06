@@ -4,15 +4,14 @@ describe('Controller: CmsNotifyBarCtrl', function () {
 
   beforeEach(module('bulbsCmsApp'));
   beforeEach(module('bulbsCmsApp.mockApi'));
-  beforeEach(module('ipCookie'));
 
   var CmsNotifyBarCtrl,
       ipCookie,
       $httpBackend,
       $scope;
 
-  beforeEach(inject(function (_$httpBackend_, _ipCookie_, $controller, $rootScope, moment, CmsNotificationsApi,
-                              mockApiData) {
+  beforeEach(inject(function (_$httpBackend_, _ipCookie_, $controller, $rootScope, moment,
+                              CmsNotificationsApi, mockApiData) {
 
     ipCookie = _ipCookie_;
     $httpBackend = _$httpBackend_;
@@ -53,7 +52,6 @@ describe('Controller: CmsNotifyBarCtrl', function () {
     $scope.dismissNotification(notification);
 
     expect($scope.notifications.length).toBe(3);
-    expect(ipCookie('dismissed-cms-notification-0')).toBe(true);
 
   });
 
