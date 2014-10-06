@@ -14,12 +14,11 @@ angular.module('bulbsCmsApp')
 
     $scope.loadFromServer = function () {
 
-//      $route.reload();
-
-_.each($scope.articleOnServer, function (value, key) {
-$scope.article[key] = value;
-});
-$scope.articleIsDirty = true;
+      // pull article from server and replace whatever data we need to show the newest version
+      _.each($scope.articleOnServer, function (value, key) {
+        $scope.article[key] = value;
+      });
+      $scope.articleIsDirty = true;
 
       $modalInstance.close();
     };
