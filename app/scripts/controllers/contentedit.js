@@ -55,17 +55,20 @@ angular.module('bulbsCmsApp')
                       title: 'Another User Saved!',
                       text: msg,
                       type: 'error',
+                      mouse_reset: false,
                       confirm: {
                         confirm: true,
                         buttons: [{
                           text: 'Open Version Browser',
                           addClass: 'btn-info',
                           click: function (notice) {
+                            notice.mouse_reset = false;
                             notice.remove();
                             VersionBrowserModalOpener.open($scope, $scope.article);
                           }
                         }, {
-                          addClass: 'hide'
+                          text: 'Dismiss',
+                          addClass: 'btn-warning'
                         }]
                       },
                       buttons: {
