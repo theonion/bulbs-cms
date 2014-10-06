@@ -21,6 +21,7 @@ angular.module('bulbsCmsApp')
       $scope.articleIsDirty = true;
 
       $modalInstance.close();
+
     };
 
     $scope.saveAnyway = function () {
