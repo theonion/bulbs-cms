@@ -57,6 +57,7 @@ angular.module('bulbsCmsApp')
                       text: msg,
                       type: 'error',
                       mouse_reset: false,
+                      hide: false,
                       confirm: {
                         confirm: true,
                         buttons: [{
