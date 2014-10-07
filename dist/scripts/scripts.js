@@ -402,7 +402,7 @@ angular.module('bulbsCmsApp')
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, keypress, Raven,
-    IfExistsElse, VersionStorageApi, ContentApi, FirebaseArticleFactory, Login, routes)
+    IfExistsElse, VersionStorageApi, ContentApi, FirebaseApi, FirebaseArticleFactory, Login, routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
@@ -422,6 +422,14 @@ angular.module('bulbsCmsApp')
       $window.article = $scope.article = data; //exposing article on window for debugging
 
       $scope.last_saved_article = angular.copy(data);
+
+      FirebaseApi.$connection
+        .onConnect(function () {
+          $scope.firebaseConnected = true;
+        })
+        .onDisconnect(function () {
+          $scope.firebaseConnected = false;
+        });
 
       // get article and active users, register current user as active
       FirebaseArticleFactory
@@ -3074,7 +3082,7 @@ angular.module('bulbsCmsApp')
 angular.module('bulbsCmsApp')
   .value('FIREBASE_URL', 'https://luminous-fire-8340.firebaseio.com/')
   .value('FIREBASE_ROOT', 'a-site-is-not-configured')
-  .factory('FirebaseApi', function ($firebase, $q, CurrentUser, FIREBASE_URL, FIREBASE_ROOT) {
+  .factory('FirebaseApi', function ($firebase, $rootScope, $q, CurrentUser, FIREBASE_URL, FIREBASE_ROOT) {
 
     // get root reference in firebase for this site
     var rootRef = new Firebase(FIREBASE_URL + 'sites/' + FIREBASE_ROOT);
@@ -3084,12 +3092,11 @@ angular.module('bulbsCmsApp')
         $authorize = authDefer.promise;
 
     // set up catch all for logging auth errors
-    $authorize.catch(function (error) {
-
-      // if there's an error message log it
-      error && console.error('Firebase login failed:', error);
-
-    });
+    $authorize
+      .catch(function (error) {
+        // if there's an error message log it
+        error && console.error('Firebase login failed:', error);
+      });
 
     // log current session in when their current user data is available
     CurrentUser.$retrieveData.then(function (user) {
@@ -3124,18 +3131,39 @@ angular.module('bulbsCmsApp')
 
     });
 
-    // ensure session is unauthed when they disconnect
+    // emit events when firebase reconnects or disconnects, disconnect event should not be used in place of onDisconnect
+    //  function provided by firebase reference objects
     var connectedRef = new Firebase(FIREBASE_URL + '.info/connected');
     connectedRef.on('value', function (connected) {
 
-      if (!connected.val()) {
+      if (connected.val()) {
 
-        // user is no longer connected, unauthorize them from the server
-        rootRef.unauth();
+        $rootScope.$emit('firebase-reconnected');
+
+      } else {
+
+        $rootScope.$emit('firebase-disconnected');
 
       }
 
+      $rootScope.$emit('firebase-connection-state-changed');
+
     });
+
+    // connection object
+    var $connection = {
+      onConnect: function (callback) {
+        $rootScope.$on('firebase-reconnected', callback);
+        return $connection;
+      },
+      onDisconnect: function (callback) {
+        $rootScope.$on('firebase-disconnected', callback);
+        return $connection;
+      },
+      onChange: function (callback) {
+        $rootScope.$on('firebase-connection-state-changed', callback);
+      }
+    };
 
     return {
 
@@ -3143,7 +3171,12 @@ angular.module('bulbsCmsApp')
        * Authorization deferred promise that resolves with the root firebase reference, or rejects with an error
        *  message.
        */
-      $authorize: function () { return $authorize; }
+      $authorize: function () { return $authorize; },
+
+      /**
+       * Provides access to Firebase connection and disconnection event listeners.
+       */
+      $connection: $connection
 
     };
 
@@ -3173,9 +3206,9 @@ angular.module('bulbsCmsApp')
           $activeUsers = $firebase(articleRef.child('users')).$asArray(),
           $versions = $firebase(articleRef.child('versions')).$asArray();
 
-      var registerActiveUser = function () {
+      var addCurrentUserToActiveUsers = function () {
 
-        return CurrentUser.$simplified().then(function (user) {
+        CurrentUser.$simplified().then(function (user) {
 
           return $activeUsers
             .$add(user)
@@ -3188,6 +3221,16 @@ angular.module('bulbsCmsApp')
             });
 
         });
+
+      };
+
+      var registerCurrentUserActive = function () {
+
+        // ensure when reconnection occurs, user is added back to active users
+        FirebaseApi.$connection.onConnect(addCurrentUserToActiveUsers);
+
+        // add current user and return promise
+        return addCurrentUserToActiveUsers();
 
       };
 
@@ -3254,7 +3297,7 @@ angular.module('bulbsCmsApp')
          *
          * @returns   deferred promise that will resolve with the user reference as added to the active user list.
          */
-        $registerCurrentUserActive: registerActiveUser,
+        $registerCurrentUserActive: registerCurrentUserActive,
         /**
          * Create a new version for this article.
          *
