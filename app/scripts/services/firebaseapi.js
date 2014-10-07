@@ -6,7 +6,7 @@
 angular.module('bulbsCmsApp')
   .value('FIREBASE_URL', 'https://luminous-fire-8340.firebaseio.com/')
   .value('FIREBASE_ROOT', 'a-site-is-not-configured')
-  .factory('FirebaseApi', function ($firebase, $q, CurrentUser, FIREBASE_URL, FIREBASE_ROOT) {
+  .factory('FirebaseApi', function ($firebase, $rootScope, $q, CurrentUser, FIREBASE_URL, FIREBASE_ROOT) {
 
     // get root reference in firebase for this site
     var rootRef = new Firebase(FIREBASE_URL + 'sites/' + FIREBASE_ROOT);
@@ -16,12 +16,11 @@ angular.module('bulbsCmsApp')
         $authorize = authDefer.promise;
 
     // set up catch all for logging auth errors
-    $authorize.catch(function (error) {
-
-      // if there's an error message log it
-      error && console.error('Firebase login failed:', error);
-
-    });
+    $authorize
+      .catch(function (error) {
+        // if there's an error message log it
+        error && console.error('Firebase login failed:', error);
+      });
 
     // log current session in when their current user data is available
     CurrentUser.$retrieveData.then(function (user) {
@@ -56,18 +55,39 @@ angular.module('bulbsCmsApp')
 
     });
 
-    // ensure session is unauthed when they disconnect
+    // emit events when firebase reconnects or disconnects, disconnect event should not be used in place of onDisconnect
+    //  function provided by firebase reference objects
     var connectedRef = new Firebase(FIREBASE_URL + '.info/connected');
     connectedRef.on('value', function (connected) {
 
-      if (!connected.val()) {
+      if (connected.val()) {
 
-        // user is no longer connected, unauthorize them from the server
-        rootRef.unauth();
+        $rootScope.$emit('firebase-reconnected');
+
+      } else {
+
+        $rootScope.$emit('firebase-disconnected');
 
       }
 
+      $rootScope.$emit('firebase-connection-state-changed');
+
     });
+
+    // connection object
+    var $connection = {
+      onConnect: function (callback) {
+        $rootScope.$on('firebase-reconnected', callback);
+        return $connection;
+      },
+      onDisconnect: function (callback) {
+        $rootScope.$on('firebase-disconnected', callback);
+        return $connection;
+      },
+      onChange: function (callback) {
+        $rootScope.$on('firebase-connection-state-changed', callback);
+      }
+    };
 
     return {
 
@@ -75,7 +95,12 @@ angular.module('bulbsCmsApp')
        * Authorization deferred promise that resolves with the root firebase reference, or rejects with an error
        *  message.
        */
-      $authorize: function () { return $authorize; }
+      $authorize: function () { return $authorize; },
+
+      /**
+       * Provides access to Firebase connection and disconnection event listeners.
+       */
+      $connection: $connection
 
     };
 

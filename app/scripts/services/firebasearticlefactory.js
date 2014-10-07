@@ -21,9 +21,9 @@ angular.module('bulbsCmsApp')
           $activeUsers = $firebase(articleRef.child('users')).$asArray(),
           $versions = $firebase(articleRef.child('versions')).$asArray();
 
-      var registerActiveUser = function () {
+      var addCurrentUserToActiveUsers = function () {
 
-        return CurrentUser.$simplified().then(function (user) {
+        CurrentUser.$simplified().then(function (user) {
 
           return $activeUsers
             .$add(user)
@@ -36,6 +36,16 @@ angular.module('bulbsCmsApp')
             });
 
         });
+
+      };
+
+      var registerCurrentUserActive = function () {
+
+        // ensure when reconnection occurs, user is added back to active users
+        FirebaseApi.$connection.onConnect(addCurrentUserToActiveUsers);
+
+        // add current user and return promise
+        return addCurrentUserToActiveUsers();
 
       };
 
@@ -102,7 +112,7 @@ angular.module('bulbsCmsApp')
          *
          * @returns   deferred promise that will resolve with the user reference as added to the active user list.
          */
-        $registerCurrentUserActive: registerActiveUser,
+        $registerCurrentUserActive: registerCurrentUserActive,
         /**
          * Create a new version for this article.
          *
