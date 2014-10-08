@@ -126,7 +126,15 @@ angular.module('bulbsCmsApp.mockApi').run([
     $httpBackend.whenPOST('/cms/api/v1/notifications/').respond(200, {
       id: 5,
       title: 'New Notification',
-      body: 'Ipsum ipsum ipsum.',
+      body: 'Ipsum ipsum ipsum. This was POSTed here.',
+      post_date: today.clone().add({days: 1}).format(),
+      notify_end_date: today.clone().add({days: 4}).format(),
+      editable: true
+    });
+    $httpBackend.whenPUT(/\/cms\/api\/v1\/notifications\/(\d+)\//).respond(200, {
+      id: 5,
+      title: 'Updated Notification',
+      body: 'This was PUT here.',
       post_date: today.clone().add({days: 1}).format(),
       notify_end_date: today.clone().add({days: 4}).format(),
       editable: true

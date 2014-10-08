@@ -83,6 +83,21 @@ describe('Controller: CmsNotificationsCtrl', function () {
       expect(notificationSaved.post_date.valueOf()).toBe(newPostDate.valueOf());
       expect(notificationSaved.notify_end_date.valueOf()).toBe(newNotifyEndDate.valueOf());
 
+      notificationSaved.title = 'Updated Title';
+      notificationSaved.id = 0;
+
+      $httpBackend.expectPUT('/cms/api/v1/notifications/' + notificationSaved.id + '/').respond(200, notificationSaved);
+
+      var notificationUpdated = null;
+      $scope.$saveNotification(notificationSaved).then(function (notification) {
+        notificationUpdated = notification;
+      });
+
+      $httpBackend.flush();
+      $scope.$apply();
+
+      expect(notificationUpdated.title).toBe(notificationSaved.title);
+
     });
 
     it('should provide a function to remove a notification', function () {

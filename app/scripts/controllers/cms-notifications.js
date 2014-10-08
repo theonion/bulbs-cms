@@ -54,16 +54,24 @@ angular.module('bulbsCmsApp')
       var saveDefer = $q.defer(),
           savePromise = saveDefer.promise;
 
-      $scope.notifications.post(notification)
-        .then(function (newNotification) {
-          // save succeeded, replace notification with restangularized notification
-          var i = $scope.notifications.indexOf(notification);
-          $scope.notifications[i] = newNotification;
-          saveDefer.resolve(newNotification);
-        })
-        .catch(function (error) {
-          saveDefer.reject(error);
+      if ('id' in notification) {
+        // this thing already exists, update it
+        notification.put().then(function (updatedNotification) {
+          saveDefer.resolve(updatedNotification);
         });
+      } else {
+        // a new notification, post it to the list
+        $scope.notifications.post(notification)
+          .then(function (newNotification) {
+            // save succeeded, replace notification with restangularized notification
+            var i = $scope.notifications.indexOf(notification);
+            $scope.notifications[i] = newNotification;
+            saveDefer.resolve(newNotification);
+          })
+          .catch(function (error) {
+            saveDefer.reject(error);
+          });
+      }
 
       return savePromise;
 
