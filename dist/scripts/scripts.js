@@ -248,7 +248,8 @@ angular.module('bulbsCmsApp', [
   'PNotify',
   'keypress',
   'Raven',
-  'firebase'
+  'firebase',
+  'ipCookie'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
@@ -891,7 +892,7 @@ angular.module('bulbsCmsApp')
 
     $scope.pubTimeModal = function (article) {
       return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'modals/choose-date-modal.html',
+        templateUrl: routes.PARTIALS_URL + 'modals/publish-date-modal.html',
         controller: 'PubtimemodalCtrl',
         scope: $scope,
         resolve: {
@@ -1408,20 +1409,121 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('CmsNotificationsCtrl', function ($window, $scope, routes, ContentApi) {
+  .controller('CmsNotificationsCtrl', function ($q, $window, $scope, routes, CmsNotificationsApi) {
 
     // set title
     $window.document.title = routes.CMS_NAMESPACE + ' | Notifications';
 
-    ContentApi.all('notifications').getList().then(function (notifications) {
-
-      _.each(notifications, function (notification) {
-        notification.post_date = moment(notification.post_date);
-        notification.notify_end_date = moment(notification.notify_end_date);
+    // get list of notifications
+    CmsNotificationsApi.getList().then(function (notifications) {
+      // filter out notifications that are not editable and have a post date in the future
+      var removeIndicies = [];
+      _.each(notifications, function (notification, i) {
+        if (!notification.editable && moment(notification.post_date).isAfter(moment())) {
+          removeIndicies.push(i);
+        } else if (notification.editable) {
+          $scope.showAddButton = true;
+        }
+      });
+      _.each(removeIndicies, function (i) {
+        notifications.splice(i, 1);
       });
 
       $scope.notifications = notifications;
     });
+
+    /**
+     * Create a new notification, plain old object since we don't want to save invalid objects to the db.
+     *
+     * @return  new notification with only nulled date properties.
+     */
+    $scope.newNotification = function () {
+
+      var notification = {
+        post_date: null,
+        notify_end_date: null,
+        editable: true
+      };
+
+      $scope.notifications.unshift(notification);
+
+      return notification;
+
+    };
+
+    /**
+     * Save given notification to the database.
+     *
+     * @param notification  Notification to save.
+     * @return  promise that resolves when notification is saved.
+     */
+    $scope.$saveNotification = function (notification) {
+
+      var saveDefer = $q.defer(),
+          savePromise = saveDefer.promise;
+
+      if ('id' in notification) {
+        // this thing already exists, update it
+        notification.put().then(function (updatedNotification) {
+          saveDefer.resolve(updatedNotification);
+        });
+      } else {
+        // a new notification, post it to the list
+        $scope.notifications.post(notification)
+          .then(function (newNotification) {
+            // save succeeded, replace notification with restangularized notification
+            var i = $scope.notifications.indexOf(notification);
+            $scope.notifications[i] = newNotification;
+            saveDefer.resolve(newNotification);
+          })
+          .catch(function (error) {
+            saveDefer.reject(error);
+          });
+      }
+
+      return savePromise;
+
+    };
+
+    /**
+     * Delete given notification from the database.
+     *
+     * @param notification  Notification to delete.
+     * @return  promise that resolves when notification is deleted.
+     */
+    $scope.$deleteNotification = function (notification) {
+
+      var deleteDefer = $q.defer(),
+          deletePromise = deleteDefer.promise,
+          removeFromList = function (index) {
+            $scope.notifications.splice(index, 1);
+            deleteDefer.resolve();
+          };
+
+      // find notification in list
+      var i = $scope.notifications.indexOf(notification);
+      if (i > -1) {
+        // notification in list, check if it is a restangular object and has a remove function
+        if (_.isFunction(notification.remove)) {
+          // has remove, call it and resolve promise
+          notification.remove()
+            .then(function () {
+              removeFromList(i)
+            })
+            .catch(function (error) {
+              deleteDefer.reject(error);
+            });
+        } else {
+          // does not have remove, this is a previously unsaved notification, just remove it from list
+          removeFromList(i);
+        }
+      } else {
+        deleteDefer.reject('Cannot find notification in notification list. Unable to delete.');
+      }
+
+      return deletePromise;
+
+    };
 
   });
 
@@ -1430,10 +1532,85 @@ angular.module('bulbsCmsApp')
 angular.module('bulbsCmsApp')
   .controller('CmsNotificationCtrl', function ($scope, moment) {
 
-    $scope.today = moment();
+    var valid = function () {
+      $scope.postDateValid = $scope.postDate && (!$scope.notifyEndDate || $scope.postDate < $scope.notifyEndDate);
+      $scope.notifyEndDateValid = $scope.notifyEndDate && $scope.postDate && $scope.notifyEndDate > $scope.postDate;
+      $scope.titleValid = $scope.notification.title && $scope.notification.title.length > 0
+        && $scope.notification.title.length <= 110;
 
-    $scope.formatMomentDate = function (date, format) {
-      return moment(date).format(format || 'ddd, MMM Do, YYYY');
+      $scope.notificationValid = $scope.postDateValid && $scope.notifyEndDateValid && $scope.titleValid;
+    };
+
+    // Note: use middle man for handling dates since a bug in angular.js version causes moment to not work with
+    //  angular.copy. So instead of keeping notification dates as moments, keep them as strings and use moment objects
+    //  for interactions.
+
+    $scope.postDate = $scope.notification.post_date ? moment($scope.notification.post_date) : null;
+    $scope.$watch('postDate', function () {
+      if ($scope.postDate) {
+        // set notification's post date as the string version of the moment object
+        $scope.notification.post_date = $scope.postDate.format();
+        // automatically set the notify end date as 3 days after post date
+        $scope.notifyEndDate = $scope.postDate.clone().add({days: 3});
+      } else {
+        $scope.notification.post_date = null;
+      }
+    });
+
+    $scope.notifyEndDate = $scope.notification.notify_end_date ? moment($scope.notification.notify_end_date) : null;
+    $scope.$watch('notifyEndDate', function () {
+      $scope.notification.notify_end_date = $scope.notifyEndDate ? $scope.notifyEndDate.format() : null;
+    });
+
+    // keep track of changes to this notification
+    $scope.notificationDirty = false;
+    $scope.$watch('notification', function (newValue, oldValue) {
+      if (!angular.equals(newValue, oldValue)) {
+        $scope.notificationDirty = true;
+
+        // do some validation here
+        valid();
+
+      }
+    }, true);
+
+    // do initial validation
+    valid();
+
+    /**
+     * Save this notification using the parent scope.
+     */
+    $scope.saveNotification = function () {
+
+      if ($scope.notification.editable && $scope.notificationDirty && $scope.notificationValid) {
+
+        $scope.$parent.$saveNotification($scope.notification)
+          .then(function (newNotification) {
+            $scope.notification = newNotification;
+            $scope.notificationDirty = false;
+          })
+          .catch(function (error) {
+            console.log('Notification save failed', error);
+          });
+
+      }
+
+    };
+
+    /**
+     * Delete this notification using the parent scope.
+     */
+    $scope.deleteNotification = function () {
+
+      if ($scope.notification.editable) {
+
+        $scope.$parent.$deleteNotification($scope.notification)
+          .catch(function (error) {
+            console.log('Notification delete failed', error);
+          });
+
+      }
+
     };
 
   });
@@ -1449,6 +1626,11 @@ angular.module('bulbsCmsApp')
 
     var timeNowWithOffset = function () {
       return moment().zone(TIMEZONE_OFFSET);
+    };
+
+    // callback function for using datetime calendar because it doesn't work at all in a sensible way
+    $scope.setDate = function (newDate) {
+      $scope.tempDatetime = moment(newDate);
     };
 
     $scope.setDateToday = function () {
@@ -1471,6 +1653,50 @@ angular.module('bulbsCmsApp')
 
     $scope.chooseDatetime = function () {
       $modalInstance.close($scope.tempDatetime);
+    };
+
+  });
+'use strict';
+
+/**
+ * Controller for notifications bar that is displayed to users.
+ */
+angular.module('bulbsCmsApp')
+  .controller('CmsNotifyBarCtrl', function ($scope, ipCookie, moment, CmsNotificationsApi) {
+
+    var genCookieKey = function (id) {
+      return 'dismissed-cms-notification-' + id;
+    };
+
+    // get list of notifications to show
+    CmsNotificationsApi.getList().then(function (notifications) {
+      var now = moment();
+      $scope.notifications = _.filter(notifications, function (notification) {
+        // show notifications where there is no dismiss cookie and post_date < now < notify_end_date
+        return !ipCookie(genCookieKey(notification.id))
+                && moment(notification.post_date).isBefore(now) && moment(notification.notify_end_date).isAfter(now);
+      });
+    });
+
+    /**
+     * Dismiss a given notification. Stores a dismiss cookie which will expire one day after the notification's end
+     *  date.
+     *
+     * @param notification  Notification to dismiss.
+     */
+    $scope.dismissNotification = function (notification) {
+
+      // add dismiss cookie
+      var cookieKey = URLify(genCookieKey(notification.id));
+      ipCookie(cookieKey, true, {
+        expires: moment(notification.notify_end_date).add({days: 1}).diff(moment(), 'days'),
+        path: '/cms/app'
+      });
+
+      // remove notification from bar
+      var i = $scope.notifications.indexOf(notification);
+      $scope.notifications.splice(i, 1);
+
     };
 
   });
@@ -2647,12 +2873,12 @@ function safeApply(scope, fn) {
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('cmsNotification', function (routes, moment) {
+  .directive('cmsNotification', function (routes) {
     return {
       restrict: 'E',
       templateUrl: routes.PARTIALS_URL + 'cms-notification.html',
       scope: {
-        notification: '=notification'
+        notification: '='
       },
       controller: 'CmsNotificationCtrl'
     }
@@ -2669,13 +2895,12 @@ angular.module('bulbsCmsApp')
       restrict: 'A',
       scope: {
         modDatetime: '=ngModel',
-        modalTitle: '@modalTitle',
-        customFooterTemplatePath: '@customFooterTemplatePath',
-        closeCallback: '@closeCallback'
+        modalTitle: '@'
       },
       require: '^ngModel',
       link: function (scope, element) {
         var modalInstance = null;
+        element.addClass('datetime-selection-modal-opener');
         element.on('click', function () {
           modalInstance = $modal
             .open({
@@ -2685,15 +2910,22 @@ angular.module('bulbsCmsApp')
             });
           modalInstance.result
             .then(function (newDate) {
-              if (scope.closeCallback) {
-                scope.closeCallback(newDate)
-              } else {
-                scope.modDatetime = newDate;
-              }
+              scope.modDatetime = newDate;
             });
         });
       }
     };
+  });
+'use strict';
+
+angular.module('bulbsCmsApp')
+  .directive('cmsNotifyBar', function (routes) {
+    return {
+      restrict: 'E',
+      templateUrl: routes.PARTIALS_URL + 'cms-notify-bar.html',
+      scope: {},
+      controller: 'CmsNotifyBarCtrl'
+    }
   });
 'use strict';
 
@@ -4799,4 +5031,11 @@ angular.module('bulbsCmsApp')
         return deferred.promise;
       }
     }
+  });
+
+'use strict';
+
+angular.module('bulbsCmsApp')
+  .factory('CmsNotificationsApi', function ($q, ContentApi) {
+    return ContentApi.service('notifications');
   });
