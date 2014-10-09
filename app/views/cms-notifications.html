@@ -21,7 +21,10 @@
           ng-repeat="notification in notifications"
           notification="notification"
           class="cms-notification"></cms-notification>
-   </div>
+    </div>
+    <div ng-if="!showAddButton && notifications.length < 1">
+      No notifications yet, check back soon!
+    </div>
   </div>
 
 </div>
