@@ -3,6 +3,12 @@
 angular.module('bulbsCmsApp')
   .controller('DatetimeSelectionModalCtrl', function ($scope, $modalInstance, TIMEZONE_OFFSET, TIMEZONE_LABEL) {
 
+    // ensure that we can't choose a time if date is invalid
+    $scope.dateValid = false;
+    $scope.$watch('tempDatetime', function () {
+      $scope.dateValid = moment($scope.tempDatetime).isValid();
+    });
+
     // copy date temporarily so user has to actually verify change to the date
     $scope.tempDatetime = angular.copy($scope.modDatetime);
 
@@ -36,7 +42,13 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.chooseDatetime = function () {
-      $modalInstance.close($scope.tempDatetime);
+      if ($scope.dateValid) {
+        // close modal, ensuring that output date is a moment
+        var retMoment = moment($scope.tempDatetime);
+        $modalInstance.close(retMoment);
+      } else {
+        console.error('Attempting to choose invalid date.')
+      }
     };
 
   });

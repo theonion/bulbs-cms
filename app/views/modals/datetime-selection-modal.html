@@ -40,7 +40,7 @@
     </div>
 </div>
 <div class="modal-footer">
-  <button class="btn btn-success" ng-click="chooseDatetime()">
+  <button class="btn btn-success" ng-disabled="!dateValid" ng-click="chooseDatetime()">
     <i class="glyphicon glyphicon-ok"></i>
     Done
   </button>

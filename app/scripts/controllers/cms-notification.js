@@ -30,7 +30,12 @@ angular.module('bulbsCmsApp')
 
     $scope.notifyEndDate = $scope.notification.notify_end_date ? moment($scope.notification.notify_end_date) : null;
     $scope.$watch('notifyEndDate', function () {
-      $scope.notification.notify_end_date = $scope.notifyEndDate ? $scope.notifyEndDate.format() : null;
+      if ($scope.notifyEndDate) {
+        // set notification's post date as the string version of the moment object
+        $scope.notification.notify_end_date = $scope.notifyEndDate.format();
+      } else {
+        $scope.notification.notify_end_date = null;
+      }
     });
 
     // keep track of changes to this notification
