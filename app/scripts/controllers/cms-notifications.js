@@ -1,27 +1,32 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('CmsNotificationsCtrl', function ($q, $window, $scope, routes, CmsNotificationsApi) {
+  .controller('CmsNotificationsCtrl', function ($q, $window, $scope, routes, CmsNotificationsApi, CurrentUser) {
 
     // set title
     $window.document.title = routes.CMS_NAMESPACE + ' | Notifications';
 
-    // get list of notifications
-    CmsNotificationsApi.getList().then(function (notifications) {
-      // filter out notifications that are not editable and have a post date in the future
-      var removeIndicies = [];
-      _.each(notifications, function (notification, i) {
-        if (!notification.editable && moment(notification.post_date).isAfter(moment())) {
-          removeIndicies.push(i);
-        } else if (notification.editable) {
-          $scope.showAddButton = true;
-        }
-      });
-      _.each(removeIndicies, function (i) {
-        notifications.splice(i, 1);
-      });
+    // get user info
+    CurrentUser.$retrieveData().then(function (user) {
+      if (user.is_superuser) {
+        $scope.userIsSuperuser = true;
+      }
 
-      $scope.notifications = notifications;
+      // get list of notifications
+      CmsNotificationsApi.getList().then(function (notifications) {
+        // filter out notifications for regular users that have a post date in the future
+        var removeIndicies = [];
+        _.each(notifications, function (notification, i) {
+          if (!user.is_superuser && moment(notification.post_date).isAfter(moment())) {
+            removeIndicies.push(i);
+          }
+        });
+        _.each(removeIndicies, function (i) {
+          notifications.splice(i, 1);
+        });
+
+        $scope.notifications = notifications;
+      });
     });
 
     /**
@@ -33,8 +38,7 @@ angular.module('bulbsCmsApp')
 
       var notification = {
         post_date: null,
-        notify_end_date: null,
-        editable: true
+        notify_end_date: null
       };
 
       $scope.notifications.unshift(notification);
@@ -54,23 +58,27 @@ angular.module('bulbsCmsApp')
       var saveDefer = $q.defer(),
           savePromise = saveDefer.promise;
 
-      if ('id' in notification) {
-        // this thing already exists, update it
-        notification.put().then(function (updatedNotification) {
-          saveDefer.resolve(updatedNotification);
-        });
-      } else {
-        // a new notification, post it to the list
-        $scope.notifications.post(notification)
-          .then(function (newNotification) {
-            // save succeeded, replace notification with restangularized notification
-            var i = $scope.notifications.indexOf(notification);
-            $scope.notifications[i] = newNotification;
-            saveDefer.resolve(newNotification);
-          })
-          .catch(function (error) {
-            saveDefer.reject(error);
+      if ($scope.userIsSuperuser) {
+        if ('id' in notification) {
+          // this thing already exists, update it
+          notification.put().then(function (updatedNotification) {
+            saveDefer.resolve(updatedNotification);
           });
+        } else {
+          // a new notification, post it to the list
+          $scope.notifications.post(notification)
+            .then(function (newNotification) {
+              // save succeeded, replace notification with restangularized notification
+              var i = $scope.notifications.indexOf(notification);
+              $scope.notifications[i] = newNotification;
+              saveDefer.resolve(newNotification);
+            })
+            .catch(function (error) {
+              saveDefer.reject(error);
+            });
+        }
+      } else {
+        saveDefer.reject('Insufficient permissions.')
       }
 
       return savePromise;
@@ -92,6 +100,7 @@ angular.module('bulbsCmsApp')
             deleteDefer.resolve();
           };
 
+      if ($scope.userIsSuperuser)
       // find notification in list
       var i = $scope.notifications.indexOf(notification);
       if (i > -1) {

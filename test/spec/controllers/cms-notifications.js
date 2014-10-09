@@ -18,7 +18,21 @@ describe('Controller: CmsNotificationsCtrl', function () {
 
   describe('with editable notifications', function () {
 
-    beforeEach(inject(function ($rootScope, $controller, CmsNotificationsApi, $window, routes, mockApiData) {
+    beforeEach(inject(function () {
+
+      $httpBackend.expectGET('/cms/api/v1/me/').respond({
+        id: 0,
+        username: 'admin',
+        email: 'webtech@theonion.com',
+        first_name: 'Herman',
+        last_name: 'Zweibel',
+        is_superuser: true
+      });
+
+    }));
+
+    beforeEach(inject(function ($rootScope, $controller, CmsNotificationsApi, $window, routes,
+                                mockApiData, CurrentUser) {
 
       $httpBackend.expectGET('/cms/api/v1/notifications/').respond(mockApiData.notifications);
 
@@ -26,7 +40,8 @@ describe('Controller: CmsNotificationsCtrl', function () {
         $window: $window,
         $scope: $scope,
         routes: routes,
-        CmsNotificationsApi: CmsNotificationsApi
+        CmsNotificationsApi: CmsNotificationsApi,
+        CurrentUser: CurrentUser
       });
 
       $httpBackend.flush();
@@ -124,21 +139,31 @@ describe('Controller: CmsNotificationsCtrl', function () {
 
   describe('without editable notifications', function () {
 
-    beforeEach(inject(function ($rootScope, $controller, CmsNotificationsApi, $window, routes, moment) {
+    beforeEach(inject(function () {
+
+      $httpBackend.expectGET('/cms/api/v1/me/').respond({
+        id: 0,
+        username: 'regularguy',
+        email: 'regularguy@aol.com',
+        first_name: 'John',
+        last_name: 'Smath'
+      });
+
+    }));
+
+    beforeEach(inject(function ($rootScope, $controller, CmsNotificationsApi, $window, routes, moment, CurrentUser) {
 
       var today = moment();
       $httpBackend.expectGET('/cms/api/v1/notifications/').respond([
         {
           id: 0,
           title: 'I Should be Listed',
-          post_date: today.clone().subtract({days: 1}).format(),
-          editable: false
+          post_date: today.clone().subtract({days: 1}).format()
         },
         {
           id: 1,
           title: 'I Should Not be Listed',
-          post_date: today.clone().add({days: 1}).format(),
-          editable: false
+          post_date: today.clone().add({days: 1}).format()
         }
       ]);
 
@@ -146,7 +171,8 @@ describe('Controller: CmsNotificationsCtrl', function () {
         $window: $window,
         $scope: $scope,
         routes: routes,
-        CmsNotificationsApi: CmsNotificationsApi
+        CmsNotificationsApi: CmsNotificationsApi,
+        CurrentUser: CurrentUser
       });
 
       $httpBackend.flush();

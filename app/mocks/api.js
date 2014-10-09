@@ -92,35 +92,30 @@ angular.module('bulbsCmsApp.mockApi').run([
         title: 'We\'ve Made An Update!',
         body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin quis aliquet risus, eget vulputate nibh. Fusce egestas porttitor libero in faucibus. Aliquam at orci eget massa tristique condimentum vel sit amet ipsum. Nulla tincidunt arcu tortor, a pulvinar mauris convallis id. Quisque imperdiet id ex ac fringilla. Aliquam fringilla dolor nec enim iaculis iaculis sed ac lacus. Nulla id condimentum magna. Aliquam dictum justo tortor, vitae blandit odio aliquet sagittis.',
         post_date: today.format(),
-        notify_end_date: today.clone().add({days: 3}).format(),
-        editable: true
+        notify_end_date: today.clone().add({days: 3}).format()
       },{
         id: 1,
         title: 'You Can\'t Edit Me',
         body: 'something something',
         post_date: today.format(),
-        notify_end_date: today.clone().add({days: 3}).format(),
-        editable: false
+        notify_end_date: today.clone().add({days: 3}).format()
       },{
         id: 2,
         title: 'I\'m Not Visible',
         post_date: today.clone().add({days: 1}).format(),
-        notify_end_date: today.clone().add({days: 3}).format(),
-        editable: false
+        notify_end_date: today.clone().add({days: 3}).format()
       },{
         id: 3,
         title: 'Another Update!',
         body: 'Something something.',
         post_date: today.format(),
-        notify_end_date: today.clone().add({days: 3}).format(),
-        editable: true
+        notify_end_date: today.clone().add({days: 3}).format()
       },{
         id: 4,
         title: 'Update Update Update!',
         body: 'All sorts of stuff added to the CMS.',
         post_date: today.format(),
-        notify_end_date: today.clone().add({days: 3}).format(),
-        editable: true
+        notify_end_date: today.clone().add({days: 3}).format()
     }];
     $httpBackend.whenGET('/cms/api/v1/notifications/').respond(mockApiData.notifications);
     $httpBackend.whenPOST('/cms/api/v1/notifications/').respond(200, {
@@ -128,16 +123,14 @@ angular.module('bulbsCmsApp.mockApi').run([
       title: 'New Notification',
       body: 'Ipsum ipsum ipsum. This was POSTed here.',
       post_date: today.clone().add({days: 1}).format(),
-      notify_end_date: today.clone().add({days: 4}).format(),
-      editable: true
+      notify_end_date: today.clone().add({days: 4}).format()
     });
     $httpBackend.whenPUT(/\/cms\/api\/v1\/notifications\/(\d+)\//).respond(200, {
       id: 5,
       title: 'Updated Notification',
       body: 'This was PUT here.',
       post_date: today.clone().add({days: 1}).format(),
-      notify_end_date: today.clone().add({days: 4}).format(),
-      editable: true
+      notify_end_date: today.clone().add({days: 4}).format()
     });
     $httpBackend.whenDELETE(/\/cms\/api\/v1\/notifications\/(\d+)\//).respond(200);
 
@@ -240,6 +233,7 @@ angular.module('bulbsCmsApp.mockApi').run([
         email: 'webtech@theonion.com',
         first_name: 'Herman',
         last_name: 'Zweibel',
+        is_superuser: true,
 //        firebase_token: tokenGenerator.createToken({
 //          id: 0,
 //          username: 'admin',

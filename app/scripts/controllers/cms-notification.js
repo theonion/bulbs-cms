@@ -53,7 +53,7 @@ angular.module('bulbsCmsApp')
      */
     $scope.saveNotification = function () {
 
-      if ($scope.notification.editable && $scope.notificationDirty && $scope.notificationValid) {
+      if ($scope.$parent.userIsSuperuser && $scope.notificationDirty && $scope.notificationValid) {
 
         $scope.$parent.$saveNotification($scope.notification)
           .then(function (newNotification) {
@@ -73,7 +73,7 @@ angular.module('bulbsCmsApp')
      */
     $scope.deleteNotification = function () {
 
-      if ($scope.notification.editable) {
+      if ($scope.$parent.userIsSuperuser) {
 
         $scope.$parent.$deleteNotification($scope.notification)
           .catch(function (error) {

@@ -1,48 +1,48 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <h4>
-      <div
-          ng-show="notification.editable"
-          tooltip="{{ !titleValid ? 'Title must be between 0 and 110 characters!' : '' }}"
-          tooltip-placement="bottom">
-        <onion-editor
-          ng-model="notification.title"
-          role="singleline"
-          placeholder="Title"
-          ng-class="{'bg-danger text-danger': !titleValid}">
-        </onion-editor>
-      </div>
-      <div ng-show="!notification.editable">{{ notification.title }}</div>
-      <div>
-        <span
-            ng-show="notification.editable"
-            datetime-selection-modal-opener
-            ng-model="postDate"
-            modal-title="Choose Date to Post">
-          <span
-              tooltip="{{ !postDateValid ? 'This date must occur before promotion end date!' : '' }}"
-              tooltip-placement="bottom"
-              ng-class="{'bg-danger text-danger': !postDateValid}">
-            <span ng-show="postDate" class="header-post-date">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
-            <span ng-show="!postDate" class="header-post-date">&lt;choose date&gt;</span>
-          </span>
-        </span>
-        <div ng-show="!notification.editable" class="header-post-date">
-          {{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}
+      <div ng-show="$parent.userIsSuperuser">
+        <div
+            tooltip="{{ !titleValid ? 'Title must be between 0 and 110 characters!' : '' }}"
+            tooltip-placement="bottom">
+          <onion-editor
+            ng-model="notification.title"
+            role="singleline"
+            placeholder="Title"
+            ng-class="{'bg-danger text-danger': !titleValid}">
+          </onion-editor>
         </div>
+        <div>
+          <span
+              datetime-selection-modal-opener
+              ng-model="postDate"
+              modal-title="Choose Date to Post">
+            <span
+                tooltip="{{ !postDateValid ? 'This date must occur before promotion end date!' : '' }}"
+                tooltip-placement="bottom"
+                ng-class="{'bg-danger text-danger': !postDateValid}">
+              <span ng-show="postDate" class="header-post-date">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
+              <span ng-show="!postDate" class="header-post-date">&lt;choose date&gt;</span>
+            </span>
+          </span>
+        </div>
+      </div>
+      <div ng-show="!$parent.userIsSuperuser">
+        <div>{{ notification.title }}</div>
+        <div class="header-post-date">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</div>
       </div>
     </h4>
   </div>
   <div class="panel-body">
     <onion-editor
-      ng-show="notification.editable"
+      ng-show="$parent.userIsSuperuser"
       ng-model="notification.body"
       role="multiline"
       placeholder="Write here">
     </onion-editor>
-    <span ng-show="!notification.editable">{{ notification.body }}</span>
+    <span ng-show="!$parent.userIsSuperuser">{{ notification.body }}</span>
   </div>
-  <div ng-show="notification.editable" class="panel-footer clearfix">
+  <div ng-show="$parent.userIsSuperuser" class="panel-footer clearfix">
     <div class="pull-left">
         <div>
           <label>Post on</label>

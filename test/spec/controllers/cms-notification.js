@@ -35,6 +35,8 @@ describe('Controller: CmsNotificationCtrl', function () {
 
     $scope.notificationDirty = false;
 
+    $scope.$parent.userIsSuperuser = true;
+
   }));
 
   it('should have a scope level variable to track if a notification is dirty', function () {
@@ -103,7 +105,9 @@ describe('Controller: CmsNotificationCtrl', function () {
 
     });
 
-    it('should not be able to save or delete if not editable', function () {
+    it('should not be able to save or delete if not superuser', function () {
+
+      $scope.$parent.userIsSuperuser = false;
 
       $scope.notification.editable = false;
       $scope.notificationDirty = true;
