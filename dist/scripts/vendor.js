@@ -13323,7 +13323,7 @@ var version = {
   major: 1,    // package task
   minor: 2,
   dot: 26,
-  codeName: 'zucchini-expansion'
+  codeName: 'captivating-disinterest'
 };
 
 
@@ -66000,22 +66000,21 @@ define('plugins/core/events',[
         var selection = new scribe.api.Selection();
         // In Chrome, the range is not created on or before this event loop.
         // It doesn’t matter because this is a fix for Firefox.
+        // We always want to do this because Chrome >= 38 does create the event
+        // loop and doesn't leave things alone
         if (selection.range) {
           selection.placeMarkers();
-          var isFirefoxBug = scribe.allowsBlockElements() && scribe.getHTML().match(/^<em class="scribe-marker"><\/em>/);
           selection.removeMarkers();
 
-          if (isFirefoxBug) {
-            var focusElement = getFirstDeepestChild(scribe.el.firstChild);
+          var focusElement = getFirstDeepestChild(scribe.el.firstChild);
 
-            var range = selection.range;
+          var range = selection.range;
 
-            range.setStart(focusElement, 0);
-            range.setEnd(focusElement, 0);
+          range.setStart(focusElement, 0);
+          range.setEnd(focusElement, 0);
 
-            selection.selection.removeAllRanges();
-            selection.selection.addRange(range);
-          }
+          selection.selection.removeAllRanges();
+          selection.selection.addRange(range);
         }
 
         function getFirstDeepestChild(node) {
