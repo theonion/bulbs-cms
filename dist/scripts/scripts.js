@@ -1568,7 +1568,12 @@ angular.module('bulbsCmsApp')
 
     $scope.notifyEndDate = $scope.notification.notify_end_date ? moment($scope.notification.notify_end_date) : null;
     $scope.$watch('notifyEndDate', function () {
-      $scope.notification.notify_end_date = $scope.notifyEndDate ? $scope.notifyEndDate.format() : null;
+      if ($scope.notifyEndDate) {
+        // set notification's post date as the string version of the moment object
+        $scope.notification.notify_end_date = $scope.notifyEndDate.format();
+      } else {
+        $scope.notification.notify_end_date = null;
+      }
     });
 
     // keep track of changes to this notification
@@ -1628,6 +1633,12 @@ angular.module('bulbsCmsApp')
 angular.module('bulbsCmsApp')
   .controller('DatetimeSelectionModalCtrl', function ($scope, $modalInstance, TIMEZONE_OFFSET, TIMEZONE_LABEL) {
 
+    // ensure that we can't choose a time if date is invalid
+    $scope.dateValid = false;
+    $scope.$watch('tempDatetime', function () {
+      $scope.dateValid = moment($scope.tempDatetime).isValid();
+    });
+
     // copy date temporarily so user has to actually verify change to the date
     $scope.tempDatetime = angular.copy($scope.modDatetime);
 
@@ -1661,7 +1672,13 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.chooseDatetime = function () {
-      $modalInstance.close($scope.tempDatetime);
+      if ($scope.dateValid) {
+        // close modal, ensuring that output date is a moment
+        var retMoment = moment($scope.tempDatetime);
+        $modalInstance.close(retMoment);
+      } else {
+        console.error('Attempting to choose invalid date.')
+      }
     };
 
   });
