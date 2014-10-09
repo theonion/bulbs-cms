@@ -96,7 +96,7 @@ angular.module('bulbsCmsApp.mockApi').run([
       },{
         id: 1,
         title: 'You Can\'t Edit Me',
-        body: 'something something',
+        body: '<p>something something <b>bold</b></p>',
         post_date: today.format(),
         notify_end_date: today.clone().add({days: 3}).format()
       },{

@@ -28,7 +28,7 @@
         </div>
       </div>
       <div ng-show="!$parent.userIsSuperuser">
-        <div>{{ notification.title }}</div>
+        <div ng-bind-html="notification.title"></div>
         <div class="header-post-date">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</div>
       </div>
     </h4>
@@ -40,7 +40,7 @@
       role="multiline"
       placeholder="Write here">
     </onion-editor>
-    <span ng-show="!$parent.userIsSuperuser">{{ notification.body }}</span>
+    <span ng-show="!$parent.userIsSuperuser" ng-bind-html="notification.body"></span>
   </div>
   <div ng-show="$parent.userIsSuperuser" class="panel-footer clearfix">
     <div class="pull-left">
