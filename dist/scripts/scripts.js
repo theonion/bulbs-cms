@@ -1688,42 +1688,61 @@ angular.module('bulbsCmsApp')
  * Controller for notifications bar that is displayed to users.
  */
 angular.module('bulbsCmsApp')
-  .controller('CmsNotifyBarCtrl', function ($scope, ipCookie, moment, CmsNotificationsApi) {
+  .controller('CmsNotifyPopupsCtrl', function ($scope, $window, ipCookie, moment, CmsNotificationsApi, PNotify) {
 
     var genCookieKey = function (id) {
-      return 'dismissed-cms-notification-' + id;
-    };
+          return 'dismissed-cms-notification-' + id;
+        },
+        notify = function (notification) {
+          new PNotify({
+            title: 'New Update',
+            text: notification.title,
+            type: 'info',
+            mouse_reset: false,
+            hide: false,
+            confirm: {
+              confirm: true,
+              buttons: [{
+                text: 'Learn More',
+                addClass: 'btn-info',
+                click: function (notice) {
+                  notice.mouse_reset = false;
+                  notice.remove();
 
-    // get list of notifications to show
+                  // take user to notifications page
+                  $window.location.href = '/cms/app/notifications/'
+                }
+              }, {
+                addClass: 'hide'
+              }]
+            },
+            buttons: {
+              sticker: false,
+              closer_hover: false
+            },
+            before_close: function () {
+              // add dismiss cookie
+              var cookieKey = URLify(genCookieKey(notification.id));
+              ipCookie(cookieKey, true, {
+                expires: moment(notification.notify_end_date).add({days: 1}).diff(moment(), 'days'),
+                path: '/cms/app'
+              });
+            }
+          });
+        };
+
+    // show notifications
     CmsNotificationsApi.getList().then(function (notifications) {
       var now = moment();
-      $scope.notifications = _.filter(notifications, function (notification) {
+      $scope.notifications = _.each(notifications, function (notification) {
         // show notifications where there is no dismiss cookie and post_date < now < notify_end_date
-        return !ipCookie(genCookieKey(notification.id))
-                && moment(notification.post_date).isBefore(now) && moment(notification.notify_end_date).isAfter(now);
+        if (!ipCookie(genCookieKey(notification.id))
+            && moment(notification.post_date).isBefore(now)
+            && moment(notification.notify_end_date).isAfter(now)) {
+          notify(notification);
+        }
       });
     });
-
-    /**
-     * Dismiss a given notification. Stores a dismiss cookie which will expire one day after the notification's end
-     *  date.
-     *
-     * @param notification  Notification to dismiss.
-     */
-    $scope.dismissNotification = function (notification) {
-
-      // add dismiss cookie
-      var cookieKey = URLify(genCookieKey(notification.id));
-      ipCookie(cookieKey, true, {
-        expires: moment(notification.notify_end_date).add({days: 1}).diff(moment(), 'days'),
-        path: '/cms/app'
-      });
-
-      // remove notification from bar
-      var i = $scope.notifications.indexOf(notification);
-      $scope.notifications.splice(i, 1);
-
-    };
 
   });
 'use strict';
@@ -2588,21 +2607,19 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('nav', function (routes, navbar_options) {
+  .directive('navBar', function (routes, navbar_options) {
     return {
       restrict: 'E',
+      scope: false,
       templateUrl: function (tElement, tAttrs) {
-        var getCustomTemplate = navbar_options[tAttrs.view];
-
-        if (getCustomTemplate) {
+        // load navbar view template
+        if (navbar_options[tAttrs.view]) {
           return routes.DIRECTIVE_PARTIALS_URL + navbar_options[tAttrs.view] + '.html';
         } else {
           return routes.PARTIALS_URL + tAttrs.view + '.html';
         }
-
       },
-      scope: false,
-      link: function (scope, element, attrs) {
+      link: function (scope) {
         scope.NAV_LOGO = routes.NAV_LOGO;
       }
     };
@@ -2945,12 +2962,11 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('cmsNotifyBar', function (routes) {
+  .directive('cmsNotifyPopups', function () {
     return {
       restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'cms-notify-bar.html',
       scope: {},
-      controller: 'CmsNotifyBarCtrl'
+      controller: 'CmsNotifyPopupsCtrl'
     }
   });
 'use strict';
