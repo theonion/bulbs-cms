@@ -12,20 +12,6 @@
             ng-class="{'bg-danger text-danger': !titleValid}">
           </onion-editor>
         </div>
-        <div>
-          <span
-              datetime-selection-modal-opener
-              ng-model="postDate"
-              modal-title="Choose Date to Post">
-            <span
-                tooltip="{{ !postDateValid ? 'This date must occur before promotion end date!' : '' }}"
-                tooltip-placement="bottom"
-                ng-class="{'bg-danger text-danger': !postDateValid}">
-              <span ng-show="postDate" class="header-post-date">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
-              <span ng-show="!postDate" class="header-post-date">&lt;choose date&gt;</span>
-            </span>
-          </span>
-        </div>
       </div>
       <div ng-show="!$parent.userIsSuperuser">
         <div ng-bind-html="notification.title"></div>
@@ -43,52 +29,52 @@
     <span ng-show="!$parent.userIsSuperuser" ng-bind-html="notification.body"></span>
   </div>
   <div ng-show="$parent.userIsSuperuser" class="panel-footer clearfix">
-    <div class="pull-left">
-        <div>
-          <label>Post on</label>
+    <div class="pull-right">
+      <div>
+        <label>Post on</label>
+        <span
+            datetime-selection-modal-opener
+            ng-model="postDate"
+            modal-title="Choose Date to Post"
+            ng-class="{'bg-danger text-danger': !postDateValid}">
           <span
-              datetime-selection-modal-opener
-              ng-model="postDate"
-              modal-title="Choose Date to Post"
-              ng-class="{'bg-danger text-danger': !postDateValid}">
-            <span
-                tooltip="{{ !postDateValid ? 'This date must occur before promotion end date!' : '' }}"
-                tooltip-placement="bottom">
-              <i class="glyphicon glyphicon-calendar"></i>
-              <span ng-show="postDate">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
-              <span ng-show="!postDate">&lt;choose date&gt;</span>
-            </span>
+              tooltip="{{ !postDateValid ? 'This date must occur before promotion end date!' : '' }}"
+              tooltip-placement="bottom">
+            <i class="glyphicon glyphicon-calendar"></i>
+            <span ng-show="postDate">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
+            <span ng-show="!postDate">&lt;choose date&gt;</span>
           </span>
-        </div>
-        <div>
-          <label>Promote until</label>
+        </span>
+      </div>
+      <div>
+        <label>Promote until</label>
+        <span
+            datetime-selection-modal-opener
+            ng-model="notifyEndDate"
+            modal-title="Choose Date to End Notifications"
+            ng-class="{'bg-danger text-danger': !notifyEndDateValid}">
           <span
-              datetime-selection-modal-opener
-              ng-model="notifyEndDate"
-              modal-title="Choose Date to End Notifications"
-              ng-class="{'bg-danger text-danger': !notifyEndDateValid}">
-            <span
-                tooltip="{{ !notifyEndDateValid ? 'This date must occur after post date!' : '' }}"
-                tooltip-placement="bottom">
-              <i class="glyphicon glyphicon-calendar"></i>
-              <span ng-show="notifyEndDate">{{ notifyEndDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
-              <span ng-show="!notifyEndDate">&lt;choose date&gt;</span>
-            </span>
+              tooltip="{{ !notifyEndDateValid ? 'This date must occur after post date!' : '' }}"
+              tooltip-placement="bottom">
+            <i class="glyphicon glyphicon-calendar"></i>
+            <span ng-show="notifyEndDate">{{ notifyEndDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
+            <span ng-show="!notifyEndDate">&lt;choose date&gt;</span>
           </span>
-        </div>
-    </div>
-    <div class="pull-right btn-group">
-      <button
-          class="btn btn-success btn-xs"
-          ng-disabled="!notificationDirty || !notificationValid"
-          ng-click="saveNotification()">
-        <i class="glyphicon glyphicon-save"></i>
-        Save
-      </button>
-      <button class="btn btn-danger btn-xs" ng-click="deleteNotification()">
-        <i class="glyphicon glyphicon-remove"></i>
-        Delete
-      </button>
+        </span>
+      </div>
+      <div class="btn-group">
+        <button
+            class="btn btn-success btn-xs"
+            ng-disabled="!notificationDirty || !notificationValid"
+            ng-click="saveNotification()">
+          <i class="glyphicon glyphicon-save"></i>
+          Save
+        </button>
+        <button class="btn btn-danger btn-xs" ng-click="deleteNotification()">
+          <i class="glyphicon glyphicon-remove"></i>
+          Delete
+        </button>
+      </div>
     </div>
   </div>
 </div>
