@@ -429,7 +429,8 @@ angular.module('bulbsCmsApp')
 
             var $activeUsers = $article.$activeUsers(),
                 $versions = $article.$versions(),
-                currentUser;
+                currentUser,
+                savePNotify;
 
             $versions.$loaded(function () {
               $versions.$watch(function (e) {
@@ -442,14 +443,18 @@ angular.module('bulbsCmsApp')
 
                   if (currentUser && newVersion.user.id !== currentUser.id) {
 
-                    var msg = '<b>'+ newVersion.user.displayName + '</b> just saved their own version of this article!';
+                    // close any existing save pnotify
+                    savePNotify && savePNotify.remove();
+
+                    var msg = '<b>'+ newVersion.user.displayName + '</b> -- '
+                                + moment(newVersion.timestamp).format('MMM Do YYYY, h:mma') + '<br>';
                     if ($scope.articleIsDirty) {
                       msg += ' You have unsaved changes that may conflict when you save.'
                     }
                     msg += ' Open the version browser to see their latest version.';
 
                     // this isn't the current user that saved, so someone else must have saved, notify this user
-                    new PNotify({
+                    savePNotify = new PNotify({
                       title: 'Another User Saved!',
                       text: msg,
                       type: 'error',
@@ -459,18 +464,18 @@ angular.module('bulbsCmsApp')
                         confirm: true,
                         buttons: [{
                           text: 'Open Version Browser',
-                          addClass: 'btn-info',
+                          addClass: 'btn-primary',
                           click: function (notice) {
                             notice.mouse_reset = false;
                             notice.remove();
                             VersionBrowserModalOpener.open($scope, $scope.article);
                           }
                         }, {
-                          text: 'Dismiss',
-                          addClass: 'btn-warning'
+                          addClass: 'hide'
                         }]
                       },
                       buttons: {
+                        closer_hover: false,
                         sticker: false
                       }
                     });
