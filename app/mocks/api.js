@@ -1,6 +1,6 @@
 angular.module('bulbsCmsApp.mockApi').run([
-  '$httpBackend', 'mockApiData',
-  function($httpBackend, mockApiData) {
+  '$httpBackend', 'mockApiData', 'moment',
+  function($httpBackend, mockApiData, moment) {
 
     $httpBackend.when('OPTIONS', '/returns-a-403/').respond(function(){ //just for testing
       return [403, {"detail": "No permission"}];
@@ -85,15 +85,54 @@ angular.module('bulbsCmsApp.mockApi').run([
       return [200]
     });
 
-    $httpBackend.whenGET('/cms/api/v1/notifications/').respond([
-      {
+    // notifications
+    var today = moment();
+    mockApiData.notifications = [{
+        id: 0,
         title: 'We\'ve Made An Update!',
-        description: 'There were some updates made to the site!',
         body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin quis aliquet risus, eget vulputate nibh. Fusce egestas porttitor libero in faucibus. Aliquam at orci eget massa tristique condimentum vel sit amet ipsum. Nulla tincidunt arcu tortor, a pulvinar mauris convallis id. Quisque imperdiet id ex ac fringilla. Aliquam fringilla dolor nec enim iaculis iaculis sed ac lacus. Nulla id condimentum magna. Aliquam dictum justo tortor, vitae blandit odio aliquet sagittis.',
-        post_date: '2014-09-25T16:00:00Z',
-        notify_end_date: '2014-09-28T16:00:00Z'
-      }
-    ]);
+        post_date: today.format(),
+        notify_end_date: today.clone().add({days: 3}).format()
+      },{
+        id: 1,
+        title: 'You Can\'t Edit Me',
+        body: '<p>something something <b>bold</b></p>',
+        post_date: today.format(),
+        notify_end_date: today.clone().add({days: 3}).format()
+      },{
+        id: 2,
+        title: 'I\'m Not Visible',
+        post_date: today.clone().add({days: 1}).format(),
+        notify_end_date: today.clone().add({days: 3}).format()
+      },{
+        id: 3,
+        title: 'Another Update!',
+        body: 'Something something.',
+        post_date: today.format(),
+        notify_end_date: today.clone().add({days: 3}).format()
+      },{
+        id: 4,
+        title: 'Update Update Update!',
+        body: 'All sorts of stuff added to the CMS.',
+        post_date: today.format(),
+        notify_end_date: today.clone().add({days: 3}).format()
+    }];
+    $httpBackend.whenGET('/cms/api/v1/notifications/').respond(mockApiData.notifications);
+    $httpBackend.whenPOST('/cms/api/v1/notifications/').respond(200, {
+      id: 5,
+      title: 'New Notification',
+      body: 'Ipsum ipsum ipsum. This was POSTed here.',
+      post_date: today.clone().add({days: 1}).format(),
+      notify_end_date: today.clone().add({days: 4}).format()
+    });
+    $httpBackend.whenPUT(/\/cms\/api\/v1\/notifications\/(\d+)\//).respond(200, {
+      id: 5,
+      title: 'Updated Notification',
+      body: 'This was PUT here.',
+      post_date: today.clone().add({days: 1}).format(),
+      notify_end_date: today.clone().add({days: 4}).format()
+    });
+    $httpBackend.whenDELETE(/\/cms\/api\/v1\/notifications\/(\d+)\//).respond(200);
 
     //current user
     $httpBackend.whenGET(/\/users\/me\/?/).respond({
@@ -194,6 +233,7 @@ angular.module('bulbsCmsApp.mockApi').run([
         email: 'webtech@theonion.com',
         first_name: 'Herman',
         last_name: 'Zweibel',
+        is_superuser: true,
 //        firebase_token: tokenGenerator.createToken({
 //          id: 0,
 //          username: 'admin',
@@ -764,6 +804,13 @@ angular.module('bulbsCmsApp.mockApi').run([
         last_name: "Last5",
         id: 5,
         email: "flast5@theonion.com"
+      },
+      {
+        username: "User6",
+        first_name: "First6",
+        last_name: "Last6",
+        id: 6,
+        email: "flast6@theonion.com"
       },
       {
         username: "Username6",

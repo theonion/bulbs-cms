@@ -39,13 +39,13 @@ module.exports = function(config) {
       'app/bower_components/angular/angular.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
       'app/bower_components/angular-resource/angular-resource.js',
+      'app/bower_components/angular-cookie/angular-cookie.js',
       'app/bower_components/angular-cookies/angular-cookies.js',
       'app/bower_components/angular-sanitize/angular-sanitize.js',
       'app/bower_components/angular-route/angular-route.js',
       'app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'app/bower_components/angularfire/dist/angularfire.js',
       'app/bower_components/nprogress/nprogress.js',
-      'app/bower_components/restangular/dist/restangular.js',
       'app/bower_components/restangular/dist/restangular.js',
       'app/bower_components/moment/moment.js',
       'app/bower_components/urlify/urlify.js',
@@ -59,8 +59,15 @@ module.exports = function(config) {
       'app/mocks/firebaseapi.js',
 
       'app/scripts/*.js',
+
+      'app/scripts/api/module.js',
+      'app/scripts/api/*.js',
+
       'app/scripts/**/*.js',
       'test/spec/**/*.js',
+
+      'app/scripts/api/*.js',
+
       'test/config.js',
       'app/views/**/*.html'
     ],

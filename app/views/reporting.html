@@ -1,0 +1,44 @@
+<nav-bar view="nav" ></nav-bar>
+
+<div class="wrapper container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <select class="form-control" ng-options="options as name for (name, options) in reports" ng-model="report"></select>
+        </div>
+        <div class="col-md-2">
+            <p class="input-group">
+              <input placeholder="Start Date" type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="start" is-open="startOpen" close-text="Close" />
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="openStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+            </p>
+        </div>
+        <div class="col-md-2">
+            <p class="input-group">
+              <input placeholder="End Date" type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="end" is-open="endOpen" close-text="Close" />
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="openEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+            </p>
+        </div>
+        <div class="col-md-2">
+            <select class="form-control" ng-options="option as option.label for option in orderOptions" ng-model="orderBy" ng-change="orderingChange()"></select>
+        </div>
+        <div class="col-md-2">
+            <a href="{{ downloadURL }}" target="_blank" class="btn btn-primary">Download</a>
+        </div>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th ng-repeat="heading in headings" ng-bind="heading"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="item in items">
+                <td ng-repeat="value in item" ng-bind="value"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

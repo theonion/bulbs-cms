@@ -1,0 +1,56 @@
+<nav-bar view="toolbar" article="content"></nav-bar>
+
+<div class="container">
+
+<!--     <div class="row content-nav">
+        <div class="container col-xs-12 col-sm-pull-1 col-sm-push-1 col-sm-10 col-md-pull-2 col-md-push-2 col-md-8">
+            <ul class="nav nav-pills">
+                <li>
+                    <a href="/cms/app/edit/{{ contentId }}/" >Content</a>
+                </li>
+                <li class="active">
+                    <a href="/cms/{{ contentId }}/contributions/" >Contributions</a>
+                </li>
+            </ul>
+        </div>
+    </div> -->
+    <div class="row">
+        <div id="contributions" class="container col-xs-12 col-sm-pull-1 col-sm-push-1 col-sm-10 col-md-pull-2 col-md-push-2 col-md-8">
+            <div class="contribution panel panel-default" ng-repeat="contribution in contributions">
+
+                <div class="panel-heading" data-toggle="collapse" href="#contribution{{$index}}">
+                    <b>{{ contribution.contributor.getFullName() }}&nbsp;</b><span class="label label-default" ng-bind="contributionLabels[$index]"></span><a class="pull-right" ng-click="remove($index)">
+                        <i class="glyphicon glyphicon-remove text-danger"></i>
+                    </a>
+                </div>
+
+                <div id="contribution{{$index}}" ng-class="{collapse: true, in: collapsed[$index] == false}">
+                    <div class="panel-body" >
+                        <div class="row">
+                            <div class="form-group col-sm-6">
+                                <autocomplete type="text"
+                                    ng-model="contribution.contributor"
+                                    service="AuthorService"
+                                    label-attr="getFullName"
+                                    search-param="search"
+                                    placeholder="Search for author"></autocomplete>
+                            </div>
+                            <div class="role col-sm-6">
+                                <select name="role" class="form-control form-group" ng-change="updateLabel($index)" ng-options="role.id as role.name for role in roles" ng-model="contribution.role">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control" rows="3" placeholder="Notes" ng-model="contribution.notes"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group pull-right">
+                <button class="btn btn-success" ng-click="add()">Add Contributor</button>
+            </div>
+
+        </div>
+    </div>
+</div>

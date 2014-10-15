@@ -1,0 +1,51 @@
+<div class="modal-header">
+  <button type="button" class="close" ng-click="$dismiss();" aria-hidden="true">&times;</button>
+  <h4 class="modal-title">{{ modalTitle || 'Choose a Time' }}</h4>
+</div>
+<div class="modal-body">
+    <div class="well">
+      <div class="date-dropdown dropdown">
+        <label>Date</label>
+        <div class="input-group">
+          <input readonly class="form-control disabled uneditable-input" value="{{ tempDatetime | tzDate: 'shortDate' }}">
+          <div class="input-group-btn">
+            <a class="btn-default btn" ng-click="setDateToday()">Today</a>
+            <a class="btn-default btn" ng-click="setDateTomorrow()">Tomorrow</a>
+            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+              <i class="glyphicon glyphicon-calendar"></i>
+            </a>
+            <ul class="dropdown-menu pull-right calendar-dropdown" role="menu" aria-labelledby="dLabel">
+              <datetimepicker
+                ng-model="tempDatetime"
+                on-set-time="setDate"
+                datetimepicker-config="{ dropdownSelector: '.calendar-dropdown', minView: 'day' }"></datetimepicker>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="well">
+      <label>Time ({{ TIMEZONE_LABEL }})</label>
+      <div class="row">
+        <div class="col-sm-4 col-xs-12">
+          <timepicker ng-model="tempDatetime" minute-step="5" mousewheel="false"></timepicker>
+        </div>
+        <div class="col-sm-8 col-xs-12">
+          <div class="btn-group" style="margin-top: 34px;">
+            <a class="btn-default btn" ng-click="setTimeNow()">Now</a>
+            <a class="btn-default btn" ng-click="setTimeMidnight()">Midnight</a>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-success" ng-disabled="!dateValid" ng-click="chooseDatetime()">
+    <i class="glyphicon glyphicon-ok"></i>
+    Done
+  </button>
+  <button class="btn btn-danger" ng-click="$dismiss();">
+    <i class="glyphicon glyphicon-remove"></i>
+    Cancel
+  </button>
+</div>

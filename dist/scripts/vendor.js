@@ -33291,6 +33291,118 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
+/*
+ * Copyright 2013 Ivan Pusic
+ * Contributors:
+ *   Matjaz Lipus
+ */
+angular.module('ivpusic.cookie', ['ipCookie']);
+angular.module('ipCookie', ['ng']).
+factory('ipCookie', ['$document',
+  function ($document) {
+    'use strict';
+
+    return (function () {
+      function cookieFun(key, value, options) {
+
+        var cookies,
+          list,
+          i,
+          cookie,
+          pos,
+          name,
+          hasCookies,
+          all,
+          expiresFor;
+
+        options = options || {};
+
+        if (value !== undefined) {
+          // we are setting value
+          value = typeof value === 'object' ? JSON.stringify(value) : String(value);
+
+          if (typeof options.expires === 'number') {
+            expiresFor = options.expires;
+            options.expires = new Date();
+            // Trying to delete a cookie; set a date far in the past
+            if (expiresFor === -1) {
+              options.expires = new Date('Thu, 01 Jan 1970 00:00:00 GMT');
+              // A new 
+            } else if (options.expirationUnit !== undefined) {
+              if (options.expirationUnit === 'hours') {
+                options.expires.setHours(options.expires.getHours() + expiresFor);
+              } else if (options.expirationUnit === 'minutes') {
+                options.expires.setMinutes(options.expires.getMinutes() + expiresFor);
+              } else if (options.expirationUnit === 'seconds') {
+                options.expires.setSeconds(options.expires.getSeconds() + expiresFor);
+              } else {
+                options.expires.setDate(options.expires.getDate() + expiresFor);
+              }
+            } else {
+              options.expires.setDate(options.expires.getDate() + expiresFor);
+            }
+          }
+          return ($document[0].cookie = [
+            encodeURIComponent(key),
+            '=',
+            encodeURIComponent(value),
+            options.expires ? '; expires=' + options.expires.toUTCString() : '',
+            options.path ? '; path=' + options.path : '',
+            options.domain ? '; domain=' + options.domain : '',
+            options.secure ? '; secure' : ''
+          ].join(''));
+        }
+
+        list = [];
+        all = $document[0].cookie;
+        if (all) {
+          list = all.split('; ');
+        }
+
+        cookies = {};
+        hasCookies = false;
+
+        for (i = 0; i < list.length; ++i) {
+          if (list[i]) {
+            cookie = list[i];
+            pos = cookie.indexOf('=');
+            name = cookie.substring(0, pos);
+            value = decodeURIComponent(cookie.substring(pos + 1));
+
+            if (key === undefined || key === name) {
+              try {
+                cookies[name] = JSON.parse(value);
+              } catch (e) {
+                cookies[name] = value;
+              }
+              if (key === name) {
+                return cookies[name];
+              }
+              hasCookies = true;
+            }
+          }
+        }
+        if (hasCookies && key === undefined) {
+          return cookies;
+        }
+      }
+      cookieFun.remove = function (key, options) {
+        var hasCookie = cookieFun(key) !== undefined;
+
+        if (hasCookie) {
+          if (!options) {
+            options = {};
+          }
+          options.expires = -1;
+          cookieFun(key, '', options);
+        }
+        return hasCookie;
+      };
+      return cookieFun;
+    }());
+  }
+]);
+
 (function() {var h=!0,i=null,m=!1,n=n||{},o=this;function q(a,c,b){a=a.split(".");b=b||o;!(a[0]in b)&&b.execScript&&b.execScript("var "+a[0]);for(var d;a.length&&(d=a.shift());)!a.length&&void 0!==c?b[d]=c:b=b[d]?b[d]:b[d]={}}q("goog.LOCALE","en");q("goog.TRUSTED_SITE",h);q("goog.ENABLE_DEBUG_LOADER",h);
 function r(a){var c=typeof a;if("object"==c)if(a){if(a instanceof Array)return"array";if(a instanceof Object)return c;var b=Object.prototype.toString.call(a);if("[object Window]"==b)return"object";if("[object Array]"==b||"number"==typeof a.length&&"undefined"!=typeof a.splice&&"undefined"!=typeof a.propertyIsEnumerable&&!a.propertyIsEnumerable("splice"))return"array";if("[object Function]"==b||"undefined"!=typeof a.call&&"undefined"!=typeof a.propertyIsEnumerable&&!a.propertyIsEnumerable("call"))return"function"}else return"null";
 else if("function"==c&&"undefined"==typeof a.call)return"object";return c}Math.random();var t={};q("goog.json.USE_NATIVE_JSON",m);var ba={}.$?o.JSON.stringify:function(a,c){var b=[];u(new aa(c),a,b);return b.join("")};function aa(a){this.i=a}
