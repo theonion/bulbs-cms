@@ -5,7 +5,8 @@ angular.module('bulbsCmsApp')
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, keypress, Raven,
-    IfExistsElse, VersionStorageApi, ContentApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener, routes)
+    IfExistsElse, VersionStorageApi, ContentApi, FirebaseApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener,
+    routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
@@ -26,6 +27,15 @@ angular.module('bulbsCmsApp')
 
       $scope.last_saved_article = angular.copy(data);
 
+      FirebaseApi.$connection
+        .onConnect(function () {
+          $scope.firebaseConnected = true;
+        })
+        .onDisconnect(function () {
+          $scope.firebaseConnected = false;
+        });
+
+      // get article and active users, register current user as active
       FirebaseArticleFactory
         .$retrieveCurrentArticle()
           .then(function ($article) {

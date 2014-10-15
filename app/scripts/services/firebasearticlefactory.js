@@ -21,28 +21,9 @@ angular.module('bulbsCmsApp')
           $activeUsers = $firebase(articleRef.child('users')).$asArray(),
           $versions = $firebase(articleRef.child('versions')).$asArray();
 
-      return {
+      var addCurrentUserToActiveUsers = function () {
 
-        /**
-         * Raw firebase article reference.
-         */
-        ref: articleRef,
-        /**
-         * Get angularfire live array of article's currently active users.
-         */
-        $activeUsers: function () { return $activeUsers; },
-        /**
-         * Get angularfire live array of article versions.
-         */
-        $versions: function () { return $versions; },
-        /**
-         * Register a user as active with this article.
-         *
-         * @returns   deferred promise that will resolve with the user reference as added to the active user list.
-         */
-        $registerCurrentUserActive: function () {
-
-          var registeredDeferred = $q.defer(),
+        var registeredDeferred = $q.defer(),
               registeredPromise = registeredDeferred.promise;
 
           CurrentUser.$simplified()
@@ -70,7 +51,39 @@ angular.module('bulbsCmsApp')
 
           return registeredPromise;
 
-        },
+      };
+
+      var registerCurrentUserActive = function () {
+
+        // ensure when reconnection occurs, user is added back to active users
+        FirebaseApi.$connection.onConnect(addCurrentUserToActiveUsers);
+
+        // add current user and return promise
+        return addCurrentUserToActiveUsers();
+
+      };
+
+      return {
+
+        /**
+         * Raw firebase article reference.
+         */
+        ref: articleRef,
+        /**
+         * Get angularfire live array of article's currently active users.
+         */
+        $activeUsers: function () { return $activeUsers; },
+        /**
+         * Get angularfire live array of article versions.
+         */
+        $versions: function () { return $versions; },
+        /**
+         * Register a user as active with this article.
+         *
+         * @returns   deferred promise that will resolve with the user reference as added to the active user list.
+         */
+        $registerCurrentUserActive: registerCurrentUserActive,
+
         /**
          * Create a new version for this article.
          *

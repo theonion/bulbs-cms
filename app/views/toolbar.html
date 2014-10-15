@@ -39,7 +39,10 @@
   </ul>
     <ul class="nav navbar-nav navbar-right">
 
-      <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="activeUsers.length > 0" ng-init="showActiveUsers = false;">
+      <li class="content-status"
+          ng-controller="ContentworkflowCtrl"
+          ng-show="firebaseConnected && activeUsers.length > 0"
+          ng-init="showActiveUsers = false;">
         <a href="" ng-mouseenter="showActiveUsers = true;" ng-mouseleave="showActiveUsers = false;">
           <i class="glyphicon glyphicon-eye-open"></i>
           <span>Active Users ({{ activeUsers.length }})</span>

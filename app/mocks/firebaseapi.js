@@ -5,6 +5,17 @@
  */
 angular.module('bulbsCmsApp.mockApi')
   .factory('FirebaseApi', function ($q) {
+    var $connection = {
+      onConnect: function () {
+        return this;
+      },
+      onDisconnect: function () {
+        return this;
+      },
+      onChange: function () {
+        return this;
+      }
+    };
     return {
       hasFirebase: false,
       $authorize: function () {
@@ -20,6 +31,7 @@ angular.module('bulbsCmsApp.mockApi')
         }
 
         return $firebaseAvailable;
-      }
+      },
+      $connection: $connection
     };
   });
