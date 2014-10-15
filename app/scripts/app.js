@@ -32,7 +32,6 @@ angular.module('bulbsCmsApp', [
   'Raven',
   'firebase',
   'ipCookie'
-  'firebase',
   'bulbs.api'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
