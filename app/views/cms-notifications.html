@@ -1,0 +1,30 @@
+<nav-bar view="nav" ></nav-bar>
+
+<div id="content-wrapper" class="container cms-notifications">
+  <h2 class="heading">Notifications</h2>
+
+  <div class="row well well-sm">
+    <div
+        ng-if="userIsSuperuser"
+        class="add-notification clearfix">
+      <span ng-if="notifications.length < 1" class="pull-left text-info">
+        <i class="glyphicon glyphicon-info-sign"></i>
+        No notifications yet, click "New Notification" to add one!
+      </span>
+      <button class="btn btn-success btn-xs pull-right" ng-click="newNotification()">
+        <i class="glyphicon glyphicon-plus"></i>
+        New Notification
+      </button>
+    </div>
+    <div ng-if="notifications.length > 0" class="col-md-12 panel-group">
+      <cms-notification
+          ng-repeat="notification in notifications"
+          notification="notification"
+          class="cms-notification"></cms-notification>
+    </div>
+    <div ng-if="!userIsSuperuser && notifications.length < 1">
+      No notifications yet, check back soon!
+    </div>
+  </div>
+
+</div>

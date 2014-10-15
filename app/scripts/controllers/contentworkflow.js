@@ -18,7 +18,7 @@ angular.module('bulbsCmsApp')
 
     $scope.pubTimeModal = function (article) {
       return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'modals/choose-date-modal.html',
+        templateUrl: routes.PARTIALS_URL + 'modals/publish-date-modal.html',
         controller: 'PubtimemodalCtrl',
         scope: $scope,
         resolve: {

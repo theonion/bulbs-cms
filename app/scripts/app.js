@@ -31,6 +31,7 @@ angular.module('bulbsCmsApp', [
   'keypress',
   'Raven',
   'firebase',
+  'ipCookie',
   'bulbs.api'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
@@ -59,6 +60,10 @@ angular.module('bulbsCmsApp', [
     .when('/cms/app/targeting/', {
       templateUrl: routes.PARTIALS_URL + 'targeting-editor.html',
       controller: 'TargetingCtrl'
+    })
+    .when('/cms/app/notifications/', {
+      templateUrl: routes.PARTIALS_URL + 'cms-notifications.html',
+      controller: 'CmsNotificationsCtrl'
     })
     .when('/cms/app/reporting/', {
       templateUrl: routes.PARTIALS_URL + 'reporting.html',

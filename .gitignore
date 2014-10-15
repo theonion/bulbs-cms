@@ -7,3 +7,4 @@ app/styles/**/*.css
 app/keys.js
 coverage
 .idea/
+.DS_Store

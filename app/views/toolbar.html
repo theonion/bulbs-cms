@@ -1,87 +1,113 @@
-<div class="navbar-header">
-  <a id="logo" class="navbar-brand" href="/cms/app/list"><img ng-src="{{ NAV_LOGO }}"></a>
-  <button type="button" class="navbar-toggle pull-right" data-toggle="collapse" data-target="#navbar-collapse">
-    <span class="sr-only">Toggle navigation</span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-  </button>
-  <a class="navbar-save btn btn-success navbar-btn visible-xs-inline pull-right" ng-class="{'btn-clean': !articleIsDirty}" href="" ng-click="saveArticle();" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/">
-      <i class="glyphicon glyphicon-floppy-disk"></i> Save</a>
-</div>
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container-fluid">
 
-<div class="collapse navbar-collapse" id="navbar-collapse">
-  <ul class="nav navbar-nav edit-page-nav container-fluid">
-    <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Article Tools <b class="caret"></b></a>
-      <ul class="dropdown-menu">
-        <li>
-          <a href="" role="button" class="changelog-button" ng-controller="ContentworkflowCtrl" ng-click="changelogModal(article);">
-            <i class="glyphicon glyphicon-cog"></i> View Changelog</a></li>
-        <li>
-          <a href="" role="button" class="version-browser-button" ng-controller="ContentworkflowCtrl" ng-click="versionBrowserModal(article);">
-            <i class="glyphicon glyphicon-th-list"></i> Browse Versions</a></li>
-        <li>
-          <a href="" role="button" ng-controller="ContentworkflowCtrl" ng-click="thumbnailModal(article);">
-            <i class="glyphicon glyphicon-picture"></i> Edit Thumbnail</a></li>
-        <li>
-          <a href="" role="button" ng-controller="ContentworkflowCtrl" ng-click="sponsorModal(article);">
-            <i class="glyphicon glyphicon-briefcase"></i> Edit Sponsor</a></li>
-        <li>
-            <a href="" role="button" ng-controller="ContentworkflowCtrl" ng-click="descriptionModal(article)">
-                <i class="glyphicon glyphicon-edit"></i> Edit Description</a></li>
-        <li role="presentation" class="divider"></li>
-        <li>
-          <a href="" ng-controller="ContentworkflowCtrl" role="button" ng-click="trashContentModal(article.id);">
-            <i class="glyphicon glyphicon-trash"></i> Delete Article</a></li>
+    <div class="navbar-header">
+      <a id="logo" class="navbar-brand" href="/cms/app/list"><img ng-src="{{ NAV_LOGO }}"></a>
+      <button type="button" class="navbar-toggle pull-right" data-toggle="collapse" data-target="#navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-save btn btn-success navbar-btn visible-xs-inline pull-right" ng-class="{'btn-clean': !articleIsDirty}" href="" ng-click="saveArticle();" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/">
+          <i class="glyphicon glyphicon-floppy-disk"></i> Save</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="navbar-collapse">
+      <ul class="nav navbar-nav edit-page-nav container-fluid">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Article Tools <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li>
+              <a href="" role="button" class="changelog-button" ng-controller="ContentworkflowCtrl" ng-click="changelogModal(article);">
+                <i class="glyphicon glyphicon-cog"></i> View Changelog</a></li>
+            <li>
+              <a href="" role="button" class="version-browser-button" ng-controller="ContentworkflowCtrl" ng-click="versionBrowserModal(article);">
+                <i class="glyphicon glyphicon-th-list"></i> Browse Versions</a></li>
+            <li>
+              <a href="" role="button" ng-controller="ContentworkflowCtrl" ng-click="thumbnailModal(article);">
+                <i class="glyphicon glyphicon-picture"></i> Edit Thumbnail</a></li>
+            <li>
+              <a href="" role="button" ng-controller="ContentworkflowCtrl" ng-click="sponsorModal(article);">
+                <i class="glyphicon glyphicon-briefcase"></i> Edit Sponsor</a></li>
+            <li>
+                <a href="" role="button" ng-controller="ContentworkflowCtrl" ng-click="descriptionModal(article)">
+                    <i class="glyphicon glyphicon-edit"></i> Edit Description</a></li>
+            <li role="presentation" class="divider"></li>
+            <li>
+              <a href="" ng-controller="ContentworkflowCtrl" role="button" ng-click="trashContentModal(article.id);">
+                <i class="glyphicon glyphicon-trash"></i> Delete Article</a></li>
+          </ul>
+        </li>
+        <li ng-class="{active: page === 'edit'}">
+          <a href="/cms/app/edit/{{article.id}}/" role="button">Edit Content</a>
+        </li>
+        <li ng-class="{active: page === 'contributions'}">
+          <a href="/cms/app/edit/{{article.id}}/contributions/" role="button">Edit Contributions</a>
+        </li>
       </ul>
-    </li>
-    <li ng-class="{active: page === 'edit'}">
-      <a href="/cms/app/edit/{{ article.id }}/">Edit Article</a>
-    </li>
-    <li ng-class="{active: page === 'contributions'}">
-      <a href="/cms/app/edit/{{ article.id }}/contributions/">Edit Contributions</a>
-    </li>
-  </ul>
-    <ul class="nav navbar-nav navbar-right">
+      <ul class="nav navbar-nav navbar-right" ng-show="page === 'contributions'">
+          <li>
+            <button id="save-btn" class="navbar-save btn btn-success btn-sm navbar-btn" href="" ng-click="save();">
+              <i class="glyphicon glyphicon-floppy-disk"></i>
+              <span>Save</span>
+            </button>
+          </li>
+      </ul>
 
-      <li class="content-status"
-          ng-controller="ContentworkflowCtrl"
-          ng-show="firebaseConnected && activeUsers.length > 0"
-          ng-init="showActiveUsers = false;">
-        <a href="" ng-mouseenter="showActiveUsers = true;" ng-mouseleave="showActiveUsers = false;">
-          <i class="glyphicon glyphicon-eye-open"></i>
-          <span>Active Users ({{ activeUsers.length }})</span>
-        </a>
-        <div class="active-users" ng-show="showActiveUsers">
-            <ul>
-                <li ng-repeat="user in activeUsers">
-                    <span>{{ user.displayName }}</span><span ng-show="user.count > 1"> ({{ user.count }})</span>
-                </li>
-            </ul>
-        </div>
-      </li>
+        <ul class="nav navbar-nav navbar-right" ng-show="page === 'edit'">
 
-      <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'unpublished'" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/publish/">
-        <a href="" ng-click="saveArticle().then(pubTimeModal);">
-          <i class="glyphicon glyphicon-globe"></i> Publish...</a></li>
+          <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="activeUsers.length > 0" ng-init="showActiveUsers = false;">
+            <a href="" ng-mouseenter="showActiveUsers = true;" ng-mouseleave="showActiveUsers = false;">
+              <i class="glyphicon glyphicon-eye-open"></i>
+              <span class="active-users-btn-text">Active Users ({{ activeUsers.length }})</span>
+            </a>
+            <div class="active-users" ng-show="showActiveUsers">
+                <ul>
+                    <li ng-repeat="user in activeUsers">
+                        <span>{{ user.displayName }}</span><span ng-show="user.count > 1"> ({{ user.count }})</span>
+                    </li>
+                </ul>
+            </div>
+          </li>
 
-      <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'published'" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/publish/">
-        <a href="" class="changeable" ng-click="saveArticle().then(pubTimeModal);">
-          <i class="glyphicon glyphicon-calendar"></i>
-          <span>Published: {{article.published|tzDate:"M/d/yy '@' h:mm a" }}</span></a></li>
+          <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'unpublished'" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/publish/">
+            <a href="" ng-click="saveArticle().then(pubTimeModal);">
+              <i class="glyphicon glyphicon-globe"></i> Publish...
+            </a>
+          </li>
 
-      <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'scheduled'" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/publish/">
-        <a href="" class="changeable" ng-click="saveArticle().then(pubTimeModal);">
-          <i class="glyphicon glyphicon-calendar"></i>
-          <span>Scheduled: {{article.published|tzDate:"M/d/yy '@' h:mm a" }}</span></a></li>
+          <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'published'" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/publish/">
+            <a href="" class="changeable" ng-click="saveArticle().then(pubTimeModal);">
+              <i class="glyphicon glyphicon-calendar"></i>
+              <span>Published: {{article.published|tzDate:"M/d/yy '@' h:mm a" }}</span>
+            </a>
+          </li>
 
-      <li class="content-status">
-        <a target="_blank" href="/r/{{article.id}}">
-          <i class="glyphicon glyphicon-share-alt"></i> Preview</a></li>
+          <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'scheduled'" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/publish/">
+            <a href="" class="changeable" ng-click="saveArticle().then(pubTimeModal);">
+              <i class="glyphicon glyphicon-calendar"></i>
+              <span>Scheduled: {{article.published|tzDate:"M/d/yy '@' h:mm a" }}</span>
+            </a>
+          </li>
 
-      <li class="hidden-xs" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/">
-        <button id="save-article-btn" class="navbar-save btn btn-success btn-sm navbar-btn" ng-class="{'btn-clean': !articleIsDirty}" href="" ng-click="saveArticle();">
-          <i class="glyphicon glyphicon-floppy-disk"></i> Save</button></li>
+          <li class="content-status">
+            <a target="_blank" href="/r/{{article.id}}">
+              <i class="glyphicon glyphicon-share-alt"></i>
+              <span>Preview</span>
+            </a>
+          </li>
 
-  </ul></div>
+          <li class="hidden-xs" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/">
+            <button id="save-article-btn" class="navbar-save btn btn-success btn-sm navbar-btn" ng-class="{'btn-clean': !articleIsDirty}" href="" ng-click="saveArticle();">
+              <i class="glyphicon glyphicon-floppy-disk"></i>
+              <span>Save</span>
+            </button>
+          </li>
+
+      </ul>
+    </div>
+
+  </div>
+
+</nav>
