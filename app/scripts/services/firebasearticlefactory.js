@@ -23,19 +23,33 @@ angular.module('bulbsCmsApp')
 
       var addCurrentUserToActiveUsers = function () {
 
-        CurrentUser.$simplified().then(function (user) {
+        var registeredDeferred = $q.defer(),
+              registeredPromise = registeredDeferred.promise;
 
-          return $activeUsers
-            .$add(user)
-            .then(function (userRef) {
+          CurrentUser.$simplified()
+            .then(function (user) {
 
-              // ensure user is removed on disconnect
-              userRef.onDisconnect().remove();
-              return userRef;
+              $activeUsers
+                .$add(user)
+                .then(function (userRef) {
 
+                  // ensure user is removed on disconnect
+                  userRef.onDisconnect().remove();
+
+                  // resolve registration
+                  registeredDeferred.resolve(user);
+
+                })
+                .catch(function (error) {
+                  registeredDeferred.reject(error);
+                });
+
+            })
+            .catch(function (error) {
+              registeredDeferred.reject(error);
             });
 
-        });
+          return registeredPromise;
 
       };
 
@@ -46,50 +60,6 @@ angular.module('bulbsCmsApp')
 
         // add current user and return promise
         return addCurrentUserToActiveUsers();
-
-      };
-
-      var createVersion = function (articleData) {
-
-        // defer for creation of version
-        var createDefer = $q.defer(),
-            $createPromise = createDefer.promise;
-
-        // get simplified version of user then use that when creating version
-        CurrentUser.$simplified().then(function (user) {
-
-          // if we will have more than the max versions allowed, delete until we're one below the max
-          var numVersions = $versions.length;
-          if (numVersions + 1 > FIREBASE_ARTICLE_MAX_VERSIONS) {
-            _.chain($versions)
-              // sort oldest to newest
-              .sortBy(function (version) {
-                return version.timestamp;
-              })
-              // remove oldest versions until we're 1 below max versions
-              .every(function (version) {
-                $versions.$remove(version);
-                numVersions--;
-                return numVersions + 1 > FIREBASE_ARTICLE_MAX_VERSIONS;
-              });
-          }
-
-          // make version data
-          var versionData = {
-            timestamp: moment().valueOf(),
-            user: user,
-            content: articleData
-          };
-
-          // add version to version data
-          $versions.$add(versionData)
-            .then(createDefer.resolve)
-            .catch(createDefer.reject);
-
-        });
-
-        // return promise for this create
-        return $createPromise;
 
       };
 
@@ -113,6 +83,7 @@ angular.module('bulbsCmsApp')
          * @returns   deferred promise that will resolve with the user reference as added to the active user list.
          */
         $registerCurrentUserActive: registerCurrentUserActive,
+
         /**
          * Create a new version for this article.
          *
@@ -120,24 +91,55 @@ angular.module('bulbsCmsApp')
          * @returns   deferred promise that will resolve with the version reference as added to the versions list.
          *  Promise is rejected if for some reason create did not occur (eg nothing changed since last version).
          */
-        $createVersion: createVersion
+        $createVersion: function (articleData) {
+
+          // defer for creation of version
+          var createDefer = $q.defer(),
+              $createPromise = createDefer.promise;
+
+          // get simplified version of user then use that when creating version
+          CurrentUser.$simplified().then(function (user) {
+
+            // if we will have more than the max versions allowed, delete until we're one below the max
+            var numVersions = $versions.length;
+            if (numVersions + 1 > FIREBASE_ARTICLE_MAX_VERSIONS) {
+              _.chain($versions)
+                // sort oldest to newest
+                .sortBy(function (version) {
+                  return version.timestamp;
+                })
+                // remove oldest versions until we're 1 below max versions
+                .every(function (version) {
+                  $versions.$remove(version);
+                  numVersions--;
+                  return numVersions + 1 > FIREBASE_ARTICLE_MAX_VERSIONS;
+                });
+            }
+
+            // make version data
+            var versionData = {
+              timestamp: moment().valueOf(),
+              user: user,
+              content: articleData
+            };
+
+            // add version to version data
+            $versions.$add(versionData)
+              .then(createDefer.resolve)
+              .catch(createDefer.reject);
+
+          });
+
+          // return promise for this create
+          return $createPromise;
+
+        }
 
       };
 
     };
 
     return {
-
-      /**
-       * Retrieve current article object that is connected to firebase.
-       *
-       * @returns   deferred promise that will resolve with the current article object.
-       */
-      $retrieveCurrentArticle: function () {
-
-        return this.$retrieveArticle($routeParams.id);
-
-      },
 
       /**
        * Retrieve an article object that is connected to firebase.
@@ -147,11 +149,28 @@ angular.module('bulbsCmsApp')
        */
       $retrieveArticle: function (articleId) {
 
-        return FirebaseApi.$authorize().then(function (rootRef) {
+        var retrieveDeferred = $q.defer(),
+            retrievePromise = retrieveDeferred.promise;
 
-          return createArticle(rootRef, articleId);
+        FirebaseApi.$authorize()
+          .then(function (rootRef) {
+            retrieveDeferred.resolve(createArticle(rootRef, articleId));
+          })
+          .catch(function (error) {
+            retrieveDeferred.reject(error);
+          });
 
-        });
+        return retrievePromise;
+
+      },
+      /**
+       * Retrieve current article object that is connected to firebase.
+       *
+       * @returns   deferred promise that will resolve with the current article object.
+       */
+      $retrieveCurrentArticle: function () {
+
+        return this.$retrieveArticle($routeParams.id);
 
       }
 

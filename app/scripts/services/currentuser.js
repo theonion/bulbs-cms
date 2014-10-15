@@ -3,10 +3,10 @@
 angular.module('bulbsCmsApp')
   .service('CurrentUser', function EditorItems(ContentApi, $q) {
 
-    var userDefer = $q.defer();
+    var userDefer = $q.defer(),
+        $userPromise = userDefer.promise;
 
     this.data = [];
-    this.$retrieveData = userDefer.promise;
 
     var self = this;
     this.getItems = function () {
@@ -19,11 +19,16 @@ angular.module('bulbsCmsApp')
     this.getItems();
 
     /**
+     * Get promise that resolves when user data is populated.
+     */
+    this.$retrieveData = function () { return $userPromise; };
+
+    /**
      * Create a simplified version of this user for storage.
      */
     this.$simplified = function () {
 
-      return this.$retrieveData.then(function (user) {
+      return $userPromise.then(function (user) {
 
         var displayName = user.first_name && user.last_name
                             ? user.first_name + ' ' + user.last_name

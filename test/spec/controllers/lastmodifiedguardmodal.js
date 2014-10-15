@@ -39,12 +39,20 @@ describe('Controller: LastmodifiedguardmodalCtrl', function () {
       {user: 5, action_time: '1995-04-08T15:35:15.118Z'},
     ]);
     httpBackend.expectGET('/cms/api/v1/author/1/').respond(lastSavedBy);
+
+    scope.article = {
+      title: 'This is Mine'
+    };
+    scope.articleIsDirty = false;
+
     LastmodifiedguardmodalCtrl = $controller('LastmodifiedguardmodalCtrl', {
       $scope: scope,
       $modal: modalService,
       $modalInstance: modal,
-      articleOnPage: {},
-      articleOnServer: {}
+      articleOnPage: scope.article,
+      articleOnServer: {
+        title: 'This is Theirs'
+      }
     });
     scope.$digest();
     httpBackend.flush();
@@ -60,10 +68,16 @@ describe('Controller: LastmodifiedguardmodalCtrl', function () {
     expect(scope.lastSavedBy.username).toBe(lastSavedBy.username);
   });
   
-  it('should have a function loadFromServer that just reloads the page (and therefore fetches the latest version of the article)', function () {
-    spyOn(routeService, 'reload');
+  it('should have a function loadFromServer that replaces current article with latest version', function () {
+
+    expect(scope.article.title).toBe('This is Mine');
+    expect(scope.articleIsDirty).toBe(false);
+
     scope.loadFromServer();
-    expect(routeService.reload).toHaveBeenCalled();
+
+    expect(scope.article.title).toBe('This is Theirs');
+    expect(scope.articleIsDirty).toBe(true);
+
   });
   
   it('should have a function saveAnyway that calls $parent.postValidationSaveArticle', function (){

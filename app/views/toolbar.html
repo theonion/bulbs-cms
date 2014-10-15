@@ -45,7 +45,7 @@
           ng-init="showActiveUsers = false;">
         <a href="" ng-mouseenter="showActiveUsers = true;" ng-mouseleave="showActiveUsers = false;">
           <i class="glyphicon glyphicon-eye-open"></i>
-          <span class="active-users-btn-text">Active Users ({{ activeUsers.length }})</span>
+          <span>Active Users ({{ activeUsers.length }})</span>
         </a>
         <div class="active-users" ng-show="showActiveUsers">
             <ul>
