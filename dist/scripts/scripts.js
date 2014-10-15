@@ -402,7 +402,8 @@ angular.module('bulbsCmsApp')
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, keypress, Raven,
-    IfExistsElse, VersionStorageApi, ContentApi, FirebaseApi, FirebaseArticleFactory, Login, routes)
+    IfExistsElse, VersionStorageApi, ContentApi, FirebaseApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener,
+    routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
@@ -436,7 +437,62 @@ angular.module('bulbsCmsApp')
         .$retrieveCurrentArticle()
           .then(function ($article) {
 
-            var $activeUsers = $article.$activeUsers();
+            var $activeUsers = $article.$activeUsers(),
+                $versions = $article.$versions(),
+                currentUser,
+                savePNotify;
+
+            $versions.$loaded(function () {
+              $versions.$watch(function (e) {
+                if (e.event === 'child_added') {
+
+                  // order versions newest to oldest then grab the top one which should be the new version
+                  var newVersion = _.sortBy($versions, function (version) {
+                    return -version.timestamp;
+                  })[0];
+
+                  if (currentUser && newVersion.user.id !== currentUser.id) {
+
+                    // close any existing save pnotify
+                    savePNotify && savePNotify.remove();
+
+                    var msg = '<b>'+ newVersion.user.displayName + '</b> -- '
+                                + moment(newVersion.timestamp).format('MMM Do YYYY, h:mma') + '<br>';
+                    if ($scope.articleIsDirty) {
+                      msg += ' You have unsaved changes that may conflict when you save.'
+                    }
+                    msg += ' Open the version browser to see their latest version.';
+
+                    // this isn't the current user that saved, so someone else must have saved, notify this user
+                    savePNotify = new PNotify({
+                      title: 'Another User Saved!',
+                      text: msg,
+                      type: 'error',
+                      mouse_reset: false,
+                      hide: false,
+                      confirm: {
+                        confirm: true,
+                        buttons: [{
+                          text: 'Open Version Browser',
+                          addClass: 'btn-primary',
+                          click: function (notice) {
+                            notice.mouse_reset = false;
+                            notice.remove();
+                            VersionBrowserModalOpener.open($scope, $scope.article);
+                          }
+                        }, {
+                          addClass: 'hide'
+                        }]
+                      },
+                      buttons: {
+                        closer_hover: false,
+                        sticker: false
+                      }
+                    });
+                  }
+                }
+              });
+            });
 
             // register a watch on active users so we can update the list in real time
             $activeUsers.$watch(function () {
@@ -453,11 +509,16 @@ angular.module('bulbsCmsApp')
                   .map(function (group) {
                     var groupedUser = group[0];
                     groupedUser.count = group.length;
+
+                    if (currentUser && groupedUser.id === currentUser.id) {
+                      groupedUser.displayName = 'You';
+                    }
+
                     return groupedUser;
                   })
                   // sort users by their display names
                   .sortBy(function (user) {
-                    return user.displayName;
+                    return user.displayName === 'You' ? '' : user.displayName;
                   })
                   // now we have a list of unique users along with the number of sessions they have running, sorted by
                   //  their display names
@@ -466,7 +527,10 @@ angular.module('bulbsCmsApp')
             });
 
             // register current user active with this article
-            $article.$registerCurrentUserActive();
+            $article.$registerCurrentUserActive()
+              .then(function (user) {
+                currentUser = user;
+              });
 
             // who knows what kind of promises you might have in the future? so return the article object for chains
             return $article;
@@ -851,7 +915,8 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ContentworkflowCtrl', function ($scope, $http, $modal, $window, moment, routes, TIMEZONE_LABEL) {
+  .controller('ContentworkflowCtrl', function ($scope, $http, $modal, $window, moment, routes,
+                                               VersionBrowserModalOpener, TIMEZONE_LABEL) {
     $scope.TIMEZONE_LABEL = TIMEZONE_LABEL;
 
     $scope.trashContentModal = function (articleId) {
@@ -933,15 +998,7 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.versionBrowserModal = function (article) {
-      return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'modals/version-browser-modal.html',
-        controller: 'VersionBrowserModalCtrl',
-        scope: $scope,
-        size: 'lg',
-        resolve: {
-          article: function () { return article; }
-        }
-      });
+      VersionBrowserModalOpener.open($scope, article);
     };
 
     $scope.descriptionModal = function (article) {
@@ -2892,6 +2949,51 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
+  .factory('VersionBrowserModalOpener', function ($modal, routes) {
+
+    var modal = null;
+
+    return {
+      open: function ($scope, article) {
+        // ensure only one version browser modal is open at a time
+        if (modal) {
+          modal.close();
+        }
+
+        modal = $modal.open({
+          templateUrl: routes.PARTIALS_URL + 'modals/version-browser-modal.html',
+          controller: 'VersionBrowserModalCtrl',
+          scope: $scope,
+          size: 'lg',
+          resolve: {
+            article: function () {
+              return article;
+            }
+          }
+        });
+
+        return modal;
+      }
+    };
+  });
+'use strict';
+
+/**
+ * Factory for creating new references to firebase.
+ */
+angular.module('bulbsCmsApp')
+  .service('FirebaseRefFactory', function () {
+
+    return {
+      newRef: function (url) {
+        return new Firebase(url);
+      }
+    };
+
+  });
+'use strict';
+
+angular.module('bulbsCmsApp')
   .service('IfExistsElse', function IfExistsElse($window, $http) {
     // AngularJS will instantiate a singleton by calling "new" on this function
     this.ifExistsElse = function (restQ, propertiesToValues, existsCbk, elseCbk, errorCbk) {
@@ -2975,10 +3077,10 @@ angular.module('bulbsCmsApp')
 angular.module('bulbsCmsApp')
   .service('CurrentUser', function EditorItems(ContentApi, $q) {
 
-    var userDefer = $q.defer();
+    var userDefer = $q.defer(),
+        $userPromise = userDefer.promise;
 
     this.data = [];
-    this.$retrieveData = userDefer.promise;
 
     var self = this;
     this.getItems = function () {
@@ -2991,11 +3093,16 @@ angular.module('bulbsCmsApp')
     this.getItems();
 
     /**
+     * Get promise that resolves when user data is populated.
+     */
+    this.$retrieveData = function () { return $userPromise; };
+
+    /**
      * Create a simplified version of this user for storage.
      */
     this.$simplified = function () {
 
-      return this.$retrieveData.then(function (user) {
+      return $userPromise.then(function (user) {
 
         var displayName = user.first_name && user.last_name
                             ? user.first_name + ' ' + user.last_name
@@ -3082,10 +3189,11 @@ angular.module('bulbsCmsApp')
 angular.module('bulbsCmsApp')
   .value('FIREBASE_URL', 'https://luminous-fire-8340.firebaseio.com/')
   .value('FIREBASE_ROOT', 'a-site-is-not-configured')
-  .factory('FirebaseApi', function ($firebase, $rootScope, $q, CurrentUser, FIREBASE_URL, FIREBASE_ROOT) {
+  .factory('FirebaseApi', function (FirebaseRefFactory, $firebase, $rootScope, $q, CurrentUser, FIREBASE_URL,
+                                    FIREBASE_ROOT) {
 
     // get root reference in firebase for this site
-    var rootRef = new Firebase(FIREBASE_URL + 'sites/' + FIREBASE_ROOT);
+    var rootRef = FirebaseRefFactory.newRef(FIREBASE_URL + 'sites/' + FIREBASE_ROOT);
 
     // set up a promise for authorization
     var authDefer = $q.defer(),
@@ -3099,7 +3207,7 @@ angular.module('bulbsCmsApp')
       });
 
     // log current session in when their current user data is available
-    CurrentUser.$retrieveData.then(function (user) {
+    CurrentUser.$retrieveData().then(function (user) {
 
       // attempt to login if user has firebase token, if they don't auth promise will reject with no error message
       //  which is okay if we're in an environment where firebase isn't set up yet
@@ -3133,7 +3241,7 @@ angular.module('bulbsCmsApp')
 
     // emit events when firebase reconnects or disconnects, disconnect event should not be used in place of onDisconnect
     //  function provided by firebase reference objects
-    var connectedRef = new Firebase(FIREBASE_URL + '.info/connected');
+    var connectedRef = FirebaseRefFactory.newRef(FIREBASE_URL + '.info/connected');
     connectedRef.on('value', function (connected) {
 
       if (connected.val()) {
@@ -3208,19 +3316,33 @@ angular.module('bulbsCmsApp')
 
       var addCurrentUserToActiveUsers = function () {
 
-        CurrentUser.$simplified().then(function (user) {
+        var registeredDeferred = $q.defer(),
+              registeredPromise = registeredDeferred.promise;
 
-          return $activeUsers
-            .$add(user)
-            .then(function (userRef) {
+          CurrentUser.$simplified()
+            .then(function (user) {
 
-              // ensure user is removed on disconnect
-              userRef.onDisconnect().remove();
-              return userRef;
+              $activeUsers
+                .$add(user)
+                .then(function (userRef) {
 
+                  // ensure user is removed on disconnect
+                  userRef.onDisconnect().remove();
+
+                  // resolve registration
+                  registeredDeferred.resolve(user);
+
+                })
+                .catch(function (error) {
+                  registeredDeferred.reject(error);
+                });
+
+            })
+            .catch(function (error) {
+              registeredDeferred.reject(error);
             });
 
-        });
+          return registeredPromise;
 
       };
 
@@ -3231,50 +3353,6 @@ angular.module('bulbsCmsApp')
 
         // add current user and return promise
         return addCurrentUserToActiveUsers();
-
-      };
-
-      var createVersion = function (articleData) {
-
-        // defer for creation of version
-        var createDefer = $q.defer(),
-            $createPromise = createDefer.promise;
-
-        // get simplified version of user then use that when creating version
-        CurrentUser.$simplified().then(function (user) {
-
-          // if we will have more than the max versions allowed, delete until we're one below the max
-          var numVersions = $versions.length;
-          if (numVersions + 1 > FIREBASE_ARTICLE_MAX_VERSIONS) {
-            _.chain($versions)
-              // sort oldest to newest
-              .sortBy(function (version) {
-                return version.timestamp;
-              })
-              // remove oldest versions until we're 1 below max versions
-              .every(function (version) {
-                $versions.$remove(version);
-                numVersions--;
-                return numVersions + 1 > FIREBASE_ARTICLE_MAX_VERSIONS;
-              });
-          }
-
-          // make version data
-          var versionData = {
-            timestamp: moment().valueOf(),
-            user: user,
-            content: articleData
-          };
-
-          // add version to version data
-          $versions.$add(versionData)
-            .then(createDefer.resolve)
-            .catch(createDefer.reject);
-
-        });
-
-        // return promise for this create
-        return $createPromise;
 
       };
 
@@ -3298,6 +3376,7 @@ angular.module('bulbsCmsApp')
          * @returns   deferred promise that will resolve with the user reference as added to the active user list.
          */
         $registerCurrentUserActive: registerCurrentUserActive,
+
         /**
          * Create a new version for this article.
          *
@@ -3305,24 +3384,55 @@ angular.module('bulbsCmsApp')
          * @returns   deferred promise that will resolve with the version reference as added to the versions list.
          *  Promise is rejected if for some reason create did not occur (eg nothing changed since last version).
          */
-        $createVersion: createVersion
+        $createVersion: function (articleData) {
+
+          // defer for creation of version
+          var createDefer = $q.defer(),
+              $createPromise = createDefer.promise;
+
+          // get simplified version of user then use that when creating version
+          CurrentUser.$simplified().then(function (user) {
+
+            // if we will have more than the max versions allowed, delete until we're one below the max
+            var numVersions = $versions.length;
+            if (numVersions + 1 > FIREBASE_ARTICLE_MAX_VERSIONS) {
+              _.chain($versions)
+                // sort oldest to newest
+                .sortBy(function (version) {
+                  return version.timestamp;
+                })
+                // remove oldest versions until we're 1 below max versions
+                .every(function (version) {
+                  $versions.$remove(version);
+                  numVersions--;
+                  return numVersions + 1 > FIREBASE_ARTICLE_MAX_VERSIONS;
+                });
+            }
+
+            // make version data
+            var versionData = {
+              timestamp: moment().valueOf(),
+              user: user,
+              content: articleData
+            };
+
+            // add version to version data
+            $versions.$add(versionData)
+              .then(createDefer.resolve)
+              .catch(createDefer.reject);
+
+          });
+
+          // return promise for this create
+          return $createPromise;
+
+        }
 
       };
 
     };
 
     return {
-
-      /**
-       * Retrieve current article object that is connected to firebase.
-       *
-       * @returns   deferred promise that will resolve with the current article object.
-       */
-      $retrieveCurrentArticle: function () {
-
-        return this.$retrieveArticle($routeParams.id);
-
-      },
 
       /**
        * Retrieve an article object that is connected to firebase.
@@ -3332,11 +3442,28 @@ angular.module('bulbsCmsApp')
        */
       $retrieveArticle: function (articleId) {
 
-        return FirebaseApi.$authorize().then(function (rootRef) {
+        var retrieveDeferred = $q.defer(),
+            retrievePromise = retrieveDeferred.promise;
 
-          return createArticle(rootRef, articleId);
+        FirebaseApi.$authorize()
+          .then(function (rootRef) {
+            retrieveDeferred.resolve(createArticle(rootRef, articleId));
+          })
+          .catch(function (error) {
+            retrieveDeferred.reject(error);
+          });
 
-        });
+        return retrievePromise;
+
+      },
+      /**
+       * Retrieve current article object that is connected to firebase.
+       *
+       * @returns   deferred promise that will resolve with the current article object.
+       */
+      $retrieveCurrentArticle: function () {
+
+        return this.$retrieveArticle($routeParams.id);
 
       }
 
@@ -3799,8 +3926,15 @@ angular.module('bulbsCmsApp')
     });
 
     $scope.loadFromServer = function () {
-      $route.reload();
+
+      // pull article from server and replace whatever data we need to show the newest version
+      _.each($scope.articleOnServer, function (value, key) {
+        $scope.article[key] = value;
+      });
+      $scope.articleIsDirty = true;
+
       $modalInstance.close();
+
     };
 
     $scope.saveAnyway = function () {
