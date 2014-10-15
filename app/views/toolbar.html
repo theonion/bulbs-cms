@@ -39,8 +39,23 @@
                 <i class="glyphicon glyphicon-trash"></i> Delete Article</a></li>
           </ul>
         </li>
+        <li ng-class="{active: page === 'edit'}">
+          <a href="/cms/app/edit/{{article.id}}/" role="button">Edit Content</a>
+        </li>
+        <li ng-class="{active: page === 'contributions'}">
+          <a href="/cms/app/edit/{{article.id}}/contributions/" role="button">Edit Contributions</a>
+        </li>
       </ul>
-        <ul class="nav navbar-nav navbar-right">
+      <ul class="nav navbar-nav navbar-right" ng-show="page === 'contributions'">
+          <li>
+            <button id="save-btn" class="navbar-save btn btn-success btn-sm navbar-btn" href="" ng-click="save();">
+              <i class="glyphicon glyphicon-floppy-disk"></i>
+              <span>Save</span>
+            </button>
+          </li>
+      </ul>
+
+        <ul class="nav navbar-nav navbar-right" ng-show="page === 'edit'">
 
           <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="activeUsers.length > 0" ng-init="showActiveUsers = false;">
             <a href="" ng-mouseenter="showActiveUsers = true;" ng-mouseleave="showActiveUsers = false;">
