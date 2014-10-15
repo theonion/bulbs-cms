@@ -21,6 +21,48 @@ angular.module('bulbsCmsApp')
           $activeUsers = $firebase(articleRef.child('users')).$asArray(),
           $versions = $firebase(articleRef.child('versions')).$asArray();
 
+      var addCurrentUserToActiveUsers = function () {
+
+        var registeredDeferred = $q.defer(),
+              registeredPromise = registeredDeferred.promise;
+
+          CurrentUser.$simplified()
+            .then(function (user) {
+
+              $activeUsers
+                .$add(user)
+                .then(function (userRef) {
+
+                  // ensure user is removed on disconnect
+                  userRef.onDisconnect().remove();
+
+                  // resolve registration
+                  registeredDeferred.resolve(user);
+
+                })
+                .catch(function (error) {
+                  registeredDeferred.reject(error);
+                });
+
+            })
+            .catch(function (error) {
+              registeredDeferred.reject(error);
+            });
+
+          return registeredPromise;
+
+      };
+
+      var registerCurrentUserActive = function () {
+
+        // ensure when reconnection occurs, user is added back to active users
+        FirebaseApi.$connection.onConnect(addCurrentUserToActiveUsers);
+
+        // add current user and return promise
+        return addCurrentUserToActiveUsers();
+
+      };
+
       return {
 
         /**
@@ -40,37 +82,8 @@ angular.module('bulbsCmsApp')
          *
          * @returns   deferred promise that will resolve with the user reference as added to the active user list.
          */
-        $registerCurrentUserActive: function () {
+        $registerCurrentUserActive: registerCurrentUserActive,
 
-          var registeredDeferred = $q.defer(),
-              registeredPromise = registeredDeferred.promise;
-
-          CurrentUser.$simplified()
-            .then(function (user) {
-
-              $activeUsers
-                .$add(user)
-                .then(function (userRef) {
-
-                  // ensure user is removed on disconnect
-                  userRef.onDisconnect().remove();
-
-                  // resolve registration
-                  registeredDeferred.resolve(userRef);
-
-                })
-                .catch(function (error) {
-                  registeredDeferred.reject(error);
-                });
-
-            })
-            .catch(function (error) {
-              registeredDeferred.reject(error);
-            });
-
-          return registeredPromise;
-
-        },
         /**
          * Create a new version for this article.
          *

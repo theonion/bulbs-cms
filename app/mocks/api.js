@@ -806,6 +806,13 @@ angular.module('bulbsCmsApp.mockApi').run([
         email: "flast5@theonion.com"
       },
       {
+        username: "User6",
+        first_name: "First6",
+        last_name: "Last6",
+        id: 6,
+        email: "flast6@theonion.com"
+      },
+      {
         username: "Username6",
         first_name: "",
         last_name: "",

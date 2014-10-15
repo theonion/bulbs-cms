@@ -3,9 +3,13 @@
 describe('Service: LocalStorageBackup', function () {
 
   beforeEach(module('bulbsCmsApp'));
+  beforeEach(module('bulbsCmsApp.mockApi'));
 
   var LocalStorageBackupTest,
-      mockWindow;
+      mockWindow,
+      $rootScope,
+      $q,
+      CurrentUser;
 
   // provide mock dependencies
   beforeEach(module(function ($provide) {
@@ -30,11 +34,22 @@ describe('Service: LocalStorageBackup', function () {
         }
       }
     });
+    $provide.service('CurrentUser', function ($q) {
+      return {
+        $simplified: function () {
+          var currentUserDefer = $q.defer(),
+              currentUserPromise = currentUserDefer.promise;
+          currentUserDefer.resolve({id: 0, displayName: 'Test User'});
+          return currentUserPromise;
+        }
+      }
+    });
     $provide.service('$window', function () {
       return {
         localStorage: {
           'article.1.1': JSON.stringify({
             timestamp: 1,
+            user: {},
             content: {
               title: 'Some Article',
               body: 'Something'
@@ -42,6 +57,7 @@ describe('Service: LocalStorageBackup', function () {
           }),
           'article.1.2': JSON.stringify({
             timestamp: 2,
+            user: {},
             content: {
               title: 'Some Article Has Changes',
               body: 'Whatever balh balh balhb.'
@@ -49,6 +65,7 @@ describe('Service: LocalStorageBackup', function () {
           }),
           'article.2.3': JSON.stringify({
             timestamp: 3,
+            user: {},
             content: {
               title: 'This Is A Different Article',
               body: 'I am NOT article 1.'
@@ -78,24 +95,37 @@ describe('Service: LocalStorageBackup', function () {
   }));
 
   // grab dependencies we need to be able to test
-  beforeEach(inject(function (LocalStorageBackup, $window) {
+  beforeEach(inject(function (LocalStorageBackup, $window, _$rootScope_, _CurrentUser_, _$q_) {
 
+    CurrentUser = _CurrentUser_;
     mockWindow = $window;
     LocalStorageBackupTest = LocalStorageBackup;
+    $rootScope = _$rootScope_
+    $q = _$q_;
 
   }));
 
   it('should create a new version in local storage', function () {
 
     // add new article
-    var article = {
-      title: 'Some New Article',
-      body: 'Batman is the man.'
-    };
-    LocalStorageBackupTest.create(article);
+    var user = null,
+        article = {
+          title: 'Some New Article',
+          body: 'Batman is the man.'
+        };
+    LocalStorageBackupTest.$create(article);
+    CurrentUser.$simplified().then(function (currentUser) { user = currentUser; });
+
+    // apply promises
+    $rootScope.$apply();
 
     // see if it got stored properly in local storage
-    expect(mockWindow.localStorage['article.2.5']).toBe(JSON.stringify({timestamp: 5, content: article}));
+    expect(mockWindow.localStorage['article.2.5'])
+      .toBe(JSON.stringify({
+        timestamp: 5,
+        user: user,
+        content: article
+      }));
 
   });
 
@@ -106,8 +136,11 @@ describe('Service: LocalStorageBackup', function () {
 
     // local storage mock can hold a max of 4 entries, 5th entry will trigger an error and then a read
     // add two new entries, according to the rules of the mock local storage, both of these will have a timestamp of 5
-    LocalStorageBackupTest.create({ title: 'New Article 1', body: 'New article 1...'});
-    LocalStorageBackupTest.create({ title: 'New Article 2', body: 'New article 2...'});
+    LocalStorageBackupTest.$create({ title: 'New Article 1', body: 'New article 1...'});
+    LocalStorageBackupTest.$create({ title: 'New Article 2', body: 'New article 2...'});
+
+    // apply promises
+    $rootScope.$apply();
 
     // entries already in local storage have values less than 4, those three are removed and only 2 new ones remain
     expect(mockWindow.localStorage.itemCount).toBe(2);
@@ -120,12 +153,20 @@ describe('Service: LocalStorageBackup', function () {
       title: 'Some New Article',
       body: 'Batman is the man.'
     };
-    LocalStorageBackupTest.create(article);
+    LocalStorageBackupTest.$create(article);
 
-    // sort the output versions
-    var versions = _.sortBy(LocalStorageBackupTest.versions(), function (version) {
-      return -version.timestamp;
+    // apply promises
+    $rootScope.$apply();
+
+    var versions = [];
+    LocalStorageBackupTest.$versions().then(function (versionsData) {
+      versions = _.sortBy(versionsData, function (version) {
+        return -version.timestamp;
+      });
     });
+
+    // apply promises
+    $rootScope.$apply();
 
     // test output versions
     expect(versions.length).toBe(2);

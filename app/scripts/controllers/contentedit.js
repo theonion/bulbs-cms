@@ -5,11 +5,13 @@ angular.module('bulbsCmsApp')
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, keypress, Raven,
-    IfExistsElse, VersionStorageApi, ContentApi, FirebaseArticleFactory, Login, routes)
+    IfExistsElse, VersionStorageApi, ContentApi, FirebaseApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener,
+    routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
     $scope.MEDIA_ITEM_PARTIALS_URL = routes.MEDIA_ITEM_PARTIALS_URL;
+    $scope.page = 'edit';
 
     /*note on cachebuster:
       contentedit ng-includes templates served by django
@@ -26,17 +28,28 @@ angular.module('bulbsCmsApp')
 
       $scope.last_saved_article = angular.copy(data);
 
+      FirebaseApi.$connection
+        .onConnect(function () {
+          $scope.firebaseConnected = true;
+        })
+        .onDisconnect(function () {
+          $scope.firebaseConnected = false;
+        });
+
+      // get article and active users, register current user as active
       FirebaseArticleFactory
         .$retrieveCurrentArticle()
           .then(function ($article) {
 
             var $activeUsers = $article.$activeUsers(),
                 $versions = $article.$versions(),
-                currentUser;
+                currentUser,
+                savePNotify;
 
             $versions.$loaded(function () {
               $versions.$watch(function (e) {
                 if (e.event === 'child_added') {
+
                   // order versions newest to oldest then grab the top one which should be the new version
                   var newVersion = _.sortBy($versions, function (version) {
                     return -version.timestamp;
@@ -44,13 +57,41 @@ angular.module('bulbsCmsApp')
 
                   if (currentUser && newVersion.user.id !== currentUser.id) {
 
+                    // close any existing save pnotify
+                    savePNotify && savePNotify.remove();
+
+                    var msg = '<b>'+ newVersion.user.displayName + '</b> -- '
+                                + moment(newVersion.timestamp).format('MMM Do YYYY, h:mma') + '<br>';
+                    if ($scope.articleIsDirty) {
+                      msg += ' You have unsaved changes that may conflict when you save.'
+                    }
+                    msg += ' Open the version browser to see their latest version.';
+
                     // this isn't the current user that saved, so someone else must have saved, notify this user
-                    new PNotify({
+                    savePNotify = new PNotify({
                       title: 'Another User Saved!',
-                      text: '<b>'+ newVersion.user.displayName + '</b> has saved a version of this article! If you' +
-                        ' have unsaved changes, resolve their changes before saving your own version. If you have' +
-                        ' no unsaved changes, reload the page to see the newest version.',
-                      type: 'error'
+                      text: msg,
+                      type: 'error',
+                      mouse_reset: false,
+                      hide: false,
+                      confirm: {
+                        confirm: true,
+                        buttons: [{
+                          text: 'Open Version Browser',
+                          addClass: 'btn-primary',
+                          click: function (notice) {
+                            notice.mouse_reset = false;
+                            notice.remove();
+                            VersionBrowserModalOpener.open($scope, $scope.article);
+                          }
+                        }, {
+                          addClass: 'hide'
+                        }]
+                      },
+                      buttons: {
+                        closer_hover: false,
+                        sticker: false
+                      }
                     });
                   }
                 }
@@ -127,8 +168,6 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.saveArticle = function () {
-      VersionStorageApi.$create($scope.article, $scope.articleIsDirty);
-
       ContentApi.one('content', $routeParams.id).get().then(function (data) {
         if (data.last_modified &&
           $scope.article.last_modified &&
@@ -183,7 +222,13 @@ angular.module('bulbsCmsApp')
       $scope.saveArticleDeferred.reject();
     }
 
+    /**
+     * Last thing to happen on a successful save.
+     */
     function saveArticleSuccessCbk(resp) {
+      // store a version with version api
+      VersionStorageApi.$create($scope.article, $scope.articleIsDirty);
+
       $(navbarSave).html('<i class=\'glyphicon glyphicon-ok\'></i> Saved!');
       setTimeout(function () {
           $(navbarSave).html(saveHTML);

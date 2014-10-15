@@ -15,7 +15,7 @@
             <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-calendar"></i></a>
             <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dLabel">
               <datetimepicker
-                data-ng-model="$parent.datePickerValue"
+                data-ng-model="datePickerValue"
                 data-datetimepicker-config="{ dropdownSelector: '#dateDropdown', minView: 'day' }"/>
             </ul>
           </div>
@@ -26,7 +26,7 @@
       <label>Time ({{TIMEZONE_LABEL}})</label>
       <div class="row">
         <div class="col-sm-4 col-xs-12">
-          <timepicker minute-step="5" ng-model="$parent.timePickerValue" mousewheel="false"></timepicker>
+          <timepicker minute-step="5" ng-model="timePickerValue" mousewheel="false"></timepicker>
         </div>
         <div class="col-sm-8 col-xs-12">
           <div class="btn-group" style="margin-top: 34px;">

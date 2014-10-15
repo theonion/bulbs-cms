@@ -372,6 +372,27 @@ module.exports = function (grunt) {
       }
     },
 
+    injector: {
+      options: {
+        addRootSlash: false,
+        transform: function(filepath){
+          filepath = filepath.replace('app/', '');
+          return '<script src="' + filepath + '"></script>'
+        }
+      },
+      local_dependencies: {
+        files: {
+          'app/index.html': [
+            'app/scripts/directives/*.js',
+            'app/scripts/directives/autocomplete/*.js',
+            'app/scripts/controllers/*.js',
+            'app/scripts/services/*.js',
+            'app/scripts/filters/*.js',
+          ],
+        }
+      }
+    },
+
     // By default, your `index.html`'s <!-- Usemin block --> will take care of
     // minification. These next options are pre-configured if you do not wish
     // to use the Usemin blocks.
@@ -388,7 +409,10 @@ module.exports = function (grunt) {
     uglify: {
       options: {
         mangle: false, //https://github.com/theonion/bulbs-cms/issues/4
-        sourceMap: true
+        sourceMap: true,
+        sourceMapName: function (path) {
+          return path + '.' + Date.now() + '.map';
+        }
       },
       dist: {
         files: {
@@ -486,6 +510,7 @@ module.exports = function (grunt) {
       'concurrent:server',
       'autoprefixer',
       'less',
+      'injector:local_dependencies',
       'connect:livereload',
       'watch:less',
       'watch:livereload'
@@ -511,6 +536,7 @@ module.exports = function (grunt) {
     'shell:bower_update',
     'bowerInstall',
     'ngtemplates',
+    'injector:local_dependencies',
     'useminPrepare',
     'concurrent:dist',
     'less',

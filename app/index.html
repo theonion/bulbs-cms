@@ -26,7 +26,7 @@
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" />
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css" />
-
+    <link rel="stylesheet" href="styles/autocomplete.css" />
     <link rel="stylesheet" href="bower_components/onion-editor/build/editor-main.css" />
 
     <link rel="stylesheet" href="styles/edit-page.css" />
@@ -74,17 +74,18 @@
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/firebase-token-generator/build/firebase-token-generator.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/firebase/firebase.js"></script>
     <script src="bower_components/firebase-simple-login/firebase-simple-login.js"></script>
     <script src="bower_components/mockfirebase/dist/mockfirebase.js"></script>
     <script src="bower_components/angularfire/dist/angularfire.min.js"></script>
-    <script src="bower_components/angular-resource/angular-resource.js"></script>
-    <script src="bower_components/angular-cookie/angular-cookie.js"></script>
-    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-    <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/nprogress/nprogress.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="bower_components/raven-js/dist/raven.js"></script>
@@ -116,93 +117,97 @@
 
     <script src="scripts/app.js"></script>
 
-    <script src="scripts/controllers/contentlist.js"></script>
-    <script src="scripts/controllers/contentedit.js"></script>
-    <script src="scripts/controllers/promotion.js"></script>
-    <script src="scripts/controllers/targeting.js"></script>
-    <script src="scripts/controllers/contentworkflow.js"></script>
-    <script src="scripts/controllers/thumbnailmodal.js"></script>
-    <script src="scripts/controllers/descriptionmodal.js"></script>
-    <script src="scripts/controllers/trashcontentmodal.js"></script>
-    <script src="scripts/controllers/pubtimemodal.js"></script>
-    <script src="scripts/controllers/imagecropmodal.js"></script>
-    <script src="scripts/controllers/loginmodal.js"></script>
-    <script src="scripts/controllers/unpublish.js"></script>
-    <script src="scripts/controllers/cms-notifications.js"></script>
-    <script src="scripts/controllers/cms-notification.js"></script>
-    <script src="scripts/controllers/datetimeselectionmodal.js"></script>
-    <script src="scripts/controllers/cms-notify-container.js"></script>
+    <script src="scripts/api/module.js"></script>
+    <script src="scripts/api/authors.js"></script>
+    <script src="scripts/api/content.js"></script>
+    <script src="scripts/api/contributions.js"></script>
 
+    <script src="scripts/modules/betty-cropper.js"></script>
+
+    <!-- injector:js -->
     <script src="scripts/directives/activenav.js"></script>
+    <script src="scripts/directives/add-image.js"></script>
     <script src="scripts/directives/articlecontainer.js"></script>
-    <script src="scripts/directives/bulbs-autocomplete.js"></script>
-    <script src="scripts/directives/bugreporter.js"></script>
+    <script src="scripts/directives/authorsfield.js"></script>
     <script src="scripts/directives/bettyeditable.js"></script>
-    <script src="scripts/directives/bettyimage.js"></script>
+    <script src="scripts/directives/bugreporter.js"></script>
+    <script src="scripts/directives/bulbs-autocomplete.js"></script>
     <script src="scripts/directives/create-content.js"></script>
     <script src="scripts/directives/devicepreview.js"></script>
+    <script src="scripts/directives/editor.js"></script>
+    <script src="scripts/directives/encode-status.js"></script>
+    <script src="scripts/directives/featuretypefield.js"></script>
     <script src="scripts/directives/filterwidget.js"></script>
-    <script src="scripts/directives/video-upload.js"></script>
+    <script src="scripts/directives/hide-if-forbidden.js"></script>
+    <script src="scripts/directives/lazyinclude.js"></script>
     <script src="scripts/directives/logged-in-user.js"></script>
     <script src="scripts/directives/nav-bar.js"></script>
     <script src="scripts/directives/responsive-image.js"></script>
     <script src="scripts/directives/save-button.js"></script>
-    <script src="scripts/directives/slideshow-pane.js"></script>
-    <script src="scripts/directives/targeting.js"></script>
-    <script src="scripts/directives/editor.js"></script>
-    <script src="scripts/directives/cms-notification.js"></script>
-    <script src="scripts/directives/datetimeselectionmodalopener.js"></script>
-    <script src="scripts/directives/cms-notify-container.js"></script>
-
-    <script src="scripts/filters/truncateByCharacters.js"></script>
-    <script src="scripts/filters/truncateByWords.js"></script>
-
-    <script src="scripts/modules/betty-cropper.js"></script>
-
-    <script src="scripts/services/firebasereffactory.js"></script>
-    <script src="scripts/services/if-exists-else.js"></script>
-    <script src="scripts/services/openimagecropmodal.js"></script>
-    <script src="scripts/services/bulbsapi.js"></script>
-    <script src="scripts/services/currentuser.js"></script>
-    <script src="scripts/services/contentapi.js"></script>
-    <script src="scripts/services/promotionapi.js"></script>
-    <script src="scripts/services/adapi.js"></script>
-    <script src="scripts/services/login.js"></script>
-    <script src="scripts/services/firebaseapi.js"></script>
-    <script src="scripts/services/firebasearticlefactory.js"></script>
-    <script src="scripts/services/versionstorageapi.js"></script>
-    <script src="scripts/filters/tzdate.js"></script>
-    <script src="scripts/controllers/changelogmodal.js"></script>
-    <script src="scripts/controllers/versionbrowsermodal.js"></script>
-    <script src="scripts/services/localstoragebackup.js"></script>
-    <script src="scripts/controllers/lastmodifiedguardmodal.js"></script>
-    <script src="scripts/filters/user.js"></script>
-    <script src="scripts/directives/status-filter.js"></script>
-    <script src="scripts/services/zencoder.js"></script>
-    <script src="scripts/directives/authorsfield.js"></script>
-    <script src="scripts/directives/tagsfield.js"></script>
-    <script src="scripts/directives/featuretypefield.js"></script>
     <script src="scripts/directives/sectionsfield.js"></script>
+    <script src="scripts/directives/slideshow-pane.js"></script>
+    <script src="scripts/directives/static-image.js"></script>
+    <script src="scripts/directives/status-filter.js"></script>
+    <script src="scripts/directives/tagsfield.js"></script>
+    <script src="scripts/directives/targeting.js"></script>
+    <script src="scripts/directives/video-upload.js"></script>
     <script src="scripts/directives/videoembed.js"></script>
     <script src="scripts/directives/videofield.js"></script>
-    <script src="scripts/controllers/sponsormodal.js"></script>
-    <script src="scripts/controllers/videothumbnailmodal.js"></script>
-    <script src="scripts/directives/encode-status.js"></script>
-    <script src="scripts/directives/static-image.js"></script>
-    <script src="scripts/controllers/forbiddenmodal.js"></script>
-    <script src="scripts/directives/hide-if-forbidden.js"></script>
-    <script src="scripts/services/bugreportinterceptor.js"></script>
-    <script src="scripts/services/permissionsinterceptor.js"></script>
-    <script src="scripts/services/badrequestinterceptor.js"></script>
+    <script src="scripts/directives/autocomplete/menu.js"></script>
+    <script src="scripts/directives/autocomplete/select.js"></script>
     <script src="scripts/controllers/badrequestmodal.js"></script>
-    <script src="scripts/directives/lazyinclude.js"></script>
+    <script src="scripts/controllers/changelogmodal.js"></script>
+    <script src="scripts/controllers/contentedit.js"></script>
+    <script src="scripts/controllers/contentlist.js"></script>
+    <script src="scripts/controllers/contentworkflow.js"></script>
+    <script src="scripts/controllers/contributions.js"></script>
+    <script src="scripts/controllers/descriptionmodal.js"></script>
+    <script src="scripts/controllers/forbiddenmodal.js"></script>
+    <script src="scripts/controllers/imagecropmodal.js"></script>
+    <script src="scripts/controllers/lastmodifiedguardmodal.js"></script>
+    <script src="scripts/controllers/loginmodal.js"></script>
+    <script src="scripts/controllers/promotion.js"></script>
+    <script src="scripts/controllers/pubtimemodal.js"></script>
+    <script src="scripts/controllers/reporting.js"></script>
+    <script src="scripts/controllers/sponsormodal.js"></script>
+    <script src="scripts/controllers/targeting.js"></script>
+    <script src="scripts/controllers/thumbnailmodal.js"></script>
+    <script src="scripts/controllers/trashcontentmodal.js"></script>
+    <script src="scripts/controllers/unpublish.js"></script>
+    <script src="scripts/controllers/versionbrowsermodal.js"></script>
+    <script src="scripts/controllers/videothumbnailmodal.js"></script>
+    <script src="scripts/services/adapi.js"></script>
+    <script src="scripts/services/badrequestinterceptor.js"></script>
+    <script src="scripts/services/bugreportinterceptor.js"></script>
+    <script src="scripts/services/bulbsapi.js"></script>
+    <script src="scripts/services/contentapi.js"></script>
+    <script src="scripts/services/currentuser.js"></script>
+    <script src="scripts/services/firebaseapi.js"></script>
+    <script src="scripts/services/firebasearticlefactory.js"></script>
     <script src="scripts/services/gettemplate.js"></script>
-    <script src="scripts/services/cmsnotificationsapi.js"></script>
+    <script src="scripts/services/if-exists-else.js"></script>
+    <script src="scripts/services/localstoragebackup.js"></script>
+    <script src="scripts/services/login.js"></script>
+    <script src="scripts/services/openimagecropmodal.js"></script>
+    <script src="scripts/services/permissionsinterceptor.js"></script>
+    <script src="scripts/services/promotionapi.js"></script>
+    <script src="scripts/services/versionStorageApi.js"></script>
+    <script src="scripts/services/zencoder.js"></script>
+    <script src="scripts/filters/truncatebycharacters.js"></script>
+    <script src="scripts/filters/truncatebywords.js"></script>
+    <script src="scripts/filters/tzdate.js"></script>
+    <script src="scripts/filters/user.js"></script>
+    <!-- endinjector -->
+
     <!-- endbuild -->
 
     <script src="bower_components/angular-mocks/angular-mocks.js"></script>
     <script src="mocks/app.js"></script>
     <script src="mocks/api.js"></script>
+
+    <script src="mocks/newapp.js"></script>
+    <script src="scripts/api/mock.js"></script>
+
 
     <script type="text/javascript">
         //these probably don't need to be constants
@@ -211,6 +216,8 @@
         // ¯\_(ツ)_/¯
         angular.module('BettyCropper').constant('IMAGE_SERVER_URL', 'http://clickholeimg.local');
         angular.module('BettyCropper').constant('BC_API_KEY', 'http://clickholeimg.local');
+
+        angular.module('bulbs.api').constant('BULBS_API_URL', '/cms/api/v1/');
 
         angular.module('bulbsCmsApp').constant('routes', {
             IMAGE_SERVER_URL: 'http://clickholeimg.local',
@@ -266,7 +273,7 @@
     <script src="keys.js"></script>
 
     <script>
-        angular.module('bulbsCmsAppDev', ['bulbsCmsApp.mockApi', 'bulbsCmsApp'])
+        angular.module('bulbsCmsAppDev', ['bulbsCmsApp.mockApi', 'bulbsCmsApp', 'bulbs.api.mock'])
           .config(function (StatusFilterOptionsProvider) {
             StatusFilterOptionsProvider.setStatuses([
               {label: 'Filter 1', key: 'filter1key', value: 'charizard'},
@@ -283,6 +290,7 @@
         });
     </script>
     <bug-reporter></bug-reporter>
+    <firebase-save-reporter></firebase-save-reporter>
 
 </body>
 </html>

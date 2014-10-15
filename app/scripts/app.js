@@ -32,6 +32,8 @@ angular.module('bulbsCmsApp', [
   'Raven',
   'firebase',
   'ipCookie'
+  'firebase',
+  'bulbs.api'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
@@ -47,6 +49,10 @@ angular.module('bulbsCmsApp', [
       controller: 'ContenteditCtrl',
       reloadOnSearch: false
     })
+    .when('/cms/app/edit/:id/contributions/', {
+      templateUrl: routes.PARTIALS_URL + 'contributions.html',
+      controller: 'ContributionsCtrl'
+    })
     .when('/cms/app/promotion/', {
       templateUrl:  routes.PARTIALS_URL + 'promotion.html',
       controller: 'PromotionCtrl',
@@ -59,6 +65,10 @@ angular.module('bulbsCmsApp', [
     .when('/cms/app/notifications/', {
       templateUrl: routes.PARTIALS_URL + 'cms-notifications.html',
       controller: 'CmsNotificationsCtrl'
+    })
+    .when('/cms/app/reporting/', {
+      templateUrl: routes.PARTIALS_URL + 'reporting.html',
+      controller: 'ReportingCtrl'
     })
     .when('/cms/app/pzones/', {
       templateUrl: routes.PARTIALS_URL + 'pzones.html',
@@ -86,7 +96,6 @@ angular.module('bulbsCmsApp', [
   $httpProvider.interceptors.push('BugReportInterceptor');
   $httpProvider.interceptors.push('PermissionsInterceptor');
   $httpProvider.interceptors.push('BadRequestInterceptor');
-
 })
 .run(function ($rootScope, $http, $cookies) {
   // set the CSRF token here
