@@ -65780,9 +65780,9 @@ define('plugins/core/events',[
         // In Chrome, the range is not created on or before this event loop.
         // It doesn’t matter because this is a fix for Firefox.
         if (selection.range) {
-          selection.placeMarkers();
-          var isFirefoxBug = scribe.allowsBlockElements() && scribe.getHTML().match(/^<em class="scribe-marker"><\/em>/);
-          selection.removeMarkers();
+
+          var isFirefoxBug = scribe.allowsBlockElements() &&
+                  selection.range.startContainer === scribe.el;
 
           if (isFirefoxBug) {
             var focusElement = getFirstDeepestChild(scribe.el.firstChild);
