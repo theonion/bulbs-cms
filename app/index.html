@@ -278,6 +278,9 @@
 
         angular.module('bulbsCmsApp').constant('navbar_options', {});
 
+        angular.module('bulbsCmsApp').config(function(ngClipProvider, ZERO_CLIPBOARD_SWF) {
+            ngClipProvider.setPath(ZERO_CLIPBOARD_SWF);
+        });
 
         window.dummySearchHandler = function(term, resultsElement) {
             resultsElement.html("<b>Searching for: " + term + "</b><br><a href='/fart/'>Fart</a><br><a href='/butt/'>Butt</a><br><a href='/dumb/'>Dumb</a><br>");
