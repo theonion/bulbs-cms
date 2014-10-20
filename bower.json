@@ -1,6 +1,6 @@
 {
   "name": "bulbs-cms",
-  "version": "0.9.80",
+  "version": "0.9.81",
   "dependencies": {},
   "devDependencies": {
     "angular": "=1.2.18",
@@ -29,6 +29,9 @@
     "onion-editor": "0.2.35",
     "restangular": "~1.4.0",
     "Keypress": "~2.0.2",
-    "pnotify": "~2.0.0"
+    "pnotify": "~2.0.0",
+    "firebase": "1.0.21",
+    "zeroclipboard": "~2.1.6",
+    "ng-clip": "~0.2.4"
   }
 }
