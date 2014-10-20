@@ -1,0 +1,63 @@
+<div class="modal-header">
+  <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true">&times;</button>
+  <h4 class="modal-title">Temporary URL Generator</h4>
+</div>
+
+<div class="temporary-url-modal-body modal-body">
+  <p>
+    Using the following form to generate a temporary URL that can be accessed
+    by anyone with the link. Links generated here will remain valid only for
+    {{ TEMP_LINK_DAYS_VALID }} days.
+  </p>
+  <div class="new-temp-url input-group">
+    <span class="input-group-btn">
+      <button class="btn btn-primary" ng-click="createToken()">
+        <i class="glyphicon glyphicon-share"></i>
+      </button>
+    </span>
+    <input 
+        type="text"
+        class="form-control"
+        placeholder="Your URL will show up here" value="{{ newestToken.url_uuid ? TEMP_URL_BASE + newestToken.url_uuid : '' }}"
+        readonly>
+    <span class="input-group-btn">
+      <button class="btn btn-success" clip-copy="TEMP_URL_BASE + newestToken.url_uuid" ng-disabled="!newestToken">
+        <i class="glyphicon glyphicon-paperclip"></i>
+      </button>
+    </span>
+  </div>
+  <div ng-show="tokens.length > 0" class="table-responsive">
+    <p>
+      Or use one of the following URLs already generated:
+    </p>
+    <div class="temp-token-list">
+      <table class="table">
+        <thead>
+          <tr>
+            <td>URL</td>
+            <td>Days</td>
+            <td>Copy</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="token in tokens">
+            <td>{{ TEMP_URL_BASE + token.url_uuid }}</td>
+            <td>{{ token.expire_date.diff(token.create_date, 'days') }}</td>
+            <td>
+              <button class="btn btn-success btn-xs" clip-copy="TEMP_URL_BASE + token.url_uuid">
+                <i class="glyphicon glyphicon-paperclip"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-default btn-danger" ng-click="$dismiss()">
+    <i class="glyphicon glyphicon-remove"></i>
+    Close
+  </button>
+</div>

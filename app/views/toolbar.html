@@ -1,6 +1,5 @@
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container-fluid">
-
     <div class="navbar-header">
       <a id="logo" class="navbar-brand" href="/cms/app/list"><img ng-src="{{ NAV_LOGO }}"></a>
       <button type="button" class="navbar-toggle pull-right" data-toggle="collapse" data-target="#navbar-collapse">
@@ -33,6 +32,12 @@
             <li>
                 <a href="" role="button" ng-controller="ContentworkflowCtrl" ng-click="descriptionModal(article)">
                     <i class="glyphicon glyphicon-edit"></i> Edit Description</a></li>
+            <li>
+              <a href="" role="button" ng-controller="ContentworkflowCtrl" ng-click="temporaryUrlModal(article)">
+                <i class="glyphicon glyphicon-link"></i>
+                Temporary Link
+              </a>
+            </li>
             <li role="presentation" class="divider"></li>
             <li>
               <a href="" ng-controller="ContentworkflowCtrl" role="button" ng-click="trashContentModal(article.id);">

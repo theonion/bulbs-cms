@@ -2,6 +2,8 @@ angular.module('bulbsCmsApp.mockApi').run([
   '$httpBackend', 'mockApiData', 'moment',
   function($httpBackend, mockApiData, moment) {
 
+    var today = moment();
+
     $httpBackend.when('OPTIONS', '/returns-a-403/').respond(function(){ //just for testing
       return [403, {"detail": "No permission"}];
     });
@@ -51,6 +53,36 @@ angular.module('bulbsCmsApp.mockApi').run([
     $httpBackend.when('POST', publishRegex).respond(mockApiData['content.publish.response']);
     $httpBackend.when('OPTIONS', publishRegex).respond(mockApiData['content.publish.response']);
 
+    // content tokens
+    var uuid = function () {
+      return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+          return v.toString(16);
+      });
+    };
+    $httpBackend.when('POST', /\/cms\/api\/v1\/content\/\d+\/create-token\//).respond({
+      'id': 5,
+      'url_uuid': uuid(),
+      'create_date': today,
+      'expire_date': today.clone().add({days: 7})
+    });
+    $httpBackend.when('GET', /\/cms\/api\/v1\/content\/\d+\/list-tokens\//).respond([{
+      'id': 1,
+      'url_uuid': uuid(),
+      'create_date': today,
+      'expire_date': today.clone().add({days: 7})
+    }, {
+      'id': 2,
+      'url_uuid': uuid(),
+      'create_date': today,
+      'expire_date': today.clone().add({days: 7})
+    }, {
+      'id': 3,
+      'url_uuid': uuid(),
+      'create_date': today,
+      'expire_date': today.clone().add({days: 7})
+    }]);
+
     // content list
     var listRegex = /^\/cms\/api\/v1\/content\/(\?.*)?$/
     $httpBackend.when('GET', listRegex).respond(mockApiData['content.list']);
@@ -86,7 +118,6 @@ angular.module('bulbsCmsApp.mockApi').run([
     });
 
     // notifications
-    var today = moment();
     mockApiData.notifications = [{
         id: 0,
         title: 'We\'ve Made An Update!',
@@ -216,9 +247,9 @@ angular.module('bulbsCmsApp.mockApi').run([
     $httpBackend.when('POST', /^http:\/\/localimages\.avclub\.com\/api\/new$/)
       .respond(mockApiData['bettycropper.new']);
 
-    $httpBackend.when('OPTIONS', /^http:\/\/clickholeimg.local.*/).passThrough();
-    $httpBackend.when('GET', /^http:\/\/clickholeimg.local.*/).passThrough();
-    $httpBackend.when('POST', /^http:\/\/clickholeimg.local.*/).passThrough();
+    $httpBackend.when('OPTIONS', /^http:\/\/clickholeimg.local.*/).respond(404);
+    $httpBackend.when('GET', /^http:\/\/clickholeimg.local.*/).respond(404);
+    $httpBackend.when('POST', /^http:\/\/clickholeimg.local.*/).respond(404);
 
     // send to webtech (fickle)
     $httpBackend.whenPOST('/cms/api/v1/report-bug/').respond('');

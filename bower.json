@@ -31,6 +31,7 @@
     "Keypress": "~2.0.2",
     "pnotify": "~2.0.0",
     "firebase": "1.0.21",
-    "firebase-token-generator": "~1.1.3"
+    "zeroclipboard": "~2.1.6",
+    "ng-clip": "~0.2.4"
   }
 }
