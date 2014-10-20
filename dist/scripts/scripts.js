@@ -315,9 +315,6 @@ angular.module('bulbsCmsApp', [
   $httpProvider.interceptors.push('PermissionsInterceptor');
   $httpProvider.interceptors.push('BadRequestInterceptor');
 })
-.config(function(ngClipProvider, ZERO_CLIPBOARD_SWF) {
-  ngClipProvider.setPath(ZERO_CLIPBOARD_SWF);
-})
 .run(function ($rootScope, $http, $cookies) {
   // set the CSRF token here
   $http.defaults.headers.common['X-CSRFToken'] = $cookies.csrftoken;
