@@ -250,7 +250,8 @@ angular.module('bulbsCmsApp', [
   'Raven',
   'firebase',
   'ipCookie',
-  'bulbs.api'
+  'bulbs.api',
+  'ngClipboard'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
@@ -313,6 +314,9 @@ angular.module('bulbsCmsApp', [
   $httpProvider.interceptors.push('BugReportInterceptor');
   $httpProvider.interceptors.push('PermissionsInterceptor');
   $httpProvider.interceptors.push('BadRequestInterceptor');
+})
+.config(function(ngClipProvider, ZERO_CLIPBOARD_SWF) {
+  ngClipProvider.setPath(ZERO_CLIPBOARD_SWF);
 })
 .run(function ($rootScope, $http, $cookies) {
   // set the CSRF token here
@@ -3299,7 +3303,8 @@ angular.module('bulbsCmsApp')
 
 angular.module('bulbsCmsApp')
   .controller('ContentworkflowCtrl', function ($scope, $http, $modal, $window, moment, routes,
-                                               VersionBrowserModalOpener, TIMEZONE_LABEL) {
+                                               VersionBrowserModalOpener, TemporaryUrlModalOpener,
+                                               TIMEZONE_LABEL) {
     $scope.TIMEZONE_LABEL = TIMEZONE_LABEL;
 
     $scope.trashContentModal = function (articleId) {
@@ -3382,6 +3387,10 @@ angular.module('bulbsCmsApp')
 
     $scope.versionBrowserModal = function (article) {
       VersionBrowserModalOpener.open($scope, article);
+    };
+
+    $scope.temporaryUrlModal = function (article) {
+      TemporaryUrlModalOpener.open($scope, article);
     };
 
     $scope.descriptionModal = function (article) {
@@ -4289,6 +4298,42 @@ angular.module('bulbsCmsApp')
   }
 );
 
+'use strict';
+
+angular.module('bulbsCmsApp')
+  .value('ARTICLE_TEMPORARY_URL_DAYS_VALID', 7)
+  .value('ARTICLE_TEMPORARY_URL_BASE', 'http://0.0.0.0:9069/unpublished/')
+  .controller('TemporaryUrlModalCtrl', function ($scope, $routeParams, ContentApi, ARTICLE_TEMPORARY_URL_DAYS_VALID,
+                                                 ARTICLE_TEMPORARY_URL_BASE) {
+
+    var content = ContentApi.one('content', $routeParams.id);
+
+    $scope.TEMP_LINK_DAYS_VALID = ARTICLE_TEMPORARY_URL_DAYS_VALID;
+    $scope.TEMP_URL_BASE = ARTICLE_TEMPORARY_URL_BASE;
+
+    $scope.tokens = [];
+    content.getList('list-tokens').then(function (tokenList) {
+      $scope.tokens = tokenList;
+    });
+
+    $scope.createToken = function () {
+
+      var now = moment();
+      ContentApi.one('content', $routeParams.id).post('create-token', {
+        'create_date': now,
+        'expire_date': now.clone().add({days: ARTICLE_TEMPORARY_URL_DAYS_VALID})
+      }).then(function (token) {
+        // make dates moments
+        token.create_date = moment(token.create_date);
+        token.expire_date = moment(token.expire_date);
+
+        $scope.tokens.unshift(token);
+        $scope.newestToken = token;
+      });
+
+    };
+
+  });
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -5253,6 +5298,37 @@ angular.module('bulbsCmsApp')
   })
   .constant('promotionApiConfig', {
     baseUrl: '/promotions/api'
+  });
+
+'use strict';
+
+angular.module('bulbsCmsApp')
+  .factory('TemporaryUrlModalOpener', function ($modal, routes) {
+
+    var modal = null;
+
+    return {
+      open: function ($scope, article) {
+        // ensure only one version browser is open at a time
+        if (modal) {
+          modal.close();
+        }
+
+        modal = $modal.open({
+          templateUrl: routes.PARTIALS_URL + 'modals/temporary-url-modal.html',
+          controller: 'TemporaryUrlModalCtrl',
+          scope: $scope,
+          resolve: {
+            article: function () {
+              return article;
+            }
+          }
+        });
+
+        return modal;
+      }
+    };
+
   });
 
 'use strict';

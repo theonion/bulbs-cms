@@ -345,6 +345,12 @@ module.exports = function (grunt) {
         cwd: '<%= yeoman.app %>/bower_components/font-awesome/css',
         dest:'<%= yeoman.dist %>/styles/',
         src: ['font-awesome.min.css']
+      },
+      zeroclipboard: {
+        expand: true,
+        cwd: '<%= yeoman.app %>/bower_components/zeroclipboard/dist',
+        dest:'<%= yeoman.dist %>/swf/',
+        src: ['ZeroClipboard.swf']
       }
     },
 

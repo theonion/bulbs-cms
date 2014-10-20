@@ -32,7 +32,8 @@ angular.module('bulbsCmsApp', [
   'Raven',
   'firebase',
   'ipCookie',
-  'bulbs.api'
+  'bulbs.api',
+  'ngClipboard'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
@@ -95,6 +96,9 @@ angular.module('bulbsCmsApp', [
   $httpProvider.interceptors.push('BugReportInterceptor');
   $httpProvider.interceptors.push('PermissionsInterceptor');
   $httpProvider.interceptors.push('BadRequestInterceptor');
+})
+.config(function(ngClipProvider, ZERO_CLIPBOARD_SWF) {
+  ngClipProvider.setPath(ZERO_CLIPBOARD_SWF);
 })
 .run(function ($rootScope, $http, $cookies) {
   // set the CSRF token here
