@@ -60,13 +60,13 @@ angular.module('bulbsCmsApp.mockApi').run([
           return v.toString(16);
       });
     };
-    $httpBackend.when('POST', /\/cms\/api\/v1\/content\/\d+\/create-token\//).respond({
+    $httpBackend.when('POST', /\/cms\/api\/v1\/content\/\d+\/create_token\//).respond({
       'id': 5,
       'url_uuid': uuid(),
       'create_date': today,
       'expire_date': today.clone().add({days: 7})
     });
-    $httpBackend.when('GET', /\/cms\/api\/v1\/content\/\d+\/list-tokens\//).respond([{
+    $httpBackend.when('GET', /\/cms\/api\/v1\/content\/\d+\/list_tokens\//).respond([{
       'id': 1,
       'url_uuid': uuid(),
       'create_date': today,

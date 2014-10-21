@@ -30,7 +30,7 @@
     <link rel="stylesheet" href="bower_components/onion-editor/build/editor-main.css" />
 
     <link rel="stylesheet" href="styles/edit-page.css" />
-    
+
     <!-- FEATURE IMAGE STUFF -->
     <link rel="stylesheet" href="styles/feature-image.css" />
 
@@ -247,7 +247,6 @@
             CMS_NAMESPACE: 'Smoove'
         });
 
-        angular.module('bulbsCmsApp').constant('ZERO_CLIPBOARD_SWF', 'bower_components/zeroclipboard/dist/ZeroClipboard.swf');
         angular.module('bulbsCmsApp').constant('IMAGE_SERVER_URL', 'http://clickholeimg.local');
         angular.module('bulbsCmsApp').constant('BC_ADMIN_URL', 'http://clickholeimg.local');
         angular.module('bulbsCmsApp').constant('LOADING_IMG_SRC', "/images/loading.gif");
@@ -278,6 +277,7 @@
 
         angular.module('bulbsCmsApp').constant('navbar_options', {});
 
+        angular.module('bulbsCmsApp').constant('ZERO_CLIPBOARD_SWF', 'bower_components/zeroclipboard/dist/ZeroClipboard.swf');
         angular.module('bulbsCmsApp').config(function(ngClipProvider, ZERO_CLIPBOARD_SWF) {
             ngClipProvider.setPath(ZERO_CLIPBOARD_SWF);
         });
