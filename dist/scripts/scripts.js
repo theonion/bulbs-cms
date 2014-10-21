@@ -4309,14 +4309,20 @@ angular.module('bulbsCmsApp')
     $scope.TEMP_URL_BASE = ARTICLE_TEMPORARY_URL_BASE;
 
     $scope.tokens = [];
-    content.getList('list-tokens').then(function (tokenList) {
+    content.getList('list_tokens').then(function (tokenList) {
       $scope.tokens = tokenList;
+
+      // make dates moments
+      _.each($scope.tokens, function (token) {
+        token.create_date = moment(token.create_date);
+        token.expire_date = moment(token.expire_date);
+      });
     });
 
     $scope.createToken = function () {
 
       var now = moment();
-      ContentApi.one('content', $routeParams.id).post('create-token', {
+      ContentApi.one('content', $routeParams.id).post('create_token', {
         'create_date': now,
         'expire_date': now.clone().add({days: ARTICLE_TEMPORARY_URL_DAYS_VALID})
       }).then(function (token) {
