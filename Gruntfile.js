@@ -553,6 +553,7 @@ module.exports = function (grunt) {
     'copy:jcropGif',
     'copy:fontawesome',
     'copy:fontawesomeCSS',
+    'copy:zeroclipboard',
     'cdnify',
     'cssmin',
     'uglify'
