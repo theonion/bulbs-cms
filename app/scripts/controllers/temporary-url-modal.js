@@ -16,10 +16,24 @@ angular.module('bulbsCmsApp')
       $scope.tokens = tokenList;
 
       // make dates moments
-      _.each($scope.tokens, function (token) {
+      var expiredIndicies = [];
+      _.each($scope.tokens, function (token, i) {
         token.create_date = moment(token.create_date);
         token.expire_date = moment(token.expire_date);
+
+        if (moment().isAfter(token.expire_date)) {
+          // keep track of expired tokens for later removal
+          expiredIndicies.push(i);
+        } else {
+          // this is not expired, keep track of day diff
+          token.daysTillExpire = token.expire_date.diff(moment(), 'days') + 1;
+        }
       });
+
+      // remove expired tokens from list, done this way so objects remain restangularized
+      for(var i = expiredIndicies.length - 1; i >= 0; i--) {
+        $scope.tokens.splice(expiredIndicies[i], 1);
+      }
     });
 
     $scope.createToken = function () {
@@ -32,8 +46,9 @@ angular.module('bulbsCmsApp')
         // make dates moments
         token.create_date = moment(token.create_date);
         token.expire_date = moment(token.expire_date);
+        token.daysTillExpire = token.expire_date.diff(moment(), 'days') + 1;
 
-        $scope.tokens.unshift(token);
+        $scope.tokens.push(token);
         $scope.newestToken = token;
       });
 
