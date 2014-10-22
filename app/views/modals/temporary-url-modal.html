@@ -15,7 +15,7 @@
         <i class="glyphicon glyphicon-share"></i>
       </button>
     </span>
-    <input 
+    <input
         type="text"
         class="form-control"
         placeholder="Your URL will show up here" value="{{ newestToken.url_uuid ? TEMP_URL_BASE + newestToken.url_uuid : '' }}"
@@ -42,7 +42,7 @@
         <tbody>
           <tr ng-repeat="token in tokens">
             <td>{{ TEMP_URL_BASE + token.url_uuid }}</td>
-            <td>{{ token.expire_date.diff(token.create_date, 'days') }}</td>
+            <td>{{ token.daysTillExpire }}</td>
             <td>
               <button class="btn btn-success btn-xs" clip-copy="TEMP_URL_BASE + token.url_uuid">
                 <i class="glyphicon glyphicon-paperclip"></i>
