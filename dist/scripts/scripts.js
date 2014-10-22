@@ -4514,7 +4514,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('VideothumbnailmodalCtrl', function ($scope, $http, $modalInstance, Zencoder, videoId, VIDEO_THUMBNAIL_URL, STATIC_IMAGE_URL) {
+  .controller('VideothumbnailmodalCtrl', function ($scope, $http, $modalInstance, Zencoder, videoId, VIDEO_THUMBNAIL_URL, CUSTOM_VIDEO_POSTER_URL) {
     var DEFAULT_THUMBNAIL = 4;
     var MAX_THUMBNAIL = 19;
     $scope.uploadedImage = {id: null};
@@ -4546,7 +4546,7 @@ angular.module('bulbsCmsApp')
 
     $scope.$watch('uploadedImage.id', function () {
       if ($scope.uploadedImage.id) {
-        $scope.video.poster = STATIC_IMAGE_URL.replace('{{ratio}}', '16x9').replace('{{image}}', $scope.uploadedImage.id);
+        $scope.video.poster = CUSTOM_VIDEO_POSTER_URL.replace('{{ratio}}', '16x9').replace('{{image}}', $scope.uploadedImage.id);
       }
     });
 
