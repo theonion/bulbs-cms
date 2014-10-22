@@ -13,7 +13,7 @@ describe('Controller: VideothumbnailmodalCtrl', function () {
     zencoderService;
 
   var thumbnailUrlString = 'thumbnails4you.com/{{video}}/thumbnail_{{thumbnail}}';
-  var staticImageUrlString = '{{ratio}}_{{image}}';
+  var customVideoPosterUrlString = '{{ratio}}_{{image}}';
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $rootScope, $modal, routes, Zencoder) {
@@ -40,7 +40,7 @@ describe('Controller: VideothumbnailmodalCtrl', function () {
       $modalInstance: modal,
       Zencoder: zencoderService,
       VIDEO_THUMBNAIL_URL: thumbnailUrlString,
-      STATIC_IMAGE_URL: staticImageUrlString,
+      CUSTOM_VIDEO_POSTER_URL: customVideoPosterUrlString,
       videoId: 1
     });
   }));
