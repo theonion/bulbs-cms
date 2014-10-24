@@ -12,7 +12,9 @@ angular.module('bulbsCmsApp')
         controller: 'TrashcontentmodalCtrl',
         scope: $scope,
         resolve: {
-          articleId: function () {}
+          articleId: function () {
+            return articleId;
+          }
         }
       });
     };
