@@ -48,6 +48,7 @@ module.exports = function(config) {
       'app/bower_components/nprogress/nprogress.js',
       'app/bower_components/restangular/dist/restangular.js',
       'app/bower_components/moment/moment.js',
+      'app/bower_components/moment-timezone/builds/moment-timezone-with-data-2010-2020.js',
       'app/bower_components/urlify/urlify.js',
       'app/bower_components/onion-editor/build/onion-editor.min.js',
       'app/bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js',
