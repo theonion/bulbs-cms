@@ -321,7 +321,8 @@ angular.module('bulbsCmsApp', [
   var deleteHeaders = $http.defaults.headers.delete || {};
   deleteHeaders['X-CSRFToken'] = $cookies.csrftoken;
   $http.defaults.headers.delete = deleteHeaders;
-});
+})
+.constant('TIMEZONE_NAME', 'America/Chicago');
 
 
 angular.module('bulbs.api', ['restangular', 'moment']);
@@ -3301,8 +3302,8 @@ angular.module('bulbsCmsApp')
 angular.module('bulbsCmsApp')
   .controller('ContentworkflowCtrl', function ($scope, $http, $modal, $window, moment, routes,
                                                VersionBrowserModalOpener, TemporaryUrlModalOpener,
-                                               TIMEZONE_LABEL) {
-    $scope.TIMEZONE_LABEL = TIMEZONE_LABEL;
+                                               TIMEZONE_NAME) {
+    $scope.TIMEZONE_LABEL = moment.tz(TIMEZONE_NAME).format('z');
 
     $scope.trashContentModal = function (articleId) {
       return $modal.open({
@@ -3509,7 +3510,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('DatetimeSelectionModalCtrl', function ($scope, $modalInstance, TIMEZONE_OFFSET, TIMEZONE_LABEL) {
+  .controller('DatetimeSelectionModalCtrl', function ($scope, $modalInstance, TIMEZONE_NAME) {
 
     // ensure that we can't choose a time if date is invalid
     $scope.dateValid = false;
@@ -3520,10 +3521,10 @@ angular.module('bulbsCmsApp')
     // copy date temporarily so user has to actually verify change to the date
     $scope.tempDatetime = angular.copy($scope.modDatetime);
 
-    $scope.TIMEZONE_LABEL = TIMEZONE_LABEL;
+    $scope.TIMEZONE_LABEL = moment.tz(TIMEZONE_NAME).format('z');
 
     var timeNowWithOffset = function () {
-      return moment().zone(TIMEZONE_OFFSET);
+      return moment.tz(TIMEZONE_NAME);
     };
 
     // callback function for using datetime calendar because it doesn't work at all in a sensible way
@@ -3950,7 +3951,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance, $, moment, Login, routes, article, TIMEZONE_OFFSET, Raven) {
+  .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance, $, moment, Login, routes, article, TIMEZONE_NAME, Raven) {
     $scope.article = article;
 
     $scope.pubButton = {
@@ -3961,7 +3962,7 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.$watch('pickerValue', function (newVal) {
-      var pubTimeMoment = moment(newVal).zone(TIMEZONE_OFFSET);
+      var pubTimeMoment = moment(newVal);
       $scope.datePickerValue = moment()
         .year(pubTimeMoment.year())
         .month(pubTimeMoment.month())
@@ -3976,17 +3977,17 @@ angular.module('bulbsCmsApp')
 
     $scope.setTimeShortcut = function (shortcut) {
       if (shortcut === 'now') {
-        var now = moment().zone(TIMEZONE_OFFSET);
+        var now = moment();
         $scope.pickerValue = now;
       }
       if (shortcut === 'midnight') {
-        var midnight = moment().zone(TIMEZONE_OFFSET).hour(24).minute(0);
+        var midnight = moment().hour(24).minute(0);
         $scope.pickerValue = midnight;
       }
     };
 
     $scope.setDateShortcut = function (shortcut) {
-      var today = moment().zone(TIMEZONE_OFFSET);
+      var today = moment.tz(TIMEZONE_NAME);
       if (shortcut === 'today') {
         $scope.datePickerValue = moment().year(today.year()).month(today.month()).date(today.date());
       }
@@ -4008,7 +4009,7 @@ angular.module('bulbsCmsApp')
 
       var newDate = moment($scope.datePickerValue);
       var newTime = moment($scope.timePickerValue);
-      var newDateTime = moment().zone(TIMEZONE_OFFSET)
+      var newDateTime = moment.tz(TIMEZONE_NAME)
         .year(newDate.year())
         .month(newDate.month())
         .date(newDate.date())
@@ -4072,7 +4073,7 @@ angular.module('bulbsCmsApp')
     };
 
     if ($scope.article.published) {
-      $scope.pickerValue = moment($scope.article.published);
+      $scope.pickerValue = moment.tz($scope.article.published, TIMEZONE_NAME);
     } else {
       $scope.setTimeShortcut('now');
     }
@@ -5823,15 +5824,16 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .filter('tzDate', function (dateFilter, moment, TIMEZONE_OFFSET, TIMEZONE_LABEL) {
+  .filter('tzDate', function (dateFilter, moment, TIMEZONE_NAME) {
     return function (input, format) {
       if (!input) {
         return '';
       }
-      var newdate = moment(input).zone(TIMEZONE_OFFSET).format('YYYY-MM-DDTHH:mm');
+      var inDate = moment.tz(input, TIMEZONE_NAME);
+      var newdate = inDate.format('YYYY-MM-DDTHH:mm');
       var formattedDate = dateFilter(newdate, format);
       if (format.toLowerCase().indexOf('h') > -1) {
-        formattedDate += ' ' + TIMEZONE_LABEL;
+        formattedDate += ' ' + inDate.format('z');
       }
       return formattedDate;
     };
