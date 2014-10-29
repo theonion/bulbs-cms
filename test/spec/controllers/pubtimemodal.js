@@ -153,17 +153,18 @@ describe('Controller: PubtimemodalCtrl', function () {
     describe('in a different timezone', function () {
       //mock a different timezone
       beforeEach(inject(function ($controller, moment) {
+        var otherTz = 'America/Los_Angeles';
 
         mockmoment = function(param) {
           if(param){
             return moment(param);
           }else{
-            return moment('Fri Apr 25 2014 12:22:10 GMT-0700');
+            return moment('Fri Apr 25 2014 12:22:10');
           }
         }
         mockmoment.tz = function () {
           if (arguments.length == 1) {
-            return moment.tz('Fri Apr 25 2014 12:22:00 GMT-0700', timezoneName);
+            return moment.tz('Fri Apr 25 2014 12:22:00', otherTz);
           }
             return moment.tz.apply(this, arguments);
         }
