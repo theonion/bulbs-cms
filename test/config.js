@@ -22,8 +22,7 @@ angular.module('bulbsCmsApp').constant('CONTENT_PARTIALS_URL', '/content_type_vi
 angular.module('bulbsCmsApp').constant('DIRECTIVE_PARTIALS_URL', '/views/');
 angular.module('bulbsCmsApp').constant('MEDIA_ITEM_PARTIALS_URL', '/cms/api/partials/media_items/');
 angular.module('bulbsCmsApp').constant('CACHEBUSTER', "?" + Date.now());
-angular.module('bulbsCmsApp').constant('TIMEZONE_OFFSET', '-0500');
-angular.module('bulbsCmsApp').constant('TIMEZONE_LABEL', 'CST');
+angular.module('bulbsCmsApp').constant('TIMEZONE_NAME', 'America/Chicago');
 angular.module('bulbsCmsApp').constant('AUTO_ADD_AUTHOR', false);
 angular.module('bulbsCmsApp').constant('DEFAULT_IMAGE_WIDTH', 1200);
 angular.module('bulbsCmsApp').constant('VIDEO_EMBED_URL', 'http://www.avclub.com/video/embed?id=');
