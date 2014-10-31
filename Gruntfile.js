@@ -53,10 +53,6 @@ module.exports = function (grunt) {
         files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
         tasks: ['newer:copy:styles', 'autoprefixer']
       },
-      less: {
-        files: ['<%= yeoman.app %>/styles/{,*/}*.less'],
-        tasks: ['less']
-      },
       gruntfile: {
         files: ['Gruntfile.js']
       },
@@ -65,9 +61,12 @@ module.exports = function (grunt) {
           livereload: '<%= connect.options.livereload %>'
         },
         files: [
+          '<%= yeoman.app %>/styles/{,*/}*.less',
           '<%= yeoman.app %>/{,*/}*.html',
-          '.tmp/styles/{,*/}*.css',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+        ],
+        tasks: [
+          'less'
         ]
       }
     },
@@ -518,7 +517,6 @@ module.exports = function (grunt) {
       'less',
       'injector:local_dependencies',
       'connect:livereload',
-      'watch:less',
       'watch:livereload'
     ]);
   });
