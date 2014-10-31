@@ -103,5 +103,6 @@ angular.module('bulbsCmsApp', [
   var deleteHeaders = $http.defaults.headers.delete || {};
   deleteHeaders['X-CSRFToken'] = $cookies.csrftoken;
   $http.defaults.headers.delete = deleteHeaders;
-});
+})
+.constant('TIMEZONE_NAME', 'America/Chicago');
 

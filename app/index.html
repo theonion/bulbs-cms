@@ -91,6 +91,7 @@
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="bower_components/raven-js/dist/raven.js"></script>
     <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/moment-timezone/builds/moment-timezone-with-data-2010-2020.js"></script>
     <script src="bower_components/lodash/dist/lodash.compat.js"></script>
     <script src="bower_components/urlify/urlify.js"></script>
     <script src="bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js"></script>
@@ -256,13 +257,13 @@
         angular.module('bulbsCmsApp').constant('DIRECTIVE_PARTIALS_URL', '/views/');
         angular.module('bulbsCmsApp').constant('MEDIA_ITEM_PARTIALS_URL', '/cms/api/partials/media_items/');
         angular.module('bulbsCmsApp').constant('CACHEBUSTER', "?" + Date.now());
-        angular.module('bulbsCmsApp').constant('TIMEZONE_OFFSET', '-0500');
-        angular.module('bulbsCmsApp').constant('TIMEZONE_LABEL', 'CST');
+        angular.module('bulbsCmsApp').constant('TIMEZONE_NAME', 'America/Chicago');
         angular.module('bulbsCmsApp').constant('AUTO_ADD_AUTHOR', true);
         angular.module('bulbsCmsApp').constant('DEFAULT_IMAGE_WIDTH', 1200);
         angular.module('bulbsCmsApp').constant('VIDEO_EMBED_URL', 'http://www.avclub.com/videos/embed?id=');
         angular.module('bulbsCmsApp').constant('VIDEO_THUMBNAIL_URL', 'http://v.theonion.com/avclubmedia/video/{{video}}/frame_{{thumbnail}}.jpg');
         angular.module('bulbsCmsApp').constant('STATIC_IMAGE_URL', 'http://chimg.onionstatic.com/{{image}}/{{ratio}}/600.jpg');
+        angular.module('bulbsCmsApp').constant('CUSTOM_VIDEO_POSTER_URL', 'http://chimg.onionstatic.com/{{image}}/{{ratio}}/600.jpg');
         angular.module('bulbsCmsApp').constant('FIREBASE_ROOT', 'bulbs-cms-testing');
 
         // ****** CMS Plugins ****** \\

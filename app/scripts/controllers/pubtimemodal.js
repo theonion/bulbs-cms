@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance, $, moment, Login, routes, article, TIMEZONE_OFFSET, Raven) {
+  .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance, $, moment, Login, routes, article, TIMEZONE_NAME, Raven) {
     $scope.article = article;
 
     $scope.pubButton = {
@@ -12,7 +12,7 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.$watch('pickerValue', function (newVal) {
-      var pubTimeMoment = moment(newVal).zone(TIMEZONE_OFFSET);
+      var pubTimeMoment = moment(newVal);
       $scope.datePickerValue = moment()
         .year(pubTimeMoment.year())
         .month(pubTimeMoment.month())
@@ -27,17 +27,17 @@ angular.module('bulbsCmsApp')
 
     $scope.setTimeShortcut = function (shortcut) {
       if (shortcut === 'now') {
-        var now = moment().zone(TIMEZONE_OFFSET);
+        var now = moment();
         $scope.pickerValue = now;
       }
       if (shortcut === 'midnight') {
-        var midnight = moment().zone(TIMEZONE_OFFSET).hour(24).minute(0);
+        var midnight = moment().hour(24).minute(0);
         $scope.pickerValue = midnight;
       }
     };
 
     $scope.setDateShortcut = function (shortcut) {
-      var today = moment().zone(TIMEZONE_OFFSET);
+      var today = moment.tz(TIMEZONE_NAME);
       if (shortcut === 'today') {
         $scope.datePickerValue = moment().year(today.year()).month(today.month()).date(today.date());
       }
@@ -59,7 +59,7 @@ angular.module('bulbsCmsApp')
 
       var newDate = moment($scope.datePickerValue);
       var newTime = moment($scope.timePickerValue);
-      var newDateTime = moment().zone(TIMEZONE_OFFSET)
+      var newDateTime = moment.tz(TIMEZONE_NAME)
         .year(newDate.year())
         .month(newDate.month())
         .date(newDate.date())
@@ -123,7 +123,7 @@ angular.module('bulbsCmsApp')
     };
 
     if ($scope.article.published) {
-      $scope.pickerValue = moment($scope.article.published);
+      $scope.pickerValue = moment.tz($scope.article.published, TIMEZONE_NAME);
     } else {
       $scope.setTimeShortcut('now');
     }

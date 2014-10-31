@@ -12,7 +12,8 @@ describe('Controller: PubtimemodalCtrl', function () {
     modal,
     modalService,
     httpBackend,
-    mockmoment;
+    mockmoment,
+    timezoneName;
 
   var articleWithNoFeatureType = {
     id: 1,
@@ -31,9 +32,9 @@ describe('Controller: PubtimemodalCtrl', function () {
   }
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope, $httpBackend, $modal, moment, routes) {
+  beforeEach(inject(function ($controller, $rootScope, $httpBackend, $modal, moment, routes, TIMEZONE_NAME) {
     httpBackend = $httpBackend;
-
+    timezoneName = TIMEZONE_NAME;
     var modalUrl = routes.PARTIALS_URL + 'modals/publish-date-modal.html';
     modal = $modal.open({
       templateUrl: modalUrl
@@ -47,8 +48,14 @@ describe('Controller: PubtimemodalCtrl', function () {
       if(param){
         return moment(param);
       }else{
-        return moment("Fri Apr 25 2014 14:22:00 GMT-0500 (UTC)");
+        return moment("Fri Apr 25 2014 14:22:00");
       }
+    }
+    mockmoment.tz = function () {
+      if (arguments.length == 1) {
+        return moment.tz('Fri Apr 25 2014 14:22:00', timezoneName);
+      }
+      return moment.tz.apply(this, arguments);
     }
 
     scope = $rootScope.$new();
@@ -146,13 +153,20 @@ describe('Controller: PubtimemodalCtrl', function () {
     describe('in a different timezone', function () {
       //mock a different timezone
       beforeEach(inject(function ($controller, moment) {
+        var otherTz = 'America/Los_Angeles';
 
         mockmoment = function(param) {
           if(param){
             return moment(param);
           }else{
-            return moment("Fri Apr 25 2014 12:22:10 GMT-0700 (UTC)");
+            return moment('Fri Apr 25 2014 12:22:10');
           }
+        }
+        mockmoment.tz = function () {
+          if (arguments.length == 1) {
+            return moment.tz('Fri Apr 25 2014 12:22:00', otherTz);
+          }
+            return moment.tz.apply(this, arguments);
         }
 
         PubtimemodalCtrl = $controller('PubtimemodalCtrl', {
@@ -169,7 +183,7 @@ describe('Controller: PubtimemodalCtrl', function () {
           scope.setTimeShortcut('now');
           scope.$apply();
 
-          expect(scope.timePickerValue.hour()).toBe(14);
+          expect(scope.timePickerValue.hour()).toBe(12);
           expect(scope.timePickerValue.minute()).toBe(22);
         });
 
