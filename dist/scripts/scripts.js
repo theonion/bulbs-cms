@@ -1608,8 +1608,13 @@ angular.module('bulbsCmsApp')
           if (e.keyCode === 38) { arrowSelect('up'); }//up
           if (e.keyCode === 40) { arrowSelect('down'); } //down
           if (e.keyCode === 13) { //enter
-            if ($element.find('.selected').length > 0) { $element.find('.selected').click(); }
-            else {
+            if ($element.find('.selected').length > 0) {
+              // To trigger the click we need to first break out of the
+              // current $apply() cycle. Hence the $timeout()
+              $timeout(function() {
+                angular.element('.selected > a').triggerHandler('click');
+              }, 0);
+            } else {
               scope.addFilter('search', $input.val());
             }
           }
@@ -1912,34 +1917,40 @@ angular.module('bulbsCmsApp')
 
           var save_promise = scope.getPromise();
 
-          var promise = save_promise
-          .then(
-            function (result) {
-              NProgress.done();
-              scope.colors = scope.colors_tmp;
-              element
-                .prop('disabled', false)
-                .html('<i class=\'glyphicon glyphicon-ok\'></i> ' + scope.config.finished);
+          var saveSuccess = function (result) {
+            NProgress.done();
+            scope.colors = scope.colors_tmp;
+            element
+              .prop('disabled', false)
+              .html('<i class=\'glyphicon glyphicon-ok\'></i> ' + scope.config.finished);
 
-              return $timeout(function () {
-                element.html(scope.config.idle);
-              }, 1000)
-              .then(function () {
-                return result;
-              });
-            })
-          .catch(
-            function (reason) {
-              NProgress.done();
-              scope.colors = 'btn-danger';
-              element
-                .prop('disabled', false)
-                .html('<i class=\'glyphicon glyphicon-remove\'></i> ' + scope.config.error);
-
-              return $q.reject(reason);
+            return $timeout(function () {
+              element.html(scope.config.idle);
+            }, 1000)
+            .then(function () {
+              return result;
             });
-          if (scope.saveCbk) {
-            scope.saveCbk({promise: promise});
+          };
+
+          if (save_promise) {
+            var promise = save_promise
+            .then(saveSuccess)
+            .catch(
+              function (reason) {
+                NProgress.done();
+                scope.colors = 'btn-danger';
+                element
+                  .prop('disabled', false)
+                  .html('<i class=\'glyphicon glyphicon-remove\'></i> ' + scope.config.error);
+
+                return $q.reject(reason);
+              });
+            if (scope.saveCbk) {
+              scope.saveCbk({promise: promise});
+            }
+          } else {
+            // no save promise was set, just run success function
+            saveSuccess();
           }
         };
       }
