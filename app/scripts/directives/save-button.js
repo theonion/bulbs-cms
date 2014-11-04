@@ -44,34 +44,40 @@ angular.module('bulbsCmsApp')
 
           var save_promise = scope.getPromise();
 
-          var promise = save_promise
-          .then(
-            function (result) {
-              NProgress.done();
-              scope.colors = scope.colors_tmp;
-              element
-                .prop('disabled', false)
-                .html('<i class=\'glyphicon glyphicon-ok\'></i> ' + scope.config.finished);
+          var saveSuccess = function (result) {
+            NProgress.done();
+            scope.colors = scope.colors_tmp;
+            element
+              .prop('disabled', false)
+              .html('<i class=\'glyphicon glyphicon-ok\'></i> ' + scope.config.finished);
 
-              return $timeout(function () {
-                element.html(scope.config.idle);
-              }, 1000)
-              .then(function () {
-                return result;
-              });
-            })
-          .catch(
-            function (reason) {
-              NProgress.done();
-              scope.colors = 'btn-danger';
-              element
-                .prop('disabled', false)
-                .html('<i class=\'glyphicon glyphicon-remove\'></i> ' + scope.config.error);
-
-              return $q.reject(reason);
+            return $timeout(function () {
+              element.html(scope.config.idle);
+            }, 1000)
+            .then(function () {
+              return result;
             });
-          if (scope.saveCbk) {
-            scope.saveCbk({promise: promise});
+          };
+
+          if (save_promise) {
+            var promise = save_promise
+            .then(saveSuccess)
+            .catch(
+              function (reason) {
+                NProgress.done();
+                scope.colors = 'btn-danger';
+                element
+                  .prop('disabled', false)
+                  .html('<i class=\'glyphicon glyphicon-remove\'></i> ' + scope.config.error);
+
+                return $q.reject(reason);
+              });
+            if (scope.saveCbk) {
+              scope.saveCbk({promise: promise});
+            }
+          } else {
+            // no save promise was set, just run success function
+            saveSuccess();
           }
         };
       }

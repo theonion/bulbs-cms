@@ -46,8 +46,13 @@ angular.module('bulbsCmsApp')
           if (e.keyCode === 38) { arrowSelect('up'); }//up
           if (e.keyCode === 40) { arrowSelect('down'); } //down
           if (e.keyCode === 13) { //enter
-            if ($element.find('.selected').length > 0) { $element.find('.selected').click(); }
-            else {
+            if ($element.find('.selected').length > 0) {
+              // To trigger the click we need to first break out of the
+              // current $apply() cycle. Hence the $timeout()
+              $timeout(function() {
+                angular.element('.selected > a').triggerHandler('click');
+              }, 0);
+            } else {
               scope.addFilter('search', $input.val());
             }
           }
