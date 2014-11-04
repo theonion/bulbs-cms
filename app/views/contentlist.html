@@ -25,12 +25,12 @@
                 <a class="panel-title collapsed" ng-bind-html="article.title | truncateByWords:15"></a></div>
               <div class="published col-xs-12 col-sm-4">
                 <div class="publish-widget small" ng-hide="article.id == -1">
-                  <span ng-show="article.authors">By {{ article.authors.0.first_name | truncateByCharacters: 1 }} {{ article.authors.0.last_name }}
+                  <span ng-show="article.authors">By {{ article.authors[0].first_name | truncateByCharacters: 1 }} {{ article.authors[0].last_name }}
                     <span ng-show="article.authors.length > 1">and {{ article.authors.length - 1}} others</span> &middot; </span>
                   <a class="text-success" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'published'" ng-click="pubTimeModal(article);" >{{ article.published|tzDate:"EEE',' M/d/yy' at ' h:mm a" }}</a>
                   <a class="text-info" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'unpublished'"  ng-click="pubTimeModal(article);" >Draft</a>
                   <a class="text-info" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'scheduled'" ng-click="pubTimeModal(article);" ><strong>Scheduled</strong> for {{ article.published|tzDate:"EEE M/d/yy 'at' h:mm a" }}</a></div></div></div>
-            
+
             <div id="collapse-{{ article.id }}" class="panel-collapse collapse" lazy-include template='content-list-detail-panel.html'><span class="fa fa-spinner fa-spin"></span></div></td></tr></table></div>
 
     <div class="row">
