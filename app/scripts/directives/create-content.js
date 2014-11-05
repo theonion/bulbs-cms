@@ -18,7 +18,6 @@ angular.module('bulbsCmsApp')
         });
 
         $scope.newArticle = function (e) {
-          e.preventDefault();
           var init = {'title': $scope.newTitle};
           angular.extend($scope.init, init);
 
@@ -94,7 +93,10 @@ angular.module('bulbsCmsApp')
           scope.$apply();
 
           if ($(this).hasClass('go-next')) {
+            e.preventDefault();
+
             $('#create button.next-pane').click();
+            return false;
           }
 
           return true;
