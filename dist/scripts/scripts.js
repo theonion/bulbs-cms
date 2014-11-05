@@ -1175,7 +1175,8 @@ angular.module('bulbsCmsApp')
           }
         });
 
-        $scope.newArticle = function () {
+        $scope.newArticle = function (e) {
+          e.preventDefault();
           var init = {'title': $scope.newTitle};
           angular.extend($scope.init, init);
 
