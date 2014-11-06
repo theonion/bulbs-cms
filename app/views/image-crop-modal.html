@@ -10,8 +10,8 @@
       <h5>Set Image Crops</h5>
       <ul class="thumb-list">
         <li ng-repeat="ratio in ratios">
-          <div class="cropped-thumb-container" ng-style="thumb_container_styles.{{ ratio }}" ng-click="selectCrop(ratio)">
-            <div ng-style="thumb_styles.{{ ratio }}" class="cropped-thumb">
+          <div class="cropped-thumb-container" ng-style="thumb_container_styles[ratio]" ng-click="selectCrop(ratio)">
+            <div ng-style="thumb_styles[ratio]" class="cropped-thumb">
             </div>
           </div>
           <span class="fa" ng-class="isCropDone(ratio)"><strong>{{ ratio }}</strong></span>
