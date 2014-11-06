@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('onionEditor', function (routes, $, Zencoder, BettyCropper, openImageCropModal, VIDEO_EMBED_URL) {
+  .directive('onionEditor', function (routes, $, Zencoder, BettyCropper, openImageCropModal, VIDEO_EMBED_URL, OnionEditor) {
     return {
       require: 'ngModel',
       replace: true,
@@ -67,14 +67,13 @@ angular.module('bulbsCmsApp')
         var editor = new OnionEditor($('.editor', element[0])[0], options);
 
         ngModel.$render = function () {
-          var val = ngModel.$viewValue || defaultValue;
           editor.setContent(ngModel.$viewValue || defaultValue);
           // register on change here, after the initial load so angular doesn't get mad...
           setTimeout(function () {
             editor.setChangeHandler(read);
           });
         };
-        
+
         // Redefine what empty looks like
         ngModel.$isEmpty = function (value) {
           return ! value || editor.scribe.allowsBlockElements() && value === defaultValue;

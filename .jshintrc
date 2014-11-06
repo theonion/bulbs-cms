@@ -21,8 +21,15 @@
   "sub": true,
   "white": true,
   "globals": {
+    // app deps
     "angular": false,
-    "$": false,
-    "moment": false
+
+    // testing functions
+    "describe": false,
+    "afterEach": false,
+    "beforeEach": false,
+    "inject": false,
+    "it": false,
+    "expect": false
   }
 }

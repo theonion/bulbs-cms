@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .provider('StatusFilterOptions', function () {
+  .provider('StatusFilterOptions', function (moment) {
     var _statuses = [
       {label: 'Draft', key: 'status', value: 'draft'},
       {label: 'Published', key: 'before', value: function () { return moment().format('YYYY-MM-DDTHH:mmZ'); }},

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('featuretypeField', function (routes, IfExistsElse, ContentApi, Raven) {
+  .directive('featuretypeField', function (routes, IfExistsElse, ContentApi, Raven, $) {
     return {
       templateUrl: routes.PARTIALS_URL + 'textlike-autocomplete-field.html',
       restrict: 'E',
@@ -38,7 +38,7 @@ angular.module('bulbsCmsApp')
         };
 
         scope.delete = function (e) {
-          article.feature_type = null;
+          scope.article.feature_type = null;
         };
 
       }

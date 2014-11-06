@@ -22,7 +22,6 @@ angular.module('bulbsCmsApp')
         .minute(pubTimeMoment.minute());
     });
 
-    var viewDateFormat = 'MM/DD/YYYY hh:mm a';
     var modelDateFormat = 'YYYY-MM-DDTHH:mmZ';
 
     $scope.setTimeShortcut = function (shortcut) {

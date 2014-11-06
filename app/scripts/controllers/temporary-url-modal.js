@@ -4,7 +4,7 @@ angular.module('bulbsCmsApp')
   .value('ARTICLE_TEMPORARY_URL_DAYS_VALID', 7)
   .value('ARTICLE_TEMPORARY_URL_BASE', 'http://0.0.0.0:9069/unpublished/')
   .controller('TemporaryUrlModalCtrl', function ($scope, $routeParams, ContentApi, ARTICLE_TEMPORARY_URL_DAYS_VALID,
-                                                 ARTICLE_TEMPORARY_URL_BASE) {
+                                                 ARTICLE_TEMPORARY_URL_BASE, _, moment) {
 
     var content = ContentApi.one('content', $routeParams.id);
 
@@ -31,7 +31,7 @@ angular.module('bulbsCmsApp')
       });
 
       // remove expired tokens from list, done this way so objects remain restangularized
-      for(var i = expiredIndicies.length - 1; i >= 0; i--) {
+      for (var i = expiredIndicies.length - 1; i >= 0; i--) {
         $scope.tokens.splice(expiredIndicies[i], 1);
       }
     });

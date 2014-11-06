@@ -6,8 +6,7 @@ angular.module('bulbsCmsApp')
     var valid = function () {
       $scope.postDateValid = $scope.postDate && (!$scope.notifyEndDate || $scope.postDate < $scope.notifyEndDate);
       $scope.notifyEndDateValid = $scope.notifyEndDate && $scope.postDate && $scope.notifyEndDate > $scope.postDate;
-      $scope.titleValid = $scope.notification.title && $scope.notification.title.length > 0
-        && $scope.notification.title.length <= 110;
+      $scope.titleValid = $scope.notification.title && $scope.notification.title.length > 0 && $scope.notification.title.length <= 110;
 
       $scope.notificationValid = $scope.postDateValid && $scope.notifyEndDateValid && $scope.titleValid;
     };

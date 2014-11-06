@@ -4,7 +4,7 @@
  * Factory for creating new references to firebase.
  */
 angular.module('bulbsCmsApp')
-  .service('FirebaseRefFactory', function () {
+  .service('FirebaseRefFactory', function (Firebase) {
 
     return {
       newRef: function (url) {

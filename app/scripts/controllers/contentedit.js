@@ -4,7 +4,7 @@ angular.module('bulbsCmsApp')
   .controller('ContenteditCtrl', function (
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
-    $, _, keypress, Raven,
+    $, _, moment, keypress, Raven, PNotify,
     IfExistsElse, VersionStorageApi, ContentApi, FirebaseApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener,
     routes)
   {
@@ -17,7 +17,7 @@ angular.module('bulbsCmsApp')
       contentedit ng-includes templates served by django
       which are currently treated like templates
       instead of static assets (which they are)
-      we're cachebuster those URLs because we've run into trouble 
+      we're cachebuster those URLs because we've run into trouble
       with cached version in the past and it was a bludgeon solution
         kill this someday! --SB
     */
@@ -58,12 +58,17 @@ angular.module('bulbsCmsApp')
                   if (currentUser && newVersion.user.id !== currentUser.id) {
 
                     // close any existing save pnotify
-                    savePNotify && savePNotify.remove();
+                    if (savePNotify) {
+                      savePNotify.remove();
+                    }
 
-                    var msg = '<b>'+ newVersion.user.displayName + '</b> -- '
-                                + moment(newVersion.timestamp).format('MMM Do YYYY, h:mma') + '<br>';
+                    var msg = '<b>' +
+                                newVersion.user.displayName +
+                              '</b> -- ' +
+                              moment(newVersion.timestamp).format('MMM Do YYYY, h:mma') +
+                              '<br>';
                     if ($scope.articleIsDirty) {
-                      msg += ' You have unsaved changes that may conflict when you save.'
+                      msg += ' You have unsaved changes that may conflict when you save.';
                     }
                     msg += ' Open the version browser to see their latest version.';
 
@@ -153,7 +158,7 @@ angular.module('bulbsCmsApp')
     });
 
     $scope.saveArticleDeferred = $q.defer();
-    
+
     $scope.saveArticleIfDirty = function () {
       /*this is only for operations that trigger a saveArticle (e.g. send to editor)
       if the article isn't dirty, we don't want to fire saveArticle
@@ -196,7 +201,6 @@ angular.module('bulbsCmsApp')
     listener.simple_combo('ctrl s', function (e) { $scope.saveArticle(); });
 
     $scope.postValidationSaveArticle = function () {
-      var data = $scope.article;
       if ($scope.article.status !== 'Published') {
         $scope.article.slug = $window.URLify($scope.article.title, 50);
       }
@@ -253,7 +257,7 @@ angular.module('bulbsCmsApp')
           return 'You have unsaved changes. Do you want to continue?';
         };
       } else {
-        $window.onbeforeunload = function() {};
+        $window.onbeforeunload = function () {};
       }
     });
 

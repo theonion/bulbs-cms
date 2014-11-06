@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ImageCropModalCtrl', function ($scope, $timeout, $modalInstance, BettyCropper, Selection, DEFAULT_IMAGE_WIDTH, imageData, ratios) {
+  .controller('ImageCropModalCtrl', function ($scope, $timeout, $modalInstance, BettyCropper, Selection, DEFAULT_IMAGE_WIDTH, imageData, ratios, $) {
     $scope.selectedCrop = null;
     $scope.cropMode = false;
     $scope.ratios = ratios;
@@ -11,7 +11,7 @@ angular.module('bulbsCmsApp')
 
     if (!$scope.image) {
       $scope.image = null;
-      BettyCropper.get(imageData.id).then(function(success){
+      BettyCropper.get(imageData.id).then(function (success) {
         $scope.image = success.data;
       });
     }
@@ -51,7 +51,7 @@ angular.module('bulbsCmsApp')
       $scope.setThumbStyles();
     });
 
-    $scope.$watch('selectedCrop', function(crop) {
+    $scope.$watch('selectedCrop', function (crop) {
       if (!$scope.image) {
         return;
       }
@@ -148,7 +148,7 @@ angular.module('bulbsCmsApp')
         var selection = success.data[1];
         $scope.image.selections[ratio] = selection;
 
-        var nextRatioIndex = ($scope.ratios.indexOf(ratio) + 1) % $scope.ratios.length; 
+        var nextRatioIndex = ($scope.ratios.indexOf(ratio) + 1) % $scope.ratios.length;
 
         $scope.selectCrop($scope.ratios[nextRatioIndex]);
       });

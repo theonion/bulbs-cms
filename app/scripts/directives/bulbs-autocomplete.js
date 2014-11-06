@@ -3,11 +3,12 @@
 angular.module('bulbsCmsApp')
   .directive('bulbsAutocomplete', function ($http, $location, $compile, $timeout, $, Login, Raven) {
 
-    var autocomplete_dropdown_template = '<div class="autocomplete dropdown" ng-show="autocomplete_list">\
-          <div class="entry" ng-repeat="option in autocomplete_list" ng-click="onClick(option)">\
-              {{display(option);}}\
-          </div>\
-      </div>';
+    var autocomplete_dropdown_template =
+      '<div class="autocomplete dropdown" ng-show="autocomplete_list">' +
+          '<div class="entry" ng-repeat="option in autocomplete_list" ng-click="onClick(option)">' +
+              '{{display(option);}}' +
+          '</div>' +
+      '</div>';
 
     return {
       restrict: 'AC',

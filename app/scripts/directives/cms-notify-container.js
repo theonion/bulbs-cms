@@ -7,5 +7,5 @@ angular.module('bulbsCmsApp')
       scope: {},
       templateUrl: routes.PARTIALS_URL + 'cms-notify-container.html',
       controller: 'CmsNotifyContainerCtrl'
-    }
+    };
   });

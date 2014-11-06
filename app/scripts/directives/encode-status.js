@@ -28,13 +28,11 @@ angular.module('bulbsCmsApp')
         }, 5000);
 
         function updateEncodeStatuses() {
-          for (var i in Zencoder.encodingVideos) {
-            if (scope.encodingVideos[i] && scope.encodingVideos[i].finished) {
-              continue;
-            }
-            scope.encodingVideos[i] = Zencoder.encodingVideos[i];
-            (function (videoid) {
-              if (Zencoder.encodingVideos[videoid].encode_status_endpoints && Zencoder.encodingVideos[videoid].encode_status_endpoints.json) {
+          var updateEncodeStatus = function (i) {
+            return (function (videoid) {
+              if (Zencoder.encodingVideos[videoid].encode_status_endpoints &&
+                  Zencoder.encodingVideos[videoid].encode_status_endpoints.json) {
+
                 $http({
                   method: 'GET',
                   url: Zencoder.encodingVideos[videoid].encode_status_endpoints.json,
@@ -50,6 +48,14 @@ angular.module('bulbsCmsApp')
                 });
               }
             })(i);
+          };
+
+          for (var i in Zencoder.encodingVideos) {
+            if (scope.encodingVideos[i] && scope.encodingVideos[i].finished) {
+              continue;
+            }
+            scope.encodingVideos[i] = Zencoder.encodingVideos[i];
+            updateEncodeStatus(i);
           }
         }
 

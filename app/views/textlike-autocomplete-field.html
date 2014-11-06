@@ -1,8 +1,14 @@
 <div class="bulbs-autocomplete">
-  <h1 class="h6 col-xs-12 section"><label class="control-label" for="{{name}}-input">{{label}}</label></h1>
-  <div class="tag taglikeobject col-sm-12" id="{{name}}-container" ng-show="model">
+  <h1 class="h6 col-xs-12 section">
+    <label class="control-label" for="{{name}}-input">{{label}}</label>
+  </h1>
+  <div class="tag taglikeobject col-sm-12 {{name}}-display" id="{{name}}-container" ng-show="model">
     <span class="tagname">{{model}} </span>
-    <a class="remove" ng-click='delete($event);'>
-    <span class='glyphicon glyphicon-remove'></span></a></div>
-  <div class="col-sm-12">
-    <input class="form-control input-sm new-tag-input" id="{{name}}-input" name="{{name}}" type="text" placeholder="{{placeholder}}" ng-hide="model" /></div></div>
+      <a class="remove" ng-click='delete($event);'>
+          <span class='glyphicon glyphicon-remove'></span>
+      </a>
+  </div>
+  <div class="col-sm-12 {{name}}-input">
+    <input class="form-control input-sm new-tag-input" id="{{name}}-input" name="{{name}}" type="text" placeholder="{{placeholder}}" ng-hide="model" />
+  </div>
+</div>

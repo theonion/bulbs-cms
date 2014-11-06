@@ -5,8 +5,7 @@ describe('Directive: filterwidget', function () {
   // load the directive's module
   beforeEach(module('bulbsCmsApp'));
 
-  var element,
-    scope;
+  var scope;
 
   beforeEach(inject(function ($rootScope) {
     scope = $rootScope.$new();

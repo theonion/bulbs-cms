@@ -40,7 +40,7 @@ angular.module('bulbsCmsApp')
               $scope.image = null;
             } else {
               $scope.image = image;
-              BettyCropper.get($scope.image.id).then(function(response){
+              BettyCropper.get($scope.image.id).then(function (response) {
                 $scope.bettyImage = response.data;
                 $scope.setStyles();
               });
@@ -72,7 +72,7 @@ angular.module('bulbsCmsApp')
 
         scope.$watch('image', function (newImage, oldImage) {
           if (newImage && newImage.id) {
-            BettyCropper.get(newImage.id).then(function(response){
+            BettyCropper.get(newImage.id).then(function (response) {
               scope.bettyImage = response.data;
             });
           }

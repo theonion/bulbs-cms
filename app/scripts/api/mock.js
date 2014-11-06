@@ -1,4 +1,5 @@
 'use strict';
+
 angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
   $httpBackend.when('OPTIONS', /^\/cms\/api\/v1\/.*/).respond('');
 
@@ -85,8 +86,8 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
     {
       id: 3,
       name: 'Programmer'
-    },
-  ]);  
+    }
+  ]);
 
   // ContributionReporting Service
   $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/reporting/?')).respond([
@@ -144,32 +145,32 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
         full_name: 'Sean Bloomfield',
       }
     },
-  ]);  
+  ]);
 
   // TODO: Do this better.
   $httpBackend.when('GET', new RegExp('^/cms/api/v1/content/[0-9]+/?$')).respond({
     id: 6,
-    title: "No Thumbnail Here Folks",
-    feature_type: "Thumbnails On Holiday",
-    slug: "thumbnails-holiday-6",
-    polymorphic_ctype: "content_content",
+    title: 'No Thumbnail Here Folks',
+    feature_type: 'Thumbnails On Holiday',
+    slug: 'thumbnails-holiday-6',
+    polymorphic_ctype: 'content_content',
     tags: [],
     authors: [{
-      username: "hsimpson",
-      first_name: "Homer",
-      last_name: "Simpson",
+      username: 'hsimpson',
+      first_name: 'Homer',
+      last_name: 'Simpson',
       id: 16832
     }],
     thumbnail: null,
-    absolute_url: "/article/article-1",
+    absolute_url: '/article/article-1',
     sponsor_image: null,
-    status: "Published",
-    published: "2011-04-03T16:20:00Z",
-    last_modified: "2011-05-03T16:00:00Z",
-    description: "",
-    subhead: "",
+    status: 'Published',
+    published: '2011-04-03T16:20:00Z',
+    last_modified: '2011-05-03T16:00:00Z',
+    description: '',
+    subhead: '',
     indexed: true,
-    body: "There's no thumbnail here. Go away.",
+    body: 'There\'s no thumbnail here. Go away.',
     client_pixel: null,
     sponsor_name: null
   });

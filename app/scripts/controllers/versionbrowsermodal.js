@@ -20,7 +20,7 @@ angular.module('bulbsCmsApp')
           _.chain(versions)
             // loop through each version and add timestamp display property
             .each(function (version) {
-              version.timestamp_display = moment(version.timestamp).format('MMM Do YYYY, h:mma')
+              version.timestamp_display = moment(version.timestamp).format('MMM Do YYYY, h:mma');
             })
             // sort by timestamps desc, so most recent is on top
             .sortBy(function (version) {

@@ -17,9 +17,9 @@ describe('Controller: LastmodifiedguardmodalCtrl', function () {
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $rootScope, $httpBackend, routes, $modal, $route) {
     lastSavedBy = {id: 1, username: 'whatever'};
-    
+
     routeService = $route;
-    
+
     var modalUrl = routes.PARTIALS_URL + 'modals/last-modified-guard-modal.html';
     modal = $modal.open({
       templateUrl: modalUrl
@@ -28,7 +28,7 @@ describe('Controller: LastmodifiedguardmodalCtrl', function () {
     modal.dismiss = function () { return true; }
     modalService = $modal
     modalService.open = function () { return true; }
-    
+
     scope = $rootScope.$new();
     httpBackend = $httpBackend;
     httpBackend.expectGET('/cms/api/v1/log/?content=1').respond([
@@ -41,6 +41,7 @@ describe('Controller: LastmodifiedguardmodalCtrl', function () {
     httpBackend.expectGET('/cms/api/v1/author/1/').respond(lastSavedBy);
 
     scope.article = {
+      id: 1,
       title: 'This is Mine'
     };
     scope.articleIsDirty = false;
@@ -67,7 +68,7 @@ describe('Controller: LastmodifiedguardmodalCtrl', function () {
     expect(scope.lastSavedBy.id).toBe(lastSavedBy.id);
     expect(scope.lastSavedBy.username).toBe(lastSavedBy.username);
   });
-  
+
   it('should have a function loadFromServer that replaces current article with latest version', function () {
 
     expect(scope.article.title).toBe('This is Mine');
@@ -79,7 +80,7 @@ describe('Controller: LastmodifiedguardmodalCtrl', function () {
     expect(scope.articleIsDirty).toBe(true);
 
   });
-  
+
   it('should have a function saveAnyway that calls $parent.postValidationSaveArticle', function (){
     scope.$parent = {};
     scope.$parent.postValidationSaveArticle = function(){};

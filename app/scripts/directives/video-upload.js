@@ -33,7 +33,6 @@ angular.module('bulbsCmsApp').directive(
 
         var progressEl = element.find('div.progress');
         var progressBar = element.find('div.progress-bar');
-        var progressText = element.find('div.progress span');
         var fakeInput = element.find('input.fake-input');
         scope.lastProgress = 0;
 
@@ -106,10 +105,6 @@ angular.module('bulbsCmsApp').directive(
             scope.lastProgress = progress;
             progressEl.show();
           }
-        }
-
-        function setProgressText(text) {
-          progressText.html(text);
         }
 
         function updateEncodeProgress() {
