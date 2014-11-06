@@ -197,15 +197,17 @@ This bridges the embed module that the editor exposes & our custom image impleme
 
 /* prevents backspace from accidentally triggering a back event */
 
+// TODO : fix this at some point so we don't use global $
+/* global $ */
+
 $(document).unbind('keydown').bind('keydown', function (event) {
   var doPrevent = false;
   if (event.keyCode === 8) {
     var d = event.srcElement || event.target;
     if (['TEXTAREA', 'INPUT'].indexOf(d.tagName.toUpperCase() !==  -1)) {
       doPrevent = d.readOnly || d.disabled;
-    }
-    //we're in a content editable field
-    else if (d.isContentEditable) {
+    } else if (d.isContentEditable) {
+      //we're in a content editable field
       doPrevent = false;
     } else {
       doPrevent = true;
@@ -220,14 +222,15 @@ $(document).unbind('keydown').bind('keydown', function (event) {
 
 // ****** External Libraries ****** \\
 
-angular.module('underscore', []).value('_', window._);
-angular.module('NProgress', []).value('NProgress', window.NProgress);
-angular.module('URLify', []).value('URLify', window.URLify);
-angular.module('jquery', []).value('$', window.$);
-angular.module('moment', []).value('moment', window.moment);
-angular.module('PNotify', []).value('PNotify', window.PNotify);
-angular.module('keypress', []).value('keypress', window.keypress);
-angular.module('Raven', []).value('Raven', window.Raven);
+angular.module('underscore', []).constant('_', window._);
+angular.module('NProgress', []).constant('NProgress', window.NProgress);
+angular.module('URLify', []).constant('URLify', window.URLify);
+angular.module('jquery', []).constant('$', window.$);
+angular.module('moment', []).constant('moment', window.moment);
+angular.module('PNotify', []).constant('PNotify', window.PNotify);
+angular.module('keypress', []).constant('keypress', window.keypress);
+angular.module('Raven', []).constant('Raven', window.Raven);
+angular.module('OnionEditor', []).constant('OnionEditor', window.OnionEditor);
 
 // ****** App Config ****** \\
 
@@ -251,7 +254,8 @@ angular.module('bulbsCmsApp', [
   'firebase',
   'ipCookie',
   'bulbs.api',
-  'ngClipboard'
+  'ngClipboard',
+  'OnionEditor'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
@@ -326,31 +330,42 @@ angular.module('bulbsCmsApp', [
 
 
 angular.module('bulbs.api', ['restangular', 'moment']);
-angular.module('bulbs.api').
-  factory('AuthorService', function (Restangular) {
+
+'use strict';
+
+angular.module('bulbs.api')
+  .factory('AuthorService', function (Restangular) {
     Restangular.setBaseUrl('/cms/api/v1/');
     Restangular.setRequestSuffix('/');
     Restangular.extendModel('author', function (obj) {
       return angular.extend(obj, {
-        getFullName: function() {
+        getFullName: function () {
           return obj.first_name + ' ' + obj.last_name;
         }
       });
     });
     return Restangular.all('author');
   });
-angular.module('bulbs.api').
-  factory('ContentService', function (Restangular) {
+
+'use strict';
+
+angular.module('bulbs.api')
+  .factory('ContentService', function (Restangular) {
     Restangular.setBaseUrl('/cms/api/v1/');
     Restangular.setRequestSuffix('/');
 
     Restangular.extendModel('content', function (obj) {
-      for (var i in obj.authors) {
-        obj.authors[i] = angular.extend(obj.authors[i], {
-          getFullName: function() {
+
+      var extendAuthor = function (author) {
+        return angular.extend(author, {
+          getFullName: function () {
             return obj.contributor.first_name + ' ' + obj.contributor.last_name;
           }
-        })
+        });
+      };
+
+      for (var i in obj.authors) {
+        obj.authors[i] = extendAuthor(obj.authors[i]);
       }
       return obj;
     });
@@ -358,7 +373,7 @@ angular.module('bulbs.api').
     Restangular.extendModel('contributions', function (obj) {
       if (obj && obj.contributor) {
         obj.contributor = angular.extend(obj.contributor, {
-          getFullName: function() {
+          getFullName: function () {
             return obj.contributor.first_name + ' ' + obj.contributor.last_name;
           }
         });
@@ -366,54 +381,59 @@ angular.module('bulbs.api').
       return obj;
     });
 
-    Restangular.extendCollection('contributions', function(collection) {
-      collection.save = function(data) {
-        return collection.post(data).then(function(contributions) {
+    Restangular.extendCollection('contributions', function (collection) {
+      collection.save = function (data) {
+        return collection.post(data).then(function (contributions) {
           return Restangular.restangularizeCollection('contributions', contributions);
         });
-      }
+      };
       return collection;
     });
 
     return Restangular.service('content');
   });
-angular.module('bulbs.api').
-  factory('ContributionRoleService', function (Restangular) {
-    return Restangular.withConfig(function(RestangularConfigurer) {
+
+'use strict';
+
+angular.module('bulbs.api')
+  .factory('ContributionRoleService', function (Restangular) {
+    return Restangular.withConfig(function (RestangularConfigurer) {
       RestangularConfigurer.setBaseUrl('/cms/api/v1/contributions/');
       RestangularConfigurer.setRequestSuffix('/');
     }).service('role');
-  }).
-  factory('ContributionReportingService', function(Restangular, moment) {
+  })
+  .factory('ContributionReportingService', function (Restangular, moment) {
 
     Restangular.extendModel('reporting', function (obj) {
       obj.user = angular.extend(obj.user, {
-        toString: function() {
+        toString: function () {
           return obj.user.full_name || obj.user.username;
-        },
+        }
       });
+
       obj.content = angular.extend(obj.content, {
-        toString: function() {
+        toString: function () {
           return obj.content.title + ' (' + moment(obj.content.published).format('MM/DD/YYYY h:mm a') + ')';
         },
       });
       return obj;
     });
 
-    return Restangular.withConfig(function(RestangularConfigurer) {
+    return Restangular.withConfig(function (RestangularConfigurer) {
       RestangularConfigurer.setBaseUrl('/cms/api/v1/contributions/');
       RestangularConfigurer.setRequestSuffix('/');
     }).service('reporting');
   });
+
 'use strict';
 (function () {
-  angular.module('BettyCropper', ['restangular'])
+  angular.module('BettyCropper', ['restangular', 'jquery'])
     .value('DEFAULT_IMAGE_WIDTH', 1200)
     .factory('Selection', SelectionFactory)
     .factory('BettyImage', BettyImageFactory)
     .service('BettyCropper', BettyCropperService);
 
-  function BettyCropperService($http, $interpolate, $q, IMAGE_SERVER_URL, BC_API_KEY, BettyImage) {
+  function BettyCropperService($http, $interpolate, $q, IMAGE_SERVER_URL, BC_API_KEY, BettyImage, $) {
       var fileInputId = '#bulbs-cms-hidden-image-file-input';
       var inputTemplate = '<input id="bulbs-cms-hidden-image-file-input" type="file" accept="image/*" style="position: absolute; left:-99999px;" name="image" />';
 
@@ -429,7 +449,7 @@ angular.module('bulbs.api').
         angular.element(fileInputId).remove();
         var fileInput = angular.element(inputTemplate);
         angular.element('body').append(fileInput);
-        
+
         fileInput.click();
 
         fileInput.unbind('change');
@@ -533,9 +553,9 @@ angular.module('bulbs.api').
           data: selections
         });
       }
-  }
+    }
 
-  function BettyImageFactory($interpolate, $http, IMAGE_SERVER_URL, BC_API_KEY, DEFAULT_IMAGE_WIDTH, Selection) {
+  function BettyImageFactory($interpolate, $http, IMAGE_SERVER_URL, BC_API_KEY, DEFAULT_IMAGE_WIDTH, Selection, $) {
     function BettyImage(data) {
       this.id = data.id;
       this.name = data.name;
@@ -547,13 +567,13 @@ angular.module('bulbs.api').
       }
     }
 
-    BettyImage.prototype.scaleToFit = function(width, height) {
+    BettyImage.prototype.scaleToFit = function (width, height) {
       var scale;
       if (width && height) {
         var fitRatio = width / height;
         var thisRatio = this.width / this.height;
         if (fitRatio > thisRatio) {
-          scale = height/ this.height;
+          scale = height / this.height;
         } else {
           scale = width / this.width;
         }
@@ -562,7 +582,7 @@ angular.module('bulbs.api').
           scale = width / this.width;
         }
         if (height) {
-          scale = height/ this.height;
+          scale = height / this.height;
         }
       }
       var scaled = {
@@ -573,7 +593,7 @@ angular.module('bulbs.api').
       return scaled;
     };
 
-    BettyImage.prototype.getStyles = function(width, height, ratio) {
+    BettyImage.prototype.getStyles = function (width, height, ratio) {
       if (height === 0) {
         height = null;
       }
@@ -598,7 +618,7 @@ angular.module('bulbs.api').
       );
       var idStr = this.id.toString();
       var segmentedId = '';
-      for (var i=0; i < idStr.length; i++) {
+      for (var i = 0; i < idStr.length; i++) {
         if (i % 4 === 0 && i !== 0) {
           segmentedId += '/';
         }
@@ -646,11 +666,11 @@ angular.module('bulbs.api').
 
   function SelectionFactory() {
     function Selection(data) {
-        this.x0 = data.x0;
-        this.x1 = data.x1;
-        this.y0 = data.y0;
-        this.y1 = data.y1;
-        this.source = data.source;
+      this.x0 = data.x0;
+      this.x1 = data.x1;
+      this.y0 = data.y0;
+      this.y1 = data.y1;
+      this.source = data.source;
     }
 
     Selection.prototype.width = function () {
@@ -661,7 +681,7 @@ angular.module('bulbs.api').
       return this.y1 - this.y0;
     };
 
-    Selection.prototype.scaleBy = function(scale) {
+    Selection.prototype.scaleBy = function (scale) {
       var scaledToFit = new Selection({
         x0: Math.round(this.x0 * scale),
         x1: Math.round(this.x1 * scale),
@@ -678,7 +698,7 @@ angular.module('bulbs.api').
         var fitRatio = width / height;
         var thisRatio = this.width() / this.height();
         if (fitRatio > thisRatio) {
-          scale = height/ this.height();
+          scale = height / this.height();
         } else {
           scale = width / this.width();
         }
@@ -687,7 +707,7 @@ angular.module('bulbs.api').
           scale = width / this.width();
         }
         if (height) {
-          scale = height/ this.height();
+          scale = height / this.height();
         }
       }
       return this.scaleBy(scale);
@@ -696,6 +716,7 @@ angular.module('bulbs.api').
     return Selection;
   }
 })();
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -748,7 +769,7 @@ angular.module('bulbsCmsApp')
             },
             onError: function (data) {
               scope.$apply(function () {
-                alert('Error: ', data);
+                $window.alert('Error: ', data);
               });
             },
             onProgress: function (data) {
@@ -781,7 +802,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('authorsField', function (routes, userFilter) {
+  .directive('authorsField', function (routes, userFilter, $) {
     return {
       templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
@@ -866,7 +887,7 @@ angular.module('bulbsCmsApp')
               $scope.image = null;
             } else {
               $scope.image = image;
-              BettyCropper.get($scope.image.id).then(function(response){
+              BettyCropper.get($scope.image.id).then(function (response) {
                 $scope.bettyImage = response.data;
                 $scope.setStyles();
               });
@@ -898,7 +919,7 @@ angular.module('bulbsCmsApp')
 
         scope.$watch('image', function (newImage, oldImage) {
           if (newImage && newImage.id) {
-            BettyCropper.get(newImage.id).then(function(response){
+            BettyCropper.get(newImage.id).then(function (response) {
               scope.bettyImage = response.data;
             });
           }
@@ -1002,11 +1023,12 @@ angular.module('bulbsCmsApp')
 angular.module('bulbsCmsApp')
   .directive('bulbsAutocomplete', function ($http, $location, $compile, $timeout, $, Login, Raven) {
 
-    var autocomplete_dropdown_template = '<div class="autocomplete dropdown" ng-show="autocomplete_list">\
-          <div class="entry" ng-repeat="option in autocomplete_list" ng-click="onClick(option)">\
-              {{display(option);}}\
-          </div>\
-      </div>';
+    var autocomplete_dropdown_template =
+      '<div class="autocomplete dropdown" ng-show="autocomplete_list">' +
+          '<div class="entry" ng-repeat="option in autocomplete_list" ng-click="onClick(option)">' +
+              '{{display(option);}}' +
+          '</div>' +
+      '</div>';
 
     return {
       restrict: 'AC',
@@ -1143,8 +1165,9 @@ angular.module('bulbsCmsApp')
         notification: '='
       },
       controller: 'CmsNotificationCtrl'
-    }
+    };
   });
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -1154,8 +1177,9 @@ angular.module('bulbsCmsApp')
       scope: {},
       templateUrl: routes.PARTIALS_URL + 'cms-notify-container.html',
       controller: 'CmsNotifyContainerCtrl'
-    }
+    };
   });
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -1347,7 +1371,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('onionEditor', function (routes, $, Zencoder, BettyCropper, openImageCropModal, VIDEO_EMBED_URL) {
+  .directive('onionEditor', function (routes, $, Zencoder, BettyCropper, openImageCropModal, VIDEO_EMBED_URL, OnionEditor) {
     return {
       require: 'ngModel',
       replace: true,
@@ -1413,14 +1437,13 @@ angular.module('bulbsCmsApp')
         var editor = new OnionEditor($('.editor', element[0])[0], options);
 
         ngModel.$render = function () {
-          var val = ngModel.$viewValue || defaultValue;
           editor.setContent(ngModel.$viewValue || defaultValue);
           // register on change here, after the initial load so angular doesn't get mad...
           setTimeout(function () {
             editor.setChangeHandler(read);
           });
         };
-        
+
         // Redefine what empty looks like
         ngModel.$isEmpty = function (value) {
           return ! value || editor.scribe.allowsBlockElements() && value === defaultValue;
@@ -1487,13 +1510,11 @@ angular.module('bulbsCmsApp')
         }, 5000);
 
         function updateEncodeStatuses() {
-          for (var i in Zencoder.encodingVideos) {
-            if (scope.encodingVideos[i] && scope.encodingVideos[i].finished) {
-              continue;
-            }
-            scope.encodingVideos[i] = Zencoder.encodingVideos[i];
-            (function (videoid) {
-              if (Zencoder.encodingVideos[videoid].encode_status_endpoints && Zencoder.encodingVideos[videoid].encode_status_endpoints.json) {
+          var updateEncodeStatus = function (i) {
+            return (function (videoid) {
+              if (Zencoder.encodingVideos[videoid].encode_status_endpoints &&
+                  Zencoder.encodingVideos[videoid].encode_status_endpoints.json) {
+
                 $http({
                   method: 'GET',
                   url: Zencoder.encodingVideos[videoid].encode_status_endpoints.json,
@@ -1509,6 +1530,14 @@ angular.module('bulbsCmsApp')
                 });
               }
             })(i);
+          };
+
+          for (var i in Zencoder.encodingVideos) {
+            if (scope.encodingVideos[i] && scope.encodingVideos[i].finished) {
+              continue;
+            }
+            scope.encodingVideos[i] = Zencoder.encodingVideos[i];
+            updateEncodeStatus(i);
           }
         }
 
@@ -1519,7 +1548,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('featuretypeField', function (routes, IfExistsElse, ContentApi, Raven) {
+  .directive('featuretypeField', function (routes, IfExistsElse, ContentApi, Raven, $) {
     return {
       templateUrl: routes.PARTIALS_URL + 'textlike-autocomplete-field.html',
       restrict: 'E',
@@ -1556,7 +1585,7 @@ angular.module('bulbsCmsApp')
         };
 
         scope.delete = function (e) {
-          article.feature_type = null;
+          scope.article.feature_type = null;
         };
 
       }
@@ -1614,7 +1643,7 @@ angular.module('bulbsCmsApp')
             if ($element.find('.selected').length > 0) {
               // To trigger the click we need to first break out of the
               // current $apply() cycle. Hence the $timeout()
-              $timeout(function() {
+              $timeout(function () {
                 angular.element('.selected > a').triggerHandler('click');
               }, 0);
             } else {
@@ -1679,7 +1708,9 @@ angular.module('bulbsCmsApp')
         scope.deleteFilter = function (key) {
           var filterObject = $location.search();
           var toDelete = scope.filterObjects[key];
-          if (typeof(filterObject[toDelete.type]) === 'string') { filterObject[type] = [filterObject[type]]; }
+          if (typeof(filterObject[toDelete.type]) === 'string') {
+            filterObject[toDelete.type] = [filterObject[toDelete.type]];
+          }
           var toSplice;
           for (var i in filterObject[toDelete.type]) {
             if (filterObject[toDelete.type][i] === toDelete.query) {
@@ -1794,17 +1825,17 @@ angular.module('bulbsCmsApp')
     return {
       restrict: 'A',
       scope: true,
-      link: function(scope, element, attrs){
+      link: function (scope, element, attrs) {
         var templateUrl = routes.PARTIALS_URL + attrs.template;
         var $element = $(element);
-        
-        scope.$evalAsync(function(){
-          scope.$watch(function(){
+
+        scope.$evalAsync(function () {
+          scope.$watch(function () {
             return $element.is(':visible');
-          }, function(visible){
-            if(visible && !scope.loaded){
+          }, function (visible) {
+            if (visible && !scope.loaded) {
               scope.loaded = true;
-              Gettemplate.get(templateUrl).then(function(html){
+              Gettemplate.get(templateUrl).then(function (html) {
                 var template = angular.element(html);
                 var compiledEl = $compile(template)(scope);
                 element.html(compiledEl);
@@ -1813,7 +1844,6 @@ angular.module('bulbsCmsApp')
             }
           });
         });
-        
       }
     };
   });
@@ -1963,7 +1993,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('sectionsField', function (routes, _, IfExistsElse, ContentApi, Raven) {
+  .directive('sectionsField', function (routes, _, IfExistsElse, ContentApi, Raven, $) {
     return {
       templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
@@ -1978,7 +2008,7 @@ angular.module('bulbsCmsApp')
         };
 
         scope.$watch('article.tags', function () {
-          scope.objects = _.where(article.tags, {type: 'core_section'});
+          scope.objects = _.where(scope.article.tags, {type: 'core_section'});
         }, true);
 
         scope.add = function (o, input, freeForm) {
@@ -2027,13 +2057,17 @@ angular.module('bulbsCmsApp')
       link: function (scope, element, attrs) {
         var $element = $(element);
 
-        if (attrs.caption === 'false') { scope.hideCaption = true; }
+        if (attrs.caption === 'false') {
+          scope.hideCaption = true;
+        }
+
         scope.format = attrs.format || 'jpg';
         scope.crop = attrs.crop || '16x9';
 
         scope.removeImage = function (index) {
           scope.article.slides.splice(index, 1);
-        },
+        };
+
         scope.editImage = function (index) {
           $window.openImageDrawer(
             scope.article.slides[index].id,
@@ -2063,9 +2097,7 @@ angular.module('bulbsCmsApp')
             }
           );
         };
-
       }
-
     };
   });
 
@@ -2080,11 +2112,8 @@ angular.module('bulbsCmsApp')
         'image': '='
       },
       link: function postLink(scope, element, attrs) {
-        if (attrs.ratio) {
-          var ratio = attrs.ratio;
-        } else {
-          var ratio = '16x9';
-        }
+        var ratio = attrs.ratio || '16x9';
+
         scope.$watch('image', function () {
           if (scope.image && scope.image.id) {
             scope.imageUrl = STATIC_IMAGE_URL.replace('{{ratio}}', ratio).replace('{{image}}', scope.image.id);
@@ -2099,7 +2128,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .provider('StatusFilterOptions', function () {
+  .provider('StatusFilterOptions', function (moment) {
     var _statuses = [
       {label: 'Draft', key: 'status', value: 'draft'},
       {label: 'Published', key: 'before', value: function () { return moment().format('YYYY-MM-DDTHH:mmZ'); }},
@@ -2168,10 +2197,11 @@ angular.module('bulbsCmsApp')
       }
     };
   });
+
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('tagsField', function (routes, _, IfExistsElse, ContentApi, Raven) {
+  .directive('tagsField', function (routes, _, IfExistsElse, ContentApi, Raven, $) {
     return {
       templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
@@ -2189,7 +2219,7 @@ angular.module('bulbsCmsApp')
         };
 
         scope.$watch('article.tags', function () {
-          scope.objects = _.where(article.tags, {type: 'content_tag'});
+          scope.objects = _.where(scope.article.tags, {type: 'content_tag'});
         }, true);
 
         scope.add = function (o, input, freeForm) {
@@ -2276,7 +2306,6 @@ angular.module('bulbsCmsApp').directive(
 
         var progressEl = element.find('div.progress');
         var progressBar = element.find('div.progress-bar');
-        var progressText = element.find('div.progress span');
         var fakeInput = element.find('input.fake-input');
         scope.lastProgress = 0;
 
@@ -2349,10 +2378,6 @@ angular.module('bulbsCmsApp').directive(
             scope.lastProgress = progress;
             progressEl.show();
           }
-        }
-
-        function setProgressText(text) {
-          progressText.html(text);
         }
 
         function updateEncodeProgress() {
@@ -2448,7 +2473,7 @@ angular.module('bulbsCmsApp')
         };
 
         scope.thumbnailModal = function () {
-          Zencoder.openVideoThumbnailModal(article.video).result.then(
+          Zencoder.openVideoThumbnailModal(scope.article.video).result.then(
             function (resolve) {
               console.log('thumbnail modal resolve');
               console.log(resolve);
@@ -2682,10 +2707,12 @@ angular.module('bulbsCmsApp')
       $scope.changelog = data;
 
       var userIds = _.unique(_.pluck(data, 'user'));
+      var resp = function (data) {
+        $scope.users[data.id] = data;
+      };
+
       for (var i in userIds) {
-        ContentApi.one('author', userIds[i]).get().then(function (data) {
-          $scope.users[data.id] = data;
-        });
+        ContentApi.one('author', userIds[i]).get().then(resp);
       }
     });
 
@@ -2699,8 +2726,7 @@ angular.module('bulbsCmsApp')
     var valid = function () {
       $scope.postDateValid = $scope.postDate && (!$scope.notifyEndDate || $scope.postDate < $scope.notifyEndDate);
       $scope.notifyEndDateValid = $scope.notifyEndDate && $scope.postDate && $scope.notifyEndDate > $scope.postDate;
-      $scope.titleValid = $scope.notification.title && $scope.notification.title.length > 0
-        && $scope.notification.title.length <= 110;
+      $scope.titleValid = $scope.notification.title && $scope.notification.title.length > 0 && $scope.notification.title.length <= 110;
 
       $scope.notificationValid = $scope.postDateValid && $scope.notifyEndDateValid && $scope.titleValid;
     };
@@ -2783,10 +2809,11 @@ angular.module('bulbsCmsApp')
     };
 
   });
+
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('CmsNotificationsCtrl', function ($q, $window, $scope, routes, CmsNotificationsApi, CurrentUser) {
+  .controller('CmsNotificationsCtrl', function ($q, $window, $scope, routes, CmsNotificationsApi, CurrentUser, _, moment) {
 
     // set title
     $window.document.title = routes.CMS_NAMESPACE + ' | Notifications';
@@ -2863,7 +2890,7 @@ angular.module('bulbsCmsApp')
             });
         }
       } else {
-        saveDefer.reject('Insufficient permissions.')
+        saveDefer.reject('Insufficient permissions.');
       }
 
       return savePromise;
@@ -2885,26 +2912,29 @@ angular.module('bulbsCmsApp')
             deleteDefer.resolve();
           };
 
-      if ($scope.userIsSuperuser)
-      // find notification in list
-      var i = $scope.notifications.indexOf(notification);
-      if (i > -1) {
-        // notification in list, check if it is a restangular object and has a remove function
-        if (_.isFunction(notification.remove)) {
-          // has remove, call it and resolve promise
-          notification.remove()
-            .then(function () {
-              removeFromList(i)
-            })
-            .catch(function (error) {
-              deleteDefer.reject(error);
-            });
+      if ($scope.userIsSuperuser) {
+        // find notification in list
+        var i = $scope.notifications.indexOf(notification);
+        if (i > -1) {
+          // notification in list, check if it is a restangular object and has a remove function
+          if (_.isFunction(notification.remove)) {
+            // has remove, call it and resolve promise
+            notification.remove()
+              .then(function () {
+                removeFromList(i);
+              })
+              .catch(function (error) {
+                deleteDefer.reject(error);
+              });
+          } else {
+            // does not have remove, this is a previously unsaved notification, just remove it from list
+            removeFromList(i);
+          }
         } else {
-          // does not have remove, this is a previously unsaved notification, just remove it from list
-          removeFromList(i);
+          deleteDefer.reject('Cannot find notification in notification list. Unable to delete.');
         }
       } else {
-        deleteDefer.reject('Cannot find notification in notification list. Unable to delete.');
+        deleteDefer.reject('You do not have sufficient permissions to delete a notification.');
       }
 
       return deletePromise;
@@ -2915,26 +2945,29 @@ angular.module('bulbsCmsApp')
 
 'use strict';
 
+// note: this jshint exception is for URLify, which is just a function not a constructor
+/* jshint newcap: false */
+
 /**
  * Controller for notifications bar that is displayed to users.
  */
 angular.module('bulbsCmsApp')
-  .controller('CmsNotifyContainerCtrl', function ($scope, $window, ipCookie, moment, CmsNotificationsApi, URLify) {
+  .controller('CmsNotifyContainerCtrl', function ($scope, ipCookie, moment, CmsNotificationsApi, URLify, _) {
 
     var genCookieKey = function (id) {
-          return 'dismissed-cms-notification-' + id;
-        },
-        updateNotificationsDisplay = function (notifications) {
-          var now = moment();
-          $scope.notifications = _.filter(notifications, function (notification) {
-            // show notifications where there is no dismiss cookie and post_date < now < notify_end_date
-            if (!ipCookie(genCookieKey(notification.id))
-                && moment(notification.post_date).isBefore(now)
-                && moment(notification.notify_end_date).isAfter(now)) {
-              return true;
-            }
-          });
-        };
+      return 'dismissed-cms-notification-' + id;
+    };
+    var updateNotificationsDisplay = function (notifications) {
+      var now = moment();
+      $scope.notifications = _.filter(notifications, function (notification) {
+        // show notifications where there is no dismiss cookie and post_date < now < notify_end_date
+        if (!ipCookie(genCookieKey(notification.id)) &&
+              moment(notification.post_date).isBefore(now) &&
+              moment(notification.notify_end_date).isAfter(now)) {
+          return true;
+        }
+      });
+    };
 
     // show notifications
     CmsNotificationsApi.getList().then(function (notifications) {
@@ -2954,13 +2987,14 @@ angular.module('bulbsCmsApp')
     };
 
   });
+
 'use strict';
 
 angular.module('bulbsCmsApp')
   .controller('ContenteditCtrl', function (
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
-    $, _, keypress, Raven,
+    $, _, moment, keypress, Raven, PNotify,
     IfExistsElse, VersionStorageApi, ContentApi, FirebaseApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener,
     routes)
   {
@@ -2973,7 +3007,7 @@ angular.module('bulbsCmsApp')
       contentedit ng-includes templates served by django
       which are currently treated like templates
       instead of static assets (which they are)
-      we're cachebuster those URLs because we've run into trouble 
+      we're cachebuster those URLs because we've run into trouble
       with cached version in the past and it was a bludgeon solution
         kill this someday! --SB
     */
@@ -3014,12 +3048,17 @@ angular.module('bulbsCmsApp')
                   if (currentUser && newVersion.user.id !== currentUser.id) {
 
                     // close any existing save pnotify
-                    savePNotify && savePNotify.remove();
+                    if (savePNotify) {
+                      savePNotify.remove();
+                    }
 
-                    var msg = '<b>'+ newVersion.user.displayName + '</b> -- '
-                                + moment(newVersion.timestamp).format('MMM Do YYYY, h:mma') + '<br>';
+                    var msg = '<b>' +
+                                newVersion.user.displayName +
+                              '</b> -- ' +
+                              moment(newVersion.timestamp).format('MMM Do YYYY, h:mma') +
+                              '<br>';
                     if ($scope.articleIsDirty) {
-                      msg += ' You have unsaved changes that may conflict when you save.'
+                      msg += ' You have unsaved changes that may conflict when you save.';
                     }
                     msg += ' Open the version browser to see their latest version.';
 
@@ -3109,7 +3148,7 @@ angular.module('bulbsCmsApp')
     });
 
     $scope.saveArticleDeferred = $q.defer();
-    
+
     $scope.saveArticleIfDirty = function () {
       /*this is only for operations that trigger a saveArticle (e.g. send to editor)
       if the article isn't dirty, we don't want to fire saveArticle
@@ -3152,7 +3191,6 @@ angular.module('bulbsCmsApp')
     listener.simple_combo('ctrl s', function (e) { $scope.saveArticle(); });
 
     $scope.postValidationSaveArticle = function () {
-      var data = $scope.article;
       if ($scope.article.status !== 'Published') {
         $scope.article.slug = $window.URLify($scope.article.title, 50);
       }
@@ -3209,7 +3247,7 @@ angular.module('bulbsCmsApp')
           return 'You have unsaved changes. Do you want to continue?';
         };
       } else {
-        $window.onbeforeunload = function() {};
+        $window.onbeforeunload = function () {};
       }
     });
 
@@ -3289,8 +3327,8 @@ angular.module('bulbsCmsApp')
             $('#confirm-trash-modal').modal('hide');
           }, 1500);
       };
-      
-    $('body').on('shown.bs.collapse', '.panel-collapse', function(e){
+
+    $('body').on('shown.bs.collapse', '.panel-collapse', function (e) {
       $scope.$digest();
     });
 
@@ -3447,7 +3485,6 @@ angular.module('bulbsCmsApp')
     $scope.roles = [];
     $scope.collapsed = [];
     $scope.page = 'contributions';
-    $scope.article;
 
     $scope.save = save;
     $scope.add = add;
@@ -3457,7 +3494,7 @@ angular.module('bulbsCmsApp')
     function save() {
       // I know, I'm not supposed to do DOM manipulation in controllers. TOO BAD.
       angular.element('#save-btn').html('<i class="glyphicon glyphicon-refresh fa-spin"></i> Saving');
-      $scope.contributions.save($scope.contributions).then(function(contributions){
+      $scope.contributions.save($scope.contributions).then(function (contributions) {
         angular.element('#save-btn').html('<i class="glyphicon glyphicon-floppy-disk"></i> Save</button>');
       });
     }
@@ -3472,14 +3509,14 @@ angular.module('bulbsCmsApp')
     }
 
     function getRoles() {
-      return ContributionRoleService.getList().then(function(roles){
+      return ContributionRoleService.getList().then(function (roles) {
         $scope.roles = roles;
         getContributions();
       });
     }
 
     function getContributions() {
-      return ContentService.one($scope.contentId).all('contributions').getList().then(function(contributions) {
+      return ContentService.one($scope.contentId).all('contributions').getList().then(function (contributions) {
         for (var i in contributions) {
           if (contributions[i] === null || contributions[i].role === undefined) {
             continue;
@@ -3487,9 +3524,9 @@ angular.module('bulbsCmsApp')
         }
         $scope.contributions = contributions;
         $scope.collapsed = new Array(contributions.length);
-        $scope.contributions.forEach(function(item, index){
-          $scope.contributionLabels[index] = _.find($scope.roles, function(role) {
-            return role.id == item.role;
+        $scope.contributions.forEach(function (item, index) {
+          $scope.contributionLabels[index] = _.find($scope.roles, function (role) {
+            return role.id === item.role;
           }).name;
           $scope.collapsed[index] = true;
         });
@@ -3497,12 +3534,12 @@ angular.module('bulbsCmsApp')
     }
 
     function getContent() {
-      ContentService.one($scope.contentId).get().then(function(content) {
+      ContentService.one($scope.contentId).get().then(function (content) {
         $scope.content = content;
         $scope.article = {
           id: content.id
         };
-      })
+      });
     }
 
     function remove(index) {
@@ -3511,8 +3548,8 @@ angular.module('bulbsCmsApp')
     }
 
     function updateLabel(index) {
-      $scope.contributionLabels[index] = _.find($scope.roles, function(role) {
-        return role.id == $scope.contributions[index].role;
+      $scope.contributionLabels[index] = _.find($scope.roles, function (role) {
+        return role.id === $scope.contributions[index].role;
       }).name;
     }
 
@@ -3524,7 +3561,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('DatetimeSelectionModalCtrl', function ($scope, $modalInstance, TIMEZONE_NAME) {
+  .controller('DatetimeSelectionModalCtrl', function ($scope, $modalInstance, TIMEZONE_NAME, moment) {
 
     // ensure that we can't choose a time if date is invalid
     $scope.dateValid = false;
@@ -3570,19 +3607,18 @@ angular.module('bulbsCmsApp')
         var retMoment = moment($scope.tempDatetime);
         $modalInstance.close(retMoment);
       } else {
-        console.error('Attempting to choose invalid date.')
+        console.error('Attempting to choose invalid date.');
       }
     };
 
   });
+
 'use strict';
 
 angular.module('bulbsCmsApp')
-    .controller('DescriptionModalCtrl', function ($scope, $modalInstance, article) {
-
-        $scope.article = article;
-
-    });
+  .controller('DescriptionModalCtrl', function ($scope, $modalInstance, article) {
+    $scope.article = article;
+  });
 
 'use strict';
 
@@ -3594,7 +3630,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ImageCropModalCtrl', function ($scope, $timeout, $modalInstance, BettyCropper, Selection, DEFAULT_IMAGE_WIDTH, imageData, ratios) {
+  .controller('ImageCropModalCtrl', function ($scope, $timeout, $modalInstance, BettyCropper, Selection, DEFAULT_IMAGE_WIDTH, imageData, ratios, $) {
     $scope.selectedCrop = null;
     $scope.cropMode = false;
     $scope.ratios = ratios;
@@ -3604,7 +3640,7 @@ angular.module('bulbsCmsApp')
 
     if (!$scope.image) {
       $scope.image = null;
-      BettyCropper.get(imageData.id).then(function(success){
+      BettyCropper.get(imageData.id).then(function (success) {
         $scope.image = success.data;
       });
     }
@@ -3644,7 +3680,7 @@ angular.module('bulbsCmsApp')
       $scope.setThumbStyles();
     });
 
-    $scope.$watch('selectedCrop', function(crop) {
+    $scope.$watch('selectedCrop', function (crop) {
       if (!$scope.image) {
         return;
       }
@@ -3741,20 +3777,21 @@ angular.module('bulbsCmsApp')
         var selection = success.data[1];
         $scope.image.selections[ratio] = selection;
 
-        var nextRatioIndex = ($scope.ratios.indexOf(ratio) + 1) % $scope.ratios.length; 
+        var nextRatioIndex = ($scope.ratios.indexOf(ratio) + 1) % $scope.ratios.length;
 
         $scope.selectCrop($scope.ratios[nextRatioIndex]);
       });
     };
 
   });
+
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('LastmodifiedguardmodalCtrl', function ($scope, $route, $modalInstance, _, ContentApi, articleOnPage, articleOnServer) {
+  .controller('LastmodifiedguardmodalCtrl', function ($scope, $modalInstance, _, moment, ContentApi, articleOnPage, articleOnServer) {
     $scope.articleOnServer = articleOnServer;
 
-    ContentApi.all('log').getList({content: article.id}).then(function (log) {
+    ContentApi.all('log').getList({content: articleOnPage.id}).then(function (log) {
       var latest = _.max(log, function (entry) { return moment(entry.action_time); });
       var lastSavedById = latest.user;
       ContentApi.one('author', lastSavedById).get().then(function (data) {
@@ -3829,7 +3866,7 @@ angular.module('bulbsCmsApp')
           $scope.pzone = data[0];
         })
         .catch(function (data) {
-          alert('Content list does not exist.');
+          $window.alert('Content list does not exist.');
         });
     };
 
@@ -3986,7 +4023,6 @@ angular.module('bulbsCmsApp')
         .minute(pubTimeMoment.minute());
     });
 
-    var viewDateFormat = 'MM/DD/YYYY hh:mm a';
     var modelDateFormat = 'YYYY-MM-DDTHH:mmZ';
 
     $scope.setTimeShortcut = function (shortcut) {
@@ -4100,9 +4136,8 @@ angular.module('bulbsCmsApp')
   .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter, $interpolate, Login, routes, ContributionReportingService) {
     $window.document.title = routes.CMS_NAMESPACE + ' | Reporting'; // set title
 
-    $scope.report;
     $scope.reports = {
-      "Contributions": {
+      'Contributions': {
         service: ContributionReportingService,
         headings: [
           {'title': 'Date', 'expression': 'content.published'},
@@ -4124,83 +4159,78 @@ angular.module('bulbsCmsApp')
         ]
       }
     };
-    $scope.downloadURL;
-    $scope.items = []
+    $scope.items = [];
     $scope.headings = [];
-    $scope.orderBy;
     $scope.orderOptions = [];
-
-    $scope.start;
-    $scope.end;
 
     $scope.startOpen = false;
     $scope.endOpen = false;
 
-    $scope.openStart = function($event) {
+    $scope.openStart = function ($event) {
       $event.preventDefault();
       $event.stopPropagation();
       $scope.startOpen = true;
-    }
+    };
 
-    $scope.openEnd = function($event) {
+    $scope.openEnd = function ($event) {
       $event.preventDefault();
       $event.stopPropagation();
       $scope.endOpen = true;
-    }
+    };
 
-    $scope.orderingChange = function() {
-      loadReport($scope.report, $scope.start, $scope.end, $scope.orderBy)
-    }
+    $scope.orderingChange = function () {
+      loadReport($scope.report, $scope.start, $scope.end, $scope.orderBy);
+    };
 
-    $scope.$watch('report', function(report){
+    $scope.$watch('report', function (report) {
       if (!report) {
         return;
       }
       $scope.orderOptions = report.orderOptions;
       $scope.orderBy = report.orderOptions[0];
       $scope.headings = [];
-      report.headings.forEach(function(heading){
+      report.headings.forEach(function (heading) {
         $scope.headings.push(heading.title);
       });
 
-      loadReport(report, $scope.start, $scope.end, $scope.orderBy)
+      loadReport(report, $scope.start, $scope.end, $scope.orderBy);
     });
 
-    $scope.$watchCollection('[start, end]', function(params){
+    $scope.$watchCollection('[start, end]', function (params) {
       if (!$scope.report) {
         return;
       }
       var start = params[0];
       var end = params[1];
 
-      loadReport($scope.report, start, end, $scope.orderBy)
+      loadReport($scope.report, start, end, $scope.orderBy);
     });
 
 
     function loadReport(report, start, end, order) {
       $scope.items = [];
       var reportParams = {};
-      $scope.downloadURL = report.downloadURL + '?format=csv'
+      $scope.downloadURL = report.downloadURL + '?format=csv';
       if (end) {
         var endParam = $filter('date')(end, 'yyyy-MM-dd');
         reportParams['end'] = endParam;
-        $scope.downloadURL += ('&end=' + endParam)
+        $scope.downloadURL += ('&end=' + endParam);
       }
 
       if (start) {
         var startParam = $filter('date')(start, 'yyyy-MM-dd');
         reportParams['start'] = startParam;
-        $scope.downloadURL += ('&start=' + startParam)
+        $scope.downloadURL += ('&start=' + startParam);
       }
 
-      $scope.downloadURL += ('&ordering=' + order.key)
-      reportParams['ordering'] = order.key
+      $scope.downloadURL += ('&ordering=' + order.key);
+      reportParams['ordering'] = order.key;
 
-      report.service.getList(reportParams).then(function(data){
+      report.service.getList(reportParams).then(function (data) {
         $scope.items = [];
-        data.forEach(function(lineItem){
+        data.forEach(function (lineItem) {
           var item = [];
-          report.headings.forEach(function(heading) {
+          report.headings.forEach(function (heading) {
             var exp = $interpolate('{{item.' + heading.expression + '}}');
             var value = exp({item: lineItem});
             item.push(value);
@@ -4318,7 +4348,7 @@ angular.module('bulbsCmsApp')
   .value('ARTICLE_TEMPORARY_URL_DAYS_VALID', 7)
   .value('ARTICLE_TEMPORARY_URL_BASE', 'http://0.0.0.0:9069/unpublished/')
   .controller('TemporaryUrlModalCtrl', function ($scope, $routeParams, ContentApi, ARTICLE_TEMPORARY_URL_DAYS_VALID,
-                                                 ARTICLE_TEMPORARY_URL_BASE) {
+                                                 ARTICLE_TEMPORARY_URL_BASE, _, moment) {
 
     var content = ContentApi.one('content', $routeParams.id);
 
@@ -4345,7 +4375,7 @@ angular.module('bulbsCmsApp')
       });
 
       // remove expired tokens from list, done this way so objects remain restangularized
-      for(var i = expiredIndicies.length - 1; i >= 0; i--) {
+      for (var i = expiredIndicies.length - 1; i >= 0; i--) {
         $scope.tokens.splice(expiredIndicies[i], 1);
       }
     });
@@ -4385,7 +4415,7 @@ angular.module('bulbsCmsApp')
       // user is choosing a custom thumbnail
       BettyCropper.upload().then(function (success) {
 
-        $scope.article.thumbnail_override = success
+        $scope.article.thumbnail_override = success;
 
       }, function (error) {
         console.log(error);
@@ -4493,7 +4523,7 @@ angular.module('bulbsCmsApp')
           _.chain(versions)
             // loop through each version and add timestamp display property
             .each(function (version) {
-              version.timestamp_display = moment(version.timestamp).format('MMM Do YYYY, h:mma')
+              version.timestamp_display = moment(version.timestamp).format('MMM Do YYYY, h:mma');
             })
             // sort by timestamps desc, so most recent is on top
             .sortBy(function (version) {
@@ -4610,25 +4640,29 @@ angular.module('bulbsCmsApp')
     baseUrl: '/ads'
   });
 
-angular.module('bulbsCmsApp').factory('BadRequestInterceptor', function ($q, $injector, routes) {
+'use strict';
+
+angular.module('bulbsCmsApp')
+  .factory('BadRequestInterceptor', function ($q, $injector, routes) {
     return {
       responseError: function (rejection) {
-        $injector.invoke(function($modal){
+        $injector.invoke(function ($modal) {
           if (rejection.status === 400) {
             var detail = rejection.data || {'something': ['Something was wrong with your request.']};
             $modal.open({
               templateUrl: routes.PARTIALS_URL + 'modals/400-modal.html',
               controller: 'BadrequestmodalCtrl',
               resolve: {
-                detail: function(){ return detail; }
+                detail: function () { return detail; }
               }
             });
           }
         });
         return $q.reject(rejection);
       }
-    }
+    };
   });
+
 'use strict';
 
 angular.module('bulbsCmsApp').factory('BugReportInterceptor', function ($q, $window, PNotify) {
@@ -4745,18 +4779,18 @@ angular.module('bulbsCmsApp')
 
       return $userPromise.then(function (user) {
 
-        var displayName = user.first_name && user.last_name
-                            ? user.first_name + ' ' + user.last_name
-                              : (user.email || user.username);
+        var displayName = user.first_name && user.last_name ?
+                            user.first_name + ' ' + user.last_name :
+                              (user.email || user.username);
 
         return {
           id: user.id,
           displayName: displayName
-        }
+        };
 
       });
 
-    }
+    };
 
   });
 
@@ -4782,7 +4816,9 @@ angular.module('bulbsCmsApp')
     $authorize
       .catch(function (error) {
         // if there's an error message log it
-        error && console.error('Firebase login failed:', error);
+        if (error) {
+          console.error('Firebase login failed:', error);
+        }
       });
 
     // log current session in when their current user data is available
@@ -4877,8 +4913,8 @@ angular.module('bulbsCmsApp')
  */
 angular.module('bulbsCmsApp')
   .value('FIREBASE_ARTICLE_MAX_VERSIONS', 25)
-  .factory('FirebaseArticleFactory', function ($q, $firebase, $routeParams, FirebaseApi, CurrentUser,
-                                                FIREBASE_ARTICLE_MAX_VERSIONS) {
+  .factory('FirebaseArticleFactory', function ($q, $firebase, $routeParams, _, moment,
+                                               FirebaseApi, CurrentUser, FIREBASE_ARTICLE_MAX_VERSIONS) {
 
     /**
      * Create a new article.
@@ -4896,32 +4932,32 @@ angular.module('bulbsCmsApp')
       var addCurrentUserToActiveUsers = function () {
 
         var registeredDeferred = $q.defer(),
-              registeredPromise = registeredDeferred.promise;
+            registeredPromise = registeredDeferred.promise;
 
-          CurrentUser.$simplified()
-            .then(function (user) {
+        CurrentUser.$simplified()
+          .then(function (user) {
 
-              $activeUsers
-                .$add(user)
-                .then(function (userRef) {
+            $activeUsers
+              .$add(user)
+              .then(function (userRef) {
 
-                  // ensure user is removed on disconnect
-                  userRef.onDisconnect().remove();
+                // ensure user is removed on disconnect
+                userRef.onDisconnect().remove();
 
-                  // resolve registration
-                  registeredDeferred.resolve(user);
+                // resolve registration
+                registeredDeferred.resolve(user);
 
-                })
-                .catch(function (error) {
-                  registeredDeferred.reject(error);
-                });
+              })
+              .catch(function (error) {
+                registeredDeferred.reject(error);
+              });
 
-            })
-            .catch(function (error) {
-              registeredDeferred.reject(error);
-            });
+          })
+          .catch(function (error) {
+            registeredDeferred.reject(error);
+          });
 
-          return registeredPromise;
+        return registeredPromise;
 
       };
 
@@ -5049,13 +5085,14 @@ angular.module('bulbsCmsApp')
     };
 
   });
+
 'use strict';
 
 /**
  * Factory for creating new references to firebase.
  */
 angular.module('bulbsCmsApp')
-  .service('FirebaseRefFactory', function () {
+  .service('FirebaseRefFactory', function (Firebase) {
 
     return {
       newRef: function (url) {
@@ -5064,6 +5101,7 @@ angular.module('bulbsCmsApp')
     };
 
   });
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -5072,16 +5110,16 @@ angular.module('bulbsCmsApp')
       var template = $templateCache.get(templateUrl);
       if (template) {
         return $q.when(template);
-      }else {
+      } else {
         var deferred = $q.defer();
         $http.get(templateUrl, {cache: true}).success(function (html) {
           $templateCache.put(templateUrl, html);
           deferred.resolve(html);
         });
-        
+
         return deferred.promise;
       }
-    }
+    };
   });
 
 'use strict';
@@ -5381,7 +5419,7 @@ angular.module('bulbsCmsApp')
  *  }
  */
 angular.module('bulbsCmsApp')
-  .factory('VersionStorageApi', function ($q, FirebaseApi, FirebaseArticleFactory, LocalStorageBackup) {
+  .factory('VersionStorageApi', function ($q, FirebaseApi, FirebaseArticleFactory, LocalStorageBackup, _) {
 
     // set up a promise for checking if we can authorize with firebase
     var firebaseAvailableDefer = $q.defer(),
@@ -5405,10 +5443,10 @@ angular.module('bulbsCmsApp')
      */
     var _omitter = _.memoize(
       function (value, key) {
-        return _.isFunction(value)
-                || _.find(key, function (c) {
+        return _.isFunction(value) ||
+                  _.find(key, function (c) {
                     return c === '.' || c === '#' || c === '$' || c === '/' || c === '[' || c === ']';
-                   });
+                  });
       },
       function (value, key) {
         return [key, value];
@@ -5589,6 +5627,7 @@ angular.module('bulbsCmsApp')
     };
 
   });
+
 'use strict';
 
 angular.module('bulbsCmsApp')
