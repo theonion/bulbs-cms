@@ -1,12 +1,12 @@
 'use strict';
 (function () {
-  angular.module('BettyCropper', ['restangular'])
+  angular.module('BettyCropper', ['restangular', 'jquery'])
     .value('DEFAULT_IMAGE_WIDTH', 1200)
     .factory('Selection', SelectionFactory)
     .factory('BettyImage', BettyImageFactory)
     .service('BettyCropper', BettyCropperService);
 
-  function BettyCropperService($http, $interpolate, $q, IMAGE_SERVER_URL, BC_API_KEY, BettyImage) {
+  function BettyCropperService($http, $interpolate, $q, IMAGE_SERVER_URL, BC_API_KEY, BettyImage, $) {
       var fileInputId = '#bulbs-cms-hidden-image-file-input';
       var inputTemplate = '<input id="bulbs-cms-hidden-image-file-input" type="file" accept="image/*" style="position: absolute; left:-99999px;" name="image" />';
 
@@ -22,7 +22,7 @@
         angular.element(fileInputId).remove();
         var fileInput = angular.element(inputTemplate);
         angular.element('body').append(fileInput);
-        
+
         fileInput.click();
 
         fileInput.unbind('change');
@@ -126,9 +126,9 @@
           data: selections
         });
       }
-  }
+    }
 
-  function BettyImageFactory($interpolate, $http, IMAGE_SERVER_URL, BC_API_KEY, DEFAULT_IMAGE_WIDTH, Selection) {
+  function BettyImageFactory($interpolate, $http, IMAGE_SERVER_URL, BC_API_KEY, DEFAULT_IMAGE_WIDTH, Selection, $) {
     function BettyImage(data) {
       this.id = data.id;
       this.name = data.name;
@@ -140,13 +140,13 @@
       }
     }
 
-    BettyImage.prototype.scaleToFit = function(width, height) {
+    BettyImage.prototype.scaleToFit = function (width, height) {
       var scale;
       if (width && height) {
         var fitRatio = width / height;
         var thisRatio = this.width / this.height;
         if (fitRatio > thisRatio) {
-          scale = height/ this.height;
+          scale = height / this.height;
         } else {
           scale = width / this.width;
         }
@@ -155,7 +155,7 @@
           scale = width / this.width;
         }
         if (height) {
-          scale = height/ this.height;
+          scale = height / this.height;
         }
       }
       var scaled = {
@@ -166,7 +166,7 @@
       return scaled;
     };
 
-    BettyImage.prototype.getStyles = function(width, height, ratio) {
+    BettyImage.prototype.getStyles = function (width, height, ratio) {
       if (height === 0) {
         height = null;
       }
@@ -191,7 +191,7 @@
       );
       var idStr = this.id.toString();
       var segmentedId = '';
-      for (var i=0; i < idStr.length; i++) {
+      for (var i = 0; i < idStr.length; i++) {
         if (i % 4 === 0 && i !== 0) {
           segmentedId += '/';
         }
@@ -239,11 +239,11 @@
 
   function SelectionFactory() {
     function Selection(data) {
-        this.x0 = data.x0;
-        this.x1 = data.x1;
-        this.y0 = data.y0;
-        this.y1 = data.y1;
-        this.source = data.source;
+      this.x0 = data.x0;
+      this.x1 = data.x1;
+      this.y0 = data.y0;
+      this.y1 = data.y1;
+      this.source = data.source;
     }
 
     Selection.prototype.width = function () {
@@ -254,7 +254,7 @@
       return this.y1 - this.y0;
     };
 
-    Selection.prototype.scaleBy = function(scale) {
+    Selection.prototype.scaleBy = function (scale) {
       var scaledToFit = new Selection({
         x0: Math.round(this.x0 * scale),
         x1: Math.round(this.x1 * scale),
@@ -271,7 +271,7 @@
         var fitRatio = width / height;
         var thisRatio = this.width() / this.height();
         if (fitRatio > thisRatio) {
-          scale = height/ this.height();
+          scale = height / this.height();
         } else {
           scale = width / this.width();
         }
@@ -280,7 +280,7 @@
           scale = width / this.width();
         }
         if (height) {
-          scale = height/ this.height();
+          scale = height / this.height();
         }
       }
       return this.scaleBy(scale);

@@ -34,28 +34,6 @@ module.exports = function (grunt) {
 
     // Watches files for changes and runs tasks based on the changed files
     watch: {
-      jsHint: {
-        files: ['<%= yeoman.app %>/scripts/{,*/}*.js', 'test/spec/{,*/}*.js'],
-        tasks: ['newer:jshint:all']
-      },
-      jsHintReload: {
-        files: ['<%= yeoman.app %>/scripts/{,*/}*.js', 'test/spec/{,*/}*.js'],
-        tasks: ['newer:jshint:all'],
-        options: {
-          livereload: true
-        }
-      },
-      jsTest: {
-        files: ['<%= yeoman.app %>/scripts/{,*/}*.js', 'test/spec/{,*/}*.js'],
-        tasks: ['test']
-      },
-      styles: {
-        files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
-        tasks: ['newer:copy:styles', 'autoprefixer']
-      },
-      gruntfile: {
-        files: ['Gruntfile.js']
-      },
       livereload: {
         options: {
           livereload: '<%= connect.options.livereload %>'
@@ -63,10 +41,15 @@ module.exports = function (grunt) {
         files: [
           '<%= yeoman.app %>/styles/{,*/}*.less',
           '<%= yeoman.app %>/{,*/}*.html',
-          '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+          '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
+          '<%= yeoman.app %>/scripts/{,*/}*.js',
+          'test/spec/{,*/}*.js',
+          'Gruntfile.js'
         ],
         tasks: [
-          'less'
+          'newer:less',
+          'newer:karma:ci',
+          'newer:jshint:all'
         ]
       }
     },
@@ -86,7 +69,7 @@ module.exports = function (grunt) {
             '.tmp',
             '<%= yeoman.app %>'
           ],
-          middleware: function (connect, options) {
+          middleware: function (connect) {
             return [
               modRewrite([
                 '!\\.eot|\\.woff|\\.ttf|\\.svg|\\.html|\\.js|\\.css|\\.swf|\\.jp(e?)g|\\.png|\\.gif$ /index.html'
@@ -121,7 +104,7 @@ module.exports = function (grunt) {
         reporter: require('jshint-stylish')
       },
       all: [
-        // 'Gruntfile.js',
+        'Gruntfile.js',
         '<%= yeoman.app %>/scripts/{,*/}*.js'
       ],
       test: {
@@ -172,12 +155,12 @@ module.exports = function (grunt) {
     },
 
     // Automatically inject Bower components into the app
-    bowerInstall: {
+    wiredep: {
       app: {
         src: ['<%= yeoman.app %>/index.html'],
         ignorePath: '<%= yeoman.app %>/',
         devDependencies: true
-      },
+      }
     },
 
     less: {
@@ -214,11 +197,11 @@ module.exports = function (grunt) {
       options: {
         dest: '<%= yeoman.dist %>',
         flow: {
-            steps: {
-              'js': ['concat'],
-              'css': ['concat', 'cssmin'],
-            },
-            post: {}
+          steps: {
+            'js': ['concat'],
+            'css': ['concat', 'cssmin'],
+          },
+          post: {}
         }
       }
     },
@@ -330,25 +313,25 @@ module.exports = function (grunt) {
       jcropGif: {
         expand: true,
         cwd: '<%= yeoman.app %>/bower_components/jcrop/css',
-        dest:'<%= yeoman.dist %>/styles/',
+        dest: '<%= yeoman.dist %>/styles/',
         src: 'Jcrop.gif'
       },
       fontawesome: {
         expand: true,
         cwd: '<%= yeoman.app %>/bower_components/font-awesome/fonts',
-        dest:'<%= yeoman.dist %>/fonts/',
+        dest: '<%= yeoman.dist %>/fonts/',
         src: ['fontawesome-webfont.*']
       },
       fontawesomeCSS: {  // This is a hack for now. FontAwesome REALLY doesn't like getting minified, I guess.
         expand: true,
         cwd: '<%= yeoman.app %>/bower_components/font-awesome/css',
-        dest:'<%= yeoman.dist %>/styles/',
+        dest: '<%= yeoman.dist %>/styles/',
         src: ['font-awesome.min.css']
       },
       zeroclipboard: {
         expand: true,
         cwd: '<%= yeoman.app %>/bower_components/zeroclipboard/dist',
-        dest:'<%= yeoman.dist %>/swf/',
+        dest: '<%= yeoman.dist %>/swf/',
         src: ['ZeroClipboard.swf']
       }
     },
@@ -380,9 +363,9 @@ module.exports = function (grunt) {
     injector: {
       options: {
         addRootSlash: false,
-        transform: function(filepath){
+        transform: function (filepath) {
           filepath = filepath.replace('app/', '');
-          return '<script src="' + filepath + '"></script>'
+          return '<script src="' + filepath + '"></script>';
         }
       },
       local_dependencies: {
@@ -471,7 +454,7 @@ module.exports = function (grunt) {
 
     protractor: {
       options: {
-        configFile: "node_modules/protractor/referenceConf.js", // Default config file
+        configFile: 'node_modules/protractor/referenceConf.js', // Default config file
         keepAlive: true, // If false, the grunt process stops when the test fails.
         noColor: false, // If true, protractor will not use colors in its output.
         args: {
@@ -480,7 +463,7 @@ module.exports = function (grunt) {
       },
       'bulbs-cms': {
         options: {
-          configFile: "protractor.conf.js", // Target-specific config file
+          configFile: 'protractor.conf.js', // Target-specific config file
           args: {} // Target-specific arguments
         }
       },
@@ -505,21 +488,30 @@ module.exports = function (grunt) {
   var shell = require('shelljs');
 
   grunt.registerTask('serve', function (target) {
+
     if (target === 'dist') {
+      // use built files in dist instead of raw files
       return grunt.task.run(['build', 'connect:dist:keepalive']);
     }
 
+    // run task list
     grunt.task.run([
       'clean:server',
-      'bowerInstall',
+      'wiredep',
       'concurrent:server',
       'autoprefixer',
       'less',
       'injector:local_dependencies',
+      'karma:ci',
+      'jshint:all',
       'connect:livereload',
       'watch:livereload'
     ]);
   });
+
+  grunt.registerTask('lint', [
+    'jshint:all'
+  ]);
 
   grunt.registerTask('test', [
     'travis',
@@ -538,7 +530,7 @@ module.exports = function (grunt) {
     'clean:dist',
     'shell:bower_install',
     'shell:bower_update',
-    'bowerInstall',
+    'wiredep',
     'ngtemplates',
     'injector:local_dependencies',
     'useminPrepare',
@@ -562,7 +554,7 @@ module.exports = function (grunt) {
                             'git commit -am \'new build\'',
       {silent: true});
     grunt.log.ok(stdout.output);
-  })
+  });
 
   grunt.registerTask('default', [
     'newer:jshint',
@@ -570,10 +562,10 @@ module.exports = function (grunt) {
     'build'
   ]);
 
-  grunt.registerTask('publish', function(release_args) {
+  grunt.registerTask('publish', function (release_args) {
     var branch = shell.exec(
       'git symbolic-ref --short HEAD',
-      { silent:true }
+      { silent: true }
     ).output.trim();
 
     if (branch === 'release') {

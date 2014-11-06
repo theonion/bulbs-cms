@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('DatetimeSelectionModalCtrl', function ($scope, $modalInstance, TIMEZONE_NAME) {
+  .controller('DatetimeSelectionModalCtrl', function ($scope, $modalInstance, TIMEZONE_NAME, moment) {
 
     // ensure that we can't choose a time if date is invalid
     $scope.dateValid = false;
@@ -47,7 +47,7 @@ angular.module('bulbsCmsApp')
         var retMoment = moment($scope.tempDatetime);
         $modalInstance.close(retMoment);
       } else {
-        console.error('Attempting to choose invalid date.')
+        console.error('Attempting to choose invalid date.');
       }
     };
 

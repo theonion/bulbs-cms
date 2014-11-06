@@ -20,7 +20,9 @@ angular.module('bulbsCmsApp')
     $authorize
       .catch(function (error) {
         // if there's an error message log it
-        error && console.error('Firebase login failed:', error);
+        if (error) {
+          console.error('Firebase login failed:', error);
+        }
       });
 
     // log current session in when their current user data is available

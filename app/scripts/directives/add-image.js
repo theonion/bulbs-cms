@@ -31,7 +31,7 @@ angular.module('bulbsCmsApp')
             },
             onError: function (data) {
               scope.$apply(function () {
-                alert('Error: ', data);
+                $window.alert('Error: ', data);
               });
             },
             onProgress: function (data) {

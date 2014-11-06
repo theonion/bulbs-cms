@@ -2,14 +2,15 @@
 
 // ****** External Libraries ****** \\
 
-angular.module('underscore', []).value('_', window._);
-angular.module('NProgress', []).value('NProgress', window.NProgress);
-angular.module('URLify', []).value('URLify', window.URLify);
-angular.module('jquery', []).value('$', window.$);
-angular.module('moment', []).value('moment', window.moment);
-angular.module('PNotify', []).value('PNotify', window.PNotify);
-angular.module('keypress', []).value('keypress', window.keypress);
-angular.module('Raven', []).value('Raven', window.Raven);
+angular.module('underscore', []).constant('_', window._);
+angular.module('NProgress', []).constant('NProgress', window.NProgress);
+angular.module('URLify', []).constant('URLify', window.URLify);
+angular.module('jquery', []).constant('$', window.$);
+angular.module('moment', []).constant('moment', window.moment);
+angular.module('PNotify', []).constant('PNotify', window.PNotify);
+angular.module('keypress', []).constant('keypress', window.keypress);
+angular.module('Raven', []).constant('Raven', window.Raven);
+angular.module('OnionEditor', []).constant('OnionEditor', window.OnionEditor);
 
 // ****** App Config ****** \\
 
@@ -33,7 +34,8 @@ angular.module('bulbsCmsApp', [
   'firebase',
   'ipCookie',
   'bulbs.api',
-  'ngClipboard'
+  'ngClipboard',
+  'OnionEditor'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);

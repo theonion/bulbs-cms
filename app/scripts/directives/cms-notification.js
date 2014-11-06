@@ -9,5 +9,5 @@ angular.module('bulbsCmsApp')
         notification: '='
       },
       controller: 'CmsNotificationCtrl'
-    }
+    };
   });

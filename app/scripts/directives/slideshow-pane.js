@@ -13,13 +13,17 @@ angular.module('bulbsCmsApp')
       link: function (scope, element, attrs) {
         var $element = $(element);
 
-        if (attrs.caption === 'false') { scope.hideCaption = true; }
+        if (attrs.caption === 'false') {
+          scope.hideCaption = true;
+        }
+
         scope.format = attrs.format || 'jpg';
         scope.crop = attrs.crop || '16x9';
 
         scope.removeImage = function (index) {
           scope.article.slides.splice(index, 1);
-        },
+        };
+
         scope.editImage = function (index) {
           $window.openImageDrawer(
             scope.article.slides[index].id,
@@ -49,8 +53,6 @@ angular.module('bulbsCmsApp')
             }
           );
         };
-
       }
-
     };
   });

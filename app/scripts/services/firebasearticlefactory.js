@@ -5,8 +5,8 @@
  */
 angular.module('bulbsCmsApp')
   .value('FIREBASE_ARTICLE_MAX_VERSIONS', 25)
-  .factory('FirebaseArticleFactory', function ($q, $firebase, $routeParams, FirebaseApi, CurrentUser,
-                                                FIREBASE_ARTICLE_MAX_VERSIONS) {
+  .factory('FirebaseArticleFactory', function ($q, $firebase, $routeParams, _, moment,
+                                               FirebaseApi, CurrentUser, FIREBASE_ARTICLE_MAX_VERSIONS) {
 
     /**
      * Create a new article.
@@ -24,32 +24,32 @@ angular.module('bulbsCmsApp')
       var addCurrentUserToActiveUsers = function () {
 
         var registeredDeferred = $q.defer(),
-              registeredPromise = registeredDeferred.promise;
+            registeredPromise = registeredDeferred.promise;
 
-          CurrentUser.$simplified()
-            .then(function (user) {
+        CurrentUser.$simplified()
+          .then(function (user) {
 
-              $activeUsers
-                .$add(user)
-                .then(function (userRef) {
+            $activeUsers
+              .$add(user)
+              .then(function (userRef) {
 
-                  // ensure user is removed on disconnect
-                  userRef.onDisconnect().remove();
+                // ensure user is removed on disconnect
+                userRef.onDisconnect().remove();
 
-                  // resolve registration
-                  registeredDeferred.resolve(user);
+                // resolve registration
+                registeredDeferred.resolve(user);
 
-                })
-                .catch(function (error) {
-                  registeredDeferred.reject(error);
-                });
+              })
+              .catch(function (error) {
+                registeredDeferred.reject(error);
+              });
 
-            })
-            .catch(function (error) {
-              registeredDeferred.reject(error);
-            });
+          })
+          .catch(function (error) {
+            registeredDeferred.reject(error);
+          });
 
-          return registeredPromise;
+        return registeredPromise;
 
       };
 

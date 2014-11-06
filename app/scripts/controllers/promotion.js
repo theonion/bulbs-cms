@@ -32,7 +32,7 @@ angular.module('bulbsCmsApp')
           $scope.pzone = data[0];
         })
         .catch(function (data) {
-          alert('Content list does not exist.');
+          $window.alert('Content list does not exist.');
         });
     };
 

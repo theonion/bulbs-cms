@@ -1,7 +1,9 @@
+'use strict';
+
 describe('Author service', function () {
-  
+
   var AuthorService, $httpBackend;
-  beforeEach(function() {
+  beforeEach(function () {
 
     module('bulbs.api');
     module('bulbs.api.mock');
@@ -13,7 +15,7 @@ describe('Author service', function () {
   });
 
   it('should get an author detail', function () {
-    AuthorService.get(2).then(function(author){
+    AuthorService.get(2).then(function (author) {
       expect(author.id).toBe(2);
       expect(author.getFullName()).toBe('Chris Sinchok');
     });
@@ -21,14 +23,14 @@ describe('Author service', function () {
   });
 
   it('should be able to search authors', function () {
-    AuthorService.getList({'q': 'Chris'}).then(function(authors){
+    AuthorService.getList({'q': 'Chris'}).then(function (authors) {
       expect(authors.length).toBe(5);
       expect(authors[0].getFullName()).toBe('T. Herman Zweibel');
     });
     $httpBackend.flush();
   });
 
-  afterEach(function() {
+  afterEach(function () {
     $httpBackend.verifyNoOutstandingExpectation();
     $httpBackend.verifyNoOutstandingRequest();
   });

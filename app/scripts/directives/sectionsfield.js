@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('sectionsField', function (routes, _, IfExistsElse, ContentApi, Raven) {
+  .directive('sectionsField', function (routes, _, IfExistsElse, ContentApi, Raven, $) {
     return {
       templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
@@ -16,7 +16,7 @@ angular.module('bulbsCmsApp')
         };
 
         scope.$watch('article.tags', function () {
-          scope.objects = _.where(article.tags, {type: 'core_section'});
+          scope.objects = _.where(scope.article.tags, {type: 'core_section'});
         }, true);
 
         scope.add = function (o, input, freeForm) {

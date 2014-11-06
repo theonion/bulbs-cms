@@ -44,9 +44,9 @@ body { background-color: #F1F1F1; padding-top: 55px; }
 
 .pagination a { cursor: pointer }
 
-.autocomplete.dropdown-menu { position: absolute; background-color: #fff; border: 1px solid #CCCCCC; border-top: 0; z-index: 1000;
+.autocomplete.dropdown { position: absolute; background-color: #fff; border: 1px solid #CCCCCC; border-top: 0; z-index: 1000;
 
-    .entry.selected { background-color: #f5f5f5; color: #fff; }
+    .entry.selected { background-color: #4A88CE; color: #fff; }
 
     .entry { cursor: pointer;
 
@@ -108,7 +108,9 @@ td.author { max-width: 150px; }
 
     .filter-input:focus { outline: 0; }
 
-    .dropdown-menu { top: 43px;
+    .dropdown-menu { top: 44px; position: absolute; background-color: #fff; border: 1px solid #CCCCCC; border-top: 0; z-index: 1000;
+
+       .selected { background-color: #f5f5f5; color: #fff; }
 
         li a { cursor: pointer; }
 
@@ -484,4 +486,10 @@ nav.navbar {
 
   }
 
+}
+
+.bulbs-autocomplete {
+  .feature_type-input input, .feature_type-display {
+    margin-bottom: 10px;
+  }
 }

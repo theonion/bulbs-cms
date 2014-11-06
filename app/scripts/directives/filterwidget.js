@@ -49,7 +49,7 @@ angular.module('bulbsCmsApp')
             if ($element.find('.selected').length > 0) {
               // To trigger the click we need to first break out of the
               // current $apply() cycle. Hence the $timeout()
-              $timeout(function() {
+              $timeout(function () {
                 angular.element('.selected > a').triggerHandler('click');
               }, 0);
             } else {
@@ -114,7 +114,9 @@ angular.module('bulbsCmsApp')
         scope.deleteFilter = function (key) {
           var filterObject = $location.search();
           var toDelete = scope.filterObjects[key];
-          if (typeof(filterObject[toDelete.type]) === 'string') { filterObject[type] = [filterObject[type]]; }
+          if (typeof(filterObject[toDelete.type]) === 'string') {
+            filterObject[toDelete.type] = [filterObject[toDelete.type]];
+          }
           var toSplice;
           for (var i in filterObject[toDelete.type]) {
             if (filterObject[toDelete.type][i] === toDelete.query) {

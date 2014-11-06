@@ -1,7 +1,9 @@
+'use strict';
+
 describe('ContentService', function () {
-  
+
   var ContentService, $httpBackend;
-  beforeEach(function() {
+  beforeEach(function () {
 
     module('bulbs.api');
     module('bulbs.api.mock');
@@ -13,22 +15,22 @@ describe('ContentService', function () {
   });
 
   it('should get a content detail', function () {
-    ContentService.one(6).get().then(function(content){
+    ContentService.one(6).get().then(function (content) {
       expect(content.id).toBe(6);
     });
     $httpBackend.flush();
   });
 
   it('should return the contributions for content', function () {
-    ContentService.one(6).all('contributions').getList().then(function(contributions){
+    ContentService.one(6).all('contributions').getList().then(function (contributions) {
       expect(contributions.length).toBe(2);
       expect(contributions[0].contributor.getFullName()).toBe('Chris Sinchok');
     });
     $httpBackend.flush();
   });
 
-  it('should update the contributions for content', function() {
-    data = [{
+  it('should update the contributions for content', function () {
+    var data = {
       id: 7,
       content: 1234,
       contributor: {
@@ -41,17 +43,17 @@ describe('ContentService', function () {
         id: 3,
         name: 'Programmer'
       }
-    }];
-    // console.log(ContentService.one(6).all('contributions').post(data));
-    ContentService.one(6).all('contributions').post(data).then(function(contributions){
+    };
+
+    ContentService.one(6).all('contributions').post([data]).then(function (contributions) {
       expect(contributions.length).toBe(1);
-      expect(contributions).toEqual(data);
+      expect(contributions[0]).toEqual(data);
     });
     $httpBackend.flush();
   });
 
-  it('should update the contributions for content', function() {
-    data = [{
+  it('should update the contributions for content', function () {
+    var data = {
       id: 7,
       content: 1234,
       contributor: {
@@ -64,17 +66,16 @@ describe('ContentService', function () {
         id: 3,
         name: 'Programmer'
       }
-    }];
-    // console.log(ContentService.one(6).all('contributions').getList());
-    // console.log(ContentService.one(6).all('contributions').post(data));
-    ContentService.one(6).all('contributions').save(data).then(function(contributions){
+    };
+
+    ContentService.one(6).all('contributions').save([data]).then(function (contributions) {
       expect(contributions.length).toBe(1);
-      expect(contributions).toEqual(data);
+      expect(contributions[0].id).toEqual(data.id);
     });
     $httpBackend.flush();
   });
 
-  afterEach(function() {
+  afterEach(function () {
     $httpBackend.verifyNoOutstandingExpectation();
     $httpBackend.verifyNoOutstandingRequest();
   });

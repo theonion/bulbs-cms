@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('CmsNotificationsCtrl', function ($q, $window, $scope, routes, CmsNotificationsApi, CurrentUser) {
+  .controller('CmsNotificationsCtrl', function ($q, $window, $scope, routes, CmsNotificationsApi, CurrentUser, _, moment) {
 
     // set title
     $window.document.title = routes.CMS_NAMESPACE + ' | Notifications';
@@ -78,7 +78,7 @@ angular.module('bulbsCmsApp')
             });
         }
       } else {
-        saveDefer.reject('Insufficient permissions.')
+        saveDefer.reject('Insufficient permissions.');
       }
 
       return savePromise;
@@ -100,26 +100,29 @@ angular.module('bulbsCmsApp')
             deleteDefer.resolve();
           };
 
-      if ($scope.userIsSuperuser)
-      // find notification in list
-      var i = $scope.notifications.indexOf(notification);
-      if (i > -1) {
-        // notification in list, check if it is a restangular object and has a remove function
-        if (_.isFunction(notification.remove)) {
-          // has remove, call it and resolve promise
-          notification.remove()
-            .then(function () {
-              removeFromList(i)
-            })
-            .catch(function (error) {
-              deleteDefer.reject(error);
-            });
+      if ($scope.userIsSuperuser) {
+        // find notification in list
+        var i = $scope.notifications.indexOf(notification);
+        if (i > -1) {
+          // notification in list, check if it is a restangular object and has a remove function
+          if (_.isFunction(notification.remove)) {
+            // has remove, call it and resolve promise
+            notification.remove()
+              .then(function () {
+                removeFromList(i);
+              })
+              .catch(function (error) {
+                deleteDefer.reject(error);
+              });
+          } else {
+            // does not have remove, this is a previously unsaved notification, just remove it from list
+            removeFromList(i);
+          }
         } else {
-          // does not have remove, this is a previously unsaved notification, just remove it from list
-          removeFromList(i);
+          deleteDefer.reject('Cannot find notification in notification list. Unable to delete.');
         }
       } else {
-        deleteDefer.reject('Cannot find notification in notification list. Unable to delete.');
+        deleteDefer.reject('You do not have sufficient permissions to delete a notification.');
       }
 
       return deletePromise;

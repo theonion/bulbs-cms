@@ -11,17 +11,17 @@ angular.module('bulbsCmsApp')
     return {
       restrict: 'A',
       scope: true,
-      link: function(scope, element, attrs){
+      link: function (scope, element, attrs) {
         var templateUrl = routes.PARTIALS_URL + attrs.template;
         var $element = $(element);
-        
-        scope.$evalAsync(function(){
-          scope.$watch(function(){
+
+        scope.$evalAsync(function () {
+          scope.$watch(function () {
             return $element.is(':visible');
-          }, function(visible){
-            if(visible && !scope.loaded){
+          }, function (visible) {
+            if (visible && !scope.loaded) {
               scope.loaded = true;
-              Gettemplate.get(templateUrl).then(function(html){
+              Gettemplate.get(templateUrl).then(function (html) {
                 var template = angular.element(html);
                 var compiledEl = $compile(template)(scope);
                 element.html(compiledEl);
@@ -30,7 +30,6 @@ angular.module('bulbsCmsApp')
             }
           });
         });
-        
       }
     };
   });

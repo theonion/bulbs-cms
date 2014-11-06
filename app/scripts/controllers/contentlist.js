@@ -61,8 +61,8 @@ angular.module('bulbsCmsApp')
             $('#confirm-trash-modal').modal('hide');
           }, 1500);
       };
-      
-    $('body').on('shown.bs.collapse', '.panel-collapse', function(e){
+
+    $('body').on('shown.bs.collapse', '.panel-collapse', function (e) {
       $scope.$digest();
     });
 

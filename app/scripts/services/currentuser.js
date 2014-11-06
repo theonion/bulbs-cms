@@ -30,17 +30,17 @@ angular.module('bulbsCmsApp')
 
       return $userPromise.then(function (user) {
 
-        var displayName = user.first_name && user.last_name
-                            ? user.first_name + ' ' + user.last_name
-                              : (user.email || user.username);
+        var displayName = user.first_name && user.last_name ?
+                            user.first_name + ' ' + user.last_name :
+                              (user.email || user.username);
 
         return {
           id: user.id,
           displayName: displayName
-        }
+        };
 
       });
 
-    }
+    };
 
   });

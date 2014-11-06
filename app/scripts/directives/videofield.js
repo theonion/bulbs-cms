@@ -28,7 +28,7 @@ angular.module('bulbsCmsApp')
         };
 
         scope.thumbnailModal = function () {
-          Zencoder.openVideoThumbnailModal(article.video).result.then(
+          Zencoder.openVideoThumbnailModal(scope.article.video).result.then(
             function (resolve) {
               console.log('thumbnail modal resolve');
               console.log(resolve);

@@ -12,7 +12,7 @@
  *  }
  */
 angular.module('bulbsCmsApp')
-  .factory('VersionStorageApi', function ($q, FirebaseApi, FirebaseArticleFactory, LocalStorageBackup) {
+  .factory('VersionStorageApi', function ($q, FirebaseApi, FirebaseArticleFactory, LocalStorageBackup, _) {
 
     // set up a promise for checking if we can authorize with firebase
     var firebaseAvailableDefer = $q.defer(),
@@ -36,10 +36,10 @@ angular.module('bulbsCmsApp')
      */
     var _omitter = _.memoize(
       function (value, key) {
-        return _.isFunction(value)
-                || _.find(key, function (c) {
+        return _.isFunction(value) ||
+                  _.find(key, function (c) {
                     return c === '.' || c === '#' || c === '$' || c === '/' || c === '[' || c === ']';
-                   });
+                  });
       },
       function (value, key) {
         return [key, value];
