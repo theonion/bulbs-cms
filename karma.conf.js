@@ -2,16 +2,18 @@
 // http://karma-runner.github.io/0.10/config/configuration-file.html
 
 module.exports = function(config) {
+  'use strict';
 
+  // sauce labs custom launchers (https://saucelabs.com/platforms)
   var customLaunchers = {
     'SL_Chrome': {
       base: 'SauceLabs',
-      browserName: 'chrome'
+      browserName: 'chrome',
+      version: '38'
     },
     'SL_Firefox': {
       base: 'SauceLabs',
-      browserName: 'firefox',
-      version: '27'
+      browserName: 'firefox'
     },
     // 'SL_Safari': {
     //   base: 'SauceLabs',
@@ -55,7 +57,7 @@ module.exports = function(config) {
       'app/bower_components/Keypress/keypress.js',
       'app/bower_components/zeroclipboard/dist/ZeroClipboard.min.js',
       'app/bower_components/ng-clip/dest/ng-clip.min.js',
-      
+
       'app/mocks/app.js',
       'app/mocks/api.js',
       'app/mocks/betty.js',
@@ -85,21 +87,12 @@ module.exports = function(config) {
     // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
     logLevel: config.LOG_INFO,
 
-
-    // Start these browsers, currently available:
-    // - Chrome
-    // - ChromeCanary
-    // - Firefox
-    // - Opera
-    // - Safari (only Mac)
-    // - PhantomJS
-    // - IE (only Windows)
-
     preprocessors: {
       'app/views/**/*.html': 'ng-html2js',
       'app/scripts/**/*.js': 'coverage'
     },
 
+    // set up reporters
     reporters: ['progress', 'coverage'],
 
     ngHtml2JsPreprocessor: {
@@ -111,6 +104,7 @@ module.exports = function(config) {
       moduleName: 'jsTemplates'
     },
 
+    // set up lcov coverage reporter
     coverageReporter: {
       type: 'lcov',
       dir: 'coverage/'
@@ -119,8 +113,11 @@ module.exports = function(config) {
   });
 
   if (process.env.TRAVIS) {
+
+    // we're using Travis CI to do karma, configure as such
     var buildLabel = 'TRAVIS #' + process.env.TRAVIS_BUILD_NUMBER + ' (' + process.env.TRAVIS_BUILD_ID + ')';
 
+    // set up saucelabs stuff
     config.captureTimeout = 0; // rely on SL timeout
     config.singleRun = true;
     config.autoWatch = false;
@@ -134,7 +131,9 @@ module.exports = function(config) {
     config.browsers = Object.keys(customLaunchers);
     config.singleRun = true;
     config.reporters.push('saucelabs');
+
   } else {
+    // this is local, just use Chrome
     config.singleRun = false;
     config.autoWatch = true;
     config.browsers = ['Chrome'];
