@@ -1,6 +1,5 @@
 node_modules
-dist/bower_components
-dist/.htaccess
+dist
 .tmp
 .sass-cache
 app/bower_components
