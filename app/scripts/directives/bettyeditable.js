@@ -57,7 +57,7 @@ angular.module('bulbsCmsApp')
 
         scope.setStyles = function () {
           if (scope.bettyImage) {
-            scope.imageStyling = scope.bettyImage.getStyles(element.parent().width(), element.parent().height(), scope.ratio);
+            scope.imageStyling = scope.bettyImage.getStyles(element.parent().width(), null, scope.ratio);
           } else {
             var ratioWidth = parseInt(scope.ratio.split('x')[0], 10);
             var ratioHeight = parseInt(scope.ratio.split('x')[1], 10);
