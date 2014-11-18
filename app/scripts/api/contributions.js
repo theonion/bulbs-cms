@@ -7,6 +7,12 @@ angular.module('bulbs.api')
       RestangularConfigurer.setRequestSuffix('/');
     }).service('role');
   })
+  .factory('ContentComplianceService', function (Restangular) {
+    return Restangular.withConfig(function (RestangularConfigurer) {
+      RestangularConfigurer.setBaseUrl('/cms/api/v1/contributions/');
+      RestangularConfigurer.setRequestSuffix('/');
+    }).service('contentcompliance');
+  })
   .factory('ContributionReportingService', function (Restangular, moment) {
 
     Restangular.extendModel('reporting', function (obj) {
