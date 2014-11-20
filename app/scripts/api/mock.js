@@ -148,7 +148,7 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
   ]);
 
   // ContentCompliance Service
-  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/contentcompliance/?')).respond([
+  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/contentreporting/?')).respond([
     {
       id: 1,
       title: 'Just an Article',

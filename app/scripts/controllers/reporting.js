@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter, $interpolate, Login, routes, ContributionReportingService, ContentComplianceService) {
+  .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter, $interpolate, Login, routes, ContributionReportingService, ContentReportingService) {
     $window.document.title = routes.CMS_NAMESPACE + ' | Reporting'; // set title
 
     $scope.reports = {
@@ -26,15 +26,15 @@ angular.module('bulbsCmsApp')
           },
         ]
       },
-      'Compliance': {
-        service: ContentComplianceService,
+      'Content': {
+        service: ContentReportingService,
         headings: [
           {'title': 'Date', 'expression': 'published'},
           {'title': 'Headline', 'expression': 'title'},
           {'title': 'URL', 'expression': 'url'},
         ],
         orderOptions: [],
-        downloadURL: '/cms/api/v1/contributions/contentcompliance/',
+        downloadURL: '/cms/api/v1/contributions/contentreporting/',
       }
     };
     $scope.items = [];
