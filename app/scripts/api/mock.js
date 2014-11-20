@@ -147,6 +147,34 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
     },
   ]);
 
+  // ContentCompliance Service
+  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/contentreporting/?')).respond([
+    {
+      id: 1,
+      title: 'Just an Article',
+      url: '/articles/just-an-article-1',
+      content_type: 'Article',
+      feature_type: 'ICYMI',
+      published: '2011-04-03T16:20:00Z'
+    },
+    {
+      id: 2,
+      title: 'Just an Article',
+      url: '/articles/just-an-article-1',
+      content_type: 'Article',
+      feature_type: 'ICYMI',
+      published: '2011-04-03T16:20:00Z'
+    },
+    {
+      id: 3,
+      title: 'Just an Article',
+      url: '/articles/just-an-article-1',
+      content_type: 'Article',
+      feature_type: 'ICYMI',
+      published: '2011-04-03T16:20:00Z'
+    }
+  ]);
+
   // TODO: Do this better.
   $httpBackend.when('GET', new RegExp('^/cms/api/v1/content/[0-9]+/?$')).respond({
     id: 6,
