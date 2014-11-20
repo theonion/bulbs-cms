@@ -402,6 +402,12 @@ angular.module('bulbs.api')
       RestangularConfigurer.setRequestSuffix('/');
     }).service('role');
   })
+  .factory('ContentReportingService', function (Restangular) {
+    return Restangular.withConfig(function (RestangularConfigurer) {
+      RestangularConfigurer.setBaseUrl('/cms/api/v1/contributions/');
+      RestangularConfigurer.setRequestSuffix('/');
+    }).service('contentreporting');
+  })
   .factory('ContributionReportingService', function (Restangular, moment) {
 
     Restangular.extendModel('reporting', function (obj) {
@@ -4133,7 +4139,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter, $interpolate, Login, routes, ContributionReportingService) {
+  .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter, $interpolate, Login, routes, ContributionReportingService, ContentReportingService) {
     $window.document.title = routes.CMS_NAMESPACE + ' | Reporting'; // set title
 
     $scope.reports = {
@@ -4157,6 +4163,16 @@ angular.module('bulbsCmsApp')
             key: 'content'
           },
         ]
+      },
+      'Content': {
+        service: ContentReportingService,
+        headings: [
+          {'title': 'Date', 'expression': 'published'},
+          {'title': 'Headline', 'expression': 'title'},
+          {'title': 'URL', 'expression': 'url'},
+        ],
+        orderOptions: [],
+        downloadURL: '/cms/api/v1/contributions/contentreporting/',
       }
     };
     $scope.items = [];
@@ -4187,7 +4203,11 @@ angular.module('bulbsCmsApp')
         return;
       }
       $scope.orderOptions = report.orderOptions;
-      $scope.orderBy = report.orderOptions[0];
+      if(report.orderOptions.length > 0) {        
+        $scope.orderBy = report.orderOptions[0];
+      } else {
+        $scope.orderBy = null;
+      }
       $scope.headings = [];
       report.headings.forEach(function (heading) {
         $scope.headings.push(heading.title);
@@ -4223,8 +4243,10 @@ angular.module('bulbsCmsApp')
         $scope.downloadURL += ('&start=' + startParam);
       }
 
-      $scope.downloadURL += ('&ordering=' + order.key);
-      reportParams['ordering'] = order.key;
+      if (order) {
+        $scope.downloadURL += ('&ordering=' + order.key);
+        reportParams['ordering'] = order.key;
+      }
 
       report.service.getList(reportParams).then(function (data) {
         $scope.items = [];
