@@ -3169,24 +3169,27 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.saveArticle = function () {
-      ContentApi.one('content', $routeParams.id).get().then(function (data) {
-        if (data.last_modified &&
-          $scope.article.last_modified &&
-          moment(data.last_modified) > moment($scope.article.last_modified)) {
-          $scope.saveArticleDeferred.reject();
-          $modal.open({
-            templateUrl: routes.PARTIALS_URL + 'modals/last-modified-guard-modal.html',
-            controller: 'LastmodifiedguardmodalCtrl',
-            scope: $scope,
-            resolve: {
-              articleOnPage: function () { return $scope.article; },
-              articleOnServer: function () { return data; }
-            }
-          });
-        } else {
-          $scope.postValidationSaveArticle();
-        }
-      });
+      $(navbarSave).html('<i class=\'glyphicon glyphicon-refresh fa-spin\'></i> Saving');
+      ContentApi.one('content', $routeParams.id).get()
+        .then(function (data) {
+          if (data.last_modified &&
+            $scope.article.last_modified &&
+            moment(data.last_modified) > moment($scope.article.last_modified)) {
+            $scope.saveArticleDeferred.reject();
+            $modal.open({
+              templateUrl: routes.PARTIALS_URL + 'modals/last-modified-guard-modal.html',
+              controller: 'LastmodifiedguardmodalCtrl',
+              scope: $scope,
+              resolve: {
+                articleOnPage: function () { return $scope.article; },
+                articleOnServer: function () { return data; }
+              }
+            });
+          } else {
+            $scope.postValidationSaveArticle();
+          }
+        })
+        .catch(saveArticleErrorCbk);
 
       return $scope.saveArticleDeferred.promise;
 
@@ -3207,11 +3210,10 @@ angular.module('bulbsCmsApp')
     var saveHTML =  '<i class=\'glyphicon glyphicon-floppy-disk\'></i> Save';
     var navbarSave = '.navbar-save';
 
-
     function saveToContentApi() {
-      $(navbarSave).html('<i class=\'glyphicon glyphicon-refresh fa-spin\'></i> Saving');
       $scope.article.put()
-        .then(saveArticleSuccessCbk, saveArticleErrorCbk);
+        .then(saveArticleSuccessCbk)
+        .catch(saveArticleErrorCbk);
     }
 
     function saveArticleErrorCbk(data) {
