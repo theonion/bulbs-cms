@@ -3169,7 +3169,10 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.saveArticle = function () {
-      $(navbarSave).html('<i class=\'glyphicon glyphicon-refresh fa-spin\'></i> Saving');
+      $(navbarSave)
+        .removeClass('btn-danger')
+        .addClass('btn-success')
+        .html('<i class=\'glyphicon glyphicon-refresh fa-spin\'></i> Saving');
       ContentApi.one('content', $routeParams.id).get()
         .then(function (data) {
           if (data.last_modified &&
@@ -3217,7 +3220,10 @@ angular.module('bulbsCmsApp')
     }
 
     function saveArticleErrorCbk(data) {
-      $(navbarSave).html('<i class=\'glyphicon glyphicon-remove\'></i> Error');
+      $(navbarSave)
+        .removeClass('btn-success')
+        .addClass('btn-danger')
+        .html('<i class=\'glyphicon glyphicon-remove\'></i> Error');
       if (status === 400) {
         $scope.errors = data;
       }
