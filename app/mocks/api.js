@@ -85,7 +85,34 @@ angular.module('bulbsCmsApp.mockApi').run([
 
     // content list
     var listRegex = /^\/cms\/api\/v1\/content\/(\?.*)?$/
-    $httpBackend.when('GET', listRegex).respond(mockApiData['content.list']);
+    $httpBackend.when('GET', listRegex).respond(function (method, url, data) {
+      var mockResponse = mockApiData['content.list'];
+      var filteredData = [];
+      var match;
+      if (match = url.match(/before=([^&]*)/)) {
+        filteredData = mockResponse.results.filter(function (result) {
+          return result.published != null && result.published < match[1];
+        });
+      } else if (match = url.match(/after=([^&]*)/)) {
+        filteredData = mockResponse.results.filter(function (result) {
+          return result.published != null && result.published > match[1];
+        });
+      } else if (match = url.match(/status=([^&]*)/)) {
+        filteredData = mockResponse.results.filter(function (result) {
+          return (result.status != null && result.status.toLowerCase() == match[1].toLowerCase()) || !result.published;
+        });
+      }
+      if (filteredData.length > 0) {
+        return [200, {
+          count: filteredData.length,
+          next: null,
+          previous: null,
+          results: filteredData
+        }];
+      } else {
+        return [200, mockResponse];
+      }
+    });
     $httpBackend.when('OPTIONS', listRegex).respond(mockApiData['content.list']);
 
     // things

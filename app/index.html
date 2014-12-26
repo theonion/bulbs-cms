@@ -291,9 +291,9 @@
         angular.module('bulbsCmsAppDev', ['bulbsCmsApp.mockApi', 'bulbsCmsApp', 'bulbs.api.mock'])
           .config(function (StatusFilterOptionsProvider) {
             StatusFilterOptionsProvider.setStatuses([
-              {label: 'Filter 1', key: 'filter1key', value: 'charizard'},
-              {label: 'Filter 2', key: 'filter2key', value: function(){ return moment().unix(); }},
-              {label: 'Filter 3', key: 'filter2key', value: function(){ return "cool"; }},
+              {label: 'Draft', key: 'status', value: 'Draft'},
+              {label: 'Published', key: 'before', value: function () { return moment().format('YYYY-MM-DDTHH:mmZ'); }},
+              {label: 'Scheduled', key: 'after', value: function () { return moment().format('YYYY-MM-DDTHH:mmZ'); }},
               {label: 'All', key: null, value: null}
             ]);
           });
