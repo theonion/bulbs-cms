@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('createContent', function ($http, $window, $, IfExistsElse, Login, ContentApi, routes, AUTO_ADD_AUTHOR, Raven) {
+  .directive('createContent', function ($http, $window, $, IfExistsElse, Login, ContentFactory, routes, AUTO_ADD_AUTHOR, Raven) {
     return {
       restrict: 'E',
       templateUrl:  routes.DIRECTIVE_PARTIALS_URL + 'create-content.html',
@@ -23,7 +23,7 @@ angular.module('bulbsCmsApp')
 
           if ($scope.tag) {
             IfExistsElse.ifExistsElse(
-              ContentApi.all('tag').getList({
+              ContentFactory.all('tag').getList({
                 ordering: 'name',
                 search: $scope.tag
               }),
@@ -37,7 +37,7 @@ angular.module('bulbsCmsApp')
           }
 
           if (AUTO_ADD_AUTHOR) {
-            ContentApi.one('me').get().then(function (data) {
+            ContentFactory.one('me').get().then(function (data) {
               $scope.init.authors = [data];
               $scope.gotUser = true;
             });

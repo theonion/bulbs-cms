@@ -6,18 +6,22 @@
 
   <div class="row filter-shortcuts" role="navigation">
     <div class="navbar-btn navbar-left" role="toolbar">
-      <create-content></create-content>
       <status-filter></status-filter>
+    </div>
+    <div class="navbar-btn navbar-right" role="toolbar">
+      <create-content></create-content>
     </div></div>
 
     <div class="row">
       <div class="col-xs-12 navbar-btn filterwidget-container" style="padding: 0;">
-        <filterwidget update_content_list="update_content_list"></filterwidget></div></div>
+        <filter-widget></filter-widget>
+      </div>
+    </div>
 
     <div class="row">
       <table class="panel-group col-xs-12 table table-condensed table-bordered table-striped" id="contentListAccordion">
-        <tr ng-if="totalItems === 0"><td><h1 class="h4 text-center">No content here</h1></td></tr>
-        <tr class="panel panel-default" ng-repeat="article in articles | filter:text_filter">
+        <tr ng-if="contentData.totalItems === 0"><td><h1 class="h4 text-center">No content here</h1></td></tr>
+        <tr class="panel panel-default" ng-repeat="article in contentData.content | filter:text_filter">
           <td>
             <div class="panel-heading row" data-toggle="collapse" href="#collapse-{{ article.id }}" ng-click="collapse[article.id] = !collapse[article.id]">
               <div class="heading col-xs-12 col-sm-8">
@@ -34,4 +38,4 @@
             <div id="collapse-{{ article.id }}" class="panel-collapse collapse" lazy-include template='content-list-detail-panel.html'><span class="fa fa-spinner fa-spin"></span></div></td></tr></table></div>
 
     <div class="row">
-      <pagination max-size="10" total-items="totalItems" ng-model="pageNumber" items-per-page="20" ng-change="goToPage(page);" boundary-links="true"></pagination></div></div>
+      <pagination max-size="10" total-items="contentData.totalItems" ng-model="pageNumber" items-per-page="20" ng-change="goToPage(page);" boundary-links="true"></pagination></div></div>

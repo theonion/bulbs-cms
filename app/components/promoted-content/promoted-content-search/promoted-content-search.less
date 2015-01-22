@@ -1,0 +1,26 @@
+promoted-content-search {
+
+  .remove-content-btn, .article-tools {
+    display: none;
+  }
+
+  .article-tools + .panel-heading {
+    margin-left: 0;
+  }
+
+  .draggable-content .panel-heading {
+    cursor: move;
+  }
+
+  .non-draggable-content {
+    .panel-heading {
+      cursor: default;
+    }
+
+    .panel-title {
+      color: #bcbcbc;
+    }
+
+    .heading { font-style: italic; }
+  }
+}

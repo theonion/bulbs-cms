@@ -5,7 +5,7 @@ angular.module('bulbsCmsApp')
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, moment, keypress, Raven, PNotify,
-    IfExistsElse, VersionStorageApi, ContentApi, FirebaseApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener,
+    IfExistsElse, VersionStorageApi, ContentFactory, FirebaseApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener,
     routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
@@ -149,7 +149,7 @@ angular.module('bulbsCmsApp')
     };
 
     function getContent() {
-      return ContentApi.one('content', $routeParams.id).get().then(getArticleCallback);
+      return ContentFactory.one('content', $routeParams.id).get().then(getArticleCallback);
     }
     getContent();
 
@@ -177,7 +177,7 @@ angular.module('bulbsCmsApp')
         .removeClass('btn-danger')
         .addClass('btn-success')
         .html('<i class=\'glyphicon glyphicon-refresh fa-spin\'></i> Saving');
-      ContentApi.one('content', $routeParams.id).get()
+      ContentFactory.one('content', $routeParams.id).get()
         .then(function (data) {
           if (data.last_modified &&
             $scope.article.last_modified &&

@@ -15,6 +15,7 @@ angular.module('OnionEditor', []).constant('OnionEditor', window.OnionEditor);
 // ****** App Config ****** \\
 
 angular.module('bulbsCmsApp', [
+  'bulbsCmsApp.settings',
   'ngCookies',
   'ngResource',
   'ngSanitize',
@@ -34,8 +35,13 @@ angular.module('bulbsCmsApp', [
   'firebase',
   'ipCookie',
   'bulbs.api',
-  'ngClipboard',
-  'OnionEditor'
+  'OnionEditor',
+  // shared
+  'contentServices',
+  // components
+  'filterWidget',
+  'promotedContent',
+  'statusFilter'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
@@ -54,11 +60,6 @@ angular.module('bulbsCmsApp', [
     .when('/cms/app/edit/:id/contributions/', {
       templateUrl: routes.PARTIALS_URL + 'contributions.html',
       controller: 'ContributionsCtrl'
-    })
-    .when('/cms/app/promotion/', {
-      templateUrl:  routes.PARTIALS_URL + 'promotion.html',
-      controller: 'PromotionCtrl',
-      reloadOnSearch: false
     })
     .when('/cms/app/targeting/', {
       templateUrl: routes.PARTIALS_URL + 'targeting-editor.html',
@@ -107,4 +108,3 @@ angular.module('bulbsCmsApp', [
   $http.defaults.headers.delete = deleteHeaders;
 })
 .constant('TIMEZONE_NAME', 'America/Chicago');
-

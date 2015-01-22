@@ -1,13 +1,13 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('LastmodifiedguardmodalCtrl', function ($scope, $modalInstance, _, moment, ContentApi, articleOnPage, articleOnServer) {
+  .controller('LastmodifiedguardmodalCtrl', function ($scope, $modalInstance, _, moment, ContentFactory, articleOnPage, articleOnServer) {
     $scope.articleOnServer = articleOnServer;
 
-    ContentApi.all('log').getList({content: articleOnPage.id}).then(function (log) {
+    ContentFactory.all('log').getList({content: articleOnPage.id}).then(function (log) {
       var latest = _.max(log, function (entry) { return moment(entry.action_time); });
       var lastSavedById = latest.user;
-      ContentApi.one('author', lastSavedById).get().then(function (data) {
+      ContentFactory.one('author', lastSavedById).get().then(function (data) {
         $scope.lastSavedBy = data;
       });
     });

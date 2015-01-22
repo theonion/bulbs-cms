@@ -1,0 +1,10 @@
+<div id="pubLevels" class="btn-group btn-group-md">
+  <a
+      ng-repeat="option in options"
+      ng-class="{ active: isActive(option) }"
+      ng-click="filterByStatus(option);"
+      class="btn btn-default"
+      href="">
+    {{option.label}}
+  </a>
+</div>

@@ -235,6 +235,7 @@ angular.module('OnionEditor', []).constant('OnionEditor', window.OnionEditor);
 // ****** App Config ****** \\
 
 angular.module('bulbsCmsApp', [
+  'bulbsCmsApp.settings',
   'ngCookies',
   'ngResource',
   'ngSanitize',
@@ -254,8 +255,13 @@ angular.module('bulbsCmsApp', [
   'firebase',
   'ipCookie',
   'bulbs.api',
-  'ngClipboard',
-  'OnionEditor'
+  'OnionEditor',
+  // shared
+  'contentServices',
+  // components
+  'filterWidget',
+  'promotedContent',
+  'statusFilter'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
@@ -274,11 +280,6 @@ angular.module('bulbsCmsApp', [
     .when('/cms/app/edit/:id/contributions/', {
       templateUrl: routes.PARTIALS_URL + 'contributions.html',
       controller: 'ContributionsCtrl'
-    })
-    .when('/cms/app/promotion/', {
-      templateUrl:  routes.PARTIALS_URL + 'promotion.html',
-      controller: 'PromotionCtrl',
-      reloadOnSearch: false
     })
     .when('/cms/app/targeting/', {
       templateUrl: routes.PARTIALS_URL + 'targeting-editor.html',
@@ -327,7 +328,6 @@ angular.module('bulbsCmsApp', [
   $http.defaults.headers.delete = deleteHeaders;
 })
 .constant('TIMEZONE_NAME', 'America/Chicago');
-
 
 angular.module('bulbs.api', ['restangular', 'moment']);
 
@@ -722,6 +722,1349 @@ angular.module('bulbs.api')
     return Selection;
   }
 })();
+
+'use strict';
+
+angular.module('filterWidget.directive', [
+  'bulbsCmsApp.settings',
+  'contentServices.listService'
+])
+  .directive('filterWidget', function (_, $http, $location, $timeout, $,
+      ContentListService, routes) {
+    return {
+      restrict: 'E',
+      scope: {},
+      templateUrl: routes.COMPONENTS_URL + 'filter-widget/filter-widget.html',
+      link: function (scope, element, attrs) {
+        var $element = $(element);
+        var $input = $element.find('input');
+
+        scope.autocompleteArray = [];
+
+        var filterInputCounter = 0, filterInputTimeout;
+
+        $input.on('input', function (e) {
+          var search = $input.val();
+          scope.searchTerm = search;
+
+          $timeout.cancel(filterInputTimeout);
+          filterInputTimeout = $timeout(function () { getAutocompletes(search); }, 200);
+
+          if (filterInputCounter > 2) {
+            getAutocompletes(search);
+          }
+        });
+        function getAutocompletes(search) {
+          $timeout.cancel(filterInputTimeout);
+          filterInputCounter = 0;
+          if (search.length < 1) {
+            scope.autocompleteArray = [];
+            scope.$apply();
+            return;
+          }
+
+          $http({
+            url: '/cms/api/v1/things/?type=tag&type=feature_type&type=author',
+            method: 'GET',
+            params: {'q': search}
+          }).success(function (data) {
+            scope.autocompleteArray = data;
+          });
+        }
+
+        $input.on('keyup', function (e) {
+          if (e.keyCode === 38) { arrowSelect('up'); }//up
+          if (e.keyCode === 40) { arrowSelect('down'); } //down
+          if (e.keyCode === 13) { //enter
+            if ($element.find('.selected').length > 0) {
+              // To trigger the click we need to first break out of the
+              // current $apply() cycle. Hence the $timeout()
+              $timeout(function () {
+                angular.element('.selected > a').triggerHandler('click');
+              }, 0);
+            } else {
+              scope.addFilter('search', $input.val());
+            }
+          }
+        });
+
+        scope.search = function () {
+          scope.addFilter('search', scope.filterInputValue);
+        };
+
+        scope.clearSearch = function () {
+          scope.filterInputValue = '';
+        };
+
+        scope.clearFilters = function () {
+          scope.filterObjects = {};
+          scope.filterInputValue = '';
+          return applyFilterChange({});
+        };
+
+        $element.on('mouseover', '.entry', function () {
+          scope.selectEntry(this);
+        });
+
+        function arrowSelect(direction) {
+          var $entries = $element.find('.entry');
+          var $selected = $element.find('.entry.selected');
+          var $toSelect;
+          if ($selected.length > 0) {
+            if (direction === 'up') { $toSelect = $selected.first().prev(); }
+            if (direction === 'down') { $toSelect = $selected.first().next(); }
+          } else {
+            if (direction === 'up') { $toSelect = $entries.last(); }
+            if (direction === 'down') { $toSelect = $entries.first(); }
+          }
+          scope.selectEntry($toSelect);
+        }
+        scope.selectEntry = function (entry) {
+          $element.find('.selected').removeClass('selected');
+          $(entry).addClass('selected');
+        };
+
+        $input.on('blur', function () {
+          $element.find('.dropdown-menu').fadeOut(200);
+        });
+        $input.on('focus', function () {
+          $element.find('.dropdown-menu').fadeIn(200);
+        });
+
+        scope.addFilter = function (type, newFilterValue) {
+          var filterObject = $location.search();
+          if (type === 'search') {
+            filterObject.search = newFilterValue;
+          } else {
+            if (!filterObject[type]) {
+              filterObject[type] = [];
+            }
+            if (typeof(filterObject[type]) === 'string') {
+              filterObject[type] = [filterObject[type]];
+            }
+            if (!_.contains(filterObject[type], newFilterValue)) {
+              // this value is not already in
+              filterObject[type].push(newFilterValue);
+            }
+          }
+          return applyFilterChange(filterObject);
+        };
+
+        scope.deleteFilter = function (key) {
+          var filterObject = $location.search();
+          var toDelete = scope.filterObjects[key];
+          if (typeof(filterObject[toDelete.type]) === 'string') {
+            filterObject[toDelete.type] = [filterObject[toDelete.type]];
+          }
+          var toSplice;
+          for (var i in filterObject[toDelete.type]) {
+            if (filterObject[toDelete.type][i] === toDelete.query) {
+              toSplice = i;
+              break;
+            }
+          }
+          filterObject[toDelete.type].splice(i, 1);
+          filterObject.search = $input.val();
+          delete scope.filterObjects[key];
+          return applyFilterChange(filterObject);
+        };
+
+        function applyFilterChange(filterObject) {
+          filterObject.page = 1;
+          $location.search(filterObject);
+          scope.autocompleteArray = [];
+          $input.trigger('blur');
+
+          return ContentListService.$updateContent(filterObject);
+        }
+
+        function getFilterObjects() {
+          var search = $location.search();
+          scope.filterObjects = {};
+          if (typeof(search) === 'undefined') { console.log('undefined'); return; }
+          //TODO: this sucks
+          var filterParamsToTypes = {'authors': 'author', 'tags': 'tag', 'feature_types': 'feature_type'};
+          for (var filterParam in filterParamsToTypes) {
+            var filterType = filterParamsToTypes[filterParam];
+            if (typeof(search[filterParam]) === 'string') { search[filterParam] = [search[filterParam]]; }
+            for (var i in search[filterParam]) {
+              var value = search[filterParam][i];
+              scope.filterObjects[filterType + value] = {'query': value, 'type': filterParam};
+              getQueryToLabelMappings(filterType, value);
+            }
+          }
+          if (search.search) {
+            scope.filterInputValue = search.search;
+          }
+        }
+
+        scope.$on('$routeUpdate', function () {
+          getFilterObjects();
+        });
+
+        getFilterObjects();
+
+        function getQueryToLabelMappings(type, query) {
+          //this is pretty stupid
+          //TODO: Maybe do this with some localStorage caching?
+          //TODO: Maybe just dont do this at all? I dont know if thats possible
+          //    because there is no guarantee of any state (like if a user comes
+          //    directly to a filtered search page via URL)
+          scope.queryToLabelMappings = scope.queryToLabelMappings || {};
+
+          if (query in scope.queryToLabelMappings) { return; }
+
+          $http({
+            url: '/cms/api/v1/things/?type=' + type,
+            method: 'GET',
+            params: {'q': query}
+          }).success(function (data) {
+            for (var i in data) {
+              scope.queryToLabelMappings[data[i].value] = data[i].name;
+            }
+          });
+
+        }
+
+      }
+
+    };
+  });
+
+'use strict';
+
+angular.module('filterWidget', [
+  'filterWidget.directive'
+]);
+
+'use strict';
+
+angular.module('promotedContentArticle.directive', [
+  'bulbsCmsApp.settings',
+  'promotedContentArticle.controller'
+])
+  .directive('promotedContentArticle', function (routes) {
+    return {
+      controller: 'PromotedContentArticle',
+      restrict: 'E',
+      scope: {
+        article: '=',
+        isFirst: '=?',
+        isLast: '=?',
+        moveUpCallback: '&',
+        moveDownCallback: '&'
+      },
+      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-article/promoted-content-article.html'
+    };
+  });
+
+'use strict';
+
+angular.module('promotedContentArticle', [
+  'promotedContentArticle.directive'
+]);
+
+'use strict';
+
+angular.module('promotedContentArticle.controller', [
+  'promotedContent.service'
+])
+  .controller('PromotedContentArticle', function ($scope, PromotedContentService) {
+
+    $scope.pzoneData = PromotedContentService.getData();
+
+    $scope.removeContentFromPromotedList = function (article) {
+      PromotedContentService.$removeContentFromPZone(article.id);
+    };
+
+  });
+
+'use strict';
+
+angular.module('promotedContentList.controller', [
+  'promotedContent.service'
+])
+  .controller('PromotedContentList', function ($scope, PromotedContentService) {
+
+      $scope.pzoneData = PromotedContentService.getData();
+
+      $scope.contentDroppedIntoZone = function (e) {
+        $scope.destyleDropZones();
+        PromotedContentService.$dropAndAddContent(e.target);
+      };
+
+      $scope.contentDroppedIntoReplaceZone = function (e) {
+        $scope.destyleDropZones();
+        PromotedContentService.$dropAndAddContent(e.target, true);
+      };
+
+      $scope.moveUp = function (index) {
+        PromotedContentService.moveContentUp(index);
+      };
+
+      $scope.moveDown = function (index) {
+        PromotedContentService.moveContentDn(index);
+      };
+  });
+
+'use strict';
+
+angular.module('promotedContentList.directive', [
+  'bulbsCmsApp.settings',
+  'ngDragDrop',
+  'promotedContentArticle',
+  'promotedContentSave',
+  'promotedContentList.controller'
+])
+  .directive('promotedContentList', function ($, routes) {
+    return {
+      controller: 'PromotedContentList',
+      link: function (scope, element, attr) {
+
+        scope.styleDropZone = function (e) {
+          $(e.target).addClass('drop-area-hover');
+        };
+        scope.destyleDropZones = function (e) {
+          $('.content-drop-area, .replace-drop-area').removeClass('drop-area-hover');
+        };
+
+      },
+      restrict: 'E',
+      scope: {},
+      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-list/promoted-content-list.html'
+    };
+  });
+
+'use strict';
+
+angular.module('promotedContentList', [
+  'promotedContentList.directive'
+]);
+
+'use strict';
+
+angular.module('promotedContentOperationsList.controller', [
+  'promotedContent.service'
+])
+  .controller('PromotedContentOperationsList', function (moment, $scope, PromotedContentService) {
+
+    $scope.pzoneData = PromotedContentService.getData();
+    $scope.scheduleDateFrom = moment();
+    $scope.scheduleDateTo = moment().add(12, 'hours');
+    $scope.deleteStatus = {
+      message: '',
+      isError: false
+    };
+
+    PromotedContentService.$ready()
+      .then(function () {
+        $scope.aggregatedOperations = $scope.pzoneData.operations.concat($scope.pzoneData.unsavedOperations);
+      });
+
+    $scope.removeOperation = function (operation) {
+      PromotedContentService.$removeOperation(operation.id)
+        .then(function () {
+          $scope.deleteStatus = {
+            message: 'Operation successfully removed!',
+            isError: false
+          };
+        })
+        .catch(function (err) {
+          $scope.deleteStatus = {
+            message: err,
+            isError: true
+          };
+        });
+    };
+
+    $scope.clearDeleteStatus = function () {
+      $scope.deleteStatus.message = '';
+    };
+
+  });
+
+'use strict';
+
+angular.module('promotedContentOperationsList.directive', [
+  'bulbsCmsApp.settings',
+  'promotedContentOperationsList.controller'
+])
+  .directive('promotedContentOperationsList', function (_, moment, routes) {
+    return {
+      controller: 'PromotedContentOperationsList',
+      link: function (scope, element, attr) {
+
+        var aggregator = function () {
+          var tempAggregate = scope.pzoneData.operations.concat(scope.pzoneData.unsavedOperations);
+
+          scope.aggregatedOperations = _.sortBy(tempAggregate, function (operation) {
+            var compTime = 0;
+            if (operation.whenAsMoment) {
+              // has a time, use that
+              compTime = operation.whenAsMoment.valueOf();
+            } else if (scope.pzoneData.previewTime){
+              // has no time, but preview time is set, use that
+              compTime = scope.pzoneData.previewTime;
+            } else {
+              // this is an immediate operation
+              compTime = moment();
+            }
+            return compTime.valueOf();
+          });
+        };
+
+        scope.$watchCollection('pzoneData.operations', aggregator);
+        scope.$watchCollection('pzoneData.unsavedOperations', aggregator);
+
+      },
+      restrict: 'E',
+      scope: {},
+      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-operations-list/promoted-content-operations-list.html'
+    };
+  });
+
+'use strict';
+
+angular.module('promotedContentOperationsList', [
+  'promotedContentOperationsList.directive'
+]);
+
+'use strict';
+
+angular.module('promotedContentPzoneSelect.controller', [
+  'promotedContent.service'
+])
+  .controller('PromotedContentPzoneSelect', function ($scope, PromotedContentService) {
+
+    $scope.pzoneData = PromotedContentService.getData();
+    $scope.selectedPZoneName = '';
+
+    PromotedContentService.$ready()
+      .then(function () {
+        $scope.selectedPZoneName = $scope.pzoneData.selectedPZone.name;
+      });
+
+    $scope.changePZone = function (name) {
+      (function (name) {
+        PromotedContentService.$refreshPZones()
+          .then(function () { PromotedContentService.$selectPZone(name); });
+      })(name);
+    };
+
+  });
+
+'use strict';
+
+angular.module('promotedContentPzoneSelect.directive', [
+  'bulbsCmsApp.settings',
+  'promotedContentPzoneSelect.controller'
+])
+  .directive('promotedContentPzoneSelect', function (routes) {
+    return {
+      controller: 'PromotedContentPzoneSelect',
+      restrict: 'E',
+      scope: {},
+      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-pzone-select/promoted-content-pzone-select.html'
+    };
+  });
+
+'use strict';
+
+angular.module('promotedContentPzoneSelect', [
+  'promotedContentPzoneSelect.directive'
+]);
+
+'use strict';
+
+angular.module('promotedContentSave.controller', [
+  'promotedContent.service'
+])
+  .controller('PromotedContentSave', function ($scope, PromotedContentService) {
+
+    $scope.pzoneData = PromotedContentService.getData();
+
+    $scope.savePZone = function () {
+      PromotedContentService.$saveSelectedPZone();
+    };
+
+    $scope.clearOperations = function () {
+      PromotedContentService.$refreshSelectedPZone($scope.pzoneData.previewTime)
+        .then(function () {
+          PromotedContentService.clearUnsavedOperations();
+        });
+    };
+
+  });
+
+'use strict';
+
+angular.module('promotedContentSave.directive', [
+  'bulbsCmsApp.settings',
+  'promotedContentSave.controller'
+])
+  .directive('promotedContentSave', function (routes) {
+    return {
+      controller: 'PromotedContentSave',
+      restrict: 'E',
+      scope: {},
+      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-save/promoted-content-save.html'
+    };
+  });
+
+'use strict';
+
+angular.module('promotedContentSave', [
+  'promotedContentSave.directive'
+]);
+
+'use strict';
+
+angular.module('promotedContentSearch.controller', [
+  'promotedContent.service'
+])
+  .controller('PromotedContentSearch', function (_, moment, $scope, $location, PromotedContentService) {
+
+    $scope.pzoneData = PromotedContentService.getData();
+    $scope.pageNumber = $location.search().page || '1';
+
+    $scope.goToPage = function () {
+      PromotedContentService.$refreshAllContent({page: $scope.pageNumber}, true);
+    };
+
+    $scope.articleIsVisible = function (article) {
+      var inPZone =
+        $scope.pzoneData.selectedPZone &&
+        _.find($scope.pzoneData.selectedPZone.content, {id: article.id});
+      return inPZone ? true : false;
+    };
+
+    /**
+    * Check if an article is draggble. Dragging is allowed if preview time is
+    *  set to immediate and the article is already published, or if a preview
+    *  time is set into the future and the article will be published before that.
+    *
+    * @param {object} article - article to test for draggability.
+    * @returns {Boolean} true if article is draggable, false otherwise.
+    */
+    $scope.articleIsDraggable = function (article) {
+      var immediateDraggable =
+        ($scope.pzoneData.previewTime === null &&
+          moment().isAfter(article.published));
+      var futureDraggable =
+        ($scope.pzoneData.previewTime !== null &&
+          moment().isBefore($scope.pzoneData.previewTime) &&
+          $scope.pzoneData.previewTime.isAfter(article.published));
+
+      return immediateDraggable || futureDraggable;
+    };
+
+    $scope.contentPickedUp = function (e) {
+      PromotedContentService.pickupContentFromAll(e.target);
+    };
+
+    $scope.contentDropped = function () {
+      PromotedContentService.dropContent();
+    };
+
+  });
+
+'use strict';
+
+angular.module('promotedContentSearch.directive', [
+  'bulbsCmsApp.settings',
+  'ngDragDrop',
+  'statusFilter',
+  'filterWidget',
+  'promotedContentArticle',
+  'promotedContentSearch.controller'
+])
+  .directive('promotedContentSearch', function ($, routes) {
+    return {
+      controller: 'PromotedContentSearch',
+      restrict: 'E',
+      scope: {},
+      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-search/promoted-content-search.html'
+    };
+  });
+
+'use strict';
+
+angular.module('promotedContentSearch', [
+  'promotedContentSearch.directive'
+]);
+
+'use strict';
+
+/**
+ * Main service for promoted content page. Handles all data, all data modifications
+ *  for this page should be done through this service.
+ */
+angular.module('promotedContent.service', [
+  'contentServices',
+  'moment',
+  'restangular'
+])
+  .service('PromotedContentService', function ($, _, moment, $q, Restangular,
+      ContentFactory, ContentListService) {
+
+    var PromotedContentService = this;
+    PromotedContentService._serviceData = {
+      allContent: ContentListService.getData(),
+      draggingContent: null,
+      pzones: [],
+      unsavedOperations: [],
+      operations: [],
+      selectedPZone: null,
+      previewTime: null
+    };
+    var _data = PromotedContentService._serviceData;
+
+    // promise that resolves once this service is done setting up
+    var setupDefer = $q.defer();
+
+    var readableOperationTypes = {
+      INSERT: 'INSERT',
+      DELETE: 'DELETE',
+      REPLACE: 'REPLACE'
+    };
+    PromotedContentService.readableOperationTypes = readableOperationTypes;
+
+    var operationTypeToReadable = {
+      'promotion_insertoperation': readableOperationTypes.INSERT,
+      'promotion_deleteoperation': readableOperationTypes.DELETE,
+      'promotion_replaceoperation': readableOperationTypes.REPLACE
+    };
+    var readableToOperationType =
+      _.reduce(operationTypeToReadable, function (result, val, key) {
+        result[val] = key;
+        return result;
+      }, {});
+
+    /**
+     * Refresh pzone data, given the following parameters:
+     *
+     * @param {Object} filters - filter zones with these parameters.
+     * @returns {Promise} resolves with pzone data, or rejects with an error message.
+     */
+    PromotedContentService.$refreshPZones = function (filters) {
+      return ContentFactory.all('pzone').getList(filters)
+        .then(function (data) {
+          _data.pzones = data;
+          // mark everything as saved
+          _.each(_data.pzones, function (pzone) { pzone.saved = true; });
+          // resolve with pzones
+          return _data.pzones;
+        }).catch(function (err) {
+          return err;
+        });
+    };
+
+    /**
+     * Mark selected pzone as dirty.
+     */
+    PromotedContentService.markDirtySelectedPZone = function () {
+      delete _data.selectedPZone.saved;
+    };
+
+    /**
+     * Mark selected pzone as saved (not dirty).
+     */
+    PromotedContentService.markSavedSelectedPZone = function () {
+      _data.selectedPZone.saved = true;
+    };
+
+    /**
+     * Save the currently selected pzone by posting all operations at currently
+     *  selected time. If no time is selected, pzone will be immediately updated.
+     *
+     * @returns {Promise} resolves with selected pzone once saving is done.
+     */
+    PromotedContentService.$saveSelectedPZone = function () {
+      var defer = $q.defer();
+
+      if (_data.previewTime && _data.previewTime.isAfter(moment())) {
+        // save operations to be done in the future
+        var trackSaves = _.after(_data.unsavedOperations.length, function () {
+          // refresh operations after save is done
+          PromotedContentService.$refreshOperations()
+            .then(function () {
+              PromotedContentService.clearUnsavedOperations();
+              defer.resolve(_data.selectedPZone);
+            });
+        });
+
+        // grab operations out of unsaved operations and post them into operations list
+        _.each(_data.unsavedOperations, function (operation) {
+
+          // use preview time, or send null if immediate
+          operation.when = _data.previewTime ? _data.previewTime.toISOString() : null;
+          // remove client side client_id
+          delete operation.client_id;
+
+          _data.operations.post(operation)
+            .finally(trackSaves);
+        });
+      } else if (!_data.previewTime){
+        // no preview time is set, post pzone immediately
+        _data.selectedPZone.put()
+          .then(function () {
+            PromotedContentService.clearUnsavedOperations();
+            defer.resolve(_data.selectedPZone);
+          })
+          .catch(function (err) {
+            defer.reject(err);
+          });
+      } else {
+        // preview time is in the past, error out
+        defer.reject('Cannot save operations in the past.');
+      }
+
+      return defer.promise;
+    };
+
+    /**
+     * Refresh content data using ContentListService.
+     *
+     * @param {...object} var_args - arguments taken by [ContentListService.$updateContent]{@link ContentListService#$updateContent}.
+     * @returns {Promise} resolves based on [ContentListService.$updateContent]{@link ContentListService#$updateContent}.
+     */
+    PromotedContentService.$refreshAllContent = function () {
+      return ContentListService.$updateContent.apply(ContentListService, arguments);
+    };
+
+    /**
+     * Create a new operation. Note, this will not be saved until user clicks
+     *  save, at which point the new item should be posted to the operations list.
+     *  If preview time is set to immediate, no operation will be created, and this
+     *  function will resolve with nothing.
+     *
+     * @param {Object} props - properties of new operation.
+     * @returns {Promise} resolves with new operation or nothing, or rejects with an error message.
+     */
+    PromotedContentService.$addOperation = function (props) {
+      var defer = $q.defer();
+
+      if (!PromotedContentService.isPreviewTimeImmediate()) {
+        if (!PromotedContentService.isPreviewTimePast()) {
+          var lastId = _.max(_data.unsavedOperations, 'client_id').client_id;
+          var nextId = lastId ? lastId + 1 : 0;
+          var allProps = _.assign({
+            client_id: nextId,
+            type_name: readableToOperationType[props.cleanType] || '',
+            pzone: _data.selectedPZone.id,
+            applied: false,
+            content: null,
+            content_title: '',
+            index: null
+          }, props);
+
+          var operation = Restangular.restangularizeElement(_data.operations, allProps);
+          _data.unsavedOperations.push(operation);
+
+          defer.resolve(operation);
+        } else {
+          // we are looking at the past, we cannot add new operations
+          defer.reject('Cannot add operations in the past.');
+        }
+      } else {
+        // preview time is immediate, don't add an operation
+        defer.resolve();
+      }
+
+      return defer.promise;
+    };
+
+    /**
+     * Remove an operation from operation list. Only saved, future operations are removable.
+     *
+     * @param {Number} id - id of operation to remove.
+     * @returns {Promise} promise that resolves with nothing, or rejects with an
+     *  error message.
+     */
+    PromotedContentService.$removeOperation = function (id) {
+      var defer = $q.defer();
+
+      // delete this from the saved operations list
+      var index = _.findIndex(_data.operations, {id: id});
+      var operation = _data.operations[index];
+      if (operation) {
+        if (operation.whenAsMoment.isAfter(moment())) {
+          operation.remove()
+            .then(function () {
+              // remove operation and resolve
+              _data.operations.splice(index, 1);
+              defer.resolve();
+            })
+            .catch(function (err) {
+              if (err.status === 404) {
+                defer.reject('Cannot find operation to delete.');
+              } else {
+                defer.reject(err);
+              }
+            });
+        } else {
+          defer.reject('Cannot delete an operation in the past.');
+        }
+      } else {
+        defer.reject('Could not find saved operation with id ' + id + ' to delete.');
+      }
+
+      return defer.promise;
+    };
+
+    /**
+     * Clear unsaved operations list.
+     */
+    PromotedContentService.clearUnsavedOperations = function () {
+      _data.unsavedOperations = [];
+      PromotedContentService.markSavedSelectedPZone();
+    };
+
+    /**
+     * Refresh operations data for selected pzone. Each operation returned will
+     *  contain an additional property called cleanType that is the clean,
+     *  displayable representation of the operation type.
+     *
+     * @returns {Promise} resolves with operation data, or rejects with an error message.
+     */
+    PromotedContentService.$refreshOperations = function () {
+      return _data.selectedPZone.getList('operations')
+        .then(function (data) {
+          _data.operations = data;
+
+          _.each(_data.operations, function (operation) {
+            operation.cleanType = operationTypeToReadable[operation.type_name];
+            operation.whenAsMoment = moment(operation.when);
+          });
+
+          return _data.operations;
+        })
+        .catch(function (err) {
+          return err;
+        });
+    };
+
+    /**
+     * Select a pzone with the given name. Will refresh operations list.
+     *
+     * @param {string} [name] - name of pzone to select, selects first pzone if
+     *  name not provided.
+     * @returns {Promise} resolves based on $refreshSelectedPZone Promise.
+     */
+    PromotedContentService.$selectPZone = function (name) {
+      _data.selectedPZone = _.find(_data.pzones, {name: name}) || _data.pzones[0];
+
+      return PromotedContentService.$refreshSelectedPZone(_data.previewTime)
+        .then(function () {
+          PromotedContentService.clearUnsavedOperations();
+        });
+    };
+
+    /**
+     * Pickup some content from list of all content.
+     *
+     * @param {Number} contentElement - element of content being picked up.
+     * @returns {Object} object represenation of content being dragged.
+     */
+    PromotedContentService.pickupContentFromAll = function (contentElement) {
+      // note: accessing via data() doesn't work as expected (some angular/jq combo issue?)
+      var id = parseInt($(contentElement).attr('data-article-id'), 10);
+      _data.draggingContent = _.find(_data.allContent.content, {id: id});
+      return _data.draggingContent;
+    };
+
+    /**
+     * Drop picked up content outside of dropzone.
+     */
+    PromotedContentService.dropContent = function () {
+      _data.draggingContent = null;
+    };
+
+    /**
+     * Remove content from currently selected pzone.
+     *
+     * @param {Number} contentId - id of content to delete.
+     * @returns {Promise} resolves if content removed, or rejects with an error message.
+     */
+    PromotedContentService.$removeContentFromPZone = function (contentId) {
+      var defer = $q.defer();
+      var i = _.findIndex(_data.selectedPZone.content, {id: contentId});
+      if (i >= 0) {
+        // found it, splice away
+        PromotedContentService.$addOperation({
+          cleanType: readableOperationTypes.DELETE,
+          content: contentId,
+          content_title: _data.selectedPZone.content[i].title
+        }).then(function () {
+          PromotedContentService.markDirtySelectedPZone();
+          _data.selectedPZone.content.splice(i, 1);
+          defer.resolve();
+        }).catch(function (err) {
+          defer.reject(err);
+        });
+      } else {
+        defer.reject('Could not find content with given id to delete.');
+      }
+      return defer.promise;
+    };
+
+    /**
+     * Content moving function.
+     *
+     * @param {Number} indexFrom - Index to move content from.
+     * @param {Number} indexTo - Index to move content to.
+     * @returns {Boolean} true if content moved, false otherwise.
+     */
+    var moveTo = function (indexFrom, indexTo) {
+      var ret = false;
+      var content = _data.selectedPZone.content;
+      if (indexFrom >= 0 && indexFrom < content.length &&
+          indexTo >= 0 && indexTo < content.length) {
+        var splicer = content.splice(indexFrom, 1, content[indexTo]);
+        if (splicer.length > 0) {
+          content[indexTo] = splicer[0];
+          ret = true;
+          PromotedContentService.markDirtySelectedPZone();
+        }
+      }
+      return ret;
+    };
+
+    /**
+     * Move content up in the currently selected pzone.
+     *
+     * @param {Number} index - index of content to move up.
+     * @returns {Boolean} true if moved up, false otherwise.
+     */
+    PromotedContentService.moveContentUp = function (index) {
+      return moveTo(index, index - 1);
+    };
+
+    /**
+    * Move content down in the currently selected pzone.
+    *
+    * @param {Number} index - index of content to move down.
+    * @return {Boolean} true if moved down, false otherwise.
+    */
+    PromotedContentService.moveContentDn = function (index) {
+      return moveTo(index, index + 1);
+    };
+
+    /**
+     * Drop content being dragged into a dropzone. Will mark selected pzone as
+     *  dirty.
+     *
+     * @param {Element} contentElement - Content element being dropped.
+     * @param {Boolean} replace - true to replace content at given index.
+     * @returns {Promise} resovles with nothing or rejects with an error message.
+     */
+    PromotedContentService.$dropAndAddContent = function (contentElement, replace) {
+      // note: accessing via data() doesn't work as expected (some angular/jq combo issue?)
+      var index = parseInt($(contentElement).attr('data-drop-zone-index'), 10);
+      // find index of duplicate if there is one
+      var duplicateIndex = _.findIndex(_data.selectedPZone.content, {id: _data.draggingContent.id});
+      // add operation to unsaved operations
+      return PromotedContentService.$addOperation({
+        cleanType: replace ? readableOperationTypes.REPLACE : readableOperationTypes.INSERT,
+        content: _data.draggingContent.id,
+        content_title: _data.draggingContent.title,
+        index: index
+      }).then(function () {
+        // ensure that dupilcate is deleted
+        if (index !== duplicateIndex && duplicateIndex >= 0) {
+          _data.selectedPZone.content.splice(duplicateIndex, 1);
+        }
+        // add item to pzone
+        _data.selectedPZone.content.splice(index, (replace ? 1 : 0), _data.draggingContent);
+        // "drop" content that service is keeping track of
+        PromotedContentService.dropContent();
+        // mark dirty
+        PromotedContentService.markDirtySelectedPZone();
+      });
+    };
+
+    /**
+     * Set preview time to some moment. Applying this operation will cause the
+     *  unsaved operations list to clear out.
+     *
+     * @param {moment} time - moment to set _data.preview time as.
+     */
+    PromotedContentService.setPreviewTime = function (time) {
+      _data.previewTime = time;
+      return PromotedContentService.$refreshSelectedPZone(_data.previewTime)
+        .then(function () {
+          PromotedContentService.clearUnsavedOperations();
+        });
+    };
+
+    /**
+     * Set preview time to now, effectively causing all operations to be
+     *  immediately applied when saved.
+     */
+    PromotedContentService.setPreviewTimeToImmediate = function () {
+      PromotedContentService.setPreviewTime(null);
+    };
+
+    /**
+     * Check if preview time is set to immediate.
+     *
+     * @returns true if preview time is immediate, false otherwise.
+     */
+    PromotedContentService.isPreviewTimeImmediate = function () {
+      return _data.previewTime === null;
+    };
+
+    /**
+     * Check if set preview time is in the past.
+     *
+     * @returns true if preview time is in the past, false otherwise.
+     */
+    PromotedContentService.isPreviewTimePast = function () {
+      return !PromotedContentService.isPreviewTimeImmediate() &&
+        _data.previewTime.isBefore(moment());
+    };
+
+    /**
+     * Refresh the currently selected pzone.
+     *
+     * @param {moment} [time] - optional time parameter to pass to get a preview.
+     * @returns {Promise} resolves with selected pzone data or reject with an error.
+     */
+    PromotedContentService.$refreshSelectedPZone = function (time) {
+      var params = {};
+      if (time) {
+        params.preview = time.toISOString();
+      }
+
+      return _data.selectedPZone.get(params)
+        .then(function (data) {
+          _data.selectedPZone = data;
+          return PromotedContentService.$refreshOperations();
+        })
+        .then(function () {
+          return _data.selectedPZone;
+        })
+        .catch(function (err) {
+          return err;
+        });
+    };
+
+    /**
+     * Get the service's data. This function MUST be used to retrieve service
+     *  data, accessing service data via the _serviceData variable could
+     *  potentially destroy some two-way databinding magic.
+     *
+     * @returns {Object} service data.
+     */
+    PromotedContentService.getData = function () {
+      return _data;
+    };
+
+    /**
+     * @returns {Promise} resolves when service is ready.
+     */
+    PromotedContentService.$ready = function () {
+      return setupDefer.promise;
+    };
+
+    // setup initial datas
+    PromotedContentService.$refreshPZones()
+      .then(function () {
+        return PromotedContentService.$refreshAllContent();
+      })
+      .then(function () {
+        return PromotedContentService.$selectPZone();
+      })
+      .then(function () {
+        // service is ready to go
+        setupDefer.resolve();
+      });
+
+  });
+
+'use strict';
+
+angular.module('promotedContentTimePicker.controller', [
+  'moment',
+  'promotedContent.service'
+])
+  .controller('PromotedContentTimePicker', function (moment, $scope, PromotedContentService) {
+
+    $scope.contentData = PromotedContentService.getData();
+    $scope.previewTime = null;
+
+    $scope.setPreviewTime = function (previewTime) {
+      PromotedContentService.setPreviewTime(previewTime);
+    };
+
+    $scope.setPreviewTimeToImmediate = function () {
+      $scope.previewTime = null;
+      PromotedContentService.setPreviewTimeToImmediate();
+    };
+
+  });
+
+'use strict';
+
+angular.module('promotedContentTimePicker.directive', [
+  'bulbsCmsApp.settings',
+  'promotedContentTimePicker.controller'
+])
+  .directive('promotedContentTimePicker', function (_, $, moment, routes) {
+    return {
+      controller: 'PromotedContentTimePicker',
+      link: function (scope, element, attr) {
+        var now = moment();
+        var groupingFormat = 'YYYYMMDDHH';
+
+        // check for changes to operations so we can group them by time for display
+        scope.hours = [];
+        scope.$watchGroup(['contentData.operations', 'previewTime'], function (newVals) {
+          var newOperations = newVals[0];
+          var timeForTimeline = scope.previewTime || moment();
+          var previewHour = timeForTimeline.hour();
+          var groupedOperations = _.groupBy(newOperations, function (operation) {
+            return operation.whenAsMoment.format(groupingFormat);
+          });
+          scope.hours = [];
+          _.each(_.range(previewHour, previewHour + 12), function (hour, i) {
+            var format24 = hour % 24;
+            var format12 = format24 % 12 || 12;
+            var amPM = format24 < 12 ? 'a' : 'p';
+            var preformat = '';
+            var hourDate = timeForTimeline.clone().add(i, 'hours');
+            var hourOps = groupedOperations[hourDate.format(groupingFormat)];
+
+            if (hourOps) {
+              // format tooltip html
+              preformat += '<div class="tooltip-title">Operations ' + format12 + ':00' + amPM + 'm to ' + format12 + ':59' + amPM + 'm</div>';
+
+              _.each(hourOps, function (operation) {
+                preformat +=
+                  '<div class="tooltip-operation">' +
+                  operation.whenAsMoment.format(':mm') + ' ' +
+                  operation.cleanType + ' ' +
+                  operation.content_title +
+                  '<div>';
+              });
+            }
+
+            scope.hours.push({
+              hour: format12,
+              amPM: amPM,
+              passed: hourDate.isBefore(now),
+              current: hourDate.isSame(now, 'hour'),
+              operations: hourOps,
+              preformat: preformat
+            });
+          });
+        });
+      },
+      restrict: 'E',
+      scope: {},
+      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-time-picker/promoted-content-time-picker.html'
+    };
+  });
+
+'use strict';
+
+angular.module('promotedContentTimePicker', [
+  'promotedContentTimePicker.directive'
+]);
+
+'use strict';
+
+angular.module('promotedContent', [
+  'bulbsCmsApp.settings',
+  'promotedContentPzoneSelect',
+  'promotedContentList',
+  'promotedContentSearch',
+  'promotedContentTimePicker',
+  'promotedContentOperationsList'
+])
+  .config(function ($routeProvider, routes) {
+    $routeProvider
+      .when('/cms/app/promotion/', {
+        controller: function ($window) {
+          // set title
+          $window.document.title = routes.CMS_NAMESPACE + ' | Promotion Tool';
+        },
+        templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content.html',
+        reloadOnSearch: false
+      });
+  });
+
+'use strict';
+
+angular.module('statusFilter.directive', [
+  'bulbsCmsApp.settings',
+  'contentServices.listService'
+])
+  .provider('StatusFilterOptions', function (moment) {
+    var _statuses = [
+      {label: 'Draft', key: 'status', value: 'draft'},
+      {label: 'Published', key: 'before', value: function () { return moment().format('YYYY-MM-DDTHH:mmZ'); }},
+      {label: 'Scheduled', key: 'after', value: function () { return moment().format('YYYY-MM-DDTHH:mmZ'); }},
+      {label: 'All', key: null, value: null}
+    ];
+
+    this.setStatuses = function (statuses) {
+      _statuses = statuses;
+    };
+
+    this.$get = function () {
+      return {
+        getStatuses: function () {
+          return _statuses;
+        }
+      };
+    };
+
+  })
+  .directive('statusFilter', function ($location, _, StatusFilterOptions, ContentListService, routes) {
+    return {
+      templateUrl: routes.COMPONENTS_URL + 'status-filter/status-filter.html',
+      restrict: 'E',
+      scope: {},
+      controller: 'ContentlistCtrl',
+      link: function postLink(scope, element, attrs) {
+        scope.options = StatusFilterOptions.getStatuses();
+
+        /**
+         * Test if a particular option is currently active by comparing it to
+         *  $location.search().
+         *
+         * @param {object} option - option parameters to test for.
+         * @returns true if option is in $location.search, false otherwise.
+         */
+        scope.isActive = function (option) {
+          if (option.key && option.key in $location.search() &&
+              $location.search()[option.key] === getValue(option)) {
+            return true;
+          } else if (!option.key) { //all
+            var possibleKeys = _.pluck(scope.options, 'key');
+            var searchKeys = _.keys($location.search());
+            if (_.intersection(possibleKeys, searchKeys).length > 0) {
+              return false;
+            } else {
+              return true;
+            }
+          }
+          return false;
+        };
+
+        scope.filterByStatus = function (option) {
+          var search = {};
+          var value;
+          if (option.key) {
+            value = getValue(option);
+            search[option.key] = value;
+          }
+
+          return ContentListService.$updateContent(search, false);
+        };
+
+        function getValue(option) {
+          var value;
+          if (typeof option.value === 'function') {
+            value = option.value();
+          } else {
+            value = option.value;
+          }
+          return value;
+        }
+
+      }
+    };
+  });
+
+'use strict';
+
+angular.module('statusFilter', [
+  'statusFilter.directive'
+]);
+
+'use strict';
+
+angular.module('contentServices.factory', [])
+  .factory('ContentFactory', function (Restangular, contentApiConfig) {
+    return Restangular.withConfig(function (RestangularConfigurer) {
+      RestangularConfigurer.setBaseUrl(contentApiConfig.baseUrl);
+    });
+  })
+  .constant('contentApiConfig', {
+    baseUrl: '/cms/api/v1'
+  });
+
+'use strict';
+
+angular.module('contentServices.listService', [
+ 'contentServices.factory'
+])
+  .service('ContentListService', function (_, $location, $q, ContentFactory) {
+
+    var ContentListService = this;
+    // bind data object to service so we can use 2-way data binding
+    // WARNING: DO NOT ACCESS THIS DIRECTLY!
+    this._serviceData = {
+      filters: $location.search() || {},
+      content: [],
+      totalItems: 0
+    };
+    // shorthand
+    var _data = this._serviceData;
+
+    /**
+     * Update filters used for searching content data. Note: this does not actually
+     *  update content.
+     *
+     * @param {object} addFilters - filters to append to current filters.
+     * @param {Boolean} [merge=false] - false to overwrite current filters.
+     */
+    ContentListService.updateFilters = function (addFilters, merge) {
+      if (merge) {
+        _data.filters =
+          _.assign($location.search() || {}, addFilters);
+      } else {
+        _data.filters = addFilters;
+      }
+      $location.search(_data.filters);
+      return _data.filters;
+    };
+
+    /**
+    * Update content by performing a search.
+    *
+    * @param {object} addFilters - filters to append to current filters before search.
+    * @param {Boolean} [merge=false] - true to merge query parameters.
+    * @returns {Promise} resolves with new content data.
+    */
+    ContentListService.$updateContent = function (addFilters, merge) {
+      var updateParams = ContentListService.updateFilters(addFilters || _data.filters, merge);
+      return ContentFactory.all('content').getList(updateParams)
+        .then(function (data) {
+          _data.content = data;
+          _data.totalItems = data.length;
+          // resolve promise with updated content list service data
+          return _data;
+        });
+    };
+
+    /**
+     * Access data object, this will have a two-way data binding.
+     */
+    ContentListService.getData = function () {
+      return _data;
+    };
+
+  });
+
+'use strict';
+
+angular.module('contentServices', [
+  'contentServices.factory',
+  'contentServices.listService'
+]);
 
 'use strict';
 
@@ -1189,7 +2532,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('createContent', function ($http, $window, $, IfExistsElse, Login, ContentApi, routes, AUTO_ADD_AUTHOR, Raven) {
+  .directive('createContent', function ($http, $window, $, IfExistsElse, Login, ContentFactory, routes, AUTO_ADD_AUTHOR, Raven) {
     return {
       restrict: 'E',
       templateUrl:  routes.DIRECTIVE_PARTIALS_URL + 'create-content.html',
@@ -1211,7 +2554,7 @@ angular.module('bulbsCmsApp')
 
           if ($scope.tag) {
             IfExistsElse.ifExistsElse(
-              ContentApi.all('tag').getList({
+              ContentFactory.all('tag').getList({
                 ordering: 'name',
                 search: $scope.tag
               }),
@@ -1225,7 +2568,7 @@ angular.module('bulbsCmsApp')
           }
 
           if (AUTO_ADD_AUTHOR) {
-            ContentApi.one('me').get().then(function (data) {
+            ContentFactory.one('me').get().then(function (data) {
               $scope.init.authors = [data];
               $scope.gotUser = true;
             });
@@ -1323,7 +2666,8 @@ angular.module('bulbsCmsApp')
       restrict: 'A',
       scope: {
         modDatetime: '=ngModel',
-        modalTitle: '@'
+        modalTitle: '@',
+        modalOnClose: '&'
       },
       require: '^ngModel',
       link: function (scope, element) {
@@ -1339,11 +2683,13 @@ angular.module('bulbsCmsApp')
           modalInstance.result
             .then(function (newDate) {
               scope.modDatetime = newDate;
+              scope.modalOnClose({newDate: newDate});
             });
         });
       }
     };
   });
+
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -1554,7 +2900,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('featuretypeField', function (routes, IfExistsElse, ContentApi, Raven, $) {
+  .directive('featuretypeField', function (routes, IfExistsElse, ContentFactory, Raven, $) {
     return {
       templateUrl: routes.PARTIALS_URL + 'textlike-autocomplete-field.html',
       restrict: 'E',
@@ -1579,7 +2925,7 @@ angular.module('bulbsCmsApp')
         scope.add = function (o, input, freeForm) {
           var fVal = freeForm ? o : o.name;
           IfExistsElse.ifExistsElse(
-            ContentApi.all('things').getList({
+            ContentFactory.all('things').getList({
               type: 'feature_type',
               q: fVal
             }),
@@ -1595,197 +2941,6 @@ angular.module('bulbsCmsApp')
         };
 
       }
-    };
-  });
-
-'use strict';
-
-angular.module('bulbsCmsApp')
-  .directive('filterwidget', function ($http, $location, $window, $timeout, $, routes) {
-    return {
-      restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'filterwidget.html',
-      link: function (scope, element, attrs) {
-        var $element = $(element);
-        var $input = $element.find('input');
-
-        scope.autocompleteArray = [];
-
-        var filterInputCounter = 0, filterInputTimeout;
-
-        $input.on('input', function (e) {
-          var search = $input.val();
-          scope.searchTerm = search;
-
-          $timeout.cancel(filterInputTimeout);
-          filterInputTimeout = $timeout(function () { getAutocompletes(search); }, 200);
-
-          if (filterInputCounter > 2) {
-            getAutocompletes(search);
-          }
-        });
-        function getAutocompletes(search) {
-          $timeout.cancel(filterInputTimeout);
-          filterInputCounter = 0;
-          if (search.length < 1) {
-            scope.autocompleteArray = [];
-            scope.$apply();
-            return;
-          }
-
-          $http({
-            url: '/cms/api/v1/things/?type=tag&type=feature_type&type=author',
-            method: 'GET',
-            params: {'q': search}
-          }).success(function (data) {
-            scope.autocompleteArray = data;
-          });
-        }
-
-        $input.on('keyup', function (e) {
-          if (e.keyCode === 38) { arrowSelect('up'); }//up
-          if (e.keyCode === 40) { arrowSelect('down'); } //down
-          if (e.keyCode === 13) { //enter
-            if ($element.find('.selected').length > 0) {
-              // To trigger the click we need to first break out of the
-              // current $apply() cycle. Hence the $timeout()
-              $timeout(function () {
-                angular.element('.selected > a').triggerHandler('click');
-              }, 0);
-            } else {
-              scope.addFilter('search', $input.val());
-            }
-          }
-        });
-
-        $element.find('.search-button').on('click', function (e) {
-          scope.addFilter('search', $input.val());
-        });
-
-        $element.find('.clear-button').on('click', function (e) {
-          $(this).prev('input').val('');
-          scope.filterObjects = {};
-          applyFilterChange({});
-        });
-
-        $element.on('mouseover', '.entry', function () {
-          scope.selectEntry(this);
-        });
-
-        function arrowSelect(direction) {
-          var $entries = $element.find('.entry');
-          var $selected = $element.find('.entry.selected');
-          var $toSelect;
-          if ($selected.length > 0) {
-            if (direction === 'up') { $toSelect = $selected.first().prev(); }
-            if (direction === 'down') { $toSelect = $selected.first().next(); }
-          } else {
-            if (direction === 'up') { $toSelect = $entries.last(); }
-            if (direction === 'down') { $toSelect = $entries.first(); }
-          }
-          scope.selectEntry($toSelect);
-        }
-        scope.selectEntry = function (entry) {
-          $element.find('.selected').removeClass('selected');
-          $(entry).addClass('selected');
-        };
-
-        $input.on('blur', function () {
-          $element.find('.dropdown-menu').fadeOut(200);
-        });
-        $input.on('focus', function () {
-          $element.find('.dropdown-menu').fadeIn(200);
-        });
-
-        scope.addFilter = function (type, newFilterValue) {
-          var filterObject = $location.search();
-          if (type === 'search') {
-            filterObject.search = newFilterValue;
-          } else {
-            if (!filterObject[type]) { filterObject[type] = []; }
-            if (typeof(filterObject[type]) === 'string') { filterObject[type] = [filterObject[type]]; }
-            filterObject[type].push(newFilterValue);
-            $input.val('');
-          }
-          applyFilterChange(filterObject);
-          scope.filterInputValue = '';
-        };
-
-        scope.deleteFilter = function (key) {
-          var filterObject = $location.search();
-          var toDelete = scope.filterObjects[key];
-          if (typeof(filterObject[toDelete.type]) === 'string') {
-            filterObject[toDelete.type] = [filterObject[toDelete.type]];
-          }
-          var toSplice;
-          for (var i in filterObject[toDelete.type]) {
-            if (filterObject[toDelete.type][i] === toDelete.query) {
-              toSplice = i;
-              break;
-            }
-          }
-          filterObject[toDelete.type].splice(i, 1);
-          filterObject.search = $input.val();
-          delete scope.filterObjects[key];
-          applyFilterChange(filterObject);
-        };
-
-        function applyFilterChange(filterObject) {
-          filterObject.page = 1;
-          $location.search(filterObject);
-          scope.getContent(filterObject);
-          scope.autocompleteArray = [];
-          $input.trigger('blur');
-        }
-
-        function getFilterObjects() {
-          var search = $location.search();
-          scope.filterObjects = {};
-          if (typeof(search) === 'undefined') { console.log('undefined'); return; }
-          //TODO: this sucks
-          var filterParamsToTypes = {'authors': 'author', 'tags': 'tag', 'feature_types': 'feature_type'};
-          for (var filterParam in filterParamsToTypes) {
-            var filterType = filterParamsToTypes[filterParam];
-            if (typeof(search[filterParam]) === 'string') { search[filterParam] = [search[filterParam]]; }
-            for (var i in search[filterParam]) {
-              var value = search[filterParam][i];
-              scope.filterObjects[filterType + value] = {'query': value, 'type': filterParam};
-              getQueryToLabelMappings(filterType, value);
-            }
-          }
-          if (search.search) { scope.filterInputValue = search.search; }
-        }
-
-        scope.$on('$routeUpdate', function () {
-          getFilterObjects();
-        });
-
-        getFilterObjects();
-
-        function getQueryToLabelMappings(type, query) {
-          //this is pretty stupid
-          //TODO: Maybe do this with some localStorage caching?
-          //TODO: Maybe just dont do this at all? I dont know if thats possible
-          //    because there is no guarantee of any state (like if a user comes
-          //    directly to a filtered search page via URL)
-          scope.queryToLabelMappings = scope.queryToLabelMappings || {};
-
-          if (query in scope.queryToLabelMappings) { return; }
-
-          $http({
-            url: '/cms/api/v1/things/?type=' + type,
-            method: 'GET',
-            params: {'q': query}
-          }).success(function (data) {
-            for (var i in data) {
-              scope.queryToLabelMappings[data[i].value] = data[i].name;
-            }
-          });
-
-        }
-
-      }
-
     };
   });
 
@@ -1999,7 +3154,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('sectionsField', function (routes, _, IfExistsElse, ContentApi, Raven, $) {
+  .directive('sectionsField', function (routes, _, IfExistsElse, ContentFactory, Raven, $) {
     return {
       templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
@@ -2020,7 +3175,7 @@ angular.module('bulbsCmsApp')
         scope.add = function (o, input, freeForm) {
           var tagVal = freeForm ? o : o.name;
           IfExistsElse.ifExistsElse(
-            ContentApi.all('tag').getList({
+            ContentFactory.all('tag').getList({
               ordering: 'name',
               search: tagVal
             }),
@@ -2134,80 +3289,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .provider('StatusFilterOptions', function (moment) {
-    var _statuses = [
-      {label: 'Draft', key: 'status', value: 'draft'},
-      {label: 'Published', key: 'before', value: function () { return moment().format('YYYY-MM-DDTHH:mmZ'); }},
-      {label: 'Scheduled', key: 'after', value: function () { return moment().format('YYYY-MM-DDTHH:mmZ'); }},
-      {label: 'All', key: null, value: null}
-    ];
-
-    this.setStatuses = function (statuses) {
-      _statuses = statuses;
-    };
-
-    this.$get = function () {
-      return {
-        getStatuses: function () {
-          return _statuses;
-        }
-      };
-    };
-
-  })
-  .directive('statusFilter', function ($location, _, StatusFilterOptions, routes) {
-    return {
-      templateUrl: routes.PARTIALS_URL + 'status-filter.html',
-      restrict: 'E',
-      replace: true,
-      controller: 'ContentlistCtrl',
-      link: function postLink(scope, element, attrs) {
-        scope.options = StatusFilterOptions.getStatuses();
-
-        scope.isActive = function (option) {
-          if (option.key && option.key in $location.search() && $location.search()[option.key] === getValue(option)) {
-            return true;
-          }
-          if (!option.key) { //all
-            var possibleKeys = _.pluck(scope.options, 'key');
-            var searchKeys = _.keys($location.search());
-            if (_.intersection(possibleKeys, searchKeys).length > 0) {
-              return false;
-            } else {
-              return true;
-            }
-          }
-          return false;
-        };
-
-        scope.filterByStatus = function (option) {
-          var search = {};
-          var value;
-          if (option.key) {
-            value = getValue(option);
-            search[option.key] = value;
-          }
-          scope.getContent(search);
-        };
-
-        function getValue(option) {
-          var value;
-          if (typeof option.value === 'function') {
-            value = option.value();
-          } else {
-            value = option.value;
-          }
-          return value;
-        }
-
-      }
-    };
-  });
-
-'use strict';
-
-angular.module('bulbsCmsApp')
-  .directive('tagsField', function (routes, _, IfExistsElse, ContentApi, Raven, $) {
+  .directive('tagsField', function (routes, _, IfExistsElse, ContentFactory, Raven, $) {
     return {
       templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
@@ -2231,7 +3313,7 @@ angular.module('bulbsCmsApp')
         scope.add = function (o, input, freeForm) {
           var tagVal = freeForm ? o : o.name;
           IfExistsElse.ifExistsElse(
-            ContentApi.all('tag').getList({
+            ContentFactory.all('tag').getList({
               ordering: 'name',
               search: tagVal
             }),
@@ -2705,11 +3787,11 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ChangelogmodalCtrl', function ($scope, $modalInstance, _, ContentApi, article) {
+  .controller('ChangelogmodalCtrl', function ($scope, $modalInstance, _, ContentFactory, article) {
     $scope.article = article;
     $scope.users = {};
 
-    ContentApi.all('log').getList({content: article.id}).then(function (data) {
+    ContentFactory.all('log').getList({content: article.id}).then(function (data) {
       $scope.changelog = data;
 
       var userIds = _.unique(_.pluck(data, 'user'));
@@ -2718,7 +3800,7 @@ angular.module('bulbsCmsApp')
       };
 
       for (var i in userIds) {
-        ContentApi.one('author', userIds[i]).get().then(resp);
+        ContentFactory.one('author', userIds[i]).get().then(resp);
       }
     });
 
@@ -3001,7 +4083,7 @@ angular.module('bulbsCmsApp')
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, moment, keypress, Raven, PNotify,
-    IfExistsElse, VersionStorageApi, ContentApi, FirebaseApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener,
+    IfExistsElse, VersionStorageApi, ContentFactory, FirebaseApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener,
     routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
@@ -3145,7 +4227,7 @@ angular.module('bulbsCmsApp')
     };
 
     function getContent() {
-      return ContentApi.one('content', $routeParams.id).get().then(getArticleCallback);
+      return ContentFactory.one('content', $routeParams.id).get().then(getArticleCallback);
     }
     getContent();
 
@@ -3173,7 +4255,7 @@ angular.module('bulbsCmsApp')
         .removeClass('btn-danger')
         .addClass('btn-success')
         .html('<i class=\'glyphicon glyphicon-refresh fa-spin\'></i> Saving');
-      ContentApi.one('content', $routeParams.id).get()
+      ContentFactory.one('content', $routeParams.id).get()
         .then(function (data) {
           if (data.last_modified &&
             $scope.article.last_modified &&
@@ -3283,9 +4365,15 @@ angular.module('bulbsCmsApp')
 angular.module('bulbsCmsApp')
   .controller('ContentlistCtrl', function (
     $scope, $http, $timeout, $location,
-    $window, $q, $, ContentApi,
+    $window, $q, $, ContentListService,
     LOADING_IMG_SRC, routes)
   {
+    $scope.contentData = [];
+    ContentListService.$updateContent({page: 1})
+      .then(function (data) {
+        $scope.contentData = data;
+      });
+
     $scope.LOADING_IMG_SRC = LOADING_IMG_SRC;
     //set title
     $window.document.title = routes.CMS_NAMESPACE + ' | Content';
@@ -3295,52 +4383,31 @@ angular.module('bulbsCmsApp')
     $scope.search = $location.search().search;
     $scope.collapse = {};
 
-    var getContentCallback = function (data) {
-        $scope.articles = data;
-        $scope.totalItems = data.metadata.count;
-      };
-
-    $scope.getContent = function (params, merge) {
-        params = params || {};
-        if (merge) {
-          var curParams = $location.search();
-          params = $.extend(true, curParams, params);
-        }
-
-        $location.search(params);
-        $scope.pageNumber = $location.search().page || '1';
-
-        ContentApi.all('content').getList(params)
-          .then(getContentCallback);
-      };
-
-    $scope.getContent();
-
     $scope.goToPage = function () {
-        $scope.getContent({'page': $scope.pageNumber}, true);
-      };
+      ContentListService.$updateContent({page: $scope.pageNumber}, true);
+    };
 
     $scope.publishSuccessCbk = function (data) {
-        var i;
-        for (i = 0; i < $scope.articles.length; i++) {
-          if ($scope.articles[i].id === data.article.id) {
-            break;
-          }
+      var i;
+      for (i = 0; i < $scope.contentData.content.length; i++) {
+        if ($scope.contentData.content[i].id === data.article.id) {
+          break;
         }
+      }
 
-        for (var field in data.response) {
-          $scope.articles[i][field] = data.response[field];
-        }
+      for (var field in data.response) {
+        $scope.contentData.content[i][field] = data.response[field];
+      }
 
-        return $q.when();
-      };
+      return $q.when();
+    };
 
     $scope.trashSuccessCbk = function () {
-        $timeout(function () {
-            $scope.getContent();
-            $('#confirm-trash-modal').modal('hide');
-          }, 1500);
-      };
+      $timeout(function () {
+        ContentListService.$updateContent();
+        $('#confirm-trash-modal').modal('hide');
+      }, 1500);
+    };
 
     $('body').on('shown.bs.collapse', '.panel-collapse', function (e) {
       $scope.$digest();
@@ -3802,13 +4869,13 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('LastmodifiedguardmodalCtrl', function ($scope, $modalInstance, _, moment, ContentApi, articleOnPage, articleOnServer) {
+  .controller('LastmodifiedguardmodalCtrl', function ($scope, $modalInstance, _, moment, ContentFactory, articleOnPage, articleOnServer) {
     $scope.articleOnServer = articleOnServer;
 
-    ContentApi.all('log').getList({content: articleOnPage.id}).then(function (log) {
+    ContentFactory.all('log').getList({content: articleOnPage.id}).then(function (log) {
       var latest = _.max(log, function (entry) { return moment(entry.action_time); });
       var lastSavedById = latest.user;
-      ContentApi.one('author', lastSavedById).get().then(function (data) {
+      ContentFactory.one('author', lastSavedById).get().then(function (data) {
         $scope.lastSavedBy = data;
       });
     });
@@ -3844,173 +4911,6 @@ angular.module('bulbsCmsApp')
         function () { $modalInstance.dismiss(); }
       );
     };
-  });
-
-'use strict';
-
-angular.module('bulbsCmsApp')
-  .controller('PromotionCtrl', function ($scope, $window, $location, $, _, ContentApi, PromotionApi, Login, promo_options, routes, Raven) {
-    $window.document.title = routes.CMS_NAMESPACE + ' | Promotion Tool'; // set title
-
-    $scope.$watch('pzone', function (pzone) {
-      if (pzone && pzone.content && pzone.content.length) {
-        $scope.lastSavedPromotedArticles = _.clone(pzone.content.slice(0));
-        $scope.promotedArticles = pzone.content.slice(0);
-      } else {
-        $scope.promotedArticles = [{
-          hey_checkthis: true,
-          title: 'Nothing Promoted!',
-          feature_type: 'Click an article on the right and use \'Insert\''
-        }];
-      }
-    });
-
-    $scope.$watch('promotedArticles', function () {
-      if (_.isEqual($scope.promotedArticles, $scope.lastSavedPromotedArticles)) {
-        $scope.promotedArticlesDirty = false;
-      } else {
-        $scope.promotedArticlesDirty = true;
-      }
-    }, true);
-
-    $scope.getPzones = function () {
-      ContentApi.all('contentlist').getList()
-        .then(function (data) {
-          $scope.pzones = data;
-          $scope.pzone = data[0];
-        })
-        .catch(function (data) {
-          $window.alert('Content list does not exist.');
-        });
-    };
-
-    var getContentCallback = function (data) {
-      $scope.articles = data;
-      $scope.totalItems = data.metadata.count;
-    };
-
-    $scope.getContent = function () {
-      var params = {published: true};
-      var search = $location.search();
-      for (var prop in search) {
-        if (!search.hasOwnProperty(prop)) {
-          continue;
-        }
-        var val = search[prop];
-        if (!val || val === 'false') {
-          continue;
-        }
-        params[prop] = val;
-      }
-      ContentApi.all('content').getList(params)
-        .then(getContentCallback);
-    };
-
-    $scope.$on('$viewContentLoaded', function () {
-      $scope.getPzones();
-      $scope.getContent();
-    });
-
-    $scope.articleIsInPromotedArticles = function (id) {
-      if ($scope.promotedArticles) {
-        for (var i in $scope.promotedArticles) {
-          if ($scope.promotedArticles[i].id === id) {
-            return true;
-          }
-        }
-      }
-      return false;
-    };
-
-    var pA = $('.promotion-area'),
-      pC = $('.promotion-container');
-
-    $scope.insertArticleMode = function (article) {
-      $scope.selectedArticle = article;
-
-      pA.addClass('select-mode');
-      pC.off('click');
-      pC.on('click', '.promotion-area.select-mode .article-container', function (e) {
-        var index = $(this).parents('[data-index]').data('index') - 0;
-        $scope.insertArticle(index);
-        pA.removeClass('select-mode');
-        $scope.$apply();
-      });
-    };
-
-    $scope.insertArticle = function (index) {
-      var limit = promo_options.upper_limits[$scope.pzone.name];
-      if (!$scope.promotedArticles[index] || !$scope.promotedArticles[index].id) {
-        $scope.promotedArticles.splice(index, 1, $scope.selectedArticle);
-      }
-      else { $scope.promotedArticles.splice(index, 0, $scope.selectedArticle); }
-      if (limit && $scope.promotedArticles.length > limit) {
-        $scope.promotedArticles.pop($scope.promotedArticles.length);
-      }
-    };
-
-    $scope.replaceArticleMode = function (article) {
-      $scope.selectedArticle = article;
-
-      pA.addClass('select-mode');
-      pC.off('click');
-      pC.on('click', '.promotion-area.select-mode .article-container', function (e) {
-        var index = $(this).parents('[data-index]').data('index');
-        $scope.replaceArticle(index);
-        pA.removeClass('select-mode');
-        $scope.$apply();
-      });
-    };
-
-    $scope.replaceArticle = function (index) {
-      $scope.promotedArticles.splice(index, 1, $scope.selectedArticle);
-    };
-
-    $scope.save = function () {
-      var items = $scope.promotedArticles.slice(0); //copy
-      if (!items[0].id) {
-        items.shift();
-      }
-
-      var oldSaveHtml = $('.save-button').html();
-      $('.save-button').html('<i class="fa fa-refresh fa-spin"></i> Saving');
-
-      var payload = $scope.pzone;
-      if ($scope.promotedArticles[0].hey_checkthis) {
-        payload.content = [];
-      } else {
-        payload.content = $scope.promotedArticles;
-      }
-      var pzone = ContentApi.restangularizeElement(null, payload, 'contentlist');
-      return pzone.put().then(function (data) {
-        $scope.lastSavedPromotedArticles = _.clone(data.content);
-        $scope.promotedArticles = data.content;
-        $('.save-button').html(oldSaveHtml);
-      }, function (data) {
-        Raven.captureMessage('Error Saving Pzone', {extra: data});
-        $('.save-button').html('<i class="fa fa-times-circle"></i> Error');
-      });
-    };
-
-    $scope.moveUp = function (index) {
-      if (index === 0) { return; }
-      var toMove = $scope.promotedArticles[index];
-      $scope.promotedArticles[index] = $scope.promotedArticles[index - 1];
-      $scope.promotedArticles[index - 1] = toMove;
-    };
-
-    $scope.moveDown = function (index) {
-      if (index === $scope.promotedArticles.length - 1) { return; }
-      var toMove = $scope.promotedArticles[index];
-      $scope.promotedArticles[index] = $scope.promotedArticles[index + 1];
-      $scope.promotedArticles[index + 1] = toMove;
-    };
-
-    $scope.remove = function (index) {
-      $scope.promotedArticles.splice(index, 1);
-    };
-
-
   });
 
 'use strict';
@@ -4275,10 +5175,10 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('SponsormodalCtrl', function ($scope, ContentApi, article) {
+  .controller('SponsormodalCtrl', function ($scope, ContentFactory, article) {
     $scope.article = article;
 
-    ContentApi.all('sponsor').getList().then(function (data) {
+    ContentFactory.all('sponsor').getList().then(function (data) {
       $scope.sponsors = data;
     });
 
@@ -4377,10 +5277,10 @@ angular.module('bulbsCmsApp')
 angular.module('bulbsCmsApp')
   .value('ARTICLE_TEMPORARY_URL_DAYS_VALID', 7)
   .value('ARTICLE_TEMPORARY_URL_BASE', 'http://0.0.0.0:9069/unpublished/')
-  .controller('TemporaryUrlModalCtrl', function ($scope, $routeParams, ContentApi, ARTICLE_TEMPORARY_URL_DAYS_VALID,
+  .controller('TemporaryUrlModalCtrl', function ($scope, $routeParams, ContentFactory, ARTICLE_TEMPORARY_URL_DAYS_VALID,
                                                  ARTICLE_TEMPORARY_URL_BASE, _, moment) {
 
-    var content = ContentApi.one('content', $routeParams.id);
+    var content = ContentFactory.one('content', $routeParams.id);
 
     $scope.TEMP_LINK_DAYS_VALID = ARTICLE_TEMPORARY_URL_DAYS_VALID;
     $scope.TEMP_URL_BASE = ARTICLE_TEMPORARY_URL_BASE;
@@ -4413,7 +5313,7 @@ angular.module('bulbsCmsApp')
     $scope.createToken = function () {
 
       var now = moment();
-      ContentApi.one('content', $routeParams.id).post('create_token', {
+      ContentFactory.one('content', $routeParams.id).post('create_token', {
         'create_date': now,
         'expire_date': now.clone().add({days: ARTICLE_TEMPORARY_URL_DAYS_VALID})
       }).then(function (token) {
@@ -4762,25 +5662,14 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .factory('CmsNotificationsApi', function ($q, ContentApi) {
-    return ContentApi.service('notifications');
-  });
-'use strict';
-
-angular.module('bulbsCmsApp')
-  .factory('ContentApi', function (Restangular, contentApiConfig) {
-    return Restangular.withConfig(function (RestangularConfigurer) {
-      RestangularConfigurer.setBaseUrl(contentApiConfig.baseUrl);
-    });
-  })
-  .constant('contentApiConfig', {
-    baseUrl: '/cms/api/v1'
+  .factory('CmsNotificationsApi', function ($q, ContentFactory) {
+    return ContentFactory.service('notifications');
   });
 
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .service('CurrentUser', function EditorItems(ContentApi, $q) {
+  .service('CurrentUser', function EditorItems(ContentFactory, $q) {
 
     var userDefer = $q.defer(),
         $userPromise = userDefer.promise;
@@ -4789,7 +5678,7 @@ angular.module('bulbsCmsApp')
 
     var self = this;
     this.getItems = function () {
-      ContentApi.one('me').get().then(function (data) {
+      ContentFactory.one('me').get().then(function (data) {
         self.data = data;
         userDefer.resolve(data);
       });
@@ -5392,18 +6281,6 @@ angular.module('bulbsCmsApp').factory('PermissionsInterceptor', function ($q, $i
     }
   };
 });
-'use strict';
-
-angular.module('bulbsCmsApp')
-  .factory('PromotionApi', function (Restangular, promotionApiConfig) {
-    return Restangular.withConfig(function (RestangularConfigurer) {
-      RestangularConfigurer.setBaseUrl(promotionApiConfig.baseUrl);
-    });
-  })
-  .constant('promotionApiConfig', {
-    baseUrl: '/promotions/api'
-  });
-
 'use strict';
 
 angular.module('bulbsCmsApp')

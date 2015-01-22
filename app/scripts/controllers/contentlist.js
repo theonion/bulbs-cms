@@ -3,9 +3,15 @@
 angular.module('bulbsCmsApp')
   .controller('ContentlistCtrl', function (
     $scope, $http, $timeout, $location,
-    $window, $q, $, ContentApi,
+    $window, $q, $, ContentListService,
     LOADING_IMG_SRC, routes)
   {
+    $scope.contentData = [];
+    ContentListService.$updateContent({page: 1})
+      .then(function (data) {
+        $scope.contentData = data;
+      });
+
     $scope.LOADING_IMG_SRC = LOADING_IMG_SRC;
     //set title
     $window.document.title = routes.CMS_NAMESPACE + ' | Content';
@@ -15,52 +21,31 @@ angular.module('bulbsCmsApp')
     $scope.search = $location.search().search;
     $scope.collapse = {};
 
-    var getContentCallback = function (data) {
-        $scope.articles = data;
-        $scope.totalItems = data.metadata.count;
-      };
-
-    $scope.getContent = function (params, merge) {
-        params = params || {};
-        if (merge) {
-          var curParams = $location.search();
-          params = $.extend(true, curParams, params);
-        }
-
-        $location.search(params);
-        $scope.pageNumber = $location.search().page || '1';
-
-        ContentApi.all('content').getList(params)
-          .then(getContentCallback);
-      };
-
-    $scope.getContent();
-
     $scope.goToPage = function () {
-        $scope.getContent({'page': $scope.pageNumber}, true);
-      };
+      ContentListService.$updateContent({page: $scope.pageNumber}, true);
+    };
 
     $scope.publishSuccessCbk = function (data) {
-        var i;
-        for (i = 0; i < $scope.articles.length; i++) {
-          if ($scope.articles[i].id === data.article.id) {
-            break;
-          }
+      var i;
+      for (i = 0; i < $scope.contentData.content.length; i++) {
+        if ($scope.contentData.content[i].id === data.article.id) {
+          break;
         }
+      }
 
-        for (var field in data.response) {
-          $scope.articles[i][field] = data.response[field];
-        }
+      for (var field in data.response) {
+        $scope.contentData.content[i][field] = data.response[field];
+      }
 
-        return $q.when();
-      };
+      return $q.when();
+    };
 
     $scope.trashSuccessCbk = function () {
-        $timeout(function () {
-            $scope.getContent();
-            $('#confirm-trash-modal').modal('hide');
-          }, 1500);
-      };
+      $timeout(function () {
+        ContentListService.$updateContent();
+        $('#confirm-trash-modal').modal('hide');
+      }, 1500);
+    };
 
     $('body').on('shown.bs.collapse', '.panel-collapse', function (e) {
       $scope.$digest();

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('sectionsField', function (routes, _, IfExistsElse, ContentApi, Raven, $) {
+  .directive('sectionsField', function (routes, _, IfExistsElse, ContentFactory, Raven, $) {
     return {
       templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
@@ -22,7 +22,7 @@ angular.module('bulbsCmsApp')
         scope.add = function (o, input, freeForm) {
           var tagVal = freeForm ? o : o.name;
           IfExistsElse.ifExistsElse(
-            ContentApi.all('tag').getList({
+            ContentFactory.all('tag').getList({
               ordering: 'name',
               search: tagVal
             }),

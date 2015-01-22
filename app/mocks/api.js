@@ -1,14 +1,16 @@
+'use strict';
+
 angular.module('bulbsCmsApp.mockApi').run([
-  '$httpBackend', 'mockApiData', 'moment',
-  function($httpBackend, mockApiData, moment) {
+  '$httpBackend', 'mockApiData', 'moment', '_',
+  function($httpBackend, mockApiData, moment, _) {
 
     var today = moment();
 
     $httpBackend.when('OPTIONS', '/returns-a-403/').respond(function(){ //just for testing
-      return [403, {"detail": "No permission"}];
+      return [403, {'detail': 'No permission'}];
     });
 
-    detailRegex = /^\/cms\/api\/v1\/content\/(\d+)\/$/;
+    var detailRegex = /^\/cms\/api\/v1\/content\/(\d+)\/$/;
     function getContentId(url) {
       var index = detailRegex.exec(url)[1];
       return index;
@@ -17,26 +19,26 @@ angular.module('bulbsCmsApp.mockApi').run([
     function detailView(method, url, data) {
       var index = getContentId(url);
 
-      var contentList = mockApiData['content.list'];
+      var pzones = mockApiData['pzones.list'];
 
-      if(index <= contentList.results.length) {
-        return [200, contentList.results[index - 1]];
+      if(index <= pzones.results.length) {
+        return [200, pzones.results[index - 1]];
       } else {
-        return [404, {"detail": "Not found"}];
+        return [404, {'detail': 'Not found'}];
       }
     }
     $httpBackend.when('GET', detailRegex).respond(detailView);
 
     function detailPut(method, url, data) {
       var index = getContentId(url);
-      if(index == 7){ //todo: fix this
-        return [403, {detail: "You do not have permission to perform this action."}];
+      if(index === 7){
+        return [403, {detail: 'You do not have permission to perform this action.'}];
       }
-      if(method == 'PUT' && index == 8){
-        return [400, {"season": ["This field is required."], "episode": ["This field is required."], "show": ["This field is required."]}];
+      if(method === 'PUT' && index === 8){
+        return [400, {'season': ['This field is required.'], 'episode': ['This field is required.'], 'show': ['This field is required.']}];
       }
       return [200, data];
-    };
+    }
     $httpBackend.when('OPTIONS', detailRegex).respond(detailPut);
     $httpBackend.when('PUT', detailRegex).respond(detailPut);
 
@@ -49,7 +51,7 @@ angular.module('bulbsCmsApp.mockApi').run([
     $httpBackend.when('POST', trashRegex).respond(mockApiData['content.trash.response']);
     $httpBackend.when('OPTIONS', trashRegex).respond(mockApiData['content.trash.response']);
 
-    var publishRegex = /\/cms\/api\/v1\/content\/\d+\/publish\//
+    var publishRegex = /\/cms\/api\/v1\/content\/\d+\/publish\//;
     $httpBackend.when('POST', publishRegex).respond(mockApiData['content.publish.response']);
     $httpBackend.when('OPTIONS', publishRegex).respond(mockApiData['content.publish.response']);
 
@@ -84,7 +86,7 @@ angular.module('bulbsCmsApp.mockApi').run([
     }]);
 
     // content list
-    var listRegex = /^\/cms\/api\/v1\/content\/(\?.*)?$/
+    var listRegex = /^\/cms\/api\/v1\/content\/(\?.*)?$/;
     $httpBackend.when('GET', listRegex).respond(mockApiData['content.list']);
     $httpBackend.when('OPTIONS', listRegex).respond(mockApiData['content.list']);
 
@@ -107,14 +109,14 @@ angular.module('bulbsCmsApp.mockApi').run([
       if(index <= authorList.results.length) {
         return [200, authorList.results[index - 1]];
       } else {
-        return [404, {"detail": "Not found"}];
+        return [404, {'detail': 'Not found'}];
       }
     });
 
     $httpBackend.whenGET(/^\/cms\/api\/v1\/author\/.*/).respond(mockApiData['author.list']);
 
     $httpBackend.whenGET('/users/logout/').respond(function(method, url, data){
-      return [200]
+      return [200];
     });
 
     // notifications
@@ -167,74 +169,129 @@ angular.module('bulbsCmsApp.mockApi').run([
 
     //current user
     $httpBackend.whenGET(/\/users\/me\/?/).respond({
-      username: "JesseWoghin",
-      first_name: "Jesse",
-      last_name: "Woghin",
+      username: 'JesseWoghin',
+      first_name: 'Jesse',
+      last_name: 'Woghin',
       id: 35823,
-      email: "jwoghin@theonion.com"
+      email: 'jwoghin@theonion.com'
     });
 
     //sponsors
     $httpBackend.whenGET(/^\/cms\/api\/v1\/sponsor\/$/).respond([
       {
-        "id": 1,
-        "name": "Sponsor 1",
-        "slug": "sponsor-1",
-        "image": "1",
-        "url": "",
-        "pixel": "",
-        "top_widget": "",
-        "bottom_widget": ""
+        'id': 1,
+        'name': 'Sponsor 1',
+        'slug': 'sponsor-1',
+        'image': '1',
+        'url': '',
+        'pixel': '',
+        'top_widget': '',
+        'bottom_widget': ''
       },
       {
-        "id": 2,
-        "name": "Sponsor 2",
-        "slug": "sponsor-2",
-        "image": "2",
-        "url": "",
-        "pixel": "",
-        "top_widget": "",
-        "bottom_widget": ""
+        'id': 2,
+        'name': 'Sponsor 2',
+        'slug': 'sponsor-2',
+        'image': '2',
+        'url': '',
+        'pixel': '',
+        'top_widget': '',
+        'bottom_widget': ''
       },
     ]);
 
-    // promotions contentlist
-    var contentlist = {
-      count: 5,
-      next: null,
-      previous: null,
-      results: [
-        {id: 1, name: 'Homepage One', length: 1, content: mockApiData['content.list'].results.slice(0,1) },
-        {id: 2, name: 'Homepage Two', length: 2, content: mockApiData['content.list'].results.slice(0,2) },
-        {id: 3, name: 'Music', length: 1, content: mockApiData['content.list'].results.slice(1,2) },
-        {id: 4, name: 'Quizzes', length: 2, content: mockApiData['content.list'].results.slice(1,3) },
-        {id: 5, name: 'Business', length: 3, content: mockApiData['content.list'].results.slice(0,3) }
-      ]
-    };
+    // add content to pzones
+    var pzones = mockApiData['pzones.list'];
+    pzones.results[0].content = mockApiData['content.list'].results.slice(0,1);
+    pzones.results[1].content = mockApiData['content.list'].results.slice(0,2);
+    pzones.results[2].content = mockApiData['content.list'].results.slice(1,2);
+    pzones.results[3].content = mockApiData['content.list'].results.slice(1,3);
+    pzones.results[4].content = mockApiData['content.list'].results.slice(0,3);
 
+    var pzoneOperationsRegex = /^\/cms\/api\/v1\/pzone\/(\d+)\/operations\/((\d+)\/)?$/;
+    $httpBackend.when('GET', pzoneOperationsRegex).respond(function (method, url) {
+      // return the operation matching given id
+      var matches = url.match(pzoneOperationsRegex);
 
-    var contentlistRegex = /^\/cms\/api\/v1\/contentlist\/(\d+)\/$/;
-    function getContentlistId(url) {
-      var index = contentlistRegex.exec(url)[1];
-      return index - 1;
+      var json = null;
+      if (matches[3]) {
+        // operation id provided, find it and return it
+        var operationId = parseInt(matches[3], 10);
+        json = _.find(mockApiData['pzones.operations'], {id: operationId});
+      } else {
+        // no operation id provided, return all operations for given pzone
+        var pzoneId = parseInt(matches[1], 10);
+        json = _.filter(mockApiData['pzones.operations'], {pzone: pzoneId});
+      }
+
+      return [200, json];
+    });
+
+    $httpBackend.when('PUT', pzoneOperationsRegex).respond(function (method, url) {
+      var matches = url.match(pzoneOperationsRegex);
+
+      var json = null;
+      if (matches[0]) {
+        var pzoneId = parseInt(matches[0], 10);
+        json = _.find(mockApiData['pzones.list'], {id: pzoneId});
+      }
+
+      return [200, json];
+    });
+
+    $httpBackend.when('POST', pzoneOperationsRegex).respond(function (method, url, data) {
+      var operation = JSON.parse(data);
+      delete operation.cleanType;
+      operation.id = _.max(mockApiData['pzones.operations'], 'id').id + 1;
+      operation.content_title = _.find(mockApiData['content.list'].results, {id: operation.content}).title;
+      mockApiData['pzones.operations'].push(operation);
+      return operation;
+    });
+
+    $httpBackend.when('DELETE', pzoneOperationsRegex).respond(function (method, url) {
+      var status = 404;
+      var matches = url.match(pzoneOperationsRegex);
+      if (matches[3]) {
+        // operation id provided, find it and return it
+        var operationId = parseInt(matches[3], 10);
+        var index = _.findIndex(mockApiData['pzones.operations'], {id: operationId});
+        if (index >= 0) {
+          mockApiData['pzones.operations'].splice(index, 1);
+          status = 203;
+        }
+      }
+      return [status];
+    });
+
+    var pzoneRegex = /^\/cms\/api\/v1\/pzone\/(\d+)\/(\?preview=([\w\d-.:]+))?$/;
+    function pzoneView (method, url, data){
+      var matches = url.match(pzoneRegex);
+      var id = parseInt(matches[1], 10);
+
+      var obj = null;
+      if (matches[3]) {
+        // has a preview time, get preview
+        obj = _.clone(_.find(pzones.results, {id: id}), true);
+        // delete two entries to simulate some operations
+        obj.content.splice(0,2);
+      } else {
+        // there is no preview time, just get without preview time
+        obj = _.clone(_.find(pzones.results, {id: id}), true);
+      }
+      return [200, obj];
     }
-    function contentlistView(method, url, data){
-      var index = getContentlistId(url);
-      return [200, contentlist.results[index]];
-    }
-    $httpBackend.when('GET', '/cms/api/v1/contentlist/').respond(contentlist);
-    $httpBackend.when('OPTIONS', '/cms/api/v1/contentlist/').respond(contentlist);
+    $httpBackend.when('GET', '/cms/api/v1/pzone/').respond(pzones);
+    $httpBackend.when('OPTIONS', '/cms/api/v1/pzone/').respond(pzones);
 
-    $httpBackend.when('GET', contentlistRegex).respond(contentlistView);
-    $httpBackend.when('OPTIONS', contentlistRegex).respond(contentlistView);
-    $httpBackend.when('PUT', contentlistRegex).respond(contentlistView);
+    $httpBackend.when('GET', pzoneRegex).respond(pzoneView);
+    $httpBackend.when('OPTIONS', pzoneRegex).respond(pzoneView);
+    $httpBackend.when('PUT', pzoneRegex).respond(pzoneView);
 
-
-    // adding these into mockApiData for now. they'll be generated later.
-    mockApiData['contentlist.list'] = contentlist;
-    mockApiData['contentlist.list.1'] = contentlist.results[0];
+    // TODO : adding these into mockApiData for now. they'll be generated later.
+    mockApiData['pzones.list.1'] = pzones.results[0];
 
     // templates
+    $httpBackend.whenGET(/^\/components\/(.*)\.html/).passThrough();
     $httpBackend.whenGET(/^\/views\//).passThrough();
     $httpBackend.whenGET(/^\/content_type_views\//).passThrough();
 
@@ -309,371 +366,371 @@ angular.module('bulbsCmsApp.mockApi').run([
   }
 ]).value('mockApiData', {
   // NOTE: double-quotes are used because JSON
-  "content.create": {
-    "title": "A Test Article"
+  'content.create': {
+    'title': 'A Test Article'
   },
-  "content.create.response": {
-    "polymorphic_ctype": "core_article",
-    "tags": [],
-    "authors": [],
-    "image": null,
-    "absolute_url": "/article/a-test-article-1",
-    "detail_image": null,
-    "sponsor_image": null,
-    "status": "Draft",
-    "id": 4,
-    "published": null,
-    "last_modified": "2014-04-08T15:35:15.118Z",
-    "title": "A Test Article",
-    "slug": "a-test-article",
-    "description": "",
-    "feature_type": null,
-    "subhead": null,
-    "indexed": true,
-    "body": "",
-    "client_pixel": null,
-    "sponsor_name": null
+  'content.create.response': {
+    'polymorphic_ctype': 'core_article',
+    'tags': [],
+    'authors': [],
+    'image': null,
+    'absolute_url': '/article/a-test-article-1',
+    'detail_image': null,
+    'sponsor_image': null,
+    'status': 'Draft',
+    'id': 4,
+    'published': null,
+    'last_modified': '2014-04-08T15:35:15.118Z',
+    'title': 'A Test Article',
+    'slug': 'a-test-article',
+    'description': '',
+    'feature_type': null,
+    'subhead': null,
+    'indexed': true,
+    'body': '',
+    'client_pixel': null,
+    'sponsor_name': null
   },
-  "content.edit": {
-    "polymorphic_ctype": "core_article",
-    "tags": [],
-    "authors": [],
-    "image": null,
-    "absolute_url": "/article/a-test-article-1",
-    "detail_image": null,
-    "sponsor_image": null,
-    "status": "Draft",
-    "id": 4,
-    "published": null,
-    "last_modified": "2014-04-08T15:35:15.118Z",
-    "title": "A Test Article!!!",
-    "slug": "a-test-article-4",
-    "description": "",
-    "feature_type": null,
-    "subhead": null,
-    "indexed": true,
-    "body": "",
-    "client_pixel": null,
-    "sponsor_name": null
+  'content.edit': {
+    'polymorphic_ctype': 'core_article',
+    'tags': [],
+    'authors': [],
+    'image': null,
+    'absolute_url': '/article/a-test-article-1',
+    'detail_image': null,
+    'sponsor_image': null,
+    'status': 'Draft',
+    'id': 4,
+    'published': null,
+    'last_modified': '2014-04-08T15:35:15.118Z',
+    'title': 'A Test Article!!!',
+    'slug': 'a-test-article-4',
+    'description': '',
+    'feature_type': null,
+    'subhead': null,
+    'indexed': true,
+    'body': '',
+    'client_pixel': null,
+    'sponsor_name': null
   },
-  "content.edit.response": {
-    "polymorphic_ctype": "core_article",
-    "tags": [],
-    "authors": [],
-    "image": null,
-    "absolute_url": "/article/a-test-article-1",
-    "detail_image": null,
-    "sponsor_image": null,
-    "status": "Draft",
-    "id": 4, "published": null,
-    "last_modified": "2014-04-08T15:35:15.118Z",
-    "title": "A Test Article!!!",
-    "slug": "a-test-article-4",
-    "description": "",
-    "feature_type": null,
-    "subhead": null,
-    "indexed": true,
-    "body": "",
-    "client_pixel": null,
-    "sponsor_name": null
+  'content.edit.response': {
+    'polymorphic_ctype': 'core_article',
+    'tags': [],
+    'authors': [],
+    'image': null,
+    'absolute_url': '/article/a-test-article-1',
+    'detail_image': null,
+    'sponsor_image': null,
+    'status': 'Draft',
+    'id': 4, 'published': null,
+    'last_modified': '2014-04-08T15:35:15.118Z',
+    'title': 'A Test Article!!!',
+    'slug': 'a-test-article-4',
+    'description': '',
+    'feature_type': null,
+    'subhead': null,
+    'indexed': true,
+    'body': '',
+    'client_pixel': null,
+    'sponsor_name': null
   },
-  "content.trash": {
-    "status": "Trashed"
+  'content.trash': {
+    'status': 'Trashed'
   },
-  "content.trash.response": {
-    "status": "Trashed"
+  'content.trash.response': {
+    'status': 'Trashed'
   },
-  "content.publish": {
-    "published": "1969-06-09T16:20-05:00"
+  'content.publish': {
+    'published': '1969-06-09T16:20-05:00'
   },
-  "content.publish.response": {
-    "published": "1969-06-09T16:20-05:00",
-    "status": "Published"
+  'content.publish.response': {
+    'published': '1969-06-09T16:20-05:00',
+    'status': 'Published'
   },
-  "content.list": {
+  'content.list': {
     count: 100,
-    next: "/cms/api/v1/content/?page=2",
+    next: '/cms/api/v1/content/?page=2',
     previous: null,
     results: [{
-      polymorphic_ctype: "content_content",
+      polymorphic_ctype: 'content_content',
       tags: [{
-        slug: "section",
-        type: "core_section",
+        slug: 'section',
+        type: 'core_section',
         id: 1,
-        name: "Section"
+        name: 'Section'
       }],
       authors: [{
-        username: "username",
-        first_name: "First",
-        last_name: "Last",
+        username: 'username',
+        first_name: 'First',
+        last_name: 'Last',
         id: 1
       }],
-      thumbnail: {id: "1"},
+      thumbnail: {id: '1'},
       image: {
         caption: null,
         alt: null,
-        id: "1"
+        id: '1'
       },
-      absolute_url: "/article/slug-1",
+      absolute_url: '/article/slug-1',
       detail_image: {
         caption: null,
         alt: null,
-        id: "1"
+        id: '1'
       },
       sponsor_image: null,
-      status: "Draft",
+      status: 'Draft',
       id: 1,
       published: null,
-      title: "This is a draft article",
-      slug: "this-is-a-draft-article",
+      title: 'This is a draft article',
+      slug: 'this-is-a-draft-article',
       feature_type: null,
-      body: "<p>This is a draft article. It was written by First Last. It is a Feature Type article.</p>",
-      last_modified: "2015-04-08T15:35:15.118Z"
+      body: '<p>This is a draft article. It was written by First Last. It is a Feature Type article.</p>',
+      last_modified: '2015-04-08T15:35:15.118Z'
     }, {
-      polymorphic_ctype: "content_content",
+      polymorphic_ctype: 'content_content',
       tags: [{
-        slug: "film",
-        type: "core_section",
+        slug: 'film',
+        type: 'core_section',
         id: 22,
-        name: "Film"
+        name: 'Film'
       }],
       authors: [{
-        username: "milquetoast",
-        first_name: "Milque",
-        last_name: "Toast",
+        username: 'milquetoast',
+        first_name: 'Milque',
+        last_name: 'Toast',
         id: 1111
       }],
-      thumbnail: {id: "2"},
+      thumbnail: {id: '2'},
       image: {
         caption: null,
         alt: null,
-        id: "2"
+        id: '2'
       },
-      absolute_url: "/article/article-1",
+      absolute_url: '/article/article-1',
       detail_image: {
         caption: null,
         alt: null,
-        id: "2"
+        id: '2'
       },
       sponsor_image: null,
-      status: "Published",
+      status: 'Published',
       id: 2,
-      published: "2014-03-28T17:00:00Z",
-      last_modified: "2014-03-27T19:13:04.074Z",
-      title: "This is an article",
-      slug: "this-is-an-article-2",
-      description: "",
-      feature_type: "Feature Type 1",
-      subhead: "",
+      published: '2014-03-28T17:00:00Z',
+      last_modified: '2014-03-27T19:13:04.074Z',
+      title: 'This is an article',
+      slug: 'this-is-an-article-2',
+      description: '',
+      feature_type: 'Feature Type 1',
+      subhead: '',
       indexed: true,
-      body: "<p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p>",
+      body: '<p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p>',
       client_pixel: null,
       sponsor_name: null
     }, {
       id: 3,
-      polymorphic_ctype: "content_content",
-      feature_type: "Big Feature",
-      title: "Some title",
-      slug: "some-title-3",
+      polymorphic_ctype: 'content_content',
+      feature_type: 'Big Feature',
+      title: 'Some title',
+      slug: 'some-title-3',
       authors: [{
-        username: "BobbyNutson",
-        first_name: "Bobby",
-        last_name: "Nutson"
+        username: 'BobbyNutson',
+        first_name: 'Bobby',
+        last_name: 'Nutson'
       }],
-      thumbnail: {id: "3"},
+      thumbnail: {id: '3'},
       image: {
-        id: "3"
+        id: '3'
       }
     }, {
       id: 4,
-      title: "Far Future Article",
-      feature_type: "Feature From The Future",
-      slug: "far-future-article-4",
-      polymorphic_ctype: "content_content",
+      title: 'Far Future Article',
+      feature_type: 'Feature From The Future',
+      slug: 'far-future-article-4',
+      polymorphic_ctype: 'content_content',
       tags: [{
-        slug: "film",
-        type: "core_section",
+        slug: 'film',
+        type: 'core_section',
         id: 22,
-        name: "Film"
+        name: 'Film'
       }],
       authors: [{
-        username: "milquetoast",
-        first_name: "Milque",
-        last_name: "Toast",
+        username: 'milquetoast',
+        first_name: 'Milque',
+        last_name: 'Toast',
         id: 1
       }],
-      thumbnail: {id: "4"},
+      thumbnail: {id: '4'},
       image: {
         caption: null,
         alt: null,
-        id: "4"
+        id: '4'
       },
-      absolute_url: "/article/article-1",
+      absolute_url: '/article/article-1',
       detail_image: {
         caption: null,
         alt: null,
-        id: "4"
+        id: '4'
       },
       sponsor_image: null,
-      status: "Published",
-      published: "2021-03-28T17:00:00Z",
-      last_modified: "2014-03-27T19:13:04.074Z",
-      description: "",
-      subhead: "",
+      status: 'Published',
+      published: '2021-03-28T17:00:00Z',
+      last_modified: '2014-03-27T19:13:04.074Z',
+      description: '',
+      subhead: '',
       indexed: true,
-      body: "<p>This is a body</p><div data-type=\"image\" class=\"onion-image image inline crop-original size-medium\" data-image-id=\"1488\" data-size=\"medium\" data-crop=\"original\" data-format=\"jpg\" data-alt=\"\"><div><br></div><span class=\"caption\">Via Weadiamedia.com</span></div><p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p>",
+      body: '<p>This is a body</p><div data-type=\'image\' class=\'onion-image image inline crop-original size-medium\' data-image-id=\'1488\' data-size=\'medium\' data-crop=\'original\' data-format=\'jpg\' data-alt=\'\'><div><br></div><span class=\'caption\'>Via Weadiamedia.com</span></div><p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p><p>This is a body</p>',
       client_pixel: null,
       sponsor_name: null
     }, {
       id: 5,
-      title: "Behold: A Video",
-      feature_type: "Video Series",
-      slug: "behold-video-5",
-      polymorphic_ctype: "video",
+      title: 'Behold: A Video',
+      feature_type: 'Video Series',
+      slug: 'behold-video-5',
+      polymorphic_ctype: 'video',
       tags: [{
-        slug: "film",
-        type: "core_section",
+        slug: 'film',
+        type: 'core_section',
         id: 22,
-        name: "Film"
+        name: 'Film'
       }],
       authors: [{
-        username: "reggie420",
-        first_name: "Reginald",
-        last_name: "Cunningham",
+        username: 'reggie420',
+        first_name: 'Reginald',
+        last_name: 'Cunningham',
         id: 420
       }],
-      thumbnail: {id: "5"},
+      thumbnail: {id: '5'},
       image: {
         caption: null,
         alt: null,
-        id: "1"
+        id: '1'
       },
-      absolute_url: "/article/article-1",
+      absolute_url: '/article/article-1',
       video: 10118,
       sponsor_image: null,
-      status: "Published",
-      published: "2001-09-03T16:20:00Z",
-      last_modified: "2001-09-03T16:00:00Z",
-      description: "",
-      subhead: "",
+      status: 'Published',
+      published: '2001-09-03T16:20:00Z',
+      last_modified: '2001-09-03T16:00:00Z',
+      description: '',
+      subhead: '',
       indexed: true,
-      body: "See that video up there? No? Oh.",
+      body: 'See that video up there? No? Oh.',
       client_pixel: null,
       sponsor_name: null
     }, {
       id: 6,
-      title: "No Thumbnail Here Folks",
-      feature_type: "Thumbnails On Holiday",
-      slug: "thumbnails-holiday-6",
-      polymorphic_ctype: "content_content",
+      title: 'No Thumbnail Here Folks',
+      feature_type: 'Thumbnails On Holiday',
+      slug: 'thumbnails-holiday-6',
+      polymorphic_ctype: 'content_content',
       tags: [],
       authors: [{
-        username: "hsimpson",
-        first_name: "Homer",
-        last_name: "Simpson",
+        username: 'hsimpson',
+        first_name: 'Homer',
+        last_name: 'Simpson',
         id: 16832
       }],
       thumbnail: null,
-      absolute_url: "/article/article-1",
+      absolute_url: '/article/article-1',
       sponsor_image: null,
-      status: "Published",
-      published: "2011-04-03T16:20:00Z",
-      last_modified: "2011-05-03T16:00:00Z",
-      description: "",
-      subhead: "",
+      status: 'Published',
+      published: '2011-04-03T16:20:00Z',
+      last_modified: '2011-05-03T16:00:00Z',
+      description: '',
+      subhead: '',
       indexed: true,
-      body: "There's no thumbnail here. Go away.",
+      body: 'There\'s no thumbnail here. Go away.',
       client_pixel: null,
       sponsor_name: null
     }, {
       id: 7,
-      title: "You don't have permission here",
-      feature_type: "Locked it down here",
-      slug: "no-permission-7",
-      polymorphic_ctype: "content_content",
+      title: 'You don\'t have permission here',
+      feature_type: 'Locked it down here',
+      slug: 'no-permission-7',
+      polymorphic_ctype: 'content_content',
       tags: [],
       authors: [{
-        username: "special",
-        first_name: "Stephanie",
-        last_name: "Pecial",
+        username: 'special',
+        first_name: 'Stephanie',
+        last_name: 'Pecial',
         id: 16832
       }],
       thumbnail: null,
-      absolute_url: "/article/article-1",
+      absolute_url: '/article/article-1',
       sponsor_image: null,
-      status: "Published",
-      published: "2017-07-25T16:20:00Z",
-      last_modified: "2012-05-03T16:00:00Z",
-      description: "",
-      subhead: "",
+      status: 'Published',
+      published: '2017-07-25T16:20:00Z',
+      last_modified: '2012-05-03T16:00:00Z',
+      description: '',
+      subhead: '',
       indexed: true,
-      body: "Go ahead, try saving. Not happening.",
+      body: 'Go ahead, try saving. Not happening.',
       client_pixel: null,
       sponsor_name: null
     }, {
       id: 8,
-      title: "Bad Requests Here",
-      feature_type: "You can't do anything right",
-      slug: "bad-request-8",
-      polymorphic_ctype: "content_content",
+      title: 'Bad Requests Here',
+      feature_type: 'You can\'t do anything right',
+      slug: 'bad-request-8',
+      polymorphic_ctype: 'content_content',
       tags: [],
       authors: [{
-        username: "bbrian",
-        first_name: "Bad Luck",
-        last_name: "Brian",
+        username: 'bbrian',
+        first_name: 'Bad Luck',
+        last_name: 'Brian',
         id: 8410293
       }],
       thumbnail: null,
-      absolute_url: "/article/article-1",
+      absolute_url: '/article/article-1',
       sponsor_image: null,
-      status: "Published",
-      published: "2017-07-25T16:20:00Z",
-      last_modified: "2012-05-03T16:00:00Z",
-      description: "",
-      subhead: "",
+      status: 'Published',
+      published: '2017-07-25T16:20:00Z',
+      last_modified: '2012-05-03T16:00:00Z',
+      description: '',
+      subhead: '',
       indexed: true,
-      body: "Go ahead, try saving. Not happening.",
+      body: 'Go ahead, try saving. Not happening.',
       client_pixel: null,
       sponsor_name: null
     }, {
       id: 9,
-      feature_type: "Thumbnail Override Testing",
-      title: "Overridden Thumbnail",
-      slug: "overridden-thumbnail-9",
-      polymorphic_ctype: "content_content",
+      feature_type: 'Thumbnail Override Testing',
+      title: 'Overridden Thumbnail',
+      slug: 'overridden-thumbnail-9',
+      polymorphic_ctype: 'content_content',
       tags: [],
       authors: [],
-      thumbnail: {id: "1"},
-      thumbnail_override: {id: "1"},
+      thumbnail: {id: '1'},
+      thumbnail_override: {id: '1'},
       image: {
         caption: null,
         alt: null,
-        id: "3"
+        id: '3'
       },
-      absolute_url: "/article/article-1",
+      absolute_url: '/article/article-1',
       sponsor_image: null,
-      status: "Published",
-      published: "2017-07-25T16:20:00Z",
-      last_modified: "2012-05-03T16:00:00Z",
-      description: "",
-      subhead: "",
+      status: 'Published',
+      published: '2017-07-25T16:20:00Z',
+      last_modified: '2012-05-03T16:00:00Z',
+      description: '',
+      subhead: '',
       indexed: true,
-      body: "This article has a thumbnail override field.",
+      body: 'This article has a thumbnail override field.',
       client_pixel: null,
       sponsor_name: null
     }]
   },
   'things.list': [
-    {"url": "/search?tags=so-you-think-you-can-dance", "param": "tags", "type": "tag", "name": "So You Think You Can Dance", "value": "so-you-think-you-can-dance"},
-    {"url": "/search?feature_types=oscar-this", "param": "feature_types", "type": "feature_type", "name": "Oscar This", "value": "oscar-this"},
-    {"url": "/search?feature_types=hear-this", "param": "feature_types", "type": "feature_type", "name": "Hear This", "value": "hear-this"},
-    {"url": "/search?feature_types=why-do-i-own-this", "param": "feature_types", "type": "feature_type", "name": "Why Do I Own This?", "value": "why-do-i-own-this"},
-    {"url": "/search?feature_types=out-this-month", "param": "feature_types", "type": "feature_type", "name": "Out This Month", "value": "out-this-month"},
-    {"url": "/search?feature_types=emmy-this", "param": "feature_types", "type": "feature_type", "name": "Emmy This!", "value": "emmy-this"},
-    {"url": "/search?feature_types=this-was-pop", "param": "feature_types", "type": "feature_type", "name": "This Was Pop", "value": "this-was-pop"},
-    {"url": "/search?feature_types=watch-this", "param": "feature_types", "type": "feature_type", "name": "Watch This", "value": "watch-this"},
-    {"url": "/search?feature_types=what-are-you-playing-this-weekend", "param": "feature_types", "type": "feature_type", "name": "What Are You Playing This Weekend?", "value": "what-are-you-playing-this-weekend"},
-    {"url": "/search?feature_types=i-watched-this-on-purpose", "param": "feature_types", "type": "feature_type", "name": "I Watched This On Purpose", "value": "i-watched-this-on-purpose"}
+    {'url': '/search?tags=so-you-think-you-can-dance', 'param': 'tags', 'type': 'tag', 'name': 'So You Think You Can Dance', 'value': 'so-you-think-you-can-dance'},
+    {'url': '/search?feature_types=oscar-this', 'param': 'feature_types', 'type': 'feature_type', 'name': 'Oscar This', 'value': 'oscar-this'},
+    {'url': '/search?feature_types=hear-this', 'param': 'feature_types', 'type': 'feature_type', 'name': 'Hear This', 'value': 'hear-this'},
+    {'url': '/search?feature_types=why-do-i-own-this', 'param': 'feature_types', 'type': 'feature_type', 'name': 'Why Do I Own This?', 'value': 'why-do-i-own-this'},
+    {'url': '/search?feature_types=out-this-month', 'param': 'feature_types', 'type': 'feature_type', 'name': 'Out This Month', 'value': 'out-this-month'},
+    {'url': '/search?feature_types=emmy-this', 'param': 'feature_types', 'type': 'feature_type', 'name': 'Emmy This!', 'value': 'emmy-this'},
+    {'url': '/search?feature_types=this-was-pop', 'param': 'feature_types', 'type': 'feature_type', 'name': 'This Was Pop', 'value': 'this-was-pop'},
+    {'url': '/search?feature_types=watch-this', 'param': 'feature_types', 'type': 'feature_type', 'name': 'Watch This', 'value': 'watch-this'},
+    {'url': '/search?feature_types=what-are-you-playing-this-weekend', 'param': 'feature_types', 'type': 'feature_type', 'name': 'What Are You Playing This Weekend?', 'value': 'what-are-you-playing-this-weekend'},
+    {'url': '/search?feature_types=i-watched-this-on-purpose', 'param': 'feature_types', 'type': 'feature_type', 'name': 'I Watched This On Purpose', 'value': 'i-watched-this-on-purpose'}
   ],
   'tags.list': [
     {'id': 1, 'slug': 'tag-1', 'name': 'Tag 1', 'type': 'content_tag'},
@@ -683,262 +740,308 @@ angular.module('bulbsCmsApp.mockApi').run([
     {'id': 5, 'slug': 'tag-5', 'name': 'Tag 5', 'type': 'content_tag'},
     {'id': 6, 'slug': 'tag-6', 'name': 'Tag 6', 'type': 'content_tag'}
   ],
-  'contentlist.list': {
-    'count': 5,
-    'next': null,
-    'previous': null,
-    'results': [
-      {'id': 1, 'name': 'Homepage One'},
-      {'id': 2, 'name': 'Homepage Two'},
-      {'id': 3, 'name': 'Music'},
-      {'id': 4, 'name': 'Quizzes'},
-      {'id': 5, 'name': 'Business'}
-    ]
+  'pzones.list': {
+    count: 5,
+    next: null,
+    previous: null,
+    results: [{
+      id: 1,
+      name: 'Homepage One',
+      zone_length: 3
+    }, {
+      id: 2,
+      name: 'Homepage Two',
+      zone_length: 5
+    }, {
+      id: 3,
+      name: 'Music',
+      zone_length: 3
+    }, {
+      id: 4,
+      name: 'Quizzes',
+      zone_length: 3
+    }, {
+      id: 5,
+      name: 'Business',
+      zone_length: 10
+    }]
   },
-  "bettycropper.detail": {
-    "credit": "No-Look Wnuk",
-    "name": 'prom1985_2.jpg',
-    "id": '1',
-    "height": 450,
-    "width": 800,
-    "selections": {
-      "1x1": {
-        "y0": 0,
-        "y1": 0,
-        "x0": 0,
-        "x1": 0,
-        "source": "auto"
+  'pzones.operations': [{
+    'id': 0,
+    'type_name': 'promotion_insertoperation',
+    'pzone': 1,
+    'when': moment().add(2, 'hours').toISOString(),
+    'index': 0,
+    'content': 1,
+    'content_title': 'This is a draft article'
+  }, {
+    'id': 1,
+    'type_name': 'promotion_replaceoperation',
+    'pzone': 1,
+    'when': moment().subtract(1, 'hours').toISOString(),
+    'index': 0,
+    'content': 1,
+    'content_title': 'This is a draft article'
+  }, {
+    'id': 2,
+    'type_name': 'promotion_deleteoperation',
+    'pzone': 1,
+    'when': moment().toISOString(),
+    'content': 1,
+    'content_title': 'This is a draft article'
+  }, {
+    'id': 3,
+    'type_name': 'promotion_insertoperation',
+    'pzone': 1,
+    'when': moment().add(20, 'minutes').toISOString(),
+    'index': 0,
+    'content': 1,
+    'content_title': 'This is a draft article'
+  }],
+  'bettycropper.detail': {
+    'credit': 'No-Look Wnuk',
+    'name': 'prom1985_2.jpg',
+    'id': '1',
+    'height': 450,
+    'width': 800,
+    'selections': {
+      '1x1': {
+        'y0': 0,
+        'y1': 0,
+        'x0': 0,
+        'x1': 0,
+        'source': 'auto'
       },
-      "2x1": {
-        "y0": 100,
-        "y1": 250,
-        "x0": 100,
-        "x1": 400,
-        "source": "auto"
+      '2x1': {
+        'y0': 100,
+        'y1': 250,
+        'x0': 100,
+        'x1': 400,
+        'source': 'auto'
       },
-      "3x1": {
-        "y0": 200,
-        "y1": 450,
-        "x0": 0,
-        "x1": 750,
-        "source": "auto"
+      '3x1': {
+        'y0': 200,
+        'y1': 450,
+        'x0': 0,
+        'x1': 750,
+        'source': 'auto'
       },
-      "3x4": {
-        "y0": 0,
-        "y1": 400,
-        "x0": 500,
-        "x1": 800,
-        "source": "auto"
+      '3x4': {
+        'y0': 0,
+        'y1': 400,
+        'x0': 500,
+        'x1': 800,
+        'source': 'auto'
       },
-      "4x3": {
-        "y0": 150,
-        "y1": 450,
-        "x0": 400,
-        "x1": 800,
-        "source": "user"
+      '4x3': {
+        'y0': 150,
+        'y1': 450,
+        'x0': 400,
+        'x1': 800,
+        'source': 'user'
       },
-      "16x9": {
-        "y0": 0,
-        "y1": 450,
-        "x0": 0,
-        "x1": 800,
-        "source": "user"
+      '16x9': {
+        'y0': 0,
+        'y1': 450,
+        'x0': 0,
+        'x1': 800,
+        'source': 'user'
       }
     }
   },
-  "changelog": [
+  'changelog': [
     {
       id: 6,
-      action_time: "2014-04-29T06:51:39.427Z",
+      action_time: '2014-04-29T06:51:39.427Z',
       content_type: 15,
-      object_id: "1",
+      object_id: '1',
       user: 6,
-      change_message: "Saved"
+      change_message: 'Saved'
     },
     {
       id: 5,
-      action_time: "2014-04-28T06:51:39.427Z",
+      action_time: '2014-04-28T06:51:39.427Z',
       content_type: 15,
-      object_id: "1",
+      object_id: '1',
       user: 1,
-      change_message: "Published"
+      change_message: 'Published'
     },
     {
       id: 4,
-      action_time: "2014-04-28T06:51:39.427Z",
+      action_time: '2014-04-28T06:51:39.427Z',
       content_type: 15,
-      object_id: "1",
+      object_id: '1',
       user: 1,
-      change_message: "Scheduled"
+      change_message: 'Scheduled'
     },
     {
       id: 3,
-      action_time: "2014-04-28T06:51:21.550Z",
+      action_time: '2014-04-28T06:51:21.550Z',
       content_type: 15,
-      object_id: "1",
+      object_id: '1',
       user: 1,
-      change_message: "Waiting for Editor"
+      change_message: 'Waiting for Editor'
     },
     {
       id: 2,
-      action_time: "2014-04-28T06:51:09.732Z",
+      action_time: '2014-04-28T06:51:09.732Z',
       content_type: 15,
-      object_id: "1",
+      object_id: '1',
       user: 1,
-      change_message: "Saved"
+      change_message: 'Saved'
     },
     {
       id: 1,
-      action_time: "2014-04-28T06:47:49.576Z",
+      action_time: '2014-04-28T06:47:49.576Z',
       content_type: 15,
-      object_id: "1",
+      object_id: '1',
       user: 1,
-      change_message: "Created"
+      change_message: 'Created'
     }
   ],
-  "author.list": {
+  'author.list': {
     count: 5,
     next: '/?next',
     previous: null,
     results: [
       {
-        username: "User1",
-        first_name: "First1",
-        last_name: "Last1",
+        username: 'User1',
+        first_name: 'First1',
+        last_name: 'Last1',
         id: 1,
-        email: "flast1@theonion.com"
+        email: 'flast1@theonion.com'
       },
       {
-        username: "User2",
-        first_name: "First2",
-        last_name: "Last2",
+        username: 'User2',
+        first_name: 'First2',
+        last_name: 'Last2',
         id: 2,
-        email: "flast2@theonion.com"
+        email: 'flast2@theonion.com'
       },
       {
-        username: "User3",
-        first_name: "First3",
-        last_name: "Last3",
+        username: 'User3',
+        first_name: 'First3',
+        last_name: 'Last3',
         id: 3,
-        email: "flast3@theonion.com"
+        email: 'flast3@theonion.com'
       },
       {
-        username: "User4",
-        first_name: "First4",
-        last_name: "Last4",
+        username: 'User4',
+        first_name: 'First4',
+        last_name: 'Last4',
         id: 4,
-        email: "flast4@theonion.com"
+        email: 'flast4@theonion.com'
       },
       {
-        username: "User5",
-        first_name: "First5",
-        last_name: "Last5",
+        username: 'User5',
+        first_name: 'First5',
+        last_name: 'Last5',
         id: 5,
-        email: "flast5@theonion.com"
+        email: 'flast5@theonion.com'
       },
       {
-        username: "User6",
-        first_name: "First6",
-        last_name: "Last6",
+        username: 'User6',
+        first_name: 'First6',
+        last_name: 'Last6',
         id: 6,
-        email: "flast6@theonion.com"
+        email: 'flast6@theonion.com'
       },
       {
-        username: "Username6",
-        first_name: "",
-        last_name: "",
+        username: 'Username6',
+        first_name: '',
+        last_name: '',
         id: 6,
-        email: "flast6@theonion.com"
+        email: 'flast6@theonion.com'
       }
     ]
   },
   'bettycropper.updateSelection': {
-    "credit": "No-Look Wnuk",
-    "name": 'prom1985_2.jpg',
-    "id": '1',
-    "height": 450,
-    "width": 800,
-    "selections": {
-      "1x1": {
-        "y0": 0,
-        "y1": 0,
-        "x0": 0,
-        "x1": 0
+    'credit': 'No-Look Wnuk',
+    'name': 'prom1985_2.jpg',
+    'id': '1',
+    'height': 450,
+    'width': 800,
+    'selections': {
+      '1x1': {
+        'y0': 0,
+        'y1': 0,
+        'x0': 0,
+        'x1': 0
       },
-      "2x1": {
-        "y0": 100,
-        "y1": 250,
-        "x0": 100,
-        "x1": 400
+      '2x1': {
+        'y0': 100,
+        'y1': 250,
+        'x0': 100,
+        'x1': 400
       },
-      "3x1": {
-        "y0": 200,
-        "y1": 450,
-        "x0": 0,
-        "x1": 750
+      '3x1': {
+        'y0': 200,
+        'y1': 450,
+        'x0': 0,
+        'x1': 750
       },
-      "3x4": {
-        "y0": 0,
-        "y1": 400,
-        "x0": 500,
-        "x1": 800
+      '3x4': {
+        'y0': 0,
+        'y1': 400,
+        'x0': 500,
+        'x1': 800
       },
-      "4x3": {
-        "y0": 150,
-        "y1": 450,
-        "x0": 400,
-        "x1": 800
+      '4x3': {
+        'y0': 150,
+        'y1': 450,
+        'x0': 400,
+        'x1': 800
       },
-      "16x9": {
-        "y0": 0,
-        "y1": 450,
-        "x0": 0,
-        "x1": 800
+      '16x9': {
+        'y0': 0,
+        'y1': 450,
+        'x0': 0,
+        'x1': 800
       }
     }
   },
   'bettycropper.new': {
-    "credit": "No-Look Wnuk",
-    "name": 'prom1985_2.jpg',
-    "id": '1',
-    "height": 450,
-    "width": 800,
-    "selections": {
-      "1x1": {
-        "y0": 0,
-        "y1": 0,
-        "x0": 0,
-        "x1": 0
+    'credit': 'No-Look Wnuk',
+    'name': 'prom1985_2.jpg',
+    'id': '1',
+    'height': 450,
+    'width': 800,
+    'selections': {
+      '1x1': {
+        'y0': 0,
+        'y1': 0,
+        'x0': 0,
+        'x1': 0
       },
-      "2x1": {
-        "y0": 100,
-        "y1": 250,
-        "x0": 100,
-        "x1": 400
+      '2x1': {
+        'y0': 100,
+        'y1': 250,
+        'x0': 100,
+        'x1': 400
       },
-      "3x1": {
-        "y0": 200,
-        "y1": 450,
-        "x0": 0,
-        "x1": 750
+      '3x1': {
+        'y0': 200,
+        'y1': 450,
+        'x0': 0,
+        'x1': 750
       },
-      "3x4": {
-        "y0": 0,
-        "y1": 400,
-        "x0": 500,
-        "x1": 800
+      '3x4': {
+        'y0': 0,
+        'y1': 400,
+        'x0': 500,
+        'x1': 800
       },
-      "4x3": {
-        "y0": 150,
-        "y1": 450,
-        "x0": 400,
-        "x1": 800
+      '4x3': {
+        'y0': 150,
+        'y1': 450,
+        'x0': 400,
+        'x1': 800
       },
-      "16x9": {
-        "y0": 0,
-        "y1": 450,
-        "x0": 0,
-        "x1": 800
+      '16x9': {
+        'y0': 0,
+        'y1': 450,
+        'x0': 0,
+        'x1': 800
       }
     }
   }

@@ -1,11 +1,11 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ChangelogmodalCtrl', function ($scope, $modalInstance, _, ContentApi, article) {
+  .controller('ChangelogmodalCtrl', function ($scope, $modalInstance, _, ContentFactory, article) {
     $scope.article = article;
     $scope.users = {};
 
-    ContentApi.all('log').getList({content: article.id}).then(function (data) {
+    ContentFactory.all('log').getList({content: article.id}).then(function (data) {
       $scope.changelog = data;
 
       var userIds = _.unique(_.pluck(data, 'user'));
@@ -14,7 +14,7 @@ angular.module('bulbsCmsApp')
       };
 
       for (var i in userIds) {
-        ContentApi.one('author', userIds[i]).get().then(resp);
+        ContentFactory.one('author', userIds[i]).get().then(resp);
       }
     });
 
