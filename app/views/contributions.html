@@ -1,19 +1,6 @@
 <nav-bar view="toolbar" article="content"></nav-bar>
 
 <div class="container">
-
-<!--     <div class="row content-nav">
-        <div class="container col-xs-12 col-sm-pull-1 col-sm-push-1 col-sm-10 col-md-pull-2 col-md-push-2 col-md-8">
-            <ul class="nav nav-pills">
-                <li>
-                    <a href="/cms/app/edit/{{ contentId }}/" >Content</a>
-                </li>
-                <li class="active">
-                    <a href="/cms/{{ contentId }}/contributions/" >Contributions</a>
-                </li>
-            </ul>
-        </div>
-    </div> -->
     <div class="row">
         <div id="contributions" class="container col-xs-12 col-sm-pull-1 col-sm-push-1 col-sm-10 col-md-pull-2 col-md-push-2 col-md-8">
             <div class="contribution panel panel-default" ng-repeat="contribution in contributions">
@@ -33,9 +20,10 @@
                                     service="AuthorService"
                                     label-attr="getFullName"
                                     search-param="search"
+                                    ng-class="{'has-error': !contribution.contributor}"
                                     placeholder="Search for author"></autocomplete>
                             </div>
-                            <div class="role col-sm-6">
+                            <div class="role col-sm-6" ng-class="{'has-error': !contribution.role}">
                                 <select name="role" class="form-control form-group" ng-change="updateLabel($index)" ng-options="role.id as role.name for role in roles" ng-model="contribution.role">
                                 </select>
                             </div>
