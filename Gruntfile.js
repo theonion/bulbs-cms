@@ -21,6 +21,7 @@ module.exports = function (grunt) {
   require('time-grunt')(grunt);
 
   var modRewrite = require('connect-modrewrite');
+  var path = require('path');
 
   // Define the configuration for all the tasks
   grunt.initConfig({
@@ -43,13 +44,16 @@ module.exports = function (grunt) {
           '<%= yeoman.app %>/{,*/}*.html',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
           '<%= yeoman.app %>/scripts/{,*/}*.js',
+          '<%= yeoman.app %>/components/**/*.{html,js,less}',
+          '<%= yeoman.app %>/shared/{,*/}*.{html,js,less}',
           'test/spec/{,*/}*.js',
           'Gruntfile.js'
         ],
         tasks: [
           'newer:less',
           'newer:karma:ci',
-          'newer:jshint:all'
+          'newer:jshint:all',
+          'injector:local_dependencies'
         ]
       }
     },
@@ -72,7 +76,7 @@ module.exports = function (grunt) {
           middleware: function (connect) {
             return [
               modRewrite([
-                '!\\.eot|\\.woff|\\.ttf|\\.svg|\\.html|\\.js|\\.css|\\.swf|\\.jp(e?)g|\\.png|\\.gif$ /index.html'
+                '!\\.eot|\\.woff|\\.woff2\\.ttf|\\.svg|\\.html|\\.js|\\.css|\\.swf|\\.jp(e?)g|\\.png|\\.gif$ /index.html'
               ]),
               mountFolder(connect, '.tmp'),
               mountFolder(connect, 'app')
@@ -105,6 +109,8 @@ module.exports = function (grunt) {
       },
       all: [
         'Gruntfile.js',
+        '<%= yeoman.app %>/components/**/*.js',
+        '<%= yeoman.app %>/shared/**/*.js',
         '<%= yeoman.app %>/scripts/{,*/}*.js'
       ],
       test: {
@@ -167,9 +173,12 @@ module.exports = function (grunt) {
       development: {
         files: [{
           expand: true,
-          cwd: 'app/styles/',
-          src: '{,*/}*.less',
-          dest: '.tmp/styles/',
+          cwd: '<%= yeoman.app %>',
+          src: [
+            'styles/{,*/}*.less',
+            'components/**/*.less'
+          ],
+          dest: '.tmp/',
           ext: '.css'
         }]
       },
@@ -180,10 +189,13 @@ module.exports = function (grunt) {
       dist: {
         files: {
           src: [
+            '<%= yeoman.dist %>/components/**/*.{js,css}',
+            '<%= yeoman.dist %>/shared/**/*.{js,css}',
             '<%= yeoman.dist %>/scripts/{,*/}*.js',
             '<%= yeoman.dist %>/styles/{,*/}*.css',
             '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
-            '<%= yeoman.dist %>/styles/fonts/*'
+            '<%= yeoman.dist %>/styles/fonts/*',
+            '!**/*.tests.js',
           ]
         }
       }
@@ -209,7 +221,9 @@ module.exports = function (grunt) {
     // Performs rewrites based on rev and the useminPrepare configuration
     usemin: {
       html: ['<%= yeoman.dist %>/{,*/}*.html'],
-      css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
+      css: [
+        '<%= yeoman.dist %>{,*/}*.css'
+      ],
       options: {
         assetsDirs: ['<%= yeoman.dist %>']
       }
@@ -306,7 +320,7 @@ module.exports = function (grunt) {
       },
       styles: {
         expand: true,
-        cwd: '<%= yeoman.app %>/styles',
+        cwd: '<%= yeoman.app %>',
         dest: '.tmp/styles/',
         src: '{,*/}*.css'
       },
@@ -315,6 +329,12 @@ module.exports = function (grunt) {
         cwd: '<%= yeoman.app %>/bower_components/jcrop/css',
         dest: '<%= yeoman.dist %>/styles/',
         src: 'Jcrop.gif'
+      },
+      bootstrapFonts: {
+        expand: true,
+        cwd: '<%= yeoman.app %>/bower_components/bootstrap/dist/fonts',
+        dest: '<%= yeoman.dist %>/fonts/',
+        src: ['glyphicons-halflings-regular.*', 'glyphicons-halflings-regular.woff2']
       },
       fontawesome: {
         expand: true,
@@ -364,36 +384,34 @@ module.exports = function (grunt) {
       options: {
         addRootSlash: false,
         transform: function (filepath) {
-          filepath = filepath.replace('app/', '');
-          return '<script src="' + filepath + '"></script>';
+          filepath = filepath.replace(/app\/|.tmp\//i, '');
+          var e = path.extname(filepath).slice(1);
+          if (e === 'css') {
+            return '<link rel="stylesheet" href="' + filepath + '">';
+          } else if (e === 'js') {
+            return '<script src="' + filepath + '"></script>';
+          } else if (e === 'html') {
+            return '<link rel="import" href="' + filepath + '">';
+          }
         }
       },
       local_dependencies: {
         files: {
           'app/index.html': [
+            '.tmp/components/**/*.css',
+            'app/components/**/*.js',
+            'app/shared/**/*.js',
             'app/scripts/directives/*.js',
             'app/scripts/directives/autocomplete/*.js',
             'app/scripts/controllers/*.js',
             'app/scripts/services/*.js',
             'app/scripts/filters/*.js',
+            '!**/*.tests.js'
           ],
         }
       }
     },
 
-    // By default, your `index.html`'s <!-- Usemin block --> will take care of
-    // minification. These next options are pre-configured if you do not wish
-    // to use the Usemin blocks.
-    // cssmin: {
-    //   dist: {
-    //     files: {
-    //       '<%= yeoman.dist %>/styles/main.css': [
-    //         '.tmp/styles/{,*/}*.css',
-    //         '<%= yeoman.app %>/styles/{,*/}*.css'
-    //       ]
-    //     }
-    //   }
-    // },
     uglify: {
       options: {
         mangle: false, //https://github.com/theonion/bulbs-cms/issues/4
@@ -434,7 +452,7 @@ module.exports = function (grunt) {
     ngtemplates: {
       bulbsCmsApp: {
         cwd: '<%= yeoman.app %>',
-        src: 'views/{,*/}*.html',
+        src: ['views/{,*/}*.html', 'components/**/*.html'],
         dest: '.tmp/concat/scripts/templates.js',
         options: {
           url:    function (url) { return '/' + url; },
@@ -499,8 +517,8 @@ module.exports = function (grunt) {
       'clean:server',
       'wiredep',
       'concurrent:server',
-      'autoprefixer',
       'less',
+      'autoprefixer',
       'injector:local_dependencies',
       'karma:ci',
       'jshint:all',
@@ -532,15 +550,16 @@ module.exports = function (grunt) {
     'shell:bower_update',
     'wiredep',
     'ngtemplates',
+    'less',
     'injector:local_dependencies',
     'useminPrepare',
     'concurrent:dist',
-    'less',
     'autoprefixer',
     'concat',
     'ngmin',
     'copy:dist',
     'copy:jcropGif',
+    'copy:bootstrapFonts',
     'copy:fontawesome',
     'copy:fontawesomeCSS',
     'copy:zeroclipboard',

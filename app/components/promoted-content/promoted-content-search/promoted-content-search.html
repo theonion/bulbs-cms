@@ -1,0 +1,48 @@
+<h3>Search Content</h3>
+<div class="row">
+  <filter-widget class="col-xs-12"></filter-widget>
+  <status-filter class="col-xs-12 form-group"></status-filter>
+</div>
+<div
+    ng-repeat="article in pzoneData.allContent.content"
+    ng-hide="articleIsVisible(article)">
+  <!-- draggable article -->
+  <promoted-content-article
+      class="draggable-content"
+      ng-if="articleIsDraggable(article)"
+      article="article"
+      data-article-id="{{ article.id }}"
+      data-drag="true"
+      jqyoui-draggable="{
+        onStart: 'contentPickedUp',
+        onStop: 'contentDropped'
+      }"
+      data-jqyoui-options="{
+        revert: true,
+        revertDuration: 0
+      }">
+  </promoted-content-article>
+  <!-- non-dragglable article -->
+  <div
+      ng-if="!articleIsDraggable(article)"
+      tooltip="This article cannot be promoted because its publish date is unspecified, occurs after selected time, or you are viewing a past list."
+      tooltip-placement="left"
+      tooltip-trigger="mouseenter">
+    <promoted-content-article
+        class="non-draggable-content"
+        article="article">
+    </promoted-content-article>
+  </div>
+</div>
+<pagination
+    max-size="10"
+    total-items="pzoneData.allContent.content.metadata.count"
+    ng-model="pageNumber"
+    items-per-page="20"
+    ng-change="goToPage()"
+    boundary-links="true"
+    first-text="<<"
+    previous-text="<"
+    next-text=">"
+    last-text=">>">
+</pagination>

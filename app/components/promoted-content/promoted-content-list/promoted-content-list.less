@@ -1,0 +1,90 @@
+.transition (@transition) {
+  -webkit-transition: @transition;
+  -moz-transition:    @transition;
+  -ms-transition:     @transition;
+  -o-transition:      @transition;
+}
+
+.box-shadow (@string) {
+  -webkit-box-shadow: @string;
+  -moz-box-shadow:    @string;
+  box-shadow:         @string;
+}
+
+promoted-content-list {
+  @inactive-color:#aaaaaa;
+  @active-color:#8FCB8F;
+  margin-bottom: 20px;
+
+  .replace-drop-area, .content-drop-area {
+    float: left;
+    width: 100%;
+    display: block;
+  }
+
+  .preview-time-heading {
+    color: #cccccc;
+    font-style: italic;
+  }
+
+  .info-past-date {
+    padding: 5px;
+    text-align: center;
+  }
+
+  .content-cutoff {
+    border-top: 1px solid;
+    text-align: center;
+    color: #bbb;
+    display: block;
+    padding-top: 6px;
+    margin-top: 4px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    float: left;
+    width: 100%;
+    clear: both;
+  }
+
+  .replace-drop-area.drop-area-hover promoted-content-article .panel {
+    border: 1px solid @active-color;
+    .box-shadow(0px 0px 24px 1px @active-color);
+  }
+
+  .content-drop-area {
+    background-color: lighten(@inactive-color, 20%);
+    border: 3px dashed @inactive-color;
+    color: @inactive-color;
+    display: block;
+    min-height: 50px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: bold;
+    position: relative;
+
+    span {
+      line-height: 3em;
+    }
+
+    &.drop-area-hover {
+      background-color: lighten(@active-color, 20%);
+      border-color: @active-color;
+      color: @active-color;
+      min-height: 75px;
+    }
+
+    &:before {
+      float: left;
+      height: 100%;
+      width: 100%;
+      content: "Drop Here to Insert Article";
+      position: absolute; top: 25%; right: 0; left: 0; bottom: 50%;
+    }
+
+    &:hover {
+      min-height: 75px;
+    }
+
+    &, &:hover, &.drop-area-hover { .transition(min-height .25s); }
+  }
+}

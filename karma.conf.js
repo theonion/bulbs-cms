@@ -39,6 +39,7 @@ module.exports = function(config) {
       'app/bower_components/bootstrap/dist/js/bootstrap.js',
       'app/bower_components/firebase/firebase-debug.js',
       'app/bower_components/angular/angular.js',
+      'app/bower_components/angular-dragdrop/src/angular-dragdrop.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
       'app/bower_components/angular-resource/angular-resource.js',
       'app/bower_components/angular-cookie/angular-cookie.js',
@@ -63,6 +64,9 @@ module.exports = function(config) {
       'app/mocks/betty.js',
       'app/mocks/firebaseapi.js',
 
+      'app/shared/**/*.js',
+      'app/components/**/*.js',
+
       'app/scripts/*.js',
 
       'app/scripts/api/module.js',
@@ -74,7 +78,9 @@ module.exports = function(config) {
       'app/scripts/api/*.js',
 
       'test/config.js',
-      'app/views/**/*.html'
+
+      'app/views/**/*.html',
+      'app/components/**/*.html'
     ],
 
     // list of files / patterns to exclude
@@ -88,6 +94,7 @@ module.exports = function(config) {
     logLevel: config.LOG_INFO,
 
     preprocessors: {
+      'app/components/**/*.html': 'ng-html2js',
       'app/views/**/*.html': 'ng-html2js',
       'app/scripts/**/*.js': 'coverage'
     },

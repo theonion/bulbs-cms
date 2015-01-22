@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('SponsormodalCtrl', function ($scope, ContentApi, article) {
+  .controller('SponsormodalCtrl', function ($scope, ContentFactory, article) {
     $scope.article = article;
 
-    ContentApi.all('sponsor').getList().then(function (data) {
+    ContentFactory.all('sponsor').getList().then(function (data) {
       $scope.sponsors = data;
     });
 

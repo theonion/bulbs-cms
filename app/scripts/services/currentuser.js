@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .service('CurrentUser', function EditorItems(ContentApi, $q) {
+  .service('CurrentUser', function EditorItems(ContentFactory, $q) {
 
     var userDefer = $q.defer(),
         $userPromise = userDefer.promise;
@@ -10,7 +10,7 @@ angular.module('bulbsCmsApp')
 
     var self = this;
     this.getItems = function () {
-      ContentApi.one('me').get().then(function (data) {
+      ContentFactory.one('me').get().then(function (data) {
         self.data = data;
         userDefer.resolve(data);
       });

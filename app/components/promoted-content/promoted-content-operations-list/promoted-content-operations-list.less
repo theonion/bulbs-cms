@@ -1,0 +1,54 @@
+promoted-content-operations-list {
+
+  h3 .title {
+    font-style: italic;
+    color: #cccccc;
+  }
+
+  .delete-status-message {
+    padding: 5px;
+    text-align: center;
+
+    .alert-link {
+      cursor: pointer;
+    }
+  }
+
+  ul.operation-list {
+    list-style: none;
+
+    li {
+
+      &.old {
+        border: 1px solid #cccccc;
+        color: #cccccc;
+      }
+
+      &.unsaved {
+        background: #dff0d8;
+        border: 1px solid #d6e9c6;
+        color: #3c763d;
+      }
+
+      .operation-delete {
+        height: 40px;
+        width: 40px;
+
+        .btn { margin-left: -15px; }
+
+        .operation-delete-lock {
+        }
+      }
+      .operation-head {
+        text-transform: capitalize;
+
+      }
+      .operation-body {
+
+        .article-title {
+          font-style: italic;
+        }
+      }
+    }
+  }
+}

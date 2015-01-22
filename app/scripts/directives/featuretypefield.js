@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('featuretypeField', function (routes, IfExistsElse, ContentApi, Raven, $) {
+  .directive('featuretypeField', function (routes, IfExistsElse, ContentFactory, Raven, $) {
     return {
       templateUrl: routes.PARTIALS_URL + 'textlike-autocomplete-field.html',
       restrict: 'E',
@@ -26,7 +26,7 @@ angular.module('bulbsCmsApp')
         scope.add = function (o, input, freeForm) {
           var fVal = freeForm ? o : o.name;
           IfExistsElse.ifExistsElse(
-            ContentApi.all('things').getList({
+            ContentFactory.all('things').getList({
               type: 'feature_type',
               q: fVal
             }),

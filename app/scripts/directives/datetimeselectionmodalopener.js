@@ -10,7 +10,8 @@ angular.module('bulbsCmsApp')
       restrict: 'A',
       scope: {
         modDatetime: '=ngModel',
-        modalTitle: '@'
+        modalTitle: '@',
+        modalOnClose: '&'
       },
       require: '^ngModel',
       link: function (scope, element) {
@@ -26,6 +27,7 @@ angular.module('bulbsCmsApp')
           modalInstance.result
             .then(function (newDate) {
               scope.modDatetime = newDate;
+              scope.modalOnClose({newDate: newDate});
             });
         });
       }

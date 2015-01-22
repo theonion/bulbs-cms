@@ -72,7 +72,11 @@ body { background-color: #F1F1F1; padding-top: 55px; }
     &[href^=http], &[href^=mailto], &[href^="/"] { background-color: transparent !important; } }
 
 /* Content page */
-.hideOverflow { white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+.hide-overflow {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 
 body { overflow-x: hidden; }
 
@@ -92,29 +96,23 @@ td.author { max-width: 150px; }
 
     .fa + span { clear: both; display: block; font-size: 12px; font-weight: bold; margin-bottom: 20px; margin-top: -20px; } }
 
-.filter-shortcuts { margin-bottom: 5px; }
+.filter-shortcuts {
+  margin-bottom: 5px;
+
+  .navbar-right {
+    margin-right: 0;
+  }
+}
 
 .filter-object-container {
 
-  margin-top: 5px;
+  margin: 5px 0;
 
   .clear-button:first-child { display: none; }
 
-  .label { padding: 0.3em 0.6em; margin-right: 3px; cursor: pointer;
+  .label { padding: 0.3em 0.6em; margin-right: 3px; margin-bottom: 5px; cursor: pointer; display: inline-block;
 
       span { margin-right: 3px; } } }
-
-.filterwidget {
-
-    .filter-input:focus { outline: 0; }
-
-    .dropdown-menu { top: 44px; position: absolute; background-color: #fff; border: 1px solid #CCCCCC; border-top: 0; z-index: 1000;
-
-       .selected { background-color: #f5f5f5; color: #fff; }
-
-        li a { cursor: pointer; }
-
-        .glyphicon { margin-left: -7px; margin-right: 7px; } } }
 
 .panel .panel-heading { overflow: hidden; text-overflow: ellipsis; cursor: pointer; padding: 6px 10px 7px 10px;
 
@@ -167,8 +165,6 @@ nav.navbar {
 @media (min-width: 768px) { #save-article-btn { width: 100px; margin: 1px 18px 1px 3px;} }
 
 .changeable span { border-bottom: 1px dotted #777 !important; }
-
-.filterwidget { position: relative; }
 
 #page-prev { margin-bottom: 10px;
 
@@ -306,52 +302,6 @@ nav.navbar {
         td, th { border-top: 0 !important; } }
 
     .targeting-table { padding-top: 0; } }
-
-.promotion-container {
-
-    .promotion-area { margin-bottom: 20px; }
-
-    .panel-body { margin-bottom: 0; }
-
-    .article { position: relative;
-
-        h1.h5 { margin-top: 0; clear: both; padding-top: 5px; } }
-
-    .close { margin: 10px 5px 0 0; }
-
-    .media { border-bottom: 1px solid #ccc; padding: 10px 10px 10px 0; }
-
-    .move-up, .move-down { margin: 0; position: absolute; right: 10px; z-index: 10; cursor: pointer;
-
-        &:hover { color: lighten(#428BCA,20%); } }
-
-    .move-up { top: 5px; }
-
-    .move-down { bottom: 0; }
-
-    .sidebar-articles-container { padding-top: 39px; position: relative }
-
-    .sidebar-article-container { border: 1px solid #CCC; border-radius: 4px; overflow: auto; position: relative;
-
-        .button-container { height: 100%; position: absolute; width: 60px;
-
-            button { height: 50%; width: 65px; } } }
-
-    .promotion-area.select-mode .article-container { border: 1px solid #CCC; box-shadow: 0px 0px 70px #CCC; cursor: pointer; margin-top: 5px; padding-left: 10px;
-
-        &:hover { border: 1px solid #428BCA; box-shadow: 0px 0px 70px #428BCA; } }
-
-    .promotion-container {
-
-        .filterwidget { padding: 0; width: 100%; }
-
-        .sidebar-articles-container { width: 100% } } }
-
-.save-button { opacity: 0.8; margin-bottom:10px;
-
-    &:hover { opacity: 1; } }
-
-.btn-clean { opacity: 0.5; }
 
 // workaround for https://github.com/twbs/bootstrap/issues/10263
 @media screen and (max-width: 768px) {

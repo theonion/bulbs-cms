@@ -1,0 +1,89 @@
+<h3>
+  Schedule
+  <small class="title">{{ pzoneData.selectedPZone.name }}</small>
+</h3>
+
+<div class="form-group">
+  From:
+  <button
+      class="btn btn-xs btn-info"
+      datetime-selection-modal-opener
+      ng-model="scheduleDateFrom"
+      modal-title="See Schedule Starting At This Date">
+    <i class="glyphicon glyphicon-calendar"></i>
+    <span ng-show="scheduleDateFrom">{{ scheduleDateFrom.toDate() | date: 'MMM d, yyyy @ h:mma' }}</span>
+    <span ng-show="!scheduleDateFrom">Select Date</span>
+  </button>
+  to:
+  <button
+      class="btn btn-xs btn-info"
+      datetime-selection-modal-opener
+      ng-model="scheduleDateTo"
+      modal-title="See Schedule up to This Date">
+    <i class="glyphicon glyphicon-calendar"></i>
+    <span ng-show="scheduleDateTo">{{ scheduleDateTo.toDate() | date: 'MMM d, yyyy @ h:mma' }}</span>
+    <span ng-show="!scheduleDateTo">Select Date</span>
+  </button>
+</div>
+
+<div
+    class="delete-status-message alert"
+    ng-show="deleteStatus.message"
+    ng-class="{
+      'alert-success': !deleteStatus.isError,
+      'alert-danger': deleteStatus.isError
+    }">
+  <i class="glyphicon glyphicon-info-sign"></i>
+  {{ deleteStatus.message }}
+  <span
+      class="alert-link"
+      ng-click="clearDeleteStatus()">
+    Dismiss
+  </span>
+</div>
+
+<ul class="operation-list list-group">
+  <li class="list-group-item"
+      ng-repeat="operation in aggregatedOperations"
+      ng-if="
+        (operation.whenAsMoment &&
+          operation.whenAsMoment.isAfter(scheduleDateFrom) &&
+          operation.whenAsMoment.isBefore(scheduleDateTo)) ||
+        operation.client_id >= 0"
+      ng-class="{
+        'text-muted': operation.whenAsMoment.isBefore(moment()),
+        'list-group-item-warning': !operation.whenAsMoment && operation.client_id >= 0
+      }">
+    <div class="operation-delete pull-left">
+      <button
+          ng-if="operation.whenAsMoment.isAfter(moment())"
+          class="btn btn-link btn-lg"
+          ng-click="removeOperation(operation)">
+        <i class="glyphicon glyphicon-remove"></i>
+      </button>
+      <div
+          class="btn btn-link btn-lg disabled operation-delete-lock"
+          ng-if="operation.whenAsMoment.isBefore(moment()) || operation.client_id >= 0">
+        <i class="glyphicon glyphicon-lock"></i>
+      </div>
+    </div>
+    <div class="operation-head">
+      <span class="small" ng-show="operation.whenAsMoment">{{ operation.when | date: 'MMM d, yyyy @ h:mma' }}</span>
+    </div>
+    <div class="operation-body">
+      <span ng-if="operation.cleanType === 'INSERT'">
+        {{ operation.cleanType }}
+        <span class="article-title" ng-bind-html="operation.content_title"></span>
+        @ position {{ operation.index + 1 }}
+      </span>
+      <span ng-if="operation.cleanType === 'REPLACE'">
+        {{ operation.cleanType }} position {{ operation.index + 1 }} with
+        <span class="article-title" ng-bind-html="operation.content_title"></span>
+      </span>
+      <span ng-if="operation.cleanType === 'DELETE'">
+        {{ operation.cleanType }}
+        <span class="article-title" ng-bind-html="operation.content_title"></span>
+      </span>
+    </div>
+  </li>
+</ul>
