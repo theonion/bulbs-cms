@@ -2044,7 +2044,7 @@ angular.module('contentServices.listService', [
       return ContentFactory.all('content').getList(updateParams)
         .then(function (data) {
           _data.content = data;
-          _data.totalItems = data.length;
+          _data.totalItems = data.metadata.count;
           // resolve promise with updated content list service data
           return _data;
         });
@@ -3634,6 +3634,7 @@ angular.module('bulbsCmsApp')
       transclude: true,
       controller: function ($scope, $element, $attrs, $injector) {
         $scope.service = $injector.get($attrs.service);
+        $scope.placeholder = $attrs.placeholder || '';
       },
       link: function ($scope, element, attrs, ngModel, transclude) {
 
@@ -3725,7 +3726,7 @@ angular.module('bulbsCmsApp')
 
         function queryData(query) {
           var searchParams = {}
-          searchParams[attrs.searchParam || search] = query;
+          searchParams[attrs.searchParam || 'search'] = query;
           $scope['service'].getList(searchParams).then(function (results) {
 
             if(results.length > 5) {
@@ -3750,7 +3751,7 @@ angular.module('bulbsCmsApp')
           ngModel.$render();
           menuScope.items = [];
           menuScope.index = 0;
-          $animate.leave(menuEl, function() {
+          $animate.leave(menuEl).finally(function() {
             isMenuAppended = false;
           });
         }
