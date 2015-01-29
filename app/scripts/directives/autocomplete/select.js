@@ -126,7 +126,7 @@ angular.module('bulbsCmsApp')
           ngModel.$render();
           menuScope.items = [];
           menuScope.index = 0;
-          $animate.leave(menuEl, function() {
+          $animate.leave(menuEl).finally(function() {
             isMenuAppended = false;
           });
         }
