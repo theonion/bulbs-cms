@@ -46,7 +46,7 @@ angular.module('contentServices.listService', [
       return ContentFactory.all('content').getList(updateParams)
         .then(function (data) {
           _data.content = data;
-          _data.totalItems = data.length;
+          _data.totalItems = data.metadata.count;
           // resolve promise with updated content list service data
           return _data;
         });
