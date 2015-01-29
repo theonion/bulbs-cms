@@ -59,22 +59,23 @@ describe('ContentListService', function () {
   });
 
   it('Should update data.content and data.totalItems on $updateContent()', function () {
-    var response = [
-      {
+    var response = {
+      count: 2,
+      results: [{
         title: 'Mom Gathers Rolls Of Wrapping Paper Around Her To Stroke Softly'
       },
       {
         title: '10 People Who Made No Difference In 2014'
-      }
-    ];
+      }]
+    };
     $httpBackend.expectGET(/\/cms\/api\/v1\/content/).respond(response);
     var update = ContentListService.$updateContent({abc: 123, something: 'something'});
     $httpBackend.flush();
 
     // set up promise callback
     update.then(function (data) {
-      expect(data.content[0].title).toEqual(response[0].title);
-      expect(data.content[1].title).toEqual(response[1].title);
+      expect(data.content[0].title).toEqual(response.results[0].title);
+      expect(data.content[1].title).toEqual(response.results[1].title);
       expect(data.totalItems).toBe(2);
     });
     $rootScope.$apply();
@@ -83,8 +84,8 @@ describe('ContentListService', function () {
     var data = ContentListService.getData();
     expect(data.filters.abc).toBe(123);
     expect(data.filters.something).toBe('something');
-    expect(data.content[0].title).toEqual(response[0].title);
-    expect(data.content[1].title).toEqual(response[1].title);
+    expect(data.content[0].title).toEqual(response.results[0].title);
+    expect(data.content[1].title).toEqual(response.results[1].title);
     expect(data.totalItems).toBe(2);
 
   });
