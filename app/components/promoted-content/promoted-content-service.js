@@ -88,16 +88,6 @@ angular.module('promotedContent.service', [
       var defer = $q.defer();
 
       if (_data.previewTime && _data.previewTime.isAfter(moment())) {
-        // save operations to be done in the future
-        var trackSaves = _.after(_data.unsavedOperations.length, function () {
-          // refresh operations after save is done
-          PromotedContentService.$refreshOperations()
-            .then(function () {
-              PromotedContentService.clearUnsavedOperations();
-              defer.resolve(_data.selectedPZone);
-            });
-        });
-
         // grab operations out of unsaved operations and post them into operations list
         _.each(_data.unsavedOperations, function (operation) {
 
@@ -106,9 +96,17 @@ angular.module('promotedContent.service', [
           // remove client side client_id
           delete operation.client_id;
 
-          _data.operations.post(operation)
-            .finally(trackSaves);
+          // _data.operations.post(operation)
+          //   .finally(trackSaves);
         });
+        _data.operations.post(_data.unsavedOperations).then(function () {
+          PromotedContentService.$refreshOperations()
+            .then(function () {
+              PromotedContentService.clearUnsavedOperations();
+              defer.resolve(_data.selectedPZone);
+            });
+        });
+
       } else if (!_data.previewTime){
         // no preview time is set, post pzone immediately
         _data.selectedPZone.put()
