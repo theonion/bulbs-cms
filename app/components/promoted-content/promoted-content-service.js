@@ -88,16 +88,6 @@ angular.module('promotedContent.service', [
       var defer = $q.defer();
 
       if (_data.previewTime && _data.previewTime.isAfter(moment())) {
-        // save operations to be done in the future
-        var trackSaves = _.after(_data.unsavedOperations.length, function () {
-          // refresh operations after save is done
-          PromotedContentService.$refreshOperations()
-            .then(function () {
-              PromotedContentService.clearUnsavedOperations();
-              defer.resolve(_data.selectedPZone);
-            });
-        });
-
         // grab operations out of unsaved operations and post them into operations list
         _.each(_data.unsavedOperations, function (operation) {
 
