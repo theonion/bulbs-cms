@@ -9205,7 +9205,7 @@ return jQuery;
 }));
 
 /**
- * @license AngularJS v1.3.11
+ * @license AngularJS v1.3.13
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -9260,7 +9260,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.11/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.13/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -9587,8 +9587,7 @@ function nextUid() {
 function setHashKey(obj, h) {
   if (h) {
     obj.$$hashKey = h;
-  }
-  else {
+  } else {
     delete obj.$$hashKey;
   }
 }
@@ -9897,7 +9896,7 @@ function isElement(node) {
 function makeMap(str) {
   var obj = {}, items = str.split(","), i;
   for (i = 0; i < items.length; i++)
-    obj[ items[i] ] = true;
+    obj[items[i]] = true;
   return obj;
 }
 
@@ -10678,8 +10677,12 @@ function bootstrap(element, modules, config) {
     forEach(extraModules, function(module) {
       modules.push(module);
     });
-    doBootstrap();
+    return doBootstrap();
   };
+
+  if (isFunction(angular.resumeDeferredBootstrap)) {
+    angular.resumeDeferredBootstrap();
+  }
 }
 
 /**
@@ -11324,11 +11327,11 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.11',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.13',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
-  dot: 11,
-  codeName: 'spiffy-manatee'
+  dot: 13,
+  codeName: 'meticulous-riffleshuffle'
 };
 
 
@@ -13363,7 +13366,7 @@ function createInjector(modulesToLoad, strictDi) {
       }
 
       var args = [],
-          $inject = annotate(fn, strictDi, serviceName),
+          $inject = createInjector.$$annotate(fn, strictDi, serviceName),
           length, i,
           key;
 
@@ -13402,7 +13405,7 @@ function createInjector(modulesToLoad, strictDi) {
       invoke: invoke,
       instantiate: instantiate,
       get: getService,
-      annotate: annotate,
+      annotate: createInjector.$$annotate,
       has: function(name) {
         return providerCache.hasOwnProperty(name + providerSuffix) || cache.hasOwnProperty(name);
       }
@@ -17076,8 +17079,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           afterTemplateChildLinkFn,
           beforeTemplateCompileNode = $compileNode[0],
           origAsyncDirective = directives.shift(),
-          // The fact that we have to copy and patch the directive seems wrong!
-          derivedSyncDirective = extend({}, origAsyncDirective, {
+          derivedSyncDirective = inherit(origAsyncDirective, {
             templateUrl: null, transclude: null, replace: null, $$originalDirective: origAsyncDirective
           }),
           templateUrl = (isFunction(origAsyncDirective.templateUrl))
@@ -17530,6 +17532,8 @@ function removeComments(jqNodes) {
   return jqNodes;
 }
 
+var $controllerMinErr = minErr('$controller');
+
 /**
  * @ngdoc provider
  * @name $controllerProvider
@@ -17617,7 +17621,12 @@ function $ControllerProvider() {
       }
 
       if (isString(expression)) {
-        match = expression.match(CNTRL_REG),
+        match = expression.match(CNTRL_REG);
+        if (!match) {
+          throw $controllerMinErr('ctrlfmt',
+            "Badly formed controller string '{0}'. " +
+            "Must match `__name__ as __id__` or `__name__`.", expression);
+        }
         constructor = match[1],
         identifier = identifier || match[3];
         expression = controllers.hasOwnProperty(constructor)
@@ -20568,7 +20577,7 @@ function $LocationProvider() {
 
 
     // rewrite hashbang url <> html5 url
-    if ($location.absUrl() != initialUrl) {
+    if (trimEmptyHash($location.absUrl()) != trimEmptyHash(initialUrl)) {
       $browser.url($location.absUrl(), true);
     }
 
@@ -21542,6 +21551,11 @@ Parser.prototype = {
             ? fn.apply(context, args)
             : fn(args[0], args[1], args[2], args[3], args[4]);
 
+      if (args) {
+        // Free-up the memory (arguments of the last function call).
+        args.length = 0;
+      }
+
       return ensureSafeObject(v, expressionText);
       };
   },
@@ -22413,8 +22427,7 @@ function qFactory(nextTick, exceptionHandler) {
           'qcycle',
           "Expected promise to be resolved with value other than itself '{0}'",
           val));
-      }
-      else {
+      } else {
         this.$$resolve(val);
       }
 
@@ -33757,10 +33770,11 @@ var NG_HIDE_IN_PROGRESS_CLASS = 'ng-hide-animate';
  *
  * By default, the `.ng-hide` class will style the element with `display: none!important`. If you wish to change
  * the hide behavior with ngShow/ngHide then this can be achieved by restating the styles for the `.ng-hide`
- * class in CSS:
+ * class CSS. Note that the selector that needs to be used is actually `.ng-hide:not(.ng-hide-animate)` to cope
+ * with extra animation classes that can be added.
  *
  * ```css
- * .ng-hide {
+ * .ng-hide:not(.ng-hide-animate) {
  *   /&#42; this is just another form of hiding an element &#42;/
  *   display: block!important;
  *   position: absolute;
@@ -35276,7 +35290,7 @@ var maxlengthDirective = function() {
         ctrl.$validate();
       });
       ctrl.$validators.maxlength = function(modelValue, viewValue) {
-        return (maxlength < 0) || ctrl.$isEmpty(modelValue) || (viewValue.length <= maxlength);
+        return (maxlength < 0) || ctrl.$isEmpty(viewValue) || (viewValue.length <= maxlength);
       };
     }
   };
@@ -35321,7 +35335,7 @@ var minlengthDirective = function() {
 
 !window.angular.$$csp() && window.angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}</style>');
 /**
- * @license AngularJS v1.3.11
+ * @license AngularJS v1.3.13
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -35989,7 +36003,7 @@ angular.module('ngResource', ['ng']).
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.3.11
+ * @license AngularJS v1.3.13
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -36195,10 +36209,10 @@ angular.module('ngCookies', ['ng']).
 
 })(window, window.angular);
 
-/*! jQuery UI - v1.11.2 - 2014-10-16
+/*! jQuery UI - v1.11.3 - 2015-02-12
 * http://jqueryui.com
 * Includes: core.js, widget.js, mouse.js, position.js, accordion.js, autocomplete.js, button.js, datepicker.js, dialog.js, draggable.js, droppable.js, effect.js, effect-blind.js, effect-bounce.js, effect-clip.js, effect-drop.js, effect-explode.js, effect-fade.js, effect-fold.js, effect-highlight.js, effect-puff.js, effect-pulsate.js, effect-scale.js, effect-shake.js, effect-size.js, effect-slide.js, effect-transfer.js, menu.js, progressbar.js, resizable.js, selectable.js, selectmenu.js, slider.js, sortable.js, spinner.js, tabs.js, tooltip.js
-* Copyright 2014 jQuery Foundation and other contributors; Licensed MIT */
+* Copyright jQuery Foundation and other contributors; Licensed MIT */
 
 (function( factory ) {
 	if ( typeof define === "function" && define.amd ) {
@@ -36212,10 +36226,10 @@ angular.module('ngCookies', ['ng']).
 	}
 }(function( $ ) {
 /*!
- * jQuery UI Core 1.11.2
+ * jQuery UI Core 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -36227,7 +36241,7 @@ angular.module('ngCookies', ['ng']).
 $.ui = $.ui || {};
 
 $.extend( $.ui, {
-	version: "1.11.2",
+	version: "1.11.3",
 
 	keyCode: {
 		BACKSPACE: 8,
@@ -36300,7 +36314,7 @@ function focusable( element, isTabIndexNotNaN ) {
 		img = $( "img[usemap='#" + mapName + "']" )[ 0 ];
 		return !!img && visible( img );
 	}
-	return ( /input|select|textarea|button|object/.test( nodeName ) ?
+	return ( /^(input|select|textarea|button|object)$/.test( nodeName ) ?
 		!element.disabled :
 		"a" === nodeName ?
 			element.href || isTabIndexNotNaN :
@@ -36506,10 +36520,10 @@ $.ui.plugin = {
 
 
 /*!
- * jQuery UI Widget 1.11.2
+ * jQuery UI Widget 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -36687,11 +36701,6 @@ $.widget.bridge = function( name, object ) {
 			args = widget_slice.call( arguments, 1 ),
 			returnValue = this;
 
-		// allow multiple hashes to be passed on init
-		options = !isMethodCall && args.length ?
-			$.widget.extend.apply( null, [ options ].concat(args) ) :
-			options;
-
 		if ( isMethodCall ) {
 			this.each(function() {
 				var methodValue,
@@ -36716,6 +36725,12 @@ $.widget.bridge = function( name, object ) {
 				}
 			});
 		} else {
+
+			// Allow multiple hashes to be passed on init
+			if ( args.length ) {
+				options = $.widget.extend.apply( null, [ options ].concat(args) );
+			}
+
 			this.each(function() {
 				var instance = $.data( this, fullName );
 				if ( instance ) {
@@ -37053,10 +37068,10 @@ var widget = $.widget;
 
 
 /*!
- * jQuery UI Mouse 1.11.2
+ * jQuery UI Mouse 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -37070,7 +37085,7 @@ $( document ).mouseup( function() {
 });
 
 var mouse = $.widget("ui.mouse", {
-	version: "1.11.2",
+	version: "1.11.3",
 	options: {
 		cancel: "input,textarea,button,select,option",
 		distance: 1,
@@ -37239,10 +37254,10 @@ var mouse = $.widget("ui.mouse", {
 
 
 /*!
- * jQuery UI Position 1.11.2
+ * jQuery UI Position 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -37678,12 +37693,12 @@ $.ui.position = {
 				newOverBottom;
 			if ( overTop < 0 ) {
 				newOverBottom = position.top + myOffset + atOffset + offset + data.collisionHeight - outerHeight - withinOffset;
-				if ( ( position.top + myOffset + atOffset + offset) > overTop && ( newOverBottom < 0 || newOverBottom < abs( overTop ) ) ) {
+				if ( newOverBottom < 0 || newOverBottom < abs( overTop ) ) {
 					position.top += myOffset + atOffset + offset;
 				}
 			} else if ( overBottom > 0 ) {
 				newOverTop = position.top - data.collisionPosition.marginTop + myOffset + atOffset + offset - offsetTop;
-				if ( ( position.top + myOffset + atOffset + offset) > overBottom && ( newOverTop > 0 || abs( newOverTop ) < overBottom ) ) {
+				if ( newOverTop > 0 || abs( newOverTop ) < overBottom ) {
 					position.top += myOffset + atOffset + offset;
 				}
 			}
@@ -37746,10 +37761,10 @@ var position = $.ui.position;
 
 
 /*!
- * jQuery UI Accordion 1.11.2
+ * jQuery UI Accordion 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -37758,7 +37773,7 @@ var position = $.ui.position;
 
 
 var accordion = $.widget( "ui.accordion", {
-	version: "1.11.2",
+	version: "1.11.3",
 	options: {
 		active: 0,
 		animate: {},
@@ -38216,7 +38231,10 @@ var accordion = $.widget( "ui.accordion", {
 		toHide.attr({
 			"aria-hidden": "true"
 		});
-		toHide.prev().attr( "aria-selected", "false" );
+		toHide.prev().attr({
+			"aria-selected": "false",
+			"aria-expanded": "false"
+		});
 		// if we're switching panels, remove the old header from the tab order
 		// if we're opening from collapsed state, remove the previous header from the tab order
 		// if we're collapsing, then keep the collapsing header in the tab order
@@ -38227,7 +38245,7 @@ var accordion = $.widget( "ui.accordion", {
 			});
 		} else if ( toShow.length ) {
 			this.headers.filter(function() {
-				return $( this ).attr( "tabIndex" ) === 0;
+				return parseInt( $( this ).attr( "tabIndex" ), 10 ) === 0;
 			})
 			.attr( "tabIndex", -1 );
 		}
@@ -38237,8 +38255,8 @@ var accordion = $.widget( "ui.accordion", {
 			.prev()
 				.attr({
 					"aria-selected": "true",
-					tabIndex: 0,
-					"aria-expanded": "true"
+					"aria-expanded": "true",
+					tabIndex: 0
 				});
 	},
 
@@ -38316,10 +38334,10 @@ var accordion = $.widget( "ui.accordion", {
 
 
 /*!
- * jQuery UI Menu 1.11.2
+ * jQuery UI Menu 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -38328,7 +38346,7 @@ var accordion = $.widget( "ui.accordion", {
 
 
 var menu = $.widget( "ui.menu", {
-	version: "1.11.2",
+	version: "1.11.3",
 	defaultElement: "<ul>",
 	delay: 300,
 	options: {
@@ -38947,10 +38965,10 @@ var menu = $.widget( "ui.menu", {
 
 
 /*!
- * jQuery UI Autocomplete 1.11.2
+ * jQuery UI Autocomplete 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -38959,7 +38977,7 @@ var menu = $.widget( "ui.menu", {
 
 
 $.widget( "ui.autocomplete", {
-	version: "1.11.2",
+	version: "1.11.3",
 	defaultElement: "<input>",
 	options: {
 		appendTo: null,
@@ -39559,10 +39577,10 @@ var autocomplete = $.ui.autocomplete;
 
 
 /*!
- * jQuery UI Button 1.11.2
+ * jQuery UI Button 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -39598,7 +39616,7 @@ var lastActive,
 	};
 
 $.widget( "ui.button", {
-	version: "1.11.2",
+	version: "1.11.3",
 	defaultElement: "<button>",
 	options: {
 		disabled: null,
@@ -39894,7 +39912,7 @@ $.widget( "ui.button", {
 });
 
 $.widget( "ui.buttonset", {
-	version: "1.11.2",
+	version: "1.11.3",
 	options: {
 		items: "button, input[type=button], input[type=submit], input[type=reset], input[type=checkbox], input[type=radio], a, :data(ui-button)"
 	},
@@ -39956,10 +39974,10 @@ var button = $.ui.button;
 
 
 /*!
- * jQuery UI Datepicker 1.11.2
+ * jQuery UI Datepicker 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -39967,7 +39985,7 @@ var button = $.ui.button;
  */
 
 
-$.extend($.ui, { datepicker: { version: "1.11.2" } });
+$.extend($.ui, { datepicker: { version: "1.11.3" } });
 
 var datepicker_instActive;
 
@@ -40332,6 +40350,10 @@ $.extend(Datepicker.prototype, {
 				unbind("keyup", this._doKeyUp);
 		} else if (nodeName === "div" || nodeName === "span") {
 			$target.removeClass(this.markerClassName).empty();
+		}
+
+		if ( datepicker_instActive === inst ) {
+			datepicker_instActive = null;
 		}
 	},
 
@@ -42017,16 +42039,16 @@ $.fn.datepicker = function(options){
 $.datepicker = new Datepicker(); // singleton instance
 $.datepicker.initialized = false;
 $.datepicker.uuid = new Date().getTime();
-$.datepicker.version = "1.11.2";
+$.datepicker.version = "1.11.3";
 
 var datepicker = $.datepicker;
 
 
 /*!
- * jQuery UI Draggable 1.11.2
+ * jQuery UI Draggable 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -42035,7 +42057,7 @@ var datepicker = $.datepicker;
 
 
 $.widget("ui.draggable", $.ui.mouse, {
-	version: "1.11.2",
+	version: "1.11.3",
 	widgetEventPrefix: "drag",
 	options: {
 		addClasses: true,
@@ -43136,10 +43158,10 @@ var draggable = $.ui.draggable;
 
 
 /*!
- * jQuery UI Resizable 1.11.2
+ * jQuery UI Resizable 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -43148,7 +43170,7 @@ var draggable = $.ui.draggable;
 
 
 $.widget("ui.resizable", $.ui.mouse, {
-	version: "1.11.2",
+	version: "1.11.3",
 	widgetEventPrefix: "resize",
 	options: {
 		alsoResize: false,
@@ -43221,7 +43243,7 @@ $.widget("ui.resizable", $.ui.mouse, {
 		});
 
 		// Wrap the element if it cannot hold child nodes
-		if (this.element[0].nodeName.match(/canvas|textarea|input|select|button|img/i)) {
+		if (this.element[0].nodeName.match(/^(canvas|textarea|input|select|button|img)$/i)) {
 
 			this.element.wrap(
 				$("<div class='ui-wrapper' style='overflow: hidden;'></div>").css({
@@ -43322,7 +43344,7 @@ $.widget("ui.resizable", $.ui.mouse, {
 					this.handles[i] = this.element.children( this.handles[ i ] ).first().show();
 				}
 
-				if (this.elementIsWrapper && this.originalElement[0].nodeName.match(/textarea|input|select|button/i)) {
+				if (this.elementIsWrapper && this.originalElement[0].nodeName.match(/^(textarea|input|select|button)$/i)) {
 
 					axis = $(this.handles[i], this.element);
 
@@ -44065,7 +44087,7 @@ $.ui.plugin.add( "resizable", "containment", {
 			}
 		}
 
-		if ( !continueResize ){
+		if ( !continueResize ) {
 			that.position.left = that.prevPosition.left;
 			that.position.top = that.prevPosition.top;
 			that.size.width = that.prevSize.width;
@@ -44287,7 +44309,7 @@ $.ui.plugin.add("resizable", "grid", {
 				that.size.width = newWidth;
 				that.position.left = op.left - ox;
 			} else {
-				newWidth = gridY - outerDimensions.height;
+				newWidth = gridX - outerDimensions.width;
 				that.size.width = newWidth;
 				that.position.left = op.left + os.width - newWidth;
 			}
@@ -44300,10 +44322,10 @@ var resizable = $.ui.resizable;
 
 
 /*!
- * jQuery UI Dialog 1.11.2
+ * jQuery UI Dialog 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -44312,7 +44334,7 @@ var resizable = $.ui.resizable;
 
 
 var dialog = $.widget( "ui.dialog", {
-	version: "1.11.2",
+	version: "1.11.3",
 	options: {
 		appendTo: "body",
 		autoOpen: true,
@@ -45156,10 +45178,10 @@ var dialog = $.widget( "ui.dialog", {
 
 
 /*!
- * jQuery UI Droppable 1.11.2
+ * jQuery UI Droppable 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -45168,7 +45190,7 @@ var dialog = $.widget( "ui.dialog", {
 
 
 $.widget( "ui.droppable", {
-	version: "1.11.2",
+	version: "1.11.3",
 	widgetEventPrefix: "drop",
 	options: {
 		accept: "*",
@@ -45553,10 +45575,10 @@ var droppable = $.ui.droppable;
 
 
 /*!
- * jQuery UI Effects 1.11.2
+ * jQuery UI Effects 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -46448,7 +46470,7 @@ $.fn.extend({
 (function() {
 
 $.extend( $.effects, {
-	version: "1.11.2",
+	version: "1.11.3",
 
 	// Saves a set of properties in a data storage
 	save: function( element, set ) {
@@ -46844,10 +46866,10 @@ var effect = $.effects;
 
 
 /*!
- * jQuery UI Effects Blind 1.11.2
+ * jQuery UI Effects Blind 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -46921,10 +46943,10 @@ var effectBlind = $.effects.effect.blind = function( o, done ) {
 
 
 /*!
- * jQuery UI Effects Bounce 1.11.2
+ * jQuery UI Effects Bounce 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -47031,10 +47053,10 @@ var effectBounce = $.effects.effect.bounce = function( o, done ) {
 
 
 /*!
- * jQuery UI Effects Clip 1.11.2
+ * jQuery UI Effects Clip 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -47095,10 +47117,10 @@ var effectClip = $.effects.effect.clip = function( o, done ) {
 
 
 /*!
- * jQuery UI Effects Drop 1.11.2
+ * jQuery UI Effects Drop 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -47157,10 +47179,10 @@ var effectDrop = $.effects.effect.drop = function( o, done ) {
 
 
 /*!
- * jQuery UI Effects Explode 1.11.2
+ * jQuery UI Effects Explode 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -47251,10 +47273,10 @@ var effectExplode = $.effects.effect.explode = function( o, done ) {
 
 
 /*!
- * jQuery UI Effects Fade 1.11.2
+ * jQuery UI Effects Fade 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -47278,10 +47300,10 @@ var effectFade = $.effects.effect.fade = function( o, done ) {
 
 
 /*!
- * jQuery UI Effects Fold 1.11.2
+ * jQuery UI Effects Fold 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -47351,10 +47373,10 @@ var effectFold = $.effects.effect.fold = function( o, done ) {
 
 
 /*!
- * jQuery UI Effects Highlight 1.11.2
+ * jQuery UI Effects Highlight 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -47398,10 +47420,10 @@ var effectHighlight = $.effects.effect.highlight = function( o, done ) {
 
 
 /*!
- * jQuery UI Effects Size 1.11.2
+ * jQuery UI Effects Size 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -47618,10 +47640,10 @@ var effectSize = $.effects.effect.size = function( o, done ) {
 
 
 /*!
- * jQuery UI Effects Scale 1.11.2
+ * jQuery UI Effects Scale 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -47693,10 +47715,10 @@ var effectScale = $.effects.effect.scale = function( o, done ) {
 
 
 /*!
- * jQuery UI Effects Puff 1.11.2
+ * jQuery UI Effects Puff 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -47739,10 +47761,10 @@ var effectPuff = $.effects.effect.puff = function( o, done ) {
 
 
 /*!
- * jQuery UI Effects Pulsate 1.11.2
+ * jQuery UI Effects Pulsate 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -47799,10 +47821,10 @@ var effectPulsate = $.effects.effect.pulsate = function( o, done ) {
 
 
 /*!
- * jQuery UI Effects Shake 1.11.2
+ * jQuery UI Effects Shake 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -47870,10 +47892,10 @@ var effectShake = $.effects.effect.shake = function( o, done ) {
 
 
 /*!
- * jQuery UI Effects Slide 1.11.2
+ * jQuery UI Effects Slide 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -47931,10 +47953,10 @@ var effectSlide = $.effects.effect.slide = function( o, done ) {
 
 
 /*!
- * jQuery UI Effects Transfer 1.11.2
+ * jQuery UI Effects Transfer 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -47975,10 +47997,10 @@ var effectTransfer = $.effects.effect.transfer = function( o, done ) {
 
 
 /*!
- * jQuery UI Progressbar 1.11.2
+ * jQuery UI Progressbar 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -47987,7 +48009,7 @@ var effectTransfer = $.effects.effect.transfer = function( o, done ) {
 
 
 var progressbar = $.widget( "ui.progressbar", {
-	version: "1.11.2",
+	version: "1.11.3",
 	options: {
 		max: 100,
 		value: 0,
@@ -48120,10 +48142,10 @@ var progressbar = $.widget( "ui.progressbar", {
 
 
 /*!
- * jQuery UI Selectable 1.11.2
+ * jQuery UI Selectable 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -48132,7 +48154,7 @@ var progressbar = $.widget( "ui.progressbar", {
 
 
 var selectable = $.widget("ui.selectable", $.ui.mouse, {
-	version: "1.11.2",
+	version: "1.11.3",
 	options: {
 		appendTo: "body",
 		autoRefresh: true,
@@ -48392,10 +48414,10 @@ var selectable = $.widget("ui.selectable", $.ui.mouse, {
 
 
 /*!
- * jQuery UI Selectmenu 1.11.2
+ * jQuery UI Selectmenu 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -48404,7 +48426,7 @@ var selectable = $.widget("ui.selectable", $.ui.mouse, {
 
 
 var selectmenu = $.widget( "ui.selectmenu", {
-	version: "1.11.2",
+	version: "1.11.3",
 	defaultElement: "<select>",
 	options: {
 		appendTo: null,
@@ -48444,8 +48466,7 @@ var selectmenu = $.widget( "ui.selectmenu", {
 	},
 
 	_drawButton: function() {
-		var that = this,
-			tabindex = this.element.attr( "tabindex" );
+		var that = this;
 
 		// Associate existing label with the new button
 		this.label = $( "label[for='" + this.ids.element + "']" ).attr( "for", this.ids.button );
@@ -48462,7 +48483,7 @@ var selectmenu = $.widget( "ui.selectmenu", {
 		// Create button
 		this.button = $( "<span>", {
 			"class": "ui-selectmenu-button ui-widget ui-state-default ui-corner-all",
-			tabindex: tabindex || this.options.disabled ? -1 : 0,
+			tabindex: this.options.disabled ? -1 : 0,
 			id: this.ids.button,
 			role: "combobox",
 			"aria-expanded": "false",
@@ -48972,7 +48993,7 @@ var selectmenu = $.widget( "ui.selectmenu", {
 			data.push({
 				element: option,
 				index: index,
-				value: option.attr( "value" ),
+				value: option.val(),
 				label: option.text(),
 				optgroup: optgroup.attr( "label" ) || "",
 				disabled: optgroup.prop( "disabled" ) || option.prop( "disabled" )
@@ -48992,10 +49013,10 @@ var selectmenu = $.widget( "ui.selectmenu", {
 
 
 /*!
- * jQuery UI Slider 1.11.2
+ * jQuery UI Slider 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -49004,7 +49025,7 @@ var selectmenu = $.widget( "ui.selectmenu", {
 
 
 var slider = $.widget( "ui.slider", $.ui.mouse, {
-	version: "1.11.2",
+	version: "1.11.3",
 	widgetEventPrefix: "slide",
 
 	options: {
@@ -49525,8 +49546,26 @@ var slider = $.widget( "ui.slider", $.ui.mouse, {
 	},
 
 	_calculateNewMax: function() {
-		var remainder = ( this.options.max - this._valueMin() ) % this.options.step;
-		this.max = this.options.max - remainder;
+		var max = this.options.max,
+			min = this._valueMin(),
+			step = this.options.step,
+			aboveMin = Math.floor( ( max - min ) / step ) * step;
+		max = aboveMin + min;
+		this.max = parseFloat( max.toFixed( this._precision() ) );
+	},
+
+	_precision: function() {
+		var precision = this._precisionOf( this.options.step );
+		if ( this.options.min !== null ) {
+			precision = Math.max( precision, this._precisionOf( this.options.min ) );
+		}
+		return precision;
+	},
+
+	_precisionOf: function( num ) {
+		var str = num.toString(),
+			decimal = str.indexOf( "." );
+		return decimal === -1 ? 0 : str.length - decimal - 1;
 	},
 
 	_valueMin: function() {
@@ -49676,10 +49715,10 @@ var slider = $.widget( "ui.slider", $.ui.mouse, {
 
 
 /*!
- * jQuery UI Sortable 1.11.2
+ * jQuery UI Sortable 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -49688,7 +49727,7 @@ var slider = $.widget( "ui.slider", $.ui.mouse, {
 
 
 var sortable = $.widget("ui.sortable", $.ui.mouse, {
-	version: "1.11.2",
+	version: "1.11.3",
 	widgetEventPrefix: "sort",
 	ready: false,
 	options: {
@@ -49938,7 +49977,7 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 		}
 
 		//Prepare scrolling
-		if(this.scrollParent[0] !== document && this.scrollParent[0].tagName !== "HTML") {
+		if(this.scrollParent[0] !== this.document[0] && this.scrollParent[0].tagName !== "HTML") {
 			this.overflowOffset = this.scrollParent.offset();
 		}
 
@@ -49990,7 +50029,7 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 
 		//Do scrolling
 		if(this.options.scroll) {
-			if(this.scrollParent[0] !== document && this.scrollParent[0].tagName !== "HTML") {
+			if(this.scrollParent[0] !== this.document[0] && this.scrollParent[0].tagName !== "HTML") {
 
 				if((this.overflowOffset.top + this.scrollParent[0].offsetHeight) - event.pageY < o.scrollSensitivity) {
 					this.scrollParent[0].scrollTop = scrolled = this.scrollParent[0].scrollTop + o.scrollSpeed;
@@ -50006,16 +50045,16 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 
 			} else {
 
-				if(event.pageY - $(document).scrollTop() < o.scrollSensitivity) {
-					scrolled = $(document).scrollTop($(document).scrollTop() - o.scrollSpeed);
-				} else if($(window).height() - (event.pageY - $(document).scrollTop()) < o.scrollSensitivity) {
-					scrolled = $(document).scrollTop($(document).scrollTop() + o.scrollSpeed);
+				if(event.pageY - this.document.scrollTop() < o.scrollSensitivity) {
+					scrolled = this.document.scrollTop(this.document.scrollTop() - o.scrollSpeed);
+				} else if(this.window.height() - (event.pageY - this.document.scrollTop()) < o.scrollSensitivity) {
+					scrolled = this.document.scrollTop(this.document.scrollTop() + o.scrollSpeed);
 				}
 
-				if(event.pageX - $(document).scrollLeft() < o.scrollSensitivity) {
-					scrolled = $(document).scrollLeft($(document).scrollLeft() - o.scrollSpeed);
-				} else if($(window).width() - (event.pageX - $(document).scrollLeft()) < o.scrollSensitivity) {
-					scrolled = $(document).scrollLeft($(document).scrollLeft() + o.scrollSpeed);
+				if(event.pageX - this.document.scrollLeft() < o.scrollSensitivity) {
+					scrolled = this.document.scrollLeft(this.document.scrollLeft() - o.scrollSpeed);
+				} else if(this.window.width() - (event.pageX - this.document.scrollLeft()) < o.scrollSensitivity) {
+					scrolled = this.document.scrollLeft(this.document.scrollLeft() + o.scrollSpeed);
 				}
 
 			}
@@ -50114,10 +50153,10 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 				animation = {};
 
 			if ( !axis || axis === "x" ) {
-				animation.left = cur.left - this.offset.parent.left - this.margins.left + (this.offsetParent[0] === document.body ? 0 : this.offsetParent[0].scrollLeft);
+				animation.left = cur.left - this.offset.parent.left - this.margins.left + (this.offsetParent[0] === this.document[0].body ? 0 : this.offsetParent[0].scrollLeft);
 			}
 			if ( !axis || axis === "y" ) {
-				animation.top = cur.top - this.offset.parent.top - this.margins.top + (this.offsetParent[0] === document.body ? 0 : this.offsetParent[0].scrollTop);
+				animation.top = cur.top - this.offset.parent.top - this.margins.top + (this.offsetParent[0] === this.document[0].body ? 0 : this.offsetParent[0].scrollTop);
 			}
 			this.reverting = true;
 			$(this.helper).animate( animation, parseInt(this.options.revert, 10) || 500, function() {
@@ -50310,7 +50349,7 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 
 		if(connectWith && connected) {
 			for (i = connectWith.length - 1; i >= 0; i--){
-				cur = $(connectWith[i]);
+				cur = $(connectWith[i], this.document[0]);
 				for ( j = cur.length - 1; j >= 0; j--){
 					inst = $.data(cur[j], this.widgetFullName);
 					if(inst && inst !== this && !inst.options.disabled) {
@@ -50360,7 +50399,7 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 
 		if(connectWith && this.ready) { //Shouldn't be run the first time through due to massive slow-down
 			for (i = connectWith.length - 1; i >= 0; i--){
-				cur = $(connectWith[i]);
+				cur = $(connectWith[i], this.document[0]);
 				for (j = cur.length - 1; j >= 0; j--){
 					inst = $.data(cur[j], this.widgetFullName);
 					if(inst && inst !== this && !inst.options.disabled) {
@@ -50652,14 +50691,14 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 		// 1. The position of the helper is absolute, so it's position is calculated based on the next positioned parent
 		// 2. The actual offset parent is a child of the scroll parent, and the scroll parent isn't the document, which means that
 		//    the scroll is included in the initial calculation of the offset of the parent, and never recalculated upon drag
-		if(this.cssPosition === "absolute" && this.scrollParent[0] !== document && $.contains(this.scrollParent[0], this.offsetParent[0])) {
+		if(this.cssPosition === "absolute" && this.scrollParent[0] !== this.document[0] && $.contains(this.scrollParent[0], this.offsetParent[0])) {
 			po.left += this.scrollParent.scrollLeft();
 			po.top += this.scrollParent.scrollTop();
 		}
 
 		// This needs to be actually done for all browsers, since pageX/pageY includes this information
 		// with an ugly IE fix
-		if( this.offsetParent[0] === document.body || (this.offsetParent[0].tagName && this.offsetParent[0].tagName.toLowerCase() === "html" && $.ui.ie)) {
+		if( this.offsetParent[0] === this.document[0].body || (this.offsetParent[0].tagName && this.offsetParent[0].tagName.toLowerCase() === "html" && $.ui.ie)) {
 			po = { top: 0, left: 0 };
 		}
 
@@ -50709,8 +50748,8 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 			this.containment = [
 				0 - this.offset.relative.left - this.offset.parent.left,
 				0 - this.offset.relative.top - this.offset.parent.top,
-				$(o.containment === "document" ? document : window).width() - this.helperProportions.width - this.margins.left,
-				($(o.containment === "document" ? document : window).height() || document.body.parentNode.scrollHeight) - this.helperProportions.height - this.margins.top
+				o.containment === "document" ? this.document.width() : this.window.width() - this.helperProportions.width - this.margins.left,
+				(o.containment === "document" ? this.document.width() : this.window.height() || this.document[0].body.parentNode.scrollHeight) - this.helperProportions.height - this.margins.top
 			];
 		}
 
@@ -50735,7 +50774,7 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 			pos = this.position;
 		}
 		var mod = d === "absolute" ? 1 : -1,
-			scroll = this.cssPosition === "absolute" && !(this.scrollParent[0] !== document && $.contains(this.scrollParent[0], this.offsetParent[0])) ? this.offsetParent : this.scrollParent,
+			scroll = this.cssPosition === "absolute" && !(this.scrollParent[0] !== this.document[0] && $.contains(this.scrollParent[0], this.offsetParent[0])) ? this.offsetParent : this.scrollParent,
 			scrollIsRootNode = (/(html|body)/i).test(scroll[0].tagName);
 
 		return {
@@ -50761,13 +50800,13 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 			o = this.options,
 			pageX = event.pageX,
 			pageY = event.pageY,
-			scroll = this.cssPosition === "absolute" && !(this.scrollParent[0] !== document && $.contains(this.scrollParent[0], this.offsetParent[0])) ? this.offsetParent : this.scrollParent, scrollIsRootNode = (/(html|body)/i).test(scroll[0].tagName);
+			scroll = this.cssPosition === "absolute" && !(this.scrollParent[0] !== this.document[0] && $.contains(this.scrollParent[0], this.offsetParent[0])) ? this.offsetParent : this.scrollParent, scrollIsRootNode = (/(html|body)/i).test(scroll[0].tagName);
 
 		// This is another very weird special case that only happens for relative elements:
 		// 1. If the css position is relative
 		// 2. and the scroll parent is the document or similar to the offset parent
 		// we have to refresh the relative offset during the scroll so there are no jumps
-		if(this.cssPosition === "relative" && !(this.scrollParent[0] !== document && this.scrollParent[0] !== this.offsetParent[0])) {
+		if(this.cssPosition === "relative" && !(this.scrollParent[0] !== this.document[0] && this.scrollParent[0] !== this.offsetParent[0])) {
 			this.offset.relative = this._getRelativeOffset();
 		}
 
@@ -50965,10 +51004,10 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 
 
 /*!
- * jQuery UI Spinner 1.11.2
+ * jQuery UI Spinner 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -50988,7 +51027,7 @@ function spinner_modifier( fn ) {
 }
 
 var spinner = $.widget( "ui.spinner", {
-	version: "1.11.2",
+	version: "1.11.3",
 	defaultElement: "<input>",
 	widgetEventPrefix: "spin",
 	options: {
@@ -51464,10 +51503,10 @@ var spinner = $.widget( "ui.spinner", {
 
 
 /*!
- * jQuery UI Tabs 1.11.2
+ * jQuery UI Tabs 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -51476,7 +51515,7 @@ var spinner = $.widget( "ui.spinner", {
 
 
 var tabs = $.widget( "ui.tabs", {
-	version: "1.11.2",
+	version: "1.11.3",
 	delay: 300,
 	options: {
 		active: null,
@@ -51652,8 +51691,9 @@ var tabs = $.widget( "ui.tabs", {
 		clearTimeout( this.activating );
 		selectedIndex = this._focusNextTab( selectedIndex, goingForward );
 
-		// Navigating with control key will prevent automatic activation
-		if ( !event.ctrlKey ) {
+		// Navigating with control/command key will prevent automatic activation
+		if ( !event.ctrlKey && !event.metaKey ) {
+
 			// Update aria-selected immediately so that AT think the tab is already selected.
 			// Otherwise AT may confuse the user by stating that they need to activate the tab,
 			// but the tab will already be activated by the time the announcement finishes.
@@ -52330,10 +52370,10 @@ var tabs = $.widget( "ui.tabs", {
 
 
 /*!
- * jQuery UI Tooltip 1.11.2
+ * jQuery UI Tooltip 1.11.3
  * http://jqueryui.com
  *
- * Copyright 2014 jQuery Foundation and other contributors
+ * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
@@ -52342,7 +52382,7 @@ var tabs = $.widget( "ui.tabs", {
 
 
 var tooltip = $.widget( "ui.tooltip", {
-	version: "1.11.2",
+	version: "1.11.3",
 	options: {
 		content: function() {
 			// support: IE<9, Opera in jQuery <1.7
@@ -53109,7 +53149,7 @@ var jqyoui = angular.module('ngDragDrop', []).service('ngDragDropService', ['$ti
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.3.11
+ * @license AngularJS v1.3.13
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -53386,14 +53426,14 @@ function htmlParser(html, handler) {
     }
   }
   var index, chars, match, stack = [], last = html, text;
-  stack.last = function() { return stack[ stack.length - 1 ]; };
+  stack.last = function() { return stack[stack.length - 1]; };
 
   while (html) {
     text = '';
     chars = true;
 
     // Make sure we're not in a script or style element
-    if (!stack.last() || !specialElements[ stack.last() ]) {
+    if (!stack.last() || !specialElements[stack.last()]) {
 
       // Comment
       if (html.indexOf("<!--") === 0) {
@@ -53451,7 +53491,8 @@ function htmlParser(html, handler) {
       }
 
     } else {
-      html = html.replace(new RegExp("(.*)<\\s*\\/\\s*" + stack.last() + "[^>]*>", 'i'),
+      // IE versions 9 and 10 do not understand the regex '[^]', so using a workaround with [\W\w].
+      html = html.replace(new RegExp("([\\W\\w]*)<\\s*\\/\\s*" + stack.last() + "[^>]*>", 'i'),
         function(all, text) {
           text = text.replace(COMMENT_REGEXP, "$1").replace(CDATA_REGEXP, "$1");
 
@@ -53475,17 +53516,17 @@ function htmlParser(html, handler) {
 
   function parseStartTag(tag, tagName, rest, unary) {
     tagName = angular.lowercase(tagName);
-    if (blockElements[ tagName ]) {
-      while (stack.last() && inlineElements[ stack.last() ]) {
+    if (blockElements[tagName]) {
+      while (stack.last() && inlineElements[stack.last()]) {
         parseEndTag("", stack.last());
       }
     }
 
-    if (optionalEndTagElements[ tagName ] && stack.last() == tagName) {
+    if (optionalEndTagElements[tagName] && stack.last() == tagName) {
       parseEndTag("", tagName);
     }
 
-    unary = voidElements[ tagName ] || !!unary;
+    unary = voidElements[tagName] || !!unary;
 
     if (!unary)
       stack.push(tagName);
@@ -53510,13 +53551,13 @@ function htmlParser(html, handler) {
     if (tagName)
       // Find the closest opened tag of the same type
       for (pos = stack.length - 1; pos >= 0; pos--)
-        if (stack[ pos ] == tagName)
+        if (stack[pos] == tagName)
           break;
 
     if (pos >= 0) {
       // Close all the open elements, up the stack
       for (i = stack.length - 1; i >= pos; i--)
-        if (handler.end) handler.end(stack[ i ]);
+        if (handler.end) handler.end(stack[i]);
 
       // Remove the open elements from the stack
       stack.length = pos;
@@ -53790,7 +53831,7 @@ angular.module('ngSanitize').filter('linky', ['$sanitize', function($sanitize) {
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.3.11
+ * @license AngularJS v1.3.13
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -54273,21 +54314,15 @@ function $RouteProvider() {
            * definitions will be interpolated into the location's path, while
            * remaining properties will be treated as query params.
            *
-           * @param {Object} newParams mapping of URL parameter names to values
+           * @param {!Object<string, string>} newParams mapping of URL parameter names to values
            */
           updateParams: function(newParams) {
             if (this.current && this.current.$$route) {
-              var searchParams = {}, self=this;
-
-              angular.forEach(Object.keys(newParams), function(key) {
-                if (!self.current.pathParams[key]) searchParams[key] = newParams[key];
-              });
-
               newParams = angular.extend({}, this.current.params, newParams);
               $location.path(interpolate(this.current.$$route.originalPath, newParams));
-              $location.search(angular.extend({}, $location.search(), searchParams));
-            }
-            else {
+              // interpolate modifies newParams, only query params are left
+              $location.search(newParams);
+            } else {
               throw $routeMinErr('norout', 'Tried updating route when with no current route');
             }
           }
