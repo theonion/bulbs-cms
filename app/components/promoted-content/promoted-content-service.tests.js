@@ -109,6 +109,51 @@ describe('Service: PromotedContentService', function () {
     expect(saveResp).toEqual(data.selectedPZone);
   });
 
+  it('should be able to save multiple operations in the future', function () {
+    var operations = [
+      {
+        client_id: 1,
+        type_name: 'promotion_insertoperation',
+        pzone: 1,
+        applied: false,
+        content: 1,
+        index: 1
+      },
+      {
+        client_id: 1,
+        type_name: 'promotion_insertoperation',
+        pzone: 1,
+        applied: false,
+        content: 2,
+        index: 2
+      }];
+
+    // add the operations to service data manually
+    data.unsavedOperations = operations;
+
+    // set preview time so that saving uses this date
+    var previewTime = moment().add(1, 'hours');
+    data.previewTime = previewTime;
+
+    // call save
+    var saveResp;
+    PromotedContentService.$saveSelectedPZone()
+      .then(function (selectedPZone) {
+        saveResp = selectedPZone;
+      });
+
+    // expect requests then flush
+    $httpBackend.expectPOST('/cms/api/v1/pzone/1/operations/').respond(operations);
+    $httpBackend.expectGET('/cms/api/v1/pzone/1/operations/').respond(mockApiData['pzones.operations']);
+    $httpBackend.flush();
+
+    // check everything is in order
+    expect(data.unsavedOperations).toEqual([]);
+    expect(operations[0].client_id).toBeUndefined();
+    expect(operations[0].when).toEqual(previewTime.toISOString());
+    expect(saveResp).toEqual(data.selectedPZone);
+  });
+
   it('should be able to save the selected pzone immediately', function () {
     // set preview time to immediate
     data.previewTime = null;

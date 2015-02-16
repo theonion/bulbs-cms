@@ -106,9 +106,17 @@ angular.module('promotedContent.service', [
           // remove client side client_id
           delete operation.client_id;
 
-          _data.operations.post(operation)
-            .finally(trackSaves);
+          // _data.operations.post(operation)
+          //   .finally(trackSaves);
         });
+        _data.operations.post(_data.unsavedOperations).then(function () {
+          PromotedContentService.$refreshOperations()
+            .then(function () {
+              PromotedContentService.clearUnsavedOperations();
+              defer.resolve(_data.selectedPZone);
+            });
+        });
+
       } else if (!_data.previewTime){
         // no preview time is set, post pzone immediately
         _data.selectedPZone.put()
