@@ -1,0 +1,131 @@
+<div class="queries-section">
+  <div class="clear-search-queries-container clearfix">
+    <button
+        ng-show="customSearchService.groups.length > 0"
+        class="btn-minimalized pull-right btn-clear-queries"
+        ng-click="
+          resetFilters();
+          customSearchService.clearAllQueries()">
+      <i class="glyphicon glyphicon-remove"></i>
+      Clear All Search Parameters
+    </button>
+  </div>
+
+  <custom-search-query
+      ng-repeat="group in customSearchService.groups"
+      remove="
+        customSearchService.removeQuery($index);
+        resetFilters();
+        customSearchService.$retrieveContent()"
+      model="group"
+      on-update="
+        resetFilters();
+        customSearchService.$retrieveContent()">
+  </custom-search-query>
+
+  <button
+      class="btn-minimalized"
+      ng-click="customSearchService.newQuery()">
+    <i class="glyphicon glyphicon-plus"></i>
+    Add Another Query
+  </button>
+</div>
+
+<custom-search-simple-content-search
+    on-select="
+      resetFilters();
+      customSearchService.include(id);
+      customSearchService.$retrieveContent()">
+</custom-search-simple-content-search>
+
+<hr>
+
+<div class="content-list">
+  <div class="content-list-heading">
+    <span class="content-list-heading-title">Current List Based on Above Parameters</span>
+    <span>Total Results in List: <span class="content-list-heading-count">{{ customSearchService.content.count }}</span></span>
+  </div>
+
+  <div class="content-list-filters row">
+    <div class="col-md-7">
+      <div class="search-input">
+        <span class="label-container">
+          <label for="contentFilterTerm">
+            <i class="glyphicon glyphicon-search"></i>
+          </label>
+        </span>
+        <span class="input-container">
+          <input
+              id="contentFilterTerm"
+              ng-model="customSearchService.query"
+              ng-change="
+                customSearchService.page = 1;
+                $conditionalContentRetrieve()"
+              placeholder="Search the list by article ID or headline...">
+        </span>
+        <span class="btn-container">
+          <button
+              class="btn-minimalized"
+              ng-click="
+                customSearchService.query = '';
+                customSearchService.page = 1;
+                $conditionalContentRetrieve()">
+            <i class="glyphicon glyphicon-remove"></i>
+          </button>
+        </span>
+      </div>
+    </div>
+    <div class="col-md-5">
+      <button
+          class="btn-filter btn-filter-green"
+          ng-class="{'active': addedFilterOn}"
+          ng-click="
+            addedFilterOn = !addedFilterOn;
+            removedFilterOn = false;
+            customSearchService.query = '';
+            customSearchService.page = 1;
+            $conditionalContentRetrieve()">
+        Added Articles:
+        <span class="btn-filter-count">{{ customSearchService.included_ids.length }}</span>
+        <span class="btn-filter-state">
+          <span ng-if="!addedFilterOn">Filter</span>
+          <span ng-if="addedFilterOn">Clear</span>
+        </span>
+      </button>
+      <button
+          class="btn-filter btn-filter-red"
+          ng-class="{'active': removedFilterOn}"
+          ng-click="
+            addedFilterOn = false;
+            removedFilterOn = !removedFilterOn;
+            customSearchService.query = '';
+            customSearchService.page = 1;
+            $conditionalContentRetrieve()">
+        Removed Articles:
+        <span class="btn-filter-count">{{ customSearchService.excluded_ids.length }}</span>
+        <span class="btn-filter-state">
+          <span ng-if="!removedFilterOn">Filter</span>
+          <span ng-if="removedFilterOn">Clear</span>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <custom-search-content-item
+      ng-repeat="content in customSearchService.content.results"
+      model="content"
+      modifier-service="customSearchService">
+  </custom-search-content-item>
+
+  <pagination
+      boundary-links="true"
+      ng-change="$conditionalContentRetrieve()"
+      ng-model="customSearchService.page"
+      max-size="10"
+      total-items="customSearchService.content.count"
+      previous-text="&lsaquo;"
+      next-text="&rsaquo;"
+      first-text="&laquo;"
+      last-text="&raquo;">
+  </pagination>
+</div>

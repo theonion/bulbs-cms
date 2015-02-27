@@ -23,7 +23,7 @@
     "raven-js": "1.1.11",
     "moment": "~2.6.0",
     "moment-timezone": "~0.2.4",
-    "lodash": "2.4.1",
+    "lodash": "~3.1.0",
     "jcrop": "0.9.12",
     "urlify": "theonion/urlify",
     "angular-bootstrap-datetimepicker": "~0.2.2",
@@ -33,7 +33,9 @@
     "pnotify": "~2.0.0",
     "firebase": "1.0.21",
     "zeroclipboard": "~2.1.6",
-    "ng-clip": "~0.2.4"
+    "ng-clip": "~0.2.4",
+    "bulbs-autocomplete": "~0.1.4",
+    "angular-uuid4": "~0.3.0"
   },
   "resolutions": {
     "zeroclipboard": "2.2.0"

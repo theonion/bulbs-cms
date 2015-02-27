@@ -447,3 +447,40 @@ nav.navbar {
 .btn-clean {
   opacity: .5;
 }
+
+.glyphicon {
+  top: 2px;
+}
+
+.btn-minimalized {
+  @btn-height: 1.5em;
+
+  background: none;
+  border: 0;
+  line-height: @btn-height;
+  outline: none;
+
+  &:hover {
+    color: #337ab7;
+
+    .glyphicon {
+      background-color: #337ab7
+    }
+  }
+
+  .glyphicon {
+    background-color: #000;
+    border-radius: 50%;
+    color: #fff;
+    height: @btn-height;
+    line-height: @btn-height;
+    padding-left: 1px;
+    text-align: center;
+    width: @btn-height;
+  }
+}
+
+.muted-capitals {
+  color: #999;
+  text-transform: uppercase;
+}

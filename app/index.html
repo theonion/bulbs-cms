@@ -41,6 +41,11 @@
     <link rel="stylesheet" href="styles/temporary-url-modal.css" />
 
     <!-- injector:css -->
+    <link rel="stylesheet" href="components/custom-search/custom-search-content-item/custom-search-content-item.css">
+    <link rel="stylesheet" href="components/custom-search/custom-search-query/custom-search-query-condition/custom-search-query-condition.css">
+    <link rel="stylesheet" href="components/custom-search/custom-search-query/custom-search-query.css">
+    <link rel="stylesheet" href="components/custom-search/custom-search-simple-content-search/custom-search-simple-content-search.css">
+    <link rel="stylesheet" href="components/custom-search/custom-search.css">
     <link rel="stylesheet" href="components/filter-widget/filter-widget.css">
     <link rel="stylesheet" href="components/promoted-content/promoted-content-article/promoted-content-article.css">
     <link rel="stylesheet" href="components/promoted-content/promoted-content-list/promoted-content-list.css">
@@ -106,7 +111,7 @@
     <script src="bower_components/raven-js/dist/raven.js"></script>
     <script src="bower_components/moment/moment.js"></script>
     <script src="bower_components/moment-timezone/builds/moment-timezone-with-data-2010-2020.js"></script>
-    <script src="bower_components/lodash/dist/lodash.compat.js"></script>
+    <script src="bower_components/lodash/lodash.js"></script>
     <script src="bower_components/urlify/urlify.js"></script>
     <script src="bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js"></script>
     <script src="bower_components/onion-editor/build/onion-editor.js"></script>
@@ -121,6 +126,8 @@
     <script src="bower_components/pnotify/pnotify.nonblock.js"></script>
     <script src="bower_components/zeroclipboard/dist/ZeroClipboard.js"></script>
     <script src="bower_components/ng-clip/src/ngClip.js"></script>
+    <script src="bower_components/bulbs-autocomplete/dist/bulbs-autocomplete.js"></script>
+    <script src="bower_components/angular-uuid4/angular-uuid4.js"></script>
     <!-- endbower -->
     <script src="bower_components/jcrop/js/jquery.Jcrop.min.js"></script>
     <!-- endbuild -->
@@ -140,6 +147,21 @@
     <script src="scripts/modules/betty-cropper.js"></script>
 
     <!-- injector:js -->
+    <script src="components/custom-search/custom-search-content-item/custom-search-content-item-directive.js"></script>
+    <script src="components/custom-search/custom-search-content-item/custom-search-content-item.js"></script>
+    <script src="components/custom-search/custom-search-directive.js"></script>
+    <script src="components/custom-search/custom-search-query/custom-search-query-condition/custom-search-query-condition-directive.js"></script>
+    <script src="components/custom-search/custom-search-query/custom-search-query-condition/custom-search-query-condition.js"></script>
+    <script src="components/custom-search/custom-search-query/custom-search-query-directive.js"></script>
+    <script src="components/custom-search/custom-search-query/custom-search-query.js"></script>
+    <script src="components/custom-search/custom-search-service/custom-search-service-condition-factory.js"></script>
+    <script src="components/custom-search/custom-search-service/custom-search-service-query-factory.js"></script>
+    <script src="components/custom-search/custom-search-service/custom-search-service.js"></script>
+    <script src="components/custom-search/custom-search-settings.js"></script>
+    <script src="components/custom-search/custom-search-simple-content-search/custom-search-simple-content-search-directive.js"></script>
+    <script src="components/custom-search/custom-search-simple-content-search/custom-search-simple-content-search.js"></script>
+    <script src="components/custom-search/custom-search.js"></script>
+    <script src="components/editors-pick/editors-pick.js"></script>
     <script src="components/filter-widget/filter-widget-directive.js"></script>
     <script src="components/filter-widget/filter-widget.js"></script>
     <script src="components/promoted-content/promoted-content-article/promoted-content-article-directive.js"></script>

@@ -1,1 +1,3 @@
-angular.module('bulbsCmsApp.mockApi', ['ngMockE2E']);
+angular.module('bulbsCmsApp.mockApi', [
+  'ngMockE2E'
+]);

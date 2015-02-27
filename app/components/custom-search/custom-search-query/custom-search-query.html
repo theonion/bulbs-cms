@@ -1,0 +1,54 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <span>Total Results from this Query: <strong>{{ model.result_count || 0 }}</strong></span>
+    <button
+        class="query-remove btn btn-danger btn-xs"
+        ng-click="remove()">
+      <i class="glyphicon glyphicon-remove"></i>
+    </button>
+  </div>
+  <div class="panel-body">
+    <custom-search-query-condition
+        ng-repeat="condition in model.conditions"
+        remove="model.removeCondition($index); model.$updateResultCount(); onUpdate()"
+        model="condition"
+        on-update="model.$updateResultCount(); onUpdate()">
+    </custom-search-query-condition>
+
+    <div
+        class="query-time-period"
+        ng-if="model.time">
+      <div class="form-inline">
+        <div class="form-group input-group-sm">
+          <label for="timePeriod-{{ uuid }}">Time Period is from</label>
+          <select
+              id="timePeriod-{{ uuid }}"
+              class="form-control"
+              ng-model="model.time"
+              ng-change="model.$updateResultCount(); onUpdate()"
+              ng-options="timePeriod.value as timePeriod.name for timePeriod in timePeriods">
+          </select>
+        </div>
+      </div>
+      <button
+          class="query-time-period-remove btn btn-xs btn-danger"
+          ng-click="model.removeTimePeriod(); model.$updateResultCount(); onUpdate()">
+        <i class="glyphicon glyphicon-remove"></i>
+      </button>
+    </div>
+
+    <button
+        class="btn-minimalized"
+        ng-click="model.newCondition(); model.$updateResultCount()">
+      <i class="glyphicon glyphicon-plus"></i>
+      Add a Condition
+    </button>
+    <button
+        class="btn-minimalized btn-add-time-period"
+        ng-if="!model.time"
+        ng-click="model.addTimePeriod(); model.$updateResultCount(); onUpdate()">
+      <i class="glyphicon glyphicon-plus"></i>
+      Add Time Period
+    </button>
+  </div>
+</div>
