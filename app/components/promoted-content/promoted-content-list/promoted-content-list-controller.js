@@ -7,21 +7,15 @@ angular.module('promotedContentList.controller', [
 
       $scope.pzoneData = PromotedContentService.getData();
 
-      $scope.contentDroppedIntoZone = function (e) {
-        $scope.destyleDropZones();
-        PromotedContentService.$dropAndAddContent(e.target);
-      };
-
-      $scope.contentDroppedIntoReplaceZone = function (e) {
-        $scope.destyleDropZones();
-        PromotedContentService.$dropAndAddContent(e.target, true);
-      };
-
       $scope.moveUp = function (index) {
         PromotedContentService.moveContentUp(index);
       };
 
       $scope.moveDown = function (index) {
         PromotedContentService.moveContentDn(index);
+      };
+
+      $scope.markDirty = function () {
+        PromotedContentService.markDirtySelectedPZone();
       };
   });

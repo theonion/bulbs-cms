@@ -12,31 +12,28 @@ angular.module('promotedContentSearch.controller', [
       PromotedContentService.$refreshAllContent({page: $scope.pageNumber}, true);
     };
 
-    $scope.articleIsVisible = function (article) {
-      var inPZone =
-        $scope.pzoneData.selectedPZone &&
-        _.find($scope.pzoneData.selectedPZone.content, {id: article.id});
-      return inPZone ? true : false;
-    };
-
     /**
-    * Check if an article is draggble. Dragging is allowed if preview time is
-    *  set to immediate and the article is already published, or if a preview
-    *  time is set into the future and the article will be published before that.
+    * Check if an content is enabled. Actions are allowed if preview time is
+    *  set to immediate and the content is already published, or if a preview
+    *  time is set into the future and the content will be published before that.
+    *  In either case, content is only draggable if it is not already listed.
     *
-    * @param {object} article - article to test for draggability.
-    * @returns {Boolean} true if article is draggable, false otherwise.
+    * @param {object} content - content to check if enabled.
+    * @returns {Boolean} true if content is enabled, false otherwise.
     */
-    $scope.articleIsDraggable = function (article) {
+    $scope.contentIsEnabled = function (content) {
+      var notAlreadyInList =
+        ($scope.pzoneData.selectedPZone &&
+        _.isUndefined(_.find($scope.pzoneData.selectedPZone.content, {id: content.id})));
       var immediateDraggable =
         ($scope.pzoneData.previewTime === null &&
-          moment().isAfter(article.published));
+          moment().isAfter(content.published));
       var futureDraggable =
         ($scope.pzoneData.previewTime !== null &&
           moment().isBefore($scope.pzoneData.previewTime) &&
-          $scope.pzoneData.previewTime.isAfter(article.published));
+          $scope.pzoneData.previewTime.isAfter(content.published));
 
-      return immediateDraggable || futureDraggable;
+      return notAlreadyInList && (immediateDraggable || futureDraggable);
     };
 
     $scope.contentPickedUp = function (e) {

@@ -16,60 +16,29 @@
   <i class="glyphicon glyphicon-info-sign"></i>
   Viewing a past list, past lists cannot be modified.
 </div>
-<div class="article-list">
-  <div
+<ul
+    class="article-list"
+    ui-sortable="sortableOptions"
+    ng-model="pzoneData.selectedPZone.content">
+  <li
       class="article-wrapper"
       ng-repeat="article in pzoneData.selectedPZone.content">
-    <div
-        class="content-drop-area content-drop-area-sm"
-        ng-hide="!pzoneData.draggingContent"
-        data-drop-zone-index="{{ $index }}"
-        data-drop="true"
-        jqyoui-droppable="{
-          onDrop: 'contentDroppedIntoZone',
-          onOver: 'styleDropZone',
-          onOut: 'destyleDropZones'
-        }">
-    </div>
-    <div
-        class="replace-drop-area"
-        data-drop-zone-index="{{ $index }}"
-        data-drop="true"
-        jqyoui-droppable="{
-          onDrop: 'contentDroppedIntoReplaceZone',
-          onOver: 'styleDropZone',
-          onOut: 'destyleDropZones'
-        }">
-      <promoted-content-article
-          article="article"
-          is-first="$first"
-          is-last="$last"
-          move-up-callback="moveUp($index)"
-          move-down-callback="moveDown($index)">
-      </promoted-content-article>
-    </div>
+    <promoted-content-article
+        article="article"
+        is-first="$first"
+        is-last="$last"
+        move-up-callback="moveUp($index)"
+        move-down-callback="moveDown($index)">
+    </promoted-content-article>
     <div
         class="content-cutoff"
         ng-if="$index + 1 === pzoneData.selectedPZone.zone_length">
       All {{ pzoneData.selectedPZone.zone_length }} spots filled, content below will not display
     </div>
-  </div>
-  <div
-      class="content-drop-area"
-      ng-hide="
-        (pzoneData.previewTime && pzoneData.previewTime.isBefore(moment())) ||
-        (!pzoneData.draggingContent && pzoneData.selectedPZone.content.length !== 0)"
-      data-drop-zone-index="{{ pzoneData.selectedPZone.content.length }}"
-      data-drop="true"
-      jqyoui-droppable="{
-        onDrop: 'contentDroppedIntoZone',
-        onOver: 'styleDropZone',
-        onOut: 'destyleDropZones'
-      }">
-  </div>
-  <div
-      class="content-cutoff"
-      ng-if="pzoneData.selectedPZone.content.length < pzoneData.selectedPZone.zone_length">
-    {{ pzoneData.selectedPZone.zone_length - pzoneData.selectedPZone.content.length }} spots left
-  </div>
-</div>
+    <div
+        class="content-cutoff"
+        ng-if="$last && pzoneData.selectedPZone.content.length < pzoneData.selectedPZone.zone_length">
+      {{ pzoneData.selectedPZone.zone_length - pzoneData.selectedPZone.content.length }} spots left
+    </div>
+  </li>
+</ul>

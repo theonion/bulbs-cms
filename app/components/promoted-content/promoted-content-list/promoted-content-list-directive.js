@@ -2,23 +2,35 @@
 
 angular.module('promotedContentList.directive', [
   'bulbsCmsApp.settings',
-  'ngDragDrop',
   'promotedContentArticle',
   'promotedContentSave',
-  'promotedContentList.controller'
+  'promotedContentList.controller',
+  'ui.sortable'
 ])
   .directive('promotedContentList', function ($, routes) {
     return {
       controller: 'PromotedContentList',
       link: function (scope, element, attr) {
 
-        scope.styleDropZone = function (e) {
-          $(e.target).addClass('drop-area-hover');
+        scope.sortableOptions = {
+          beforeStop: function (e, ui) {
+            ui.helper.css('margin-top', 0);
+            ui.item.parent().removeClass('ui-sortable-dragging');
+          },
+          change: function (e, ui) {
+            ui.helper.css('margin-top', $(window).scrollTop());
+          },
+          containment: 'promoted-content-list',
+          opacity: 0.75,
+          placeholder: 'dropzone',
+          start: function (e, ui) {
+            ui.item.parent().addClass('ui-sortable-dragging');
+            ui.helper.css('margin-top', $(window).scrollTop());
+          },
+          stop: function () {
+            scope.markDirty();
+          }
         };
-        scope.destyleDropZones = function (e) {
-          $('.content-drop-area, .replace-drop-area').removeClass('drop-area-hover');
-        };
-
       },
       restrict: 'E',
       scope: {},

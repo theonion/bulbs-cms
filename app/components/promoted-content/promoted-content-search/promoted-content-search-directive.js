@@ -2,7 +2,6 @@
 
 angular.module('promotedContentSearch.directive', [
   'bulbsCmsApp.settings',
-  'ngDragDrop',
   'statusFilter',
   'filterWidget',
   'promotedContentArticle',

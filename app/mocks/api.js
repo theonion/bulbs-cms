@@ -252,7 +252,7 @@ angular.module('bulbsCmsApp.mockApi').run([
 
     // add content to pzones
     var pzones = mockApiData['pzones.list'];
-    pzones.results[0].content = mockApiData['content.list'].results.slice(0,1);
+    pzones.results[0].content = mockApiData['content.list'].results.slice(0,6);
     pzones.results[1].content = mockApiData['content.list'].results.slice(0,2);
     pzones.results[2].content = mockApiData['content.list'].results.slice(1,2);
     pzones.results[3].content = mockApiData['content.list'].results.slice(1,3);
