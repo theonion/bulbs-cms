@@ -402,8 +402,8 @@ describe('Service: PromotedContentService', function () {
       expect(moved).toBe(false);
     });
 
-    it('should not be able to move top content down', function () {
-      var moved = PromotedContentService.moveContentDn(1);
+    it('should not be able to move bottom content down', function () {
+      var moved = PromotedContentService.moveContentDn(data.selectedPZone.content.length - 1);
       expect(moved).toBe(false);
     });
 
