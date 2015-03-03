@@ -15,7 +15,12 @@ angular.module('promotedContentList.controller', [
         PromotedContentService.moveContentDn(index);
       };
 
+      $scope.remove = function (article) {
+        PromotedContentService.$removeContentFromPZone(article.id);
+      };
+
       $scope.markDirty = function () {
         PromotedContentService.markDirtySelectedPZone();
       };
+
   });

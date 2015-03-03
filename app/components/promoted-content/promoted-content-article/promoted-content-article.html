@@ -1,33 +1,4 @@
 <div class="panel panel-default">
-  <div class="article-tools btn-group-lg">
-    <!-- actual remove button -->
-    <button
-        class="btn btn-default btn-link remove-content-btn"
-        ng-click="removeContentFromPromotedList(article)"
-        ng-hide="pzoneData.previewTime && pzoneData.previewTime.isBefore(moment())">
-      <i class="glyphicon glyphicon-remove"></i>
-    </button>
-    <!-- lock button for preventing removal in past content lists -->
-    <button
-        class="btn btn-default btn-link remove-content-btn"
-        disabled="true"
-        ng-show="pzoneData.previewTime && pzoneData.previewTime.isBefore(moment())">
-      <i class="glyphicon glyphicon-lock"></i>
-    </button>
-    <!-- up down buttons for reordering with preview time immediate -->
-    <button
-        class="btn btn-default btn-link up-content-btn"
-        ng-click="moveUpCallback()"
-        ng-disabled="isFirst || pzoneData.previewTime">
-      <i class="glyphicon glyphicon-chevron-up"></i>
-    </button>
-    <button
-        class="btn btn-default btn-link dn-content-btn"
-        ng-click="moveDownCallback()"
-        ng-disabled="isLast || pzoneData.previewTime">
-      <i class="glyphicon glyphicon-chevron-down"></i>
-    </button>
-  </div>
   <div class="panel-heading">
     <h4 class="panel-title hideOverflow">
       <span class="small">
