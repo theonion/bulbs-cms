@@ -23,6 +23,11 @@
   <span>Select an item below to finish your {{ pzoneData.action }} operation.</span>
   <button ng-click="stopAction()">Stop {{ pzoneData.action }}</button>
 </div>
+<div
+    class="dropzone dropzone-no-content"
+    ng-if="pzoneData.action && pzoneData.selectedPZone.content.length < 1"
+    ng-click="pzoneData.action && completeAction(0)">
+</div>
 <ul
     class="article-list"
     ui-sortable="sortableOptions"
@@ -32,6 +37,7 @@
       ng-class="{'ui-sortable-unsortable': pzoneData.action}">
     <div
         class="article-wrapper"
+        ng-class="{'action-hoverable': pzoneData.action}"
         ng-click="pzoneData.action && completeAction($index)">
       <div class="article-tools btn-group-lg">
         <!-- actual remove button -->

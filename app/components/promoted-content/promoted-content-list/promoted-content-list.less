@@ -1,5 +1,13 @@
 promoted-content-list {
+  @box-shadow-active: 0px 0px 24px 1px #8fcb8f;
   @inactive-color:#aaaaaa;
+
+  .transition (@transition) {
+    -webkit-transition: @transition;
+    -moz-transition:    @transition;
+    -ms-transition:     @transition;
+    -o-transition:      @transition;
+  }
 
   display: block;
   margin-bottom: 20px;
@@ -25,6 +33,40 @@ promoted-content-list {
     }
   }
 
+  .dropzone {
+    .transition(box-shadow 250ms);
+
+    background-color: lighten(@inactive-color, 20%);
+    border: 3px dashed @inactive-color;
+    box-shadow: none;
+    color: @inactive-color;
+    display: block;
+    min-height: 50px;
+    text-align: center;
+    font-weight: bold;
+    position: relative;
+
+    &:hover {
+      box-shadow: @box-shadow-active;
+    }
+  }
+
+  .mixin-dropzone-content(@text) {
+    float: left;
+    height: 100%;
+    width: 100%;
+    content: @text;
+    position: absolute;
+    top: 25%;
+    right: 0;
+    left: 0;
+    bottom: 50%;
+  }
+
+  .dropzone-no-content::before {
+    .mixin-dropzone-content("No Content Yet, Click Here to Add");
+  }
+
   .article-list {
     padding-bottom: 50px; // for improved contained drag-drop functionality
 
@@ -33,33 +75,30 @@ promoted-content-list {
     }
 
     li {
+      margin-bottom: 10px;
 
-      &.dropzone {
-        background-color: lighten(@inactive-color, 20%);
-        border: 3px dashed @inactive-color;
-        color: @inactive-color;
-        display: block;
-        min-height: 50px;
-        margin-bottom: 10px;
-        text-align: center;
-        font-weight: bold;
-        position: relative;
+      &.dropzone::before {
+        .mixin-dropzone-content("Drop Here to Insert Article");
+      }
 
-        &::before {
-          float: left;
-          height: 100%;
-          width: 100%;
-          content: "Drop Here to Insert Article";
-          position: absolute;
-          top: 25%;
-          right: 0;
-          left: 0;
-          bottom: 50%;
+      &.ui-sortable-unsortable {
+        cursor: crosshair;
+
+        promoted-content-article {
+          cursor: inherit;
         }
       }
 
       .article-wrapper {
+        .transition(box-shadow 250ms);
+
+        -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, .05);
+        box-shadow: 0 2px 2px rgba(0, 0, 0, .05);
         position: relative;
+
+        &.action-hoverable:hover {
+          box-shadow: @box-shadow-active;
+        }
 
         .article-tools {
           @border-style: 1px solid #ddd;
@@ -71,8 +110,6 @@ promoted-content-list {
           border-left: @border-style;
           border-top: @border-style;
           border-top-left-radius: @border-radius;
-          -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, .05);
-          box-shadow: 0 2px 2px rgba(0, 0, 0, .05);
           height: 100%;
           position: absolute;
           width: 90px;
@@ -114,6 +151,7 @@ promoted-content-list {
 
       promoted-content-article {
         margin-left: 90px;
+        cursor: move;
 
         .panel {
           border-bottom-left-radius: 0px;

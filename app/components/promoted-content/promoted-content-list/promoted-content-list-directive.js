@@ -22,6 +22,7 @@ angular.module('promotedContentList.directive', [
             ui.helper.css('margin-top', $(window).scrollTop());
           },
           containment: 'promoted-content-list',
+          distance: 3,
           opacity: 0.75,
           placeholder: 'dropzone',
           start: function (e, ui) {

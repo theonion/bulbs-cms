@@ -4,42 +4,60 @@
   <status-filter class="col-xs-12 form-group"></status-filter>
 </div>
 <div
+    class="article-wrapper"
     ng-repeat="article in pzoneData.allContent.content">
-  <!-- draggable article -->
+  <!-- actionable article -->
   <div
       ng-if="contentIsEnabled(article)">
     <promoted-content-article
-        class="draggable-content"
+        class="actionable-content"
         article="article"
-        data-article-id="{{ article.id }}">
+        ng-click="(toolsOpenFor(article) && closeTools()) || openToolsFor(article)">
     </promoted-content-article>
-    <div>
+    <div
+        ng-if="toolsOpenFor(article)"
+        class="article-tools">
       <button
-          ng-hide="pzoneData.action"
+          class="btn btn-xs btn-primary"
+          ng-disabled="pzoneData.action"
           ng-click="beginInsert(article)">
+        <i class="glyphicon glyphicon-plus"></i>
         Insert
       </button>
       <button
-          ng-hide="pzoneData.action"
+          class="btn btn-xs btn-primary"
+          ng-disabled="pzoneData.action"
           ng-click="beginReplace(article)">
+        <i class="glyphicon glyphicon-transfer"></i>
         Replace
       </button>
       <button
-          ng-show="pzoneData.action"
+          class="btn btn-xs btn-danger"
+          ng-disabled="!pzoneData.action"
           ng-click="stopAction()">
-        STOP
+        <i class="glyphicon glyphicon-remove"></i>
+        Stop Operation
       </button>
-      <button>Edit</button>
+      <a
+          class="btn-edit-article"
+          href="/cms/app/edit/{{article.id}}"
+          target="_blank">
+        <button
+            class="btn btn-xs btn-info">
+          <i class="fa fa-pencil"></i>
+          <span>Edit...</span>
+        </button>
+      </a>
     </div>
   </div>
-  <!-- non-dragglable article -->
+  <!-- non-actionable article -->
   <div
       ng-if="!contentIsEnabled(article)"
       tooltip="This article cannot be promoted because it is unpublished, occurs after selected time, you are viewing a past list, or it is already in this list."
       tooltip-placement="left"
       tooltip-trigger="mouseenter">
     <promoted-content-article
-        class="non-draggable-content"
+        class="non-actionable-content"
         article="article">
     </promoted-content-article>
   </div>
