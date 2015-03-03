@@ -9,9 +9,20 @@ promoted-content-list {
     font-style: italic;
   }
 
-  .info-past-date {
+  .alert {
     padding: 5px;
     text-align: center;
+
+    &.alert-action-in-progress {
+
+      button {
+        background-color: transparent;
+        border: none;
+        border-bottom: 1px dotted #31708f;
+        font-weight: bold;
+        line-height: 1em;
+      }
+    }
   }
 
   .article-list {

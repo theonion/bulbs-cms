@@ -19,6 +19,14 @@ angular.module('promotedContentList.controller', [
         PromotedContentService.$removeContentFromPZone(article.id);
       };
 
+      $scope.completeAction = function (index) {
+        PromotedContentService.$completeContentAction(index);
+      };
+
+      $scope.stopAction = function () {
+        PromotedContentService.stopContentAction();
+      };
+
       $scope.markDirty = function () {
         PromotedContentService.markDirtySelectedPZone();
       };

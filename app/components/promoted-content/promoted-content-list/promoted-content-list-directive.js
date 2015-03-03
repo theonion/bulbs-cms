@@ -17,6 +17,7 @@ angular.module('promotedContentList.directive', [
             ui.helper.css('margin-top', 0);
             ui.item.parent().removeClass('ui-sortable-dragging');
           },
+          cancel: '.ui-sortable-unsortable',
           change: function (e, ui) {
             ui.helper.css('margin-top', $(window).scrollTop());
           },

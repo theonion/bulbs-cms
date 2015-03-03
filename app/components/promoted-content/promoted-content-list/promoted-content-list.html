@@ -11,22 +11,34 @@
   </div>
 </h3>
 <div
-    class="info-past-date alert alert-info"
+    class="alert alert-info"
     ng-show="pzoneData.previewTime && pzoneData.previewTime.isBefore(moment())">
   <i class="glyphicon glyphicon-info-sign"></i>
   Viewing a past list, past lists cannot be modified.
+</div>
+<div
+    class="alert-action-in-progress alert alert-info"
+    ng-show="pzoneData.action">
+  <i class="glyphicon glyphicon-info-sign"></i>
+  <span>Select an item below to finish your {{ pzoneData.action }} operation.</span>
+  <button ng-click="stopAction()">Stop {{ pzoneData.action }}</button>
 </div>
 <ul
     class="article-list"
     ui-sortable="sortableOptions"
     ng-model="pzoneData.selectedPZone.content">
-  <li ng-repeat="article in pzoneData.selectedPZone.content">
-    <div class="article-wrapper">
+  <li
+      ng-repeat="article in pzoneData.selectedPZone.content"
+      ng-class="{'ui-sortable-unsortable': pzoneData.action}">
+    <div
+        class="article-wrapper"
+        ng-click="pzoneData.action && completeAction($index)">
       <div class="article-tools btn-group-lg">
         <!-- actual remove button -->
         <button
             class="btn btn-default btn-link remove-content-btn"
             ng-click="remove(article)"
+            ng-disabled="pzoneData.action"
             ng-hide="pzoneData.previewTime && pzoneData.previewTime.isBefore(moment())">
           <i class="glyphicon glyphicon-remove"></i>
         </button>
@@ -41,13 +53,13 @@
         <button
             class="btn btn-default btn-link up-content-btn"
             ng-click="moveUp($index)"
-            ng-disabled="$first || pzoneData.previewTime">
+            ng-disabled="pzoneData.action || $first || pzoneData.previewTime">
           <i class="glyphicon glyphicon-chevron-up"></i>
         </button>
         <button
             class="btn btn-default btn-link dn-content-btn"
             ng-click="moveDown($index)"
-            ng-disabled="$last || pzoneData.previewTime">
+            ng-disabled="pzoneData.action || $last || pzoneData.previewTime">
           <i class="glyphicon glyphicon-chevron-down"></i>
         </button>
       </div>

@@ -6,12 +6,32 @@
 <div
     ng-repeat="article in pzoneData.allContent.content">
   <!-- draggable article -->
-  <promoted-content-article
-      class="draggable-content"
-      ng-if="contentIsEnabled(article)"
-      article="article"
-      data-article-id="{{ article.id }}">
-  </promoted-content-article>
+  <div
+      ng-if="contentIsEnabled(article)">
+    <promoted-content-article
+        class="draggable-content"
+        article="article"
+        data-article-id="{{ article.id }}">
+    </promoted-content-article>
+    <div>
+      <button
+          ng-hide="pzoneData.action"
+          ng-click="beginInsert(article)">
+        Insert
+      </button>
+      <button
+          ng-hide="pzoneData.action"
+          ng-click="beginReplace(article)">
+        Replace
+      </button>
+      <button
+          ng-show="pzoneData.action"
+          ng-click="stopAction()">
+        STOP
+      </button>
+      <button>Edit</button>
+    </div>
+  </div>
   <!-- non-dragglable article -->
   <div
       ng-if="!contentIsEnabled(article)"

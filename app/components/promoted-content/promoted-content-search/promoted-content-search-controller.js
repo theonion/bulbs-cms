@@ -36,12 +36,16 @@ angular.module('promotedContentSearch.controller', [
       return notAlreadyInList && (immediateDraggable || futureDraggable);
     };
 
-    $scope.contentPickedUp = function (e) {
-      PromotedContentService.pickupContentFromAll(e.target);
+    $scope.beginInsert = function (article) {
+      PromotedContentService.beginContentInsert(article);
     };
 
-    $scope.contentDropped = function () {
-      PromotedContentService.dropContent();
+    $scope.beginReplace = function (article) {
+      PromotedContentService.beginContentReplace(article);
+    };
+
+    $scope.stopAction = function () {
+      PromotedContentService.stopContentAction();
     };
 
   });
