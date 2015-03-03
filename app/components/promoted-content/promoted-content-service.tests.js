@@ -449,6 +449,7 @@ describe('Service: PromotedContentService', function () {
       expect(data.actionContent).toBeNull();
       expect(data.action).toBeNull();
       expect(data.selectedPZone.content.length).toBe(oldContentLength + 1);
+      expect(data.selectedPZone.saved).toBeUndefined();
     });
 
     it('should allow an article to be replaced', function () {
@@ -470,6 +471,7 @@ describe('Service: PromotedContentService', function () {
       expect(data.actionContent).toBeNull();
       expect(data.action).toBeNull();
       expect(data.selectedPZone.content.length).toBe(oldContentLength);
+      expect(data.selectedPZone.saved).toBeUndefined();
     });
 
     it('should be able to stop an insert operation', function () {

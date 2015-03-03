@@ -394,6 +394,9 @@ angular.module('promotedContent.service', [
             // stop action
             PromotedContentService.stopContentAction();
 
+            // ensure pzone is marked dirty
+            PromotedContentService.markDirtySelectedPZone();
+
             deferred.resolve();
           })
           .catch(deferred.reject);
