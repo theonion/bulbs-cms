@@ -36,7 +36,7 @@
       ng-repeat="article in pzoneData.selectedPZone.content"
       ng-class="{
         'ui-sortable-unsortable': pzoneData.action || pzoneData.previewTime !== null,
-        'time-unsortable': pzoneData.previewTime !== null
+        'time-unsortable': pzoneData.previewTime.isBefore(moment())
       }">
     <div
         class="article-wrapper"

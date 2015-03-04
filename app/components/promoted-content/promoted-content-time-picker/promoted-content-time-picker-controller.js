@@ -7,7 +7,6 @@ angular.module('promotedContentTimePicker.controller', [
   .controller('PromotedContentTimePicker', function (moment, $scope, PromotedContentService) {
 
     $scope.contentData = PromotedContentService.getData();
-    $scope.previewTime = null;
 
     $scope.setPreviewTime = function (previewTime) {
       PromotedContentService.setPreviewTime(previewTime);

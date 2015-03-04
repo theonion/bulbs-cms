@@ -38,4 +38,7 @@ angular.module('promotedContentOperationsList.controller', [
       $scope.deleteStatus.message = '';
     };
 
+    $scope.setPreviewTime = function (time) {
+      PromotedContentService.setPreviewTime(time);
+    };
   });

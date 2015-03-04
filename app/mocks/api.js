@@ -926,8 +926,8 @@ angular.module('bulbsCmsApp.mockApi').run([
     'pzone': 1,
     'when': moment().add(21, 'minutes').add(1, 'second').toISOString(),
     'index': 0,
-    'content': 1,
-    'content_title': 'This is a draft article'
+    'content': 10,
+    'content_title': 'THIS IS THE LONGEST ARTICLE TITLE IN THE HISTORY OF ARTICLE TITLES. THIS IS THE LONGEST ARTICLE TITLE IN THE HISTORY OF ARTICLE TITLES. THIS IS THE LONGEST ARTICLE TITLE IN THE HISTORY OF ARTICLE TITLES. THIS IS THE LONGEST ARTICLE TITLE IN THE HISTORY OF ARTICLE TITLES. THIS IS THE LONGEST ARTICLE TITLE IN THE HISTORY OF ARTICLE TITLES. THIS IS THE LONGEST ARTICLE TITLE IN THE HISTORY OF ARTICLE TITLES.'
   }],
   'bettycropper.detail': {
     'credit': 'No-Look Wnuk',
