@@ -34,7 +34,10 @@
     ng-model="pzoneData.selectedPZone.content">
   <li
       ng-repeat="article in pzoneData.selectedPZone.content"
-      ng-class="{'ui-sortable-unsortable': pzoneData.action}">
+      ng-class="{
+        'ui-sortable-unsortable': pzoneData.action || pzoneData.previewTime !== null,
+        'time-unsortable': pzoneData.previewTime !== null
+      }">
     <div
         class="article-wrapper"
         ng-class="{'action-hoverable': pzoneData.action}"

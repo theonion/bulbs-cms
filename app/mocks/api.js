@@ -873,6 +873,61 @@ angular.module('bulbsCmsApp.mockApi').run([
     'index': 0,
     'content': 1,
     'content_title': 'This is a draft article'
+  }, {
+    'id': 4,
+    'type_name': 'promotion_replaceoperation',
+    'pzone': 1,
+    'when': moment().add(20, 'minutes').toISOString(),
+    'index': 0,
+    'content': 1,
+    'content_title': 'This is a draft article'
+  }, {
+    'id': 5,
+    'type_name': 'promotion_deleteoperation',
+    'pzone': 1,
+    'when': moment().add(20, 'minutes').toISOString(),
+    'content': 1,
+    'content_title': 'This is a draft article'
+  }, {
+    'id': 6,
+    'type_name': 'promotion_insertoperation',
+    'pzone': 1,
+    'when': moment().add(20, 'minutes').toISOString(),
+    'index': 0,
+    'content': 1,
+    'content_title': 'This is a draft article'
+  }, {
+    'id': 7,
+    'type_name': 'promotion_insertoperation',
+    'pzone': 1,
+    'when': moment().add(21, 'minutes').toISOString(),
+    'index': 0,
+    'content': 1,
+    'content_title': 'This is a draft article'
+  }, {
+    'id': 8,
+    'type_name': 'promotion_insertoperation',
+    'pzone': 1,
+    'when': moment().add(21, 'minutes').toISOString(),
+    'index': 0,
+    'content': 1,
+    'content_title': 'This is a draft article'
+  }, {
+    'id': 9,
+    'type_name': 'promotion_insertoperation',
+    'pzone': 1,
+    'when': moment().add(21, 'minutes').toISOString(),
+    'index': 0,
+    'content': 1,
+    'content_title': 'This is a draft article'
+  }, {
+    'id': 10,
+    'type_name': 'promotion_insertoperation',
+    'pzone': 1,
+    'when': moment().add(21, 'minutes').add(1, 'second').toISOString(),
+    'index': 0,
+    'content': 1,
+    'content_title': 'This is a draft article'
   }],
   'bettycropper.detail': {
     'credit': 'No-Look Wnuk',
