@@ -8,14 +8,10 @@
           <span ng-show="article.ratings[0].media_item.show" ng-bind-html="article.ratings[0].media_item.show"></span>
           <span ng-hide="article.ratings[0].media_item.show || article.feature_type"><em>No type set</em></span>
         </span>
-        <div class="pull-right">
-          <span class="article-publish-date">
-            <i class="fa fa-calendar"></i>
-            <span ng-show="article.published" ng-bind-html="article.published|date: 'M/d/yy\' @ \' h:mm a' "></span>
-            <span ng-hide="article.published"><em>Not published</em></span>
-          </span>
-          &nbsp;
-          <a href="/cms/app/edit/{{article.id}}"><i class="fa fa-pencil"></i> Edit...</a>
+        <div class="article-publish-date pull-right">
+          <i class="fa fa-calendar"></i>
+          <span ng-show="article.published" ng-bind-html="article.published|date: 'M/d/yy\' @ \' h:mm a' "></span>
+          <span ng-hide="article.published"><em>Not published</em></span>
         </div>
       </span><br>
       <div class="heading" title="{{article.title}}" ng-show="article.title" ng-bind-html="article.title"></div>

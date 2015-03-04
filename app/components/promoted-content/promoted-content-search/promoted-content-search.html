@@ -33,10 +33,10 @@
       </button>
       <button
           class="btn btn-xs btn-danger"
-          ng-disabled="!pzoneData.action"
+          ng-show="pzoneData.action"
           ng-click="stopAction()">
         <i class="glyphicon glyphicon-remove"></i>
-        Stop Operation
+        Cancel
       </button>
       <a
           class="btn-edit-article"

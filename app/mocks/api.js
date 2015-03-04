@@ -290,12 +290,16 @@ angular.module('bulbsCmsApp.mockApi').run([
     });
 
     $httpBackend.when('POST', pzoneOperationsRegex).respond(function (method, url, data) {
-      var operation = JSON.parse(data);
-      delete operation.cleanType;
-      operation.id = _.max(mockApiData['pzones.operations'], 'id').id + 1;
-      operation.content_title = _.find(mockApiData['content.list'].results, {id: operation.content}).title;
-      mockApiData['pzones.operations'].push(operation);
-      return operation;
+      var operations = JSON.parse(data);
+
+      _.forEach(operations, function (operation) {
+        delete operation.cleanType;
+        operation.id = _.max(mockApiData['pzones.operations'], 'id').id + 1;
+        operation.content_title = _.find(mockApiData['content.list'].results, {id: operation.content}).title;
+        mockApiData['pzones.operations'].push(operation);
+      });
+
+      return [200, mockApiData['pzones.operations']];
     });
 
     $httpBackend.when('DELETE', pzoneOperationsRegex).respond(function (method, url) {

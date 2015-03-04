@@ -91,15 +91,13 @@ angular.module('promotedContent.service', [
       if (_data.previewTime && _data.previewTime.isAfter(moment())) {
         // grab operations out of unsaved operations and post them into operations list
         _.each(_data.unsavedOperations, function (operation) {
-
           // use preview time, or send null if immediate
           operation.when = _data.previewTime ? _data.previewTime.toISOString() : null;
           // remove client side client_id
           delete operation.client_id;
-
-          // _data.operations.post(operation)
-          //   .finally(trackSaves);
         });
+
+        // post all operations as an array
         _data.operations.post(_data.unsavedOperations).then(function () {
           PromotedContentService.$refreshOperations()
             .then(function () {
