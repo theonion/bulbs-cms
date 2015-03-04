@@ -19,10 +19,10 @@ angular.module('bulbsCmsApp.mockApi').run([
     function detailView(method, url, data) {
       var index = getContentId(url);
 
-      var pzones = mockApiData['pzones.list'];
+      var content = mockApiData['content.list'];
 
-      if(index <= pzones.results.length) {
-        return [200, pzones.results[index - 1]];
+      if(index <= content.results.length) {
+        return [200, content.results[index - 1]];
       } else {
         return [404, {'detail': 'Not found'}];
       }
@@ -118,6 +118,56 @@ angular.module('bulbsCmsApp.mockApi').run([
     $httpBackend.whenGET('/users/logout/').respond(function(method, url, data){
       return [200];
     });
+
+    // custom search content endpoint
+    $httpBackend.whenPOST('/cms/api/v1/custom-search-content/').respond(function () {
+      return [200, {
+        count: Math.floor(Math.random() * 1000),
+        results: mockApiData['content.list'].results
+      }];
+    });
+
+    // custom search query count
+    $httpBackend.whenPOST('/cms/api/v1/custom-search-content/count/').respond(function () {
+      return [200, {count: Math.floor(Math.random() * 1000)}];
+    });
+
+    // feature types
+    mockApiData.feature_types = [{
+      slug: 'quiz',
+      id: 5,
+      name: 'Quiz'
+    }, {
+      slug: 'slideshow',
+      id: 6,
+      name: 'Slideshow'
+    }, {
+      slug: 'article',
+      id: 7,
+      name: 'Article'
+    }, {
+      slug: 'they-said-what',
+      id: 8,
+      name: 'They Said What?!'
+    }, {
+      slug: 'some-super-long-feature-type-some-super-long-feature-type-some-super-long-feature-type-some-super-long-feature-typesome-super-long-feature-type',
+      id: 8,
+      name: 'Some Super Long Feature Type Some Super Long Feature Type Some Super Long Feature Type Some Super Long Feature Type Some Super Long Feature Type'
+    }];
+    $httpBackend.whenGET(/\/cms\/api\/v1\/feature-type\/(\?search=.*)?/).respond(mockApiData.feature_types);
+
+    // content types
+    mockApiData.content_types = [{
+      name: 'Video',
+      doctype: 'video'
+    }, {
+      name: 'Clickventure',
+      doctype: 'clickventure'
+    }, {
+      name: 'Some Super Long Content Type Some Super Long Content Type Some Super Long Content Type Some Super Long Content Type Some Super Long Content Type',
+      doctype: 'some-super-long-content-type-some-super-long-content-type-some-super-long-content-type-some-super-long-content-type-some-super-long-content-type'
+    }];
+    $httpBackend.whenGET(/\/cms\/api\/v1\/content-type\/(\?search=.*)?/).respond(mockApiData.content_types);
 
     // notifications
     mockApiData.notifications = [{
@@ -716,6 +766,32 @@ angular.module('bulbsCmsApp.mockApi').run([
       subhead: '',
       indexed: true,
       body: 'This article has a thumbnail override field.',
+      client_pixel: null,
+      sponsor_name: null
+    }, {
+      id: 10,
+      feature_type: 'Something Feature Type Something',
+      title: 'THIS IS THE LONGEST ARTICLE TITLE IN THE HISTORY OF ARTICLE TITLES. THIS IS THE LONGEST ARTICLE TITLE IN THE HISTORY OF ARTICLE TITLES. THIS IS THE LONGEST ARTICLE TITLE IN THE HISTORY OF ARTICLE TITLES. THIS IS THE LONGEST ARTICLE TITLE IN THE HISTORY OF ARTICLE TITLES. THIS IS THE LONGEST ARTICLE TITLE IN THE HISTORY OF ARTICLE TITLES. THIS IS THE LONGEST ARTICLE TITLE IN THE HISTORY OF ARTICLE TITLES.',
+      slug: 'longest-article-title',
+      polymorphic_ctype: 'content_content',
+      tags: [],
+      authors: [],
+      thumbnail: {id: '1'},
+      thumbnail_override: {id: '1'},
+      image: {
+        caption: null,
+        alt: null,
+        id: '3'
+      },
+      absolute_url: '/article/article-1',
+      sponsor_image: null,
+      status: 'Published',
+      published: '2017-07-25T16:20:00Z',
+      last_modified: '2012-05-03T16:00:00Z',
+      description: '',
+      subhead: '',
+      indexed: true,
+      body: 'This article has a really long title.',
       client_pixel: null,
       sponsor_name: null
     }]

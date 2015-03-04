@@ -2,7 +2,7 @@
 
 // ****** External Libraries ****** \\
 
-angular.module('underscore', []).constant('_', window._);
+angular.module('lodash', []).constant('_', window._);
 angular.module('NProgress', []).constant('NProgress', window.NProgress);
 angular.module('URLify', []).constant('URLify', window.URLify);
 angular.module('jquery', []).constant('$', window.$);
@@ -18,14 +18,13 @@ angular.module('bulbsCmsApp', [
   'bulbsCmsApp.settings',
   'ngCookies',
   'ngResource',
-  'ngSanitize',
   'ngRoute',
   'ui.bootstrap',
   'ui.bootstrap.datetimepicker',
   'restangular',
   'BettyCropper',
   'jquery',
-  'underscore',
+  'lodash',
   'NProgress',
   'URLify',
   'moment',

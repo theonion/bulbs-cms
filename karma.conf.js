@@ -33,7 +33,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'app/cms-image.js',
-      'app/bower_components/lodash/dist/lodash.js',
+      'app/bower_components/lodash/lodash.js',
       'app/bower_components/jquery/dist/jquery.js',
       'app/bower_components/jcrop/js/jquery.Jcrop.js',
       'app/bower_components/bootstrap/dist/js/bootstrap.js',
@@ -44,9 +44,9 @@ module.exports = function(config) {
       'app/bower_components/angular-resource/angular-resource.js',
       'app/bower_components/angular-cookie/angular-cookie.js',
       'app/bower_components/angular-cookies/angular-cookies.js',
-      'app/bower_components/angular-sanitize/angular-sanitize.js',
       'app/bower_components/angular-route/angular-route.js',
       'app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
+      'app/bower_components/angular-uuid4/angular-uuid4.js',
       'app/bower_components/angularfire/dist/angularfire.js',
       'app/bower_components/nprogress/nprogress.js',
       'app/bower_components/restangular/dist/restangular.js',
@@ -58,6 +58,7 @@ module.exports = function(config) {
       'app/bower_components/Keypress/keypress.js',
       'app/bower_components/zeroclipboard/dist/ZeroClipboard.min.js',
       'app/bower_components/ng-clip/dest/ng-clip.min.js',
+      'app/bower_components/bulbs-autocomplete/dist/bulbs-autocomplete.js',
 
       'app/mocks/app.js',
       'app/mocks/api.js',

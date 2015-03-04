@@ -527,6 +527,27 @@ module.exports = function (grunt) {
     ]);
   });
 
+  grunt.registerTask('serve-no-test', function (target) {
+
+    if (target === 'dist') {
+      // use built files in dist instead of raw files
+      return grunt.task.run(['build', 'connect:dist:keepalive']);
+    }
+
+    // run task list
+    grunt.task.run([
+      'clean:server',
+      'wiredep',
+      'concurrent:server',
+      'less',
+      'autoprefixer',
+      'injector:local_dependencies',
+      'jshint:all',
+      'connect:livereload',
+      'watch:livereload'
+    ]);
+  });
+
   grunt.registerTask('lint', [
     'jshint:all'
   ]);

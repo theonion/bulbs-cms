@@ -1,0 +1,24 @@
+<div class="muted-capitals">Manually Add Article to List</div>
+
+<div class="search-container">
+  <div class="search-input">
+    <label for="customSearchContentSearch">
+      <i class="glyphicon glyphicon-search"></i>
+    </label>
+    <input
+        id="customSearchContentSearch"
+        placeholder="Search content by article ID or headline..."
+        type="text"
+        ng-model="writables.searchTerm"
+        ng-blur="delayClearAutocomplete()"
+        ng-change="updateAutocomplete()"
+        ng-keydown="handleKeypress($event)">
+  </div>
+
+  <bulbs-autocomplete-suggest
+      ng-show="writables.searchTerm && autocompleteItems"
+      formatter="item.name"
+      items="autocompleteItems"
+      on-select="onSelect({id: selection.value}); autocompleteItems = []; writables.searchTerm = '';">
+  </bulbs-autocomplete-suggest>
+</div>
