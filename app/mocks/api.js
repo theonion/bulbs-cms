@@ -19,10 +19,10 @@ angular.module('bulbsCmsApp.mockApi').run([
     function detailView(method, url, data) {
       var index = getContentId(url);
 
-      var pzones = mockApiData['pzones.list'];
+      var content = mockApiData['content.list'];
 
-      if(index <= pzones.results.length) {
-        return [200, pzones.results[index - 1]];
+      if(index <= content.results.length) {
+        return [200, content.results[index - 1]];
       } else {
         return [404, {'detail': 'Not found'}];
       }

@@ -32,7 +32,7 @@ angular.module('bulbsCmsApp')
 
       $scope.scaleData = image.scaleToFit(550, 400);
 
-      $('.crop-image-container img').one('load', function () {
+      angular.element('.crop-image-container img').one('load', function () {
         $(this).Jcrop({
           allowSelect: false,
           allowMove: true,
@@ -77,16 +77,18 @@ angular.module('bulbsCmsApp')
       }
       var selection = $scope.image.selections[ratio].scaleBy($scope.scaleData.scale);
 
-      $scope.jcrop_api.setOptions({
-        aspectRatio: selection.width() / selection.height()
-      });
+      if ($scope.jcrop_api) {
+        $scope.jcrop_api.setOptions({
+          aspectRatio: selection.width() / selection.height()
+        });
 
-      $scope.jcrop_api.setSelect([
-        selection.x0,
-        selection.y0,
-        selection.x1,
-        selection.y1
-      ]);
+        $scope.jcrop_api.setSelect([
+          selection.x0,
+          selection.y0,
+          selection.x1,
+          selection.y1
+        ]);
+      }
 
       $scope.cropMode = true;
       $scope.selectedCrop = ratio;
