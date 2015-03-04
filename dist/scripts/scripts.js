@@ -222,7 +222,7 @@ $(document).unbind('keydown').bind('keydown', function (event) {
 
 // ****** External Libraries ****** \\
 
-angular.module('underscore', []).constant('_', window._);
+angular.module('lodash', []).constant('_', window._);
 angular.module('NProgress', []).constant('NProgress', window.NProgress);
 angular.module('URLify', []).constant('URLify', window.URLify);
 angular.module('jquery', []).constant('$', window.$);
@@ -238,14 +238,13 @@ angular.module('bulbsCmsApp', [
   'bulbsCmsApp.settings',
   'ngCookies',
   'ngResource',
-  'ngSanitize',
   'ngRoute',
   'ui.bootstrap',
   'ui.bootstrap.datetimepicker',
   'restangular',
   'BettyCropper',
   'jquery',
-  'underscore',
+  'lodash',
   'NProgress',
   'URLify',
   'moment',
@@ -722,6 +721,587 @@ angular.module('bulbs.api')
     return Selection;
   }
 })();
+
+'use strict';
+
+angular.module('customSearch.contentItem.directive', [])
+  .directive('customSearchContentItem', function (routes) {
+    return {
+      restrict: 'E',
+      scope: {
+        model: '=',
+        modifierService: '='
+      },
+      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search-content-item/custom-search-content-item.html'
+    };
+  });
+
+'use strict';
+
+angular.module('customSearch.contentItem', [
+  'customSearch.contentItem.directive'
+]);
+
+'use strict';
+
+angular.module('customSearch.directive', [
+  'bulbsCmsApp.settings',
+  'customSearch.contentItem',
+  'customSearch.service',
+  'customSearch.simpleContentSearch',
+  'customSearch.query'
+])
+  .directive('customSearch', function (routes) {
+    return {
+      controller: function ($scope, CustomSearchService) {
+        $scope.customSearchService = new CustomSearchService($scope.searchQueryData);
+
+        $scope.customSearchService.$retrieveContent();
+
+        $scope.addedFilterOn = false;
+        $scope.removedFilterOn = false;
+
+        $scope.resetFilters = function () {
+          $scope.customSearchService.page = 1;
+          $scope.customSearchService.query = '';
+          $scope.addedFilterOn = false;
+          $scope.removedFilterOn = false;
+        };
+
+        $scope.$conditionalContentRetrieve = function () {
+          if ($scope.addedFilterOn) {
+            // included filter is on, use retrieval by included
+            $scope.customSearchService.$filterContentByIncluded();
+          } else if ($scope.removedFilterOn) {
+            // excluded filter is on, use retrieval by excluded
+            $scope.customSearchService.$filterContentByExcluded();
+          } else {
+            // no query entered, any request should go to page one
+            $scope.customSearchService.$retrieveContent();
+          }
+        };
+      },
+      restrict: 'E',
+      scope: {
+        searchQueryData: '='
+      },
+      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search.html'
+    };
+  });
+
+'use strict';
+
+angular.module('customSearch.query.condition.directive', [
+  'contentServices.factory',
+  'customSearch.settings',
+  'customSearch.service.condition.factory',
+  'BulbsAutocomplete',
+  'BulbsAutocomplete.suggest'
+])
+  .directive('customSearchQueryCondition', function (routes) {
+    return {
+      controller: function (_, $q, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS,
+          BulbsAutocomplete, ContentFactory, CUSTOM_SEARCH_CONDITION_FIELDS,
+          CUSTOM_SEARCH_CONDITION_TYPES) {
+
+        $scope.conditionTypes = CUSTOM_SEARCH_CONDITION_TYPES;
+        $scope.fieldTypes = CUSTOM_SEARCH_CONDITION_FIELDS;
+
+        $scope.writables = {
+          searchTerm: ''
+        };
+
+        $scope.autocompleteItems = [];
+
+        var getAutocompleteItems = function () {
+          return ContentFactory.all($scope.model.field)
+            .getList({search: $scope.writables.searchTerm})
+            .then(function (items) {
+              var field = _.find($scope.fieldTypes, function (type) {
+                return type.endpoint === $scope.model.field;
+              });
+
+              return _.map(items, function (item) {
+                return {
+                  name: item[field.value_structure.name],
+                  value: item[field.value_structure.value]
+                };
+              });
+            });
+        };
+
+        var autocomplete = new BulbsAutocomplete(getAutocompleteItems);
+
+        $scope.updateAutocomplete = function () {
+          if ($scope.writables.searchTerm) {
+            autocomplete.$retrieve().then(function (results) {
+              $scope.autocompleteItems = results;
+            });
+          }
+        };
+
+        $scope.delayClearAutocomplete = function () {
+          _.delay(function () {
+            $scope.clearAutocomplete();
+            $scope.$digest();
+          }, 200);
+        };
+
+        $scope.clearAutocomplete = function () {
+          $scope.writables.searchTerm = '';
+          $scope.autocompleteItems = [];
+        };
+
+        $scope.handleKeypress = function ($event) {
+          if ($event.keyCode === 27) {
+            // esc, close dropdown
+            $scope.clearAutocomplete();
+          } else {
+            $scope.$broadcast(BULBS_AUTOCOMPLETE_EVENT_KEYPRESS, $event);
+          }
+        };
+      },
+      restrict: 'E',
+      scope: {
+        model: '=',
+        onUpdate: '&',
+        remove: '&'
+      },
+      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search-query/custom-search-query-condition/custom-search-query-condition.html'
+    };
+  });
+
+'use strict';
+
+angular.module('customSearch.query.condition', [
+  'customSearch.query.condition.directive'
+]);
+
+'use strict';
+
+angular.module('customSearch.query.directive', [
+  'customSearch.settings',
+  'customSearch.query.condition',
+  'uuid4'
+])
+  .directive('customSearchQuery', function (routes) {
+    return {
+      controller: function ($scope, CUSTOM_SEARCH_TIME_PERIODS, uuid4) {
+        $scope.timePeriods = CUSTOM_SEARCH_TIME_PERIODS;
+
+        $scope.uuid = uuid4.generate();
+      },
+      restrict: 'E',
+      scope: {
+        model: '=',
+        remove: '&',
+        onUpdate: '&'
+      },
+      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search-query/custom-search-query.html'
+    };
+  });
+
+'use strict';
+
+angular.module('customSearch.query', [
+  'customSearch.query.directive',
+  'customSearch.query.condition'
+]);
+
+'use strict';
+
+angular.module('customSearch.service.condition.factory', [
+  'customSearch.settings'
+])
+  .factory('CustomSearchServiceCondition', function (_, CUSTOM_SEARCH_CONDITION_FIELDS,
+      CUSTOM_SEARCH_CONDITION_TYPES) {
+
+    var CustomSearchServiceCondition = function (params) {
+      var opts = params || {};
+
+      this.field = opts.field || CUSTOM_SEARCH_CONDITION_FIELDS[0].endpoint;
+      this.type = opts.type || CUSTOM_SEARCH_CONDITION_TYPES[0].value;
+
+      this.values = [];
+      if (opts.values) {
+        // values provided, build them out
+        var self = this;
+        _.forEach(opts.values, function (value) {
+          self.addValue(value);
+        });
+      }
+    };
+
+    CustomSearchServiceCondition.prototype.asQueryData = function () {
+      return _.pick(this, ['field', 'type', 'values']);
+    };
+
+    CustomSearchServiceCondition.prototype.addValue = function (value) {
+      var matches = _.find(this.values, function (existingValue) {
+        return existingValue.name === value.name && existingValue.value === value.value;
+      });
+
+      if (!matches) {
+        this.values.push(value);
+      }
+    };
+
+    CustomSearchServiceCondition.prototype.removeValue = function (index) {
+      return this.values.splice(index, 1).length > 0;
+    };
+
+    CustomSearchServiceCondition.prototype.clearAllValues = function () {
+      this.values = [];
+    };
+
+    return CustomSearchServiceCondition;
+  });
+
+'use strict';
+
+angular.module('customSearch.service.query.factory', [
+  'customSearch.settings',
+  'customSearch.service.condition.factory'
+])
+  .factory('CustomSearchServiceQuery', function (_, $q, ContentFactory,
+      CustomSearchServiceCondition, CUSTOM_SEARCH_TIME_PERIODS) {
+
+    var CustomSearchServiceQuery = function (params) {
+      var opts = params || {};
+
+      this.conditions = opts.conditions || [];
+      this.result_count = opts.result_count || 0;
+      this.time = opts.time || null;
+
+      this.conditions = [];
+      if (opts.conditions) {
+        // build out conditions if they were provided
+        var self = this;
+        _.forEach(opts.conditions, function (condition) {
+          self.newCondition(condition);
+        });
+      }
+
+      this._countEndpoint = ContentFactory.service('custom-search-content/count/');
+    };
+
+    CustomSearchServiceQuery.prototype.asQueryData = function () {
+      return {
+        conditions: _.map(this.conditions, function (condition) {
+          return condition.asQueryData();
+        }),
+        time: this.time ? this.time : null
+      };
+    };
+
+    CustomSearchServiceQuery.prototype.$updateResultCount = function () {
+      var self = this;
+      return self._countEndpoint.post(self.asQueryData())
+        .then(function (data) {
+          self.result_count = data.count;
+        });
+    };
+
+    CustomSearchServiceQuery.prototype.addTimePeriod = function () {
+      this.time = CUSTOM_SEARCH_TIME_PERIODS[0].value;
+      return this.time;
+    };
+
+    CustomSearchServiceQuery.prototype.removeTimePeriod = function () {
+      this.time = null;
+    };
+
+    CustomSearchServiceQuery.prototype.newCondition = function (params) {
+      var newCondition = new CustomSearchServiceCondition(params);
+      this.conditions.push(newCondition);
+      return newCondition;
+    };
+
+    CustomSearchServiceQuery.prototype.removeCondition = function (index) {
+      return this.conditions.splice(index, 1).length > 0;
+    };
+
+    return CustomSearchServiceQuery;
+  });
+
+'use strict';
+
+angular.module('customSearch.service', [
+  'customSearch.settings',
+  'customSearch.service.query.factory'
+])
+  .factory('CustomSearchService', function (_, ContentFactory, CUSTOM_SEARCH_REQUEST_CAP_MS,
+      CustomSearchServiceQuery) {
+
+    /**
+     * Create custom search service.
+     *
+     * @returns service wrapper around given endpoint.
+     */
+    var CustomSearchService = function (params) {
+      var opts = params || {};
+
+      this.included_ids = opts.included_ids || [];
+      this.excluded_ids = opts.excluded_ids || [];
+      this.pinned_ids = opts.pinned_ids || [];
+
+      this.page = opts.page || 1;
+      this.query = opts.query || '';
+
+      this.groups = [];
+      if (opts.groups) {
+        // build out groups if they were provided
+        var self = this;
+        _.forEach(opts.groups, function (group) {
+          self.newQuery(group);
+        });
+      }
+
+      this.content = {};
+
+      this._contentEndpoint = ContentFactory.service('custom-search-content/');
+    };
+
+    CustomSearchService.prototype.asQueryData = function () {
+      return {
+        groups: _.map(this.groups, function (group) {
+          return group.asQueryData();
+        }),
+        included_ids: this.included_ids,
+        excluded_ids: this.excluded_ids,
+        pinned_ids: this.pinned_ids,
+        page: this.page,
+        query: this.query
+      };
+    };
+
+    CustomSearchService.prototype._$getContent = _.debounce(function (queryData) {
+      var self = this;
+      return self._contentEndpoint.post(queryData)
+        .then(function (data) {
+          self.content = data;
+        });
+    }, CUSTOM_SEARCH_REQUEST_CAP_MS);
+
+    CustomSearchService.prototype.$filterContentByIncluded = function () {
+      var contentQuery = _.pick(this.asQueryData(), [
+        'groups',
+        'included_ids',
+        'page',
+        'query'
+      ]);
+      return this._$getContent(contentQuery);
+    };
+
+    CustomSearchService.prototype.$filterContentByExcluded = function () {
+      var contentQuery = _.pick(this.asQueryData(), [
+        'groups',
+        'excluded_ids',
+        'page',
+        'query'
+      ]);
+      return this._$getContent(contentQuery);
+    };
+
+    CustomSearchService.prototype.$retrieveContent = function () {
+      var contentQuery = _.cloneDeep(this.asQueryData());
+      return this._$getContent(contentQuery);
+    };
+
+    CustomSearchService.prototype.newQuery = function (params) {
+      var newQuery = new CustomSearchServiceQuery(params);
+      this.groups.push(newQuery);
+      return newQuery;
+    };
+
+    CustomSearchService.prototype.removeQuery = function (index) {
+      return this.groups.splice(index, 1).length > 0;
+    };
+
+    CustomSearchService.prototype.clearAllQueries = function () {
+      this.groups = [];
+    };
+
+    CustomSearchService.prototype.include = function (id) {
+      // add id, ensure uniqueness
+      this.included_ids.push(id);
+      this.included_ids = _.uniq(this.included_ids);
+
+      // remove from exclude list
+      this.unexclude(id);
+    };
+
+    CustomSearchService.prototype.uninclude = function (id) {
+      this.included_ids = _.without(this.included_ids, id);
+    };
+
+    CustomSearchService.prototype.isIncluded = function (id) {
+      return _.includes(this.included_ids, id);
+    };
+
+    CustomSearchService.prototype.exclude = function (id) {
+      // exclude id, ensure unqiueness
+      this.excluded_ids.push(id);
+      this.excluded_ids = _.uniq(this.excluded_ids);
+
+      // remove from include list and pinned list
+      this.uninclude(id);
+      this.unpin(id);
+    };
+
+    CustomSearchService.prototype.unexclude = function (id) {
+      this.excluded_ids = _.without(this.excluded_ids, id);
+    };
+
+    CustomSearchService.prototype.isExcluded = function (id) {
+      return _.includes(this.excluded_ids, id);
+    };
+
+    CustomSearchService.prototype.pin = function (id) {
+      // pin id, ensure unqiueness
+      this.pinned_ids.push(id);
+      this.pinned_ids = _.uniq(this.pinned_ids);
+
+      // remove from exclude list
+      this.unexclude(id);
+    };
+
+    CustomSearchService.prototype.unpin = function (id) {
+      this.pinned_ids = _.without(this.pinned_ids, id);
+    };
+
+    CustomSearchService.prototype.isPinned = function (id) {
+      return _.includes(this.pinned_ids, id);
+    };
+
+    return CustomSearchService;
+  });
+
+'use strict';
+
+angular.module('customSearch.settings', [])
+  .value('CUSTOM_SEARCH_CONDITION_FIELDS', [{
+    name: 'Content Type',
+    endpoint: 'content-type',
+    value_structure: {
+      name: 'name',
+      value: 'doctype'
+    }
+  }, {
+    name: 'Feature Type',
+    endpoint: 'feature-type',
+    value_structure: {
+      name: 'name',
+      value: 'slug'
+    }
+  }, {
+    name: 'Tag',
+    endpoint: 'tag',
+    value_structure: {
+      name: 'name',
+      value: 'slug'
+    }
+  }])
+  .value('CUSTOM_SEARCH_CONDITION_TYPES', [{
+    name: 'is none of',
+    value: 'none'
+  }, {
+    name: 'is all of',
+    value: 'all'
+  }, {
+    name: 'is any of',
+    value: 'any'
+  }])
+  .value('CUSTOM_SEARCH_TIME_PERIODS', [{
+    name: 'Past Day',
+    value: '1 day'
+  }, {
+    name: 'Past Week',
+    value: '1 week'
+  }])
+  .value('CUSTOM_SEARCH_REQUEST_CAP_MS', 150);
+
+'use strict';
+
+angular.module('customSearch.simpleContentSearch.directive', [
+  'BulbsAutocomplete',
+  'BulbsAutocomplete.suggest'
+])
+  .directive('customSearchSimpleContentSearch', function (routes) {
+    return {
+      controller: function (_, $scope, BulbsAutocomplete, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS,
+          ContentFactory) {
+
+        $scope.writables = {
+          searchTerm: ''
+        };
+
+        $scope.autocompleteItems = [];
+
+        var getAutocompleteItems = function () {
+          return ContentFactory.all('content')
+            .getList({search: $scope.writables.searchTerm})
+            .then(function (results) {
+              return _.map(results, function (item) {
+                return {
+                  name: 'ID: ' + item.id + ' | ' + item.title,
+                  value: item.id
+                };
+              });
+            });
+        };
+
+        var autocomplete = new BulbsAutocomplete(getAutocompleteItems);
+
+        $scope.updateAutocomplete = function () {
+          if ($scope.writables.searchTerm) {
+            autocomplete.$retrieve().then(function (results) {
+              $scope.autocompleteItems = results;
+            });
+          }
+        };
+
+        $scope.delayClearAutocomplete = function () {
+          _.delay(function () {
+            $scope.clearAutocomplete();
+            $scope.$digest();
+          }, 200);
+        };
+
+        $scope.clearAutocomplete = function () {
+          $scope.writables.searchTerm = '';
+          $scope.autocompleteItems = [];
+        };
+
+        $scope.handleKeypress = function ($event) {
+          if ($event.keyCode === 27) {
+            // esc, close dropdown
+            $scope.clearAutocomplete();
+          } else {
+            $scope.$broadcast(BULBS_AUTOCOMPLETE_EVENT_KEYPRESS, $event);
+          }
+        };
+      },
+      restrict: 'E',
+      scope: {
+        onSelect: '&'
+      },
+      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search-simple-content-search/custom-search-simple-content-search.html'
+    };
+  });
+
+'use strict';
+
+angular.module('customSearch.simpleContentSearch', [
+  'customSearch.simpleContentSearch.directive'
+]);
+
+'use strict';
+
+angular.module('customSearch', [
+  'bulbsCmsApp.settings',
+  'customSearch.directive'
+]);
 
 'use strict';
 
@@ -4754,7 +5334,7 @@ angular.module('bulbsCmsApp')
 
       $scope.scaleData = image.scaleToFit(550, 400);
 
-      $('.crop-image-container img').one('load', function () {
+      angular.element('.crop-image-container img').one('load', function () {
         $(this).Jcrop({
           allowSelect: false,
           allowMove: true,
@@ -4799,16 +5379,18 @@ angular.module('bulbsCmsApp')
       }
       var selection = $scope.image.selections[ratio].scaleBy($scope.scaleData.scale);
 
-      $scope.jcrop_api.setOptions({
-        aspectRatio: selection.width() / selection.height()
-      });
+      if ($scope.jcrop_api) {
+        $scope.jcrop_api.setOptions({
+          aspectRatio: selection.width() / selection.height()
+        });
 
-      $scope.jcrop_api.setSelect([
-        selection.x0,
-        selection.y0,
-        selection.x1,
-        selection.y1
-      ]);
+        $scope.jcrop_api.setSelect([
+          selection.x0,
+          selection.y0,
+          selection.x1,
+          selection.y1
+        ]);
+      }
 
       $scope.cropMode = true;
       $scope.selectedCrop = ratio;
