@@ -82,14 +82,13 @@ promoted-content-list {
       }
 
       &.ui-sortable-unsortable {
-        cursor: crosshair;
 
-        &.time-unsortable {
+        .article-wrapper {
           cursor: default;
-        }
 
-        promoted-content-article {
-          cursor: inherit;
+          promoted-content-article {
+            cursor: inherit;
+          }
         }
       }
 
@@ -102,6 +101,21 @@ promoted-content-list {
 
         &.action-hoverable:hover {
           box-shadow: @box-shadow-active;
+          cursor: crosshair;
+
+          promoted-content-article {
+            cursor: inherit;
+          }
+        }
+
+        promoted-content-article {
+          margin-left: 90px;
+          cursor: move;
+
+          .panel {
+            border-bottom-left-radius: 0px;
+            border-top-left-radius: 0px;
+          }
         }
 
         .article-tools {
@@ -150,16 +164,6 @@ promoted-content-list {
             border-top-left-radius: 0;
             cursor: default;
           }
-        }
-      }
-
-      promoted-content-article {
-        margin-left: 90px;
-        cursor: move;
-
-        .panel {
-          border-bottom-left-radius: 0px;
-          border-top-left-radius: 0px;
         }
       }
 

@@ -25,7 +25,7 @@ angular.module('promotedContentOperationsList.directive', [
         };
 
         scope.aggregatedOperations = {};
-        scope.groupDateFormat = 'MMM D, YYYY @ h:mma';
+        scope.groupDateFormat = 'M/D/YY @ h:mma';
         var aggregator = function () {
           var tempAggregate = scope.pzoneData.operations.concat(scope.pzoneData.unsavedOperations);
 
