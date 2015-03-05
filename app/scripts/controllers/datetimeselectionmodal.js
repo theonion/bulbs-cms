@@ -11,6 +11,10 @@ angular.module('bulbsCmsApp')
 
     // copy date temporarily so user has to actually verify change to the date
     $scope.tempDatetime = angular.copy($scope.modDatetime);
+    if (!$scope.tempDatetime) {
+      // default to now if no time given
+      $scope.tempDatetime = moment();
+    }
 
     $scope.TIMEZONE_LABEL = moment.tz(TIMEZONE_NAME).format('z');
 

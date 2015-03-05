@@ -2,50 +2,30 @@
   <div class="col-xs-12 col-md-7 form-group">
     <div class="form-horizontal">
       <div class="form-group">
-        <div class="col-xs-4">
+        <div class="col-xs-6">
           <label class="control-label">Promote Content:</label>
           <button
               class="btn form-control"
               ng-click="setPreviewTimeToImmediate()"
-              ng-class="{'btn-primary': !previewTime}">
+              ng-class="{'btn-primary': !contentData.previewTime}">
             <span>Immediately</span>
           </button>
         </div>
-        <div class="col-xs-8">
+        <div class="col-xs-6">
           <label for="choose-pzone-time" class="control-label">Or Choose Date/Time:</label>
           <button
               id="choose-pzone-time"
               class="btn btn-default form-control"
               datetime-selection-modal-opener
-              ng-model="previewTime"
-              ng-class="{'btn-primary': previewTime}"
+              ng-class="{'btn-primary': contentData.previewTime}"
               modal-title="Preview PZone at this Time"
               modal-on-close="setPreviewTime(newDate)">
-            <span ng-show="previewTime">{{ previewTime.toDate() | date: 'M/d/yy\', \' h:mma' }}</span>
-            <span ng-show="!previewTime">Use Date...</span>
+            <span ng-show="contentData.previewTime">{{ contentData.previewTime.format('M/D/YY, h:mma') }}</span>
+            <span ng-show="!contentData.previewTime">Use Date...</span>
             <i class="glyphicon glyphicon-time"></i>
           </button>
         </div>
       </div>
     </div>
-  </div>
-  <div class="timeline col-md-5 col-xs-12 form-horizontal">
-    <label class="control-label">12-Hour Preview</label>
-    <ul class="input form-control cf">
-      <li
-        ng-repeat="hour in hours"
-        ng-class="{'passed': hour.passed, 'current': hour.current, 'future_scheduled': !hour.passed && !hour.current && hour.operations}"
-        tooltip-html-unsafe="{{ hour.preformat }}"
-        tooltip-placement="bottom"
-        tooltip-trigger="mouseenter">
-        <div class="dot">
-          <span></span>
-        </div>
-        <div class="hour">
-          <div ng-show="hour.current || (hour.hour % 2 === 0)">{{ hour.hour }}{{ hour.amPM }}</div>
-          <div ng-show="!hour.current && (hour.hour % 2 !== 0)">&nbsp;</div>
-        </div>
-      </li>
-    </ul>
   </div>
 </div>

@@ -39,7 +39,6 @@ module.exports = function(config) {
       'app/bower_components/bootstrap/dist/js/bootstrap.js',
       'app/bower_components/firebase/firebase-debug.js',
       'app/bower_components/angular/angular.js',
-      'app/bower_components/angular-dragdrop/src/angular-dragdrop.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
       'app/bower_components/angular-resource/angular-resource.js',
       'app/bower_components/angular-cookie/angular-cookie.js',
@@ -59,6 +58,7 @@ module.exports = function(config) {
       'app/bower_components/zeroclipboard/dist/ZeroClipboard.min.js',
       'app/bower_components/ng-clip/dest/ng-clip.min.js',
       'app/bower_components/bulbs-autocomplete/dist/bulbs-autocomplete.js',
+      'app/bower_components/angular-ui-sortable/sortable.js',
 
       'app/mocks/app.js',
       'app/mocks/api.js',

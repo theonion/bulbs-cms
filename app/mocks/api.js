@@ -252,7 +252,7 @@ angular.module('bulbsCmsApp.mockApi').run([
 
     // add content to pzones
     var pzones = mockApiData['pzones.list'];
-    pzones.results[0].content = mockApiData['content.list'].results.slice(0,1);
+    pzones.results[0].content = mockApiData['content.list'].results.slice(0,6);
     pzones.results[1].content = mockApiData['content.list'].results.slice(0,2);
     pzones.results[2].content = mockApiData['content.list'].results.slice(1,2);
     pzones.results[3].content = mockApiData['content.list'].results.slice(1,3);
@@ -290,12 +290,16 @@ angular.module('bulbsCmsApp.mockApi').run([
     });
 
     $httpBackend.when('POST', pzoneOperationsRegex).respond(function (method, url, data) {
-      var operation = JSON.parse(data);
-      delete operation.cleanType;
-      operation.id = _.max(mockApiData['pzones.operations'], 'id').id + 1;
-      operation.content_title = _.find(mockApiData['content.list'].results, {id: operation.content}).title;
-      mockApiData['pzones.operations'].push(operation);
-      return operation;
+      var operations = JSON.parse(data);
+
+      _.forEach(operations, function (operation) {
+        delete operation.cleanType;
+        operation.id = _.max(mockApiData['pzones.operations'], 'id').id + 1;
+        operation.content_title = _.find(mockApiData['content.list'].results, {id: operation.content}).title;
+        mockApiData['pzones.operations'].push(operation);
+      });
+
+      return [200, mockApiData['pzones.operations']];
     });
 
     $httpBackend.when('DELETE', pzoneOperationsRegex).respond(function (method, url) {
@@ -873,6 +877,61 @@ angular.module('bulbsCmsApp.mockApi').run([
     'index': 0,
     'content': 1,
     'content_title': 'This is a draft article'
+  }, {
+    'id': 4,
+    'type_name': 'promotion_replaceoperation',
+    'pzone': 1,
+    'when': moment().add(20, 'minutes').toISOString(),
+    'index': 0,
+    'content': 1,
+    'content_title': 'This is a draft article'
+  }, {
+    'id': 5,
+    'type_name': 'promotion_deleteoperation',
+    'pzone': 1,
+    'when': moment().add(20, 'minutes').toISOString(),
+    'content': 1,
+    'content_title': 'This is a draft article'
+  }, {
+    'id': 6,
+    'type_name': 'promotion_insertoperation',
+    'pzone': 1,
+    'when': moment().add(20, 'minutes').toISOString(),
+    'index': 0,
+    'content': 1,
+    'content_title': 'This is a draft article'
+  }, {
+    'id': 7,
+    'type_name': 'promotion_insertoperation',
+    'pzone': 1,
+    'when': moment().add(21, 'minutes').toISOString(),
+    'index': 0,
+    'content': 1,
+    'content_title': 'This is a draft article'
+  }, {
+    'id': 8,
+    'type_name': 'promotion_insertoperation',
+    'pzone': 1,
+    'when': moment().add(21, 'minutes').toISOString(),
+    'index': 0,
+    'content': 1,
+    'content_title': 'This is a draft article'
+  }, {
+    'id': 9,
+    'type_name': 'promotion_insertoperation',
+    'pzone': 1,
+    'when': moment().add(21, 'minutes').toISOString(),
+    'index': 0,
+    'content': 1,
+    'content_title': 'This is a draft article'
+  }, {
+    'id': 10,
+    'type_name': 'promotion_insertoperation',
+    'pzone': 1,
+    'when': moment().add(21, 'minutes').add(1, 'second').toISOString(),
+    'index': 0,
+    'content': 10,
+    'content_title': 'THIS IS THE LONGEST ARTICLE TITLE IN THE HISTORY OF ARTICLE TITLES. THIS IS THE LONGEST ARTICLE TITLE IN THE HISTORY OF ARTICLE TITLES. THIS IS THE LONGEST ARTICLE TITLE IN THE HISTORY OF ARTICLE TITLES. THIS IS THE LONGEST ARTICLE TITLE IN THE HISTORY OF ARTICLE TITLES. THIS IS THE LONGEST ARTICLE TITLE IN THE HISTORY OF ARTICLE TITLES. THIS IS THE LONGEST ARTICLE TITLE IN THE HISTORY OF ARTICLE TITLES.'
   }],
   'bettycropper.detail': {
     'credit': 'No-Look Wnuk',

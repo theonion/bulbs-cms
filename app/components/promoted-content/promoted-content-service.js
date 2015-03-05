@@ -15,7 +15,8 @@ angular.module('promotedContent.service', [
     var PromotedContentService = this;
     PromotedContentService._serviceData = {
       allContent: ContentListService.getData(),
-      draggingContent: null,
+      actionContent: null,
+      action: null,
       pzones: [],
       unsavedOperations: [],
       operations: [],
@@ -90,15 +91,13 @@ angular.module('promotedContent.service', [
       if (_data.previewTime && _data.previewTime.isAfter(moment())) {
         // grab operations out of unsaved operations and post them into operations list
         _.each(_data.unsavedOperations, function (operation) {
-
           // use preview time, or send null if immediate
           operation.when = _data.previewTime ? _data.previewTime.toISOString() : null;
           // remove client side client_id
           delete operation.client_id;
-
-          // _data.operations.post(operation)
-          //   .finally(trackSaves);
         });
+
+        // post all operations as an array
         _data.operations.post(_data.unsavedOperations).then(function () {
           PromotedContentService.$refreshOperations()
             .then(function () {
@@ -264,26 +263,6 @@ angular.module('promotedContent.service', [
     };
 
     /**
-     * Pickup some content from list of all content.
-     *
-     * @param {Number} contentElement - element of content being picked up.
-     * @returns {Object} object represenation of content being dragged.
-     */
-    PromotedContentService.pickupContentFromAll = function (contentElement) {
-      // note: accessing via data() doesn't work as expected (some angular/jq combo issue?)
-      var id = parseInt($(contentElement).attr('data-article-id'), 10);
-      _data.draggingContent = _.find(_data.allContent.content, {id: id});
-      return _data.draggingContent;
-    };
-
-    /**
-     * Drop picked up content outside of dropzone.
-     */
-    PromotedContentService.dropContent = function () {
-      _data.draggingContent = null;
-    };
-
-    /**
      * Remove content from currently selected pzone.
      *
      * @param {Number} contentId - id of content to delete.
@@ -354,36 +333,76 @@ angular.module('promotedContent.service', [
     };
 
     /**
-     * Drop content being dragged into a dropzone. Will mark selected pzone as
-     *  dirty.
+     * Begin content insert action.
      *
-     * @param {Element} contentElement - Content element being dropped.
-     * @param {Boolean} replace - true to replace content at given index.
-     * @returns {Promise} resovles with nothing or rejects with an error message.
+     * @param {Object} article - article to be inserted.
      */
-    PromotedContentService.$dropAndAddContent = function (contentElement, replace) {
-      // note: accessing via data() doesn't work as expected (some angular/jq combo issue?)
-      var index = parseInt($(contentElement).attr('data-drop-zone-index'), 10);
-      // find index of duplicate if there is one
-      var duplicateIndex = _.findIndex(_data.selectedPZone.content, {id: _data.draggingContent.id});
-      // add operation to unsaved operations
-      return PromotedContentService.$addOperation({
-        cleanType: replace ? readableOperationTypes.REPLACE : readableOperationTypes.INSERT,
-        content: _data.draggingContent.id,
-        content_title: _data.draggingContent.title,
-        index: index
-      }).then(function () {
-        // ensure that dupilcate is deleted
-        if (index !== duplicateIndex && duplicateIndex >= 0) {
-          _data.selectedPZone.content.splice(duplicateIndex, 1);
-        }
-        // add item to pzone
-        _data.selectedPZone.content.splice(index, (replace ? 1 : 0), _data.draggingContent);
-        // "drop" content that service is keeping track of
-        PromotedContentService.dropContent();
-        // mark dirty
-        PromotedContentService.markDirtySelectedPZone();
-      });
+    PromotedContentService.beginContentInsert = function (article) {
+      _data.actionContent = article;
+      _data.action = readableOperationTypes.INSERT;
+    };
+
+    /**
+     * Begin content replace operation.
+     *
+     * @param {Object} article - article to be replaced.
+     */
+    PromotedContentService.beginContentReplace = function (article) {
+      _data.actionContent = article;
+      _data.action = readableOperationTypes.REPLACE;
+    };
+
+    /**
+     * Stop doing current action.
+     */
+    PromotedContentService.stopContentAction = function () {
+      _data.actionContent = null;
+      _data.action = null;
+    };
+
+    /**
+     * Complete insert or replace operation.
+     *
+     * @param {Number} index - index where operation will occur.
+     * @returns {Promise} resolves with nothing or rejects with an error message.
+     */
+    PromotedContentService.$completeContentAction = function (index) {
+      var deferred = $q.defer();
+
+      if (_data.action) {
+        PromotedContentService.$addOperation({
+          cleanType: _data.action,
+          content: _data.actionContent.id,
+          content_title: _data.actionContent.title,
+          index: index
+        })
+          .then(function () {
+            // find index of duplicate if there is one
+            var duplicateIndex = _.findIndex(_data.selectedPZone.content, {id: _data.actionContent.id});
+
+            // ensure that duplicate is deleted
+            if (index !== duplicateIndex && duplicateIndex >= 0) {
+              _data.selectedPZone.content.splice(duplicateIndex, 1);
+            }
+
+            // add item to pzone
+            var replace = _data.action === readableOperationTypes.REPLACE;
+            _data.selectedPZone.content.splice(index, (replace ? 1 : 0), _data.actionContent);
+
+            // stop action
+            PromotedContentService.stopContentAction();
+
+            // ensure pzone is marked dirty
+            PromotedContentService.markDirtySelectedPZone();
+
+            deferred.resolve();
+          })
+          .catch(deferred.reject);
+      } else {
+        deferred.reject('No action to complete in progress.');
+      }
+
+      return deferred.promise;
     };
 
     /**
