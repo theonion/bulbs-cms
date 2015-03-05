@@ -13,7 +13,6 @@ angular.module('bulbsCmsApp')
         modalTitle: '@',
         modalOnClose: '&'
       },
-      require: '^ngModel',
       link: function (scope, element) {
         var modalInstance = null;
         element.addClass('datetime-selection-modal-opener');

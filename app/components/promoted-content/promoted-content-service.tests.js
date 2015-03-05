@@ -370,7 +370,7 @@ describe('Service: PromotedContentService', function () {
   describe('moving content', function () {
 
     beforeEach(function () {
-      data.selectedPZone.content.push(mockApiData['content.list'][1]);
+      data.selectedPZone.content.push(mockApiData['content.list'].results[1]);
     });
 
     it('should be able to move content up', function () {
@@ -402,85 +402,92 @@ describe('Service: PromotedContentService', function () {
       expect(moved).toBe(false);
     });
 
-    it('should not be able to move top content down', function () {
-      var moved = PromotedContentService.moveContentDn(1);
+    it('should not be able to move bottom content down', function () {
+      var moved = PromotedContentService.moveContentDn(data.selectedPZone.content.length - 1);
       expect(moved).toBe(false);
     });
 
   });
 
-  describe('drag and drop interactions', function () {
-    var dragging;
-    var id;
+  describe('insert and replace operations', function () {
+    var content;
 
     beforeEach(function () {
-      id = data.allContent.content[0].id;
-      var content = $('<content data-article-id=\'' + id + '\'></content>');
-
-      dragging = PromotedContentService.pickupContentFromAll(content[0]);
+      content = mockApiData['content.list'].results[1];
     });
 
-    it('should be able to pickup content from the content list', function () {
-      expect(dragging.id).toBe(id);
-      expect(data.draggingContent.id).toBe(id);
+    it('should be able to begin an insert operation', function () {
+      PromotedContentService.beginContentInsert(content);
+
+      expect(data.actionContent).toEqual(content);
+      expect(data.action).toEqual(PromotedContentService.readableOperationTypes.INSERT);
     });
 
-    it('should be able to drop picked up content', function () {
-      PromotedContentService.dropContent();
-      expect(data.draggingContent).toBeNull();
+    it('should be able to begin a replace operation', function () {
+      PromotedContentService.beginContentReplace(content);
+
+      expect(data.actionContent).toEqual(content);
+      expect(data.action).toEqual(PromotedContentService.readableOperationTypes.REPLACE);
     });
 
-    it('should be able to drop to add content to a pzone', function () {
-      var index = 0;
-      var dropZone = $('<drop-zone data-drop-zone-index=\'' + index + '\'></drop-zone>');
+    it('should allow an article to be inserted', function () {
+      var index = 1;
+      var oldContentLength = data.selectedPZone.content.length;
 
       data.previewTime = moment().add(1, 'hours');
+      data.actionContent = content;
+      data.action = PromotedContentService.readableOperationTypes.INSERT;
 
-      PromotedContentService.$dropAndAddContent(dropZone[0]);
+      PromotedContentService.$completeContentAction(index);
 
       $rootScope.$digest();
 
-      expect(data.selectedPZone.content[index].id).toBe(dragging.id);
+      expect(data.selectedPZone.content[index].id).toEqual(content.id);
       expect(data.unsavedOperations[0].cleanType).toBe(PromotedContentService.readableOperationTypes.INSERT);
-      expect(data.unsavedOperations[0].content).toBe(dragging.id);
+      expect(data.unsavedOperations[0].content).toBe(content.id);
       expect(data.unsavedOperations[0].index).toBe(index);
-      expect(data.draggingContent).toBeNull();
+      expect(data.actionContent).toBeNull();
+      expect(data.action).toBeNull();
+      expect(data.selectedPZone.content.length).toBe(oldContentLength + 1);
       expect(data.selectedPZone.saved).toBeUndefined();
     });
 
-    it('should be able to drop and replace content in a pzone', function () {
-      var index = 0;
-      var dropZone = $('<drop-zone data-drop-zone-index=\'' + index + '\'></drop-zone>');
+    it('should allow an article to be replaced', function () {
+      var index = 1;
+      var oldContentLength = data.selectedPZone.content.length;
 
       data.previewTime = moment().add(1, 'hours');
-      data.selectedPZone.content = [1];
+      data.actionContent = content;
+      data.action = PromotedContentService.readableOperationTypes.REPLACE;
 
-      PromotedContentService.$dropAndAddContent(dropZone[0], true);
+      PromotedContentService.$completeContentAction(index);
 
       $rootScope.$digest();
 
-      expect(data.selectedPZone.content.length).toBe(1);
+      expect(data.selectedPZone.content[index].id).toEqual(content.id);
       expect(data.unsavedOperations[0].cleanType).toBe(PromotedContentService.readableOperationTypes.REPLACE);
-      expect(data.unsavedOperations[0].content).toBe(dragging.id);
+      expect(data.unsavedOperations[0].content).toBe(content.id);
       expect(data.unsavedOperations[0].index).toBe(index);
+      expect(data.actionContent).toBeNull();
+      expect(data.action).toBeNull();
+      expect(data.selectedPZone.content.length).toBe(oldContentLength);
+      expect(data.selectedPZone.saved).toBeUndefined();
     });
 
-    it('should not add operations when time is set to immediate', function () {
-      var index = 0;
-      var dropZone = $('<drop-zone data-drop-zone-index=\'' + index + '\'></drop-zone>');
+    it('should be able to stop an insert operation', function () {
+      PromotedContentService.beginContentInsert(content);
+      PromotedContentService.stopContentAction();
 
-      // set time to now
-      data.previewTime = null;
+      expect(data.actionContent).toBeNull();
+      expect(data.action).toBeNull();
+    });
 
-      data.selectedPZone.content = [1];
+    it('should be able to stop a replace operation', function () {
+      PromotedContentService.beginContentReplace(content);
+      PromotedContentService.stopContentAction();
 
-      PromotedContentService.$dropAndAddContent(dropZone[0], true);
-
-      // fire promises
-      $rootScope.$digest();
-
-      expect(data.selectedPZone.content.length).toBe(1);
-      expect(data.unsavedOperations.length).toBe(0);
+      expect(data.actionContent).toBeNull();
+      expect(data.action).toBeNull();
     });
   });
 });

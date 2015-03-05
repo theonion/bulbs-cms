@@ -42,48 +42,71 @@
   </span>
 </div>
 
-<ul class="operation-list list-group">
-  <li class="list-group-item"
-      ng-repeat="operation in aggregatedOperations"
-      ng-if="
-        (operation.whenAsMoment &&
-          operation.whenAsMoment.isAfter(scheduleDateFrom) &&
-          operation.whenAsMoment.isBefore(scheduleDateTo)) ||
-        operation.client_id >= 0"
-      ng-class="{
-        'text-muted': operation.whenAsMoment.isBefore(moment()),
-        'list-group-item-warning': !operation.whenAsMoment && operation.client_id >= 0
-      }">
-    <div class="operation-delete pull-left">
+<ul
+    class="operation-list-groups"
+    ng-init="openGroups = {}">
+  <li
+      class="operation-list-group"
+      ng-repeat="group in aggregatedOperations"
+      ng-show="
+        (group[0].isSame(scheduleDateFrom, 'minute') || group[0].isAfter(scheduleDateFrom, 'minute')) &&
+          group[0].isBefore(scheduleDateTo, 'minute')">
+    <div class="operation-list-group-title">
+      <span ng-click="openGroups[$index] = !openGroups[$index]">
+        <i
+            class="glyphicon"
+            ng-class="{
+              'glyphicon-chevron-right': !openGroups[$index],
+              'glyphicon-chevron-down': openGroups[$index] === true
+            }"
+            class="glyphicon">
+        </i>
+        <span>{{ group[0].format(groupDateFormat) }}</span>
+        <span>({{ group[1].length }} Events)</span>
+      </span>
       <button
-          ng-if="operation.whenAsMoment.isAfter(moment())"
-          class="btn btn-link btn-lg"
-          ng-click="removeOperation(operation)">
-        <i class="glyphicon glyphicon-remove"></i>
+          class="btn btn-xs btn-primary"
+          ng-click="setPreviewTime(group[0])">
+        <i class="glyphicon glyphicon-time"></i>
+        View
       </button>
-      <div
-          class="btn btn-link btn-lg disabled operation-delete-lock"
-          ng-if="operation.whenAsMoment.isBefore(moment()) || operation.client_id >= 0">
-        <i class="glyphicon glyphicon-lock"></i>
-      </div>
     </div>
-    <div class="operation-head">
-      <span class="small" ng-show="operation.whenAsMoment">{{ operation.when | date: 'MMM d, yyyy @ h:mma' }}</span>
-    </div>
-    <div class="operation-body">
-      <span ng-if="operation.cleanType === 'INSERT'">
-        {{ operation.cleanType }}
-        <span class="article-title" ng-bind-html="operation.content_title"></span>
-        @ position {{ operation.index + 1 }}
-      </span>
-      <span ng-if="operation.cleanType === 'REPLACE'">
-        {{ operation.cleanType }} position {{ operation.index + 1 }} with
-        <span class="article-title" ng-bind-html="operation.content_title"></span>
-      </span>
-      <span ng-if="operation.cleanType === 'DELETE'">
-        {{ operation.cleanType }}
-        <span class="article-title" ng-bind-html="operation.content_title"></span>
-      </span>
-    </div>
+    <ul
+        class="operation-list-group-operations list-group"
+        ng-show="openGroups[$index] === true">
+      <li
+          class="operation-list-operation list-group-item"
+          ng-repeat="operation in group[1]"
+          ng-class="{
+            'text-muted': operation.whenAsMoment.isBefore(moment()),
+            'list-group-item-warning': !operation.whenAsMoment && operation.client_id >= 0
+          }">
+        <div class="operation-delete pull-left">
+          <button
+              ng-if="operation.whenAsMoment.isAfter(moment())"
+              class="btn btn-link btn-lg"
+              ng-click="removeOperation(operation)">
+            <i class="glyphicon glyphicon-remove"></i>
+          </button>
+          <div
+              class="btn btn-link btn-lg disabled operation-delete-lock"
+              ng-if="operation.whenAsMoment.isBefore(moment()) || operation.client_id >= 0">
+            <i class="glyphicon glyphicon-lock"></i>
+          </div>
+        </div>
+        <div class="operation-body">
+          <div class="small">
+            <span>{{ operation.cleanType }}</span>
+            <span ng-if="operation.cleanType === 'INSERT' || operation.cleanType === 'REPLACE'">
+              @ position {{operation.index + 1}}
+            </span>
+          </div>
+          <div
+              class="operation-title"
+              ng-bind-html="operation.content_title">
+          </div>
+        </div>
+      </li>
+    </ul>
   </li>
-</ul>
+<ul>

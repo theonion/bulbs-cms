@@ -11,65 +11,86 @@
   </div>
 </h3>
 <div
-    class="info-past-date alert alert-info"
+    class="alert alert-info"
     ng-show="pzoneData.previewTime && pzoneData.previewTime.isBefore(moment())">
   <i class="glyphicon glyphicon-info-sign"></i>
   Viewing a past list, past lists cannot be modified.
 </div>
-<div class="article-list">
+<div
+    class="alert-action-in-progress alert alert-info"
+    ng-show="pzoneData.action">
+  <i class="glyphicon glyphicon-info-sign"></i>
+  <span>Select an item below to finish your {{ pzoneData.action }} operation.</span>
+  <button ng-click="stopAction()">Cancel</button>
+</div>
+
+<div
+    class="no-content"
+    ng-if="pzoneData.selectedPZone.content.length < 1">
   <div
-      class="article-wrapper"
-      ng-repeat="article in pzoneData.selectedPZone.content">
+      class="dropzone dropzone-no-content"
+      ng-if="pzoneData.action"
+      ng-click="completeAction(0)">
+  </div>
+  <div class="content-cutoff">
+    {{ pzoneData.selectedPZone.zone_length - pzoneData.selectedPZone.content.length }} spots left
+  </div>
+</div>
+<ul
+    class="article-list"
+    ui-sortable="sortableOptions"
+    ng-model="pzoneData.selectedPZone.content">
+  <li
+      ng-repeat="article in pzoneData.selectedPZone.content"
+      ng-class="{
+        'ui-sortable-unsortable': pzoneData.action || pzoneData.previewTime !== null,
+        'time-unsortable': pzoneData.previewTime.isBefore(moment())
+      }">
     <div
-        class="content-drop-area content-drop-area-sm"
-        ng-hide="!pzoneData.draggingContent"
-        data-drop-zone-index="{{ $index }}"
-        data-drop="true"
-        jqyoui-droppable="{
-          onDrop: 'contentDroppedIntoZone',
-          onOver: 'styleDropZone',
-          onOut: 'destyleDropZones'
-        }">
-    </div>
-    <div
-        class="replace-drop-area"
-        data-drop-zone-index="{{ $index }}"
-        data-drop="true"
-        jqyoui-droppable="{
-          onDrop: 'contentDroppedIntoReplaceZone',
-          onOver: 'styleDropZone',
-          onOut: 'destyleDropZones'
-        }">
-      <promoted-content-article
-          article="article"
-          is-first="$first"
-          is-last="$last"
-          move-up-callback="moveUp($index)"
-          move-down-callback="moveDown($index)">
-      </promoted-content-article>
+        class="article-wrapper"
+        ng-class="{'action-hoverable': pzoneData.action}"
+        ng-click="pzoneData.action && completeAction($index)">
+      <div class="article-tools btn-group-lg">
+        <!-- actual remove button -->
+        <button
+            class="btn btn-default btn-link remove-content-btn"
+            ng-click="remove(article)"
+            ng-disabled="pzoneData.action"
+            ng-hide="pzoneData.previewTime && pzoneData.previewTime.isBefore(moment())">
+          <i class="glyphicon glyphicon-remove"></i>
+        </button>
+        <!-- lock button for preventing removal in past content lists -->
+        <button
+            class="btn btn-default btn-link remove-content-btn"
+            disabled="true"
+            ng-show="pzoneData.previewTime && pzoneData.previewTime.isBefore(moment())">
+          <i class="glyphicon glyphicon-lock"></i>
+        </button>
+        <!-- up down buttons for reordering with preview time immediate -->
+        <button
+            class="btn btn-default btn-link up-content-btn"
+            ng-click="moveUp($index)"
+            ng-disabled="pzoneData.action || $first || pzoneData.previewTime">
+          <i class="glyphicon glyphicon-chevron-up"></i>
+        </button>
+        <button
+            class="btn btn-default btn-link dn-content-btn"
+            ng-click="moveDown($index)"
+            ng-disabled="pzoneData.action || $last || pzoneData.previewTime">
+          <i class="glyphicon glyphicon-chevron-down"></i>
+        </button>
+      </div>
+      <promoted-content-article article="article"></promoted-content-article>
     </div>
     <div
         class="content-cutoff"
         ng-if="$index + 1 === pzoneData.selectedPZone.zone_length">
       All {{ pzoneData.selectedPZone.zone_length }} spots filled, content below will not display
     </div>
-  </div>
-  <div
-      class="content-drop-area"
-      ng-hide="
-        (pzoneData.previewTime && pzoneData.previewTime.isBefore(moment())) ||
-        (!pzoneData.draggingContent && pzoneData.selectedPZone.content.length !== 0)"
-      data-drop-zone-index="{{ pzoneData.selectedPZone.content.length }}"
-      data-drop="true"
-      jqyoui-droppable="{
-        onDrop: 'contentDroppedIntoZone',
-        onOver: 'styleDropZone',
-        onOut: 'destyleDropZones'
-      }">
-  </div>
-  <div
-      class="content-cutoff"
-      ng-if="pzoneData.selectedPZone.content.length < pzoneData.selectedPZone.zone_length">
-    {{ pzoneData.selectedPZone.zone_length - pzoneData.selectedPZone.content.length }} spots left
-  </div>
-</div>
+    <div
+        class="content-cutoff"
+        ng-if="$last && pzoneData.selectedPZone.content.length < pzoneData.selectedPZone.zone_length">
+      {{ pzoneData.selectedPZone.zone_length - pzoneData.selectedPZone.content.length }} spots left
+    </div>
+  </li>
+</ul>

@@ -1,33 +1,4 @@
 <div class="panel panel-default">
-  <div class="article-tools btn-group-lg">
-    <!-- actual remove button -->
-    <button
-        class="btn btn-default btn-link remove-content-btn"
-        ng-click="removeContentFromPromotedList(article)"
-        ng-hide="pzoneData.previewTime && pzoneData.previewTime.isBefore(moment())">
-      <i class="glyphicon glyphicon-remove"></i>
-    </button>
-    <!-- lock button for preventing removal in past content lists -->
-    <button
-        class="btn btn-default btn-link remove-content-btn"
-        disabled="true"
-        ng-show="pzoneData.previewTime && pzoneData.previewTime.isBefore(moment())">
-      <i class="glyphicon glyphicon-lock"></i>
-    </button>
-    <!-- up down buttons for reordering with preview time immediate -->
-    <button
-        class="btn btn-default btn-link up-content-btn"
-        ng-click="moveUpCallback()"
-        ng-disabled="isFirst || pzoneData.previewTime">
-      <i class="glyphicon glyphicon-chevron-up"></i>
-    </button>
-    <button
-        class="btn btn-default btn-link dn-content-btn"
-        ng-click="moveDownCallback()"
-        ng-disabled="isLast || pzoneData.previewTime">
-      <i class="glyphicon glyphicon-chevron-down"></i>
-    </button>
-  </div>
   <div class="panel-heading">
     <h4 class="panel-title hideOverflow">
       <span class="small">
@@ -37,14 +8,10 @@
           <span ng-show="article.ratings[0].media_item.show" ng-bind-html="article.ratings[0].media_item.show"></span>
           <span ng-hide="article.ratings[0].media_item.show || article.feature_type"><em>No type set</em></span>
         </span>
-        <div class="pull-right">
-          <span class="article-publish-date">
-            <i class="fa fa-calendar"></i>
-            <span ng-show="article.published" ng-bind-html="article.published|date: 'M/d/yy\' @ \' h:mm a' "></span>
-            <span ng-hide="article.published"><em>Not published</em></span>
-          </span>
-          &nbsp;
-          <a href="/cms/app/edit/{{article.id}}"><i class="fa fa-pencil"></i> Edit...</a>
+        <div class="article-publish-date pull-right">
+          <i class="fa fa-calendar"></i>
+          <span ng-show="article.published" ng-bind-html="article.published|date: 'M/d/yy\' @ \' h:mm a' "></span>
+          <span ng-hide="article.published"><em>Not published</em></span>
         </div>
       </span><br>
       <div class="heading" title="{{article.title}}" ng-show="article.title" ng-bind-html="article.title"></div>

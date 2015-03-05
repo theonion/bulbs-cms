@@ -1,4 +1,11 @@
 <button
+    class="btn btn-sm btn-link"
+    ng-click="clearOperations()"
+    ng-disabled="pzoneData.selectedPZone.saved || (data.previewTime && pzoneData.unsavedOperations.length < 1)">
+  <i class='glyphicon glyphicon-remove'></i>
+  <span>Reset</span>
+</button>
+<button
     class="btn btn-sm btn-success"
     ng-click="savePZone()"
     ng-disabled="pzoneData.selectedPZone.saved || (data.previewTime && pzoneData.unsavedOperations.length < 1)">
@@ -12,18 +19,11 @@
     Schedule
   </span>
 </button>
-<button
-    class="btn btn-sm btn-warning"
-    ng-click="clearOperations()"
-    ng-disabled="pzoneData.selectedPZone.saved || (data.previewTime && pzoneData.unsavedOperations.length < 1)">
-  <i class='glyphicon glyphicon-remove'></i>
-  <span>Clear Changes</span>
-</button>
 <br>
 <span
     class="h6 operation-count text-muted"
     ng-show="pzoneData.unsavedOperations && pzoneData.unsavedOperations.length > 0">
   <span>{{ pzoneData.unsavedOperations.length }} Unsaved</span>
   <span ng-show="pzoneData.unsavedOperations.length === 1">Operation</span>
-  <span ng-show="pzoneData.unsavedOperations.length > 1">Operations</span>&nbsp;
+  <span ng-show="pzoneData.unsavedOperations.length > 1">Operations</span>
 </span>
