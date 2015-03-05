@@ -7,7 +7,7 @@ angular.module('promotedContentOperationsList.controller', [
 
     $scope.pzoneData = PromotedContentService.getData();
     $scope.scheduleDateFrom = moment();
-    $scope.scheduleDateTo = moment().add(12, 'hours');
+    $scope.scheduleDateTo = moment().add(3, 'days');
     $scope.deleteStatus = {
       message: '',
       isError: false
