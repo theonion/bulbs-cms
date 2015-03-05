@@ -63,8 +63,24 @@ promoted-content-list {
     bottom: 50%;
   }
 
-  .dropzone-no-content::before {
-    .mixin-dropzone-content("No Content Yet, Click Here to Add");
+  .content-cutoff {
+    border-top: 1px solid;
+    text-align: center;
+    color: #bbb;
+    display: block;
+    padding-top: 6px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    font-size: 12px;
+    width: 100%;
+  }
+
+  .dropzone-no-content {
+    cursor: crosshair;
+
+    &::before {
+      .mixin-dropzone-content("No Content Yet, Click Here to Add");
+    }
   }
 
   .article-list {
@@ -165,18 +181,6 @@ promoted-content-list {
             cursor: default;
           }
         }
-      }
-
-      .content-cutoff {
-        border-top: 1px solid;
-        text-align: center;
-        color: #bbb;
-        display: block;
-        padding-top: 6px;
-        margin-top: 10px;
-        margin-bottom: 15px;
-        font-size: 12px;
-        width: 100%;
       }
     }
   }

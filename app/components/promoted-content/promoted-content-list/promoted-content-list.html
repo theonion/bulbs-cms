@@ -23,10 +23,18 @@
   <span>Select an item below to finish your {{ pzoneData.action }} operation.</span>
   <button ng-click="stopAction()">Cancel</button>
 </div>
+
 <div
-    class="dropzone dropzone-no-content"
-    ng-if="pzoneData.action && pzoneData.selectedPZone.content.length < 1"
-    ng-click="pzoneData.action && completeAction(0)">
+    class="no-content"
+    ng-if="pzoneData.selectedPZone.content.length < 1">
+  <div
+      class="dropzone dropzone-no-content"
+      ng-if="pzoneData.action"
+      ng-click="completeAction(0)">
+  </div>
+  <div class="content-cutoff">
+    {{ pzoneData.selectedPZone.zone_length - pzoneData.selectedPZone.content.length }} spots left
+  </div>
 </div>
 <ul
     class="article-list"
