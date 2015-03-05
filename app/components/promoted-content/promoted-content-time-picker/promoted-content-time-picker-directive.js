@@ -2,11 +2,23 @@
 
 angular.module('promotedContentTimePicker.directive', [
   'bulbsCmsApp.settings',
-  'promotedContentTimePicker.controller'
+  'promotedContent.service'
 ])
-  .directive('promotedContentTimePicker', function (_, $, moment, routes) {
+  .directive('promotedContentTimePicker', function (routes) {
     return {
-      controller: 'PromotedContentTimePicker',
+      controller: function (moment, $scope, PromotedContentService) {
+
+        $scope.contentData = PromotedContentService.getData();
+
+        $scope.setPreviewTime = function (previewTime) {
+          PromotedContentService.setPreviewTime(previewTime);
+        };
+
+        $scope.setPreviewTimeToImmediate = function () {
+          $scope.previewTime = null;
+          PromotedContentService.setPreviewTimeToImmediate();
+        };
+      },
       restrict: 'E',
       scope: {},
       templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-time-picker/promoted-content-time-picker.html'
