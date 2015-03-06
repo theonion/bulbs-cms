@@ -1,0 +1,29 @@
+{
+  "name": "bulbs-autocomplete",
+  "version": "0.1.15",
+  "appPath": "src",
+  "description": "America's Finest Autocomplete module",
+  "main": [
+    "dist/bulbs-autocomplete.js"
+  ],
+  "authors": [
+    "Cresten St.Clair <cstclair@theonion.com>",
+    "Andrew Kos <akos@theonion.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.3.12",
+    "lodash": "~3.1.0"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.3.12",
+    "jquery": "~2.1.3"
+  }
+}

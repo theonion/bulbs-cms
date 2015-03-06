@@ -42,7 +42,9 @@ angular.module('promotedContentOperationsList.directive', [
         };
 
         $scope.setPreviewTime = function (time) {
-          PromotedContentService.setPreviewTime(time);
+          // set preview time to time plus a minute so that all operations occuring in that
+          //  minute can be previewed
+          PromotedContentService.setPreviewTime(time.add(1, 'minute'));
         };
       },
       link: function (scope, element, attr) {

@@ -1,0 +1,120 @@
+<html lang="en" ng-app="BulbsAutocomplete.example">
+
+<head>
+  <title>BACON</title>
+
+  <style>
+    bulbs-autocomplete-suggest ul li,
+    bulbs-autocomplete-suggest-group-by ul li {
+      border: 1px solid #000;
+      color: #000;
+    }
+    bulbs-autocomplete-suggest ul li.active,
+    bulbs-autocomplete-suggest-group-by ul li.active {
+      background-color: #00f;
+      border: 1px solid #fff;
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div ng-controller="exampleController">
+    <h1>{{ selectedSuggest }}</h1>
+    Search:
+    <input type="text" ng-model="searchTerm" ng-change="updateAutocomplete()" ng-keydown="handleKeypress($event)">
+    <bulbs-autocomplete-suggest formatter="suggestFormatter(item)" items="autocompleteItems" on-select="suggestSelect(selection)">
+    </bulbs-autocomplete-suggest>
+    <bulbs-autocomplete-suggest-group-by items="autocompleteItems" formatter="suggestFormatter(item)" grouper="itemGrouper" on-select="suggestSelect(selection)">
+    </bulbs-autocomplete-suggest-group-by>
+  </div>
+
+  <!-- bower:js -->
+  <script src="../bower_components/jquery/dist/jquery.js"></script>
+  <script src="../bower_components/angular/angular.js"></script>
+  <script src="../bower_components/lodash/lodash.js"></script>
+  <script src="../bower_components/angular-mocks/angular-mocks.js"></script>
+  <!-- endbower-->
+  <!-- injector:js -->
+  <script src="/src/bulbs-autocomplete-suggest/bulbs-autocomplete-suggest-group-by/bulbs-autocomplete-suggest-group-by-directive.js"></script>
+  <script src="/src/bulbs-autocomplete-suggest/bulbs-autocomplete-suggest-group-by/bulbs-autocomplete-suggest-group-by.js"></script>
+  <script src="/src/bulbs-autocomplete-suggest/bulbs-autocomplete-suggest/bulbs-autocomplete-suggest-directive.js"></script>
+  <script src="/src/bulbs-autocomplete-suggest/bulbs-autocomplete-suggest/bulbs-autocomplete-suggest.js"></script>
+  <script src="/src/bulbs-autocomplete/bulbs-autocomplete-factory.js"></script>
+  <script src="/src/bulbs-autocomplete/bulbs-autocomplete.js"></script>
+  <!-- endinjector -->
+  <!-- endinjector -->
+
+  <script>
+    angular.module('BulbsAutocomplete.example', [
+      'BulbsAutocomplete',
+      'BulbsAutocomplete.suggest',
+      'BulbsAutocomplete.suggest.groupBy'
+    ])
+      .controller('exampleController', function($q, $scope, BulbsAutocomplete, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS) {
+
+        var getItems = function() {
+          var defer = $q.defer();
+
+          if ($scope.searchTerm) {
+            defer.resolve([{
+              name: 'item1',
+              value: 10
+            }, {
+              name: 'item11',
+              value: 20
+            }, {
+              name: 'item21',
+              value: 30
+            }, {
+              name: 'item31',
+              value: 40
+            }, {
+              name: 'item41',
+              value: 50
+            }, {
+              name: 'item51',
+              value: 60
+            }, {
+              name: 'item61',
+              value: 70
+            }]);
+          } else {
+            defer.resolve([]);
+          }
+
+          return defer.promise;
+        };
+
+        $scope.suggestFormatter = function(item) {
+          return item.name + ' - ' + item.value;
+        };
+
+        $scope.suggestSelect = function(item) {
+          $scope.selectedSuggest = item;
+        };
+
+        $scope.itemGrouper = function(items) {
+          return _.groupBy(items, function(item) {
+            return item.value > 30 ? 'Less than or equal to thirty' : 'More than thirty';
+          });
+        };
+
+        var autocomplete = new BulbsAutocomplete(getItems);
+
+        $scope.updateAutocomplete = function() {
+          autocomplete.$retrieve().then(function(results) {
+            $scope.autocompleteItems = results;
+          });
+        };
+
+        $scope.handleKeypress = function($event) {
+          $scope.$broadcast(BULBS_AUTOCOMPLETE_EVENT_KEYPRESS, $event);
+        };
+
+      });
+  </script>
+</body>
+
+</html>

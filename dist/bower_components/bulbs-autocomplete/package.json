@@ -1,0 +1,32 @@
+{
+  "name": "bulbs-autocomplete",
+  "version": "0.1.15",
+  "dependencies": {},
+  "devDependencies": {
+    "chromedriver": "^2.13.0",
+    "grunt": "^0.4.5",
+    "grunt-angular-templates": "^0.5.7",
+    "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-connect": "^0.9.0",
+    "grunt-contrib-jshint": "^0.11.0",
+    "grunt-injector": "^0.6.0",
+    "grunt-karma": "^0.10.1",
+    "grunt-wiredep": "^2.0.0",
+    "jasmine-core": "^2.2.0",
+    "jshint-stylish": "^1.0.0",
+    "karma": "^0.12.31",
+    "karma-chrome-launcher": "^0.1.7",
+    "karma-jasmine": "^0.3.5",
+    "karma-ng-html2js-preprocessor": "^0.1.2",
+    "karma-phantomjs-launcher": "^0.1.4",
+    "karma-script-launcher": "^0.1.0",
+    "load-grunt-tasks": "^3.1.0",
+    "time-grunt": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  }
+}

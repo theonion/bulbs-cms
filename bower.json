@@ -38,6 +38,7 @@
     "angular-ui-sortable": "~0.13.3"
   },
   "resolutions": {
-    "zeroclipboard": "2.2.0"
+    "zeroclipboard": "2.2.0",
+    "lodash": "~3.1.0"
   }
 }

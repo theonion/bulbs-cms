@@ -9,7 +9,7 @@ angular.module('bulbsCmsApp')
     return {
       restrict: 'A',
       scope: {
-        modDatetime: '=ngModel',
+        modDatetime: '=?ngModel',
         modalTitle: '@',
         modalOnClose: '&'
       },
