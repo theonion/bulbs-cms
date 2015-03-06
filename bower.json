@@ -1,12 +1,12 @@
 {
   "name": "bulbs-cms",
-  "version": "0.9.110",
+  "version": "0.9.111",
   "dependencies": {},
   "devDependencies": {
     "angular": "~1.3.0",
     "angular-resource": "~1.3.0",
     "angular-cookies": "~1.3.0",
-    "angular-dragdrop": "1.0.8",
+    "angular-sanitize": "~1.3.0",
     "angular-route": "~1.3.0",
     "angular-mocks": "~1.3.0",
     "angular-cookie": "~4.0.6",
@@ -34,9 +34,11 @@
     "zeroclipboard": "~2.1.6",
     "ng-clip": "~0.2.4",
     "bulbs-autocomplete": "~0.1.4",
-    "angular-uuid4": "~0.3.0"
+    "angular-uuid4": "~0.3.0",
+    "angular-ui-sortable": "~0.13.3"
   },
   "resolutions": {
+    "zeroclipboard": "2.2.0",
     "lodash": "~3.1.0"
   }
 }

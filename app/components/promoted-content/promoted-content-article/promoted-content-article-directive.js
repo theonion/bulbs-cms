@@ -1,19 +1,13 @@
 'use strict';
 
 angular.module('promotedContentArticle.directive', [
-  'bulbsCmsApp.settings',
-  'promotedContentArticle.controller'
+  'bulbsCmsApp.settings'
 ])
   .directive('promotedContentArticle', function (routes) {
     return {
-      controller: 'PromotedContentArticle',
       restrict: 'E',
       scope: {
-        article: '=',
-        isFirst: '=?',
-        isLast: '=?',
-        moveUpCallback: '&',
-        moveDownCallback: '&'
+        article: '='
       },
       templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-article/promoted-content-article.html'
     };

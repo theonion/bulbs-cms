@@ -1,0 +1,13 @@
+{
+  "name": "urlify",
+  "homepage": "https://github.com/theonion/urlify",
+  "_release": "6bf9e49a8a",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "6bf9e49a8a68d17cbf249a405904c62b026b4b1b"
+  },
+  "_source": "git://github.com/theonion/urlify.git",
+  "_target": "*",
+  "_originalSource": "theonion/urlify"
+}

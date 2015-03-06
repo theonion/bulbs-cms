@@ -9,11 +9,10 @@ angular.module('bulbsCmsApp')
     return {
       restrict: 'A',
       scope: {
-        modDatetime: '=ngModel',
+        modDatetime: '=?ngModel',
         modalTitle: '@',
         modalOnClose: '&'
       },
-      require: '^ngModel',
       link: function (scope, element) {
         var modalInstance = null;
         element.addClass('datetime-selection-modal-opener');

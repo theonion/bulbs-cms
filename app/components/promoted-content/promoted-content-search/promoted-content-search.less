@@ -1,26 +1,40 @@
 promoted-content-search {
 
-  .remove-content-btn, .article-tools {
-    display: none;
-  }
+  .article-wrapper {
+    -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, .05);
+    box-shadow: 0 2px 2px rgba(0, 0, 0, .05);
+    margin-bottom: 10px;
 
-  .article-tools + .panel-heading {
-    margin-left: 0;
-  }
+    promoted-content-article {
+      cursor: pointer;
 
-  .draggable-content .panel-heading {
-    cursor: move;
-  }
+      &.non-actionable-content {
+        cursor: default;
 
-  .non-draggable-content {
-    .panel-heading {
-      cursor: default;
+        .panel-title {
+          color: #bcbcbc;
+        }
+
+        .heading {
+          font-style: italic;
+        }
+      }
     }
 
-    .panel-title {
-      color: #bcbcbc;
-    }
+    .article-tools {
+      @border-style: 1px solid #ddd;
 
-    .heading { font-style: italic; }
+      background-color: #fff;
+      border-bottom: @border-style;
+      border-bottom-left-radius: @border-style;
+      border-bottom-right-radius: @border-style;
+      border-left: @border-style;
+      border-right: @border-style;
+      padding: 10px;
+
+      .btn-edit-article {
+        float: right;
+      }
+    }
   }
 }

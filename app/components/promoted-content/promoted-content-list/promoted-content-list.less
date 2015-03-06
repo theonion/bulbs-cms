@@ -1,35 +1,66 @@
-.transition (@transition) {
-  -webkit-transition: @transition;
-  -moz-transition:    @transition;
-  -ms-transition:     @transition;
-  -o-transition:      @transition;
-}
-
-.box-shadow (@string) {
-  -webkit-box-shadow: @string;
-  -moz-box-shadow:    @string;
-  box-shadow:         @string;
-}
-
 promoted-content-list {
+  @box-shadow-active: 0px 0px 24px 1px #8fcb8f;
   @inactive-color:#aaaaaa;
-  @active-color:#8FCB8F;
-  margin-bottom: 20px;
 
-  .replace-drop-area, .content-drop-area {
-    float: left;
-    width: 100%;
-    display: block;
+  .transition (@transition) {
+    -webkit-transition: @transition;
+    -moz-transition:    @transition;
+    -ms-transition:     @transition;
+    -o-transition:      @transition;
   }
+
+  display: block;
+  margin-bottom: 20px;
 
   .preview-time-heading {
     color: #cccccc;
     font-style: italic;
   }
 
-  .info-past-date {
+  .alert {
     padding: 5px;
     text-align: center;
+
+    &.alert-action-in-progress {
+
+      button {
+        background-color: transparent;
+        border: none;
+        border-bottom: 1px dotted #31708f;
+        font-weight: bold;
+        line-height: 1em;
+      }
+    }
+  }
+
+  .dropzone {
+    .transition(box-shadow 250ms);
+
+    background-color: lighten(@inactive-color, 20%);
+    border: 3px dashed @inactive-color;
+    box-shadow: none;
+    color: @inactive-color;
+    display: block;
+    min-height: 50px;
+    text-align: center;
+    font-weight: bold;
+    position: relative;
+
+    &:hover {
+      box-shadow: @box-shadow-active;
+    }
+  }
+
+  .mixin-dropzone-content(@text) {
+    float: left;
+    height: 100%;
+    width: 100%;
+    content: @text;
+    position: absolute;
+    top: 25%;
+    right: 0;
+    left: 0;
+    bottom: 50%;
   }
 
   .content-cutoff {
@@ -38,53 +69,119 @@ promoted-content-list {
     color: #bbb;
     display: block;
     padding-top: 6px;
-    margin-top: 4px;
-    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-bottom: 15px;
     font-size: 12px;
-    float: left;
     width: 100%;
-    clear: both;
   }
 
-  .replace-drop-area.drop-area-hover promoted-content-article .panel {
-    border: 1px solid @active-color;
-    .box-shadow(0px 0px 24px 1px @active-color);
+  .dropzone-no-content {
+    cursor: crosshair;
+
+    &::before {
+      .mixin-dropzone-content("No Content Yet, Click Here to Add");
+    }
   }
 
-  .content-drop-area {
-    background-color: lighten(@inactive-color, 20%);
-    border: 3px dashed @inactive-color;
-    color: @inactive-color;
-    display: block;
-    min-height: 50px;
-    margin-bottom: 10px;
-    text-align: center;
-    font-weight: bold;
-    position: relative;
+  .article-list {
+    padding-bottom: 50px; // for improved contained drag-drop functionality
 
-    span {
-      line-height: 3em;
+    &.ui-sortable-dragging li .content-cutoff {
+      display: none;
     }
 
-    &.drop-area-hover {
-      background-color: lighten(@active-color, 20%);
-      border-color: @active-color;
-      color: @active-color;
-      min-height: 75px;
-    }
+    li {
+      margin-bottom: 10px;
 
-    &:before {
-      float: left;
-      height: 100%;
-      width: 100%;
-      content: "Drop Here to Insert Article";
-      position: absolute; top: 25%; right: 0; left: 0; bottom: 50%;
-    }
+      &.dropzone::before {
+        .mixin-dropzone-content("Drop Here to Insert Article");
+      }
 
-    &:hover {
-      min-height: 75px;
-    }
+      &.ui-sortable-unsortable {
 
-    &, &:hover, &.drop-area-hover { .transition(min-height .25s); }
+        .article-wrapper {
+          cursor: default;
+
+          promoted-content-article {
+            cursor: inherit;
+          }
+        }
+      }
+
+      .article-wrapper {
+        .transition(box-shadow 250ms);
+
+        -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, .05);
+        box-shadow: 0 2px 2px rgba(0, 0, 0, .05);
+        position: relative;
+
+        &.action-hoverable:hover {
+          box-shadow: @box-shadow-active;
+          cursor: crosshair;
+
+          promoted-content-article {
+            cursor: inherit;
+          }
+        }
+
+        promoted-content-article {
+          margin-left: 90px;
+          cursor: move;
+
+          .panel {
+            border-bottom-left-radius: 0px;
+            border-top-left-radius: 0px;
+          }
+        }
+
+        .article-tools {
+          @border-style: 1px solid #ddd;
+          @border-radius: 4px;
+
+          background-color: #fff;
+          border-bottom: @border-style;
+          border-bottom-left-radius: @border-radius;
+          border-left: @border-style;
+          border-top: @border-style;
+          border-top-left-radius: @border-radius;
+          height: 100%;
+          position: absolute;
+          width: 90px;
+
+          > .btn {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            border-radius: 0;
+            border: none;
+
+            &.remove-content-btn {
+              border-right: 1px solid #ddd;
+            }
+
+            &.up-content-btn {
+              border-bottom: 1px solid #ddd;
+              height: 27px;
+              left: 51px;
+              padding: 2px 10px 4px;
+              width: 39px;
+            }
+
+            &.dn-content-btn {
+              height: 27px;
+              margin-top: 27px;
+              left: 50px;
+              padding: 4px 10px 2px;
+              width: 39px;
+            }
+          }
+
+          + .panel-heading {
+            border-top-left-radius: 0;
+            cursor: default;
+          }
+        }
+      }
+    }
   }
 }

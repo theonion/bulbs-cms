@@ -4,32 +4,60 @@
   <status-filter class="col-xs-12 form-group"></status-filter>
 </div>
 <div
-    ng-repeat="article in pzoneData.allContent.content"
-    ng-hide="articleIsVisible(article)">
-  <!-- draggable article -->
-  <promoted-content-article
-      class="draggable-content"
-      ng-if="articleIsDraggable(article)"
-      article="article"
-      data-article-id="{{ article.id }}"
-      data-drag="true"
-      jqyoui-draggable="{
-        onStart: 'contentPickedUp',
-        onStop: 'contentDropped'
-      }"
-      data-jqyoui-options="{
-        revert: true,
-        revertDuration: 0
-      }">
-  </promoted-content-article>
-  <!-- non-dragglable article -->
+    class="article-wrapper"
+    ng-repeat="article in pzoneData.allContent.content">
+  <!-- actionable article -->
   <div
-      ng-if="!articleIsDraggable(article)"
-      tooltip="This article cannot be promoted because its publish date is unspecified, occurs after selected time, or you are viewing a past list."
+      ng-if="contentIsEnabled(article)">
+    <promoted-content-article
+        class="actionable-content"
+        article="article"
+        ng-click="(toolsOpenFor(article) && closeTools()) || openToolsFor(article)">
+    </promoted-content-article>
+    <div
+        ng-if="toolsOpenFor(article)"
+        class="article-tools">
+      <button
+          class="btn btn-xs btn-primary"
+          ng-disabled="pzoneData.action"
+          ng-click="beginInsert(article)">
+        <i class="glyphicon glyphicon-plus"></i>
+        Insert
+      </button>
+      <button
+          class="btn btn-xs btn-primary"
+          ng-disabled="pzoneData.action"
+          ng-click="beginReplace(article)">
+        <i class="glyphicon glyphicon-transfer"></i>
+        Replace
+      </button>
+      <button
+          class="btn btn-xs btn-danger"
+          ng-show="pzoneData.action"
+          ng-click="stopAction()">
+        <i class="glyphicon glyphicon-remove"></i>
+        Cancel
+      </button>
+      <a
+          class="btn-edit-article"
+          href="/cms/app/edit/{{article.id}}"
+          target="_blank">
+        <button
+            class="btn btn-xs btn-info">
+          <i class="fa fa-pencil"></i>
+          <span>Edit...</span>
+        </button>
+      </a>
+    </div>
+  </div>
+  <!-- non-actionable article -->
+  <div
+      ng-if="!contentIsEnabled(article)"
+      tooltip="This article cannot be promoted because it is unpublished, occurs after selected time, you are viewing a past list, or it is already in this list."
       tooltip-placement="left"
       tooltip-trigger="mouseenter">
     <promoted-content-article
-        class="non-draggable-content"
+        class="non-actionable-content"
         article="article">
     </promoted-content-article>
   </div>

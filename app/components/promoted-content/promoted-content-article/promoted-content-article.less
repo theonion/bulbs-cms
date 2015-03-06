@@ -6,59 +6,20 @@ promoted-content-article {
     -khtml-user-select: none;
     -webkit-user-select: none;
     -o-user-select: none;
-    margin-bottom: 10px;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    margin-bottom: 0;
     min-height: 50px;
     position: relative;
 
-    .panel-body {
-      padding: 10px 10px 5px 10px;
-    }
+    .panel-heading {
+      border-bottom: none;
+      cursor: inherit;
 
-    .heading {
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-  }
-
-  .article-tools {
-    float: left;
-    height: 100%;
-    width: 90px;
-    position: absolute;
-    border-right: 1px solid #ddd;
-
-    > .btn {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      border-radius: 0;
-      border: none;
-
-      &.remove-content-btn {
-        border-right: 1px solid #ddd;
+      .heading {
+        text-overflow: ellipsis;
+        overflow: hidden;
       }
-
-      &.up-content-btn {
-        border-bottom: 1px solid #ddd;
-        height: 27px;
-        left: 51px;
-        padding: 2px 10px 4px;
-        width: 39px;
-      }
-
-      &.dn-content-btn {
-        height: 27px;
-        margin-top: 27px;
-        left: 51px;
-        padding: 4px 10px 2px;
-        width: 39px;
-      }
-    }
-
-    + .panel-heading {
-      border-top-left-radius: 0;
-      margin-left: 90px;
-      cursor: default;
     }
   }
 }

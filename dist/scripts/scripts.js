@@ -1520,19 +1520,13 @@ angular.module('filterWidget', [
 'use strict';
 
 angular.module('promotedContentArticle.directive', [
-  'bulbsCmsApp.settings',
-  'promotedContentArticle.controller'
+  'bulbsCmsApp.settings'
 ])
   .directive('promotedContentArticle', function (routes) {
     return {
-      controller: 'PromotedContentArticle',
       restrict: 'E',
       scope: {
-        article: '=',
-        isFirst: '=?',
-        isLast: '=?',
-        moveUpCallback: '&',
-        moveDownCallback: '&'
+        article: '='
       },
       templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-article/promoted-content-article.html'
     };
@@ -1546,68 +1540,67 @@ angular.module('promotedContentArticle', [
 
 'use strict';
 
-angular.module('promotedContentArticle.controller', [
-  'promotedContent.service'
-])
-  .controller('PromotedContentArticle', function ($scope, PromotedContentService) {
-
-    $scope.pzoneData = PromotedContentService.getData();
-
-    $scope.removeContentFromPromotedList = function (article) {
-      PromotedContentService.$removeContentFromPZone(article.id);
-    };
-
-  });
-
-'use strict';
-
-angular.module('promotedContentList.controller', [
-  'promotedContent.service'
-])
-  .controller('PromotedContentList', function ($scope, PromotedContentService) {
-
-      $scope.pzoneData = PromotedContentService.getData();
-
-      $scope.contentDroppedIntoZone = function (e) {
-        $scope.destyleDropZones();
-        PromotedContentService.$dropAndAddContent(e.target);
-      };
-
-      $scope.contentDroppedIntoReplaceZone = function (e) {
-        $scope.destyleDropZones();
-        PromotedContentService.$dropAndAddContent(e.target, true);
-      };
-
-      $scope.moveUp = function (index) {
-        PromotedContentService.moveContentUp(index);
-      };
-
-      $scope.moveDown = function (index) {
-        PromotedContentService.moveContentDn(index);
-      };
-  });
-
-'use strict';
-
 angular.module('promotedContentList.directive', [
   'bulbsCmsApp.settings',
-  'ngDragDrop',
+  'promotedContent.service',
   'promotedContentArticle',
   'promotedContentSave',
-  'promotedContentList.controller'
+  'ui.sortable'
 ])
   .directive('promotedContentList', function ($, routes) {
     return {
-      controller: 'PromotedContentList',
+      controller: function ($scope, PromotedContentService) {
+
+          $scope.pzoneData = PromotedContentService.getData();
+
+          $scope.moveUp = function (index) {
+            PromotedContentService.moveContentUp(index);
+          };
+
+          $scope.moveDown = function (index) {
+            PromotedContentService.moveContentDn(index);
+          };
+
+          $scope.remove = function (article) {
+            PromotedContentService.$removeContentFromPZone(article.id);
+          };
+
+          $scope.completeAction = function (index) {
+            PromotedContentService.$completeContentAction(index);
+          };
+
+          $scope.stopAction = function () {
+            PromotedContentService.stopContentAction();
+          };
+
+          $scope.markDirty = function () {
+            PromotedContentService.markDirtySelectedPZone();
+          };
+
+      },
       link: function (scope, element, attr) {
 
-        scope.styleDropZone = function (e) {
-          $(e.target).addClass('drop-area-hover');
+        scope.sortableOptions = {
+          beforeStop: function (e, ui) {
+            ui.helper.css('margin-top', 0);
+            ui.item.parent().removeClass('ui-sortable-dragging');
+          },
+          cancel: '.ui-sortable-unsortable',
+          change: function (e, ui) {
+            ui.helper.css('margin-top', $(window).scrollTop());
+          },
+          containment: 'promoted-content-list',
+          distance: 3,
+          opacity: 0.75,
+          placeholder: 'dropzone',
+          start: function (e, ui) {
+            ui.item.parent().addClass('ui-sortable-dragging');
+            ui.helper.css('margin-top', $(window).scrollTop());
+          },
+          stop: function () {
+            scope.markDirty();
+          }
         };
-        scope.destyleDropZones = function (e) {
-          $('.content-drop-area, .replace-drop-area').removeClass('drop-area-hover');
-        };
-
       },
       restrict: 'E',
       scope: {},
@@ -1623,74 +1616,88 @@ angular.module('promotedContentList', [
 
 'use strict';
 
-angular.module('promotedContentOperationsList.controller', [
-  'promotedContent.service'
-])
-  .controller('PromotedContentOperationsList', function (moment, $scope, PromotedContentService) {
-
-    $scope.pzoneData = PromotedContentService.getData();
-    $scope.scheduleDateFrom = moment();
-    $scope.scheduleDateTo = moment().add(12, 'hours');
-    $scope.deleteStatus = {
-      message: '',
-      isError: false
-    };
-
-    PromotedContentService.$ready()
-      .then(function () {
-        $scope.aggregatedOperations = $scope.pzoneData.operations.concat($scope.pzoneData.unsavedOperations);
-      });
-
-    $scope.removeOperation = function (operation) {
-      PromotedContentService.$removeOperation(operation.id)
-        .then(function () {
-          $scope.deleteStatus = {
-            message: 'Operation successfully removed!',
-            isError: false
-          };
-        })
-        .catch(function (err) {
-          $scope.deleteStatus = {
-            message: err,
-            isError: true
-          };
-        });
-    };
-
-    $scope.clearDeleteStatus = function () {
-      $scope.deleteStatus.message = '';
-    };
-
-  });
-
-'use strict';
-
 angular.module('promotedContentOperationsList.directive', [
   'bulbsCmsApp.settings',
-  'promotedContentOperationsList.controller'
+  'promotedContent.service'
 ])
   .directive('promotedContentOperationsList', function (_, moment, routes) {
     return {
-      controller: 'PromotedContentOperationsList',
+      controller: function (moment, $scope, PromotedContentService) {
+
+        $scope.pzoneData = PromotedContentService.getData();
+        $scope.scheduleDateFrom = moment();
+        $scope.scheduleDateTo = moment().add(3, 'days');
+        $scope.deleteStatus = {
+          message: '',
+          isError: false
+        };
+
+        PromotedContentService.$ready()
+          .then(function () {
+            $scope.aggregatedOperations = $scope.pzoneData.operations.concat($scope.pzoneData.unsavedOperations);
+          });
+
+        $scope.removeOperation = function (operation) {
+          PromotedContentService.$removeOperation(operation.id)
+            .then(function () {
+              $scope.deleteStatus = {
+                message: 'Operation successfully removed!',
+                isError: false
+              };
+            })
+            .catch(function (err) {
+              $scope.deleteStatus = {
+                message: err,
+                isError: true
+              };
+            });
+        };
+
+        $scope.clearDeleteStatus = function () {
+          $scope.deleteStatus.message = '';
+        };
+
+        $scope.setPreviewTime = function (time) {
+          // set preview time to time plus a minute so that all operations occuring in that
+          //  minute can be previewed
+          PromotedContentService.setPreviewTime(time.add(1, 'minute'));
+        };
+      },
       link: function (scope, element, attr) {
 
+        var operationTime = function (operation) {
+          var compTime;
+          if (operation.whenAsMoment) {
+            // has a time, use that
+            compTime = operation.whenAsMoment;
+          } else if (scope.pzoneData.previewTime){
+            // has no time, but preview time is set, use that
+            compTime = scope.pzoneData.previewTime;
+          } else {
+            // this is an immediate operation
+            compTime = moment();
+          }
+          return compTime;
+        };
+
+        scope.aggregatedOperations = {};
+        scope.groupDateFormat = 'M/D/YY @ h:mma';
         var aggregator = function () {
           var tempAggregate = scope.pzoneData.operations.concat(scope.pzoneData.unsavedOperations);
 
-          scope.aggregatedOperations = _.sortBy(tempAggregate, function (operation) {
-            var compTime = 0;
-            if (operation.whenAsMoment) {
-              // has a time, use that
-              compTime = operation.whenAsMoment.valueOf();
-            } else if (scope.pzoneData.previewTime){
-              // has no time, but preview time is set, use that
-              compTime = scope.pzoneData.previewTime;
-            } else {
-              // this is an immediate operation
-              compTime = moment();
-            }
-            return compTime.valueOf();
-          });
+          scope.aggregatedOperations = _.chain(tempAggregate)
+            .sortBy(operationTime)
+            .groupBy(function (operation) {
+              return operationTime(operation).format(scope.groupDateFormat);
+            })
+            .pairs()
+            .map(function (pair) {
+              return [moment(pair[0], scope.groupDateFormat), pair[1]];
+            })
+            .sortBy(function (pair) {
+              return pair[0];
+            })
+            .value();
         };
 
         scope.$watchCollection('pzoneData.operations', aggregator);
@@ -1711,37 +1718,29 @@ angular.module('promotedContentOperationsList', [
 
 'use strict';
 
-angular.module('promotedContentPzoneSelect.controller', [
-  'promotedContent.service'
-])
-  .controller('PromotedContentPzoneSelect', function ($scope, PromotedContentService) {
-
-    $scope.pzoneData = PromotedContentService.getData();
-    $scope.selectedPZoneName = '';
-
-    PromotedContentService.$ready()
-      .then(function () {
-        $scope.selectedPZoneName = $scope.pzoneData.selectedPZone.name;
-      });
-
-    $scope.changePZone = function (name) {
-      (function (name) {
-        PromotedContentService.$refreshPZones()
-          .then(function () { PromotedContentService.$selectPZone(name); });
-      })(name);
-    };
-
-  });
-
-'use strict';
-
 angular.module('promotedContentPzoneSelect.directive', [
   'bulbsCmsApp.settings',
-  'promotedContentPzoneSelect.controller'
+  'promotedContent.service'
 ])
   .directive('promotedContentPzoneSelect', function (routes) {
     return {
-      controller: 'PromotedContentPzoneSelect',
+      controller: function ($scope, PromotedContentService) {
+
+        $scope.pzoneData = PromotedContentService.getData();
+        $scope.selectedPZoneName = '';
+
+        PromotedContentService.$ready()
+          .then(function () {
+            $scope.selectedPZoneName = $scope.pzoneData.selectedPZone.name;
+          });
+
+        $scope.changePZone = function (name) {
+          (function (name) {
+            PromotedContentService.$refreshPZones()
+              .then(function () { PromotedContentService.$selectPZone(name); });
+          })(name);
+        };
+      },
       restrict: 'E',
       scope: {},
       templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-pzone-select/promoted-content-pzone-select.html'
@@ -1756,35 +1755,27 @@ angular.module('promotedContentPzoneSelect', [
 
 'use strict';
 
-angular.module('promotedContentSave.controller', [
-  'promotedContent.service'
-])
-  .controller('PromotedContentSave', function ($scope, PromotedContentService) {
-
-    $scope.pzoneData = PromotedContentService.getData();
-
-    $scope.savePZone = function () {
-      PromotedContentService.$saveSelectedPZone();
-    };
-
-    $scope.clearOperations = function () {
-      PromotedContentService.$refreshSelectedPZone($scope.pzoneData.previewTime)
-        .then(function () {
-          PromotedContentService.clearUnsavedOperations();
-        });
-    };
-
-  });
-
-'use strict';
-
 angular.module('promotedContentSave.directive', [
   'bulbsCmsApp.settings',
-  'promotedContentSave.controller'
+  'promotedContent.service'
 ])
   .directive('promotedContentSave', function (routes) {
     return {
-      controller: 'PromotedContentSave',
+      controller: function ($scope, PromotedContentService) {
+
+        $scope.pzoneData = PromotedContentService.getData();
+
+        $scope.savePZone = function () {
+          PromotedContentService.$saveSelectedPZone();
+        };
+
+        $scope.clearOperations = function () {
+          PromotedContentService.$refreshSelectedPZone($scope.pzoneData.previewTime)
+            .then(function () {
+              PromotedContentService.clearUnsavedOperations();
+            });
+        };
+      },
       restrict: 'E',
       scope: {},
       templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-save/promoted-content-save.html'
@@ -1799,68 +1790,78 @@ angular.module('promotedContentSave', [
 
 'use strict';
 
-angular.module('promotedContentSearch.controller', [
-  'promotedContent.service'
-])
-  .controller('PromotedContentSearch', function (_, moment, $scope, $location, PromotedContentService) {
-
-    $scope.pzoneData = PromotedContentService.getData();
-    $scope.pageNumber = $location.search().page || '1';
-
-    $scope.goToPage = function () {
-      PromotedContentService.$refreshAllContent({page: $scope.pageNumber}, true);
-    };
-
-    $scope.articleIsVisible = function (article) {
-      var inPZone =
-        $scope.pzoneData.selectedPZone &&
-        _.find($scope.pzoneData.selectedPZone.content, {id: article.id});
-      return inPZone ? true : false;
-    };
-
-    /**
-    * Check if an article is draggble. Dragging is allowed if preview time is
-    *  set to immediate and the article is already published, or if a preview
-    *  time is set into the future and the article will be published before that.
-    *
-    * @param {object} article - article to test for draggability.
-    * @returns {Boolean} true if article is draggable, false otherwise.
-    */
-    $scope.articleIsDraggable = function (article) {
-      var immediateDraggable =
-        ($scope.pzoneData.previewTime === null &&
-          moment().isAfter(article.published));
-      var futureDraggable =
-        ($scope.pzoneData.previewTime !== null &&
-          moment().isBefore($scope.pzoneData.previewTime) &&
-          $scope.pzoneData.previewTime.isAfter(article.published));
-
-      return immediateDraggable || futureDraggable;
-    };
-
-    $scope.contentPickedUp = function (e) {
-      PromotedContentService.pickupContentFromAll(e.target);
-    };
-
-    $scope.contentDropped = function () {
-      PromotedContentService.dropContent();
-    };
-
-  });
-
-'use strict';
-
 angular.module('promotedContentSearch.directive', [
   'bulbsCmsApp.settings',
-  'ngDragDrop',
   'statusFilter',
   'filterWidget',
-  'promotedContentArticle',
-  'promotedContentSearch.controller'
+  'promotedContent.service',
+  'promotedContentArticle'
 ])
-  .directive('promotedContentSearch', function ($, routes) {
+  .directive('promotedContentSearch', function (routes) {
     return {
-      controller: 'PromotedContentSearch',
+      controller: function (_, moment, $scope, $location, PromotedContentService) {
+
+        $scope.pzoneData = PromotedContentService.getData();
+        $scope.pageNumber = $location.search().page || '1';
+
+        $scope.goToPage = function () {
+          PromotedContentService.$refreshAllContent({page: $scope.pageNumber}, true);
+        };
+
+        /**
+        * Check if an content is enabled. Actions are allowed if preview time is
+        *  set to immediate and the content is already published, or if a preview
+        *  time is set into the future and the content will be published before that.
+        *  In either case, content is only draggable if it is not already listed.
+        *
+        * @param {object} content - content to check if enabled.
+        * @returns {Boolean} true if content is enabled, false otherwise.
+        */
+        $scope.contentIsEnabled = function (content) {
+          var notAlreadyInList =
+            ($scope.pzoneData.selectedPZone &&
+            _.isUndefined(_.find($scope.pzoneData.selectedPZone.content, {id: content.id})));
+          var immediateDraggable =
+            ($scope.pzoneData.previewTime === null &&
+              moment().isAfter(content.published));
+          var futureDraggable =
+            ($scope.pzoneData.previewTime !== null &&
+              moment().isBefore($scope.pzoneData.previewTime) &&
+              $scope.pzoneData.previewTime.isAfter(content.published));
+
+          return notAlreadyInList && (immediateDraggable || futureDraggable);
+        };
+
+        $scope.beginInsert = function (article) {
+          PromotedContentService.beginContentInsert(article);
+        };
+
+        $scope.beginReplace = function (article) {
+          PromotedContentService.beginContentReplace(article);
+        };
+
+        $scope.stopAction = function () {
+          PromotedContentService.stopContentAction();
+        };
+
+      },
+      link: function (scope, element, attr) {
+
+        scope.tools = null;
+        scope.openToolsFor = function (article) {
+          scope.tools = article.id;
+          return true;
+        };
+
+        scope.closeTools = function () {
+          scope.tools = null;
+          return true;
+        };
+
+        scope.toolsOpenFor = function (article) {
+          return scope.tools === article.id;
+        };
+      },
       restrict: 'E',
       scope: {},
       templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-search/promoted-content-search.html'
@@ -1890,7 +1891,8 @@ angular.module('promotedContent.service', [
     var PromotedContentService = this;
     PromotedContentService._serviceData = {
       allContent: ContentListService.getData(),
-      draggingContent: null,
+      actionContent: null,
+      action: null,
       pzones: [],
       unsavedOperations: [],
       operations: [],
@@ -1965,15 +1967,13 @@ angular.module('promotedContent.service', [
       if (_data.previewTime && _data.previewTime.isAfter(moment())) {
         // grab operations out of unsaved operations and post them into operations list
         _.each(_data.unsavedOperations, function (operation) {
-
           // use preview time, or send null if immediate
           operation.when = _data.previewTime ? _data.previewTime.toISOString() : null;
           // remove client side client_id
           delete operation.client_id;
-
-          // _data.operations.post(operation)
-          //   .finally(trackSaves);
         });
+
+        // post all operations as an array
         _data.operations.post(_data.unsavedOperations).then(function () {
           PromotedContentService.$refreshOperations()
             .then(function () {
@@ -2139,26 +2139,6 @@ angular.module('promotedContent.service', [
     };
 
     /**
-     * Pickup some content from list of all content.
-     *
-     * @param {Number} contentElement - element of content being picked up.
-     * @returns {Object} object represenation of content being dragged.
-     */
-    PromotedContentService.pickupContentFromAll = function (contentElement) {
-      // note: accessing via data() doesn't work as expected (some angular/jq combo issue?)
-      var id = parseInt($(contentElement).attr('data-article-id'), 10);
-      _data.draggingContent = _.find(_data.allContent.content, {id: id});
-      return _data.draggingContent;
-    };
-
-    /**
-     * Drop picked up content outside of dropzone.
-     */
-    PromotedContentService.dropContent = function () {
-      _data.draggingContent = null;
-    };
-
-    /**
      * Remove content from currently selected pzone.
      *
      * @param {Number} contentId - id of content to delete.
@@ -2229,36 +2209,76 @@ angular.module('promotedContent.service', [
     };
 
     /**
-     * Drop content being dragged into a dropzone. Will mark selected pzone as
-     *  dirty.
+     * Begin content insert action.
      *
-     * @param {Element} contentElement - Content element being dropped.
-     * @param {Boolean} replace - true to replace content at given index.
-     * @returns {Promise} resovles with nothing or rejects with an error message.
+     * @param {Object} article - article to be inserted.
      */
-    PromotedContentService.$dropAndAddContent = function (contentElement, replace) {
-      // note: accessing via data() doesn't work as expected (some angular/jq combo issue?)
-      var index = parseInt($(contentElement).attr('data-drop-zone-index'), 10);
-      // find index of duplicate if there is one
-      var duplicateIndex = _.findIndex(_data.selectedPZone.content, {id: _data.draggingContent.id});
-      // add operation to unsaved operations
-      return PromotedContentService.$addOperation({
-        cleanType: replace ? readableOperationTypes.REPLACE : readableOperationTypes.INSERT,
-        content: _data.draggingContent.id,
-        content_title: _data.draggingContent.title,
-        index: index
-      }).then(function () {
-        // ensure that dupilcate is deleted
-        if (index !== duplicateIndex && duplicateIndex >= 0) {
-          _data.selectedPZone.content.splice(duplicateIndex, 1);
-        }
-        // add item to pzone
-        _data.selectedPZone.content.splice(index, (replace ? 1 : 0), _data.draggingContent);
-        // "drop" content that service is keeping track of
-        PromotedContentService.dropContent();
-        // mark dirty
-        PromotedContentService.markDirtySelectedPZone();
-      });
+    PromotedContentService.beginContentInsert = function (article) {
+      _data.actionContent = article;
+      _data.action = readableOperationTypes.INSERT;
+    };
+
+    /**
+     * Begin content replace operation.
+     *
+     * @param {Object} article - article to be replaced.
+     */
+    PromotedContentService.beginContentReplace = function (article) {
+      _data.actionContent = article;
+      _data.action = readableOperationTypes.REPLACE;
+    };
+
+    /**
+     * Stop doing current action.
+     */
+    PromotedContentService.stopContentAction = function () {
+      _data.actionContent = null;
+      _data.action = null;
+    };
+
+    /**
+     * Complete insert or replace operation.
+     *
+     * @param {Number} index - index where operation will occur.
+     * @returns {Promise} resolves with nothing or rejects with an error message.
+     */
+    PromotedContentService.$completeContentAction = function (index) {
+      var deferred = $q.defer();
+
+      if (_data.action) {
+        PromotedContentService.$addOperation({
+          cleanType: _data.action,
+          content: _data.actionContent.id,
+          content_title: _data.actionContent.title,
+          index: index
+        })
+          .then(function () {
+            // find index of duplicate if there is one
+            var duplicateIndex = _.findIndex(_data.selectedPZone.content, {id: _data.actionContent.id});
+
+            // ensure that duplicate is deleted
+            if (index !== duplicateIndex && duplicateIndex >= 0) {
+              _data.selectedPZone.content.splice(duplicateIndex, 1);
+            }
+
+            // add item to pzone
+            var replace = _data.action === readableOperationTypes.REPLACE;
+            _data.selectedPZone.content.splice(index, (replace ? 1 : 0), _data.actionContent);
+
+            // stop action
+            PromotedContentService.stopContentAction();
+
+            // ensure pzone is marked dirty
+            PromotedContentService.markDirtySelectedPZone();
+
+            deferred.resolve();
+          })
+          .catch(deferred.reject);
+      } else {
+        deferred.reject('No action to complete in progress.');
+      }
+
+      return deferred.promise;
     };
 
     /**
@@ -2362,81 +2382,24 @@ angular.module('promotedContent.service', [
 
 'use strict';
 
-angular.module('promotedContentTimePicker.controller', [
-  'moment',
-  'promotedContent.service'
-])
-  .controller('PromotedContentTimePicker', function (moment, $scope, PromotedContentService) {
-
-    $scope.contentData = PromotedContentService.getData();
-    $scope.previewTime = null;
-
-    $scope.setPreviewTime = function (previewTime) {
-      PromotedContentService.setPreviewTime(previewTime);
-    };
-
-    $scope.setPreviewTimeToImmediate = function () {
-      $scope.previewTime = null;
-      PromotedContentService.setPreviewTimeToImmediate();
-    };
-
-  });
-
-'use strict';
-
 angular.module('promotedContentTimePicker.directive', [
   'bulbsCmsApp.settings',
-  'promotedContentTimePicker.controller'
+  'promotedContent.service'
 ])
-  .directive('promotedContentTimePicker', function (_, $, moment, routes) {
+  .directive('promotedContentTimePicker', function (routes) {
     return {
-      controller: 'PromotedContentTimePicker',
-      link: function (scope, element, attr) {
-        var now = moment();
-        var groupingFormat = 'YYYYMMDDHH';
+      controller: function (moment, $scope, PromotedContentService) {
 
-        // check for changes to operations so we can group them by time for display
-        scope.hours = [];
-        scope.$watchGroup(['contentData.operations', 'previewTime'], function (newVals) {
-          var newOperations = newVals[0];
-          var timeForTimeline = scope.previewTime || moment();
-          var previewHour = timeForTimeline.hour();
-          var groupedOperations = _.groupBy(newOperations, function (operation) {
-            return operation.whenAsMoment.format(groupingFormat);
-          });
-          scope.hours = [];
-          _.each(_.range(previewHour, previewHour + 12), function (hour, i) {
-            var format24 = hour % 24;
-            var format12 = format24 % 12 || 12;
-            var amPM = format24 < 12 ? 'a' : 'p';
-            var preformat = '';
-            var hourDate = timeForTimeline.clone().add(i, 'hours');
-            var hourOps = groupedOperations[hourDate.format(groupingFormat)];
+        $scope.contentData = PromotedContentService.getData();
 
-            if (hourOps) {
-              // format tooltip html
-              preformat += '<div class="tooltip-title">Operations ' + format12 + ':00' + amPM + 'm to ' + format12 + ':59' + amPM + 'm</div>';
+        $scope.setPreviewTime = function (previewTime) {
+          PromotedContentService.setPreviewTime(previewTime);
+        };
 
-              _.each(hourOps, function (operation) {
-                preformat +=
-                  '<div class="tooltip-operation">' +
-                  operation.whenAsMoment.format(':mm') + ' ' +
-                  operation.cleanType + ' ' +
-                  operation.content_title +
-                  '<div>';
-              });
-            }
-
-            scope.hours.push({
-              hour: format12,
-              amPM: amPM,
-              passed: hourDate.isBefore(now),
-              current: hourDate.isSame(now, 'hour'),
-              operations: hourOps,
-              preformat: preformat
-            });
-          });
-        });
+        $scope.setPreviewTimeToImmediate = function () {
+          $scope.previewTime = null;
+          PromotedContentService.setPreviewTimeToImmediate();
+        };
       },
       restrict: 'E',
       scope: {},
@@ -3243,11 +3206,10 @@ angular.module('bulbsCmsApp')
     return {
       restrict: 'A',
       scope: {
-        modDatetime: '=ngModel',
+        modDatetime: '=?ngModel',
         modalTitle: '@',
         modalOnClose: '&'
       },
-      require: '^ngModel',
       link: function (scope, element) {
         var modalInstance = null;
         element.addClass('datetime-selection-modal-opener');
@@ -5244,6 +5206,10 @@ angular.module('bulbsCmsApp')
 
     // copy date temporarily so user has to actually verify change to the date
     $scope.tempDatetime = angular.copy($scope.modDatetime);
+    if (!$scope.tempDatetime) {
+      // default to now if no time given
+      $scope.tempDatetime = moment();
+    }
 
     $scope.TIMEZONE_LABEL = moment.tz(TIMEZONE_NAME).format('z');
 
