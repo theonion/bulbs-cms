@@ -1,0 +1,11 @@
+<div class="form-group">
+  <label for="templateTypesField">Template</label>
+  <select
+      id="templateTypesField"
+      class="form-control"
+      name="template_type"
+      ng-model="content.template_type"
+      ng-options="template.slug as template.name for template in templateTypes">
+    <option value="" label="Default">Default</option>
+  </select>
+</div>
