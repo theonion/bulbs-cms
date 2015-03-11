@@ -798,6 +798,33 @@ angular.module('bulbsCmsApp.mockApi').run([
       body: 'This article has a really long title.',
       client_pixel: null,
       sponsor_name: null
+    }, {
+      id: 11,
+      feature_type: 'Something Feature Type Something',
+      title: 'A Real, True, Article',
+      slug: 'real-article',
+      polymorphic_ctype: 'content_content',
+      template_type: 'small-width',
+      tags: [],
+      authors: [],
+      thumbnail: {id: '1'},
+      thumbnail_override: {id: '1'},
+      image: {
+        caption: null,
+        alt: null,
+        id: '3'
+      },
+      absolute_url: '/article/article-1',
+      sponsor_image: null,
+      status: 'Published',
+      published: '2017-07-25T16:20:00Z',
+      last_modified: '2012-05-03T16:00:00Z',
+      description: '',
+      subhead: '',
+      indexed: true,
+      body: 'This article has a really long title.',
+      client_pixel: null,
+      sponsor_name: null
     }]
   },
   'things.list': [
