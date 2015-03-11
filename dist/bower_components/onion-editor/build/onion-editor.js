@@ -4064,6 +4064,10 @@ define('api/command-patch',[],function () {
     };
 
     CommandPatch.prototype.queryState = function () {
+      // Hack for firefox, which does not like this.
+      if (this.commandName === 'insertOrderedList' || this.commandName == 'insertUnorderedList') {
+        return false;
+      }
       return document.queryCommandState(this.commandName);
     };
 

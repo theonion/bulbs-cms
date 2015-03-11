@@ -1,6 +1,6 @@
 {
   "name": "onion-editor",
-  "version": "0.2.37",
+  "version": "0.2.38",
   "homepage": "https://github.com/theonion/editor",
   "authors": [
     "Mike Wnuk <mwnuk@theonion.com>"
@@ -25,7 +25,7 @@
   "devDependencies": {
     "jasmine-jquery": "~2.0.5",
     "requirejs": "~2.1.9",
-    "scribe": "theonion/scribe#68356206d189f5d51224623788e228d6ae659d15",
+    "scribe": "theonion/scribe#649a8af55c36ad2536a66a99d4abab57e418ba33",
     "scribe-plugin-blockquote-command": "0.1.0",
     "scribe-plugin-curly-quotes": "0.1.2",
     "scribe-plugin-formatter-plain-text-convert-new-lines-to-html": "0.1.1",
@@ -42,13 +42,13 @@
   "resolutions": {
     "jquery": "1.11.1"
   },
-  "_release": "0.2.37",
+  "_release": "0.2.38",
   "_resolution": {
     "type": "version",
-    "tag": "0.2.37",
-    "commit": "d8885a9c001bdacddfd819a751d43ccd576a5e87"
+    "tag": "0.2.38",
+    "commit": "968f6dbc11ed7e3601dcd0ffab694e46f3916d1a"
   },
   "_source": "git://github.com/theonion/editor.git",
-  "_target": "0.2.37",
+  "_target": "0.2.38",
   "_originalSource": "onion-editor"
 }

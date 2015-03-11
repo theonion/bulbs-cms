@@ -260,7 +260,8 @@ angular.module('bulbsCmsApp', [
   // components
   'filterWidget',
   'promotedContent',
-  'statusFilter'
+  'statusFilter',
+  'templateTypeField'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
@@ -2524,6 +2525,37 @@ angular.module('statusFilter.directive', [
 angular.module('statusFilter', [
   'statusFilter.directive'
 ]);
+
+'use strict';
+
+angular.module('templateTypeField.directive', [])
+  .directive('templateTypeField', function (routes) {
+    return {
+      controller: function (_, $scope, ContentFactory, TEMPLATE_TYPES) {
+        $scope.templateTypes = _.filter(TEMPLATE_TYPES, {content_type: $scope.content.polymorphic_ctype});
+      },
+      restrict: 'E',
+      scope: {
+        content: '='
+      },
+      templateUrl: routes.COMPONENTS_URL + 'template-type-field/template-type-field.html'
+    };
+  });
+
+'use strict';
+
+angular.module('templateTypeField', [
+  'templateTypeField.directive'
+])
+  .value('TEMPLATE_TYPES', [{
+      name: 'Small Width',
+      slug: 'small-width',
+      content_type: 'content_content'
+    }, {
+      name: 'Large Width',
+      slug: 'large-width',
+      content_type: 'content_content'
+    }]);
 
 'use strict';
 
