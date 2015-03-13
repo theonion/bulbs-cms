@@ -1,21 +1,25 @@
 <div
     class="item-wrapper row"
     ng-class="{
-      'included': modifierService.isIncluded(model.id),
-      'excluded': modifierService.isExcluded(model.id)
+      'included': controllerService.includesHas(model.id),
+      'excluded': controllerService.excludesHas(model.id)
     }">
 
   <div class="wrapper-pin col-md-1">
     <button
         class="btn-minimalized btn-pin-active"
-        ng-if="modifierService.isPinned(model.id)"
-        ng-click="modifierService.unpin(model.id); modifierService.$retrieveContent()">
+        ng-if="controllerService.pinsHas(model.id)"
+        ng-click="
+          controllerService.pinsRemove(model.id);
+          onUpdate()">
       <i class="glyphicon glyphicon-pushpin"></i>
     </button>
     <button
         class="btn-minimalized btn-pin-inactive"
-        ng-if="!modifierService.isPinned(model.id)"
-        ng-click="modifierService.pin(model.id); modifierService.$retrieveContent()">
+        ng-if="!controllerService.pinsHas(model.id)"
+        ng-click="
+          controllerService.pinsAdd(model.id);
+          onUpdate()">
       <i class="glyphicon glyphicon-pushpin"></i>
     </button>
   </div>
@@ -33,14 +37,18 @@
   <div class="wrapper-remove">
     <button
         class="btn btn-xs btn-danger"
-        ng-if="!modifierService.isExcluded(model.id)"
-        ng-click="modifierService.exclude(model.id); modifierService.$retrieveContent()">
+        ng-if="!controllerService.excludesHas(model.id)"
+        ng-click="
+          controllerService.excludesAdd(model.id);
+          onUpdate()">
       <i class="glyphicon glyphicon-remove"></i>
     </button>
     <button
         class="btn btn-xs btn-success"
-        ng-if="modifierService.isExcluded(model.id)"
-        ng-click="modifierService.unexclude(model.id); modifierService.$retrieveContent()">
+        ng-if="controllerService.excludesHas(model.id)"
+        ng-click="
+          controllerService.excludesRemove(model.id);
+          onUpdate()">
       <i class="glyphicon glyphicon-repeat"></i>
     </button>
   </div>

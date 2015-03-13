@@ -1,13 +1,12 @@
 'use strict';
 
-angular.module('customSearch.query.condition.directive', [
+angular.module('customSearch.group.condition.directive', [
   'contentServices.factory',
   'customSearch.settings',
-  'customSearch.service.condition.factory',
   'BulbsAutocomplete',
   'BulbsAutocomplete.suggest'
 ])
-  .directive('customSearchQueryCondition', function (routes) {
+  .directive('customSearchGroupCondition', function (routes) {
     return {
       controller: function (_, $q, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS,
           BulbsAutocomplete, ContentFactory, CUSTOM_SEARCH_CONDITION_FIELDS,
@@ -22,12 +21,14 @@ angular.module('customSearch.query.condition.directive', [
 
         $scope.autocompleteItems = [];
 
+        $scope.data = $scope.controllerService.groupsConditionsGet($scope.groupIndex, $scope.conditionIndex);
+
         var getAutocompleteItems = function () {
-          return ContentFactory.all($scope.model.field)
+          return ContentFactory.all($scope.data.field)
             .getList({search: $scope.writables.searchTerm})
             .then(function (items) {
               var field = _.find($scope.fieldTypes, function (type) {
-                return type.endpoint === $scope.model.field;
+                return type.endpoint === $scope.data.field;
               });
 
               return _.map(items, function (item) {
@@ -72,10 +73,12 @@ angular.module('customSearch.query.condition.directive', [
       },
       restrict: 'E',
       scope: {
-        model: '=',
+        controllerService: '=',
+        groupIndex: '=',
+        conditionIndex: '=',
         onUpdate: '&',
         remove: '&'
       },
-      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search-query/custom-search-query-condition/custom-search-query-condition.html'
+      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search-group/custom-search-group-condition/custom-search-group-condition.html'
     };
   });

@@ -5,18 +5,23 @@
   <div class="form-group">
     <select
         class="form-control input-sm"
-        ng-model="model.field"
+        ng-model="data.field"
         ng-options="field.endpoint as field.name for field in fieldTypes"
-        ng-change="clearAutocomplete(); model.clearAllValues(); onUpdate()">
+        ng-change="
+          clearAutocomplete();
+          controllerService.groupsConditionsValuesClear(groupIndex, conditionIndex);
+          onUpdate()">
     </select>
   </div>
 
   <div class="form-group">
     <select
         class="form-control input-sm"
-        ng-model="model.type"
+        ng-model="data.type"
         ng-options="condition.value as condition.name for condition in conditionTypes"
-        ng-change="clearAutocomplete(); onUpdate()">
+        ng-change="
+          clearAutocomplete();
+          onUpdate()">
     </select>
   </div>
 
@@ -36,13 +41,18 @@
         ng-show="writables.searchTerm"
         formatter="item.name"
         items="autocompleteItems"
-        on-select="model.addValue(selection); onUpdate(); writables.searchTerm = ''">
+        on-select="
+          controllerService.groupsConditionsValuesAdd(groupIndex, conditionIndex, selection);
+          writables.searchTerm = '';
+          onUpdate()">
     </bulbs-autocomplete-suggest>
   </div>
 
-  <div class="value" ng-repeat="value in model.values">
+  <div
+      class="value"
+      ng-repeat="value in controllerService.groupsConditionsValuesList(groupIndex, conditionIndex)">
     <span>{{ value.name }}</span>
-    <button ng-click="model.removeValue($index); onUpdate()">
+    <button ng-click="controllerService.groupsConditionsValuesRemove(groupIndex, conditionIndex, $index); onUpdate()">
       <i class="glyphicon glyphicon-remove"></i>
     </button>
   </div>

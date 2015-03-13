@@ -6,7 +6,8 @@ angular.module('customSearch.contentItem.directive', [])
       restrict: 'E',
       scope: {
         model: '=',
-        modifierService: '='
+        controllerService: '=',
+        onUpdate: '&'
       },
       templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search-content-item/custom-search-content-item.html'
     };
