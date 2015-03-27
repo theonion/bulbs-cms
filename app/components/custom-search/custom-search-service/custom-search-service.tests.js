@@ -218,7 +218,7 @@ describe('Service: CustomSearchService', function () {
       // force tick to fire debounce
       jasmine.Clock.tick(1);
 
-      $httpBackend.expectPOST('/cms/api/v1/custom-search-content/').respond(responseData);
+      $httpBackend.expectPOST(/\/cms\/api\/v1\/custom-search-content\/(\?page=\d+)?$/).respond(responseData);
       $httpBackend.flush();
 
       expect(customSearchService._$getContent).toHaveBeenCalledWith(_.assign(addProps, data));

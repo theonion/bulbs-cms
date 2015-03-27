@@ -34,7 +34,9 @@ angular.module('apiServices.styles', [
 
       $hooks: {
         'before-request': function (_req) {
-          _req.url += '/';
+          if (!_req.url.match(/\/\?/)) {
+            _req.url += '/';
+          }
         },
         'before-fetch-many': function (_req) {
           // add paging parameter here based on collection's $page property
