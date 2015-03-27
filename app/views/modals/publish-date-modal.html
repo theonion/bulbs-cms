@@ -38,15 +38,16 @@
     </div>
 </div>
 <div class="modal-footer">
-  <save-button
+  <save-button-old
     class="pull-left"
     color-styling="btn-warning"
     ng-show="article.published"
     get-promise="unpublish()"
     on-save="unpublishCbk(promise)"
     confirm-click-with="Are you sure you want to unpublish this article?"
-    config="unpubButton"></save-button>
+    config="unpubButton"></save-button-old>
 
   <button class="btn btn-link" ng-click="$dismiss();">Cancel</button>
-  <save-button color-styling="btn-primary" get-promise="setPubTime()" on-save="setPubTimeCbk(promise)" config="pubButton"/>
+  <save-button-old color-styling="btn-primary" get-promise="setPubTime()" on-save="setPubTimeCbk(promise)" config="pubButton">
+  </save-button-old>
 </div>

@@ -16,7 +16,7 @@
   </div>
 
   <bulbs-autocomplete-suggest
-      ng-show="writables.searchTerm && autocompleteItems"
+      ng-show="writables.searchTerm && autocompleteItems.length > 0"
       formatter="item.name"
       items="autocompleteItems"
       on-select="onSelect({id: selection.value}); autocompleteItems = []; writables.searchTerm = '';">

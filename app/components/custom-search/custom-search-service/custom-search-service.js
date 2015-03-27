@@ -1,10 +1,18 @@
 'use strict';
 
 angular.module('customSearch.service', [
-  'customSearch.settings'
+  'customSearch.settings',
+  'apiServices.customSearch.factory'
 ])
-  .factory('CustomSearchService', function (_, ContentFactory, CUSTOM_SEARCH_CONDITION_FIELDS,
+  .factory('CustomSearchService', function (_, CustomSearch, CUSTOM_SEARCH_CONDITION_FIELDS,
       CUSTOM_SEARCH_CONDITION_TYPES, CUSTOM_SEARCH_REQUEST_CAP_MS, CUSTOM_SEARCH_TIME_PERIODS) {
+
+    var defaultData = {
+      groups: [],
+      includedIds: [],
+      excludedIds: [],
+      pinnedIds: []
+    };
 
     /**
      * Create custom search service.
@@ -13,74 +21,79 @@ angular.module('customSearch.service', [
      */
     var CustomSearchService = function (data) {
 
-      if (_.isUndefined(data)) {
-        throw 'Given data for CustomSearchService is undefined!';
-      }
+      this.data(data);
 
-      this._data = _.defaults(data, {
-        groups: [],
-        included_ids: [],
-        excluded_ids: [],
-        pinned_ids: [],
-        page: 1,
-        query: ''
-      });
-
-      this._contentEndpoint = ContentFactory.service('custom-search-content/');
-      this._groupCountEndpoint = ContentFactory.service('custom-search-content/group_count/');
+      this.$page = 1;
+      this.$query = '';
 
       this.content = {};
     };
 
+    CustomSearchService.prototype.data = function (data) {
+
+      if (_.isUndefined(data)) {
+        this._data = defaultData;
+      } else {
+        this._data = _.defaults(data, defaultData);
+      }
+
+      return this._data;
+    };
+
     CustomSearchService.prototype._$getContent = _.debounce(function (queryData) {
       var self = this;
-      return self._contentEndpoint.post(queryData)
+      return CustomSearch.$retrieveContent(queryData)
         .then(function (data) {
           self.content = data;
         });
     }, CUSTOM_SEARCH_REQUEST_CAP_MS);
 
     CustomSearchService.prototype.$filterContentByIncluded = function () {
-      var contentQuery = _.pick(this._data, [
-        'included_ids',
-        'page',
-        'query'
-      ]);
+      var contentQuery = {
+        includedIds: this._data.includedIds,
+        page: this.$page,
+        query: this.$query
+      };
       return this._$getContent(contentQuery);
     };
 
     CustomSearchService.prototype.$filterContentByExcluded = function () {
-      var contentQuery = _.pick(this._data, [
-        'page',
-        'query'
-      ]);
-      contentQuery.included_ids = this._data.excluded_ids;
+      var contentQuery = {
+        includedIds: this._data.excludedIds,
+        page: this.$page,
+        query: this.$query
+      };
       return this._$getContent(contentQuery);
     };
 
     CustomSearchService.prototype.$retrieveContent = function () {
-      return this._$getContent(this._data);
+      var contentQuery = _.assign({
+        page: this.$page,
+        query: this.$query,
+        preview: true
+      }, this._data);
+      return this._$getContent(contentQuery);
     };
 
     CustomSearchService.prototype.$groupsUpdateResultCountFor = function (index) {
       var self = this;
       return (function (index) {
-        return self._groupCountEndpoint.post(self._data.groups[index])
-          .then(function (data) {
-            self._data.groups[index].result_count = data.count;
+        return CustomSearch.$retrieveGroupCount(self._data.groups[index])
+          .then(function (count) {
+            self._data.groups[index].$result_count = count;
           });
       })(index);
     };
 
     CustomSearchService.prototype.groupsResultCountGet = function (index) {
-      return this._data.groups[index].result_count || 0;
+      return this._data.groups[index].$result_count || 0;
     };
 
     CustomSearchService.prototype.groupsList = function () {
       return this._data.groups;
     };
 
-      CustomSearchService.prototype.groupsAdd = function (data) {
+    CustomSearchService.prototype.groupsAdd = function (data) {
       if (_.isUndefined(data)) {
         data = {};
       }
@@ -88,7 +101,7 @@ angular.module('customSearch.service', [
       data = _.defaults(data, {
         conditions: [],
         time: null,
-        result_count: 0
+        $result_count: 0
       });
 
       this._data.groups.push(data);
@@ -172,34 +185,34 @@ angular.module('customSearch.service', [
     };
 
     CustomSearchService.prototype.includesList = function () {
-      return this._data.included_ids;
+      return this._data.includedIds;
     };
 
     CustomSearchService.prototype.includesAdd = function (id) {
       // add id, ensure uniqueness
-      this._data.included_ids.push(id);
-      this._data.included_ids = _.uniq(this._data.included_ids);
+      this._data.includedIds.push(id);
+      this._data.includedIds = _.uniq(this._data.includedIds);
 
       // remove from exclude list
       this.excludesRemove(id);
     };
 
     CustomSearchService.prototype.includesRemove = function (id) {
-      this._data.included_ids = _.without(this._data.included_ids, id);
+      this._data.includedIds = _.without(this._data.includedIds, id);
     };
 
     CustomSearchService.prototype.includesHas = function (id) {
-      return _.includes(this._data.included_ids, id);
+      return _.includes(this._data.includedIds, id);
     };
 
     CustomSearchService.prototype.excludesList = function () {
-      return this._data.excluded_ids;
+      return this._data.excludedIds;
     };
 
     CustomSearchService.prototype.excludesAdd = function (id) {
       // exclude id, ensure unqiueness
-      this._data.excluded_ids.push(id);
-      this._data.excluded_ids = _.uniq(this._data.excluded_ids);
+      this._data.excludedIds.push(id);
+      this._data.excludedIds = _.uniq(this._data.excludedIds);
 
       // remove from include list and pinned list
       this.includesRemove(id);
@@ -207,48 +220,48 @@ angular.module('customSearch.service', [
     };
 
     CustomSearchService.prototype.excludesRemove = function (id) {
-      this._data.excluded_ids = _.without(this._data.excluded_ids, id);
+      this._data.excludedIds = _.without(this._data.excludedIds, id);
     };
 
     CustomSearchService.prototype.excludesHas = function (id) {
-      return _.includes(this._data.excluded_ids, id);
+      return _.includes(this._data.excludedIds, id);
     };
 
     CustomSearchService.prototype.pinsList = function () {
-      return this._data.pinned_ids;
+      return this._data.pinnedIds;
     };
 
     CustomSearchService.prototype.pinsAdd = function (id) {
       // pin id, ensure unqiueness
-      this._data.pinned_ids.push(id);
-      this._data.pinned_ids = _.uniq(this._data.pinned_ids);
+      this._data.pinnedIds.push(id);
+      this._data.pinnedIds = _.uniq(this._data.pinnedIds);
 
       // remove from exclude list
       this.excludesRemove(id);
     };
 
     CustomSearchService.prototype.pinsRemove = function (id) {
-      this._data.pinned_ids = _.without(this._data.pinned_ids, id);
+      this._data.pinnedIds = _.without(this._data.pinnedIds, id);
     };
 
     CustomSearchService.prototype.pinsHas = function (id) {
-      return _.includes(this._data.pinned_ids, id);
+      return _.includes(this._data.pinnedIds, id);
     };
 
     CustomSearchService.prototype.getPage = function () {
-      return this._data.page;
+      return this.$page;
     };
 
     CustomSearchService.prototype.setPage = function (page) {
-      this._data.page = page;
+      this.$page = page;
     };
 
     CustomSearchService.prototype.getQuery = function () {
-      return this._data.query;
+      return this.$query;
     };
 
     CustomSearchService.prototype.setQuery = function (query) {
-      this._data.query = query;
+      this.$query = query;
     };
 
     return CustomSearchService;

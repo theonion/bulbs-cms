@@ -1,4 +1,4 @@
-<div ng-show="targetingArray.length > 0">
+<div >
   <div class="panel-body targeting-table">
     <table class="table targeting-group">
       <tr>
@@ -20,6 +20,7 @@
   <div class="panel-footer text-right">
     <button class="btn btn-primary add-targeting-button" type="submit" ng-click="addTargetingRow($index);">
       <i class="glyphicon glyphicon-plus"></i> Add Row</button>
-    <save-button class="add-targeting-button" get-promise="save()" color-styling="btn-success"/>
+    <save-button-old class="add-targeting-button" get-promise="save()" color-styling="btn-success">
+    </save-button-old>
   </div>
 </div>

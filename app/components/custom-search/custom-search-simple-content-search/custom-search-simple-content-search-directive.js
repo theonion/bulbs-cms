@@ -6,7 +6,7 @@ angular.module('customSearch.simpleContentSearch.directive', [
 ])
   .directive('customSearchSimpleContentSearch', function (routes) {
     return {
-      controller: function (_, $scope, BulbsAutocomplete, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS,
+      controller: function (_, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS,
           ContentFactory) {
 
         $scope.writables = {
@@ -15,24 +15,25 @@ angular.module('customSearch.simpleContentSearch.directive', [
 
         $scope.autocompleteItems = [];
 
-        var getAutocompleteItems = function () {
+        var $getItems = function () {
           return ContentFactory.all('content')
             .getList({search: $scope.writables.searchTerm})
             .then(function (results) {
-              return _.map(results, function (item) {
-                return {
-                  name: 'ID: ' + item.id + ' | ' + item.title,
-                  value: item.id
-                };
+              return _.chain(results)
+                .take(10)
+                .map(function (item) {
+                  return {
+                    name: 'ID: ' + item.id + ' | ' + item.title,
+                    value: item.id
+                  };
+                })
+                .value();
               });
-            });
         };
-
-        var autocomplete = new BulbsAutocomplete(getAutocompleteItems);
 
         $scope.updateAutocomplete = function () {
           if ($scope.writables.searchTerm) {
-            autocomplete.$retrieve().then(function (results) {
+            $getItems().then(function (results) {
               $scope.autocompleteItems = results;
             });
           }

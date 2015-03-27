@@ -9,8 +9,7 @@ angular.module('customSearch.group.condition.directive', [
   .directive('customSearchGroupCondition', function (routes) {
     return {
       controller: function (_, $q, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS,
-          BulbsAutocomplete, ContentFactory, CUSTOM_SEARCH_CONDITION_FIELDS,
-          CUSTOM_SEARCH_CONDITION_TYPES) {
+          ContentFactory, CUSTOM_SEARCH_CONDITION_FIELDS, CUSTOM_SEARCH_CONDITION_TYPES) {
 
         $scope.conditionTypes = CUSTOM_SEARCH_CONDITION_TYPES;
         $scope.fieldTypes = CUSTOM_SEARCH_CONDITION_FIELDS;
@@ -23,7 +22,7 @@ angular.module('customSearch.group.condition.directive', [
 
         $scope.data = $scope.controllerService.groupsConditionsGet($scope.groupIndex, $scope.conditionIndex);
 
-        var getAutocompleteItems = function () {
+        var $getItems = function () {
           return ContentFactory.all($scope.data.field)
             .getList({search: $scope.writables.searchTerm})
             .then(function (items) {
@@ -40,11 +39,9 @@ angular.module('customSearch.group.condition.directive', [
             });
         };
 
-        var autocomplete = new BulbsAutocomplete(getAutocompleteItems);
-
         $scope.updateAutocomplete = function () {
           if ($scope.writables.searchTerm) {
-            autocomplete.$retrieve().then(function (results) {
+            $getItems().then(function (results) {
               $scope.autocompleteItems = results;
             });
           }

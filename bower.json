@@ -17,7 +17,6 @@
     "bootstrap": "~3.1.1",
     "angularfire": "~0.8.2",
     "font-awesome": "~4.1.0",
-    "nprogress": "rstacruz/nprogress#5dcb61e0bc0b2754613a3555974d1589313ae25a",
     "angular-bootstrap": "~0.11.0",
     "raven-js": "1.1.11",
     "moment": "~2.6.0",
@@ -33,9 +32,10 @@
     "firebase": "1.0.21",
     "zeroclipboard": "~2.1.6",
     "ng-clip": "~0.2.4",
-    "bulbs-autocomplete": "~0.1.4",
+    "bulbs-autocomplete": "~0.2.1",
     "angular-uuid4": "~0.3.0",
-    "angular-ui-sortable": "~0.13.3"
+    "angular-ui-sortable": "~0.13.3",
+    "angular-restmod": "~1.1.8"
   },
   "resolutions": {
     "zeroclipboard": "2.2.0",

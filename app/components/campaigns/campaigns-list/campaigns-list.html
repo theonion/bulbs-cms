@@ -1,0 +1,64 @@
+<div ng-if="$campaigns.length > 0">
+  <table class="table table-striped list-page-table">
+    <thead>
+      <tr>
+        <td>Campaign</td>
+        <td>Sponsor</td>
+        <td>Start Date</td>
+        <td>End Date</td>
+  <!--TODO: Campaign Progress-->
+        <!--td>Progress</td-->
+        <td>Tools</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="campaign in $campaigns">
+        <td>{{ campaign.campaignLabel }}</td>
+        <td>{{ campaign.sponsorName }}</td>
+        <td>{{ campaign.startDate | momentFormatter : 'MM/DD/YY' }}</td>
+        <td>{{ campaign.endDate | momentFormatter : 'MM/DD/YY' }}</td>
+  <!--TODO: Campaign Progress-->
+        <!--td>PROGRESS</td-->
+        <td>
+          <a href="/cms/app/campaigns/edit/{{ campaign.id }}/">
+            <button class="btn btn-xs btn-info">
+              <i class="glyphicon glyphicon-pencil"></i>
+            </button>
+          </a>
+          <button
+              class="btn btn-xs btn-danger"
+              confirmation-modal-opener
+              modal-body="Are you sure you want to delete this campaign?"
+              modal-title="Delete '{{ campaign.campaignLabel }}'"
+              modal-ok-text="Delete"
+              modal-on-ok="$removeCampaign(campaign)">
+            <i class="glyphicon glyphicon-remove"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <pagination
+      boundary-links="true"
+      ng-change="$retrieveCampaigns()"
+      ng-model="$campaigns.$page"
+      max-size="10"
+      total-items="$campaigns.$totalCount"
+      previous-text="&lsaquo;"
+      next-text="&rsaquo;"
+      first-text="&laquo;"
+      last-text="&raquo;">
+  </pagination>
+</div>
+
+<div class="text-primary no-items-message" ng-if="$campaigns.length === 0">
+  No campaigns, click "Add Campaign" below to add the first one!
+</div>
+
+<button
+    class="btn btn-primary"
+    ng-click="$addCampaign()">
+  <i class="glyphicon glyphicon-plus"></i>
+  Add Campaign
+</button>

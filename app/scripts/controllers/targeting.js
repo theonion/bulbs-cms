@@ -1,12 +1,8 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('TargetingCtrl', function ($scope, $http, $window, $q, $location, tar_options, NProgress, routes) {
+  .controller('TargetingCtrl', function ($scope, $http, $window, $q, $location, tar_options, routes) {
     $window.document.title = routes.CMS_NAMESPACE + ' | Targeting Editor';
-
-    NProgress.configure({
-      minimum: 0.4
-    });
 
     var canceller;
     $scope.search = function (url) {
@@ -16,11 +12,8 @@ angular.module('bulbsCmsApp')
         canceller = $q.defer();
       } else {
         canceller.resolve();
-        NProgress.set(0);
         canceller = $q.defer();
       }
-
-      NProgress.start();
 
       $http({
         method: 'GET',
@@ -32,12 +25,10 @@ angular.module('bulbsCmsApp')
         for (var k in data) {
           $scope.targetingArray.push([k, data[k]]);
         }
-        NProgress.done();
       }).error(function (data, status, headers, config) {
         if (status === 404) {
           $scope.targetingArray = [];
           $scope.targetingArray.push(['', '']);
-          NProgress.done();
         }
       });
     };

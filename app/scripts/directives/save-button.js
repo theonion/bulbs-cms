@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('saveButton', function ($q, $timeout, $window, NProgress, routes) {
+  .directive('saveButtonOld', function ($q, $timeout, $window, routes) {
     return {
       replace: true,
       restrict: 'E',
@@ -26,17 +26,12 @@ angular.module('bulbsCmsApp')
           }
         });
 
-        NProgress.configure({
-          minimum: 0.4
-        });
-
         scope.save = function () {
           if (attrs.confirmClickWith) {
             var message = attrs.confirmClickWith;
             if (!$window.confirm(message)) { return; }
           }
 
-          NProgress.start();
           scope.colors = scope.colors_tmp;
           element
             .prop('disabled', true)
@@ -45,7 +40,6 @@ angular.module('bulbsCmsApp')
           var save_promise = scope.getPromise();
 
           var saveSuccess = function (result) {
-            NProgress.done();
             scope.colors = scope.colors_tmp;
             element
               .prop('disabled', false)
@@ -64,7 +58,6 @@ angular.module('bulbsCmsApp')
             .then(saveSuccess)
             .catch(
               function (reason) {
-                NProgress.done();
                 scope.colors = 'btn-danger';
                 element
                   .prop('disabled', false)

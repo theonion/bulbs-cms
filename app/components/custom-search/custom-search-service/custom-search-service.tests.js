@@ -42,7 +42,7 @@ describe('Service: CustomSearchService', function () {
       var groups = customSearchService.groupsList();
       expect(groups.length).toBe(1);
       expect(groups[0]).toBe(data);
-      expect(newGroup.result_count).toBe(0);
+      expect(newGroup.$result_count).toBe(0);
       expect(newGroup).toEqual(data);
     });
 
@@ -199,7 +199,14 @@ describe('Service: CustomSearchService', function () {
     var id = 1;
 
     it('should provide functionality to execute a search', function () {
-      var data = {results: []};
+      var responseData = {results: []};
+      var addProps = {
+        preview: true,
+        page: customSearchService.$page,
+        query: customSearchService.$query
+      };
+
+      data.includedIds = [1,2,3];
 
       spyOn(customSearchService, '_$getContent').andCallThrough();
 
@@ -211,38 +218,38 @@ describe('Service: CustomSearchService', function () {
       // force tick to fire debounce
       jasmine.Clock.tick(1);
 
-      $httpBackend.expectPOST('/cms/api/v1/custom-search-content/').respond(data);
+      $httpBackend.expectPOST('/cms/api/v1/custom-search-content/').respond(responseData);
       $httpBackend.flush();
 
-      expect(customSearchService._$getContent).toHaveBeenCalled();
-      expect(customSearchService.content.something).toBe(data.something);
+      expect(customSearchService._$getContent).toHaveBeenCalledWith(_.assign(addProps, data));
+      expect(customSearchService.content.something).toBe(responseData.something);
     });
 
     it('should provide a function to filter content by excluded', function () {
-      customSearchService._data.excluded_ids = [1,2,3];
-      customSearchService._data.included_ids = [5,6,7];
+      customSearchService._data.excludedIds = [1,2,3];
+      customSearchService._data.includedIds = [5,6,7];
 
       spyOn(customSearchService, '_$getContent');
 
       customSearchService.$filterContentByExcluded();
 
       expect(customSearchService._$getContent).toHaveBeenCalledWith({
-        included_ids: customSearchService._data.excluded_ids,
+        includedIds: customSearchService._data.excludedIds,
         page: 1,
         query: ''
       });
     });
 
     it('should provide a function to filter content by included', function () {
-      customSearchService._data.excluded_ids = [1,2,3];
-      customSearchService._data.included_ids = [5,6,7];
+      customSearchService._data.excludedIds = [1,2,3];
+      customSearchService._data.includedIds = [5,6,7];
 
       spyOn(customSearchService, '_$getContent');
 
       customSearchService.$filterContentByIncluded();
 
       expect(customSearchService._$getContent).toHaveBeenCalledWith({
-        included_ids: customSearchService._data.included_ids,
+        includedIds: customSearchService._data.includedIds,
         page: 1,
         query: ''
       });
@@ -256,7 +263,7 @@ describe('Service: CustomSearchService', function () {
       });
 
       it('should provide a way to uninclude content', function () {
-        customSearchService._data.included_ids.push(id);
+        customSearchService._data.includedIds.push(id);
 
         customSearchService.includesRemove(id);
 
@@ -264,13 +271,13 @@ describe('Service: CustomSearchService', function () {
       });
 
       it('should provide a way to check if content is included', function () {
-        customSearchService._data.included_ids.push(id);
+        customSearchService._data.includedIds.push(id);
 
         expect(customSearchService.includesHas(id)).toBe(true);
       });
 
       it('should ensure included content is not excluded', function () {
-        customSearchService._data.excluded_ids.push(id);
+        customSearchService._data.excludedIds.push(id);
 
         customSearchService.includesAdd(id);
 
@@ -293,7 +300,7 @@ describe('Service: CustomSearchService', function () {
       });
 
       it('should provide a way to unexclude content', function () {
-        customSearchService._data.excluded_ids.push(id);
+        customSearchService._data.excludedIds.push(id);
 
         customSearchService.excludesRemove(id);
 
@@ -301,14 +308,14 @@ describe('Service: CustomSearchService', function () {
       });
 
       it('should provide a way to check if content is excluded', function () {
-        customSearchService._data.excluded_ids.push(id);
+        customSearchService._data.excludedIds.push(id);
 
         expect(customSearchService.excludesHas(id)).toBe(true);
       });
 
       it('should ensure excluded content is not pinned or included', function () {
-        customSearchService._data.pinned_ids.push(id);
-        customSearchService._data.included_ids.push(id);
+        customSearchService._data.pinnedIds.push(id);
+        customSearchService._data.includedIds.push(id);
 
         customSearchService.excludesAdd(id);
 
@@ -332,7 +339,7 @@ describe('Service: CustomSearchService', function () {
       });
 
       it('should provide a way to unpin content', function () {
-        customSearchService._data.pinned_ids.push(id);
+        customSearchService._data.pinnedIds.push(id);
 
         customSearchService.pinsRemove(id);
 
@@ -340,13 +347,13 @@ describe('Service: CustomSearchService', function () {
       });
 
       it('should provide a way to check if content is pinned', function () {
-        customSearchService._data.pinned_ids.push(id);
+        customSearchService._data.pinnedIds.push(id);
 
         expect(customSearchService.pinsHas(id)).toBe(true);
       });
 
       it('should ensure pinned content is not excluded', function () {
-        customSearchService._data.excluded_ids.push(id);
+        customSearchService._data.excludedIds.push(id);
 
         customSearchService.pinsAdd(id);
 
