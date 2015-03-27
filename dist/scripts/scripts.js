@@ -3471,7 +3471,9 @@ angular.module('apiServices.styles', [
 
       $hooks: {
         'before-request': function (_req) {
-          _req.url += '/';
+          if (!_req.url.match(/\/\?/)) {
+            _req.url += '/';
+          }
         },
         'before-fetch-many': function (_req) {
           // add paging parameter here based on collection's $page property
@@ -3612,7 +3614,13 @@ angular.module('apiServices.customSearch.factory', [
   .factory('CustomSearch', function (_, restmod, CustomSearchCount, CustomSearchGroupCount,
       CustomSearchSettings) {
 
-    var CustomSearch = restmod.model(CustomSearchSettings.searchEndpoint);
+    var CustomSearch = restmod.model(CustomSearchSettings.searchEndpoint).mix({
+      $hooks: {
+        'before-save': function (_req) {
+          _req.url += '/?page=' + _req.data.page;
+        }
+      }
+    });
 
     return {
       $retrieveResultCount: CustomSearchCount.$retrieveResultCount,
