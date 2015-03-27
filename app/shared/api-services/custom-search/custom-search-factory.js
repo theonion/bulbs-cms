@@ -12,7 +12,13 @@ angular.module('apiServices.customSearch.factory', [
   .factory('CustomSearch', function (_, restmod, CustomSearchCount, CustomSearchGroupCount,
       CustomSearchSettings) {
 
-    var CustomSearch = restmod.model(CustomSearchSettings.searchEndpoint);
+    var CustomSearch = restmod.model(CustomSearchSettings.searchEndpoint).mix({
+      $hooks: {
+        'before-save': function (_req) {
+          _req.url += '/?page=' + _req.data.page;
+        }
+      }
+    });
 
     return {
       $retrieveResultCount: CustomSearchCount.$retrieveResultCount,

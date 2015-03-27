@@ -6,7 +6,7 @@ angular.module('bulbsCmsApp.mockApi.customSearch', [
   .run(['$httpBackend', 'mockApiData',
   function ($httpBackend, mockApiData) {
     // custom search content endpoint
-    $httpBackend.whenPOST('/cms/api/v1/custom-search-content/').respond(function () {
+    $httpBackend.whenPOST(/\/cms\/api\/v1\/custom-search-content\/(\?page=\d+)?$/).respond(function () {
       return [200, {
         count: Math.floor(Math.random() * 1000),
         results: mockApiData['content.list'].results
