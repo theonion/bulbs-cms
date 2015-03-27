@@ -484,3 +484,34 @@ nav.navbar {
   color: #999;
   text-transform: uppercase;
 }
+
+table.list-page-table {
+  thead {
+    font-weight: bold;
+
+    td {
+      background-color: #555;
+      border-left: 1px solid #ccc;
+      color: #fff;
+
+      &:first-of-type {
+        border-left: none;
+      }
+    }
+  }
+
+  tbody {
+
+    tr > td {
+      border-left: 1px solid #ccc;
+
+      &:first-of-type {
+        border-left: none;
+      }
+
+      a:hover {
+        text-decoration: none;
+      }
+    }
+  }
+}

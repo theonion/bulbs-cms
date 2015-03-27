@@ -5,21 +5,17 @@ angular.module('customSearch.directive', [
   'customSearch.contentItem',
   'customSearch.service',
   'customSearch.simpleContentSearch',
-  'customSearch.query'
+  'customSearch.group'
 ])
   .directive('customSearch', function (routes) {
     return {
-      controller: function ($scope, CustomSearchService) {
-        $scope.customSearchService = new CustomSearchService($scope.searchQueryData);
+      controller: function (_, $scope, CustomSearchService) {
 
-        $scope.customSearchService.$retrieveContent();
-
-        $scope.addedFilterOn = false;
-        $scope.removedFilterOn = false;
+        $scope.customSearchService = new CustomSearchService();
 
         $scope.resetFilters = function () {
-          $scope.customSearchService.page = 1;
-          $scope.customSearchService.query = '';
+          $scope.customSearchService.setPage(1);
+          $scope.customSearchService.setQuery('');
           $scope.addedFilterOn = false;
           $scope.removedFilterOn = false;
         };
@@ -36,10 +32,24 @@ angular.module('customSearch.directive', [
             $scope.customSearchService.$retrieveContent();
           }
         };
+
+        $scope.$contentRetrieve = function () {
+          $scope.customSearchService.$retrieveContent();
+          $scope.onUpdate();
+        };
       },
+      link: function(scope, iElement, iAttrs, ngModelCtrl) {
+
+        ngModelCtrl.$formatters.push(function (modelValue) {
+          scope.customSearchService.data(modelValue);
+          scope.customSearchService.$retrieveContent();
+        });
+
+      },
+      require: 'ngModel',
       restrict: 'E',
       scope: {
-        searchQueryData: '='
+        onUpdate: '&'
       },
       templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search.html'
     };

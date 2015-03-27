@@ -1,0 +1,23 @@
+<button
+    class="btn"
+    ng-init="state = STATES.DONE"
+    ng-class="{
+      '{{ cssBtnClassComplete || 'btn-success' }}': state === STATES.DONE,
+      '{{ cssBtnClassProgress || 'btn-info' }}': state === STATES.PROGRESS,
+      '{{ cssBtnClassError || 'btn-danger' }}': state === STATES.ERROR
+    }"
+    ng-click="doClick()"
+    ng-disabled="disableWhen() === true || state === STATES.PROGRESS">
+  <span ng-if="state === STATES.ERROR">
+    <i class="glyphicon glyphicon-remove"></i>
+    {{ textError || 'Error' }}
+  </span>
+  <span ng-if="state === STATES.PROGRESS">
+    <i class="glyphicon glyphicon-refresh fa-spin"></i>
+    {{ textProgress || 'In Progress...' }}
+  </span>
+  <span ng-if="state === STATES.DONE">
+    <i class="glyphicon {{ cssIconComplete || 'glyphicon-ok' }}"></i>
+    {{ textComplete || 'Complete' }}
+  </span>
+</button>

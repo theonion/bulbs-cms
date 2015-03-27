@@ -1,0 +1,26 @@
+<div class="modal-header">
+  <button
+      type="button"
+      class="close"
+      ng-click="cancel()">
+    &times;
+  </button>
+  <h4 class="modal-title">{{ modalTitle || 'Confirm' }}</h4>
+</div>
+<div class="modal-body">
+  {{ modalBody || 'Are you sure?' }}
+</div>
+<div class="modal-footer">
+  <button
+      class="btn btn-success"
+      ng-click="confirm()">
+    <i class="glyphicon glyphicon-ok"></i>
+    {{ modalOkText || 'Done' }}
+  </button>
+  <button
+      class="btn btn-danger"
+      ng-click="cancel()">
+    <i class="glyphicon glyphicon-remove"></i>
+    {{ modalCancelText || 'Cancel' }}
+  </button>
+</div>

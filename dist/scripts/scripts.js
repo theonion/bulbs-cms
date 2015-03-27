@@ -223,7 +223,6 @@ $(document).unbind('keydown').bind('keydown', function (event) {
 // ****** External Libraries ****** \\
 
 angular.module('lodash', []).constant('_', window._);
-angular.module('NProgress', []).constant('NProgress', window.NProgress);
 angular.module('URLify', []).constant('URLify', window.URLify);
 angular.module('jquery', []).constant('$', window.$);
 angular.module('moment', []).constant('moment', window.moment);
@@ -245,7 +244,6 @@ angular.module('bulbsCmsApp', [
   'BettyCropper',
   'jquery',
   'lodash',
-  'NProgress',
   'URLify',
   'moment',
   'PNotify',
@@ -258,10 +256,13 @@ angular.module('bulbsCmsApp', [
   // shared
   'contentServices',
   // components
+  'campaigns',
   'filterWidget',
   'promotedContent',
   'statusFilter',
-  'templateTypeField'
+  'templateTypeField',
+  'specialCoverage',
+  'sections'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
@@ -725,13 +726,297 @@ angular.module('bulbs.api')
 
 'use strict';
 
+angular.module('autocompleteBasic', [
+  'BulbsAutocomplete',
+  'BulbsAutocomplete.suggest',
+  'bulbsCmsApp.settings'
+])
+  .directive('autocompleteBasic', function (routes) {
+    return {
+      controller: function (_, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS) {
+        $scope.writables = {
+          searchTerm: ''
+        };
+
+        $scope.$watch('inputInitValue', function () {
+          $scope.writables.searchTerm = $scope.inputInitValue;
+        });
+
+        $scope.autocompleteItems = [];
+
+        var $getItems = function () {
+          return $scope.searchFunction($scope.writables.searchTerm)
+            .then(function (data) {
+              return _.map(data, function (item) {
+                return {
+                  name: $scope.itemDisplayFormatter({item: item}),
+                  value: item
+                };
+              });
+            });
+        };
+
+        $scope.updateAutocomplete = function () {
+          if ($scope.writables.searchTerm) {
+            $getItems().then(function (results) {
+              $scope.autocompleteItems = results;
+            });
+          }
+        };
+
+        $scope.delayClearAutocomplete = function () {
+          _.delay(function () {
+            $scope.clearAutocomplete();
+            $scope.$digest();
+          }, 200);
+        };
+
+        $scope.clearAutocomplete = function () {
+          if (!$scope.inputUseSelectionAsValue()) {
+            $scope.writables.searchTerm = '';
+          }
+          $scope.autocompleteItems = [];
+        };
+
+        $scope.handleKeypress = function ($event) {
+          if ($event.keyCode === 27) {
+            // esc, close dropdown
+            $scope.clearAutocomplete();
+          } else if ($event.keyCode === 40 && _.isEmpty($scope.autocompleteItems)) {
+              // down key and no items in autocomplete, redo search
+              $scope.updateAutocomplete();
+          } else {
+            $scope.$broadcast(BULBS_AUTOCOMPLETE_EVENT_KEYPRESS, $event);
+          }
+        };
+
+        $scope.handleSelect = function (selection) {
+          if (selection && $scope.inputUseSelectionAsValue()) {
+            $scope.writables.searchTerm = selection.name;
+            $scope.clearAutocomplete();
+          }
+
+          $scope.onSelect({selection: selection});
+        };
+      },
+      restrict: 'E',
+      scope: {
+        hideSearchIcon: '&',
+        inputId: '@',
+        inputInitValue: '@',
+        inputPlaceholder: '@',
+        inputUseSelectionAsValue: '&',
+        itemDisplayFormatter: '&',
+        onSelect: '&',
+        searchFunction: '='
+      },
+      templateUrl: routes.COMPONENTS_URL + 'autocomplete-basic/autocomplete-basic.html'
+    };
+  });
+
+'use strict';
+
+angular.module('campaigns.edit.sponsorPixel.directive', [
+]).constant('PIXEL_TYPES', [
+    {
+      name: 'Logo',
+      value: 'Logo'
+    }
+    // TODO: Add more types (once added to API)
+    //{
+    //  name: 'Detail',
+    //  value: 'Detail'
+    //},
+  ])
+  .directive('campaignsEditSponsorPixel', function (routes) {
+    return {
+      controller: function($scope, PIXEL_TYPES) {
+        $scope.PIXEL_TYPES = PIXEL_TYPES;
+      },
+      restrict: 'E',
+      scope: {
+        model: '='
+      },
+      templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-edit/campaigns-edit-sponsor-pixel/campaigns-edit-sponsor-pixel.html'
+    };
+  });
+
+'use strict';
+
+angular.module('campaigns.edit.sponsorPixel', [
+  'campaigns.edit.sponsorPixel.directive'
+]);
+
+'use strict';
+
+angular.module('campaigns.edit', [
+  'BettyCropper',
+  'campaigns.edit.sponsorPixel',
+  'apiServices.campaign.factory',
+  'topBar'
+])
+  .config(function ($routeProvider, routes) {
+    $routeProvider
+    .when('/cms/app/campaigns/edit/:id/', {
+      controller: function ($location, $routeParams, $q, $scope, $window, _, Campaign) {
+        // set title
+        $window.document.title = routes.CMS_NAMESPACE + ' | Edit Campaign';
+
+        // populate model for use
+        if ($routeParams.id === 'new') {
+          $scope.model = Campaign.$build();
+          $scope.isNew = true;
+        } else {
+          $scope.model = Campaign.$find($routeParams.id);
+        }
+
+        $scope.addPixel = function () {
+          var pixel = {
+            url: '',
+            campaign_type: ''
+          };
+          $scope.model.pixels.push(pixel);
+        };
+
+        $scope.deletePixel = function (pixel) {
+          $scope.model.pixels = _.without($scope.model.pixels, pixel);
+        };
+
+        // set up save state function
+        $scope.saveModel = function () {
+          var promise;
+
+          if ($scope.model) {
+            // have model, use save promise as deferred
+            promise = $scope.model.$save().$asPromise().then(function (data) {
+              $location.path('/cms/app/campaigns/edit/' + data.id + '/');
+            });
+          } else {
+            // no model, this is an error, defer and reject
+            var deferred = $q.defer();
+            deferred.reject();
+            promise = deferred.promise;
+          }
+
+          return promise;
+        };
+      },
+      templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-edit/campaigns-edit.html',
+      reloadOnSearch: false
+    });
+  });
+
+'use strict';
+
+angular.module('campaigns.list.directive', [
+  'bulbsCmsApp.settings',
+  'confirmationModal',
+  'apiServices.campaign.factory',
+  'momentFormatterFilter',
+  'ui.bootstrap.pagination'
+])
+  .directive('campaignsList', function (routes) {
+    return {
+      controller: function ($scope, $location, Campaign) {
+
+        $scope.$campaigns = Campaign.$collection();
+        $scope.$retrieveCampaigns = function () {
+          $scope.$campaigns.$refresh();
+        };
+
+        $scope.$addCampaign = function () {
+          $location.path('/cms/app/campaigns/edit/new/');
+        };
+
+        $scope.$removeCampaign = function (campaign) {
+          campaign.$destroy();
+        };
+
+        $scope.$retrieveCampaigns();
+      },
+      restrict: 'E',
+      scope: {},
+      templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-list/campaigns-list.html'
+    };
+  });
+
+'use strict';
+
+angular.module('campaigns.list', [
+  'bulbsCmsApp.settings',
+  'campaigns.list.directive'
+])
+.config(function ($routeProvider, routes) {
+  $routeProvider
+  .when('/cms/app/campaigns/', {
+    controller: function ($window) {
+      // set title
+      $window.document.title = routes.CMS_NAMESPACE + ' | Campaign';
+    },
+    templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-list/campaigns-list-page.html',
+    reloadOnSearch: false
+  });
+});
+
+'use strict';
+
+angular.module('campaigns', [
+  'campaigns.edit',
+  'campaigns.list'
+]);
+
+'use strict';
+
+angular.module('confirmationModal', [
+  'bulbsCmsApp.settings',
+  'ui.bootstrap.modal'
+])
+  .directive('confirmationModalOpener', function ($modal, routes) {
+    return {
+      restrict: 'A',
+      scope: {
+        modalBody: '@',
+        modalCancelText: '@',
+        modalOkText: '@',
+        modalOnCancel: '&',
+        modalOnOk: '&',
+        modalTitle: '@'
+      },
+      link: function (scope, element) {
+        var modalInstance = null;
+        element.addClass('confirmation-modal-opener');
+        element.on('click', function () {
+          modalInstance = $modal
+            .open({
+              controller: function ($scope, $modalInstance) {
+                $scope.confirm = function () {
+                  $scope.$close();
+                  $scope.modalOnOk();
+                };
+
+                $scope.cancel = function () {
+                  $scope.$dismiss();
+                  $scope.modalOnCancel();
+                };
+              },
+              scope: scope,
+              templateUrl: routes.COMPONENTS_URL + 'confirmation-modal/confirmation-modal.html'
+            });
+        });
+      }
+    };
+  });
+
+'use strict';
+
 angular.module('customSearch.contentItem.directive', [])
   .directive('customSearchContentItem', function (routes) {
     return {
       restrict: 'E',
       scope: {
         model: '=',
-        modifierService: '='
+        controllerService: '=',
+        onUpdate: '&'
       },
       templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search-content-item/custom-search-content-item.html'
     };
@@ -750,21 +1035,17 @@ angular.module('customSearch.directive', [
   'customSearch.contentItem',
   'customSearch.service',
   'customSearch.simpleContentSearch',
-  'customSearch.query'
+  'customSearch.group'
 ])
   .directive('customSearch', function (routes) {
     return {
-      controller: function ($scope, CustomSearchService) {
-        $scope.customSearchService = new CustomSearchService($scope.searchQueryData);
+      controller: function (_, $scope, CustomSearchService) {
 
-        $scope.customSearchService.$retrieveContent();
-
-        $scope.addedFilterOn = false;
-        $scope.removedFilterOn = false;
+        $scope.customSearchService = new CustomSearchService();
 
         $scope.resetFilters = function () {
-          $scope.customSearchService.page = 1;
-          $scope.customSearchService.query = '';
+          $scope.customSearchService.setPage(1);
+          $scope.customSearchService.setQuery('');
           $scope.addedFilterOn = false;
           $scope.removedFilterOn = false;
         };
@@ -781,10 +1062,24 @@ angular.module('customSearch.directive', [
             $scope.customSearchService.$retrieveContent();
           }
         };
+
+        $scope.$contentRetrieve = function () {
+          $scope.customSearchService.$retrieveContent();
+          $scope.onUpdate();
+        };
       },
+      link: function(scope, iElement, iAttrs, ngModelCtrl) {
+
+        ngModelCtrl.$formatters.push(function (modelValue) {
+          scope.customSearchService.data(modelValue);
+          scope.customSearchService.$retrieveContent();
+        });
+
+      },
+      require: 'ngModel',
       restrict: 'E',
       scope: {
-        searchQueryData: '='
+        onUpdate: '&'
       },
       templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search.html'
     };
@@ -792,18 +1087,16 @@ angular.module('customSearch.directive', [
 
 'use strict';
 
-angular.module('customSearch.query.condition.directive', [
+angular.module('customSearch.group.condition.directive', [
   'contentServices.factory',
   'customSearch.settings',
-  'customSearch.service.condition.factory',
   'BulbsAutocomplete',
   'BulbsAutocomplete.suggest'
 ])
-  .directive('customSearchQueryCondition', function (routes) {
+  .directive('customSearchGroupCondition', function (routes) {
     return {
       controller: function (_, $q, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS,
-          BulbsAutocomplete, ContentFactory, CUSTOM_SEARCH_CONDITION_FIELDS,
-          CUSTOM_SEARCH_CONDITION_TYPES) {
+          ContentFactory, CUSTOM_SEARCH_CONDITION_FIELDS, CUSTOM_SEARCH_CONDITION_TYPES) {
 
         $scope.conditionTypes = CUSTOM_SEARCH_CONDITION_TYPES;
         $scope.fieldTypes = CUSTOM_SEARCH_CONDITION_FIELDS;
@@ -814,12 +1107,14 @@ angular.module('customSearch.query.condition.directive', [
 
         $scope.autocompleteItems = [];
 
-        var getAutocompleteItems = function () {
-          return ContentFactory.all($scope.model.field)
+        $scope.data = $scope.controllerService.groupsConditionsGet($scope.groupIndex, $scope.conditionIndex);
+
+        var $getItems = function () {
+          return ContentFactory.all($scope.data.field)
             .getList({search: $scope.writables.searchTerm})
             .then(function (items) {
               var field = _.find($scope.fieldTypes, function (type) {
-                return type.endpoint === $scope.model.field;
+                return type.endpoint === $scope.data.field;
               });
 
               return _.map(items, function (item) {
@@ -831,11 +1126,9 @@ angular.module('customSearch.query.condition.directive', [
             });
         };
 
-        var autocomplete = new BulbsAutocomplete(getAutocompleteItems);
-
         $scope.updateAutocomplete = function () {
           if ($scope.writables.searchTerm) {
-            autocomplete.$retrieve().then(function (results) {
+            $getItems().then(function (results) {
               $scope.autocompleteItems = results;
             });
           }
@@ -864,315 +1157,325 @@ angular.module('customSearch.query.condition.directive', [
       },
       restrict: 'E',
       scope: {
-        model: '=',
+        controllerService: '=',
+        groupIndex: '=',
+        conditionIndex: '=',
         onUpdate: '&',
         remove: '&'
       },
-      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search-query/custom-search-query-condition/custom-search-query-condition.html'
+      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search-group/custom-search-group-condition/custom-search-group-condition.html'
     };
   });
 
 'use strict';
 
-angular.module('customSearch.query.condition', [
-  'customSearch.query.condition.directive'
+angular.module('customSearch.group.condition', [
+  'customSearch.group.condition.directive'
 ]);
 
 'use strict';
 
-angular.module('customSearch.query.directive', [
+angular.module('customSearch.group.directive', [
   'customSearch.settings',
-  'customSearch.query.condition',
   'uuid4'
 ])
-  .directive('customSearchQuery', function (routes) {
+  .directive('customSearchGroup', function (routes) {
     return {
       controller: function ($scope, CUSTOM_SEARCH_TIME_PERIODS, uuid4) {
+        $scope.data = $scope.controllerService.groupsGet($scope.groupIndex);
         $scope.timePeriods = CUSTOM_SEARCH_TIME_PERIODS;
-
         $scope.uuid = uuid4.generate();
+
+        $scope.$update = function () {
+          $scope.controllerService.$groupsUpdateResultCountFor($scope.groupIndex).then(function () {
+            $scope.onUpdate();
+          });
+        };
+
+        $scope.controllerService.$groupsUpdateResultCountFor($scope.groupIndex);
       },
       restrict: 'E',
       scope: {
-        model: '=',
+        controllerService: '=',
+        groupIndex: '=',
         remove: '&',
         onUpdate: '&'
       },
-      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search-query/custom-search-query.html'
+      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search-group/custom-search-group.html'
     };
   });
 
 'use strict';
 
-angular.module('customSearch.query', [
-  'customSearch.query.directive',
-  'customSearch.query.condition'
+angular.module('customSearch.group', [
+  'customSearch.group.directive',
+  'customSearch.group.condition'
 ]);
-
-'use strict';
-
-angular.module('customSearch.service.condition.factory', [
-  'customSearch.settings'
-])
-  .factory('CustomSearchServiceCondition', function (_, CUSTOM_SEARCH_CONDITION_FIELDS,
-      CUSTOM_SEARCH_CONDITION_TYPES) {
-
-    var CustomSearchServiceCondition = function (params) {
-      var opts = params || {};
-
-      this.field = opts.field || CUSTOM_SEARCH_CONDITION_FIELDS[0].endpoint;
-      this.type = opts.type || CUSTOM_SEARCH_CONDITION_TYPES[0].value;
-
-      this.values = [];
-      if (opts.values) {
-        // values provided, build them out
-        var self = this;
-        _.forEach(opts.values, function (value) {
-          self.addValue(value);
-        });
-      }
-    };
-
-    CustomSearchServiceCondition.prototype.asQueryData = function () {
-      return _.pick(this, ['field', 'type', 'values']);
-    };
-
-    CustomSearchServiceCondition.prototype.addValue = function (value) {
-      var matches = _.find(this.values, function (existingValue) {
-        return existingValue.name === value.name && existingValue.value === value.value;
-      });
-
-      if (!matches) {
-        this.values.push(value);
-      }
-    };
-
-    CustomSearchServiceCondition.prototype.removeValue = function (index) {
-      return this.values.splice(index, 1).length > 0;
-    };
-
-    CustomSearchServiceCondition.prototype.clearAllValues = function () {
-      this.values = [];
-    };
-
-    return CustomSearchServiceCondition;
-  });
-
-'use strict';
-
-angular.module('customSearch.service.query.factory', [
-  'customSearch.settings',
-  'customSearch.service.condition.factory'
-])
-  .factory('CustomSearchServiceQuery', function (_, $q, ContentFactory,
-      CustomSearchServiceCondition, CUSTOM_SEARCH_TIME_PERIODS) {
-
-    var CustomSearchServiceQuery = function (params) {
-      var opts = params || {};
-
-      this.conditions = opts.conditions || [];
-      this.result_count = opts.result_count || 0;
-      this.time = opts.time || null;
-
-      this.conditions = [];
-      if (opts.conditions) {
-        // build out conditions if they were provided
-        var self = this;
-        _.forEach(opts.conditions, function (condition) {
-          self.newCondition(condition);
-        });
-      }
-
-      this._countEndpoint = ContentFactory.service('custom-search-content/count/');
-    };
-
-    CustomSearchServiceQuery.prototype.asQueryData = function () {
-      return {
-        conditions: _.map(this.conditions, function (condition) {
-          return condition.asQueryData();
-        }),
-        time: this.time ? this.time : null
-      };
-    };
-
-    CustomSearchServiceQuery.prototype.$updateResultCount = function () {
-      var self = this;
-      return self._countEndpoint.post(self.asQueryData())
-        .then(function (data) {
-          self.result_count = data.count;
-        });
-    };
-
-    CustomSearchServiceQuery.prototype.addTimePeriod = function () {
-      this.time = CUSTOM_SEARCH_TIME_PERIODS[0].value;
-      return this.time;
-    };
-
-    CustomSearchServiceQuery.prototype.removeTimePeriod = function () {
-      this.time = null;
-    };
-
-    CustomSearchServiceQuery.prototype.newCondition = function (params) {
-      var newCondition = new CustomSearchServiceCondition(params);
-      this.conditions.push(newCondition);
-      return newCondition;
-    };
-
-    CustomSearchServiceQuery.prototype.removeCondition = function (index) {
-      return this.conditions.splice(index, 1).length > 0;
-    };
-
-    return CustomSearchServiceQuery;
-  });
 
 'use strict';
 
 angular.module('customSearch.service', [
   'customSearch.settings',
-  'customSearch.service.query.factory'
+  'apiServices.customSearch.factory'
 ])
-  .factory('CustomSearchService', function (_, ContentFactory, CUSTOM_SEARCH_REQUEST_CAP_MS,
-      CustomSearchServiceQuery) {
+  .factory('CustomSearchService', function (_, CustomSearch, CUSTOM_SEARCH_CONDITION_FIELDS,
+      CUSTOM_SEARCH_CONDITION_TYPES, CUSTOM_SEARCH_REQUEST_CAP_MS, CUSTOM_SEARCH_TIME_PERIODS) {
+
+    var defaultData = {
+      groups: [],
+      includedIds: [],
+      excludedIds: [],
+      pinnedIds: []
+    };
 
     /**
      * Create custom search service.
      *
      * @returns service wrapper around given endpoint.
      */
-    var CustomSearchService = function (params) {
-      var opts = params || {};
+    var CustomSearchService = function (data) {
 
-      this.included_ids = opts.included_ids || [];
-      this.excluded_ids = opts.excluded_ids || [];
-      this.pinned_ids = opts.pinned_ids || [];
+      this.data(data);
 
-      this.page = opts.page || 1;
-      this.query = opts.query || '';
-
-      this.groups = [];
-      if (opts.groups) {
-        // build out groups if they were provided
-        var self = this;
-        _.forEach(opts.groups, function (group) {
-          self.newQuery(group);
-        });
-      }
+      this.$page = 1;
+      this.$query = '';
 
       this.content = {};
-
-      this._contentEndpoint = ContentFactory.service('custom-search-content/');
     };
 
-    CustomSearchService.prototype.asQueryData = function () {
-      return {
-        groups: _.map(this.groups, function (group) {
-          return group.asQueryData();
-        }),
-        included_ids: this.included_ids,
-        excluded_ids: this.excluded_ids,
-        pinned_ids: this.pinned_ids,
-        page: this.page,
-        query: this.query
-      };
+    CustomSearchService.prototype.data = function (data) {
+
+      if (_.isUndefined(data)) {
+        this._data = defaultData;
+      } else {
+        this._data = _.defaults(data, defaultData);
+      }
+
+      return this._data;
     };
 
     CustomSearchService.prototype._$getContent = _.debounce(function (queryData) {
       var self = this;
-      return self._contentEndpoint.post(queryData)
+      return CustomSearch.$retrieveContent(queryData)
         .then(function (data) {
           self.content = data;
         });
     }, CUSTOM_SEARCH_REQUEST_CAP_MS);
 
     CustomSearchService.prototype.$filterContentByIncluded = function () {
-      var contentQuery = _.pick(this.asQueryData(), [
-        'groups',
-        'included_ids',
-        'page',
-        'query'
-      ]);
+      var contentQuery = {
+        includedIds: this._data.includedIds,
+        page: this.$page,
+        query: this.$query
+      };
       return this._$getContent(contentQuery);
     };
 
     CustomSearchService.prototype.$filterContentByExcluded = function () {
-      var contentQuery = _.pick(this.asQueryData(), [
-        'groups',
-        'excluded_ids',
-        'page',
-        'query'
-      ]);
+      var contentQuery = {
+        includedIds: this._data.excludedIds,
+        page: this.$page,
+        query: this.$query
+      };
       return this._$getContent(contentQuery);
     };
 
     CustomSearchService.prototype.$retrieveContent = function () {
-      var contentQuery = _.cloneDeep(this.asQueryData());
+      var contentQuery = _.assign({
+        page: this.$page,
+        query: this.$query,
+        preview: true
+      }, this._data);
       return this._$getContent(contentQuery);
     };
 
-    CustomSearchService.prototype.newQuery = function (params) {
-      var newQuery = new CustomSearchServiceQuery(params);
-      this.groups.push(newQuery);
-      return newQuery;
+    CustomSearchService.prototype.$groupsUpdateResultCountFor = function (index) {
+      var self = this;
+      return (function (index) {
+        return CustomSearch.$retrieveGroupCount(self._data.groups[index])
+          .then(function (count) {
+            self._data.groups[index].$result_count = count;
+          });
+      })(index);
     };
 
-    CustomSearchService.prototype.removeQuery = function (index) {
-      return this.groups.splice(index, 1).length > 0;
+    CustomSearchService.prototype.groupsResultCountGet = function (index) {
+      return this._data.groups[index].$result_count || 0;
     };
 
-    CustomSearchService.prototype.clearAllQueries = function () {
-      this.groups = [];
+    CustomSearchService.prototype.groupsList = function () {
+      return this._data.groups;
     };
 
-    CustomSearchService.prototype.include = function (id) {
+    CustomSearchService.prototype.groupsAdd = function (data) {
+      if (_.isUndefined(data)) {
+        data = {};
+      }
+
+      data = _.defaults(data, {
+        conditions: [],
+        time: null,
+        $result_count: 0
+      });
+
+      this._data.groups.push(data);
+      return data;
+    };
+
+    CustomSearchService.prototype.groupsGet = function (index) {
+      return this._data.groups[index];
+    };
+
+    CustomSearchService.prototype.groupsRemove = function (index) {
+      return this._data.groups.splice(index, 1).length > 0;
+    };
+
+    CustomSearchService.prototype.groupsClear = function () {
+      this._data.groups = [];
+    };
+
+    CustomSearchService.prototype.groupsConditionsAdd = function (groupIndex, data) {
+      if (_.isUndefined(data)) {
+        data = {};
+      }
+
+      data = _.defaults(data, {
+        field: CUSTOM_SEARCH_CONDITION_FIELDS[0].endpoint,
+        type: CUSTOM_SEARCH_CONDITION_TYPES[0].value,
+        values: []
+      });
+
+      this._data.groups[groupIndex].conditions.push(data);
+      return data;
+    };
+
+    CustomSearchService.prototype.groupsConditionsGet = function (groupIndex, conditionIndex) {
+      return this._data.groups[groupIndex].conditions[conditionIndex];
+    };
+
+    CustomSearchService.prototype.groupsConditionsList = function (groupIndex) {
+      return this._data.groups[groupIndex].conditions;
+    };
+
+    CustomSearchService.prototype.groupsConditionsRemove = function (groupIndex, conditionIndex) {
+      return this._data.groups[groupIndex].conditions.splice(conditionIndex, 1).length > 0;
+    };
+
+    CustomSearchService.prototype.groupsTimePeriodSet = function (groupIndex) {
+      var value = CUSTOM_SEARCH_TIME_PERIODS[0].value;
+      this._data.groups[groupIndex].time = value;
+      return value;
+    };
+
+    CustomSearchService.prototype.groupsTimePeriodGet = function (groupIndex) {
+      return this._data.groups[groupIndex].time || null;
+    };
+
+    CustomSearchService.prototype.groupsTimePeriodRemove = function (groupIndex) {
+      this._data.groups[groupIndex].time = null;
+    };
+
+    CustomSearchService.prototype.groupsConditionsValuesAdd = function (groupIndex, conditionIndex, value) {
+      var values = this._data.groups[groupIndex].conditions[conditionIndex].values;
+      var matches = _.find(values, function (existingValue) {
+        return existingValue.name === value.name && existingValue.value === value.value;
+      });
+
+      if (!matches) {
+        values.push(value);
+      }
+    };
+
+    CustomSearchService.prototype.groupsConditionsValuesClear = function (groupIndex, conditionIndex) {
+      this._data.groups[groupIndex].conditions[conditionIndex].values = [];
+    };
+
+    CustomSearchService.prototype.groupsConditionsValuesList = function (groupIndex, conditionIndex) {
+      return this._data.groups[groupIndex].conditions[conditionIndex].values;
+    };
+
+    CustomSearchService.prototype.groupsConditionsValuesRemove = function (groupIndex, conditionIndex, valueIndex) {
+      return this._data.groups[groupIndex].conditions[conditionIndex].values.splice(valueIndex, 1).length > 0;
+    };
+
+    CustomSearchService.prototype.includesList = function () {
+      return this._data.includedIds;
+    };
+
+    CustomSearchService.prototype.includesAdd = function (id) {
       // add id, ensure uniqueness
-      this.included_ids.push(id);
-      this.included_ids = _.uniq(this.included_ids);
+      this._data.includedIds.push(id);
+      this._data.includedIds = _.uniq(this._data.includedIds);
 
       // remove from exclude list
-      this.unexclude(id);
+      this.excludesRemove(id);
     };
 
-    CustomSearchService.prototype.uninclude = function (id) {
-      this.included_ids = _.without(this.included_ids, id);
+    CustomSearchService.prototype.includesRemove = function (id) {
+      this._data.includedIds = _.without(this._data.includedIds, id);
     };
 
-    CustomSearchService.prototype.isIncluded = function (id) {
-      return _.includes(this.included_ids, id);
+    CustomSearchService.prototype.includesHas = function (id) {
+      return _.includes(this._data.includedIds, id);
     };
 
-    CustomSearchService.prototype.exclude = function (id) {
+    CustomSearchService.prototype.excludesList = function () {
+      return this._data.excludedIds;
+    };
+
+    CustomSearchService.prototype.excludesAdd = function (id) {
       // exclude id, ensure unqiueness
-      this.excluded_ids.push(id);
-      this.excluded_ids = _.uniq(this.excluded_ids);
+      this._data.excludedIds.push(id);
+      this._data.excludedIds = _.uniq(this._data.excludedIds);
 
       // remove from include list and pinned list
-      this.uninclude(id);
-      this.unpin(id);
+      this.includesRemove(id);
+      this.pinsRemove(id);
     };
 
-    CustomSearchService.prototype.unexclude = function (id) {
-      this.excluded_ids = _.without(this.excluded_ids, id);
+    CustomSearchService.prototype.excludesRemove = function (id) {
+      this._data.excludedIds = _.without(this._data.excludedIds, id);
     };
 
-    CustomSearchService.prototype.isExcluded = function (id) {
-      return _.includes(this.excluded_ids, id);
+    CustomSearchService.prototype.excludesHas = function (id) {
+      return _.includes(this._data.excludedIds, id);
     };
 
-    CustomSearchService.prototype.pin = function (id) {
+    CustomSearchService.prototype.pinsList = function () {
+      return this._data.pinnedIds;
+    };
+
+    CustomSearchService.prototype.pinsAdd = function (id) {
       // pin id, ensure unqiueness
-      this.pinned_ids.push(id);
-      this.pinned_ids = _.uniq(this.pinned_ids);
+      this._data.pinnedIds.push(id);
+      this._data.pinnedIds = _.uniq(this._data.pinnedIds);
 
       // remove from exclude list
-      this.unexclude(id);
+      this.excludesRemove(id);
     };
 
-    CustomSearchService.prototype.unpin = function (id) {
-      this.pinned_ids = _.without(this.pinned_ids, id);
+    CustomSearchService.prototype.pinsRemove = function (id) {
+      this._data.pinnedIds = _.without(this._data.pinnedIds, id);
     };
 
-    CustomSearchService.prototype.isPinned = function (id) {
-      return _.includes(this.pinned_ids, id);
+    CustomSearchService.prototype.pinsHas = function (id) {
+      return _.includes(this._data.pinnedIds, id);
+    };
+
+    CustomSearchService.prototype.getPage = function () {
+      return this.$page;
+    };
+
+    CustomSearchService.prototype.setPage = function (page) {
+      this.$page = page;
+    };
+
+    CustomSearchService.prototype.getQuery = function () {
+      return this.$query;
+    };
+
+    CustomSearchService.prototype.setQuery = function (query) {
+      this.$query = query;
     };
 
     return CustomSearchService;
@@ -1230,7 +1533,7 @@ angular.module('customSearch.simpleContentSearch.directive', [
 ])
   .directive('customSearchSimpleContentSearch', function (routes) {
     return {
-      controller: function (_, $scope, BulbsAutocomplete, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS,
+      controller: function (_, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS,
           ContentFactory) {
 
         $scope.writables = {
@@ -1239,24 +1542,25 @@ angular.module('customSearch.simpleContentSearch.directive', [
 
         $scope.autocompleteItems = [];
 
-        var getAutocompleteItems = function () {
+        var $getItems = function () {
           return ContentFactory.all('content')
             .getList({search: $scope.writables.searchTerm})
             .then(function (results) {
-              return _.map(results, function (item) {
-                return {
-                  name: 'ID: ' + item.id + ' | ' + item.title,
-                  value: item.id
-                };
+              return _.chain(results)
+                .take(10)
+                .map(function (item) {
+                  return {
+                    name: 'ID: ' + item.id + ' | ' + item.title,
+                    value: item.id
+                  };
+                })
+                .value();
               });
-            });
         };
-
-        var autocomplete = new BulbsAutocomplete(getAutocompleteItems);
 
         $scope.updateAutocomplete = function () {
           if ($scope.writables.searchTerm) {
-            autocomplete.$retrieve().then(function (results) {
+            $getItems().then(function (results) {
               $scope.autocompleteItems = results;
             });
           }
@@ -1303,6 +1607,59 @@ angular.module('customSearch', [
   'bulbsCmsApp.settings',
   'customSearch.directive'
 ]);
+
+'use strict';
+
+angular.module('EditorsPick', [
+  'customSearch'
+])
+  .config(function ($routeProvider, routes) {
+    $routeProvider
+      .when('/cms/app/sod/', {
+        controller: function ($scope, $window) {
+          // set title
+          $window.document.title = routes.CMS_NAMESPACE + ' | SoD';
+
+          $scope.$watch('queryData', function () { console.log(arguments); });
+
+          $scope.queryData = {};
+          $scope.updateQueryData = function () {
+            $scope.queryData = {
+              groups: [{
+                conditions: [{
+                  field: 'content-type',
+                  type: 'all',
+                  values: [{
+                    name: 'for display',
+                    value: 'actually-use-this-value-123'
+                  }]
+                }],
+                time: '1 day'
+              }],
+              included_ids: [1],
+              excluded_ids: [2],
+              pinned_ids: [3],
+              page: 1,
+  	          query: 'query balh blah blahb'
+            };
+          };
+
+          $scope.updateConditionData = function () {
+            $scope.queryData.groups[0].conditions = [{
+              field: 'content-type',
+              type: 'all',
+              values: [{
+                name: 'ANOTHER THIGN',
+                value: 'actually-use-this-value-123'
+              }]
+            }];
+          };
+
+        },
+        templateUrl: routes.COMPONENTS_URL + 'editors-pick/editors-pick.html',
+        reloadOnSearch: false
+      });
+  });
 
 'use strict';
 
@@ -1517,6 +1874,86 @@ angular.module('filterWidget.directive', [
 angular.module('filterWidget', [
   'filterWidget.directive'
 ]);
+
+'use strict';
+
+angular.module('genericAjaxButton.controller', [])
+  .controller('GenericAjaxButtonController', function ($scope) {
+    $scope.STATES = {
+      DONE: 'done',
+      PROGRESS: 'in-progress',
+      ERROR: 'error'
+    };
+    $scope.doClick = function () {
+      $scope.state = $scope.STATES.PROGRESS;
+      $scope.clickFunction()
+        .then(function () {
+          $scope.state = $scope.STATES.DONE;
+        })
+        .catch(function () {
+          $scope.state = $scope.STATES.ERROR;
+        });
+    };
+  });
+
+'use strict';
+
+/**
+ * Highly customizable four state ajax button. Useful for buttons which require
+ *  different displays for disabled/action/progress/complete states.
+ */
+angular.module('genericAjaxButton.directive', [
+  'bulbsCmsApp.settings',
+  'genericAjaxButton.controller'
+])
+  .directive('genericAjaxButton', function (routes) {
+    return {
+      controller: 'GenericAjaxButtonController',
+      restrict: 'E',
+      scope: {
+        disableWhen: '&',
+        clickFunction: '=',
+        cssBtnClassComplete: '@',
+        cssBtnClassError: '@',
+        cssBtnClassProgress: '@',
+        cssIconComplete: '@',
+        textError: '@',
+        textProgress: '@',
+        textComplete: '@'
+      },
+      templateUrl: routes.COMPONENTS_URL + 'generic-ajax-button/generic-ajax-button.html'
+    };
+  });
+
+'use strict';
+
+angular.module('genericAjaxButton', [
+  'genericAjaxButton.directive'
+]);
+
+'use strict';
+
+angular.module('saveButton.directive', [
+  'genericAjaxButton'
+])
+  .directive('saveButton', function (routes) {
+    return {
+      controller: 'GenericAjaxButtonController',
+      link: {
+        pre: function (scope) {
+          scope.cssIconComplete = 'glyphicon-floppy-disk';
+          scope.textProgress = 'Saving...';
+          scope.textComplete = 'Save';
+        }
+      },
+      restrict: 'E',
+      scope: {
+        disableWhen: '&',
+        clickFunction: '=',
+      },
+      templateUrl: routes.COMPONENTS_URL + 'generic-ajax-button/generic-ajax-button.html'
+    };
+  });
 
 'use strict';
 
@@ -2438,6 +2875,401 @@ angular.module('promotedContent', [
 
 'use strict';
 
+angular.module('sections.edit.directive', [
+  'apiServices.section.factory',
+  'BettyCropper',
+  'bulbsCmsApp.settings',
+  'customSearch',
+  'saveButton.directive',
+  'topBar'
+])
+  .directive('sectionsEdit', function (routes) {
+    return {
+      controller: function ($location, $q, $scope, EXTERNAL_URL, Section) {
+        $scope.EXTERNAL_URL = EXTERNAL_URL;
+
+        $scope.needsSave = false;
+
+        var modelId = $scope.getModelId();
+        if (modelId === 'new') {
+          // this is a new section, build it
+          $scope.model = Section.$build();
+          $scope.isNew = true;
+        } else {
+          // this is an existing special coverage, find it
+          $scope.model = Section.$find($scope.getModelId());
+        }
+
+        $scope.saveModel = function () {
+          var promise;
+
+          if ($scope.model) {
+            // have model, use save promise as deferred
+            promise = $scope.model.$save().$asPromise().then(function (data) {
+              if (modelId === 'new') {
+                $location.path('/cms/app/section/edit/' + data.id + '/');
+              }
+              $scope.isNew = false;
+              $scope.needsSave = false;
+            });
+          } else {
+            // no model, this is an error, defer and reject
+            var deferred = $q.defer();
+            deferred.reject();
+            promise = deferred.promise;
+          }
+
+          return promise;
+        };
+      },
+      restrict: 'E',
+      scope: {
+        getModelId: '&modelId'
+      },
+      templateUrl: routes.COMPONENTS_URL + 'sections/sections-edit/sections-edit.html'
+    };
+  });
+
+'use strict';
+
+angular.module('sections.edit', [
+  'sections.edit.directive'
+])
+  .config(function ($routeProvider, routes) {
+    $routeProvider
+      .when('/cms/app/section/edit/:id/', {
+        controller: function ($routeParams, $scope, $window) {
+          // set title
+          $window.document.title = routes.CMS_NAMESPACE + ' | Edit Section';
+
+          $scope.routeId = $routeParams.id;
+        },
+        templateUrl: routes.COMPONENTS_URL + 'sections/sections-edit/sections-edit-page.html',
+        reloadOnSearch: false
+      });
+  });
+
+'use strict';
+
+angular.module('sections.list.directive', [
+  'bulbsCmsApp.settings',
+  'confirmationModal',
+  'apiServices.section.factory'
+])
+  .directive('sectionsList', function (routes) {
+    return {
+      controller: function ($scope, $location, Section) {
+
+        $scope.$list = Section.$collection();
+        $scope.$retrieve = function () {
+          $scope.$list.$refresh();
+        };
+
+        $scope.$add = function () {
+          $location.path('/cms/app/section/edit/new/');
+        };
+
+        $scope.$remove = function (item) {
+          item.$destroy();
+        };
+
+        $scope.$retrieve();
+      },
+      restrict: 'E',
+      scope: {},
+      templateUrl: routes.COMPONENTS_URL + 'sections/sections-list/sections-list.html'
+    };
+  });
+
+'use strict';
+
+angular.module('sections.list', [
+  'sections.list.directive'
+])
+  .config(function ($routeProvider, routes) {
+    $routeProvider
+      .when('/cms/app/section/', {
+        controller: function ($scope, $window) {
+          // set title
+          $window.document.title = routes.CMS_NAMESPACE + ' | Section';
+        },
+        templateUrl: routes.COMPONENTS_URL + 'sections/sections-list/sections-list-page.html',
+        reloadOnSearch: false
+      });
+  });
+
+'use strict';
+
+angular.module('sections', [
+  'sections.list',
+  'sections.edit'
+]);
+
+'use strict';
+
+angular.module('specialCoverage.edit.directive', [
+  'apiServices.specialCoverage.factory',
+  'autocompleteBasic',
+  'bulbsCmsApp.settings',
+  'apiServices.campaign.factory',
+  'customSearch',
+  'specialCoverage.edit.videos.directive',
+  'topBar',
+  'ui.bootstrap.tooltip'
+])
+  .directive('specialCoverageEdit', function (routes) {
+    return {
+      controller: function ($location, $q, $scope, EXTERNAL_URL, SpecialCoverage, Campaign) {
+        $scope.ACTIVE_STATES = SpecialCoverage.ACTIVE_STATES;
+        $scope.EXTERNAL_URL = EXTERNAL_URL;
+
+        $scope.needsSave = false;
+
+        var modelId = $scope.getModelId();
+        if (modelId === 'new') {
+          // this is a new special coverage, build it
+          $scope.model = SpecialCoverage.$build();
+          $scope.isNew = true;
+        } else {
+          // this is an existing special coverage, find it
+          $scope.model = SpecialCoverage.$find($scope.getModelId());
+        }
+
+        $scope.saveModel = function () {
+          var promise;
+
+          if ($scope.model) {
+            // have model, use save promise as deferred
+            promise = $scope.model.$save().$asPromise().then(function (data) {
+              if (modelId === 'new') {
+                $location.path('/cms/app/special-coverage/edit/' + data.id + '/');
+              }
+              $scope.isNew = false;
+              $scope.needsSave = false;
+            });
+          } else {
+            // no model, this is an error, defer and reject
+            var deferred = $q.defer();
+            deferred.reject();
+            promise = deferred.promise;
+          }
+
+          return promise;
+        };
+
+        $scope.searchCampaigns = function (searchTerm) {
+          return Campaign.simpleSearch(searchTerm);
+        };
+      },
+      restrict: 'E',
+      scope: {
+        getModelId: '&modelId'
+      },
+      templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit.html'
+    };
+  });
+
+'use strict';
+
+angular.module('specialCoverage.edit.videos.directive', [
+  'apiServices.video.factory',
+  'BulbsAutocomplete',
+  'BulbsAutocomplete.suggest',
+  'specialCoverage.edit.videos.video.directive',
+  'ui.sortable'
+])
+  .directive('specialCoverageEditVideos', function (routes) {
+    return {
+      controller: function (_, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS, Video) {
+
+        $scope.writables = {
+          searchTerm: ''
+        };
+
+        $scope.autocompleteItems = [];
+
+        /**
+         * Content moving function.
+         *
+         * @param {Number} indexFrom - Index to move content from.
+         * @param {Number} indexTo - Index to move content to.
+         * @returns {Boolean} true if content moved, false otherwise.
+         */
+        var moveTo = function (indexFrom, indexTo) {
+          var ret = false;
+          var videos = $scope.videos;
+          if (indexFrom >= 0 && indexFrom < videos.length &&
+              indexTo >= 0 && indexTo < videos.length) {
+            var splicer = videos.splice(indexFrom, 1, videos[indexTo]);
+            if (splicer.length > 0) {
+              videos[indexTo] = splicer[0];
+              ret = true;
+            }
+          }
+          return ret;
+        };
+// TODO : make this autcomplete-basic
+        var $getItems = function () {
+          return Video.searchVideoHub($scope.writables.searchTerm)
+            .then(function (data) {
+              return _.map(data.results, function (video) {
+                return {
+                  name: 'ID: ' + video.id + ' | ' + video.name,
+                  value: video
+                };
+              });
+            });
+        };
+
+        $scope.moveUp = function (index) {
+          moveTo(index, index - 1);
+        };
+
+        $scope.moveDown = function (index) {
+          moveTo(index, index + 1);
+        };
+
+        $scope.delete = function (index) {
+// TODO : fill this in
+        };
+
+        $scope.addVideo = function (video) {
+// TODO : fill this in
+        };
+
+        $scope.updateAutocomplete = function () {
+          if ($scope.writables.searchTerm) {
+            $getItems().then(function (results) {
+              $scope.autocompleteItems = results;
+            });
+          }
+        };
+
+        $scope.delayClearAutocomplete = function () {
+          _.delay(function () {
+            $scope.clearAutocomplete();
+            $scope.$digest();
+          }, 200);
+        };
+
+        $scope.clearAutocomplete = function () {
+          $scope.writables.searchTerm = '';
+          $scope.autocompleteItems = [];
+        };
+
+        $scope.handleKeypress = function ($event) {
+          if ($event.keyCode === 27) {
+            // esc, close dropdown
+            $scope.clearAutocomplete();
+          } else {
+            $scope.$broadcast(BULBS_AUTOCOMPLETE_EVENT_KEYPRESS, $event);
+          }
+        };
+      },
+      link: function (scope, iElement, iAttrs, ngModelCtrl) {
+        ngModelCtrl.$formatters.push(function (modelValue) {
+          scope.videos = modelValue;
+        });
+      },
+      require: 'ngModel',
+      restrict: 'E',
+      scope: {},
+      templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit-videos/special-coverage-edit-videos.html'
+    };
+  });
+
+'use strict';
+
+angular.module('specialCoverage.edit.videos.video.directive', [
+  'bulbsCmsApp.settings'
+])
+  .directive('specialCoverageEditVideosVideo', function (routes) {
+    return {
+      restrict: 'E',
+      scope: {
+        model: '='
+      },
+      templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit-videos/special-coverage-edit-videos-video/special-coverage-edit-videos-video.html'
+    };
+  });
+
+'use strict';
+
+angular.module('specialCoverage.edit', [
+  'specialCoverage.edit.directive'
+])
+  .config(function ($routeProvider, routes) {
+    $routeProvider
+      .when('/cms/app/special-coverage/edit/:id/', {
+        controller: function ($routeParams, $scope, $window) {
+          // set title
+          $window.document.title = routes.CMS_NAMESPACE + ' | Edit Special Coverage';
+
+          $scope.routeId = $routeParams.id;
+        },
+        templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit-page.html',
+        reloadOnSearch: false
+      });
+  });
+
+'use strict';
+
+angular.module('specialCoverage.list.directive', [
+  'bulbsCmsApp.settings',
+  'confirmationModal',
+  'apiServices.specialCoverage.factory'
+])
+  .directive('specialCoverageList', function (routes) {
+    return {
+      controller: function ($scope, $location, SpecialCoverage) {
+
+        $scope.$list = SpecialCoverage.$collection();
+        $scope.$retrieve = function () {
+          $scope.$list.$refresh();
+        };
+
+        $scope.$add = function () {
+          $location.path('/cms/app/special-coverage/edit/new/');
+        };
+
+        $scope.$remove = function (item) {
+          item.$destroy();
+        };
+
+        $scope.$retrieve();
+      },
+      restrict: 'E',
+      scope: {},
+      templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-list/special-coverage-list.html'
+    };
+  });
+
+'use strict';
+
+angular.module('specialCoverage.list', [
+  'specialCoverage.list.directive'
+])
+  .config(function ($routeProvider, routes) {
+    $routeProvider
+      .when('/cms/app/special-coverage/', {
+        controller: function ($scope, $window) {
+          // set title
+          $window.document.title = routes.CMS_NAMESPACE + ' | Special Coverage';
+        },
+        templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-list/special-coverage-list-page.html',
+        reloadOnSearch: false
+      });
+  });
+
+'use strict';
+
+angular.module('specialCoverage', [
+  'specialCoverage.list',
+  'specialCoverage.edit'
+]);
+
+'use strict';
+
 angular.module('statusFilter.directive', [
   'bulbsCmsApp.settings',
   'contentServices.listService'
@@ -2559,6 +3391,453 @@ angular.module('templateTypeField', [
 
 'use strict';
 
+/**
+ * Renders a topbar template based on a given path relative to "/components/".
+ */
+angular.module('topBar.directive', [])
+  .directive('topBar', function (routes) {
+    return {
+      restrict: 'E',
+      scope: {
+        logoHref: '@',
+        itemsDropdownTitle: '@',
+        itemsDropdown: '=',
+        itemsTop: '=',
+        saveFunction: '=',
+        saveDisableWhen: '&'
+      },
+      templateUrl: routes.COMPONENTS_URL + 'top-bar/top-bar-base.html',
+      link: function (scope) {
+        scope.NAV_LOGO = routes.NAV_LOGO;
+      }
+    };
+  });
+
+'use strict';
+
+angular.module('topBar.item.factory', [])
+  .factory('TopBarItem', function () {
+
+    var TopBarItem = function (params) {
+      this.displayText = params.displayText || '';
+      this.displayIconClasses = params.displayIconClasses || '';
+      this.containerClasses = params.containerClasses || '';
+      this.clickFunction = params.clickFunction || function () {};
+    };
+
+    return TopBarItem;
+  });
+
+'use strict';
+
+angular.module('topBar', [
+  'topBar.directive',
+  'topBar.item.factory'
+]);
+
+'use strict';
+
+angular.module('apiServices.styles', [
+  'lodash',
+  'restmod'
+])
+  .factory('DjangoDRFPagedApi', function (_, restmod, inflector) {
+    var singleRoot = 'root';
+    var manyRoot = 'results';
+
+    return restmod.mixin('DefaultPacker', {
+      $config: {
+        style: 'DjangoDRFPagedApi',
+        primaryKey: 'id',
+        jsonMeta: '.',
+        jsonLinks: '.',
+        jsonRootMany: manyRoot,
+        jsonRootSingle: singleRoot
+      },
+
+      $extend: {
+        Collection: {
+          $page: 1,
+          $totalCount: 0
+        },
+
+        // special snakecase to camelcase renaming
+        Model: {
+          decodeName: inflector.camelize,
+          encodeName: function(_v) { return inflector.parameterize(_v, '_'); },
+          encodeUrlName: inflector.parameterize
+        }
+      },
+
+      $hooks: {
+        'before-request': function (_req) {
+          _req.url += '/';
+        },
+        'before-fetch-many': function (_req) {
+          // add paging parameter here based on collection's $page property
+          if (_.isUndefined(_req.params)) {
+            _req.params = {};
+          }
+          _req.params.page = this.$page || 1;
+        },
+        'after-request': function (_req) {
+          // check that response has data we need
+          if (!_.isUndefined(_req.data) && _.isUndefined(_req.data[manyRoot])) {
+            // a dirty hack so we don't have to copy/modify the DefaultPacker:
+            // this is not a collection, make it so the single root is accessible by the packer
+            var newData = {};
+            newData[singleRoot] = _req.data;
+            _req.data = newData;
+          }
+        },
+        'after-fetch-many': function (_req) {
+          this.$totalCount = _req.data.count;
+        }
+      }
+    });
+  });
+
+'use strict';
+
+angular.module('apiServices', [
+  'restmod',
+  'apiServices.styles'
+])
+  .constant('API_URL_ROOT', '/cms/api/v1/')
+  .config(function (API_URL_ROOT, restmodProvider) {
+    restmodProvider.rebase('DjangoDRFPagedApi', {
+      $config: {
+        style: 'BulbsApi',
+        urlPrefix: API_URL_ROOT
+      }
+    });
+  });
+
+'use strict';
+
+angular.module('apiServices.campaign.factory', [
+  'apiServices',
+  'moment'
+])
+  .filter('date_string_to_moment', function(moment) {
+    return function (dateStr) {
+      // Try to parse non-empty strings
+      if (dateStr && dateStr.length) {
+        var m = moment(dateStr);
+        if (m.isValid()) {
+          return m;
+        }
+      }
+      return null;
+    };
+  })
+  .filter('moment_to_date_string', function(moment) {
+    return function (momentObj) {
+      if (moment.isMoment(momentObj) && momentObj.isValid()) {
+        return momentObj.format();
+      } else {
+        // Blank time string == not set
+        return '';
+      }
+    };
+  })
+  .factory('Campaign', function (restmod) {
+    return restmod.model('campaign').mix('NestedDirtyModel', {
+      $config: {
+        name: 'Campaign',
+        primaryKey: 'id'
+      },
+
+      pixels: {
+        init: [],
+      },
+
+      end_date: {
+        encode: 'moment_to_date_string',
+      },
+      start_date: {
+        encode: 'moment_to_date_string',
+      },
+
+      endDate: {
+        decode: 'date_string_to_moment',
+      },
+      startDate: {
+        decode: 'date_string_to_moment'
+      },
+
+      $extend: {
+        Model: {
+          simpleSearch: function (searchTerm) {
+            return this.$search({search: searchTerm, ordering: 'campaign_label'}).$asPromise();
+          }
+        }
+      }
+    });
+  });
+
+'use strict';
+
+angular.module('apiServices.customSearch.count.factory', [
+  'apiServices',
+  'apiServices.customSearch.settings'
+])
+  .factory('CustomSearchCount', function (_, CustomSearchSettings, restmod) {
+
+    var Count = restmod.model(CustomSearchSettings.countEndpoint).mix({
+      count: 0
+    });
+
+    return {
+      $retrieveResultCount: function (query) {
+        return Count.$create(query).$asPromise()
+          .then(function (model) {
+            return model.$response.data.root.count;
+          });
+      }
+    };
+  });
+
+'use strict';
+
+/**
+ * Wrapper functions for custom search endpoints.
+ */
+angular.module('apiServices.customSearch.factory', [
+  'apiServices',
+  'apiServices.customSearch.count.factory',
+  'apiServices.customSearch.groupCount.factory',
+  'apiServices.customSearch.settings'
+])
+  .factory('CustomSearch', function (_, restmod, CustomSearchCount, CustomSearchGroupCount,
+      CustomSearchSettings) {
+
+    var CustomSearch = restmod.model(CustomSearchSettings.searchEndpoint);
+
+    return {
+      $retrieveResultCount: CustomSearchCount.$retrieveResultCount,
+      $retrieveGroupCount: CustomSearchGroupCount.$retrieveResultCount,
+      $retrieveContent: function (query) {
+        return CustomSearch.$create(query).$asPromise()
+          .then(function (model) {
+            return model.$response.data;
+          });
+      }
+    };
+  });
+
+'use strict';
+
+angular.module('apiServices.customSearch.groupCount.factory', [
+  'apiServices',
+  'apiServices.customSearch.settings'
+])
+  .factory('CustomSearchGroupCount', function (_, CustomSearchSettings, restmod) {
+
+    var Count = restmod.model(CustomSearchSettings.groupCountEndpoint).mix({
+      count: 0
+    });
+
+    return {
+      $retrieveResultCount: function (query) {
+        return Count.$create(query).$asPromise()
+          .then(function (model) {
+            return model.$response.data.root.count;
+          });
+      }
+    };
+  });
+
+'use strict';
+
+angular.module('apiServices.customSearch.settings', [])
+  .constant('CUSTOM_SEARCH_ENDPOINT', 'custom-search-content')
+  .constant('CUSTOM_SEARCH_REL_COUNT_ENDPOINT', 'count')
+  .constant('CUSTOM_SEARCH_REL_GROUP_COUNT_ENDPOINT', 'group_count')
+  .service('CustomSearchSettings', function (CUSTOM_SEARCH_ENDPOINT,
+      CUSTOM_SEARCH_REL_COUNT_ENDPOINT, CUSTOM_SEARCH_REL_GROUP_COUNT_ENDPOINT) {
+
+    return {
+      searchEndpoint: CUSTOM_SEARCH_ENDPOINT,
+      groupCountEndpoint: CUSTOM_SEARCH_ENDPOINT + '/' + CUSTOM_SEARCH_REL_GROUP_COUNT_ENDPOINT,
+      countEndpoint: CUSTOM_SEARCH_ENDPOINT + '/' + CUSTOM_SEARCH_REL_COUNT_ENDPOINT
+    };
+  });
+
+'use strict';
+
+angular.module('apiServices.section.factory', [
+  'apiServices',
+  'apiServices.customSearch.count.factory'
+])
+  .factory('Section', function (_, CustomSearchCount, restmod) {
+    var sectionEndpoint = 'section';
+
+    return restmod.model(sectionEndpoint).mix('NestedDirtyModel', {
+      $config: {
+        name: 'Section',
+        plural: 'Sections',
+        primaryKey: 'id'
+      },
+      query: {
+        init: {}
+      },
+      $hooks: {
+        'after-fetch': function () {
+          this.$refreshResultCount();
+        },
+        'after-fetch-many': function () {
+          _.each(this, function (record) {
+            record.$refreshResultCount();
+          });
+        }
+      },
+      $extend: {
+        Record: {
+          /**
+           * Getter for section content count.
+           *
+           * @returns {String} section content count.
+           */
+          $refreshResultCount: function () {
+            var record = this;
+            return CustomSearchCount.$retrieveResultCount(this.query)
+              .then(function (count) {
+                record.$resultCount = count;
+              });
+          }
+        }
+      },
+    });
+  });
+
+'use strict';
+
+angular.module('apiServices.specialCoverage.factory', [
+  'apiServices',
+  'apiServices.campaign.factory',
+  'apiServices.video.factory'
+])
+  .factory('SpecialCoverage', function (_, restmod) {
+    var ACTIVE_STATES = {
+      INACTIVE: 'Inactive',
+      ACTIVE: 'Active',
+      PROMOTED: 'Pin to HP'
+    };
+
+    return restmod.model('special-coverage').mix('NestedDirtyModel', {
+      $config: {
+        name: 'SpecialCoverage',
+        primaryKey: 'id'
+      },
+      campaign: {
+        belongsTo: 'Campaign',
+        prefetch: true,
+        key: 'campaign'
+      },
+      listUrl: {
+        mask: 'CU'
+      },
+      query: {
+        init: {}
+      },
+      videos: {
+// TODO : use model when video in place
+        // hasMany: 'Video'
+        init: []
+      },
+      $extend: {
+        Record: {
+          /**
+           * Getter/setter for active state, a front end standin for the active
+           *  and promoted flags.
+           *
+           * @param {String} [activeState] - set this value when using as setter.
+           * @returns {String} current activeState.
+           */
+          $activeState: function (activeState) {
+            if (_.isString(activeState)) {
+              if (activeState === ACTIVE_STATES.ACTIVE) {
+                this.active = true;
+                this.promoted = false;
+              } else if (activeState === ACTIVE_STATES.PROMOTED) {
+                this.active = true;
+                this.promoted = true;
+              } else {
+                this.active = false;
+                this.promoted = false;
+              }
+            } else {
+              activeState = ACTIVE_STATES.INACTIVE;
+              if (this.active && this.promoted) {
+                activeState = ACTIVE_STATES.PROMOTED;
+              } else if (this.active) {
+                activeState = ACTIVE_STATES.ACTIVE;
+              }
+            }
+            return activeState;
+          }
+        },
+        Model: {
+          ACTIVE_STATES: _.clone(ACTIVE_STATES)
+        }
+      },
+    });
+  });
+
+'use strict';
+
+angular.module('apiServices.video.factory', [
+  'apiServices'
+])
+  .value('VIDEOHUB_CHANNEL', 'onion')
+  .factory('Video', function (_, restmod, VIDEOHUB_CHANNEL) {
+    var singleRoot = 'root';
+    var videohubEndpoint = 'videohub-video';
+
+    var search = restmod.model(videohubEndpoint + '/search_hub').mix({
+      $config: {
+        jsonRootSingle: singleRoot
+      },
+      results: {
+        hasMany: 'Video'
+      },
+      $hooks: {
+        'after-request': function (_req) {
+          // another dirty hack so we don't have to modify DefaultPicker
+          var newData = {};
+          newData[singleRoot] = _req.data;
+          _req.data = newData;
+        }
+      }
+    });
+
+    var video = restmod.model(videohubEndpoint).mix({
+      $config: {
+        name: 'Video',
+        primaryKey: 'id'
+      },
+      $extend: {
+        Model: {
+          searchVideoHub: function (query) {
+            return search
+              .$create({
+                query: query,
+                filters: {
+                  channel: VIDEOHUB_CHANNEL
+                }
+              })
+              .$asPromise();
+          }
+        }
+      }
+    });
+
+    return video;
+  });
+
+'use strict';
+
 angular.module('contentServices.factory', [])
   .factory('ContentFactory', function (Restangular, contentApiConfig) {
     return Restangular.withConfig(function (RestangularConfigurer) {
@@ -2638,6 +3917,56 @@ angular.module('contentServices', [
   'contentServices.factory',
   'contentServices.listService'
 ]);
+
+'use strict';
+
+angular.module('momentFormatterFilter', ['moment'])
+  // Used for HTML formatting. Date can be any valid moment constructor.
+  .filter('momentFormatter', function(moment) {
+    return function(date, format) {
+      var m = moment(date);
+      if (m.isValid()) {
+        return m.format(format);
+      } else {
+        return '';
+      }
+    };
+  });
+
+'use strict';
+
+angular.module('slugify', [])
+  .filter('slugify', function () {
+
+    return function (text) {
+      // https://gist.github.com/mathewbyrne/1280286
+      return text.toString().toLowerCase()
+        .replace(/\s+/g, '-')           // Replace spaces with -
+        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+        .replace(/^-+/, '')             // Trim - from start of text
+        .replace(/-+$/, '');            // Trim - from end of text
+    };
+  });
+
+'use strict';
+
+angular.module('utils', [])
+  .service('utils.Slugs', function () {
+    var Slugs = this;
+
+    this.slugify = function (text) {
+      // https://gist.github.com/mathewbyrne/1280286
+      return text.toString().toLowerCase()
+        .replace(/\s+/g, '-')           // Replace spaces with -
+        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+        .replace(/^-+/, '')             // Trim - from start of text
+        .replace(/-+$/, '');            // Trim - from end of text
+    };
+
+    return Slugs;
+  });
 
 'use strict';
 
@@ -3640,7 +4969,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('saveButton', function ($q, $timeout, $window, NProgress, routes) {
+  .directive('saveButtonOld', function ($q, $timeout, $window, routes) {
     return {
       replace: true,
       restrict: 'E',
@@ -3665,17 +4994,12 @@ angular.module('bulbsCmsApp')
           }
         });
 
-        NProgress.configure({
-          minimum: 0.4
-        });
-
         scope.save = function () {
           if (attrs.confirmClickWith) {
             var message = attrs.confirmClickWith;
             if (!$window.confirm(message)) { return; }
           }
 
-          NProgress.start();
           scope.colors = scope.colors_tmp;
           element
             .prop('disabled', true)
@@ -3684,7 +5008,6 @@ angular.module('bulbsCmsApp')
           var save_promise = scope.getPromise();
 
           var saveSuccess = function (result) {
-            NProgress.done();
             scope.colors = scope.colors_tmp;
             element
               .prop('disabled', false)
@@ -3703,7 +5026,6 @@ angular.module('bulbsCmsApp')
             .then(saveSuccess)
             .catch(
               function (reason) {
-                NProgress.done();
                 scope.colors = 'btn-danger';
                 element
                   .prop('disabled', false)
@@ -5788,12 +7110,8 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('TargetingCtrl', function ($scope, $http, $window, $q, $location, tar_options, NProgress, routes) {
+  .controller('TargetingCtrl', function ($scope, $http, $window, $q, $location, tar_options, routes) {
     $window.document.title = routes.CMS_NAMESPACE + ' | Targeting Editor';
-
-    NProgress.configure({
-      minimum: 0.4
-    });
 
     var canceller;
     $scope.search = function (url) {
@@ -5803,11 +7121,8 @@ angular.module('bulbsCmsApp')
         canceller = $q.defer();
       } else {
         canceller.resolve();
-        NProgress.set(0);
         canceller = $q.defer();
       }
-
-      NProgress.start();
 
       $http({
         method: 'GET',
@@ -5819,12 +7134,10 @@ angular.module('bulbsCmsApp')
         for (var k in data) {
           $scope.targetingArray.push([k, data[k]]);
         }
-        NProgress.done();
       }).error(function (data, status, headers, config) {
         if (status === 404) {
           $scope.targetingArray = [];
           $scope.targetingArray.push(['', '']);
-          NProgress.done();
         }
       });
     };

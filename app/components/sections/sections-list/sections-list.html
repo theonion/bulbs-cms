@@ -1,0 +1,56 @@
+<div ng-if="$list.length > 0">
+  <table class="table table-striped list-page-table">
+    <thead>
+      <tr>
+        <td>Section Name</td>
+        <td>Article Count</td>
+        <td>Tools</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="item in $list">
+        <td>{{ item.name }}</td>
+        <td>{{ item.$resultCount }}</td>
+        <td>
+          <a href="/cms/app/section/edit/{{ item.id }}/">
+            <button class="btn btn-xs btn-info">
+              <i class="glyphicon glyphicon-pencil"></i>
+            </button>
+          </a>
+          <button
+              class="btn btn-xs btn-danger"
+              confirmation-modal-opener
+              modal-body="Are you sure you want to delete this section?"
+              modal-title="Delete '{{ item.name }}'"
+              modal-ok-text="Delete"
+              modal-on-ok="$remove(item)">
+            <i class="glyphicon glyphicon-remove"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <pagination
+      boundary-links="true"
+      ng-change="$retrieve()"
+      ng-model="$list.$page"
+      max-size="10"
+      total-items="$list.$totalCount"
+      previous-text="&lsaquo;"
+      next-text="&rsaquo;"
+      first-text="&laquo;"
+      last-text="&raquo;">
+  </pagination>
+</div>
+
+<div class="text-primary no-items-message" ng-if="$list.length === 0">
+  No section, click "Add Section" below to add the first one!
+</div>
+
+<button
+    class="btn btn-primary"
+    ng-click="$add()">
+  <i class="glyphicon glyphicon-plus"></i>
+  Add Section
+</button>

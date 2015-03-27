@@ -1,0 +1,21 @@
+<label>
+  <i
+      class="glyphicon glyphicon-search"
+      ng-if="!hideSearchIcon()">
+  </i>
+  <input
+      id="{{ inputId }}"
+      placeholder="{{ inputPlaceholder }}"
+      type="text"
+      ng-model="writables.searchTerm"
+      ng-blur="delayClearAutocomplete()"
+      ng-change="updateAutocomplete()"
+      ng-keydown="handleKeypress($event)">
+</label>
+
+<bulbs-autocomplete-suggest
+    ng-show="writables.searchTerm && autocompleteItems.length > 0"
+    formatter="item.name"
+    items="autocompleteItems"
+    on-select="handleSelect(selection)">
+</bulbs-autocomplete-suggest>

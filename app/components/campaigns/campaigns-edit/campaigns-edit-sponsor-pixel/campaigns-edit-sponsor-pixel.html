@@ -1,0 +1,13 @@
+<div class="form-group col-md-8">
+  <input type="text" ng-model="model.url" class="form-control">
+</div>
+
+<div class="form-group col-md-4">
+  <select
+      class="form-control"
+      type="text"
+      ng-options="pixelType.value as pixelType.name for pixelType in PIXEL_TYPES"
+      ng-model="model.pixel_type">
+    <option value="">Choose Type</option>
+  </select>
+</div>

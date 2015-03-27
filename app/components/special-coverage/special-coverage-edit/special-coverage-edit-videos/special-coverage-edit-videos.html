@@ -1,0 +1,53 @@
+<h4>Video Playlist</h4>
+<div>
+  <span class="video-list-title">Current List</span>
+  <span>
+    Items in List:
+    <span class="video-count">{{ videos.length }}</span>
+  </span>
+</div>
+
+<!-- TODO : replace this with basic autocomplete -->
+<!--div class="search-container">
+  <div class="search-input">
+    <label for="specialCoverageVideoSearch">
+      <i class="glyphicon glyphicon-search"></i>
+    </label>
+    <input
+        id="specialCoverageVideoSearch"
+        placeholder="Search Onion Studios by Headline or Video ID"
+        type="text"
+        ng-model="writables.searchTerm"
+        ng-blur="delayClearAutocomplete()"
+        ng-change="updateAutocomplete()"
+        ng-keydown="handleKeypress($event)">
+  </div>
+
+  <bulbs-autocomplete-suggest
+      ng-show="writables.searchTerm && autocompleteItems"
+      formatter="item.name"
+      items="autocompleteItems"
+      on-select="addVideo(selection.value)">
+  </bulbs-autocomplete-suggest>
+</div-->
+<ul ng-if="videos.length > 0" ui-sortable ng-model="videos">
+  <li ng-repeat="video in videos">
+    <button
+        ng-click="moveUp($index)"
+        ng-disabled="$first">
+      <i class="glyphicon glyphicon-chevron-up"></i>
+    </button>
+    <button
+        ng-click="moveDown($index)"
+        ng-disabled="$last">
+      <i class="glyphicon glyphicon-chevron-down"></i>
+    </button>
+    <special-coverage-edit-videos-video model="video"></special-coverage-edit-videos-video>
+    <button ng-click="delete($index)">
+      <i class="glyphicon glyphicon-remove"></i>
+    </button>
+  </li>
+</ul>
+<div ng-if="videos.length === 0">
+  There are no videos in this list, search for a video to add to playlist.
+</div>

@@ -165,8 +165,22 @@ module.exports = function (grunt) {
       app: {
         src: ['<%= yeoman.app %>/index.html'],
         ignorePath: '<%= yeoman.app %>/',
-        devDependencies: true
-      }
+        devDependencies: true,
+        overrides: {
+          'angular-restmod': {
+            'main': [
+              './dist/angular-restmod-bundle.js',
+              './dist/plugins/nested-dirty.js'
+            ]
+          },
+          'onion-editor': {
+            'main': [
+              './build/editor-main.css',
+              './build/onion-editor.js'
+            ]
+          }
+        }
+      },
     },
 
     less: {
@@ -307,7 +321,6 @@ module.exports = function (grunt) {
             '*.{ico,png,txt}',
             '.htaccess',
             '*.html',
-            'bower_components/**/*',
             'images/{,*/}*.{webp}',
             'fonts/*'
           ]
