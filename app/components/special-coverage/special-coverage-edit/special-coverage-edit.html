@@ -71,14 +71,13 @@
         <label for="specialCoverageCampaign">Attach to Campaign</label>
         <autocomplete-basic
             class="form-control"
+            ng-if="!model.campaign || model.campaign.$resolved"
+            ng-model="model.campaign"
             item-display-formatter="item.campaignLabel"
-            on-select="model.campaign = selection.value; needsSave = true"
+            on-select="$parent.needsSave = true"
             input-id="specialCoverageCampaign"
-            input-init-value="{{ model.campaign.campaignLabel }}"
             input-placeholder="e.g. 0-1337 Honda"
-            input-use-selection-as-value="true"
-            search-function="searchCampaigns"
-            hide-search-icon="true">
+            search-function="searchCampaigns">
         </autocomplete-basic>
       </div>
     </div>
@@ -90,20 +89,26 @@
           Add Content
         </a>
       </li>
-<!-- TODO : add back in videos -->
-      <!--li role="presentation">
+      <li role="presentation">
         <a href="#paneVideos" role="tab" data-toggle="tab">
           Add Videos
         </a>
-      </li-->
+      </li>
     </ul>
   </div>
   <div class="row tab-content well">
     <div id="paneQuery" role="tabpanel" class="tab-pane active">
-      <custom-search ng-model="model.query" on-update="needsSave = true"></custom-search>
+      <custom-search
+          ng-model="model.query"
+          on-update="needsSave = true">
+      </custom-search>
     </div>
-    <!--div id="paneVideos" role="tabpanel" class="tab-pane">
-      <special-coverage-edit-videos ng-model="model.videos"></special-coverage-edit-videos>
-    </div-->
+    <div id="paneVideos" role="tabpanel" class="tab-pane">
+      <special-coverage-edit-videos
+          videos="model.videos"
+          on-update="needsSave = true"
+          add-video="model.addVideo(video)">
+      </special-coverage-edit-videos>
+    </div>
   </div>
 </div>

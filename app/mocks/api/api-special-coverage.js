@@ -68,7 +68,7 @@ angular.module('bulbsCmsApp.mockApi.specialCoverage', [
       slug: 'something-video-video',
       description: 'Lots of videos to watch.',
       query: {},
-      videos: mockApiData.videos,
+      videos: [1, 2, 3],
       active: false,
       promoted: false
     }, {

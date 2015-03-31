@@ -10,7 +10,6 @@ angular.module('sections.list', [
           // set title
           $window.document.title = routes.CMS_NAMESPACE + ' | Section';
         },
-        templateUrl: routes.COMPONENTS_URL + 'sections/sections-list/sections-list-page.html',
-        reloadOnSearch: false
+        templateUrl: routes.COMPONENTS_URL + 'sections/sections-list/sections-list-page.html'
       });
   });

@@ -2,45 +2,55 @@ autocomplete-basic {
   display: block;
   position: relative;
 
-  label {
-    background-color: #fff;
-    display: table;
-    font-weight: normal;
-    width: 100%;
+  .selection-overlay {
 
-    i.glyphicon {
-      display: table-cell;
-      width: 25px;
-    }
-
-    input {
-      border: none;
-      display: table-cell;
-      outline: 0;
-      width: 100%;
+    .selection-value {
+      cursor: default;
     }
   }
 
-  bulbs-autocomplete-suggest {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    display: block;
-    left: 0;
-    position: absolute;
-    width: 100%;
-    z-index: 1000;
+  .input-container {
 
-    ul {
-      list-style: none;
-      margin: 0;
+    label {
+      background-color: #fff;
+      display: table;
+      font-weight: normal;
+      width: 100%;
 
-      li {
-        color: #333;
-        padding: 5px 5px;
+      i.glyphicon {
+        display: table-cell;
+        width: 25px;
+      }
 
-        &.active {
-          background-color: #f5f5f5;
+      input {
+        border: none;
+        display: table-cell;
+        outline: 0;
+        width: 100%;
+      }
+    }
+
+    bulbs-autocomplete-suggest {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      display: block;
+      left: 0;
+      position: absolute;
+      width: 100%;
+      z-index: 1000;
+
+      ul {
+        list-style: none;
+        margin: 0;
+
+        li {
+          color: #333;
+          padding: 5px 5px;
+
+          &.active {
+            background-color: #f5f5f5;
+          }
         }
       }
     }

@@ -2,7 +2,7 @@
 
 angular.module('apiServices', [
   'restmod',
-  'apiServices.styles'
+  'restmod.styles.drfPaged'
 ])
   .constant('API_URL_ROOT', '/cms/api/v1/')
   .config(function (API_URL_ROOT, restmodProvider) {

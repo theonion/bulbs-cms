@@ -8,7 +8,9 @@ angular.module('bulbsCmsApp.mockApi', [
   'bulbsCmsApp.mockApi.campaign',
   'bulbsCmsApp.mockApi.customSearch',
   'bulbsCmsApp.mockApi.specialCoverage',
-  'bulbsCmsApp.mockApi.sections'
+  'bulbsCmsApp.mockApi.sections',
+
+  'VideohubClient.api.mocks'
 ]).run([
   '$httpBackend', 'mockApiData', 'moment', '_',
   function($httpBackend, mockApiData, moment, _) {
@@ -280,7 +282,7 @@ angular.module('bulbsCmsApp.mockApi', [
     pzones.results[4].content = mockApiData['content.list'].results.slice(0,3);
 
     var pzoneOperationsRegex = /^\/cms\/api\/v1\/pzone\/(\d+)\/operations\/((\d+)\/)?$/;
-    $httpBackend.when('GET', pzoneOperationsRegex).respond(function (method, url) {
+    $httpBackend.whenGET(pzoneOperationsRegex).respond(function (method, url) {
       // return the operation matching given id
       var matches = url.match(pzoneOperationsRegex);
 
@@ -369,6 +371,7 @@ angular.module('bulbsCmsApp.mockApi', [
     $httpBackend.whenGET(/^\/components\/(.*)\.html/).passThrough();
     $httpBackend.whenGET(/^\/views\//).passThrough();
     $httpBackend.whenGET(/^\/content_type_views\//).passThrough();
+    $httpBackend.whenGET(/^src\/videohub-client\/videohub-suggest\/.*\.html$/).passThrough();
 
     // betty cropper
     $httpBackend.when('OPTIONS', /^http:\/\/localimages\.avclub\.com.*/).respond('');
@@ -389,7 +392,7 @@ angular.module('bulbsCmsApp.mockApi', [
     //var tokenGenerator = new FirebaseTokenGenerator('');
 
     // user, log in as a random user
-    var users = [
+    mockApiData.users = [
       {
         id: 0,
         username: 'admin',
@@ -431,8 +434,9 @@ angular.module('bulbsCmsApp.mockApi', [
 //        })
       }
     ];
-    var userIndex = Math.floor(Math.random() * users.length);
-    $httpBackend.whenGET('/cms/api/v1/me/').respond(users[userIndex]);
+    var userIndex = Math.floor(Math.random() * mockApiData.users.length);
+
+    $httpBackend.whenGET(/\/cms\/api\/v1\/me\//).respond(mockApiData.users[userIndex]);
 
     $httpBackend.when('OPTIONS', '/ads/targeting/').respond('');
 

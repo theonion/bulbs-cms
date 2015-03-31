@@ -8,14 +8,12 @@ angular.module('autocompleteBasic', [
   .directive('autocompleteBasic', function (routes) {
     return {
       controller: function (_, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS) {
+
         $scope.writables = {
           searchTerm: ''
         };
 
-        $scope.$watch('inputInitValue', function () {
-          $scope.writables.searchTerm = $scope.inputInitValue;
-        });
-
+        $scope.currentSelection = null;
         $scope.autocompleteItems = [];
 
         var $getItems = function () {
@@ -46,10 +44,15 @@ angular.module('autocompleteBasic', [
         };
 
         $scope.clearAutocomplete = function () {
-          if (!$scope.inputUseSelectionAsValue()) {
-            $scope.writables.searchTerm = '';
-          }
+          $scope.writables.searchTerm = '';
           $scope.autocompleteItems = [];
+        };
+
+        $scope.clearSelectionOverlay = function () {
+          $scope.clearAutocomplete();
+          $scope.showSelectionOverlay = false;
+          $scope.updateNgModel(null);
+          $scope.onSelect({selection: null});
         };
 
         $scope.handleKeypress = function ($event) {
@@ -65,24 +68,46 @@ angular.module('autocompleteBasic', [
         };
 
         $scope.handleSelect = function (selection) {
-          if (selection && $scope.inputUseSelectionAsValue()) {
-            $scope.writables.searchTerm = selection.name;
-            $scope.clearAutocomplete();
+          if (selection && $scope.updateNgModel) {
+            $scope.updateNgModel(selection);
+            $scope.showSelectionOverlay = true;
           }
 
+          $scope.clearAutocomplete();
           $scope.onSelect({selection: selection});
         };
       },
+      link: function (scope, iElement, iAttrs, ngModelCtrl) {
+        if (ngModelCtrl) {
+          ngModelCtrl.$formatters.push(function (modelValue) {
+            scope.currentSelection = modelValue;
+            return modelValue;
+          });
+
+          ngModelCtrl.$parsers.push(function (viewValue) {
+            scope.currentSelection = viewValue;
+            return viewValue;
+          });
+
+          scope.updateNgModel = function (selection) {
+            var newViewValue = null;
+            if (selection) {
+              newViewValue = selection.value;
+            }
+            ngModelCtrl.$setViewValue(newViewValue);
+          };
+        }
+      },
+      require: '?ngModel',
       restrict: 'E',
       scope: {
         hideSearchIcon: '&',
         inputId: '@',
-        inputInitValue: '@',
         inputPlaceholder: '@',
-        inputUseSelectionAsValue: '&',
         itemDisplayFormatter: '&',
         onSelect: '&',
-        searchFunction: '='
+        searchFunction: '=',
+        rerenderWhen: '='
       },
       templateUrl: routes.COMPONENTS_URL + 'autocomplete-basic/autocomplete-basic.html'
     };

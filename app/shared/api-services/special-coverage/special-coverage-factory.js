@@ -3,9 +3,9 @@
 angular.module('apiServices.specialCoverage.factory', [
   'apiServices',
   'apiServices.campaign.factory',
-  'apiServices.video.factory'
+  'VideohubClient.api'
 ])
-  .factory('SpecialCoverage', function (_, restmod) {
+  .factory('SpecialCoverage', function (_, restmod, Video) {
     var ACTIVE_STATES = {
       INACTIVE: 'Inactive',
       ACTIVE: 'Active',
@@ -17,6 +17,7 @@ angular.module('apiServices.specialCoverage.factory', [
         name: 'SpecialCoverage',
         primaryKey: 'id'
       },
+
       campaign: {
         belongsTo: 'Campaign',
         prefetch: true,
@@ -29,12 +30,54 @@ angular.module('apiServices.specialCoverage.factory', [
         init: {}
       },
       videos: {
-// TODO : use model when video in place
-        // hasMany: 'Video'
+        belongsToMany: 'Video',
+        keys: 'videos',
         init: []
       },
+
+      $hooks: {
+        'after-fetch': function () {
+          // auto fetch all video records when first fetching
+          this.$loadVideosData();
+        },
+        'after-save': function () {
+          // auto fetch all video records when saving/updating
+          this.$loadVideosData();
+        }
+      },
+
       $extend: {
         Record: {
+          /**
+           * Load video data by filling in video models listed in videos property.
+           */
+          $loadVideosData: function () {
+            _.each(this.videos, function (video) {
+              video.$fetch();
+            });
+          },
+          /**
+           * Add a video by id.
+           *
+           * @param {Number} id - id of video to add.
+           * @returns {Boolean} true if video was added, false otherwise.
+           */
+          addVideo: function (video) {
+            var added = false;
+
+            // check that video is not already in list
+            var existingVideo = _.find(this.videos, function (existingVideo) {
+              return video.id === existingVideo.id;
+            });
+
+            if (!existingVideo) {
+              // not in list, add it to list
+              this.videos.push(video);
+              added = true;
+            }
+
+            return added;
+          },
           /**
            * Getter/setter for active state, a front end standin for the active
            *  and promoted flags.

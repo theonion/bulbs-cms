@@ -8,7 +8,8 @@ angular.module('specialCoverage.edit.directive', [
   'customSearch',
   'specialCoverage.edit.videos.directive',
   'topBar',
-  'ui.bootstrap.tooltip'
+  'ui.bootstrap.tooltip',
+  'VideohubClient'
 ])
   .directive('specialCoverageEdit', function (routes) {
     return {

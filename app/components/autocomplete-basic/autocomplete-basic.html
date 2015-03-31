@@ -1,21 +1,38 @@
-<label>
-  <i
-      class="glyphicon glyphicon-search"
-      ng-if="!hideSearchIcon()">
-  </i>
-  <input
-      id="{{ inputId }}"
-      placeholder="{{ inputPlaceholder }}"
-      type="text"
-      ng-model="writables.searchTerm"
-      ng-blur="delayClearAutocomplete()"
-      ng-change="updateAutocomplete()"
-      ng-keydown="handleKeypress($event)">
-</label>
+<div
+    ng-if="currentSelection"
+    class="selection-overlay">
+  <span class="selection-value">
+    {{ itemDisplayFormatter({item: currentSelection}) }}
+  </span>
+  <button
+      class="no-style pull-right"
+      ng-click="clearSelectionOverlay()">
+    <i class="glyphicon glyphicon-remove"></i>
+  </button>
+</div>
+<div
+    ng-if="!currentSelection"
+    class="input-container">
 
-<bulbs-autocomplete-suggest
-    ng-show="writables.searchTerm && autocompleteItems.length > 0"
-    formatter="item.name"
-    items="autocompleteItems"
-    on-select="handleSelect(selection)">
-</bulbs-autocomplete-suggest>
+  <label>
+    <i
+        class="glyphicon glyphicon-search"
+        ng-if="!hideSearchIcon()">
+    </i>
+    <input
+        id="{{ inputId }}"
+        placeholder="{{ inputPlaceholder }}"
+        type="text"
+        ng-model="writables.searchTerm"
+        ng-blur="delayClearAutocomplete()"
+        ng-change="updateAutocomplete()"
+        ng-keydown="handleKeypress($event)">
+  </label>
+
+  <bulbs-autocomplete-suggest
+      ng-show="writables.searchTerm && autocompleteItems.length > 0"
+      formatter="item.name"
+      items="autocompleteItems"
+      on-select="handleSelect(selection)">
+  </bulbs-autocomplete-suggest>
+</div>
