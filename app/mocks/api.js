@@ -8,7 +8,7 @@ angular.module('bulbsCmsApp.mockApi', [
   'bulbsCmsApp.mockApi.campaign',
   'bulbsCmsApp.mockApi.customSearch',
   'bulbsCmsApp.mockApi.specialCoverage',
-  'bulbsCmsApp.mockApi.sections'
+  'bulbsCmsApp.mockApi.sections',
 
   'VideohubClient.api.mocks'
 ]).run([

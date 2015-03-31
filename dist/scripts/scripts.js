@@ -734,14 +734,12 @@ angular.module('autocompleteBasic', [
   .directive('autocompleteBasic', function (routes) {
     return {
       controller: function (_, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS) {
+
         $scope.writables = {
           searchTerm: ''
         };
 
-        $scope.$watch('inputInitValue', function () {
-          $scope.writables.searchTerm = $scope.inputInitValue;
-        });
-
+        $scope.currentSelection = null;
         $scope.autocompleteItems = [];
 
         var $getItems = function () {
@@ -772,10 +770,15 @@ angular.module('autocompleteBasic', [
         };
 
         $scope.clearAutocomplete = function () {
-          if (!$scope.inputUseSelectionAsValue()) {
-            $scope.writables.searchTerm = '';
-          }
+          $scope.writables.searchTerm = '';
           $scope.autocompleteItems = [];
+        };
+
+        $scope.clearSelectionOverlay = function () {
+          $scope.clearAutocomplete();
+          $scope.showSelectionOverlay = false;
+          $scope.updateNgModel(null);
+          $scope.onSelect({selection: null});
         };
 
         $scope.handleKeypress = function ($event) {
@@ -791,24 +794,46 @@ angular.module('autocompleteBasic', [
         };
 
         $scope.handleSelect = function (selection) {
-          if (selection && $scope.inputUseSelectionAsValue()) {
-            $scope.writables.searchTerm = selection.name;
-            $scope.clearAutocomplete();
+          if (selection && $scope.updateNgModel) {
+            $scope.updateNgModel(selection);
+            $scope.showSelectionOverlay = true;
           }
 
+          $scope.clearAutocomplete();
           $scope.onSelect({selection: selection});
         };
       },
+      link: function (scope, iElement, iAttrs, ngModelCtrl) {
+        if (ngModelCtrl) {
+          ngModelCtrl.$formatters.push(function (modelValue) {
+            scope.currentSelection = modelValue;
+            return modelValue;
+          });
+
+          ngModelCtrl.$parsers.push(function (viewValue) {
+            scope.currentSelection = viewValue;
+            return viewValue;
+          });
+
+          scope.updateNgModel = function (selection) {
+            var newViewValue = null;
+            if (selection) {
+              newViewValue = selection.value;
+            }
+            ngModelCtrl.$setViewValue(newViewValue);
+          };
+        }
+      },
+      require: '?ngModel',
       restrict: 'E',
       scope: {
         hideSearchIcon: '&',
         inputId: '@',
-        inputInitValue: '@',
         inputPlaceholder: '@',
-        inputUseSelectionAsValue: '&',
         itemDisplayFormatter: '&',
         onSelect: '&',
-        searchFunction: '='
+        searchFunction: '=',
+        rerenderWhen: '='
       },
       templateUrl: routes.COMPONENTS_URL + 'autocomplete-basic/autocomplete-basic.html'
     };
@@ -953,8 +978,7 @@ angular.module('campaigns.list', [
       // set title
       $window.document.title = routes.CMS_NAMESPACE + ' | Campaign';
     },
-    templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-list/campaigns-list-page.html',
-    reloadOnSearch: false
+    templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-list/campaigns-list-page.html'
   });
 });
 
@@ -2993,8 +3017,7 @@ angular.module('sections.list', [
           // set title
           $window.document.title = routes.CMS_NAMESPACE + ' | Section';
         },
-        templateUrl: routes.COMPONENTS_URL + 'sections/sections-list/sections-list-page.html',
-        reloadOnSearch: false
+        templateUrl: routes.COMPONENTS_URL + 'sections/sections-list/sections-list-page.html'
       });
   });
 
@@ -3015,7 +3038,8 @@ angular.module('specialCoverage.edit.directive', [
   'customSearch',
   'specialCoverage.edit.videos.directive',
   'topBar',
-  'ui.bootstrap.tooltip'
+  'ui.bootstrap.tooltip',
+  'VideohubClient'
 ])
   .directive('specialCoverageEdit', function (routes) {
     return {
@@ -3072,108 +3096,41 @@ angular.module('specialCoverage.edit.directive', [
 'use strict';
 
 angular.module('specialCoverage.edit.videos.directive', [
-  'apiServices.video.factory',
-  'BulbsAutocomplete',
-  'BulbsAutocomplete.suggest',
   'specialCoverage.edit.videos.video.directive',
-  'ui.sortable'
+  'ui.sortable',
+  'utils'
 ])
   .directive('specialCoverageEditVideos', function (routes) {
     return {
-      controller: function (_, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS, Video) {
-
-        $scope.writables = {
-          searchTerm: ''
-        };
-
-        $scope.autocompleteItems = [];
-
-        /**
-         * Content moving function.
-         *
-         * @param {Number} indexFrom - Index to move content from.
-         * @param {Number} indexTo - Index to move content to.
-         * @returns {Boolean} true if content moved, false otherwise.
-         */
-        var moveTo = function (indexFrom, indexTo) {
-          var ret = false;
-          var videos = $scope.videos;
-          if (indexFrom >= 0 && indexFrom < videos.length &&
-              indexTo >= 0 && indexTo < videos.length) {
-            var splicer = videos.splice(indexFrom, 1, videos[indexTo]);
-            if (splicer.length > 0) {
-              videos[indexTo] = splicer[0];
-              ret = true;
-            }
-          }
-          return ret;
-        };
-// TODO : make this autcomplete-basic
-        var $getItems = function () {
-          return Video.searchVideoHub($scope.writables.searchTerm)
-            .then(function (data) {
-              return _.map(data.results, function (video) {
-                return {
-                  name: 'ID: ' + video.id + ' | ' + video.name,
-                  value: video
-                };
-              });
-            });
-        };
+      controller: function (_, $scope, Utils) {
 
         $scope.moveUp = function (index) {
-          moveTo(index, index - 1);
+          Utils.moveTo($scope.videos, index, index - 1);
+          $scope.onUpdate();
         };
 
         $scope.moveDown = function (index) {
-          moveTo(index, index + 1);
+          Utils.moveTo($scope.videos, index, index + 1);
+          $scope.onUpdate();
         };
 
         $scope.delete = function (index) {
-// TODO : fill this in
+          Utils.removeFrom($scope.videos, index);
+          $scope.onUpdate();
         };
 
         $scope.addVideo = function (video) {
-// TODO : fill this in
+          $scope.addVideoCallback({video: video});
+          $scope.onUpdate();
         };
 
-        $scope.updateAutocomplete = function () {
-          if ($scope.writables.searchTerm) {
-            $getItems().then(function (results) {
-              $scope.autocompleteItems = results;
-            });
-          }
-        };
-
-        $scope.delayClearAutocomplete = function () {
-          _.delay(function () {
-            $scope.clearAutocomplete();
-            $scope.$digest();
-          }, 200);
-        };
-
-        $scope.clearAutocomplete = function () {
-          $scope.writables.searchTerm = '';
-          $scope.autocompleteItems = [];
-        };
-
-        $scope.handleKeypress = function ($event) {
-          if ($event.keyCode === 27) {
-            // esc, close dropdown
-            $scope.clearAutocomplete();
-          } else {
-            $scope.$broadcast(BULBS_AUTOCOMPLETE_EVENT_KEYPRESS, $event);
-          }
-        };
       },
-      link: function (scope, iElement, iAttrs, ngModelCtrl) {
-        ngModelCtrl.$formatters.push(function (modelValue) {
-          scope.videos = modelValue;
-        });
-      },
-      require: 'ngModel',
       restrict: 'E',
-      scope: {},
+      scope: {
+        addVideoCallback: '&addVideo',
+        videos: '=',
+        onUpdate: '&'
+      },
       templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit-videos/special-coverage-edit-videos.html'
     };
   });
@@ -3207,8 +3164,7 @@ angular.module('specialCoverage.edit', [
 
           $scope.routeId = $routeParams.id;
         },
-        templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit-page.html',
-        reloadOnSearch: false
+        templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit-page.html'
       });
   });
 
@@ -3503,7 +3459,7 @@ angular.module('apiServices.styles', [
 
 angular.module('apiServices', [
   'restmod',
-  'apiServices.styles'
+  'restmod.styles.drfPaged'
 ])
   .constant('API_URL_ROOT', '/cms/api/v1/')
   .config(function (API_URL_ROOT, restmodProvider) {
@@ -3724,9 +3680,9 @@ angular.module('apiServices.section.factory', [
 angular.module('apiServices.specialCoverage.factory', [
   'apiServices',
   'apiServices.campaign.factory',
-  'apiServices.video.factory'
+  'VideohubClient.api'
 ])
-  .factory('SpecialCoverage', function (_, restmod) {
+  .factory('SpecialCoverage', function (_, restmod, Video) {
     var ACTIVE_STATES = {
       INACTIVE: 'Inactive',
       ACTIVE: 'Active',
@@ -3738,6 +3694,7 @@ angular.module('apiServices.specialCoverage.factory', [
         name: 'SpecialCoverage',
         primaryKey: 'id'
       },
+
       campaign: {
         belongsTo: 'Campaign',
         prefetch: true,
@@ -3750,12 +3707,54 @@ angular.module('apiServices.specialCoverage.factory', [
         init: {}
       },
       videos: {
-// TODO : use model when video in place
-        // hasMany: 'Video'
+        belongsToMany: 'Video',
+        keys: 'videos',
         init: []
       },
+
+      $hooks: {
+        'after-fetch': function () {
+          // auto fetch all video records when first fetching
+          this.$loadVideosData();
+        },
+        'after-save': function () {
+          // auto fetch all video records when saving/updating
+          this.$loadVideosData();
+        }
+      },
+
       $extend: {
         Record: {
+          /**
+           * Load video data by filling in video models listed in videos property.
+           */
+          $loadVideosData: function () {
+            _.each(this.videos, function (video) {
+              video.$fetch();
+            });
+          },
+          /**
+           * Add a video by id.
+           *
+           * @param {Number} id - id of video to add.
+           * @returns {Boolean} true if video was added, false otherwise.
+           */
+          addVideo: function (video) {
+            var added = false;
+
+            // check that video is not already in list
+            var existingVideo = _.find(this.videos, function (existingVideo) {
+              return video.id === existingVideo.id;
+            });
+
+            if (!existingVideo) {
+              // not in list, add it to list
+              this.videos.push(video);
+              added = true;
+            }
+
+            return added;
+          },
           /**
            * Getter/setter for active state, a front end standin for the active
            *  and promoted flags.
@@ -3960,10 +3959,10 @@ angular.module('slugify', [])
 'use strict';
 
 angular.module('utils', [])
-  .service('utils.Slugs', function () {
-    var Slugs = this;
+  .service('Utils', function () {
+    var Utils = this;
 
-    this.slugify = function (text) {
+    Utils.slugify = function (text) {
       // https://gist.github.com/mathewbyrne/1280286
       return text.toString().toLowerCase()
         .replace(/\s+/g, '-')           // Replace spaces with -
@@ -3973,7 +3972,32 @@ angular.module('utils', [])
         .replace(/-+$/, '');            // Trim - from end of text
     };
 
-    return Slugs;
+    /**
+     * Content moving function.
+     *
+     * @param {Number} indexFrom - Index to move content from.
+     * @param {Number} indexTo - Index to move content to.
+     * @returns {Boolean} true if content moved, false otherwise.
+     */
+    Utils.moveTo = function (list, indexFrom, indexTo) {
+      var ret = false;
+
+      if (indexFrom >= 0 && indexFrom < list.length &&
+          indexTo >= 0 && indexTo < list.length) {
+        var splicer = list.splice(indexFrom, 1, list[indexTo]);
+        if (splicer.length > 0) {
+          list[indexTo] = splicer[0];
+          ret = true;
+        }
+      }
+      return ret;
+    };
+
+    Utils.removeFrom = function (list, index) {
+      return list.splice(index, 1).length > 0;
+    };
+
+    return Utils;
   });
 
 'use strict';
