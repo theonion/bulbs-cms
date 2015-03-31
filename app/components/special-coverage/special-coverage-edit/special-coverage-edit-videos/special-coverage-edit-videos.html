@@ -6,30 +6,7 @@
     <span class="video-count">{{ videos.length }}</span>
   </span>
 </div>
-
-<!-- TODO : replace this with basic autocomplete -->
-<!--div class="search-container">
-  <div class="search-input">
-    <label for="specialCoverageVideoSearch">
-      <i class="glyphicon glyphicon-search"></i>
-    </label>
-    <input
-        id="specialCoverageVideoSearch"
-        placeholder="Search Onion Studios by Headline or Video ID"
-        type="text"
-        ng-model="writables.searchTerm"
-        ng-blur="delayClearAutocomplete()"
-        ng-change="updateAutocomplete()"
-        ng-keydown="handleKeypress($event)">
-  </div>
-
-  <bulbs-autocomplete-suggest
-      ng-show="writables.searchTerm && autocompleteItems"
-      formatter="item.name"
-      items="autocompleteItems"
-      on-select="addVideo(selection.value)">
-  </bulbs-autocomplete-suggest>
-</div-->
+<videohub-suggest on-select="addVideo(video)"></videohub-suggest>
 <ul ng-if="videos.length > 0" ui-sortable ng-model="videos">
   <li ng-repeat="video in videos">
     <button

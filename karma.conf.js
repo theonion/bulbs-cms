@@ -60,7 +60,10 @@ module.exports = function(config) {
       'app/bower_components/angular-ui-sortable/sortable.js',
       'app/bower_components/angular-restmod/dist/angular-restmod-bundle.js',
       'app/bower_components/angular-restmod/dist/plugins/nested-dirty.js',
+      'app/bower_components/videohub-client-js/dist/videohub-client.js',
+      'app/bower_components/restmod-style-drf-paged/restmod-style-drf-paged.js',
 
+      'app/bower_components/videohub-client-js/src/videohub-client/videohub-api-mocks.js',
       'app/mocks/api.js',
       'app/mocks/api-mock-data.js',
       'app/mocks/api/api-campaign.js',

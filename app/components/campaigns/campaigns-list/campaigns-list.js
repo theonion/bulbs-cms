@@ -11,7 +11,6 @@ angular.module('campaigns.list', [
       // set title
       $window.document.title = routes.CMS_NAMESPACE + ' | Campaign';
     },
-    templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-list/campaigns-list-page.html',
-    reloadOnSearch: false
+    templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-list/campaigns-list-page.html'
   });
 });

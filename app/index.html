@@ -136,6 +136,8 @@
     <script src="bower_components/angular-inflector/dist/angular-inflector.min.js"></script>
     <script src="bower_components/angular-restmod/dist/angular-restmod-bundle.js"></script>
     <script src="bower_components/angular-restmod/dist/plugins/nested-dirty.js"></script>
+    <script src="bower_components/videohub-client-js/dist/videohub-client.js"></script>
+    <script src="bower_components/restmod-style-drf-paged/restmod-style-drf-paged.js"></script>
     <!-- endbower -->
     <script src="bower_components/jcrop/js/jquery.Jcrop.min.js"></script>
     <!-- endbuild -->
@@ -217,7 +219,6 @@
     <script src="components/top-bar/top-bar-directive.js"></script>
     <script src="components/top-bar/top-bar-item-factory.js"></script>
     <script src="components/top-bar/top-bar.js"></script>
-    <script src="shared/api-services/api-services-styles/style-django-drf-paged.js"></script>
     <script src="shared/api-services/api-services.js"></script>
     <script src="shared/api-services/campaign/campaign-factory.js"></script>
     <script src="shared/api-services/custom-search/custom-search-count-factory.js"></script>
@@ -372,6 +373,11 @@
             ngClipProvider.setPath(ZERO_CLIPBOARD_SWF);
           });
 
+        angular.module('VideohubClient.settings')
+          .constant('VIDEOHUB_API_BASE_URL', 'http://videohub.local/api/v0')
+          .constant('VIDEOHUB_SECRET_TOKEN', 'BLAH BLAH')
+          .constant('VIDEOHUB_DEFAULT_CHANNEL', 'The Onion');
+
         window.dummySearchHandler = function(term, resultsElement) {
           resultsElement.html("<b>Searching for: " + term + "</b><br><a href='/fart/'>Fart</a><br><a href='/butt/'>Butt</a><br><a href='/dumb/'>Dumb</a><br>");
         };
@@ -384,6 +390,7 @@
     <script src="mocks/api/api-custom-search.js"></script>
     <script src="mocks/api/api-special-coverage.js"></script>
     <script src="mocks/api/api-sections.js"></script>
+    <script src="bower_components/videohub-client-js/src/videohub-client/videohub-api-mocks.js"></script>
 
     <script src="mocks/newapp.js"></script>
     <script src="scripts/api/mock.js"></script>

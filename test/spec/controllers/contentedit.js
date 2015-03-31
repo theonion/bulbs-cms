@@ -86,7 +86,7 @@ describe('Controller: ContenteditCtrl', function () {
     });
 
     it('should set articleIsDirty to true when article is dirty', function () {
-      scope.article.title = "some random title that isn not the same as the original";
+      scope.article.title = 'some random title that isn not the same as the original';
       scope.$digest();
       expect(scope.articleIsDirty).toBe(true);
     });
@@ -126,7 +126,7 @@ describe('Controller: ContenteditCtrl', function () {
         var newMockArticle = angular.copy(mockArticle);
         newMockArticle.last_modified = '2999-04-08T15:35:15.118Z'; //last_modified FAR in the future
         httpBackend.expect('GET', '/cms/api/v1/content/1/').respond(newMockArticle);
-        spyOn(scope, 'postValidationSaveArticle')
+        spyOn(scope, 'postValidationSaveArticle');
         spyOn(modalService, 'open');
         scope.saveArticle();
         httpBackend.flush();

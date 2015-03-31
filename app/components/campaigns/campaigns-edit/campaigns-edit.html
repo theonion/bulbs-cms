@@ -117,14 +117,14 @@
 
     <div class="row well">
       <h5>Sponsor Pixels</h5>
-      <div
-          class="row col-md-8"
-          ng-repeat="pixel in model.pixels">
-        <campaigns-edit-sponsor-pixel model="pixel"></campaigns-edit-sponsor-pixel>
-        <button ng-click="deletePixel(pixel)">Delete</button>
+      <div class="row col-md-12" ng-repeat="pixel in model.pixels">
+        <campaigns-edit-sponsor-pixel model="pixel" class="pixel"></campaigns-edit-sponsor-pixel>
+        <button class="btn btn-danger" ng-click="deletePixel(pixel)">
+          <i class="glyphicon glyphicon-remove"></i>
+        </button>
       </div>
       <div class="row col-md-12">
-        <button ng-click="addPixel()">Add Another Pixel</button>
+        <button ng-click="addPixel()" class="add-pixel"><i class="glyphicon glyphicon-plus-sign"></i> Add Another Pixel</button>
       </div>
     </div>
   </div>
