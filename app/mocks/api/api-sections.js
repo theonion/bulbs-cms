@@ -3,12 +3,12 @@
 angular.module('bulbsCmsApp.mockApi.sections', [
   'bulbsCmsApp.mockApi.data',
   'lodash',
-  'slugify'
+  'utils'
 ])
-  .run(['_', '$httpBackend', 'mockApiData', '$filter',
-  function (_, $httpBackend, mockApiData, $filter) {
+  .run(['_', '$httpBackend', 'mockApiData', 'Utils',
+  function (_, $httpBackend, mockApiData, Utils) {
 
-    var slugify = $filter('slugify');
+    var slugify = Utils.slugify;
 
     var reSections = {
       list: /^\/cms\/api\/v1\/section\/(\?.*)?$/,
@@ -35,7 +35,7 @@ angular.module('bulbsCmsApp.mockApi.sections', [
               value: 'actually-use-this-value-123'
             }]
           }],
-          time: '1 day'
+          time: 'Past day'
         }],
         included_ids: [1],
         excluded_ids: [2],

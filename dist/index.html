@@ -60,6 +60,7 @@
     <link rel="stylesheet" href="components/sections/sections-list/sections-list.css">
     <link rel="stylesheet" href="components/special-coverage/special-coverage-edit/special-coverage-edit-videos/special-coverage-edit-videos.css">
     <link rel="stylesheet" href="components/special-coverage/special-coverage-list/special-coverage-list.css">
+    <link rel="stylesheet" href="shared/list-page/list-page.css">
     <!-- endinjector -->
 
     <!-- endbuild -->
@@ -204,6 +205,7 @@
     <script src="components/sections/sections-edit/sections-edit.js"></script>
     <script src="components/sections/sections-list/sections-list-directive.js"></script>
     <script src="components/sections/sections-list/sections-list.js"></script>
+    <script src="components/sections/sections-settings.js"></script>
     <script src="components/sections/sections.js"></script>
     <script src="components/special-coverage/special-coverage-edit/special-coverage-edit-directive.js"></script>
     <script src="components/special-coverage/special-coverage-edit/special-coverage-edit-videos/special-coverage-edit-videos-directive.js"></script>
@@ -211,6 +213,7 @@
     <script src="components/special-coverage/special-coverage-edit/special-coverage-edit.js"></script>
     <script src="components/special-coverage/special-coverage-list/special-coverage-list-directive.js"></script>
     <script src="components/special-coverage/special-coverage-list/special-coverage-list.js"></script>
+    <script src="components/special-coverage/special-coverage-settings.js"></script>
     <script src="components/special-coverage/special-coverage.js"></script>
     <script src="components/status-filter/status-filter-directive.js"></script>
     <script src="components/status-filter/status-filter.js"></script>
@@ -219,6 +222,7 @@
     <script src="components/top-bar/top-bar-directive.js"></script>
     <script src="components/top-bar/top-bar-item-factory.js"></script>
     <script src="components/top-bar/top-bar.js"></script>
+    <script src="shared/api-services/api-services-mixins/mixin-field-display.js"></script>
     <script src="shared/api-services/api-services-styles/style-django-drf-paged.js"></script>
     <script src="shared/api-services/api-services.js"></script>
     <script src="shared/api-services/campaign/campaign-factory.js"></script>
@@ -232,6 +236,9 @@
     <script src="shared/content-services/content-factory.js"></script>
     <script src="shared/content-services/content-list-service.js"></script>
     <script src="shared/content-services/content-services.js"></script>
+    <script src="shared/copy-button/copy-button.js"></script>
+    <script src="shared/filters-moment/filters-moment.js"></script>
+    <script src="shared/list-page/list-page.js"></script>
     <script src="shared/moment-formatter-filter/moment-formatter-filter.js"></script>
     <script src="shared/slugify-filter/slugify-filter.js"></script>
     <script src="shared/utils/utils.js"></script>
@@ -337,6 +344,7 @@
               IMAGE_SERVER_URL: 'http://clickholeimg.local',
               BC_ADMIN_URL: 'http://clickholeimg.local',
               LOADING_IMG_SRC: '/images/loading.gif',
+              SHARED_URL: '/shared/',
               COMPONENTS_URL: '/components/',
               STATIC_URL: '/static/',
               PARTIALS_URL: '/views/',
@@ -364,7 +372,7 @@
           .constant('STATIC_IMAGE_URL', 'http://chimg.onionstatic.com/{{image}}/{{ratio}}/600.jpg')
           .constant('CUSTOM_VIDEO_POSTER_URL', 'http://chimg.onionstatic.com/{{image}}/{{ratio}}/600.jpg')
           .constant('FIREBASE_ROOT', 'bulbs-cms-testing')
-          .constant('EXTERNAL_URL', 'http://www.theonion.com')
+          .constant('EXTERNAL_URL', 'onion.local')
           // ****** CMS Plugins ****** \\
           .constant('tar_options', { endpoint: '/ads/targeting' })
           .constant('navbar_options', {})
@@ -373,6 +381,18 @@
           .config(function(ngClipProvider, ZERO_CLIPBOARD_SWF) {
             ngClipProvider.setPath(ZERO_CLIPBOARD_SWF);
           });
+
+        angular.module('customSearch.settings')
+          .constant('CUSTOM_SEARCH_TIME_PERIODS', [{
+            name: 'Past Day',
+            value: 'Past day'
+          }, {
+            name: 'Past Week',
+            value: 'Past week'
+          }, {
+            name: 'Past Month',
+            value: 'Past month'
+          }]);
 
         angular.module('VideohubClient.settings')
           .constant('VIDEOHUB_API_BASE_URL', 'http://videohub.local/api/v0')

@@ -968,19 +968,22 @@ angular.module('campaigns.list.directive', [
 'use strict';
 
 angular.module('campaigns.list', [
+  'apiServices.campaign.factory',
   'bulbsCmsApp.settings',
-  'campaigns.list.directive'
+  'listPage'
 ])
-.config(function ($routeProvider, routes) {
-  $routeProvider
-  .when('/cms/app/campaigns/', {
-    controller: function ($window) {
-      // set title
-      $window.document.title = routes.CMS_NAMESPACE + ' | Campaign';
-    },
-    templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-list/campaigns-list-page.html'
+  .config(function ($routeProvider, routes) {
+    $routeProvider
+      .when('/cms/app/campaigns/', {
+        controller: function ($scope, $window, Campaign) {
+          // set title
+          $window.document.title = routes.CMS_NAMESPACE + ' | Campaign';
+
+          $scope.modelFactory = Campaign;
+        },
+        templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-list/campaigns-list-page.html'
+      });
   });
-});
 
 'use strict';
 
@@ -1531,14 +1534,14 @@ angular.module('customSearch.settings', [])
     }
   }])
   .value('CUSTOM_SEARCH_CONDITION_TYPES', [{
-    name: 'is none of',
-    value: 'none'
+    name: 'is any of',
+    value: 'any'
   }, {
     name: 'is all of',
     value: 'all'
   }, {
-    name: 'is any of',
-    value: 'any'
+    name: 'is none of',
+    value: 'none'
   }])
   .value('CUSTOM_SEARCH_TIME_PERIODS', [{
     name: 'Past Day',
@@ -2903,14 +2906,18 @@ angular.module('sections.edit.directive', [
   'apiServices.section.factory',
   'BettyCropper',
   'bulbsCmsApp.settings',
+  'copyButton',
   'customSearch',
   'saveButton.directive',
+  'sections.settings',
   'topBar'
 ])
   .directive('sectionsEdit', function (routes) {
     return {
-      controller: function ($location, $q, $scope, EXTERNAL_URL, Section) {
-        $scope.EXTERNAL_URL = EXTERNAL_URL;
+      controller: function ($location, $q, $scope, EXTERNAL_URL,
+          SECTIONS_LIST_REL_PATH, Section) {
+
+        $scope.LIST_URL = EXTERNAL_URL + SECTIONS_LIST_REL_PATH;
 
         $scope.needsSave = false;
 
@@ -2968,7 +2975,7 @@ angular.module('sections.edit', [
 
           $scope.routeId = $routeParams.id;
         },
-        templateUrl: routes.COMPONENTS_URL + 'sections/sections-edit/sections-edit-page.html',
+        template: '<sections-edit model-id="routeId"></sections-edit>',
         reloadOnSearch: false
       });
   });
@@ -3008,18 +3015,32 @@ angular.module('sections.list.directive', [
 'use strict';
 
 angular.module('sections.list', [
-  'sections.list.directive'
+  'apiServices.section.factory',
+  'bulbsCmsApp.settings',
+  'listPage',
+  'sections.settings'
 ])
   .config(function ($routeProvider, routes) {
+
     $routeProvider
       .when('/cms/app/section/', {
-        controller: function ($scope, $window) {
+        controller: function ($scope, $window, EXTERNAL_URL, SECTIONS_LIST_REL_PATH,
+            Section) {
+
           // set title
           $window.document.title = routes.CMS_NAMESPACE + ' | Section';
+
+          $scope.modelFactory = Section;
+          $scope.LIST_URL = EXTERNAL_URL + SECTIONS_LIST_REL_PATH;
         },
         templateUrl: routes.COMPONENTS_URL + 'sections/sections-list/sections-list-page.html'
       });
   });
+
+'use strict';
+
+angular.module('sections.settings', [])
+  .value('SECTIONS_LIST_REL_PATH', '/section/');
 
 'use strict';
 
@@ -3037,15 +3058,18 @@ angular.module('specialCoverage.edit.directive', [
   'apiServices.campaign.factory',
   'customSearch',
   'specialCoverage.edit.videos.directive',
+  'specialCoverage.settings',
   'topBar',
   'ui.bootstrap.tooltip',
   'VideohubClient'
 ])
   .directive('specialCoverageEdit', function (routes) {
     return {
-      controller: function ($location, $q, $scope, EXTERNAL_URL, SpecialCoverage, Campaign) {
+      controller: function ($location, $q, $scope, Campaign, EXTERNAL_URL,
+          SPECIAL_COVERAGE_LIST_REL_PATH, SpecialCoverage) {
+
         $scope.ACTIVE_STATES = SpecialCoverage.ACTIVE_STATES;
-        $scope.EXTERNAL_URL = EXTERNAL_URL;
+        $scope.LIST_URL = EXTERNAL_URL + SPECIAL_COVERAGE_LIST_REL_PATH;
 
         $scope.needsSave = false;
 
@@ -3164,7 +3188,7 @@ angular.module('specialCoverage.edit', [
 
           $scope.routeId = $routeParams.id;
         },
-        templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit-page.html'
+        template: '<special-coverage-edit model-id="routeId"></special-coverage-edit>'
       });
   });
 
@@ -3203,19 +3227,32 @@ angular.module('specialCoverage.list.directive', [
 'use strict';
 
 angular.module('specialCoverage.list', [
-  'specialCoverage.list.directive'
+  'apiServices.specialCoverage.factory',
+  'bulbsCmsApp.settings',
+  'listPage',
+  'specialCoverage.settings'
 ])
   .config(function ($routeProvider, routes) {
+
     $routeProvider
       .when('/cms/app/special-coverage/', {
-        controller: function ($scope, $window) {
+        controller: function ($scope, $window, EXTERNAL_URL, SPECIAL_COVERAGE_LIST_REL_PATH,
+            SpecialCoverage) {
+
           // set title
           $window.document.title = routes.CMS_NAMESPACE + ' | Special Coverage';
+
+          $scope.modelFactory = SpecialCoverage;
+          $scope.LIST_URL = EXTERNAL_URL + SPECIAL_COVERAGE_LIST_REL_PATH;
         },
-        templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-list/special-coverage-list-page.html',
-        reloadOnSearch: false
+        templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-list/special-coverage-list-page.html'
       });
   });
+
+'use strict';
+
+angular.module('specialCoverage.settings', [])
+  .value('SPECIAL_COVERAGE_LIST_REL_PATH', '/special/');
 
 'use strict';
 
@@ -3393,6 +3430,111 @@ angular.module('topBar', [
 
 'use strict';
 
+/**
+ * Restmod mixin that looks for fieldDisplays in $configs, objects with a title and
+ *  optionally a value and sorts property.
+ *
+ *  title is used to label a given field, should be unique.
+ *
+ *  value is an optional field transformed into a new property function called
+ *    evalute; when invoked with a record, value string will evaluate with $parse,
+ *    where 'record' is the given record.
+ *
+ *  sorts is an optional field that can be a string or a function. As a string it
+ *    should be the name of a property to order by. As a function, it should take
+ *    a direction--'asc'/undefined for the default direction, 'desc' for the opposite
+ *    direction--and return an ordering string.
+ *
+ * Field display objecs are available at the model level as the $fieldDisplays function.
+ *  Returns a list of field displays to be used in templates.
+ */
+angular.module('apiServices.mixins.fieldDisplay', [
+  'restmod'
+])
+  .factory('FieldDisplay', function($parse, restmod) {
+
+    /**
+     * Generates a function that can be passed a record and evalutes given value
+     *  string agaist that record to return the string to be displayed to the user.
+     *
+     *  @param {string} value - string that will be evaluted with record as an instance
+     *    of model, e.g. the value string 'record.name' would print out the instance's
+     *    name property.
+     *  @returns {function} takes a record and is evaluates the given value with given
+     *    record.
+     */
+    var parserWrap = function (value) {
+      // return a function that can be called with given string to generate parser
+      return (function (value) {
+        // return a function that will be called in template
+        var parsed = $parse(value);
+        return function (record) {
+          // use angular's $parse to create a function that will eval in the correct scope
+          return parsed({record: record});
+        };
+      })(value);
+    };
+
+    /**
+     * Default sorting string builder. If field display object sorts property is a
+     *  function, that will override the functionality provided by this function. Use
+     *  this for more complex sorting strings, such as those that have multiple paramters.
+     *
+     * @param {String} sorts - sorts property provided by field display object. Should be
+     *  the non-negated property name to sort on.
+     * @returns {function} evaluated with a direction string, either 'asc'/undefined for the
+     *  default sorting direction, or 'desc' for opposite sorting direction.
+     */
+    var getOrdering = function (sorts) {
+      return (function (sorts) {
+        return function (direction) {
+          var ordering = '';
+          if (direction === 'desc') {
+            // do opposite of default sort
+            ordering = '-' + sorts;
+          } else {
+            // do default sort, only supports 1 parameter
+            ordering = sorts;
+          }
+          return ordering;
+        };
+      })(sorts);
+   };
+
+    return restmod.mixin(function () {
+
+      this.define('Scope.$fieldDisplays', function () {
+        var fieldDisplays = this.getProperty('fieldDisplays');
+        if (fieldDisplays) {
+          var i;
+          for (i = 0; i < fieldDisplays.length; i++) {
+            var fieldDisplay = fieldDisplays[i];
+
+            // set up evaluation function if a value was provided
+            if (fieldDisplay.value) {
+              fieldDisplay.evaluate = parserWrap(fieldDisplay.value);
+            }
+
+            // set up storting function if sorts was provided
+            if (fieldDisplay.sorts) {
+              if (typeof fieldDisplay.sorts === 'function') {
+                // sort function was provided, use that
+                fieldDisplay.getOrdering = fieldDisplay.sorts;
+              } else {
+                // function not provided, use default one
+                fieldDisplay.getOrdering = getOrdering(fieldDisplay.sorts);
+              }
+            }
+          }
+        }
+        return fieldDisplays;
+      });
+
+    });
+  });
+
+'use strict';
+
 angular.module('apiServices.styles', [
   'lodash',
   'restmod'
@@ -3475,41 +3617,39 @@ angular.module('apiServices', [
 
 angular.module('apiServices.campaign.factory', [
   'apiServices',
-  'moment'
+  'apiServices.mixins.fieldDisplay',
+  'filters.moment'
 ])
-  .filter('date_string_to_moment', function(moment) {
-    return function (dateStr) {
-      // Try to parse non-empty strings
-      if (dateStr && dateStr.length) {
-        var m = moment(dateStr);
-        if (m.isValid()) {
-          return m;
-        }
-      }
-      return null;
-    };
-  })
-  .filter('moment_to_date_string', function(moment) {
-    return function (momentObj) {
-      if (moment.isMoment(momentObj) && momentObj.isValid()) {
-        return momentObj.format();
-      } else {
-        // Blank time string == not set
-        return '';
-      }
-    };
-  })
   .factory('Campaign', function (restmod) {
-    return restmod.model('campaign').mix('NestedDirtyModel', {
+    return restmod.model('campaign').mix('FieldDisplay', 'NestedDirtyModel', {
       $config: {
         name: 'Campaign',
-        primaryKey: 'id'
+        plural: 'Campaigns',
+        primaryKey: 'id',
+        fieldDisplays: [{
+          title: 'Campaign',
+          value: 'record.campaignLabel',
+          sorts: 'campaign_label'
+        }, {
+          title: 'Sponsor',
+          value: 'record.sponsorName',
+          sorts: 'sponsor_name'
+        }, {
+          title: 'Start Date',
+          value: 'record.startDate.format("MM/DD/YY") || "--"',
+          sorts: 'start_date'
+        }, {
+          title: 'End Date',
+          value: 'record.endDate.format("MM/DD/YY") || "--"',
+          sorts: 'end_date'
+        }]
       },
 
       pixels: {
-        init: [],
+        init: [{}],
       },
 
+      // fields from frontend to backend
       end_date: {
         encode: 'moment_to_date_string',
       },
@@ -3517,6 +3657,7 @@ angular.module('apiServices.campaign.factory', [
         encode: 'moment_to_date_string',
       },
 
+      // fields from backend to frontend
       endDate: {
         decode: 'date_string_to_moment',
       },
@@ -3562,10 +3703,11 @@ angular.module('apiServices.customSearch.count.factory', [
  * Wrapper functions for custom search endpoints.
  */
 angular.module('apiServices.customSearch.factory', [
-  'apiServices',
   'apiServices.customSearch.count.factory',
   'apiServices.customSearch.groupCount.factory',
-  'apiServices.customSearch.settings'
+  'apiServices.customSearch.settings',
+  'lodash',
+  'restmod'
 ])
   .factory('CustomSearch', function (_, restmod, CustomSearchCount, CustomSearchGroupCount,
       CustomSearchSettings) {
@@ -3632,19 +3774,31 @@ angular.module('apiServices.customSearch.settings', [])
 
 angular.module('apiServices.section.factory', [
   'apiServices',
-  'apiServices.customSearch.count.factory'
+  'apiServices.customSearch.count.factory',
+  'apiServices.mixins.fieldDisplay'
 ])
   .factory('Section', function (_, CustomSearchCount, restmod) {
     var sectionEndpoint = 'section';
 
-    return restmod.model(sectionEndpoint).mix('NestedDirtyModel', {
+    return restmod.model(sectionEndpoint).mix('FieldDisplay', 'NestedDirtyModel', {
       $config: {
         name: 'Section',
         plural: 'Sections',
-        primaryKey: 'id'
+        primaryKey: 'id',
+        fieldDisplays: [{
+          title: 'Section Name',
+          value: 'record.name',
+          sorts: 'name'
+        }, {
+          title: 'Article Count',
+          value: 'record.$resultCount'
+        }]
       },
       query: {
         init: {}
+      },
+      promoted: {
+        init: true
       },
       $hooks: {
         'after-fetch': function () {
@@ -3680,19 +3834,46 @@ angular.module('apiServices.section.factory', [
 angular.module('apiServices.specialCoverage.factory', [
   'apiServices',
   'apiServices.campaign.factory',
+  'apiServices.mixins.fieldDisplay',
   'VideohubClient.api'
 ])
-  .factory('SpecialCoverage', function (_, restmod, Video) {
+  .factory('SpecialCoverage', function (_, $parse, restmod, Video) {
     var ACTIVE_STATES = {
       INACTIVE: 'Inactive',
       ACTIVE: 'Active',
       PROMOTED: 'Pin to HP'
     };
 
-    return restmod.model('special-coverage').mix('NestedDirtyModel', {
+    return restmod.model('special-coverage').mix('FieldDisplay', 'NestedDirtyModel', {
       $config: {
-        name: 'SpecialCoverage',
-        primaryKey: 'id'
+        name: 'Special Coverage',
+        plural: 'Special Coverages',
+        primaryKey: 'id',
+        fieldDisplays: [{
+          title: 'List Title',
+          value: 'record.name',
+          sorts: 'name'
+        }, {
+          title: 'Sponsor',
+          value: 'record.campaign.sponsorName || "--"',
+          sorts: 'campaign__sponsor_name'
+        }, {
+          title: 'Campaign',
+          value: 'record.campaign.campaignLabel || "--"',
+          sorts: 'campaign__campaign_label'
+        }, {
+          title: 'Status',
+          value: 'record.$activeState()',
+          sorts: function (direction) {
+            var sorting;
+            if (direction === 'asc') {
+              sorting = 'promoted,active';
+            } else {
+              sorting = '-promoted,-active';
+            }
+            return sorting;
+          }
+        }]
       },
 
       campaign: {
@@ -3710,6 +3891,12 @@ angular.module('apiServices.specialCoverage.factory', [
         belongsToMany: 'Video',
         keys: 'videos',
         init: []
+      },
+      active: {
+        init: true
+      },
+      promoted: {
+        init: false
       },
 
       $hooks: {
@@ -3924,6 +4111,128 @@ angular.module('contentServices', [
   'contentServices.factory',
   'contentServices.listService'
 ]);
+
+'use strict';
+
+angular.module('copyButton', [])
+  .directive('copyButton', function (routes) {
+    return {
+      controller: function ($scope, $timeout) {
+
+        $scope.okCopy = false;
+        $scope.okCopyButton = function () {
+          $scope.okCopy = true;
+          $timeout(function () {
+            $scope.okCopy = false;
+          }, 1000);
+        };
+      },
+      restrict: 'E',
+      scope: {
+        buttonClassesDefault: '@',
+        buttonClassesSuccess: '@',
+        content: '@'
+      },
+      templateUrl: routes.SHARED_URL + 'copy-button/copy-button.html'
+    };
+  });
+
+'use strict';
+
+angular.module('filters.moment', [
+  'moment'
+])
+  .filter('date_string_to_moment', function(moment) {
+    return function (dateStr) {
+      // Try to parse non-empty strings
+      if (dateStr && dateStr.length) {
+        var m = moment(dateStr);
+        if (m.isValid()) {
+          return m;
+        }
+      }
+      return null;
+    };
+  })
+  .filter('moment_to_date_string', function(moment) {
+    return function (momentObj) {
+      if (moment.isMoment(momentObj) && momentObj.isValid()) {
+        return momentObj.format();
+      } else {
+        // Blank time string == not set
+        return '';
+      }
+    };
+  });
+
+'use strict';
+
+angular.module('listPage', [
+  'bulbsCmsApp.settings',
+  'confirmationModal',
+  'copyButton'
+])
+  .directive('listPage', function (routes) {
+    return {
+      controller: function ($scope, $location, $parse) {
+        $scope.name = $scope.modelFactory.identity();
+        $scope.namePlural = $scope.modelFactory.identity(true);
+        $scope.fields = $scope.modelFactory.$fieldDisplays();
+        $scope.$list = $scope.modelFactory.$collection();
+
+        $scope.copyContentInContext = function (record) {
+          var value = '';
+          if ($scope.toolCopyContent) {
+             value = $parse($scope.toolCopyContent)({record: record});
+          }
+          return value;
+        };
+
+        $scope.$retrieve = function (params) {
+          return $scope.$list.$refresh(params);
+        };
+
+        $scope.sortingField = null;
+        $scope.sortDirection = 'asc';
+        $scope.$sort = function (field) {
+          var direction;
+          if (field.title === $scope.sortingField) {
+            // clicked on same field, make direction opposite of what it is now
+            direction = $scope.sortDirection === 'desc' ? 'asc' : 'desc';
+          } else {
+            // clicked on a different field, start with the opposite of default
+            direction = 'desc';
+          }
+
+          // do ordering request
+          (function (field, direction) {
+            $scope.$retrieve({ordering: field.getOrdering(direction)})
+              .$then(function () {
+                $scope.sortingField = field.title;
+                $scope.sortDirection = direction;
+              });
+          })(field, direction);
+        };
+
+        $scope.$add = function () {
+          $location.path('/cms/app/' + $scope.cmsPage + '/edit/new/');
+        };
+
+        $scope.$remove = function (item) {
+          item.$destroy();
+        };
+
+        $scope.$retrieve();
+      },
+      restrict: 'E',
+      scope: {
+        cmsPage: '@',
+        modelFactory: '=',
+        toolCopyContent: '@'
+      },
+      templateUrl: routes.SHARED_URL + 'list-page/list-page.html'
+    };
+  });
 
 'use strict';
 

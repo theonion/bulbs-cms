@@ -4,10 +4,11 @@
  * Wrapper functions for custom search endpoints.
  */
 angular.module('apiServices.customSearch.factory', [
-  'apiServices',
   'apiServices.customSearch.count.factory',
   'apiServices.customSearch.groupCount.factory',
-  'apiServices.customSearch.settings'
+  'apiServices.customSearch.settings',
+  'lodash',
+  'restmod'
 ])
   .factory('CustomSearch', function (_, restmod, CustomSearchCount, CustomSearchGroupCount,
       CustomSearchSettings) {

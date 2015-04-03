@@ -1,0 +1,55 @@
+list-page {
+
+  .list-page-heading {
+    margin-bottom: 10px;
+    margin-top: 25px;
+
+    h2 {
+      margin: 0;
+    }
+  }
+
+  .no-items-message {
+    margin-bottom: 20px;
+  }
+
+  table {
+
+    thead {
+      font-weight: bold;
+
+      td {
+        background-color: #555;
+        border-left: 1px solid #888;
+        color: #fff;
+
+        &:first-of-type {
+          border-left: none;
+        }
+
+        &.td-sorts {
+          cursor: pointer;
+        }
+      }
+    }
+
+    tbody {
+
+      tr > td {
+        border-top: none !important;
+
+        &:last-of-type {
+          text-align: right;
+        }
+
+        a:hover {
+          text-decoration: none;
+        }
+
+        copy-button {
+          margin-left: 5px;
+        }
+      }
+    }
+  }
+}

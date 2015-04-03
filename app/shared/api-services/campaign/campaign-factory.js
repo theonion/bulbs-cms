@@ -2,41 +2,39 @@
 
 angular.module('apiServices.campaign.factory', [
   'apiServices',
-  'moment'
+  'apiServices.mixins.fieldDisplay',
+  'filters.moment'
 ])
-  .filter('date_string_to_moment', function(moment) {
-    return function (dateStr) {
-      // Try to parse non-empty strings
-      if (dateStr && dateStr.length) {
-        var m = moment(dateStr);
-        if (m.isValid()) {
-          return m;
-        }
-      }
-      return null;
-    };
-  })
-  .filter('moment_to_date_string', function(moment) {
-    return function (momentObj) {
-      if (moment.isMoment(momentObj) && momentObj.isValid()) {
-        return momentObj.format();
-      } else {
-        // Blank time string == not set
-        return '';
-      }
-    };
-  })
   .factory('Campaign', function (restmod) {
-    return restmod.model('campaign').mix('NestedDirtyModel', {
+    return restmod.model('campaign').mix('FieldDisplay', 'NestedDirtyModel', {
       $config: {
         name: 'Campaign',
-        primaryKey: 'id'
+        plural: 'Campaigns',
+        primaryKey: 'id',
+        fieldDisplays: [{
+          title: 'Campaign',
+          value: 'record.campaignLabel',
+          sorts: 'campaign_label'
+        }, {
+          title: 'Sponsor',
+          value: 'record.sponsorName',
+          sorts: 'sponsor_name'
+        }, {
+          title: 'Start Date',
+          value: 'record.startDate.format("MM/DD/YY") || "--"',
+          sorts: 'start_date'
+        }, {
+          title: 'End Date',
+          value: 'record.endDate.format("MM/DD/YY") || "--"',
+          sorts: 'end_date'
+        }]
       },
 
       pixels: {
-        init: [],
+        init: [{}],
       },
 
+      // fields from frontend to backend
       end_date: {
         encode: 'moment_to_date_string',
       },
@@ -44,6 +42,7 @@ angular.module('apiServices.campaign.factory', [
         encode: 'moment_to_date_string',
       },
 
+      // fields from backend to frontend
       endDate: {
         decode: 'date_string_to_moment',
       },

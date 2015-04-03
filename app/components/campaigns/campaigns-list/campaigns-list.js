@@ -1,16 +1,19 @@
 'use strict';
 
 angular.module('campaigns.list', [
+  'apiServices.campaign.factory',
   'bulbsCmsApp.settings',
-  'campaigns.list.directive'
+  'listPage'
 ])
-.config(function ($routeProvider, routes) {
-  $routeProvider
-  .when('/cms/app/campaigns/', {
-    controller: function ($window) {
-      // set title
-      $window.document.title = routes.CMS_NAMESPACE + ' | Campaign';
-    },
-    templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-list/campaigns-list-page.html'
+  .config(function ($routeProvider, routes) {
+    $routeProvider
+      .when('/cms/app/campaigns/', {
+        controller: function ($scope, $window, Campaign) {
+          // set title
+          $window.document.title = routes.CMS_NAMESPACE + ' | Campaign';
+
+          $scope.modelFactory = Campaign;
+        },
+        templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-list/campaigns-list-page.html'
+      });
   });
-});

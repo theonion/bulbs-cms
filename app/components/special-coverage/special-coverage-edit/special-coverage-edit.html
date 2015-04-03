@@ -20,22 +20,12 @@
       <div class="col-md-7">
         <label for="specialCoverageSlug">List URL</label>
         <div class="input-group">
-          <span class="input-group-addon">{{ EXTERNAL_URL }}/special/</span>
+          <span class="input-group-addon">{{ LIST_URL }}</span>
           <input id="specialCoverageSlug" type="text" class="form-control" ng-model="model.slug">
-          <span class="input-group-btn">
-            <button
-                class="btn btn-info"
-                ng-if="model.slug"
-                clip-copy="EXTERNAL_URL + '/special/' + model.slug">
-              <i class="glyphicon glyphicon-paperclip"></i>
-            </button>
-            <button
-                class="btn btn-info"
-                ng-if="!model.slug"
-                disabled>
-              <i class="glyphicon glyphicon-paperclip"></i>
-            </button>
-          </span>
+          <copy-button
+              class="input-group-btn"
+              content="{{ LIST_URL + model.slug }}">
+          </copy-button>
         </div>
       </div>
     </div>
@@ -62,18 +52,18 @@
             class="form-control"
             ng-model="model.$activeState"
             ng-model-options="{getterSetter: true}">
-          <option value="{{ ACTIVE_STATES.INACTIVE }}">{{ ACTIVE_STATES.INACTIVE }}</option>
           <option value="{{ ACTIVE_STATES.ACTIVE }}">{{ ACTIVE_STATES.ACTIVE }}</option>
           <option value="{{ ACTIVE_STATES.PROMOTED }}">{{ ACTIVE_STATES.PROMOTED }}</option>
+          <option value="{{ ACTIVE_STATES.INACTIVE }}">{{ ACTIVE_STATES.INACTIVE }}</option>
         </select>
       </div>
-      <div class="form-group col-md-3">
-        <label for="specialCoverageCampaign">Attach to Campaign</label>
+      <div class="form-group col-md-5">
+        <label for="specialCoverageCampaign">Sponsor Campaign</label>
         <autocomplete-basic
             class="form-control"
             ng-if="!model.campaign || model.campaign.$resolved"
             ng-model="model.campaign"
-            item-display-formatter="item.campaignLabel"
+            item-display-formatter="item.sponsorName + ' - ' + item.campaignLabel"
             on-select="$parent.needsSave = true"
             input-id="specialCoverageCampaign"
             input-placeholder="e.g. 0-1337 Honda"

@@ -28,7 +28,7 @@
             <input
                 id="campaignStartDate"
                 type="text"
-                value="{{ model.startDate | momentFormatter : 'MM/DD/YY h:mm:ss a' }}"
+                value="{{ model.startDate.format('MM/DD/YY h:mm:ss a') }}"
                 class="form-control"
                 readonly>
             <span class="input-group-btn">
@@ -64,7 +64,7 @@
             <input
                 id="campaignEndDate"
                 type="text"
-                value="{{ model.endDate | momentFormatter : 'MM/DD/YY h:mm:ss a' }}"
+                value="{{ model.endDate.format('MM/DD/YY h:mm:ss a') }}"
                 class="form-control"
                 readonly>
             <span class="input-group-btn">

@@ -24,22 +24,12 @@
       <div class="col-md-7">
         <label for="sectionSlug">Section URL</label>
         <div class="input-group">
-          <span class="input-group-addon">{{ EXTERNAL_URL }}/list/</span>
+          <span class="input-group-addon">{{ LIST_URL }}</span>
           <input id="sectionSlug" type="text" class="form-control" ng-model="model.slug">
-          <span class="input-group-btn">
-            <button
-                class="btn btn-info"
-                ng-if="model.slug"
-                clip-copy="EXTERNAL_URL + '/list/' + model.slug">
-              <i class="glyphicon glyphicon-paperclip"></i>
-            </button>
-            <button
-                class="btn btn-info"
-                ng-if="!model.slug"
-                disabled>
-              <i class="glyphicon glyphicon-paperclip"></i>
-            </button>
-          </span>
+          <copy-button
+              class="input-group-btn"
+              content="{{ LIST_URL + model.slug }}">
+          </copy-button>
         </div>
       </div>
     </div>

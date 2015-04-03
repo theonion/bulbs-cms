@@ -2,7 +2,7 @@
   <div class="clear-search-queries-container clearfix">
     <button
         ng-show="customSearchService.groupsList().length > 0"
-        class="btn-minimalized pull-right btn-clear-queries"
+        class="btn btn-xs btn-danger pull-right"
         ng-click="
           resetFilters();
           customSearchService.groupsClear()">
@@ -24,14 +24,16 @@
         $contentRetrieve();">
   </custom-search-group>
 
-  <button
-      class="btn-minimalized"
-      ng-click="
-        customSearchService.groupsAdd();
-        onUpdate();">
-    <i class="glyphicon glyphicon-plus"></i>
-    Add Another Query
-  </button>
+  <div class="clearfix">
+    <button
+        class="btn btn-primary pull-right"
+        ng-click="
+          customSearchService.groupsAdd();
+          onUpdate();">
+      <i class="glyphicon glyphicon-plus"></i>
+      Add Another Query
+    </button>
+  </div>
 </div>
 
 <custom-search-simple-content-search
@@ -114,12 +116,14 @@
     </div>
   </div>
 
-  <custom-search-content-item
-      ng-repeat="content in customSearchService.content.results"
-      model="content"
-      controller-service="customSearchService"
-      on-update="$contentRetrieve()">
-  </custom-search-content-item>
+  <div>
+    <custom-search-content-item
+        ng-repeat="content in customSearchService.content.results"
+        model="content"
+        controller-service="customSearchService"
+        on-update="$contentRetrieve()">
+    </custom-search-content-item>
+  </div>
 
   <pagination
       boundary-links="true"

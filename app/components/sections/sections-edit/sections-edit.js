@@ -12,7 +12,7 @@ angular.module('sections.edit', [
 
           $scope.routeId = $routeParams.id;
         },
-        templateUrl: routes.COMPONENTS_URL + 'sections/sections-edit/sections-edit-page.html',
+        template: '<sections-edit model-id="routeId"></sections-edit>',
         reloadOnSearch: false
       });
   });

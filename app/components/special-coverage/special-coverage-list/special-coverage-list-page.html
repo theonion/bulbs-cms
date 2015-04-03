@@ -3,7 +3,9 @@
 <div class="container col-xs-offset-1 col-xs-10">
   <cms-notify-container class="cms-notify-container"></cms-notify-container>
 
-  <h2>Special Coverage Lists</h2>
-
-  <special-coverage-list></special-coverage-list>
+  <list-page
+      cms-page="special-coverage"
+      model-factory="modelFactory"
+      tool-copy-content="'{{ LIST_URL }}' + record.slug ">
+  </list-page>
 </div>

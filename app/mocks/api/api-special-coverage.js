@@ -4,13 +4,12 @@ angular.module('bulbsCmsApp.mockApi.specialCoverage', [
   'bulbsCmsApp.mockApi.campaign',
   'bulbsCmsApp.mockApi.data',
   'lodash',
-  'slugify',
   'utils'
 ])
-  .run(['_', '$httpBackend', 'mockApiData', '$filter',
-  function (_, $httpBackend, mockApiData, $filter) {
+  .run(['_', '$httpBackend', 'mockApiData', 'Utils',
+  function (_, $httpBackend, mockApiData, Utils) {
 
-    var slugify = $filter('slugify');
+    var slugify = Utils.slugify;
 
     // special coverage
     var reSpecialCoverage = {
@@ -33,7 +32,7 @@ angular.module('bulbsCmsApp.mockApi.specialCoverage', [
               value: 'actually-use-this-value-123'
             }]
           }],
-          time: '1 day'
+          time: 'Past day'
         }],
         included_ids: [1],
         excluded_ids: [2],
