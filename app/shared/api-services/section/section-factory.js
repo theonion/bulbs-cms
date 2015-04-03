@@ -2,19 +2,31 @@
 
 angular.module('apiServices.section.factory', [
   'apiServices',
-  'apiServices.customSearch.count.factory'
+  'apiServices.customSearch.count.factory',
+  'apiServices.mixins.fieldDisplay'
 ])
   .factory('Section', function (_, CustomSearchCount, restmod) {
     var sectionEndpoint = 'section';
 
-    return restmod.model(sectionEndpoint).mix('NestedDirtyModel', {
+    return restmod.model(sectionEndpoint).mix('FieldDisplay', 'NestedDirtyModel', {
       $config: {
         name: 'Section',
         plural: 'Sections',
-        primaryKey: 'id'
+        primaryKey: 'id',
+        fieldDisplays: [{
+          title: 'Section Name',
+          value: 'record.name',
+          sorts: 'name'
+        }, {
+          title: 'Article Count',
+          value: 'record.$resultCount'
+        }]
       },
       query: {
         init: {}
+      },
+      promoted: {
+        init: true
       },
       $hooks: {
         'after-fetch': function () {

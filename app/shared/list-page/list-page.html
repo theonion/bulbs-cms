@@ -1,0 +1,85 @@
+<div class="list-page-heading">
+  <h2 class="pull-left">{{ namePlural }}</h2>
+
+  <button
+      class="btn btn-primary pull-right"
+      ng-click="$add()">
+    <i class="glyphicon glyphicon-plus"></i>
+    Add {{ name }}
+  </button>
+
+  <div class="clearfix"></div>
+</div>
+
+<div ng-if="$list.length > 0">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <td
+            ng-class="{'td-sorts': field.sorts}"
+            ng-repeat="field in fields track by $index"
+            ng-click="$sort(field)">
+          {{ field.title }}
+          <i
+              class="fa fa-sort"
+              ng-show="field.sorts && sortingField !== field.title">
+          </i>
+          <i
+            class="fa fa-sort-asc"
+            ng-show="field.sorts && sortDirection === 'asc'  && sortingField === field.title">
+          </i>
+          <i
+            class="fa fa-sort-desc"
+            ng-show="field.sorts && sortDirection ==='desc' && sortingField === field.title">
+          </i>
+        </td>
+        <td></td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="item in $list">
+        <td ng-repeat="field in fields">
+          {{ field.evaluate(item) }}
+        </td>
+        <td>
+          <a href="/cms/app/{{ cmsPage }}/edit/{{ item.id }}/">
+            <button class="btn btn-xs btn-info">
+              <i class="glyphicon glyphicon-pencil"></i>
+            </button>
+          </a>
+          <copy-button
+              ng-if="toolCopyContent"
+              content="{{ copyContentInContext(item) }}"
+              button-classes-default="btn btn-xs btn-info"
+              button-classes-success="btn btn-xs btn-success">
+          </copy-button>
+          <button
+              class="btn btn-xs btn-danger"
+              confirmation-modal-opener
+              modal-body="Are you sure you want to delete this {{ name }}?"
+              modal-title="Delete {{ name }}"
+              modal-ok-text="Delete"
+              modal-on-ok="$remove(item)">
+            <i class="glyphicon glyphicon-remove"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <pagination
+      boundary-links="true"
+      ng-change="$retrieve()"
+      ng-model="$list.$page"
+      max-size="10"
+      total-items="$list.$totalCount"
+      previous-text="&lsaquo;"
+      next-text="&rsaquo;"
+      first-text="&laquo;"
+      last-text="&raquo;">
+  </pagination>
+</div>
+
+<div class="text-primary no-items-message" ng-if="$list.length === 0">
+  No {{ namePlural }}, click "Add {{ name }}" below to add the first {{ name }}!
+</div>

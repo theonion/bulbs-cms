@@ -7,15 +7,18 @@ angular.module('specialCoverage.edit.directive', [
   'apiServices.campaign.factory',
   'customSearch',
   'specialCoverage.edit.videos.directive',
+  'specialCoverage.settings',
   'topBar',
   'ui.bootstrap.tooltip',
   'VideohubClient'
 ])
   .directive('specialCoverageEdit', function (routes) {
     return {
-      controller: function ($location, $q, $scope, EXTERNAL_URL, SpecialCoverage, Campaign) {
+      controller: function ($location, $q, $scope, Campaign, EXTERNAL_URL,
+          SPECIAL_COVERAGE_LIST_REL_PATH, SpecialCoverage) {
+
         $scope.ACTIVE_STATES = SpecialCoverage.ACTIVE_STATES;
-        $scope.EXTERNAL_URL = EXTERNAL_URL;
+        $scope.LIST_URL = EXTERNAL_URL + SPECIAL_COVERAGE_LIST_REL_PATH;
 
         $scope.needsSave = false;
 

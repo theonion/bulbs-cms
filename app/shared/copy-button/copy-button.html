@@ -1,0 +1,19 @@
+<button
+    class="{{ buttonClassesDefault || 'btn btn-info' }}"
+    ng-if="!okCopy && content"
+    ng-click="okCopyButton()"
+    clip-copy="content">
+  <i class="glyphicon glyphicon-paperclip"></i>
+</button>
+<button
+    class="{{ buttonClassesSuccess || 'btn btn-success' }}"
+    ng-if="okCopy"
+    disabled>
+  <i class="glyphicon glyphicon-ok"></i>
+</button>
+<button
+    class="{{ buttonClassesDefault || 'btn btn-info' }}"
+    ng-if="!okCopy && !content"
+    disabled>
+  <i class="glyphicon glyphicon-paperclip"></i>
+</button>

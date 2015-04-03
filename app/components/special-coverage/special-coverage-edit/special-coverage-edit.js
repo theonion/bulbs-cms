@@ -12,6 +12,6 @@ angular.module('specialCoverage.edit', [
 
           $scope.routeId = $routeParams.id;
         },
-        templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit-page.html'
+        template: '<special-coverage-edit model-id="routeId"></special-coverage-edit>'
       });
   });

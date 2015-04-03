@@ -190,7 +190,8 @@ module.exports = function (grunt) {
           cwd: '<%= yeoman.app %>',
           src: [
             'styles/{,*/}*.less',
-            'components/**/*.less'
+            'components/**/*.less',
+            'shared/**/*.less'
           ],
           dest: '.tmp/',
           ext: '.css'
@@ -413,6 +414,7 @@ module.exports = function (grunt) {
           'app/index.html': [
             '.tmp/components/**/*.css',
             'app/components/**/*.js',
+            '.tmp/shared/**/*.css',
             'app/shared/**/*.js',
             'app/scripts/directives/*.js',
             'app/scripts/directives/autocomplete/*.js',
@@ -465,7 +467,11 @@ module.exports = function (grunt) {
     ngtemplates: {
       bulbsCmsApp: {
         cwd: '<%= yeoman.app %>',
-        src: ['views/{,*/}*.html', 'components/**/*.html'],
+        src: [
+          'views/{,*/}*.html',
+          'components/**/*.html',
+          'shared/**/*.html'
+        ],
         dest: '.tmp/concat/scripts/templates.js',
         options: {
           url:    function (url) { return '/' + url; },

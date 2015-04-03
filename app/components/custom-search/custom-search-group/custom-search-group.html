@@ -40,13 +40,13 @@
     </div>
 
     <button
-        class="btn-minimalized"
+        class="btn btn-xs btn-info"
         ng-click="controllerService.groupsConditionsAdd(groupIndex); $update()">
       <i class="glyphicon glyphicon-plus"></i>
       Add a Condition
     </button>
     <button
-        class="btn-minimalized btn-add-time-period"
+        class="btn btn-xs btn-info"
         ng-if="!controllerService.groupsTimePeriodGet(groupIndex)"
         ng-click="controllerService.groupsTimePeriodSet(groupIndex); $update()">
       <i class="glyphicon glyphicon-plus"></i>

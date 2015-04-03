@@ -3,19 +3,46 @@
 angular.module('apiServices.specialCoverage.factory', [
   'apiServices',
   'apiServices.campaign.factory',
+  'apiServices.mixins.fieldDisplay',
   'VideohubClient.api'
 ])
-  .factory('SpecialCoverage', function (_, restmod, Video) {
+  .factory('SpecialCoverage', function (_, $parse, restmod, Video) {
     var ACTIVE_STATES = {
       INACTIVE: 'Inactive',
       ACTIVE: 'Active',
       PROMOTED: 'Pin to HP'
     };
 
-    return restmod.model('special-coverage').mix('NestedDirtyModel', {
+    return restmod.model('special-coverage').mix('FieldDisplay', 'NestedDirtyModel', {
       $config: {
-        name: 'SpecialCoverage',
-        primaryKey: 'id'
+        name: 'Special Coverage',
+        plural: 'Special Coverages',
+        primaryKey: 'id',
+        fieldDisplays: [{
+          title: 'List Title',
+          value: 'record.name',
+          sorts: 'name'
+        }, {
+          title: 'Sponsor',
+          value: 'record.campaign.sponsorName || "--"',
+          sorts: 'campaign__sponsor_name'
+        }, {
+          title: 'Campaign',
+          value: 'record.campaign.campaignLabel || "--"',
+          sorts: 'campaign__campaign_label'
+        }, {
+          title: 'Status',
+          value: 'record.$activeState()',
+          sorts: function (direction) {
+            var sorting;
+            if (direction === 'asc') {
+              sorting = 'promoted,active';
+            } else {
+              sorting = '-promoted,-active';
+            }
+            return sorting;
+          }
+        }]
       },
 
       campaign: {
@@ -33,6 +60,12 @@ angular.module('apiServices.specialCoverage.factory', [
         belongsToMany: 'Video',
         keys: 'videos',
         init: []
+      },
+      active: {
+        init: true
+      },
+      promoted: {
+        init: false
       },
 
       $hooks: {

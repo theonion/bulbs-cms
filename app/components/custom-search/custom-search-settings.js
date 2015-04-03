@@ -24,14 +24,14 @@ angular.module('customSearch.settings', [])
     }
   }])
   .value('CUSTOM_SEARCH_CONDITION_TYPES', [{
-    name: 'is none of',
-    value: 'none'
+    name: 'is any of',
+    value: 'any'
   }, {
     name: 'is all of',
     value: 'all'
   }, {
-    name: 'is any of',
-    value: 'any'
+    name: 'is none of',
+    value: 'none'
   }])
   .value('CUSTOM_SEARCH_TIME_PERIODS', [{
     name: 'Past Day',

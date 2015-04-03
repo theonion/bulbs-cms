@@ -4,14 +4,18 @@ angular.module('sections.edit.directive', [
   'apiServices.section.factory',
   'BettyCropper',
   'bulbsCmsApp.settings',
+  'copyButton',
   'customSearch',
   'saveButton.directive',
+  'sections.settings',
   'topBar'
 ])
   .directive('sectionsEdit', function (routes) {
     return {
-      controller: function ($location, $q, $scope, EXTERNAL_URL, Section) {
-        $scope.EXTERNAL_URL = EXTERNAL_URL;
+      controller: function ($location, $q, $scope, EXTERNAL_URL,
+          SECTIONS_LIST_REL_PATH, Section) {
+
+        $scope.LIST_URL = EXTERNAL_URL + SECTIONS_LIST_REL_PATH;
 
         $scope.needsSave = false;
 
