@@ -88,12 +88,14 @@
   </div>
   <div class="row tab-content well">
     <div id="paneQuery" role="tabpanel" class="tab-pane active">
+      <h4>Content List</h4>
       <custom-search
           ng-model="model.query"
           on-update="needsSave = true">
       </custom-search>
     </div>
     <div id="paneVideos" role="tabpanel" class="tab-pane">
+      <h4>Video Playlist</h4>
       <special-coverage-edit-videos
           videos="model.videos"
           on-update="needsSave = true"

@@ -2,9 +2,9 @@
 
 angular.module('confirmationModal', [
   'bulbsCmsApp.settings',
-  'ui.bootstrap.modal'
+  'confirmationModal.factory'
 ])
-  .directive('confirmationModalOpener', function ($modal, routes) {
+  .directive('confirmationModalOpener', function (ConfirmationModal) {
     return {
       restrict: 'A',
       scope: {
@@ -19,22 +19,7 @@ angular.module('confirmationModal', [
         var modalInstance = null;
         element.addClass('confirmation-modal-opener');
         element.on('click', function () {
-          modalInstance = $modal
-            .open({
-              controller: function ($scope, $modalInstance) {
-                $scope.confirm = function () {
-                  $scope.$close();
-                  $scope.modalOnOk();
-                };
-
-                $scope.cancel = function () {
-                  $scope.$dismiss();
-                  $scope.modalOnCancel();
-                };
-              },
-              scope: scope,
-              templateUrl: routes.COMPONENTS_URL + 'confirmation-modal/confirmation-modal.html'
-            });
+          modalInstance = new ConfirmationModal(scope);
         });
       }
     };

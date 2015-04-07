@@ -36,7 +36,7 @@
     "angular-uuid4": "~0.3.0",
     "angular-ui-sortable": "~0.13.3",
     "angular-restmod": "~1.1.8",
-    "videohub-client-js": "theonion/videohub-client-js#0.1.6",
+    "videohub-client-js": "theonion/videohub-client-js#0.1.7",
     "restmod-style-drf-paged": "~0.0.2"
   },
   "resolutions": {

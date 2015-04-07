@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('specialCoverage.edit.videos.video.directive', [
-  'bulbsCmsApp.settings'
+  'bulbsCmsApp.settings',
+  'filters.moment'
 ])
   .directive('specialCoverageEditVideosVideo', function (routes) {
     return {

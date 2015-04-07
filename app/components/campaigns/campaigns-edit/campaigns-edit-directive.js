@@ -1,33 +1,24 @@
 'use strict';
 
-angular.module('sections.edit.directive', [
-  'apiServices.section.factory',
+angular.module('campaigns.edit.directive', [
+  'apiServices.campaign.factory',
   'BettyCropper',
   'bulbsCmsApp.settings',
-  'copyButton',
-  'customSearch',
+  'campaigns.edit.sponsorPixel',
   'lodash',
   'saveButton.directive',
-  'sections.settings',
   'topBar'
 ])
-  .directive('sectionsEdit', function (routes) {
+  .directive('campaignsEdit', function (routes) {
     return {
-      controller: function (_, $location, $q, $scope, EXTERNAL_URL,
-          SECTIONS_LIST_REL_PATH, Section) {
+      controller: function (_, $location, $q, $routeParams, $scope, Campaign) {
 
-        $scope.LIST_URL = EXTERNAL_URL + SECTIONS_LIST_REL_PATH;
-
-        $scope.needsSave = false;
-
-        var modelId = $scope.getModelId();
-        if (modelId === 'new') {
-          // this is a new section, build it
-          $scope.model = Section.$build();
+        // populate model for use
+        if ($routeParams.id === 'new') {
+          $scope.model = Campaign.$build();
           $scope.isNew = true;
         } else {
-          // this is an existing special coverage, find it
-          $scope.model = Section.$find($scope.getModelId());
+          $scope.model = Campaign.$find($routeParams.id);
         }
 
         window.onbeforeunload = function (e) {
@@ -42,17 +33,26 @@ angular.module('sections.edit.directive', [
           delete window.onbeforeunload;
         });
 
+        $scope.addPixel = function () {
+          var pixel = {
+            url: '',
+            campaign_type: ''
+          };
+          $scope.model.pixels.push(pixel);
+        };
+
+        $scope.deletePixel = function (pixel) {
+          $scope.model.pixels = _.without($scope.model.pixels, pixel);
+        };
+
+        // set up save state function
         $scope.saveModel = function () {
           var promise;
 
           if ($scope.model) {
             // have model, use save promise as deferred
             promise = $scope.model.$save().$asPromise().then(function (data) {
-              if (modelId === 'new') {
-                $location.path('/cms/app/section/edit/' + data.id + '/');
-              }
-              $scope.isNew = false;
-              $scope.needsSave = false;
+              $location.path('/cms/app/campaigns/edit/' + data.id + '/');
             });
           } else {
             // no model, this is an error, defer and reject
@@ -68,6 +68,6 @@ angular.module('sections.edit.directive', [
       scope: {
         getModelId: '&modelId'
       },
-      templateUrl: routes.COMPONENTS_URL + 'sections/sections-edit/sections-edit.html'
+      templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-edit/campaigns-edit.html',
     };
   });

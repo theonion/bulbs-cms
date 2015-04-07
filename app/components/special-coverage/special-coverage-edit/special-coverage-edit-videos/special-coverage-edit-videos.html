@@ -1,30 +1,52 @@
-<h4>Video Playlist</h4>
-<div>
-  <span class="video-list-title">Current List</span>
+<div class="video-list-title">
+  <span class="bold">Current List</span>
   <span>
     Items in List:
-    <span class="video-count">{{ videos.length }}</span>
+    <span class="bold">{{ videos.length }}</span>
   </span>
 </div>
-<videohub-suggest on-select="addVideo(video)"></videohub-suggest>
-<ul ng-if="videos.length > 0" ui-sortable ng-model="videos">
+
+<autocomplete-basic
+    class="form-control"
+    item-display-formatter="item.title"
+    on-select="addVideo(selection.value); $parent.needsSave = true"
+    input-id="specialCoverageVideoSearch"
+    input-placeholder="Search {{ videoChannel }} videos..."
+    search-function="searchVideos">
+</autocomplete-basic>
+
+<ul
+    class="video-list-videos"
+    ng-if="videos.length > 0"
+    ui-sortable="sortableOptions"
+    ng-model="videos">
   <li ng-repeat="video in videos">
-    <button
-        ng-click="moveUp($index)"
-        ng-disabled="$first">
-      <i class="glyphicon glyphicon-chevron-up"></i>
-    </button>
-    <button
-        ng-click="moveDown($index)"
-        ng-disabled="$last">
-      <i class="glyphicon glyphicon-chevron-down"></i>
-    </button>
-    <special-coverage-edit-videos-video model="video"></special-coverage-edit-videos-video>
-    <button ng-click="delete($index)">
-      <i class="glyphicon glyphicon-remove"></i>
-    </button>
+    <div class="wrapper-tools">
+      <button
+          class="btn btn-danger rm-btn"
+          ng-click="delete($index)">
+        <i class="glyphicon glyphicon-remove"></i>
+      </button>
+      <button
+          class="btn btn-info up-btn"
+          ng-click="moveUp($index)"
+          ng-disabled="$first">
+        <i class="glyphicon glyphicon-chevron-up"></i>
+      </button>
+      <button
+          class="btn btn-info dn-btn"
+          ng-click="moveDown($index)"
+          ng-disabled="$last">
+        <i class="glyphicon glyphicon-chevron-down"></i>
+      </button>
+    </div>
+    <special-coverage-edit-videos-video
+        model="video">
+    </special-coverage-edit-videos-video>
   </li>
 </ul>
-<div ng-if="videos.length === 0">
+<div
+    class="text-primary"
+    ng-if="videos.length === 0">
   There are no videos in this list, search for a video to add to playlist.
 </div>

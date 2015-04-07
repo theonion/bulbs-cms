@@ -35,22 +35,26 @@ module.exports = function (grunt) {
 
     // Watches files for changes and runs tasks based on the changed files
     watch: {
+      options: {
+        livereload: '<%= connect.options.livereload %>'
+      },
       livereload: {
-        options: {
-          livereload: '<%= connect.options.livereload %>'
-        },
         files: [
-          '<%= yeoman.app %>/styles/{,*/}*.less',
           '<%= yeoman.app %>/{,*/}*.html',
-          '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
-          '<%= yeoman.app %>/scripts/{,*/}*.js',
+          '<%= yeoman.app %>/images/**/*.{png,jpg,jpeg,gif,webp,svg}',
+          '<%= yeoman.app %>/scripts/**/*.js',
           '<%= yeoman.app %>/components/**/*.{html,js,less}',
-          '<%= yeoman.app %>/shared/{,*/}*.{html,js,less}',
+          '<%= yeoman.app %>/shared/**/*.{html,js,less}',
           'test/spec/{,*/}*.js',
-          'Gruntfile.js'
+          'Gruntfile.js',
+          'app/styles/**/*.less',
+          '!app/styles/_mixins.less',
+          '!app/styles/_components.less',
+          '!app/styles/_shared.less'
         ],
         tasks: [
-          'newer:less',
+          'injector:less_components',
+          'less',
           'newer:karma:ci',
           'newer:jshint:all',
           'injector:local_dependencies'
@@ -184,19 +188,18 @@ module.exports = function (grunt) {
     },
 
     less: {
-      development: {
+      production: {
         files: [{
           expand: true,
           cwd: '<%= yeoman.app %>',
           src: [
-            'styles/{,*/}*.less',
-            'components/**/*.less',
-            'shared/**/*.less'
+            'styles/**/*.less',
+            '!**/_*.less'
           ],
           dest: '.tmp/',
           ext: '.css'
         }]
-      },
+      }
     },
 
     // Renames files for browser caching purposes
@@ -397,22 +400,32 @@ module.exports = function (grunt) {
     injector: {
       options: {
         addRootSlash: false,
-        transform: function (filepath) {
-          filepath = filepath.replace(/app\/|.tmp\//i, '');
-          var e = path.extname(filepath).slice(1);
-          if (e === 'css') {
-            return '<link rel="stylesheet" href="' + filepath + '">';
-          } else if (e === 'js') {
-            return '<script src="' + filepath + '"></script>';
-          } else if (e === 'html') {
-            return '<link rel="import" href="' + filepath + '">';
+      },
+      less_components: {
+        files: {
+          'app/styles/_components.less': [
+            'app/components/**/*.less'
+          ],
+          'app/styles/_shared.less': [
+            'app/shared/**/*.less'
+          ]
+        },
+        options: {
+          endtag: '// endinjector:less_components',
+          sort: function (a, b) {
+            return a < b;
+          },
+          starttag: '// injector:less_components',
+          transform: function (filepath) {
+            filepath = filepath.replace(/app\//, '../');
+            return '@import "' + filepath + '";';
           }
         }
       },
       local_dependencies: {
         files: {
           'app/index.html': [
-            '.tmp/components/**/*.css',
+            '.tmp/styles/*.css',
             'app/components/**/*.js',
             '.tmp/shared/**/*.css',
             'app/shared/**/*.js',
@@ -423,6 +436,19 @@ module.exports = function (grunt) {
             'app/scripts/filters/*.js',
             '!**/*.tests.js'
           ],
+        },
+        options: {
+          transform: function (filepath) {
+            filepath = filepath.replace(/app\/|.tmp\//i, '');
+            var e = path.extname(filepath).slice(1);
+            if (e === 'css') {
+              return '<link rel="stylesheet" href="' + filepath + '">';
+            } else if (e === 'js') {
+              return '<script src="' + filepath + '"></script>';
+            } else if (e === 'html') {
+              return '<link rel="import" href="' + filepath + '">';
+            }
+          }
         }
       }
     },
@@ -536,6 +562,7 @@ module.exports = function (grunt) {
       'clean:server',
       'wiredep',
       'concurrent:server',
+      'injector:less_components',
       'less',
       'autoprefixer',
       'injector:local_dependencies',
@@ -558,6 +585,7 @@ module.exports = function (grunt) {
       'clean:server',
       'wiredep',
       'concurrent:server',
+      'injector:less_components',
       'less',
       'autoprefixer',
       'injector:local_dependencies',
@@ -590,6 +618,7 @@ module.exports = function (grunt) {
     'shell:bower_update',
     'wiredep',
     'ngtemplates',
+    'injector:less_components',
     'less',
     'injector:local_dependencies',
     'useminPrepare',
