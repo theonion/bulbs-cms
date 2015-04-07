@@ -6,15 +6,15 @@ angular.module('specialCoverage.edit.directive', [
   'bulbsCmsApp.settings',
   'apiServices.campaign.factory',
   'customSearch',
+  'lodash',
   'specialCoverage.edit.videos.directive',
   'specialCoverage.settings',
   'topBar',
-  'ui.bootstrap.tooltip',
-  'VideohubClient'
+  'ui.bootstrap.tooltip'
 ])
   .directive('specialCoverageEdit', function (routes) {
     return {
-      controller: function ($location, $q, $scope, Campaign, EXTERNAL_URL,
+      controller: function (_, $location, $q, $scope, Campaign, EXTERNAL_URL,
           SPECIAL_COVERAGE_LIST_REL_PATH, SpecialCoverage) {
 
         $scope.ACTIVE_STATES = SpecialCoverage.ACTIVE_STATES;
@@ -31,6 +31,18 @@ angular.module('specialCoverage.edit.directive', [
           // this is an existing special coverage, find it
           $scope.model = SpecialCoverage.$find($scope.getModelId());
         }
+
+        window.onbeforeunload = function (e) {
+          if (!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
+            // unsaved changes, show confirmation alert
+            return 'You have unsaved changes.';
+          }
+        };
+
+        $scope.$on('$destroy', function() {
+          // ensure even is cleaned up when we leave
+          delete window.onbeforeunload;
+        });
 
         $scope.saveModel = function () {
           var promise;

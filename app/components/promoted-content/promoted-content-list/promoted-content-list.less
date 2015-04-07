@@ -1,13 +1,5 @@
 promoted-content-list {
   @box-shadow-active: 0px 0px 24px 1px #8fcb8f;
-  @inactive-color:#aaaaaa;
-
-  .transition (@transition) {
-    -webkit-transition: @transition;
-    -moz-transition:    @transition;
-    -ms-transition:     @transition;
-    -o-transition:      @transition;
-  }
 
   display: block;
   margin-bottom: 20px;
@@ -33,36 +25,6 @@ promoted-content-list {
     }
   }
 
-  .dropzone {
-    .transition(box-shadow 250ms);
-
-    background-color: lighten(@inactive-color, 20%);
-    border: 3px dashed @inactive-color;
-    box-shadow: none;
-    color: @inactive-color;
-    display: block;
-    min-height: 50px;
-    text-align: center;
-    font-weight: bold;
-    position: relative;
-
-    &:hover {
-      box-shadow: @box-shadow-active;
-    }
-  }
-
-  .mixin-dropzone-content(@text) {
-    float: left;
-    height: 100%;
-    width: 100%;
-    content: @text;
-    position: absolute;
-    top: 25%;
-    right: 0;
-    left: 0;
-    bottom: 50%;
-  }
-
   .content-cutoff {
     border-top: 1px solid;
     text-align: center;
@@ -73,6 +35,10 @@ promoted-content-list {
     margin-bottom: 15px;
     font-size: 12px;
     width: 100%;
+  }
+
+  .dropzone {
+    .mixin-dropzone(#aaaaaa, @box-shadow-active);
   }
 
   .dropzone-no-content {
@@ -109,7 +75,7 @@ promoted-content-list {
       }
 
       .article-wrapper {
-        .transition(box-shadow 250ms);
+        .mixin-transition(box-shadow 250ms);
 
         -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, .05);
         box-shadow: 0 2px 2px rgba(0, 0, 0, .05);

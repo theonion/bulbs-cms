@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * Autocomplete directive that should cover most autocomplete situations.
+ */
 angular.module('autocompleteBasic', [
   'BulbsAutocomplete',
   'BulbsAutocomplete.suggest',

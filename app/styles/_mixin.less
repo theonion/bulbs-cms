@@ -1,0 +1,68 @@
+.mixin-list-item-wrapper {
+
+  .wrapper-content {
+    padding: 0 20px 0 0;
+
+    .content-id {
+      font-size: 0.9em;
+      color: #777;
+    }
+
+    .content-title {
+      font-weight: bold;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .wrapper-published {
+    padding: 0;
+
+    .published-top {
+      font-weight: bold;
+      font-size: 0.9em;
+    }
+
+    .published-date {
+      font-size: 0.9em;
+    }
+  }
+}
+
+.mixin-transition (@transition) {
+  -webkit-transition: @transition;
+  -moz-transition:    @transition;
+  -ms-transition:     @transition;
+  -o-transition:      @transition;
+}
+
+.mixin-dropzone (@inactive-color, @box-shadow-active) {
+  .mixin-transition(box-shadow 250ms);
+
+  background-color: lighten(@inactive-color, 20%);
+  border: 3px dashed @inactive-color;
+  box-shadow: none;
+  color: @inactive-color;
+  display: block;
+  min-height: 50px;
+  text-align: center;
+  font-weight: bold;
+  position: relative;
+
+  &:hover {
+    box-shadow: @box-shadow-active;
+  }
+}
+
+.mixin-dropzone-content (@text) {
+  float: left;
+  height: 100%;
+  width: 100%;
+  content: @text;
+  position: absolute;
+  top: 25%;
+  right: 0;
+  left: 0;
+  bottom: 50%;
+}
