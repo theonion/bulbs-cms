@@ -734,9 +734,10 @@ angular.module('autocompleteBasic', [
   'BulbsAutocomplete.suggest',
   'bulbsCmsApp.settings'
 ])
+  .value('AUTOCOMPLETE_BASIC_DEBOUNCE', 200)
   .directive('autocompleteBasic', function (routes) {
     return {
-      controller: function (_, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS) {
+      controller: function (_, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS, AUTOCOMPLETE_BASIC_DEBOUNCE) {
 
         $scope.writables = {
           searchTerm: ''
@@ -757,13 +758,13 @@ angular.module('autocompleteBasic', [
             });
         };
 
-        $scope.updateAutocomplete = function () {
+        $scope.updateAutocomplete = _.debounce(function () {
           if ($scope.writables.searchTerm) {
             $getItems().then(function (results) {
               $scope.autocompleteItems = results;
             });
           }
-        };
+        }, AUTOCOMPLETE_BASIC_DEBOUNCE);
 
         $scope.delayClearAutocomplete = function () {
           _.delay(function () {
