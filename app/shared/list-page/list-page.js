@@ -55,6 +55,10 @@ angular.module('listPage', [
           item.$destroy();
         };
 
+        $scope.goToEditPage = function (item) {
+          $location.path('/cms/app/' + $scope.cmsPage + '/edit/' + item.id + '/');
+        };
+
         $scope.$retrieve();
       },
       restrict: 'E',
