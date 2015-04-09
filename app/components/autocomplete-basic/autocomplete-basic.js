@@ -102,16 +102,15 @@ angular.module('autocompleteBasic', [
           };
         }
       },
-      require: '?ngModel',
+      require: '?ngModel',          // optionally provide ng-model to have bind with an actual property
       restrict: 'E',
       scope: {
-        hideSearchIcon: '&',
-        inputId: '@',
-        inputPlaceholder: '@',
-        itemDisplayFormatter: '&',
-        onSelect: '&',
-        searchFunction: '=',
-        rerenderWhen: '='
+        hideSearchIcon: '&',        // true to hide search icon inside autocomplete
+        inputId: '@',               // id to give input, useful if input has a label
+        inputPlaceholder: '@',      // placeholder for input
+        itemDisplayFormatter: '&',  // formatter to use for autocomplete results
+        onSelect: '&',              // selection callback, recieves selection as argument
+        searchFunction: '='         // function to use for searching autocomplete results
       },
       templateUrl: routes.COMPONENTS_URL + 'autocomplete-basic/autocomplete-basic.html'
     };
