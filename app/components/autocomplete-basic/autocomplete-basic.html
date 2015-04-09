@@ -35,4 +35,9 @@
       items="autocompleteItems"
       on-select="handleSelect(selection)">
   </bulbs-autocomplete-suggest>
+  <div
+      ng-show="writables.searchTerm && autocompleteItems.length === 0"
+      class="no-results">
+    No results found
+  </div>
 </div>

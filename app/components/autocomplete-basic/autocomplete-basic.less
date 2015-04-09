@@ -30,15 +30,29 @@ autocomplete-basic {
       }
     }
 
-    bulbs-autocomplete-suggest {
+    .results-list {
       background-color: #fff;
       border: 1px solid #ccc;
       border-radius: 4px;
       display: block;
       left: 0;
+      max-height: 200px;
+      overflow-y: auto;
       position: absolute;
       width: 100%;
       z-index: 1000;
+    }
+
+    .no-results {
+      .results-list;
+
+      color: #aaa;
+      font-style: italic;
+      padding: 5px 5px;
+    }
+
+    bulbs-autocomplete-suggest {
+      .results-list;
 
       ul {
         list-style: none;

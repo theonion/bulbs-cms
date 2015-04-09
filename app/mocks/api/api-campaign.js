@@ -26,7 +26,7 @@ angular.module('bulbsCmsApp.mockApi.campaign', [
             url: 'http://example.com/pixel',
             pixel_type: 'Logo'
         }],
-      },{
+      }, {
         id: 2,
         sponsor_name: 'Parents Magazine',
         sponsor_logo: {
@@ -47,7 +47,7 @@ angular.module('bulbsCmsApp.mockApi.campaign', [
             pixel_type: 'Logo'
           }
         ],
-      },{
+      }, {
         id: 3,
         sponsor_name: 'Sponsor Name',
         sponsor_logo: {
