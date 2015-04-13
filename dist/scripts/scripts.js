@@ -3125,10 +3125,10 @@ angular.module('specialCoverage.edit.directive', [
   'apiServices.campaign.factory',
   'customSearch',
   'lodash',
-  'specialCoverage.edit.videos.directive',
   'specialCoverage.settings',
   'topBar',
-  'ui.bootstrap.tooltip'
+  'ui.bootstrap.tooltip',
+  'videoList'
 ])
   .directive('specialCoverageEdit', function (routes) {
     return {
@@ -3193,95 +3193,6 @@ angular.module('specialCoverage.edit.directive', [
         getModelId: '&modelId'
       },
       templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit.html'
-    };
-  });
-
-'use strict';
-
-angular.module('specialCoverage.edit.videos.directive', [
-  'autocompleteBasic',
-  'jquery',
-  'specialCoverage.edit.videos.video.directive',
-  'ui.sortable',
-  'utils',
-  'VideohubClient.api',
-  'VideohubClient.settings'
-])
-  .directive('specialCoverageEditVideos', function ($, routes) {
-    return {
-      controller: function (_, $scope, Utils, Video, VIDEOHUB_DEFAULT_CHANNEL) {
-
-        $scope.videoChannel = VIDEOHUB_DEFAULT_CHANNEL;
-
-        $scope.moveUp = function (index) {
-          Utils.moveTo($scope.videos, index, index - 1);
-          $scope.onUpdate();
-        };
-
-        $scope.moveDown = function (index) {
-          Utils.moveTo($scope.videos, index, index + 1);
-          $scope.onUpdate();
-        };
-
-        $scope.delete = function (index) {
-          Utils.removeFrom($scope.videos, index);
-          $scope.onUpdate();
-        };
-
-        $scope.addVideo = function (video) {
-          $scope.addVideoCallback({video: video});
-          $scope.onUpdate();
-        };
-
-        $scope.searchVideos = function (query) {
-          return Video.$postSearch({
-            query: query,
-            channel: VIDEOHUB_DEFAULT_CHANNEL
-          });
-        };
-
-      },
-      link: function (scope, element, attr) {
-
-        scope.sortableOptions = {
-          beforeStop: function (e, ui) {
-            ui.helper.css('margin-top', 0);
-          },
-          change: function (e, ui) {
-            ui.helper.css('margin-top', $(window).scrollTop());
-          },
-          containment: 'special-coverage-edit-videos',
-          distance: 3,
-          opacity: 0.75,
-          placeholder: 'dropzone',
-          start: function (e, ui) {
-            ui.helper.css('margin-top', $(window).scrollTop());
-          }
-        };
-      },
-      restrict: 'E',
-      scope: {
-        addVideoCallback: '&addVideo',
-        videos: '=',
-        onUpdate: '&'
-      },
-      templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit-videos/special-coverage-edit-videos.html'
-    };
-  });
-
-'use strict';
-
-angular.module('specialCoverage.edit.videos.video.directive', [
-  'bulbsCmsApp.settings',
-  'filters.moment'
-])
-  .directive('specialCoverageEditVideosVideo', function (routes) {
-    return {
-      restrict: 'E',
-      scope: {
-        model: '='
-      },
-      templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit-videos/special-coverage-edit-videos-video/special-coverage-edit-videos-video.html'
     };
   });
 
@@ -4420,6 +4331,95 @@ angular.module('utils', [])
     };
 
     return Utils;
+  });
+
+'use strict';
+
+angular.module('videoList.video.directive', [
+  'bulbsCmsApp.settings',
+  'filters.moment'
+])
+  .directive('videoListVideo', function (routes) {
+    return {
+      restrict: 'E',
+      scope: {
+        model: '='
+      },
+      templateUrl: routes.SHARED_URL + 'video-list/video-list-video/video-list-video.html'
+    };
+  });
+
+'use strict';
+
+angular.module('videoList', [
+  'autocompleteBasic',
+  'jquery',
+  'videoList.video.directive',
+  'ui.sortable',
+  'utils',
+  'VideohubClient.api',
+  'VideohubClient.settings'
+])
+  .directive('videoList', function ($, routes) {
+    return {
+      controller: function (_, $scope, Utils, Video, VIDEOHUB_DEFAULT_CHANNEL) {
+
+        $scope.videoChannel = VIDEOHUB_DEFAULT_CHANNEL;
+
+        $scope.moveUp = function (index) {
+          Utils.moveTo($scope.videos, index, index - 1);
+          $scope.onUpdate();
+        };
+
+        $scope.moveDown = function (index) {
+          Utils.moveTo($scope.videos, index, index + 1);
+          $scope.onUpdate();
+        };
+
+        $scope.delete = function (index) {
+          Utils.removeFrom($scope.videos, index);
+          $scope.onUpdate();
+        };
+
+        $scope.addVideo = function (video) {
+          $scope.addVideoCallback({video: video});
+          $scope.onUpdate();
+        };
+
+        $scope.searchVideos = function (query) {
+          return Video.$postSearch({
+            query: query,
+            channel: VIDEOHUB_DEFAULT_CHANNEL
+          });
+        };
+
+      },
+      link: function (scope, element, attr) {
+
+        scope.sortableOptions = {
+          beforeStop: function (e, ui) {
+            ui.helper.css('margin-top', 0);
+          },
+          change: function (e, ui) {
+            ui.helper.css('margin-top', $(window).scrollTop());
+          },
+          containment: 'video-list',
+          distance: 3,
+          opacity: 0.75,
+          placeholder: 'dropzone',
+          start: function (e, ui) {
+            ui.helper.css('margin-top', $(window).scrollTop());
+          }
+        };
+      },
+      restrict: 'E',
+      scope: {
+        addVideoCallback: '&addVideo',
+        videos: '=',
+        onUpdate: '&'
+      },
+      templateUrl: routes.SHARED_URL + 'video-list/video-list.html'
+    };
   });
 
 'use strict';
