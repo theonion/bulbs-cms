@@ -3,9 +3,18 @@ autocomplete-basic {
   position: relative;
 
   .selection-overlay {
+    display: table;
+    table-layout: fixed;
+    white-space: nowrap;
+    width: 100%;
 
     .selection-value {
       cursor: default;
+      display: table-cell;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: top;
+      width: 90%;
     }
   }
 
