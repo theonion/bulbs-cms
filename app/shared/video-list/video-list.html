@@ -10,7 +10,6 @@
     class="form-control"
     item-display-formatter="item.title"
     on-select="addVideo(selection.value); $parent.needsSave = true"
-    input-id="specialCoverageVideoSearch"
     input-placeholder="Search {{ videoChannel }} videos..."
     search-function="searchVideos">
 </autocomplete-basic>
@@ -40,9 +39,9 @@
         <i class="glyphicon glyphicon-chevron-down"></i>
       </button>
     </div>
-    <special-coverage-edit-videos-video
+    <video-list-video
         model="video">
-    </special-coverage-edit-videos-video>
+    </video-list-video>
   </li>
 </ul>
 <div
