@@ -7,10 +7,10 @@ angular.module('specialCoverage.edit.directive', [
   'apiServices.campaign.factory',
   'customSearch',
   'lodash',
-  'specialCoverage.edit.videos.directive',
   'specialCoverage.settings',
   'topBar',
-  'ui.bootstrap.tooltip'
+  'ui.bootstrap.tooltip',
+  'videoList'
 ])
   .directive('specialCoverageEdit', function (routes) {
     return {

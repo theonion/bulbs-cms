@@ -1,15 +1,15 @@
 'use strict';
 
-angular.module('specialCoverage.edit.videos.directive', [
+angular.module('videoList', [
   'autocompleteBasic',
   'jquery',
-  'specialCoverage.edit.videos.video.directive',
+  'videoList.video.directive',
   'ui.sortable',
   'utils',
   'VideohubClient.api',
   'VideohubClient.settings'
 ])
-  .directive('specialCoverageEditVideos', function ($, routes) {
+  .directive('videoList', function ($, routes) {
     return {
       controller: function (_, $scope, Utils, Video, VIDEOHUB_DEFAULT_CHANNEL) {
 
@@ -52,7 +52,7 @@ angular.module('specialCoverage.edit.videos.directive', [
           change: function (e, ui) {
             ui.helper.css('margin-top', $(window).scrollTop());
           },
-          containment: 'special-coverage-edit-videos',
+          containment: 'video-list',
           distance: 3,
           opacity: 0.75,
           placeholder: 'dropzone',
@@ -67,6 +67,6 @@ angular.module('specialCoverage.edit.videos.directive', [
         videos: '=',
         onUpdate: '&'
       },
-      templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit-videos/special-coverage-edit-videos.html'
+      templateUrl: routes.SHARED_URL + 'video-list/video-list.html'
     };
   });
