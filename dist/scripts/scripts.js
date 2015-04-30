@@ -6433,7 +6433,7 @@ angular.module('bulbsCmsApp')
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, moment, keypress, Raven, PNotify,
     IfExistsElse, VersionStorageApi, ContentFactory, FirebaseApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener,
-    routes, Campaign)
+    routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
@@ -6705,10 +6705,6 @@ angular.module('bulbsCmsApp')
       $timeout(function () {
         $window.history.back();
       }, 1500);
-    };
-
-    $scope.searchCampaigns = function (searchTerm) {
-      return Campaign.simpleSearch(searchTerm);
     };
 
   });
@@ -7547,22 +7543,22 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('SponsormodalCtrl', function ($scope, ContentFactory, article) {
+  .controller('SponsormodalCtrl', function ($scope, ContentFactory, article, Campaign) {
     $scope.article = article;
 
-    ContentFactory.all('sponsor').getList().then(function (data) {
-      $scope.sponsors = data;
-    });
+    if ($scope.article.campaign) {
+      $scope.campaign = Campaign.$find($scope.article.campaign);
+    } else {
+      $scope.campaign = null;
+    }
 
-    $scope.selectSponsor = function (sponsor) {
-      $scope.article.sponsor = sponsor.id;
+    $scope.updateArticle = function (selection) {
+      $scope.article.campaign = selection.value.id;
     };
 
-    $scope.clearSponsor = function () {
-      $scope.article.sponsor = null;
+    $scope.searchCampaigns = function (searchTerm) {
+      return Campaign.simpleSearch(searchTerm);
     };
-
-
   });
 
 'use strict';
