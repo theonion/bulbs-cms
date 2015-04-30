@@ -6433,7 +6433,7 @@ angular.module('bulbsCmsApp')
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, moment, keypress, Raven, PNotify,
     IfExistsElse, VersionStorageApi, ContentFactory, FirebaseApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener,
-    routes)
+    routes, Campaign)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
@@ -6705,6 +6705,10 @@ angular.module('bulbsCmsApp')
       $timeout(function () {
         $window.history.back();
       }, 1500);
+    };
+
+    $scope.searchCampaigns = function (searchTerm) {
+      return Campaign.simpleSearch(searchTerm);
     };
 
   });
