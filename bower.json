@@ -1,6 +1,6 @@
 {
   "name": "bulbs-cms",
-  "version": "0.9.129",
+  "version": "0.9.130",
   "dependencies": {},
   "devDependencies": {
     "angular": "~1.3.0",
