@@ -3,11 +3,20 @@
   <h4 class="modal-title">Sponsor</h4></div>
 
 <div class="modal-body">
-  <div class="list-group">
-    <a href="" class="list-group-item" ng-click="clearSponsor();" ng-class="{'active': !article.sponsor}"><h4 class="list-group-item-heading">No sponsor</h4></a>
-    <a href="" class="list-group-item" ng-repeat="sponsor in sponsors" ng-click="selectSponsor(sponsor);" ng-class="{'active': article.sponsor == sponsor.id}">
-      <h4 class="list-group-item-heading">
-        {{sponsor.name}}</h4></a></div></div>
+    <div class="form-group col-md-5">
+        <label for="specialCoverageCampaign">Sponsor Campaign</label>
+        <autocomplete-basic
+            class="form-control"
+            ng-if="!model.campaign || model.campaign.$resolved"
+            ng-model="campaign"
+            item-display-formatter="item.sponsorName + ' - ' + item.campaignLabel"
+            on-select="updateArticle(selection)"
+            input-id="specialCoverageCampaign"
+            input-placeholder="e.g. 0-1337 Honda"
+            search-function="searchCampaigns">
+        </autocomplete-basic>
+    </div>
+</div>
 
 <div class="modal-footer">
     <button class="btn btn-default" aria-hidden="true" ng-click="$dismiss();">Close</button></div>
