@@ -331,10 +331,10 @@ angular.module('bulbsCmsApp', [
 .constant('TIMEZONE_NAME', 'America/Chicago');
 
 angular.module('bulbs.api', [
+  'bulbsCmsApp.settings',
   'restangular',
   'moment'
 ])
-  .constant('RESTANGULAR_API_URL_ROOT', '/cms/api/v1/')
   .config(function (RestangularProvider, RESTANGULAR_API_URL_ROOT) {
     RestangularProvider.setBaseUrl(RESTANGULAR_API_URL_ROOT);
     RestangularProvider.setRequestSuffix('/');
@@ -3526,10 +3526,10 @@ angular.module('apiServices.styles', [
 'use strict';
 
 angular.module('apiServices', [
+  'apiServices.settings',
   'restmod',
   'restmod.styles.drfPaged'
 ])
-  .constant('API_URL_ROOT', '/cms/api/v1/')
   .config(function (API_URL_ROOT, restmodProvider) {
     restmodProvider.rebase('DjangoDRFPagedApi', {
       $config: {
@@ -3908,13 +3908,9 @@ angular.module('apiServices.specialCoverage.factory', [
 'use strict';
 
 angular.module('contentServices.factory', [])
-  .factory('ContentFactory', function (Restangular, contentApiConfig) {
-    return Restangular.withConfig(function (RestangularConfigurer) {
-      RestangularConfigurer.setBaseUrl(contentApiConfig.baseUrl);
-    });
-  })
-  .constant('contentApiConfig', {
-    baseUrl: '/cms/api/v1'
+  .factory('ContentFactory', function (Restangular) {
+// TODO : stupid passthrough until we get rid of restangular
+    return Restangular;
   });
 
 'use strict';
@@ -7819,7 +7815,7 @@ angular.module('bulbsCmsApp').factory('BugReportInterceptor', function ($q, $win
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .config(function (RestangularProvider, bulbsApiConfig, RESTANGULAR_API_URL_ROOT) {
+  .config(function (RestangularProvider, bulbsApiConfig) {
 
     // This is specific to Django Rest Framework
     RestangularProvider.setResponseExtractor(function (response, operation, what, url) {
