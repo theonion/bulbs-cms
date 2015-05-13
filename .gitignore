@@ -1,5 +1,11 @@
 node_modules
-dist
+
+# for testing
+#dist
+
+
+
+
 .tmp
 .sass-cache
 app/bower_components
