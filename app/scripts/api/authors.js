@@ -2,8 +2,6 @@
 
 angular.module('bulbs.api')
   .factory('AuthorService', function (Restangular) {
-    Restangular.setBaseUrl('/cms/api/v1/');
-    Restangular.setRequestSuffix('/');
     Restangular.extendModel('author', function (obj) {
       return angular.extend(obj, {
         getFullName: function () {

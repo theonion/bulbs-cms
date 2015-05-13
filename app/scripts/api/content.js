@@ -2,8 +2,6 @@
 
 angular.module('bulbs.api')
   .factory('ContentService', function (Restangular) {
-    Restangular.setBaseUrl('/cms/api/v1/');
-    Restangular.setRequestSuffix('/');
 
     Restangular.extendModel('content', function (obj) {
 
