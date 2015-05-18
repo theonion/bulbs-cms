@@ -19,7 +19,7 @@ angular.module('backendHref', [
         backendHref: '@'
       },
       link: function (scope, iElement) {
-        $(iElement).attr('href', $filter('backendHref')(scope.cmsHref));
+        $(iElement).attr('href', $filter('backendHref')(scope.backendHref));
       }
     };
   });
