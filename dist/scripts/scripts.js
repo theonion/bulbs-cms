@@ -255,6 +255,8 @@ angular.module('bulbsCmsApp', [
   'OnionEditor',
   // shared
   'contentServices',
+  'cms.config',
+  'backendHref',
   // components
   'campaigns',
   'filterWidget',
@@ -329,6 +331,8 @@ angular.module('bulbsCmsApp', [
   $http.defaults.headers.delete = deleteHeaders;
 })
 .constant('TIMEZONE_NAME', 'America/Chicago');
+
+'use strict';
 
 angular.module('bulbs.api', [
   'bulbsCmsApp.settings',
@@ -3903,6 +3907,62 @@ angular.module('apiServices.specialCoverage.factory', [
         }
       },
     });
+  });
+
+'use strict';
+
+/**
+ * Filter and directive that can be used in templates to build correct urls for the CMS.
+ */
+angular.module('backendHref', [
+  'cms.config',
+  'jquery'
+])
+  .filter('backendHref', function(CmsConfig) {
+    return function (relUrl) {
+      return CmsConfig.buildBackendUrl(relUrl);
+    };
+  })
+  .directive('backendHref', function ($, $filter) {
+    return {
+      restrict: 'A',
+      scope: {
+        backendHref: '@'
+      },
+      link: function (scope, iElement) {
+        $(iElement).attr('href', $filter('backendHref')(scope.backendHref));
+      }
+    };
+  });
+
+'use strict';
+
+angular.module('cms.config', [])
+  .provider('CmsConfig', function CmsConfigProvider () {
+    // root for all backend requests
+    var backendRoot = '';
+
+    this.setBackendRoot = function (value) {
+      if (typeof(value) === 'string') {
+        backendRoot = value;
+      } else {
+        throw new TypeError('CmsConfig.backendRoot must be a string!');
+      }
+    };
+
+    this.$get = function () {
+      return {
+        /**
+         * Create an absolute url to the backend for the CMS by using the backendRoot.
+         *
+         * @param {string} relUrl - relative url to get the absolute url for.
+         * @returns absolute url.
+         */
+        buildBackendUrl: function (relUrl) {
+          return backendRoot + relUrl;
+        }
+     };
+    };
   });
 
 'use strict';
