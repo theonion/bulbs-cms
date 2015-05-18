@@ -320,7 +320,11 @@
         angular.module('BettyCropper').constant('IMAGE_SERVER_URL', 'http://clickholeimg.local');
         angular.module('BettyCropper').constant('BC_API_KEY', 'http://clickholeimg.local');
 
-        angular.module('apiServices.settings', []).constant('API_URL_ROOT', '/cms/api/v1/');;
+        angular.module('apiServices.settings', []).constant('API_URL_ROOT', '/cms/api/v1/');
+
+        angular.module('bulbsCmsApp').config(function (CmsConfigProvider) {
+          CmsConfigProvider.setCmsUrlRoot('');
+        });
 
         angular.module('bulbsCmsApp.settings', [
           'ngClipboard',

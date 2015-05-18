@@ -35,6 +35,7 @@ angular.module('bulbsCmsApp', [
   'OnionEditor',
   // shared
   'contentServices',
+  'cms.config',
   // components
   'campaigns',
   'filterWidget',
