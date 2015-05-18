@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Filter: cmsHref', function () {
+describe('Filter: backendHref', function () {
   var $;
   var $compile;
   var $filter;
@@ -8,8 +8,8 @@ describe('Filter: cmsHref', function () {
   var cmsRoot = 'http://avclub.com';
 
   beforeEach(function () {
-    module('cmsHref', function (CmsConfigProvider) {
-      CmsConfigProvider.setCmsUrlRoot(cmsRoot);
+    module('backendHref', function (CmsConfigProvider) {
+      CmsConfigProvider.setBackendRoot(cmsRoot);
     });
 
     inject(function (_$_, _$compile_, _$filter_, _$rootScope_) {
@@ -22,12 +22,12 @@ describe('Filter: cmsHref', function () {
 
   it('should have a directive that adds an href property that is the full url', function () {
     var relUrl = '/something';
-    expect($filter('cmsHref')(relUrl)).toBe(cmsRoot + relUrl);
+    expect($filter('backendHref')(relUrl)).toBe(cmsRoot + relUrl);
   });
 
   it('should have a filter that can transform relative urls into full urls', function () {
     var relUrl = '/something';
-    var element = $compile('<a cms-href="' + relUrl + '"></a>')($scope.$new());
+    var element = $compile('<a backend-href="' + relUrl + '"></a>')($scope.$new());
     expect($(element).attr('href')).toBe(cmsRoot + relUrl);
   });
 });

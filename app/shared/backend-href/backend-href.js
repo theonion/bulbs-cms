@@ -3,23 +3,23 @@
 /**
  * Filter and directive that can be used in templates to build correct urls for the CMS.
  */
-angular.module('cmsHref', [
+angular.module('backendHref', [
   'cms.config',
   'jquery'
 ])
-  .filter('cmsHref', function(CmsConfig) {
+  .filter('backendHref', function(CmsConfig) {
     return function (relUrl) {
-      return CmsConfig.buildAbsoluteUrl(relUrl);
+      return CmsConfig.buildBackendUrl(relUrl);
     };
   })
-  .directive('cmsHref', function ($, $filter) {
+  .directive('backendHref', function ($, $filter) {
     return {
       restrict: 'A',
       scope: {
-        cmsHref: '@'
+        backendHref: '@'
       },
       link: function (scope, iElement) {
-        $(iElement).attr('href', $filter('cmsHref')(scope.cmsHref));
+        $(iElement).attr('href', $filter('backendHref')(scope.cmsHref));
       }
     };
   });

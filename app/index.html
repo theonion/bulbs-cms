@@ -218,6 +218,8 @@
     <script src="shared/api-services/custom-search/custom-search-settings.js"></script>
     <script src="shared/api-services/section/section-factory.js"></script>
     <script src="shared/api-services/special-coverage/special-coverage-factory.js"></script>
+    <script src="shared/backend-href/backend-href.js"></script>
+    <script src="shared/cms-config.js"></script>
     <script src="shared/content-services/content-factory.js"></script>
     <script src="shared/content-services/content-list-service.js"></script>
     <script src="shared/content-services/content-services.js"></script>
@@ -323,7 +325,7 @@
         angular.module('apiServices.settings', []).constant('API_URL_ROOT', '/cms/api/v1/');
 
         angular.module('bulbsCmsApp').config(function (CmsConfigProvider) {
-          CmsConfigProvider.setCmsUrlRoot('');
+          CmsConfigProvider.setBackendRoot('');
         });
 
         angular.module('bulbsCmsApp.settings', [

@@ -2,26 +2,27 @@
 
 angular.module('cms.config', [])
   .provider('CmsConfig', function CmsConfigProvider () {
-    var cmsUrlRoot = '';
+    // root for all backend requests
+    var backendRoot = '';
 
-    this.setCmsUrlRoot = function (value) {
+    this.setBackendRoot = function (value) {
       if (typeof(value) === 'string') {
-        cmsUrlRoot = value;
+        backendRoot = value;
       } else {
-        throw new TypeError('CmsConfig.cmsUrlRoot must be a string!');
+        throw new TypeError('CmsConfig.backendRoot must be a string!');
       }
     };
 
     this.$get = function () {
       return {
         /**
-         * Create an absolute url for the CMS by using the cmsUrlRoot.
+         * Create an absolute url to the backend for the CMS by using the backendRoot.
          *
          * @param {string} relUrl - relative url to get the absolute url for.
          * @returns absolute url.
          */
-        buildAbsoluteUrl: function (relUrl) {
-          return cmsUrlRoot + relUrl;
+        buildBackendUrl: function (relUrl) {
+          return backendRoot + relUrl;
         }
      };
     };
