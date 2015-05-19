@@ -26,7 +26,7 @@ angular.module('bulbsCmsApp')
       $window.article = $scope.article = data; //exposing article on window for debugging
 
       // figure out what template to use
-      $scope.templateUrl = CmsConfig.getEditPageMappings()[data.polymorphic_ctype];
+      $scope.templateUrl = CmsConfig.getEditPageTemplateUrl(data.polymorphic_ctype);
 
       $scope.last_saved_article = angular.copy(data);
 

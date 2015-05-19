@@ -3,6 +3,18 @@ angular.module('BettyCropper').constant('BC_API_KEY', 'http://localimages.avclub
 
 angular.module('apiServices.settings', []).constant('API_URL_ROOT', '/cms/api/v1/');
 
+angular.module('bulbsCmsApp')
+  .config(function (CmsConfigProvider, routes) {
+    CmsConfigProvider.setBackendRoot('');
+    CmsConfigProvider.setLogoUrl('/images/onion-logo.png');
+    CmsConfigProvider.setToolbarMappings({
+      toolbar: routes.PARTIALS_URL + 'toolbar.html'
+    });
+    CmsConfigProvider.setEditPageMappings({
+      content_content: routes.CONTENT_PARTIALS_URL + 'content_content.html'
+    });
+  });
+
 angular.module('bulbsCmsApp.settings', [])
   .constant('routes', {
     IMAGE_SERVER_URL: 'http://localimages.avclub.com',

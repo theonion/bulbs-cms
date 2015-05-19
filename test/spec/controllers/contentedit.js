@@ -69,10 +69,6 @@ describe('Controller: ContenteditCtrl', function () {
       httpBackend.verifyNoOutstandingRequest ();
     });
 
-    it('should have string CONTENT_PARTIALS_URL in scope', function () {
-      expect(typeof scope.CONTENT_PARTIALS_URL).toBe('string');
-    });
-
     it('should have string MEDIA_ITEM_PARTIALS_URL in scope', function () {
       expect(typeof scope.MEDIA_ITEM_PARTIALS_URL).toBe('string');
     });

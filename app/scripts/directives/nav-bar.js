@@ -8,8 +8,7 @@ angular.module('bulbsCmsApp')
       restrict: 'E',
       scope: false,
       templateUrl: function (tElement, tAttrs) {
-        var toolbars = CmsConfig.getToolbarMappings();
-        return tAttrs.view in toolbars ? toolbars[tAttrs.view] : defaultView;
+        return 'view' in tAttrs ? CmsConfig.getToolbarTemplateUrl(tAttrs.view) : defaultView;
       },
       link: function (scope) {
         scope.NAV_LOGO = CmsConfig.getLogoUrl();
