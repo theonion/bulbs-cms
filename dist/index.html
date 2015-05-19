@@ -331,6 +331,9 @@
             CmsConfigProvider.setToolbarMappings({
               toolbar: routes.PARTIALS_URL + 'toolbar.html'
             });
+            CmsConfigProvider.setEditPageMappings({
+              content_content: routes.CONTENT_PARTIALS_URL + 'content_content.html'
+            });
           });
 
         angular.module('bulbsCmsApp.settings', [

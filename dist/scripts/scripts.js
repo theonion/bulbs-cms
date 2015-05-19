@@ -3951,8 +3951,10 @@ angular.module('cms.config', [
     var backendRoot = '';
     // url for logo to display in CMS
     var logoUrl = '';
-    // url for custom toolbar on edit page
+    // mappings where pairs are <name>: <template-url> for looking up toolbar templates
     var toolbarMappings = {};
+    // mappings where pairs are <polymorphic_ctype>: <template-url> for looking up edit page templates
+    var editPageMappings = {};
 
     this.setBackendRoot = function (value) {
       if (_.isString(value)) {
@@ -3978,14 +3980,19 @@ angular.module('cms.config', [
       }
     };
 
+    this.setEditPageMappings = function (obj) {
+      if (_.isObject(obj)) {
+        editPageMappings = _.clone(obj);
+      } else {
+        throw new TypeError('CmsConfig.toolbarMappings must be an object!');
+      }
+    };
+
     this.$get = function () {
       return {
-        getLogoUrl: function () {
-          return logoUrl;
-        },
-        getToolbarMappings: function () {
-          return toolbarMappings;
-        },
+        getLogoUrl: _.constant(logoUrl),
+        getToolbarMappings: _.constant(_.clone(toolbarMappings)),
+        getEditPageMappings: _.constant(_.clone(editPageMappings)),
         /**
          * Create an absolute url to the backend for the CMS by using the backendRoot.
          *
@@ -6355,10 +6362,9 @@ angular.module('bulbsCmsApp')
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, moment, keypress, Raven, PNotify,
     IfExistsElse, VersionStorageApi, ContentFactory, FirebaseApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener,
-    routes)
+    routes, CmsConfig)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
-    $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
     $scope.MEDIA_ITEM_PARTIALS_URL = routes.MEDIA_ITEM_PARTIALS_URL;
     $scope.page = 'edit';
 
@@ -6374,6 +6380,9 @@ angular.module('bulbsCmsApp')
 
     var getArticleCallback = function (data) {
       $window.article = $scope.article = data; //exposing article on window for debugging
+
+      // figure out what template to use
+      $scope.templateUrl = CmsConfig.getEditPageMappings()[data.polymorphic_ctype];
 
       $scope.last_saved_article = angular.copy(data);
 
