@@ -3326,7 +3326,7 @@ angular.module('templateTypeField', [
  * Renders a topbar template based on a given path relative to "/components/".
  */
 angular.module('topBar.directive', [])
-  .directive('topBar', function (routes) {
+  .directive('topBar', function (routes, CmsConfig) {
     return {
       restrict: 'E',
       scope: {
@@ -3339,7 +3339,7 @@ angular.module('topBar.directive', [])
       },
       templateUrl: routes.COMPONENTS_URL + 'top-bar/top-bar-base.html',
       link: function (scope) {
-        scope.NAV_LOGO = routes.NAV_LOGO;
+        scope.NAV_LOGO = CmsConfig.getLogoUrl();
       }
     };
   });
@@ -3947,12 +3947,22 @@ angular.module('cms.config', [])
   .provider('CmsConfig', function CmsConfigProvider () {
     // root for all backend requests
     var backendRoot = '';
+    // url for logo to display in CMS
+    var logoUrl = '';
 
     this.setBackendRoot = function (value) {
       if (typeof(value) === 'string') {
         backendRoot = value;
       } else {
         throw new TypeError('CmsConfig.backendRoot must be a string!');
+      }
+    };
+
+    this.setLogoUrl = function (value) {
+      if (typeof(value) === 'string') {
+        logoUrl = value;
+      } else {
+        throw new TypeError('CmsConfig.logoUrl must be a string!');
       }
     };
 
@@ -3966,6 +3976,9 @@ angular.module('cms.config', [])
          */
         buildBackendUrl: function (relUrl) {
           return backendRoot + relUrl;
+        },
+        getLogoUrl: function () {
+          return logoUrl;
         }
      };
     };
@@ -5278,7 +5291,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('navBar', function (routes, navbar_options) {
+  .directive('navBar', function (CmsConfig, routes, navbar_options) {
     return {
       restrict: 'E',
       scope: false,
@@ -5291,7 +5304,7 @@ angular.module('bulbsCmsApp')
         }
       },
       link: function (scope) {
-        scope.NAV_LOGO = routes.NAV_LOGO;
+        scope.NAV_LOGO = CmsConfig.getLogoUrl();
       }
     };
   });
@@ -6798,13 +6811,12 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ContributionsCtrl', function (
-    $scope, $routeParams, $http, $window,
-    $location, $timeout, $compile, $q, $modal,
-    _, routes, ContributionRoleService, ContentService)
+  .controller('ContributionsCtrl', function ($scope, $routeParams, $http, $window,
+    $location, $timeout, $compile, $q, $modal, _, routes, ContributionRoleService, ContentService,
+    CmsConfig)
   {
 
-    $scope.NAV_LOGO = routes.NAV_LOGO;
+    $scope.NAV_LOGO = CmsConfig.getLogoUrl();
     $scope.contentId = parseInt($routeParams.id, 10);
     $scope.contributions = [];
     $scope.contributionLabels = [];
