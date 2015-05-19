@@ -30,10 +30,20 @@ angular.module('bulbsCmsApp')
               type: 'feature_type',
               q: fVal
             }),
-            {name: fVal},
-            function (ft) { scope.article.feature_type = ft.name; $('#feature-type-container').removeClass('newtag'); },
-            function (value) { scope.article.feature_type = value.name; $('#feature-type-container').addClass('newtag'); },
-            function (data, status) { Raven.captureMessage('Error Adding Feature Type', {extra: data}); }
+            {
+              name: fVal
+            },
+            function (ft) {
+              scope.article.feature_type = ft.name;
+              $('#feature-type-container').removeClass('newtag');
+            },
+            function (value) {
+              scope.article.feature_type = value.name;
+              $('#feature-type-container').addClass('newtag');
+            },
+            function (data, status) {
+              Raven.captureMessage('Error Adding Feature Type', {extra: data});
+            }
           );
         };
 
