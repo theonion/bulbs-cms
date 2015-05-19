@@ -8,8 +8,10 @@ angular.module('cms.config', [
     var backendRoot = '';
     // url for logo to display in CMS
     var logoUrl = '';
-    // url for custom toolbar on edit page
+    // mappings where pairs are <name>: <template-url> for looking up toolbar templates
     var toolbarMappings = {};
+    // mappings where pairs are <polymorphic_ctype>: <template-url> for looking up edit page templates
+    var editPageMappings = {};
 
     this.setBackendRoot = function (value) {
       if (_.isString(value)) {
@@ -35,14 +37,19 @@ angular.module('cms.config', [
       }
     };
 
+    this.setEditPageMappings = function (obj) {
+      if (_.isObject(obj)) {
+        editPageMappings = _.clone(obj);
+      } else {
+        throw new TypeError('CmsConfig.toolbarMappings must be an object!');
+      }
+    };
+
     this.$get = function () {
       return {
-        getLogoUrl: function () {
-          return logoUrl;
-        },
-        getToolbarMappings: function () {
-          return toolbarMappings;
-        },
+        getLogoUrl: _.constant(logoUrl),
+        getToolbarMappings: _.constant(_.clone(toolbarMappings)),
+        getEditPageMappings: _.constant(_.clone(editPageMappings)),
         /**
          * Create an absolute url to the backend for the CMS by using the backendRoot.
          *

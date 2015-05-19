@@ -6,10 +6,9 @@ angular.module('bulbsCmsApp')
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, moment, keypress, Raven, PNotify,
     IfExistsElse, VersionStorageApi, ContentFactory, FirebaseApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener,
-    routes)
+    routes, CmsConfig)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
-    $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
     $scope.MEDIA_ITEM_PARTIALS_URL = routes.MEDIA_ITEM_PARTIALS_URL;
     $scope.page = 'edit';
 
@@ -25,6 +24,9 @@ angular.module('bulbsCmsApp')
 
     var getArticleCallback = function (data) {
       $window.article = $scope.article = data; //exposing article on window for debugging
+
+      // figure out what template to use
+      $scope.templateUrl = CmsConfig.getEditPageMappings()[data.polymorphic_ctype];
 
       $scope.last_saved_article = angular.copy(data);
 
