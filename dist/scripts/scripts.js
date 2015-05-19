@@ -3956,11 +3956,25 @@ angular.module('cms.config', [
     // mappings where pairs are <polymorphic_ctype>: <template-url> for looking up edit page templates
     var editPageMappings = {};
 
+    var ConfigError = function (message) {
+      this.name = 'CmsConfigProvider Configuration Error';
+      this.message = message || 'Something was misconfigured.';
+    };
+    ConfigError.prototype = Object.create(Error.prototype);
+    ConfigError.prototype.constructor = ConfigError;
+
+    var getOrFail = function (obj, key, failureMessage) {
+      if (key in obj) {
+        return obj[key];
+      }
+      throw new ConfigError(failureMessage || 'Unable to find mapping.');
+    };
+
     this.setBackendRoot = function (value) {
       if (_.isString(value)) {
         backendRoot = value;
       } else {
-        throw new TypeError('CmsConfig.backendRoot must be a string!');
+        throw new ConfigError('backendRoot must be a string!');
       }
     };
 
@@ -3968,7 +3982,7 @@ angular.module('cms.config', [
       if (_.isString(value)) {
         logoUrl = value;
       } else {
-        throw new TypeError('CmsConfig.logoUrl must be a string!');
+        throw new ConfigError('logoUrl must be a string!');
       }
     };
 
@@ -3976,7 +3990,7 @@ angular.module('cms.config', [
       if (_.isObject(obj)) {
         toolbarMappings = _.clone(obj);
       } else {
-        throw new TypeError('CmsConfig.toolbarMappings must be an object!');
+        throw new ConfigError('toolbarMappings must be an object!');
       }
     };
 
@@ -3984,15 +3998,19 @@ angular.module('cms.config', [
       if (_.isObject(obj)) {
         editPageMappings = _.clone(obj);
       } else {
-        throw new TypeError('CmsConfig.toolbarMappings must be an object!');
+        throw new ConfigError('toolbarMappings must be an object!');
       }
     };
 
     this.$get = function () {
       return {
         getLogoUrl: _.constant(logoUrl),
-        getToolbarMappings: _.constant(_.clone(toolbarMappings)),
-        getEditPageMappings: _.constant(_.clone(editPageMappings)),
+        getToolbarTemplateUrl: function (type) {
+          return getOrFail(toolbarMappings, type, 'Unable to find toolbar template for type "' + type + '"');
+        },
+        getEditPageTemplateUrl: function (type) {
+          return getOrFail(editPageMappings, type, 'Unable to find edit page template for type "' + type + '"');
+        },
         /**
          * Create an absolute url to the backend for the CMS by using the backendRoot.
          *
@@ -5320,8 +5338,7 @@ angular.module('bulbsCmsApp')
       restrict: 'E',
       scope: false,
       templateUrl: function (tElement, tAttrs) {
-        var toolbars = CmsConfig.getToolbarMappings();
-        return tAttrs.view in toolbars ? toolbars[tAttrs.view] : defaultView;
+        return 'view' in tAttrs ? CmsConfig.getToolbarTemplateUrl(tAttrs.view) : defaultView;
       },
       link: function (scope) {
         scope.NAV_LOGO = CmsConfig.getLogoUrl();
@@ -6382,7 +6399,7 @@ angular.module('bulbsCmsApp')
       $window.article = $scope.article = data; //exposing article on window for debugging
 
       // figure out what template to use
-      $scope.templateUrl = CmsConfig.getEditPageMappings()[data.polymorphic_ctype];
+      $scope.templateUrl = CmsConfig.getEditPageTemplateUrl(data.polymorphic_ctype);
 
       $scope.last_saved_article = angular.copy(data);
 
