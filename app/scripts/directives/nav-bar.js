@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('navBar', function (routes, navbar_options) {
+  .directive('navBar', function (CmsConfig, routes, navbar_options) {
     return {
       restrict: 'E',
       scope: false,
@@ -14,7 +14,7 @@ angular.module('bulbsCmsApp')
         }
       },
       link: function (scope) {
-        scope.NAV_LOGO = routes.NAV_LOGO;
+        scope.NAV_LOGO = CmsConfig.getLogoUrl();
       }
     };
   });

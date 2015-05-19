@@ -1,13 +1,12 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ContributionsCtrl', function (
-    $scope, $routeParams, $http, $window,
-    $location, $timeout, $compile, $q, $modal,
-    _, routes, ContributionRoleService, ContentService)
+  .controller('ContributionsCtrl', function ($scope, $routeParams, $http, $window,
+    $location, $timeout, $compile, $q, $modal, _, routes, ContributionRoleService, ContentService,
+    CmsConfig)
   {
 
-    $scope.NAV_LOGO = routes.NAV_LOGO;
+    $scope.NAV_LOGO = CmsConfig.getLogoUrl();
     $scope.contentId = parseInt($routeParams.id, 10);
     $scope.contributions = [];
     $scope.contributionLabels = [];
