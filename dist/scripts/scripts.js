@@ -3943,15 +3943,19 @@ angular.module('backendHref', [
 
 'use strict';
 
-angular.module('cms.config', [])
-  .provider('CmsConfig', function CmsConfigProvider () {
+angular.module('cms.config', [
+  'lodash'
+])
+  .provider('CmsConfig', function CmsConfigProvider (_) {
     // root for all backend requests
     var backendRoot = '';
     // url for logo to display in CMS
     var logoUrl = '';
+    // url for custom toolbar on edit page
+    var toolbarMappings = {};
 
     this.setBackendRoot = function (value) {
-      if (typeof(value) === 'string') {
+      if (_.isString(value)) {
         backendRoot = value;
       } else {
         throw new TypeError('CmsConfig.backendRoot must be a string!');
@@ -3959,15 +3963,29 @@ angular.module('cms.config', [])
     };
 
     this.setLogoUrl = function (value) {
-      if (typeof(value) === 'string') {
+      if (_.isString(value)) {
         logoUrl = value;
       } else {
         throw new TypeError('CmsConfig.logoUrl must be a string!');
       }
     };
 
+    this.setToolbarMappings = function (obj) {
+      if (_.isObject(obj)) {
+        toolbarMappings = _.clone(obj);
+      } else {
+        throw new TypeError('CmsConfig.toolbarMappings must be an object!');
+      }
+    };
+
     this.$get = function () {
       return {
+        getLogoUrl: function () {
+          return logoUrl;
+        },
+        getToolbarMappings: function () {
+          return toolbarMappings;
+        },
         /**
          * Create an absolute url to the backend for the CMS by using the backendRoot.
          *
@@ -3976,9 +3994,6 @@ angular.module('cms.config', [])
          */
         buildBackendUrl: function (relUrl) {
           return backendRoot + relUrl;
-        },
-        getLogoUrl: function () {
-          return logoUrl;
         }
      };
     };
@@ -5291,17 +5306,15 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('navBar', function (CmsConfig, routes, navbar_options) {
+  .directive('navBar', function (CmsConfig, routes) {
+    var defaultView = routes.PARTIALS_URL + 'nav.html';
+
     return {
       restrict: 'E',
       scope: false,
       templateUrl: function (tElement, tAttrs) {
-        // load navbar view template
-        if (navbar_options[tAttrs.view]) {
-          return routes.DIRECTIVE_PARTIALS_URL + navbar_options[tAttrs.view] + '.html';
-        } else {
-          return routes.PARTIALS_URL + tAttrs.view + '.html';
-        }
+        var toolbars = CmsConfig.getToolbarMappings();
+        return tAttrs.view in toolbars ? toolbars[tAttrs.view] : defaultView;
       },
       link: function (scope) {
         scope.NAV_LOGO = CmsConfig.getLogoUrl();
