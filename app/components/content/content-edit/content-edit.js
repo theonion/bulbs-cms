@@ -3,6 +3,7 @@
 angular.module('content.edit', [
   'content.edit.controller',
   'content.edit.editorItem',
+  'content.edit.linkBrowser',
   'content.edit.templateChooser'
 ])
   .config([
