@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('contentEdit.body', [])
+angular.module('content.edit.body', [])
   .directive('contentEditBody', function (routes) {
     return {
       restrict: 'E',

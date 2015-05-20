@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('contentEdit.authors', [])
+angular.module('content.edit.authors', [])
   .directive('contentEditAuthors', function (routes) {
     return {
       restrict: 'E',

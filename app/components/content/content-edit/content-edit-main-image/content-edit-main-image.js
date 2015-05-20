@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('contentEdit.mainImage', [
+angular.module('content.edit.mainImage', [
   'BettyCropper'
 ])
   .directive('contentEditMainImage', function (routes) {

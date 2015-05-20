@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('contentEdit.metadata', [])
+angular.module('content.edit.metadata', [])
   .directive('contentEditMetadata', function (routes) {
     return {
       restrict: 'E',

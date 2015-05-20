@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('contentEdit.title', [])
+angular.module('content.edit.title', [])
   .directive('contentEditTitle', function (routes) {
     return {
       restrict: 'E',
