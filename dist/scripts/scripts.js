@@ -402,10 +402,10 @@ angular.module('bulbs.api')
 
 angular.module('bulbs.api')
   .factory('ContributionRoleService', function (Restangular) {
-    return Restangular.service('role');
+    return Restangular.service('contributions/role');
   })
   .factory('ContentReportingService', function (Restangular) {
-    return Restangular.service('contentreporting');
+    return Restangular.service('contributions/contentreporting');
   })
   .factory('ContributionReportingService', function (Restangular, moment) {
 
@@ -424,7 +424,7 @@ angular.module('bulbs.api')
       return obj;
     });
 
-    return Restangular.service('reporting');
+    return Restangular.service('contributions/reporting');
   });
 
 'use strict';
