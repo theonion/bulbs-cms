@@ -8,7 +8,7 @@ angular.module('saveButton.directive', [
       controller: 'GenericAjaxButtonController',
       link: {
         pre: function (scope) {
-          scope.cssIconComplete = 'glyphicon-floppy-disk';
+          scope.cssIconComplete = 'fa-floppy-o';
           scope.textProgress = 'Saving...';
           scope.textComplete = 'Save';
         }

@@ -12,6 +12,8 @@ angular.module('cms.config', [
     var toolbarMappings = {};
     // mappings where pairs are <polymorphic_ctype>: <template-url> for looking up edit page templates
     var editPageMappings = {};
+    // callback to fire when user is attempting to logout
+    var logoutCallback = function () {};
 
     var ConfigError = function (message) {
       this.name = 'CmsConfigProvider Configuration Error';
@@ -55,7 +57,15 @@ angular.module('cms.config', [
       if (_.isObject(obj)) {
         editPageMappings = _.clone(obj);
       } else {
-        throw new ConfigError('toolbarMappings must be an object!');
+        throw new ConfigError('editPageMappings must be an object!');
+      }
+    };
+
+    this.setLogoutCallback = function (func) {
+      if (_.isFunction(func)) {
+        logoutCallback = func;
+      } else {
+        throw new ConfigError('logoutCallback must be a function!');
       }
     };
 
@@ -68,6 +78,7 @@ angular.module('cms.config', [
         getEditPageTemplateUrl: function (type) {
           return getOrFail(editPageMappings, type, 'Unable to find edit page template for type "' + type + '"');
         },
+        logoutCallback: logoutCallback,
         /**
          * Create an absolute url to the backend for the CMS by using the backendRoot.
          *

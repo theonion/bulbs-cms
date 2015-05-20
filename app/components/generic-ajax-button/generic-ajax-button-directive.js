@@ -17,6 +17,7 @@ angular.module('genericAjaxButton.directive', [
         clickFunction: '=',
         cssBtnClassComplete: '@',
         cssBtnClassError: '@',
+        cssBtnClasses: '@',
         cssBtnClassProgress: '@',
         cssIconComplete: '@',
         textError: '@',

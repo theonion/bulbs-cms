@@ -1,5 +1,5 @@
 <button
-    class="btn"
+    class="btn {{ cssBtnClasses }}"
     ng-init="state = STATES.DONE"
     ng-class="{
       '{{ cssBtnClassComplete || 'btn-success' }}': state === STATES.DONE,
@@ -9,15 +9,15 @@
     ng-click="doClick()"
     ng-disabled="disableWhen() === true || state === STATES.PROGRESS">
   <span ng-if="state === STATES.ERROR">
-    <i class="glyphicon glyphicon-remove"></i>
+    <i class="fa fa-times"></i>
     {{ textError || 'Error' }}
   </span>
   <span ng-if="state === STATES.PROGRESS">
-    <i class="glyphicon glyphicon-refresh fa-spin"></i>
+    <i class="fa fa-refresh fa-spin"></i>
     {{ textProgress || 'In Progress...' }}
   </span>
   <span ng-if="state === STATES.DONE">
-    <i class="glyphicon {{ cssIconComplete || 'glyphicon-ok' }}"></i>
+    <i class="fa {{ cssIconComplete || 'fa-check' }}"></i>
     {{ textComplete || 'Complete' }}
   </span>
 </button>

@@ -337,6 +337,9 @@
             CmsConfigProvider.setEditPageMappings({
               content_content: routes.CONTENT_PARTIALS_URL + 'content_content.html'
             });
+            CmsConfigProvider.setLogoutCallback(function () {
+              console.log('This is where you\'d be logged out');
+            });
           });
 
         angular.module('bulbsCmsApp.settings', [
