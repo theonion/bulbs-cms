@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter, $interpolate, Login, routes, ContributionReportingService, ContentReportingService) {
+  .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter,
+      $interpolate, Login, routes, ContributionReportingService, ContentReportingService,
+      CmsConfig) {
     $window.document.title = routes.CMS_NAMESPACE + ' | Reporting'; // set title
 
     $scope.reports = {
@@ -34,7 +36,7 @@ angular.module('bulbsCmsApp')
           {'title': 'URL', 'expression': 'url'},
         ],
         orderOptions: [],
-        downloadURL: '/cms/api/v1/contributions/contentreporting/',
+        downloadURL: CmsConfig.buildBackendUrl('/cms/api/v1/contributions/contentreporting/'),
       }
     };
     $scope.items = [];
@@ -65,7 +67,7 @@ angular.module('bulbsCmsApp')
         return;
       }
       $scope.orderOptions = report.orderOptions;
-      if(report.orderOptions.length > 0) {        
+      if(report.orderOptions.length > 0) {
         $scope.orderBy = report.orderOptions[0];
       } else {
         $scope.orderBy = null;
