@@ -1051,6 +1051,34 @@ angular.module('confirmationModal.factory', [
 
 'use strict';
 
+angular.module('contentEdit.authors', [])
+  .directive('contentEdit.authors', function (routes) {
+    return {
+      restrict: 'E',
+      scope: {
+        article: '=',
+        inlineObjectsUrl: '@'
+      },
+      templateUrl: routes.COMPONENTS_URL + 'content/content-edit/content-edit-authors/content-edit-authors.html'
+    };
+  });
+
+'use strict';
+
+angular.module('contentEdit.body', [])
+  .directive('contentEdit.body', function (routes) {
+    return {
+      restrict: 'E',
+      scope: {
+        article: '=',
+        inlineObjectsUrl: '@'
+      },
+      templateUrl: routes.COMPONENTS_URL + 'content/content-edit/content-edit-body/content-edit-body.html'
+    };
+  });
+
+'use strict';
+
 angular.module('content.edit.controller', [])
   .controller('ContentEdit', function (
     $scope, $routeParams, $http, $window, $location, $timeout, $interval, $compile,
@@ -1410,6 +1438,19 @@ angular.module('content.edit.linkBrowser', [
 
 'use strict';
 
+angular.module('contentEdit.metadata', [])
+  .directive('contentEdit.metadata', function (routes) {
+    return {
+      restrict: 'E',
+      scope: {
+        article: '='
+      },
+      templateUrl: routes.COMPONENTS_URL + 'content/content-edit/content-edit-metadata/content-edit-metadata.html'
+    };
+  });
+
+'use strict';
+
 /**
  * Directive that will choose an edit template based on an article's polymorphic_ctype.
  */
@@ -1437,6 +1478,19 @@ angular.module('content.edit.templateChooser', [
         template: '<div ng-include="template"></div>'
       };
     }]);
+
+'use strict';
+
+angular.module('contentEdit.title', [])
+  .directive('contentEdit.title', function (routes) {
+    return {
+      restrict: 'E',
+      scope: {
+        article: '='
+      },
+      templateUrl: routes.COMPONENTS_URL + 'content/content-edit/content-edit-title/content-edit-title.html'
+    };
+  });
 
 'use strict';
 
