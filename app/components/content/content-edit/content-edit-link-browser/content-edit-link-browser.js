@@ -8,7 +8,7 @@ angular.module('content.edit.linkBrowser', [
   'jquery'
 ])
   .service('LinkBrowser', function ($, CmsConfig) {
-     window.avLinkBrowser = function(term, resultsElement) {
+     window.linkBrowser = function(term, resultsElement) {
        resultsElement.html('<div class="items"></div><hr><span class="type">Articles</span><ul class="content"></ul>');
 
        $.ajax(CmsConfig.buildBackendUrl('/search/autocomplete?q=' + term))
