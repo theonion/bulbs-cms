@@ -1051,8 +1051,8 @@ angular.module('confirmationModal.factory', [
 
 'use strict';
 
-angular.module('contentEdit.authors', [])
-  .directive('contentEdit.authors', function (routes) {
+angular.module('content.edit.authors', [])
+  .directive('contentEditAuthors', function (routes) {
     return {
       restrict: 'E',
       scope: {
@@ -1065,8 +1065,8 @@ angular.module('contentEdit.authors', [])
 
 'use strict';
 
-angular.module('contentEdit.body', [])
-  .directive('contentEdit.body', function (routes) {
+angular.module('content.edit.body', [])
+  .directive('contentEditBody', function (routes) {
     return {
       restrict: 'E',
       scope: {
@@ -1438,8 +1438,24 @@ angular.module('content.edit.linkBrowser', [
 
 'use strict';
 
-angular.module('contentEdit.metadata', [])
-  .directive('contentEdit.metadata', function (routes) {
+angular.module('content.edit.mainImage', [
+  'BettyCropper'
+])
+  .directive('contentEditMainImage', function (routes) {
+    return {
+      restrict: 'E',
+      scope: {
+        article: '=',
+        inlineObjectsUrl: '@'
+      },
+      templateUrl: routes.COMPONENTS_URL + 'content/content-edit/content-edit-main-image/content-edit-main-image.html'
+    };
+  });
+
+'use strict';
+
+angular.module('content.edit.metadata', [])
+  .directive('contentEditMetadata', function (routes) {
     return {
       restrict: 'E',
       scope: {
@@ -1481,8 +1497,8 @@ angular.module('content.edit.templateChooser', [
 
 'use strict';
 
-angular.module('contentEdit.title', [])
-  .directive('contentEdit.title', function (routes) {
+angular.module('content.edit.title', [])
+  .directive('contentEditTitle', function (routes) {
     return {
       restrict: 'E',
       scope: {
