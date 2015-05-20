@@ -39,6 +39,7 @@ angular.module('bulbsCmsApp', [
   'backendHref',
   // components
   'campaigns',
+  'content',
   'filterWidget',
   'promotedContent',
   'statusFilter',
@@ -53,11 +54,6 @@ angular.module('bulbsCmsApp', [
     .when('/cms/app/list/', {
       templateUrl: routes.PARTIALS_URL + 'contentlist.html',
       controller: 'ContentlistCtrl',
-      reloadOnSearch: false
-    })
-    .when('/cms/app/edit/:id/', {
-      templateUrl: routes.PARTIALS_URL + 'contentedit.html',
-      controller: 'ContenteditCtrl',
       reloadOnSearch: false
     })
     .when('/cms/app/edit/:id/contributions/', {

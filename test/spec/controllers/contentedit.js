@@ -1,12 +1,12 @@
 'use strict';
 
-describe('Controller: ContenteditCtrl', function () {
+describe('Controller: ContentEdit', function () {
 
   // load the controller's module
   beforeEach(module('bulbsCmsApp'));
   beforeEach(module('bulbsCmsApp.mockApi'));
 
-  var ContenteditCtrl,
+  var ContentEdit,
     controller,
     scope,
     httpBackend,
@@ -42,7 +42,7 @@ describe('Controller: ContenteditCtrl', function () {
   describe('on instantiation', function () {
     it('should retrieve the current article from the API', function () {
       spyOn(contentApi, 'one').andCallThrough();
-      ContenteditCtrl = controller('ContenteditCtrl', {
+      ContentEdit = controller('ContentEdit', {
         $scope: scope,
         $routeParams: routeParams,
         ContentApi: contentApi
@@ -54,7 +54,7 @@ describe('Controller: ContenteditCtrl', function () {
   describe('after instantion', function () {
     beforeEach(function () {
       httpBackend.expectGET(contentApiUrl).respond(mockArticle);
-      ContenteditCtrl = controller('ContenteditCtrl', {
+      ContentEdit = controller('ContentEdit', {
         $scope: scope,
         $routeParams: routeParams,
         VersionStorageApi: VersionStorageApiMock,

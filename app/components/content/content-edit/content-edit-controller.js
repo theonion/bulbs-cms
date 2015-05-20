@@ -1,12 +1,11 @@
 'use strict';
 
-angular.module('bulbsCmsApp')
-  .controller('ContenteditCtrl', function (
-    $scope, $routeParams, $http, $window,
-    $location, $timeout, $interval, $compile, $q, $modal,
-    $, _, moment, keypress, Raven, PNotify,
-    IfExistsElse, VersionStorageApi, ContentFactory, FirebaseApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener,
-    routes, CmsConfig)
+angular.module('content.edit.controller', [])
+  .controller('ContentEdit', function (
+    $scope, $routeParams, $http, $window, $location, $timeout, $interval, $compile,
+    $q, $modal, $, _, moment, keypress, Raven, PNotify, IfExistsElse, VersionStorageApi,
+    ContentFactory, FirebaseApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener,
+    routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
     $scope.MEDIA_ITEM_PARTIALS_URL = routes.MEDIA_ITEM_PARTIALS_URL;
@@ -24,9 +23,6 @@ angular.module('bulbsCmsApp')
 
     var getArticleCallback = function (data) {
       $window.article = $scope.article = data; //exposing article on window for debugging
-
-      // figure out what template to use
-      $scope.templateUrl = CmsConfig.getEditPageTemplateUrl(data.polymorphic_ctype);
 
       $scope.last_saved_article = angular.copy(data);
 

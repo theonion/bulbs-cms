@@ -23,15 +23,10 @@
     <div
         id="content-wrapper"
         class="container">
-      <div
-          ng-if="article.polymorphic_ctype"
-          ng-include="templateUrl + CACHEBUSTER">
-      </div>
-      <h4
-          ng-if="!article.polymorphic_ctype"
-          style="text-align:center;">
-        Error: article has no content type.
-      </h4>
+      <content-edit-template-chooser
+          ng-if="article"
+          article="article">
+      </content-edit-template-chooser>
     </div>
     <div class="status-bar">
       <span class="wordcount"></span>
