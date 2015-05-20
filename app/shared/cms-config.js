@@ -15,25 +15,22 @@ angular.module('cms.config', [
     // callback to fire when user is attempting to logout
     var logoutCallback = function () {};
 
-    var ConfigError = function (message) {
-      this.name = 'CmsConfigProvider Configuration Error';
-      this.message = message || 'Something was misconfigured.';
+    var error = function (message) {
+      return new ConfigError('CmsConfig', message);
     };
-    ConfigError.prototype = Object.create(Error.prototype);
-    ConfigError.prototype.constructor = ConfigError;
 
     var getOrFail = function (obj, key, failureMessage) {
       if (key in obj) {
         return obj[key];
       }
-      throw new ConfigError(failureMessage || 'Unable to find mapping.');
+      throw error(failureMessage || 'Unable to find mapping.');
     };
 
     this.setBackendRoot = function (value) {
       if (_.isString(value)) {
         backendRoot = value;
       } else {
-        throw new ConfigError('backendRoot must be a string!');
+        throw error('backendRoot must be a string!');
       }
     };
 
@@ -41,7 +38,7 @@ angular.module('cms.config', [
       if (_.isString(value)) {
         logoUrl = value;
       } else {
-        throw new ConfigError('logoUrl must be a string!');
+        throw error('logoUrl must be a string!');
       }
     };
 
@@ -49,7 +46,7 @@ angular.module('cms.config', [
       if (_.isObject(obj)) {
         toolbarMappings = _.clone(obj);
       } else {
-        throw new ConfigError('toolbarMappings must be an object!');
+        throw error('toolbarMappings must be an object!');
       }
     };
 
@@ -57,7 +54,7 @@ angular.module('cms.config', [
       if (_.isObject(obj)) {
         editPageMappings = _.clone(obj);
       } else {
-        throw new ConfigError('editPageMappings must be an object!');
+        throw error('editPageMappings must be an object!');
       }
     };
 
@@ -65,7 +62,7 @@ angular.module('cms.config', [
       if (_.isFunction(func)) {
         logoutCallback = func;
       } else {
-        throw new ConfigError('logoutCallback must be a function!');
+        throw error('logoutCallback must be a function!');
       }
     };
 

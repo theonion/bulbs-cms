@@ -1333,6 +1333,83 @@ angular.module('content.edit.controller', [])
 
 'use strict';
 
+angular.module('content.edit.editorItem.service', [
+  'cms.config'
+])
+  .service('EditorItems', [
+    '$http', 'CmsConfig',
+    function EditorItems($http, CmsConfig) {
+      this.data = [];
+      var self = this;
+      this.getItems = function (article) {
+        $http.get(
+          CmsConfig.buildBackendUrl('/cms/api/v1/content/' + article + '/send/')
+        ).success(function (data, status) {
+          self.data = data.editor_items;
+        });
+      };
+    }]);
+
+'use strict';
+
+angular.module('content.edit.editorItem', [
+  'content.edit.editorItem.service',
+  'moment'
+])
+  .directive('editorItem', [
+    'EditorItems', 'moment', 'routes',
+    function (EditorItems, moment, routes) {
+      return {
+        restrict: 'E',
+        templateUrl: routes.COMPONENTS_URL + 'content/content-edit/content-edit-editor-item/content-edit-editor-item.html',
+        scope: {
+          article: '='
+        },
+        link: function (scope, element, attrs) {
+
+          EditorItems.getItems(scope.article.id || '');
+
+          scope.editorItems = EditorItems;
+
+          scope.parseCreated = function (date) {
+            return moment(date).format('h:mm A MMM D');
+          };
+        }
+      };
+    }]);
+
+'use strict';
+
+/**
+ * When adding links in the editor, allows searching through content to link.
+ */
+angular.module('content.edit.linkBrowser', [
+  'cms.config',
+  'jquery'
+])
+  .service('LinkBrowser', function ($, CmsConfig) {
+     window.linkBrowser = function(term, resultsElement) {
+       resultsElement.html('<div class="items"></div><hr><span class="type">Articles</span><ul class="content"></ul>');
+
+       $.ajax(CmsConfig.buildBackendUrl('/search/autocomplete?q=' + term))
+         .success(function(resp) {
+           $('.items', resultsElement).html(resp);
+         });
+
+       $.ajax(CmsConfig.buildBackendUrl('/cms/api/v1/content/?search=' + term))
+         .success(function(resp) {
+           for (var i=0; i < Math.min(resp.count, 20); i ++) {
+             var link = $('<A>')
+               .attr('href',resp.results[i].absolute_url)
+               .html('<span class="feature_type">' + resp.results[i].feature_type + '</span>' + resp.results[i].title);
+             $('.content', resultsElement).append($('<li>').append(link));
+           }
+         });
+     };
+  });
+
+'use strict';
+
 /**
  * Directive that will choose an edit template based on an article's polymorphic_ctype.
  */
@@ -1365,6 +1442,8 @@ angular.module('content.edit.templateChooser', [
 
 angular.module('content.edit', [
   'content.edit.controller',
+  'content.edit.editorItem',
+  'content.edit.linkBrowser',
   'content.edit.templateChooser'
 ])
   .config([
@@ -4280,25 +4359,22 @@ angular.module('cms.config', [
     // callback to fire when user is attempting to logout
     var logoutCallback = function () {};
 
-    var ConfigError = function (message) {
-      this.name = 'CmsConfigProvider Configuration Error';
-      this.message = message || 'Something was misconfigured.';
+    var error = function (message) {
+      return new ConfigError('CmsConfig', message);
     };
-    ConfigError.prototype = Object.create(Error.prototype);
-    ConfigError.prototype.constructor = ConfigError;
 
     var getOrFail = function (obj, key, failureMessage) {
       if (key in obj) {
         return obj[key];
       }
-      throw new ConfigError(failureMessage || 'Unable to find mapping.');
+      throw error(failureMessage || 'Unable to find mapping.');
     };
 
     this.setBackendRoot = function (value) {
       if (_.isString(value)) {
         backendRoot = value;
       } else {
-        throw new ConfigError('backendRoot must be a string!');
+        throw error('backendRoot must be a string!');
       }
     };
 
@@ -4306,7 +4382,7 @@ angular.module('cms.config', [
       if (_.isString(value)) {
         logoUrl = value;
       } else {
-        throw new ConfigError('logoUrl must be a string!');
+        throw error('logoUrl must be a string!');
       }
     };
 
@@ -4314,7 +4390,7 @@ angular.module('cms.config', [
       if (_.isObject(obj)) {
         toolbarMappings = _.clone(obj);
       } else {
-        throw new ConfigError('toolbarMappings must be an object!');
+        throw error('toolbarMappings must be an object!');
       }
     };
 
@@ -4322,7 +4398,7 @@ angular.module('cms.config', [
       if (_.isObject(obj)) {
         editPageMappings = _.clone(obj);
       } else {
-        throw new ConfigError('editPageMappings must be an object!');
+        throw error('editPageMappings must be an object!');
       }
     };
 
@@ -4330,7 +4406,7 @@ angular.module('cms.config', [
       if (_.isFunction(func)) {
         logoutCallback = func;
       } else {
-        throw new ConfigError('logoutCallback must be a function!');
+        throw error('logoutCallback must be a function!');
       }
     };
 
@@ -4356,6 +4432,15 @@ angular.module('cms.config', [
      };
     };
   });
+
+'use strict';
+
+var ConfigError = function (providerName, message) {
+  this.name = 'Configuration Error (' + providerName + ')';
+  this.message = message || 'Something was misconfigured.';
+};
+ConfigError.prototype = Object.create(Error.prototype);
+ConfigError.prototype.constructor = window.ConfigError;
 
 'use strict';
 
@@ -4484,6 +4569,34 @@ angular.module('filters.moment', [
       } else {
         // Blank time string == not set
         return '';
+      }
+    };
+  });
+
+'use strict';
+
+/**
+ * Use as an attribute to focus on a particular field when given condition is true. For example:
+ *
+ * <div focus-when="showDiv"/>
+ *
+ * Will focus on this div when showDiv is true.
+ */
+angular.module('focusWhen', [])
+  .directive('focusWhen', function ($timeout) {
+    return {
+      restrict: 'A',
+      scope: {
+        trigger: '=focusWhen'
+      },
+      link: function (scope, element) {
+        scope.$watch('trigger', function (value) {
+          if (value) {
+            $timeout(function () {
+              element[0].focus();
+            });
+          }
+        });
       }
     };
   });

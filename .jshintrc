@@ -21,10 +21,10 @@
   "sub": true,
   "white": true,
   "globals": {
-    // app deps
+    "ConfigError": true,
+
     "angular": false,
 
-    // testing functions
     "jasmine": false,
     "describe": false,
     "afterEach": false,
