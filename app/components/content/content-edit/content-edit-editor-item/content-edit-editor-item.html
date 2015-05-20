@@ -1,0 +1,13 @@
+<div
+    class="editor-items"
+    ng-show="editorItems.data.length">
+  <div ng-repeat="item in editorItems.data">
+    <div class="note">
+      <h5 class="note-author">
+        <span>{{item.sender.first_name}} {{item.sender.last_name}}</span>
+        <div>{{parseCreated(item.created)}}</div>
+      </h5>
+      <div class="text">{{item.notes}}</div>
+    </div>
+  </div>
+</div>
