@@ -16,14 +16,23 @@ angular.module('content.edit.templateChooser', [
         scope: {
           article: '='
         },
-        controller: function ($scope) {
+        controller: function ($scope, $templateCache) {
           $scope.template = defaultView;
           try {
-            $scope.template = CmsConfig.getEditPageTemplateUrl($scope.article.polymorphic_ctype);
+            var template = CmsConfig.getEditPageTemplateUrl($scope.article.polymorphic_ctype);
+
+            // need this logic to prevent a stupid infinite redirect loop if template doesn't exist
+            if ($templateCache.get(template)) {
+              // template actually exists, use it
+              $scope.template = template;
+            } else {
+              // we're headed to the error page, set hte error message
+              $scope.error = 'Unable to find template for type "' + $scope.article.polymorphic_ctype + '"';
+            }
           } catch (e) {
             $scope.error = e.message;
           }
         },
-        template: '<div ng-include="template">Could not find template "{{template}}".</div>'
+        template: '<div ng-include="template"></div>'
       };
     }]);

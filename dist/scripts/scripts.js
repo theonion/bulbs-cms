@@ -271,10 +271,13 @@ angular.module('bulbsCmsApp', [
   $locationProvider.html5Mode(true);
 
   $routeProvider
-    .when('/cms/app/list/', {
+    .when('/', {
       templateUrl: routes.PARTIALS_URL + 'contentlist.html',
       controller: 'ContentlistCtrl',
       reloadOnSearch: false
+    })
+    .when('/cms/app/list/', {
+      redirectTo: '/'
     })
     .when('/cms/app/edit/:id/contributions/', {
       templateUrl: routes.PARTIALS_URL + 'contributions.html',
@@ -297,7 +300,7 @@ angular.module('bulbsCmsApp', [
       controller: 'PzoneCtrl'
     })
     .otherwise({
-      redirectTo: '/cms/app/list/'
+      templateUrl: '/404.html'
     });
 
   //TODO: whitelist staticonion.
@@ -1491,7 +1494,13 @@ angular.module('content.edit.templateChooser', [
             $scope.error = e.message;
           }
         },
-        template: '<div ng-include="template">Could not find template "{{template}}".</div>'
+        link: function (scope) {
+          scope.$on('$includeContentError', function(event, args){
+            scope.error = 'Unable to find template "' + scope.template + '"';
+            scope.template = defaultView;
+           });
+        },
+        template: '<div ng-include="template"></div>'
       };
     }]);
 

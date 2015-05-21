@@ -51,10 +51,13 @@ angular.module('bulbsCmsApp', [
   $locationProvider.html5Mode(true);
 
   $routeProvider
-    .when('/cms/app/list/', {
+    .when('/', {
       templateUrl: routes.PARTIALS_URL + 'contentlist.html',
       controller: 'ContentlistCtrl',
       reloadOnSearch: false
+    })
+    .when('/cms/app/list/', {
+      redirectTo: '/'
     })
     .when('/cms/app/edit/:id/contributions/', {
       templateUrl: routes.PARTIALS_URL + 'contributions.html',
@@ -77,7 +80,7 @@ angular.module('bulbsCmsApp', [
       controller: 'PzoneCtrl'
     })
     .otherwise({
-      redirectTo: '/cms/app/list/'
+      templateUrl: '/404.html'
     });
 
   //TODO: whitelist staticonion.
