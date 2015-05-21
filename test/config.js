@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('BettyCropper').constant('IMAGE_SERVER_URL', 'http://localimages.avclub.com');
 angular.module('BettyCropper').constant('BC_API_KEY', 'http://localimages.avclub.com');
 
@@ -13,6 +15,7 @@ angular.module('bulbsCmsApp')
     CmsConfigProvider.setEditPageMappings({
       content_content: routes.CONTENT_PARTIALS_URL + 'content_content.html'
     });
+    CmsConfigProvider.setCreateContentTemplateUrl(routes.DIRECTIVE_PARTIALS_URL + 'create-content.html');
   });
 
 angular.module('bulbsCmsApp.settings', [])

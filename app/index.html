@@ -350,6 +350,7 @@
             CmsConfigProvider.setLogoutCallback(function () {
               console.log('This is where you\'d be logged out');
             });
+            CmsConfigProvider.setCreateContentTemplateUrl(routes.DIRECTIVE_PARTIALS_URL + 'create-content.html');
           });
 
         angular.module('bulbsCmsApp.settings', [

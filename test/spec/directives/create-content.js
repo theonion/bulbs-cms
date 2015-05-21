@@ -20,14 +20,14 @@ describe('Directive: createContent', function () {
     ifExistsElse.ifExistsElse = function(q, map, existsCbk, elseCbk, errorCbk) {
       return true;
     };
-    element = angular.element("<create-content></create-content>");
+    element = angular.element('<create-content></create-content>');
     scope = $rootScope.$new();
     template = $compile(element)(scope);
     controller = element.controller;
   }));
 
   it('should call the create url', function () {
-    scope.contentType = "whatever";
+    scope.contentType = 'whatever';
     httpBackend.expectPOST('/cms/api/v1/content/?doctype=whatever');
     scope.gotTags = true;
     scope.gotUser = true;

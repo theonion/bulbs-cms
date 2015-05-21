@@ -1,10 +1,11 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('createContent', function ($http, $window, $, IfExistsElse, Login, ContentFactory, routes, AUTO_ADD_AUTHOR, Raven) {
+  .directive('createContent', function ($http, $window, $, IfExistsElse, Login,
+      ContentFactory, routes, AUTO_ADD_AUTHOR, Raven, CmsConfig) {
     return {
       restrict: 'E',
-      templateUrl:  routes.DIRECTIVE_PARTIALS_URL + 'create-content.html',
+      templateUrl: CmsConfig.getCreateContentTemplateUrl,
       controller: function ($scope) {
         $scope.gotTags = false;
         $scope.gotUser = false;
