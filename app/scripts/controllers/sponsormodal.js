@@ -1,20 +1,20 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('SponsormodalCtrl', function ($scope, ContentFactory, article) {
+  .controller('SponsormodalCtrl', function ($scope, ContentFactory, article, Campaign) {
     $scope.article = article;
 
-    ContentFactory.all('sponsor').getList().then(function (data) {
-      $scope.sponsors = data;
-    });
+    if ($scope.article.campaign) {
+      $scope.campaign = Campaign.$find($scope.article.campaign);
+    } else {
+      $scope.campaign = null;
+    }
 
-    $scope.selectSponsor = function (sponsor) {
-      $scope.article.sponsor = sponsor.id;
+    $scope.updateArticle = function (selection) {
+      $scope.article.campaign = selection.value.id;
     };
 
-    $scope.clearSponsor = function () {
-      $scope.article.sponsor = null;
+    $scope.searchCampaigns = function (searchTerm) {
+      return Campaign.simpleSearch(searchTerm);
     };
-
-
   });
