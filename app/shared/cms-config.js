@@ -12,7 +12,8 @@ angular.module('cms.config', [
     var logoUrl = '';
     // mappings where pairs are <name>: <template-url> for looking up toolbar templates
     var toolbarMappings = {};
-    // mappings where pairs are <polymorphic_ctype>: <template-url> for looking up edit page templates
+    // mappings where pairs are <template-url>: <polymorphic_ctype | polymorphic_ctype[]>
+    //  for looking up edit page templates
     var editPageMappings = {};
     // callback to fire when user is attempting to logout
     var logoutCallback = function () {};
@@ -83,7 +84,18 @@ angular.module('cms.config', [
           return getOrFail(toolbarMappings, type, 'Unable to find toolbar template for type "' + type + '"');
         },
         getEditPageTemplateUrl: function (type) {
-          return getOrFail(editPageMappings, type, 'Unable to find edit page template for type "' + type + '"');
+          var template = _.findKey(editPageMappings, function (types) {
+            if(_.isString(types) && types === type ||
+                _.isArray(types) && _.contains(types, type)) {
+              return true;
+            }
+          });
+
+          if (template) {
+            return template;
+          } else {
+            throw error('Unable to find edit page template for type "' + type + '"');
+          }
         },
         getCreateContentTemplateUrl: _.constant(createContentTemplateUrl),
         logoutCallback: logoutCallback,

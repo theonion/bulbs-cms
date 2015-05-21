@@ -345,7 +345,7 @@
               toolbar: routes.PARTIALS_URL + 'toolbar.html'
             });
             CmsConfigProvider.setEditPageMappings({
-              content_content: routes.CONTENT_PARTIALS_URL + 'content_content.html'
+              '/content_type_views/content_content.html': 'content_content'
             });
             CmsConfigProvider.setLogoutCallback(function () {
               console.log('This is where you\'d be logged out');
