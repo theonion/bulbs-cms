@@ -495,8 +495,7 @@ module.exports = function (grunt) {
         src: [
           'views/{,*/}*.html',
           'components/**/*.html',
-          'shared/**/*.html',
-          'components/content/content-edit/inline-objects.json'
+          'shared/**/*.html'
         ],
         dest: '.tmp/concat/scripts/templates.js',
         options: {
