@@ -4973,7 +4973,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('authorsField', function (routes, userFilter, $) {
+  .directive('authorsField', function (routes, userFilter, $, CmsConfig) {
     return {
       templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
@@ -4985,7 +4985,7 @@ angular.module('bulbsCmsApp')
         scope.name = 'author';
         scope.label = 'Authors';
         scope.placeholder = 'Authors';
-        scope.resourceUrl = '/cms/api/v1/author/?ordering=name&search=';
+        scope.resourceUrl = CmsConfig.buildBackendUrl('/cms/api/v1/author/?ordering=name&search=');
         scope.display = userFilter;
 
         scope.$watch('article.authors', function () {
