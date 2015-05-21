@@ -4420,6 +4420,8 @@ angular.module('cms.config', [
   .provider('CmsConfig', function CmsConfigProvider (_) {
     // root for all backend requests
     var backendRoot = '';
+    // create content modal template to use
+    var createContentTemplateUrl = '';
     // url for logo to display in CMS
     var logoUrl = '';
     // mappings where pairs are <name>: <template-url> for looking up toolbar templates
@@ -4445,6 +4447,14 @@ angular.module('cms.config', [
         backendRoot = value;
       } else {
         throw error('backendRoot must be a string!');
+      }
+    };
+
+    this.setCreateContentTemplateUrl = function (value) {
+      if (_.isString(value)) {
+        createContentTemplateUrl = value;
+      } else {
+        throw error('createContentTemplateUrl must be a string!');
       }
     };
 
@@ -4489,6 +4499,7 @@ angular.module('cms.config', [
         getEditPageTemplateUrl: function (type) {
           return getOrFail(editPageMappings, type, 'Unable to find edit page template for type "' + type + '"');
         },
+        getCreateContentTemplateUrl: _.constant(createContentTemplateUrl),
         logoutCallback: logoutCallback,
         /**
          * Create an absolute url to the backend for the CMS by using the backendRoot.
@@ -5343,10 +5354,11 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('createContent', function ($http, $window, $, IfExistsElse, Login, ContentFactory, routes, AUTO_ADD_AUTHOR, Raven) {
+  .directive('createContent', function ($http, $window, $, IfExistsElse, Login,
+      ContentFactory, routes, AUTO_ADD_AUTHOR, Raven, CmsConfig) {
     return {
       restrict: 'E',
-      templateUrl:  routes.DIRECTIVE_PARTIALS_URL + 'create-content.html',
+      templateUrl: CmsConfig.getCreateContentTemplateUrl,
       controller: function ($scope) {
         $scope.gotTags = false;
         $scope.gotUser = false;
