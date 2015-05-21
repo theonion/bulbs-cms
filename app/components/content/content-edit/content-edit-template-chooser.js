@@ -24,6 +24,6 @@ angular.module('content.edit.templateChooser', [
             $scope.error = e.message;
           }
         },
-        template: '<div ng-include="template"></div>'
+        template: '<div ng-include="template">Could not find template {{template}}</div>'
       };
     }]);
