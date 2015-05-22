@@ -57018,7 +57018,7 @@ if (typeof define === 'function' && define.amd) {
 })(window);
 
 //! moment.js
-//! version : 2.10.2
+//! version : 2.10.3
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
@@ -57041,28 +57041,12 @@ if (typeof define === 'function' && define.amd) {
         hookCallback = callback;
     }
 
-    function defaultParsingFlags() {
-        // We need to deep clone this object.
-        return {
-            empty           : false,
-            unusedTokens    : [],
-            unusedInput     : [],
-            overflow        : -2,
-            charsLeftOver   : 0,
-            nullInput       : false,
-            invalidMonth    : null,
-            invalidFormat   : false,
-            userInvalidated : false,
-            iso             : false
-        };
-    }
-
     function isArray(input) {
         return Object.prototype.toString.call(input) === '[object Array]';
     }
 
     function isDate(input) {
-        return Object.prototype.toString.call(input) === '[object Date]' || input instanceof Date;
+        return input instanceof Date || Object.prototype.toString.call(input) === '[object Date]';
     }
 
     function map(arr, fn) {
@@ -57099,21 +57083,45 @@ if (typeof define === 'function' && define.amd) {
         return createLocalOrUTC(input, format, locale, strict, true).utc();
     }
 
+    function defaultParsingFlags() {
+        // We need to deep clone this object.
+        return {
+            empty           : false,
+            unusedTokens    : [],
+            unusedInput     : [],
+            overflow        : -2,
+            charsLeftOver   : 0,
+            nullInput       : false,
+            invalidMonth    : null,
+            invalidFormat   : false,
+            userInvalidated : false,
+            iso             : false
+        };
+    }
+
+    function getParsingFlags(m) {
+        if (m._pf == null) {
+            m._pf = defaultParsingFlags();
+        }
+        return m._pf;
+    }
+
     function valid__isValid(m) {
         if (m._isValid == null) {
+            var flags = getParsingFlags(m);
             m._isValid = !isNaN(m._d.getTime()) &&
-                m._pf.overflow < 0 &&
-                !m._pf.empty &&
-                !m._pf.invalidMonth &&
-                !m._pf.nullInput &&
-                !m._pf.invalidFormat &&
-                !m._pf.userInvalidated;
+                flags.overflow < 0 &&
+                !flags.empty &&
+                !flags.invalidMonth &&
+                !flags.nullInput &&
+                !flags.invalidFormat &&
+                !flags.userInvalidated;
 
             if (m._strict) {
                 m._isValid = m._isValid &&
-                    m._pf.charsLeftOver === 0 &&
-                    m._pf.unusedTokens.length === 0 &&
-                    m._pf.bigHour === undefined;
+                    flags.charsLeftOver === 0 &&
+                    flags.unusedTokens.length === 0 &&
+                    flags.bigHour === undefined;
             }
         }
         return m._isValid;
@@ -57122,10 +57130,10 @@ if (typeof define === 'function' && define.amd) {
     function valid__createInvalid (flags) {
         var m = create_utc__createUTC(NaN);
         if (flags != null) {
-            extend(m._pf, flags);
+            extend(getParsingFlags(m), flags);
         }
         else {
-            m._pf.userInvalidated = true;
+            getParsingFlags(m).userInvalidated = true;
         }
 
         return m;
@@ -57161,7 +57169,7 @@ if (typeof define === 'function' && define.amd) {
             to._offset = from._offset;
         }
         if (typeof from._pf !== 'undefined') {
-            to._pf = from._pf;
+            to._pf = getParsingFlags(from);
         }
         if (typeof from._locale !== 'undefined') {
             to._locale = from._locale;
@@ -57196,7 +57204,7 @@ if (typeof define === 'function' && define.amd) {
     }
 
     function isMoment (obj) {
-        return obj instanceof Moment || (obj != null && hasOwnProp(obj, '_isAMomentObject'));
+        return obj instanceof Moment || (obj != null && obj._isAMomentObject != null);
     }
 
     function toInt(argumentForCoercion) {
@@ -57634,7 +57642,7 @@ if (typeof define === 'function' && define.amd) {
         if (month != null) {
             array[MONTH] = month;
         } else {
-            config._pf.invalidMonth = input;
+            getParsingFlags(config).invalidMonth = input;
         }
     });
 
@@ -57718,7 +57726,7 @@ if (typeof define === 'function' && define.amd) {
         var overflow;
         var a = m._a;
 
-        if (a && m._pf.overflow === -2) {
+        if (a && getParsingFlags(m).overflow === -2) {
             overflow =
                 a[MONTH]       < 0 || a[MONTH]       > 11  ? MONTH :
                 a[DATE]        < 1 || a[DATE]        > daysInMonth(a[YEAR], a[MONTH]) ? DATE :
@@ -57728,11 +57736,11 @@ if (typeof define === 'function' && define.amd) {
                 a[MILLISECOND] < 0 || a[MILLISECOND] > 999 ? MILLISECOND :
                 -1;
 
-            if (m._pf._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
+            if (getParsingFlags(m)._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
                 overflow = DATE;
             }
 
-            m._pf.overflow = overflow;
+            getParsingFlags(m).overflow = overflow;
         }
 
         return m;
@@ -57745,10 +57753,12 @@ if (typeof define === 'function' && define.amd) {
     }
 
     function deprecate(msg, fn) {
-        var firstTime = true;
+        var firstTime = true,
+            msgWithStack = msg + '\n' + (new Error()).stack;
+
         return extend(function () {
             if (firstTime) {
-                warn(msg);
+                warn(msgWithStack);
                 firstTime = false;
             }
             return fn.apply(this, arguments);
@@ -57793,7 +57803,7 @@ if (typeof define === 'function' && define.amd) {
             match = from_string__isoRegex.exec(string);
 
         if (match) {
-            config._pf.iso = true;
+            getParsingFlags(config).iso = true;
             for (i = 0, l = isoDates.length; i < l; i++) {
                 if (isoDates[i][1].exec(string)) {
                     // match[5] should be 'T' or undefined
@@ -58073,7 +58083,7 @@ if (typeof define === 'function' && define.amd) {
             yearToUse = defaults(config._a[YEAR], currentDate[YEAR]);
 
             if (config._dayOfYear > daysInYear(yearToUse)) {
-                config._pf._overflowDayOfYear = true;
+                getParsingFlags(config)._overflowDayOfYear = true;
             }
 
             date = createUTCDate(yearToUse, 0, config._dayOfYear);
@@ -58169,7 +58179,7 @@ if (typeof define === 'function' && define.amd) {
         }
 
         config._a = [];
-        config._pf.empty = true;
+        getParsingFlags(config).empty = true;
 
         // This array is used to make a Date, either with `new Date` or `Date.UTC`
         var string = '' + config._i,
@@ -58185,7 +58195,7 @@ if (typeof define === 'function' && define.amd) {
             if (parsedInput) {
                 skipped = string.substr(0, string.indexOf(parsedInput));
                 if (skipped.length > 0) {
-                    config._pf.unusedInput.push(skipped);
+                    getParsingFlags(config).unusedInput.push(skipped);
                 }
                 string = string.slice(string.indexOf(parsedInput) + parsedInput.length);
                 totalParsedInputLength += parsedInput.length;
@@ -58193,27 +58203,29 @@ if (typeof define === 'function' && define.amd) {
             // don't parse if it's not a known token
             if (formatTokenFunctions[token]) {
                 if (parsedInput) {
-                    config._pf.empty = false;
+                    getParsingFlags(config).empty = false;
                 }
                 else {
-                    config._pf.unusedTokens.push(token);
+                    getParsingFlags(config).unusedTokens.push(token);
                 }
                 addTimeToArrayFromToken(token, parsedInput, config);
             }
             else if (config._strict && !parsedInput) {
-                config._pf.unusedTokens.push(token);
+                getParsingFlags(config).unusedTokens.push(token);
             }
         }
 
         // add remaining unparsed input length to the string
-        config._pf.charsLeftOver = stringLength - totalParsedInputLength;
+        getParsingFlags(config).charsLeftOver = stringLength - totalParsedInputLength;
         if (string.length > 0) {
-            config._pf.unusedInput.push(string);
+            getParsingFlags(config).unusedInput.push(string);
         }
 
         // clear _12h flag if hour is <= 12
-        if (config._pf.bigHour === true && config._a[HOUR] <= 12) {
-            config._pf.bigHour = undefined;
+        if (getParsingFlags(config).bigHour === true &&
+                config._a[HOUR] <= 12 &&
+                config._a[HOUR] > 0) {
+            getParsingFlags(config).bigHour = undefined;
         }
         // handle meridiem
         config._a[HOUR] = meridiemFixWrap(config._locale, config._a[HOUR], config._meridiem);
@@ -58257,7 +58269,7 @@ if (typeof define === 'function' && define.amd) {
             currentScore;
 
         if (config._f.length === 0) {
-            config._pf.invalidFormat = true;
+            getParsingFlags(config).invalidFormat = true;
             config._d = new Date(NaN);
             return;
         }
@@ -58268,7 +58280,6 @@ if (typeof define === 'function' && define.amd) {
             if (config._useUTC != null) {
                 tempConfig._useUTC = config._useUTC;
             }
-            tempConfig._pf = defaultParsingFlags();
             tempConfig._f = config._f[i];
             configFromStringAndFormat(tempConfig);
 
@@ -58277,12 +58288,12 @@ if (typeof define === 'function' && define.amd) {
             }
 
             // if there is any input that was not parsed add a penalty for that format
-            currentScore += tempConfig._pf.charsLeftOver;
+            currentScore += getParsingFlags(tempConfig).charsLeftOver;
 
             //or tokens
-            currentScore += tempConfig._pf.unusedTokens.length * 10;
+            currentScore += getParsingFlags(tempConfig).unusedTokens.length * 10;
 
-            tempConfig._pf.score = currentScore;
+            getParsingFlags(tempConfig).score = currentScore;
 
             if (scoreToBeat == null || currentScore < scoreToBeat) {
                 scoreToBeat = currentScore;
@@ -58325,6 +58336,8 @@ if (typeof define === 'function' && define.amd) {
             configFromStringAndArray(config);
         } else if (format) {
             configFromStringAndFormat(config);
+        } else if (isDate(input)) {
+            config._d = input;
         } else {
             configFromInput(config);
         }
@@ -58377,7 +58390,6 @@ if (typeof define === 'function' && define.amd) {
         c._i = input;
         c._f = format;
         c._strict = strict;
-        c._pf = defaultParsingFlags();
 
         return createFromConfig(c);
     }
@@ -58951,11 +58963,25 @@ if (typeof define === 'function' && define.amd) {
     }
 
     function from (time, withoutSuffix) {
+        if (!this.isValid()) {
+            return this.localeData().invalidDate();
+        }
         return create__createDuration({to: this, from: time}).locale(this.locale()).humanize(!withoutSuffix);
     }
 
     function fromNow (withoutSuffix) {
         return this.from(local__createLocal(), withoutSuffix);
+    }
+
+    function to (time, withoutSuffix) {
+        if (!this.isValid()) {
+            return this.localeData().invalidDate();
+        }
+        return create__createDuration({from: this, to: time}).locale(this.locale()).humanize(!withoutSuffix);
+    }
+
+    function toNow (withoutSuffix) {
+        return this.to(local__createLocal(), withoutSuffix);
     }
 
     function locale (key) {
@@ -59060,11 +59086,11 @@ if (typeof define === 'function' && define.amd) {
     }
 
     function parsingFlags () {
-        return extend({}, this._pf);
+        return extend({}, getParsingFlags(this));
     }
 
     function invalidAt () {
-        return this._pf.overflow;
+        return getParsingFlags(this).overflow;
     }
 
     addFormatToken(0, ['gg', 2], 0, function () {
@@ -59215,7 +59241,7 @@ if (typeof define === 'function' && define.amd) {
         if (weekday != null) {
             week.d = weekday;
         } else {
-            config._pf.invalidWeekday = input;
+            getParsingFlags(config).invalidWeekday = input;
         }
     });
 
@@ -59340,7 +59366,7 @@ if (typeof define === 'function' && define.amd) {
     });
     addParseToken(['h', 'hh'], function (input, array, config) {
         array[HOUR] = toInt(input);
-        config._pf.bigHour = true;
+        getParsingFlags(config).bigHour = true;
     });
 
     // LOCALES
@@ -59457,6 +59483,8 @@ if (typeof define === 'function' && define.amd) {
     momentPrototype__proto.format       = format;
     momentPrototype__proto.from         = from;
     momentPrototype__proto.fromNow      = fromNow;
+    momentPrototype__proto.to           = to;
+    momentPrototype__proto.toNow        = toNow;
     momentPrototype__proto.get          = getSet;
     momentPrototype__proto.invalidAt    = invalidAt;
     momentPrototype__proto.isAfter      = isAfter;
@@ -59645,7 +59673,7 @@ if (typeof define === 'function' && define.amd) {
         }
         // Lenient ordinal parsing accepts just a number in addition to
         // number + (possibly) stuff coming from _ordinalParseLenient.
-        this._ordinalParseLenient = new RegExp(this._ordinalParse.source + '|' + /\d{1,2}/.source);
+        this._ordinalParseLenient = new RegExp(this._ordinalParse.source + '|' + (/\d{1,2}/).source);
     }
 
     var prototype__proto = Locale.prototype;
@@ -59862,13 +59890,13 @@ if (typeof define === 'function' && define.amd) {
             // handle milliseconds separately because of floating point math errors (issue #1867)
             days = this._days + Math.round(yearsToDays(this._months / 12));
             switch (units) {
-                case 'week'   : return days / 7            + milliseconds / 6048e5;
-                case 'day'    : return days                + milliseconds / 864e5;
-                case 'hour'   : return days * 24           + milliseconds / 36e5;
-                case 'minute' : return days * 24 * 60      + milliseconds / 6e4;
-                case 'second' : return days * 24 * 60 * 60 + milliseconds / 1000;
+                case 'week'   : return days / 7     + milliseconds / 6048e5;
+                case 'day'    : return days         + milliseconds / 864e5;
+                case 'hour'   : return days * 24    + milliseconds / 36e5;
+                case 'minute' : return days * 1440  + milliseconds / 6e4;
+                case 'second' : return days * 86400 + milliseconds / 1000;
                 // Math.floor prevents floating point math errors here
-                case 'millisecond': return Math.floor(days * 24 * 60 * 60 * 1000) + milliseconds;
+                case 'millisecond': return Math.floor(days * 864e5) + milliseconds;
                 default: throw new Error('Unknown unit ' + units);
             }
         }
@@ -60069,7 +60097,7 @@ if (typeof define === 'function' && define.amd) {
     // Side effect imports
 
 
-    utils_hooks__hooks.version = '2.10.2';
+    utils_hooks__hooks.version = '2.10.3';
 
     setHookCallback(local__createLocal);
 
@@ -107913,7 +107941,7 @@ angular.module('ui.sortable', [])
 !function(a){"use strict";a.module("platanus.inflector",[]).provider("inflector",[function(){function a(a,b,c){if(-1===c.indexOf(a.toLowerCase()))for(var d,e=0;d=b[e++];)if(a.match(d[0]))return a.replace(d[0],d[1]);return a}var b="en",c={en:{uncountable:["music","art","love","happiness","advice","furniture","luggage","sugar","butter","water","electricity","gas","power","currency","equipment","information","rice","money","species","series","fish","sheep","moose","deer","news"],plural:[[new RegExp("(m)an$","gi"),"$1en"],[new RegExp("(pe)rson$","gi"),"$1ople"],[new RegExp("(child)$","gi"),"$1ren"],[new RegExp("^(ox)$","gi"),"$1en"],[new RegExp("(ax|test)is$","gi"),"$1es"],[new RegExp("(octop|vir)us$","gi"),"$1i"],[new RegExp("(alias|status)$","gi"),"$1es"],[new RegExp("(bu)s$","gi"),"$1ses"],[new RegExp("(buffal|tomat|potat)o$","gi"),"$1oes"],[new RegExp("([ti])um$","gi"),"$1a"],[new RegExp("sis$","gi"),"ses"],[new RegExp("(?:([^f])fe|([lr])f)$","gi"),"$1$2ves"],[new RegExp("(hive)$","gi"),"$1s"],[new RegExp("([^aeiouy]|qu)y$","gi"),"$1ies"],[new RegExp("(x|ch|ss|sh)$","gi"),"$1es"],[new RegExp("(matr|vert|ind)ix|ex$","gi"),"$1ices"],[new RegExp("([m|l])ouse$","gi"),"$1ice"],[new RegExp("(quiz)$","gi"),"$1zes"],[new RegExp("s$","gi"),"s"],[new RegExp("$","gi"),"s"]],singular:[[new RegExp("(m)en$","gi"),"$1an"],[new RegExp("(pe)ople$","gi"),"$1rson"],[new RegExp("(child)ren$","gi"),"$1"],[new RegExp("([ti])a$","gi"),"$1um"],[new RegExp("((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$","gi"),"$1$2sis"],[new RegExp("(hive)s$","gi"),"$1"],[new RegExp("(tive)s$","gi"),"$1"],[new RegExp("(curve)s$","gi"),"$1"],[new RegExp("([lr])ves$","gi"),"$1f"],[new RegExp("([^fo])ves$","gi"),"$1fe"],[new RegExp("([^aeiouy]|qu)ies$","gi"),"$1y"],[new RegExp("(s)eries$","gi"),"$1eries"],[new RegExp("(m)ovies$","gi"),"$1ovie"],[new RegExp("(x|ch|ss|sh)es$","gi"),"$1"],[new RegExp("([m|l])ice$","gi"),"$1ouse"],[new RegExp("(bus)es$","gi"),"$1"],[new RegExp("(o)es$","gi"),"$1"],[new RegExp("(shoe)s$","gi"),"$1"],[new RegExp("(cris|ax|test)es$","gi"),"$1is"],[new RegExp("(octop|vir)i$","gi"),"$1us"],[new RegExp("(alias|status)es$","gi"),"$1"],[new RegExp("^(ox)en","gi"),"$1"],[new RegExp("(vert|ind)ices$","gi"),"$1ex"],[new RegExp("(matr)ices$","gi"),"$1ix"],[new RegExp("(quiz)zes$","gi"),"$1"],[new RegExp("s$","gi"),""]]}};return{registerLocale:function(a,b){c[a]=b},setLocale:function(a){b=a},$get:["$log",function(d){function e(a){a=a||b;var e=c[a];return e||d.warn("Invalid inflector locale "+a),e}return{camelize:function(a,b){return"string"!=typeof a?a:a.replace(/(?:^[-_\s]*|[-_\s]+)([A-Z\d])/gi,function(a,c,d){return b||0!==d?c.toUpperCase():c})},parameterize:function(a,b){return"string"!=typeof a?a:a.replace(/(?:[A-Z]+|[0-9]+)/g,function(a,c){return 0===c?a:(b||"-")+a}).toLowerCase()},dasherize:function(a,b){return a.replace(/[-_\s]+/g,b||"-")},singularize:function(b,c){var d=e(c);return d?a(b,d.singular,d.uncountable):b},pluralize:function(b,c){var d=e(c);return d?a(b,d.plural,d.uncountable):b}}}]}}])}(angular);
 /**
  * API Bound Models for AngularJS
- * @version v1.1.8 - 2015-02-18
+ * @version v1.1.9 - 2015-05-07
  * @link https://github.com/angular-platanus/restmod
  * @author Ignacio Baixas <ignacio@platan.us>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -108534,22 +108562,22 @@ RMModule.factory('RMCollectionApi', ['RMUtils', function(Utils) {
      *
      * @description Finds the location of an object in the array.
      *
-     * If a function is provided then the index of the first item for which the function returns true is returned.
+     * If a function is provided then the index of the first item for which the function returns true.
      *
      * @param {RecordApi|function} _obj Object to find
+     * @param {integer} _fromIdx Index from which to start searching, defaults to 0
      * @return {number} Object index or -1 if not found
      */
-    $indexOf: function(_obj) {
-      var accept = typeof _obj === 'function' ? _obj : false;
-      for(var i = 0, l = this.length; i < l; i++) {
-        if(accept ? accept(this[i]) : this[i] === _obj) return i;
-      }
-      return -1;
+    $indexOf: function(_obj, _fromIdx) {
+      var accept = typeof _obj !== 'function' ?
+        function(e) { return e === _obj; } : _obj;
+
+      return Utils.indexWhere(this, accept, _fromIdx);
     }
   };
 
 }]);
-RMModule.factory('RMCommonApi', ['$http', 'RMFastQ', '$log', function($http, $q, $log) {
+RMModule.factory('RMCommonApi', ['$http', 'RMFastQ', '$log', 'RMUtils', function($http, $q, $log, Utils) {
 
   var EMPTY_ARRAY = [];
 
@@ -108706,6 +108734,23 @@ RMModule.factory('RMCommonApi', ['$http', 'RMFastQ', '$log', function($http, $q,
     $on: function(_hook, _fun) {
       var hooks = (this.$$cb || (this.$$cb = {}))[_hook] || (this.$$cb[_hook] = []);
       hooks.push(_fun);
+      return this;
+    },
+
+    /**
+     * @memberof CommonApi#
+     *
+     * @description Unregisters an instance hook registered with `$on`
+     *
+     * @param {string} _hook Hook name
+     * @param {function} _fun Original callback
+     * @return {CommonApi} self
+     */
+    $off: function(_hook, _fun) {
+      if(this.$$cb && this.$$cb[_hook]) {
+        var idx = Utils.indexWhere(this.$$cb[_hook], function(e) { return e === _fun; });
+        if(idx !== -1) this.$$cb[_hook].splice(idx, 1);
+      }
       return this;
     },
 
@@ -108919,18 +108964,19 @@ RMModule.factory('RMCommonApi', ['$http', 'RMFastQ', '$log', function($http, $q,
 
         return $http(_options).then(wrapPromise(this, function() {
           if(action && action.canceled) {
-            // if request was canceled during request, ignore post request actions.
             this.$status =  'canceled';
+            this.$dispatch('after-request-cancel', []);
+            return $q.reject(this);
           } else {
             this.$status = 'ok';
             this.$response = this.$last;
-            this.$dispatch('after-request', [this.$last]);
-            if(_success) _success.call(this, this.$last);
+            this.$dispatch('after-request', [this.$response]);
+            if(_success) _success.call(this, this.$response);
           }
         }), wrapPromise(this, function() {
           if(action && action.canceled) {
-            // if request was canceled during request, ignore error handling
             this.$status = 'canceled';
+            this.$dispatch('after-request-cancel', []);
           } else {
             this.$status = 'error';
             this.$response = this.$last;
@@ -108938,10 +108984,11 @@ RMModule.factory('RMCommonApi', ['$http', 'RMFastQ', '$log', function($http, $q,
             // IDEA: Consider flushing pending request in case of an error. Also continue ignoring requests
             // until the error flag is reset by user.
 
-            this.$dispatch('after-request-error', [this.$last]);
-            if(_error) _error.call(this, this.$last);
-            return $q.reject(this); // TODO: this will step over any promise generated in _error!!
+            this.$dispatch('after-request-error', [this.$response]);
+            if(_error) _error.call(this, this.$response);
           }
+
+          return $q.reject(this);  // TODO: this will step over any promise generated in _error!!
         }));
       });
     },
@@ -110635,12 +110682,8 @@ RMModule.factory('RMModelFactory', ['$injector', '$log', 'inflector', 'RMUtils',
 
     // make sure the resource name and plural name are available if posible:
 
-    if(!config.name && _baseUrl) {
+    if(_baseUrl) {
       config.name = inflector.singularize(_baseUrl.replace(NAME_RGX, '$2'));
-    }
-
-    if(!config.plural && config.name) {
-      config.plural = inflector.pluralize(config.name);
     }
 
     var Collection = Utils.buildArrayType(),
@@ -110832,9 +110875,11 @@ RMModule.factory('RMModelFactory', ['$injector', '$log', 'inflector', 'RMUtils',
        * it should be manually set by writing the name and plural properties:
        *
        * ```javascript
-       * restmod.model(null, {
-       *   __name__: 'resource',
-       *   __plural__: 'resourciness' // set only if inflector cant properly gess the name.
+       * restmod.model().mix{
+       *   $config: {
+       *     name: 'resource',
+       *     plural: 'resourciness' // set only if inflector cant properly gess the name.
+       *   }
        * });
        * ```
        *
@@ -110842,7 +110887,12 @@ RMModule.factory('RMModelFactory', ['$injector', '$log', 'inflector', 'RMUtils',
        * @return {string} The base url.
        */
       identity: function(_plural) {
-        return _plural ? config.plural : config.name;
+        if(!_plural) return config.name;
+        if(_plural) {
+          if(config.plural) return config.plural;
+          if(config.name) return inflector.pluralize(config.name);
+        }
+        return null;
       },
 
       /**
@@ -111810,10 +111860,10 @@ RMModule.factory('DefaultPacker', ['restmod', 'inflector', 'RMPackerCache', func
           meta = this.getProperty('jsonMeta', 'meta');
 
       if(_resource.$isCollection) {
-        name = this.getProperty('jsonRootMany') || this.getProperty('jsonRoot') || this.getProperty('plural');
+        name = this.getProperty('jsonRootMany') || this.getProperty('jsonRoot') || this.identity(true);
       } else {
         // TODO: use plural for single resource option.
-        name = this.getProperty('jsonRootSingle') || this.getProperty('jsonRoot') || this.getProperty('name');
+        name = this.getProperty('jsonRootSingle') || this.getProperty('jsonRoot') || this.identity();
       }
 
       if(meta) {
@@ -111984,6 +112034,25 @@ RMModule.factory('RMUtils', ['$log', function($log) {
      *
      * @description
      *
+     * Finds the location of a matching object in an array.
+     *
+     * @param {array} _array target array
+     * @param {function} _accept matching function
+     * @param {integer} _fromIdx Index from which to start searching, defaults to 0
+     * @return {number} Object index or -1 if not found
+     */
+    indexWhere: function(_array, _accept, _fromIdx) {
+      for(var i = _fromIdx || 0, l = _array.length; i < l; i++) {
+        if(_accept(_array[i])) return i;
+      }
+      return -1;
+    },
+
+    /**
+     * @memberof Utils
+     *
+     * @description
+     *
      * Extend an object using `Utils.override` instead of just replacing the functions.
      *
      * @param  {object} _target Object to be extended
@@ -112084,7 +112153,7 @@ RMModule.factory('RMUtils', ['$log', function($log) {
 })(angular);
 /**
  * API Bound Models for AngularJS
- * @version v1.1.8 - 2015-02-18
+ * @version v1.1.9 - 2015-05-07
  * @link https://github.com/angular-platanus/restmod
  * @author Ignacio Baixas <ignacio@platan.us>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -112262,7 +112331,7 @@ angular.module('VideohubClient.api', [
   .factory('Video', function (restmod, VIDEOHUB_API_BASE_URL, VIDEOHUB_SECRET_TOKEN) {
 
     var videosEndpoint = 'videos';
-    var searchEndpoint = videosEndpoint + '/search';
+    var searchEndpoint = videosEndpoint + '/search/';
 
     var videohubMix = {
       $config: {

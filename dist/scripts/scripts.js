@@ -923,12 +923,11 @@ angular.module('campaigns.edit.sponsorPixel.directive', [
     {
       name: 'Logo',
       value: 'Logo'
+    },
+    {
+      name: 'Homepage',
+      value: 'Homepage'
     }
-    // TODO: Add more types (once added to API)
-    //{
-    //  name: 'Detail',
-    //  value: 'Detail'
-    //},
   ])
   .directive('campaignsEditSponsorPixel', function (routes) {
     return {
