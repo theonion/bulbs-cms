@@ -4536,6 +4536,8 @@ angular.module('cms.config', [
       var types = [];
       if (typeIsString) {
         types.push(type);
+      } else {
+        types = type;
       }
 
       _.forEach(types, function (type) {
