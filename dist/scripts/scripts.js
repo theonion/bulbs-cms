@@ -1524,6 +1524,7 @@ angular.module('content.edit.title', [])
 'use strict';
 
 angular.module('content.edit', [
+  'content.edit.body',
   'content.edit.controller',
   'content.edit.editorItem',
   'content.edit.linkBrowser',
@@ -4517,6 +4518,7 @@ angular.module('cms.config', [
      * Add a template -> polymorphic_ctype edit page mapping.
      *
      * @param {String} templateUrl - url for edit page template.
+     * @param {String|String[]} type - content type to map to template.
      * @returns {Boolean} true if type was added, throws an error if something
      *  fails and type is not added.
      */
@@ -4525,22 +4527,32 @@ angular.module('cms.config', [
         throw error('templateUrl must be a string!');
       }
 
-      if (!_.isString(type)) {
-        throw error('type must be a string!');
-      }
-      var mapping = findEditPageMapping(type);
-      if (mapping) {
-        // this type is already mapped, fail out
-        throw error('type "' + type + '" is already mapped to "' + mapping +'"!');
+      var typeIsString = _.isString(type);
+      if (!(typeIsString || _.isArray(type))) {
+        throw error('type must be a string or array!');
       }
 
-      if (templateUrl in editPageMappings) {
-        // template mapping already exists, add type to list for this template
-        editPageMappings[templateUrl].push(type);
-      } else {
-        // template mapping does not exist yet, create a new list
-        editPageMappings[templateUrl] = [type];
+      // normalize type input so we can just treat everything as an array
+      var types = [];
+      if (typeIsString) {
+        types.push(type);
       }
+
+      _.forEach(types, function (type) {
+        var mapping = findEditPageMapping(type);
+        if (mapping) {
+          // this type is already mapped, fail out
+          throw error('type "' + type + '" is already mapped to "' + mapping +'"!');
+        }
+
+        if (templateUrl in editPageMappings) {
+          // template mapping already exists, add type to list for this template
+          editPageMappings[templateUrl].push(type);
+        } else {
+          // template mapping does not exist yet, create a new list
+          editPageMappings[templateUrl] = [type];
+        }
+      });
 
       return true;
     };

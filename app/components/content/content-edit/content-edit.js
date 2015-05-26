@@ -1,6 +1,7 @@
 'use strict';
 
 angular.module('content.edit', [
+  'content.edit.body',
   'content.edit.controller',
   'content.edit.editorItem',
   'content.edit.linkBrowser',
