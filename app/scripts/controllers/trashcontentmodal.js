@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('TrashcontentmodalCtrl', function ($scope, $http, $modalInstance, $, Login, articleId, Raven) {
+  .controller('TrashcontentmodalCtrl', function ($scope, $http, $modalInstance, $,
+      articleId, Raven, CmsConfig) {
     $scope.deleteButton = {
       idle: 'Delete',
       busy: 'Trashing',
@@ -12,7 +13,7 @@ angular.module('bulbsCmsApp')
     $scope.trashContent = function () {
       return $http({
         'method': 'POST',
-        'url': '/cms/api/v1/content/' + articleId + '/trash/'
+        'url': CmsConfig.buildBackendUrl('/cms/api/v1/content/' + articleId + '/trash/')
       });
     };
 

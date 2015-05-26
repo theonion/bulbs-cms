@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('bulbsAutocomplete', function ($http, $location, $compile, $timeout, $, Login, Raven) {
+  .directive('bulbsAutocomplete', function ($http, $location, $compile, $timeout,
+      $, Raven, CmsConfig) {
 
     var autocomplete_dropdown_template =
       '<div class="autocomplete dropdown" ng-show="autocomplete_list">' +
@@ -70,7 +71,7 @@ angular.module('bulbsCmsApp')
           inputCounter = 0;
           $http({
             method: 'GET',
-            url: scope.resourceUrl + val
+            url: CmsConfig.buildBackendUrl(scope.resourceUrl + val)
           }).success(function (data) {
             var results = data.results || data;
             scope.autocomplete_list = results.splice(0, 5);

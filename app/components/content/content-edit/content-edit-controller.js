@@ -4,7 +4,7 @@ angular.module('content.edit.controller', [])
   .controller('ContentEdit', function (
     $scope, $routeParams, $http, $window, $location, $timeout, $interval, $compile,
     $q, $modal, $, _, moment, keypress, Raven, PNotify, IfExistsElse, VersionStorageApi,
-    ContentFactory, FirebaseApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener,
+    ContentFactory, FirebaseApi, FirebaseArticleFactory, VersionBrowserModalOpener,
     routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
