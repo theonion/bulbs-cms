@@ -1524,6 +1524,7 @@ angular.module('content.edit.title', [])
 'use strict';
 
 angular.module('content.edit', [
+  'content.edit.authors',
   'content.edit.body',
   'content.edit.controller',
   'content.edit.editorItem',
