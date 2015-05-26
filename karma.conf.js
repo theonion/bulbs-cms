@@ -90,7 +90,9 @@ module.exports = function(config) {
 
       'app/views/**/*.html',
       'app/components/**/*.html',
-      'app/shared/**/*.html'
+      'app/shared/**/*.html',
+
+      '.tmp/scripts/templates.js'
     ],
 
     // list of files / patterns to exclude

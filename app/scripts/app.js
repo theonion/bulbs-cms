@@ -36,6 +36,7 @@ angular.module('bulbsCmsApp', [
   // shared
   'contentServices',
   'cms.config',
+  'cms.templates',
   'backendHref',
   // components
   'campaigns',

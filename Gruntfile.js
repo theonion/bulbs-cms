@@ -490,28 +490,42 @@ module.exports = function (grunt) {
 
     //ngtemplates settings
     ngtemplates: {
-      bulbsCmsApp: {
+      options: {
+        url:    function (url) { return '/' + url; },
+        htmlmin: {
+          collapseBooleanAttributes:      true,
+          collapseWhitespace:             true,
+          removeAttributeQuotes:          true,
+          removeComments:                 true,
+          removeEmptyAttributes:          true,
+          removeRedundantAttributes:      true,
+          removeScriptTypeAttributes:     true,
+          removeStyleLinkTypeAttributes:  true
+        },
+        module: 'cms.templates',
+        standalone: true
+      },
+      tmp: {
         cwd: '<%= yeoman.app %>',
         src: [
           'views/{,*/}*.html',
           'components/**/*.html',
           'shared/**/*.html',
-          '404.html'
+          '404.html',
+          'content_type_views/*.html'
         ],
-        dest: '.tmp/concat/scripts/templates.js',
-        options: {
-          url:    function (url) { return '/' + url; },
-          htmlmin: {
-            collapseBooleanAttributes:      true,
-            collapseWhitespace:             true,
-            removeAttributeQuotes:          true,
-            removeComments:                 true,
-            removeEmptyAttributes:          true,
-            removeRedundantAttributes:      true,
-            removeScriptTypeAttributes:     true,
-            removeStyleLinkTypeAttributes:  true
-          }
-        }
+        dest: '.tmp/scripts/templates.js'
+      },
+      dist: {
+        cwd: '<%= yeoman.app %>',
+        src: [
+          'views/{,*/}*.html',
+          'components/**/*.html',
+          'shared/**/*.html',
+          '404.html',
+          'content_type_views/*.html'
+        ],
+        dest: '.tmp/concat/scripts/templates.js'
       }
     },
 
@@ -560,6 +574,7 @@ module.exports = function (grunt) {
     // run task list
     grunt.task.run([
       'clean:server',
+      'ngtemplates:tmp',
       'wiredep',
       'concurrent:server',
       'injector:less_components',
@@ -617,7 +632,7 @@ module.exports = function (grunt) {
     'shell:bower_install',
     'shell:bower_update',
     'wiredep',
-    'ngtemplates',
+    'ngtemplates:dist',
     'injector:less_components',
     'less',
     'injector:local_dependencies',

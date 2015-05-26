@@ -324,6 +324,7 @@
     <!-- endinjector -->
 
     <!-- endbuild -->
+    <script src="scripts/templates.js"></script>
 
     <script src="bower_components/angular-mocks/angular-mocks.js"></script>
 
@@ -344,9 +345,9 @@
             CmsConfigProvider.setToolbarMappings({
               toolbar: routes.PARTIALS_URL + 'toolbar.html'
             });
-            CmsConfigProvider.setEditPageMappings({
-              '/content_type_views/content_content.html': 'content_content'
-            });
+            CmsConfigProvider.addEditPageMapping(
+              '/content_type_views/content_content.html',
+              'content_content');
             CmsConfigProvider.setLogoutCallback(function () {
               console.log('This is where you\'d be logged out');
             });

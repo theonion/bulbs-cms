@@ -12,9 +12,10 @@ angular.module('bulbsCmsApp')
     CmsConfigProvider.setToolbarMappings({
       toolbar: routes.PARTIALS_URL + 'toolbar.html'
     });
-    CmsConfigProvider.setEditPageMappings({
-      content_content: routes.CONTENT_PARTIALS_URL + 'content_content.html'
-    });
+    CmsConfigProvider.addEditPageMapping(
+      routes.CONTENT_PARTIALS_URL + 'content_content.html',
+      'content_content'
+    );
     CmsConfigProvider.setCreateContentTemplateUrl(routes.DIRECTIVE_PARTIALS_URL + 'create-content.html');
   });
 

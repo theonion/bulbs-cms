@@ -12,7 +12,7 @@ angular.module('cms.config', [
     var logoUrl = '';
     // mappings where pairs are <name>: <template-url> for looking up toolbar templates
     var toolbarMappings = {};
-    // mappings where pairs are <template-url>: <polymorphic_ctype | polymorphic_ctype[]>
+    // mappings where pairs are <template-url>: <polymorphic_ctype[]>
     //  for looking up edit page templates
     var editPageMappings = {};
     // callback to fire when user is attempting to logout
@@ -27,6 +27,14 @@ angular.module('cms.config', [
         return obj[key];
       }
       throw error(failureMessage || 'Unable to find mapping.');
+    };
+
+    var findEditPageMapping = function (type) {
+      return _.findKey(editPageMappings, function (types) {
+        if(_.contains(types, type)) {
+          return true;
+        }
+      });
     };
 
     this.setBackendRoot = function (value) {
@@ -61,6 +69,55 @@ angular.module('cms.config', [
       }
     };
 
+    /**
+     * Remove a polymorphic_ctype from edit page mappings.
+     *
+     * @param {String} type - polymorphic_ctype to remove from mappings.
+     * @returns {Boolean} true if type was removed from list, false otherwise.
+     */
+    this.removeEditPageMapping = function (type) {
+      var template = findEditPageMapping(type);
+
+      if (template) {
+        // found mapping, remove type
+        editPageMappings[template] = _.without(type);
+        return true;
+      }
+      return false;
+    };
+
+    /**
+     * Add a template -> polymorphic_ctype edit page mapping.
+     *
+     * @param {String} templateUrl - url for edit page template.
+     * @returns {Boolean} true if type was added, throws an error if something
+     *  fails and type is not added.
+     */
+    this.addEditPageMapping = function (templateUrl, type) {
+      if (!_.isString(templateUrl)) {
+        throw error('templateUrl must be a string!');
+      }
+
+      if (!_.isString(type)) {
+        throw error('type must be a string!');
+      }
+      var mapping = findEditPageMapping(type);
+      if (mapping) {
+        // this type is already mapped, fail out
+        throw error('type "' + type + '" is already mapped to "' + mapping +'"!');
+      }
+
+      if (templateUrl in editPageMappings) {
+        // template mapping already exists, add type to list for this template
+        editPageMappings[templateUrl].push(type);
+      } else {
+        // template mapping does not exist yet, create a new list
+        editPageMappings[templateUrl] = [type];
+      }
+
+      return true;
+    };
+
     this.setEditPageMappings = function (obj) {
       if (_.isObject(obj)) {
         editPageMappings = _.clone(obj);
@@ -84,12 +141,7 @@ angular.module('cms.config', [
           return getOrFail(toolbarMappings, type, 'Unable to find toolbar template for type "' + type + '"');
         },
         getEditPageTemplateUrl: function (type) {
-          var template = _.findKey(editPageMappings, function (types) {
-            if(_.isString(types) && types === type ||
-                _.isArray(types) && _.contains(types, type)) {
-              return true;
-            }
-          });
+          var template = findEditPageMapping(type);
 
           if (template) {
             return template;
