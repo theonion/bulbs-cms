@@ -9,7 +9,7 @@ describe('Directive: confirmationModalOpener', function () {
   beforeEach(function () {
     module('ui.bootstrap');
     module('confirmationModal');
-    module('jsTemplates');
+    module('cms.templates');
     module('jquery');
 
     inject(function (_$_, _$compile_, _$rootScope_) {

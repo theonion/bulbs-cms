@@ -5,7 +5,7 @@ describe('Directive: createContent', function () {
   // load the directive's module
   beforeEach(module('bulbsCmsApp'));
   beforeEach(module('bulbsCmsApp.mockApi'));
-  beforeEach(module('jsTemplates'));
+  beforeEach(module('cms.templates'));
 
   var element,
     scope,

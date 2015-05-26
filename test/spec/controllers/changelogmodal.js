@@ -5,7 +5,7 @@ describe('Controller: ChangelogmodalCtrl', function () {
   // load the controller's module
   beforeEach(module('bulbsCmsApp'));
   beforeEach(module('bulbsCmsApp.mockApi'));
-  beforeEach(module('jsTemplates'));
+  beforeEach(module('cms.templates'));
 
   var ChangelogmodalCtrl,
     scope,

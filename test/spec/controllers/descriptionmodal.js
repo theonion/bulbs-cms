@@ -3,7 +3,7 @@
 describe('Controller: DescriptionModalCtrl', function () {
 
     beforeEach(module('bulbsCmsApp'));
-    beforeEach(module('jsTemplates'));
+    beforeEach(module('cms.templates'));
 
     var DescriptionModalCtrl,
         scope,

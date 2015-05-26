@@ -4,7 +4,7 @@ describe('Controller: LastmodifiedguardmodalCtrl', function () {
 
   // load the controller's module
   beforeEach(module('bulbsCmsApp'));
-  beforeEach(module('jsTemplates'));
+  beforeEach(module('cms.templates'));
 
   var LastmodifiedguardmodalCtrl,
     scope,

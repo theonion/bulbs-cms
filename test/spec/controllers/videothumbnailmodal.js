@@ -4,7 +4,7 @@ describe('Controller: VideothumbnailmodalCtrl', function () {
 
   // load the controller's module
   beforeEach(module('bulbsCmsApp'));
-  beforeEach(module('jsTemplates'));
+  beforeEach(module('cms.templates'));
 
   var VideothumbnailmodalCtrl,
     scope,

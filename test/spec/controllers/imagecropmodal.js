@@ -9,7 +9,7 @@ describe('ImageCropModalCtrl', function () {
     module('bulbsCmsApp');
     module('BettyCropper');
     module('BettyCropper.mockApi');
-    module('jsTemplates');
+    module('cms.templates');
 
     inject(function ($injector) {
       $httpBackend = $injector.get('$httpBackend');

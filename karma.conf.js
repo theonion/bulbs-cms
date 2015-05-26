@@ -90,9 +90,7 @@ module.exports = function(config) {
 
       'app/views/**/*.html',
       'app/components/**/*.html',
-      'app/shared/**/*.html',
-
-      '.tmp/scripts/templates.js'
+      'app/shared/**/*.html'
     ],
 
     // list of files / patterns to exclude
@@ -121,7 +119,7 @@ module.exports = function(config) {
 
       // setting this option will create only a single module that contains templates
       // from all the files, so you can load them all with module('foo')
-      moduleName: 'jsTemplates'
+      moduleName: 'cms.templates'
     },
 
     // set up lcov coverage reporter

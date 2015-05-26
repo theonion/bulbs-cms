@@ -11,7 +11,7 @@ describe('Directive: genericAjaxButton', function () {
   beforeEach(function () {
     module('jquery');
     module('genericAjaxButton.directive');
-    module('jsTemplates');
+    module('cms.templates');
 
     inject(function (_$_, _$q_, _$rootScope_, $compile) {
       $ = _$_;

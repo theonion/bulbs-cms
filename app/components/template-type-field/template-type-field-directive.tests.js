@@ -27,7 +27,7 @@ describe('Directive: templateTypeField', function () {
     module('bulbsCmsApp');
     module('bulbsCmsApp.mockApi');
 
-    module('jsTemplates');
+    module('cms.templates');
 
     angular.module('templateTypeField')
       .constant('TEMPLATE_TYPES', templateTypes);

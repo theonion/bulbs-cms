@@ -4,7 +4,7 @@ describe('Directive: hideIfForbidden', function () {
 
   // load the directive's module
   beforeEach(module('bulbsCmsApp'));
-  beforeEach(module('jsTemplates'));
+  beforeEach(module('cms.templates'));
 
   var element,
     scope,
