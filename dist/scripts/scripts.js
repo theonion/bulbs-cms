@@ -1529,6 +1529,9 @@ angular.module('content.edit', [
   'content.edit.controller',
   'content.edit.editorItem',
   'content.edit.linkBrowser',
+  'content.edit.mainImage',
+  'content.edit.metadata',
+  'content.edit.title',
   'content.edit.templateChooser'
 ])
   .config([
