@@ -320,7 +320,6 @@ angular.module('bulbsCmsApp', [
   });
 
   $httpProvider.interceptors.push('BugReportInterceptor');
-  $httpProvider.interceptors.push('PermissionsInterceptor');
   $httpProvider.interceptors.push('BadRequestInterceptor');
 })
 .run(function ($rootScope, $http, $cookies) {
@@ -1087,7 +1086,7 @@ angular.module('content.edit.controller', [])
   .controller('ContentEdit', function (
     $scope, $routeParams, $http, $window, $location, $timeout, $interval, $compile,
     $q, $modal, $, _, moment, keypress, Raven, PNotify, IfExistsElse, VersionStorageApi,
-    ContentFactory, FirebaseApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener,
+    ContentFactory, FirebaseApi, FirebaseArticleFactory, VersionBrowserModalOpener,
     routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
@@ -5287,7 +5286,8 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('bulbsAutocomplete', function ($http, $location, $compile, $timeout, $, Login, Raven) {
+  .directive('bulbsAutocomplete', function ($http, $location, $compile, $timeout,
+      $, Raven, CmsConfig) {
 
     var autocomplete_dropdown_template =
       '<div class="autocomplete dropdown" ng-show="autocomplete_list">' +
@@ -5356,7 +5356,7 @@ angular.module('bulbsCmsApp')
           inputCounter = 0;
           $http({
             method: 'GET',
-            url: scope.resourceUrl + val
+            url: CmsConfig.buildBackendUrl(scope.resourceUrl + val)
           }).success(function (data) {
             var results = data.results || data;
             scope.autocomplete_list = results.splice(0, 5);
@@ -5449,8 +5449,9 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('createContent', function ($http, $window, $, IfExistsElse, Login,
-      ContentFactory, routes, AUTO_ADD_AUTHOR, Raven, CmsConfig) {
+  .directive('createContent', function ($http, $window, $, IfExistsElse, ContentFactory,
+      routes, AUTO_ADD_AUTHOR, Raven, CmsConfig) {
+
     return {
       restrict: 'E',
       templateUrl: CmsConfig.getCreateContentTemplateUrl,
@@ -5874,7 +5875,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('hideIfForbidden', function ($http) {
+  .directive('hideIfForbidden', function ($http, CmsConfig) {
     function hideElement(element) {
       element.addClass('hidden');
     }
@@ -5884,7 +5885,7 @@ angular.module('bulbsCmsApp')
       link: function postLink(scope, element, attrs) {
         $http({
           method: 'OPTIONS',
-          url: attrs.optionsUrl,
+          url: CmsConfig.buildBackendUrl(attrs.optionsUrl),
           noPermissionIntercept: true
         }).success(function (data, status) {
           //I guess 403s aren't errors? I dont know.
@@ -6289,7 +6290,7 @@ angular.module('bulbsCmsApp')
 
 angular.module('bulbsCmsApp').directive(
   'videoUpload',
-  function ($http, $window, $timeout, $sce, $, routes) {
+  function ($http, $window, $timeout, $sce, $, routes, CmsConfig) {
     return {
       templateUrl: routes.PARTIALS_URL + 'mainvideo.html',
       scope: {
@@ -6304,7 +6305,7 @@ angular.module('bulbsCmsApp').directive(
             scope.embedUrl = $sce.trustAsUrl('/video/embed?id=' + scope.article.video);
             $http({
               method: 'GET',
-              url: '/videos/api/video/' + scope.article.video + '/'
+              url: CmsConfig.buildBackendUrl('/videos/api/video/' + scope.article.video + '/')
             }).success(function (data) {
               console.log('getting video from API');
               console.log(data);
@@ -7563,21 +7564,8 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('LoginmodalCtrl', function ($scope, Login, $modalInstance, $) {
-    $scope.login = function () {
-      var username = $('input[name=\'username\']').val();
-      var password = $('input[name=\'password\']').val();
-      Login.login(username, password).then(
-        function () { $modalInstance.close(); },
-        function () { $modalInstance.dismiss(); }
-      );
-    };
-  });
-
-'use strict';
-
-angular.module('bulbsCmsApp')
-  .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance, $, moment, Login, routes, article, TIMEZONE_NAME, Raven) {
+  .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance,
+      $, moment, routes, article, TIMEZONE_NAME, Raven, CmsConfig) {
     $scope.article = article;
 
     $scope.pubButton = {
@@ -7644,7 +7632,7 @@ angular.module('bulbsCmsApp')
       var data = {published: newDateTime};
 
       return $http({
-        url: '/cms/api/v1/content/' + $scope.article.id + '/publish/',
+        url: CmsConfig.buildBackendUrl('/cms/api/v1/content/' + $scope.article.id + '/publish/'),
         method: 'POST',
         data: data
       });
@@ -7675,7 +7663,7 @@ angular.module('bulbsCmsApp')
 
     $scope.unpublish = function () {
       return $http({
-        url: '/cms/api/v1/content/' + $scope.article.id + '/publish/',
+        url: CmsConfig.buildBackendUrl('/cms/api/v1/content/' + $scope.article.id + '/publish/'),
         method: 'POST',
         data: {published: false}
       });
@@ -7709,7 +7697,7 @@ angular.module('bulbsCmsApp')
 
 angular.module('bulbsCmsApp')
   .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter,
-      $interpolate, Login, routes, ContributionReportingService, ContentReportingService,
+      $interpolate, routes, ContributionReportingService, ContentReportingService,
       CmsConfig) {
     $window.document.title = routes.CMS_NAMESPACE + ' | Reporting'; // set title
 
@@ -7859,7 +7847,8 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('TargetingCtrl', function ($scope, $http, $window, $q, $location, tar_options, routes) {
+  .controller('TargetingCtrl', function ($scope, $http, $window, $q, $location,
+      tar_options, routes, CmsConfig) {
     $window.document.title = routes.CMS_NAMESPACE + ' | Targeting Editor';
 
     var canceller;
@@ -7875,7 +7864,7 @@ angular.module('bulbsCmsApp')
 
       $http({
         method: 'GET',
-        url: tar_options.endpoint,
+        url: CmsConfig.buildBackendUrl(tar_options.endpoint),
         timeout: canceller.promise,
         params: {url: $scope.url}
       }).success(function (data) {
@@ -7899,7 +7888,7 @@ angular.module('bulbsCmsApp')
 
       return $http({
         method: 'POST',
-        url: tar_options.endpoint + '?url=' + $scope.url,
+        url: CmsConfig.buildBackendUrl(tar_options.endpoint + '?url=' + $scope.url),
         data: data
       }).success(function (data) {
         $scope.targetingArray = [];
@@ -8014,7 +8003,8 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('TrashcontentmodalCtrl', function ($scope, $http, $modalInstance, $, Login, articleId, Raven) {
+  .controller('TrashcontentmodalCtrl', function ($scope, $http, $modalInstance, $,
+      articleId, Raven, CmsConfig) {
     $scope.deleteButton = {
       idle: 'Delete',
       busy: 'Trashing',
@@ -8025,7 +8015,7 @@ angular.module('bulbsCmsApp')
     $scope.trashContent = function () {
       return $http({
         'method': 'POST',
-        'url': '/cms/api/v1/content/' + articleId + '/trash/'
+        'url': CmsConfig.buildBackendUrl('/cms/api/v1/content/' + articleId + '/trash/')
       });
     };
 
@@ -8051,7 +8041,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('UnpublishCtrl', function ($scope, $http, $q) {
+  .controller('UnpublishCtrl', function ($scope, $http, $q, CmsConfig) {
 
     $scope.unpubButton = {
       idle: 'Unpublish',
@@ -8063,7 +8053,7 @@ angular.module('bulbsCmsApp')
 
     $scope.unpublish = function () {
       return $http({
-        url: '/cms/api/v1/content/' + $scope.article.id + '/publish/',
+        url: CmsConfig.buildBackendUrl('/cms/api/v1/content/' + $scope.article.id + '/publish/'),
         method: 'POST',
         data: {published: false}
       });
@@ -8859,32 +8849,6 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .service('Login', function Login($rootScope, $http, $cookies, $window, $, routes) {
-
-    $rootScope.$watch(function () {
-      return $cookies.csrftoken;
-    }, function (newCsrf, oldCsrf) {
-      $http.defaults.headers.common['X-CSRFToken'] = newCsrf;
-      if ($window.jqueryCsrfSetup) {
-        $window.jqueryCsrfSetup();
-      }
-    });
-
-    return {
-      login: function (username, password) {
-        var data = $.param({username: username, password: password});
-        return $http({
-          method: 'POST',
-          url: '/login/',
-          data: data,
-          headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        });
-      }
-    };
-  });
-'use strict';
-
-angular.module('bulbsCmsApp')
   .factory('openImageCropModal', function ($modal, routes) {
     var openImageCropModal = function (imageData, ratios) {
 
@@ -8903,40 +8867,6 @@ angular.module('bulbsCmsApp')
     return openImageCropModal;
   });
 
-'use strict';
-  /* helpful SO question on injecting $modal into interceptor and doing intercept pass-through
-    http://stackoverflow.com/questions/14681654/i-need-two-instances-of-angularjs-http-service-or-what
-  */
-angular.module('bulbsCmsApp').factory('PermissionsInterceptor', function ($q, $injector, routes) {
-  return {
-    responseError: function (rejection) {
-      if (rejection.config && rejection.config.noPermissionIntercept) {
-        return $q.when(rejection);
-      } else {
-        $injector.invoke(function ($modal) {
-          if (rejection.status === 403) {
-            if (rejection.data && rejection.data.detail && rejection.data.detail.indexOf('credentials') > 0) {
-              $modal.open({
-                templateUrl: routes.PARTIALS_URL + 'modals/login-modal.html',
-                controller: 'LoginmodalCtrl'
-              });
-            } else {
-              var detail = rejection.data && rejection.data.detail || 'Forbidden';
-              $modal.open({
-                templateUrl: routes.PARTIALS_URL + 'modals/403-modal.html',
-                controller: 'ForbiddenmodalCtrl',
-                resolve: {
-                  detail: function () { return detail; }
-                }
-              });
-            }
-          }
-        });
-        return $q.reject(rejection);
-      }
-    }
-  };
-});
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -9224,7 +9154,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .service('Zencoder', function Zencoder($http, $q, $modal, $, routes) {
+  .service('Zencoder', function Zencoder($http, $q, $modal, $, routes, CmsConfig) {
     var newVideoUrl = '/video/new';
     var fileInputId = '#bulbs-cms-hidden-video-file-input';
     var inputTemplate = '<input id="bulbs-cms-hidden-video-file-input" type="file" accept="video/*" style="position: absolute; left:-99999px;" name="video" />';
@@ -9279,7 +9209,7 @@ angular.module('bulbsCmsApp')
 
       $http({
         method: 'POST',
-        url: newVideoUrl,
+        url: CmsConfig.buildBackendUrl(newVideoUrl),
         data: data,
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       }).success(function (data) {
@@ -9340,7 +9270,7 @@ angular.module('bulbsCmsApp')
 
       $http({
         method: 'POST',
-        url: '/video/' + videoObject.attrs.id + '/encode'
+        url: CmsConfig.buildBackendUrl('/video/' + videoObject.attrs.id + '/encode')
       }).success(function (data) {
         videoObject.attrs['encode_status_endpoints'] = data;
         _encodingVideos[videoObject.attrs.id] = videoObject.attrs;
@@ -9370,7 +9300,7 @@ angular.module('bulbsCmsApp')
       var url = '/video/' + videoId;
       return $http({
         method: 'GET',
-        url: url
+        url: CmsConfig.buildBackendUrl(url)
       });
     };
 
@@ -9379,7 +9309,7 @@ angular.module('bulbsCmsApp')
       var data = $.param(video);
       return $http({
         method: 'POST',
-        url: url,
+        url: CmsConfig.buildBackendUrl(url),
         data: data,
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       });
