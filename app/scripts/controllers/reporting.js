@@ -2,7 +2,7 @@
 
 angular.module('bulbsCmsApp')
   .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter,
-      $interpolate, Login, routes, ContributionReportingService, ContentReportingService,
+      $interpolate, routes, ContributionReportingService, ContentReportingService,
       CmsConfig) {
     $window.document.title = routes.CMS_NAMESPACE + ' | Reporting'; // set title
 

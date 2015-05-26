@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance, $, moment, Login, routes, article, TIMEZONE_NAME, Raven) {
+  .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance,
+      $, moment, routes, article, TIMEZONE_NAME, Raven, CmsConfig) {
     $scope.article = article;
 
     $scope.pubButton = {
@@ -68,7 +69,7 @@ angular.module('bulbsCmsApp')
       var data = {published: newDateTime};
 
       return $http({
-        url: '/cms/api/v1/content/' + $scope.article.id + '/publish/',
+        url: CmsConfig.buildBackendUrl('/cms/api/v1/content/' + $scope.article.id + '/publish/'),
         method: 'POST',
         data: data
       });
@@ -99,7 +100,7 @@ angular.module('bulbsCmsApp')
 
     $scope.unpublish = function () {
       return $http({
-        url: '/cms/api/v1/content/' + $scope.article.id + '/publish/',
+        url: CmsConfig.buildBackendUrl('/cms/api/v1/content/' + $scope.article.id + '/publish/'),
         method: 'POST',
         data: {published: false}
       });
