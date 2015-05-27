@@ -22,7 +22,7 @@ describe('Filter: backendHref', function () {
 
   it('should have a directive that adds an href property that is the full url', function () {
     var relUrl = '/something';
-    var element = $compile('<a backend-href="' + relUrl + '"></a>')($scope.$new());
+    var element = $compile('<a backend-href="\'' + relUrl + '\'"></a>')($scope.$new());
     expect($(element).attr('href')).toBe(cmsRoot + relUrl);
   });
 
