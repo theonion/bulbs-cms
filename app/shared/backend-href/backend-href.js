@@ -16,10 +16,10 @@ angular.module('backendHref', [
     return {
       restrict: 'A',
       scope: {
-        backendHref: '&'
+        backendHref: '@'
       },
       link: function (scope, iElement) {
-        $(iElement).attr('href', $filter('backendHref')(scope.backendHref()));
+        $(iElement).attr('href', $filter('backendHref')(scope.backendHref));
       }
     };
   });
