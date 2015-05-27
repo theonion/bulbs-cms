@@ -4,7 +4,9 @@ angular.module('bulbsCmsApp')
   .directive('loggedInUser', function (routes, CurrentUser, CmsConfig) {
     return {
       controller: function ($scope) {
-        $scope.current_user = CurrentUser;
+        CurrentUser.$simplified().then(function (user) {
+          $scope.user = user;
+        });
         $scope.logout = CmsConfig.logoutCallback;
       },
       restrict: 'E',
