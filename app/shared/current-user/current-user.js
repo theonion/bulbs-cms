@@ -5,7 +5,7 @@ angular.module('currentUser', [
 ])
   .service('CurrentUser', [
     '$q', 'ContentFactory',
-    function EditorItems($q, ContentFactory) {
+    function CurrentUser($q, ContentFactory) {
 
       var userDefer = $q.defer(),
           $userPromise = userDefer.promise;
