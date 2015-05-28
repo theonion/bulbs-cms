@@ -351,9 +351,6 @@
             CmsConfigProvider.addEditPageMapping(
               '/content_type_views/content_content.html',
               'content_content');
-            CmsConfigProvider.setLogoutCallback(function () {
-              TokenAuthServiceProvider.$get().logout();
-            });
             CmsConfigProvider.setCreateContentTemplateUrl(routes.DIRECTIVE_PARTIALS_URL + 'create-content.html');
 
             TokenAuthConfigProvider.setLogoUrl('/images/onion-logo.png');

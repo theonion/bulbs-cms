@@ -234,25 +234,28 @@ angular.module('OnionEditor', []).constant('OnionEditor', window.OnionEditor);
 // ****** App Config ****** \\
 
 angular.module('bulbsCmsApp', [
+  // unorganized
   'bulbsCmsApp.settings',
+  'bulbs.api',
+  // external
+  'BettyCropper',
+  'firebase',
+  'ipCookie',
+  'jquery',
+  'keypress',
+  'lodash',
+  'moment',
   'ngCookies',
   'ngResource',
   'ngRoute',
+  'OnionEditor',
+  'PNotify',
+  'Raven',
+  'restangular',
+  'tokenAuth',
   'ui.bootstrap',
   'ui.bootstrap.datetimepicker',
-  'restangular',
-  'BettyCropper',
-  'jquery',
-  'lodash',
   'URLify',
-  'moment',
-  'PNotify',
-  'keypress',
-  'Raven',
-  'firebase',
-  'ipCookie',
-  'bulbs.api',
-  'OnionEditor',
   // shared
   'backendHref',
   'contentServices',
@@ -269,68 +272,84 @@ angular.module('bulbsCmsApp', [
   'specialCoverage',
   'sections'
 ])
-.config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
-  $locationProvider.html5Mode(true);
+  .config([
+    '$provide', '$httpProvider', '$locationProvider', '$routeProvider', '$sceProvider', 'routes',
+      'TokenAuthConfigProvider', 'TokenAuthServiceProvider', 'CmsConfigProvider',
+    function ($provide, $httpProvider, $locationProvider, $routeProvider, $sceProvider, routes,
+        TokenAuthConfigProvider, TokenAuthServiceProvider, CmsConfigProvider) {
+      $locationProvider.html5Mode(true);
 
-  $routeProvider
-    .when('/', {
-      templateUrl: routes.PARTIALS_URL + 'contentlist.html',
-      controller: 'ContentlistCtrl',
-      reloadOnSearch: false
-    })
-    .when('/cms/app/list/', {
-      redirectTo: '/'
-    })
-    .when('/cms/app/edit/:id/contributions/', {
-      templateUrl: routes.PARTIALS_URL + 'contributions.html',
-      controller: 'ContributionsCtrl'
-    })
-    .when('/cms/app/targeting/', {
-      templateUrl: routes.PARTIALS_URL + 'targeting-editor.html',
-      controller: 'TargetingCtrl'
-    })
-    .when('/cms/app/notifications/', {
-      templateUrl: routes.PARTIALS_URL + 'cms-notifications.html',
-      controller: 'CmsNotificationsCtrl'
-    })
-    .when('/cms/app/reporting/', {
-      templateUrl: routes.PARTIALS_URL + 'reporting.html',
-      controller: 'ReportingCtrl'
-    })
-    .when('/cms/app/pzones/', {
-      templateUrl: routes.PARTIALS_URL + 'pzones.html',
-      controller: 'PzoneCtrl'
-    })
-    .otherwise({
-      templateUrl: '/404.html'
-    });
+      $routeProvider
+        .when('/', {
+          templateUrl: routes.PARTIALS_URL + 'contentlist.html',
+          controller: 'ContentlistCtrl'
+        })
+        .when('/cms/app/list/', {
+          redirectTo: '/'
+        })
+        .when('/cms/app/edit/:id/contributions/', {
+          templateUrl: routes.PARTIALS_URL + 'contributions.html',
+          controller: 'ContributionsCtrl'
+        })
+        .when('/cms/app/targeting/', {
+          templateUrl: routes.PARTIALS_URL + 'targeting-editor.html',
+          controller: 'TargetingCtrl'
+        })
+        .when('/cms/app/notifications/', {
+          templateUrl: routes.PARTIALS_URL + 'cms-notifications.html',
+          controller: 'CmsNotificationsCtrl'
+        })
+        .when('/cms/app/reporting/', {
+          templateUrl: routes.PARTIALS_URL + 'reporting.html',
+          controller: 'ReportingCtrl'
+        })
+        .when('/cms/app/pzones/', {
+          templateUrl: routes.PARTIALS_URL + 'pzones.html',
+          controller: 'PzoneCtrl'
+        })
+        .when('/cms/login/', {
+          templateUrl: routes.COMPONENTS_URL + 'login/login.html'
+        })
+        .otherwise({
+          templateUrl: '/404.html'
+        });
 
-  //TODO: whitelist staticonion.
-  $sceProvider.enabled(false);
-  /*.resourceUrlWhitelist([
-  'self',
-  STATIC_URL + "**"]);*/
+      CmsConfigProvider.setLogoutCallback(function () {
+        TokenAuthServiceProvider.$get().logout();
+      });
 
-})
-.config(function ($provide, $httpProvider) {
-  $provide.decorator('$exceptionHandler', function ($delegate) {
-    return function (exception, cause) {
-      $delegate(exception, cause);
-      window.Raven.captureException(exception);
-    };
-  });
+      TokenAuthConfigProvider.setApiEndpointAuth('/token/auth');
+      TokenAuthConfigProvider.setApiEndpointRefresh('/token/refresh');
+      TokenAuthConfigProvider.setLoginPagePath('/cms/login/');
 
-  $httpProvider.interceptors.push('BugReportInterceptor');
-  $httpProvider.interceptors.push('BadRequestInterceptor');
-})
-.run(function ($rootScope, $http, $cookies) {
-  // set the CSRF token here
-  $http.defaults.headers.common['X-CSRFToken'] = $cookies.csrftoken;
-  var deleteHeaders = $http.defaults.headers.delete || {};
-  deleteHeaders['X-CSRFToken'] = $cookies.csrftoken;
-  $http.defaults.headers.delete = deleteHeaders;
-})
-.constant('TIMEZONE_NAME', 'America/Chicago');
+      //TODO: whitelist staticonion.
+      $sceProvider.enabled(false);
+      /*.resourceUrlWhitelist([
+      'self',
+      STATIC_URL + "**"]);*/
+
+      $provide.decorator('$exceptionHandler', function ($delegate) {
+        return function (exception, cause) {
+          $delegate(exception, cause);
+          window.Raven.captureException(exception);
+        };
+      });
+
+      $httpProvider.interceptors.push('BugReportInterceptor');
+      $httpProvider.interceptors.push('BadRequestInterceptor');
+    }
+  ])
+  .run([
+    '$rootScope', '$http', '$cookies',
+    function ($rootScope, $http, $cookies) {
+      // set the CSRF token here
+      $http.defaults.headers.common['X-CSRFToken'] = $cookies.csrftoken;
+      var deleteHeaders = $http.defaults.headers.delete || {};
+      deleteHeaders['X-CSRFToken'] = $cookies.csrftoken;
+      $http.defaults.headers.delete = deleteHeaders;
+    }
+  ])
+  .constant('TIMEZONE_NAME', 'America/Chicago');
 
 'use strict';
 
@@ -4730,41 +4749,45 @@ angular.module('currentUser', [
     '$q', 'ContentFactory',
     function CurrentUser($q, ContentFactory) {
 
-      var userDefer = $q.defer(),
-          $userPromise = userDefer.promise;
+      var $userPromise;
 
       this.data = [];
 
       var self = this;
       this.getItems = function () {
-        ContentFactory.one('me').get().then(function (data) {
-          self.data = data;
-          userDefer.resolve(data);
-        });
-      };
+        if (!$userPromise) {
+          $userPromise = ContentFactory.one('me')
+            .get()
+            .then(function (data) {
+              self.data = data;
+              return data;
+            });
+        }
 
-      this.getItems();
+        return $userPromise;
+      };
 
       /**
        * Get promise that resolves when user data is populated.
        */
       this.$retrieveData = function () {
-        return $userPromise;
+        return this.getItems();
       };
 
       /**
        * Create a simplified version of this user for storage.
        */
       this.$simplified = function () {
-        return $userPromise.then(function (user) {
-          var displayName = user.first_name && user.last_name ?
-                              user.first_name + ' ' + user.last_name :
-                                (user.email || user.username);
-          return {
-            id: user.id,
-            displayName: displayName
-          };
-        });
+        return this.getItems()
+          .then(function (user) {
+            var displayName = user.first_name && user.last_name ?
+                                user.first_name + ' ' + user.last_name :
+                                  (user.email || user.username);
+            return {
+              id: user.id,
+              displayName: displayName
+            };
+          });
       };
     }
   ]);
