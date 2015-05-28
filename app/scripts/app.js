@@ -34,10 +34,11 @@ angular.module('bulbsCmsApp', [
   'bulbs.api',
   'OnionEditor',
   // shared
+  'backendHref',
   'contentServices',
   'cms.config',
   'cms.templates',
-  'backendHref',
+  'currentUser',
   // components
   'campaigns',
   'content',
