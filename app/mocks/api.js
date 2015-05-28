@@ -2,6 +2,7 @@
 
 angular.module('bulbsCmsApp.mockApi', [
   'ngMockE2E',
+  'LocalStorageModule',
 
   'bulbsCmsApp.mockApi.data',
 
@@ -11,21 +12,12 @@ angular.module('bulbsCmsApp.mockApi', [
   'bulbsCmsApp.mockApi.sections',
 
   'VideohubClient.api.mocks'
-]).run([
-  '$httpBackend', 'mockApiData', 'moment', '_',
-  function($httpBackend, mockApiData, moment, _) {
+])
+.run([
+  '$httpBackend', 'mockApiData', 'moment', '_', 'localStorageService',
+  function ($httpBackend, mockApiData, moment, _, localStorageService) {
 
     var today = moment();
-
-    var slugify = function (text) {
-      /// https://gist.github.com/mathewbyrne/1280286
-      return text.toString().toLowerCase()
-        .replace(/\s+/g, '-')           // Replace spaces with -
-        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-        .replace(/^-+/, '')             // Trim - from start of text
-        .replace(/-+$/, '');            // Trim - from end of text
-    };
 
     $httpBackend.when('OPTIONS', '/returns-a-403/').respond(function(){ //just for testing
       return [403, {'detail': 'No permission'}];
@@ -135,10 +127,6 @@ angular.module('bulbsCmsApp.mockApi', [
     });
 
     $httpBackend.whenGET(/^\/cms\/api\/v1\/author\/.*/).respond(mockApiData['author.list']);
-
-    $httpBackend.whenGET('/users/logout/').respond(function(method, url, data){
-      return [200];
-    });
 
     // videos
     mockApiData.videos = [{
@@ -402,11 +390,12 @@ angular.module('bulbsCmsApp.mockApi', [
 
     //var tokenGenerator = new FirebaseTokenGenerator('');
 
-    // user, log in as a random user
+    // users
     mockApiData.users = [
       {
         id: 0,
         username: 'admin',
+        password: '123',
         email: 'webtech@theonion.com',
         first_name: 'Herman',
         last_name: 'Zweibel',
@@ -421,6 +410,7 @@ angular.module('bulbsCmsApp.mockApi', [
       {
         id: 1,
         username: 'jadams',
+        password: '123',
         email: 'jadams@theonion.com',
         first_name: 'John',
         last_name: 'Adams',
@@ -434,6 +424,7 @@ angular.module('bulbsCmsApp.mockApi', [
       {
         id: 2,
         username: 'bdoledoledoledoledoledole',
+        password: '123',
         email: 'bdole@theonion.com',
         first_name: 'Bob',
         last_name: 'Dole Dole Dole Dole Dole Dole',
@@ -445,9 +436,36 @@ angular.module('bulbsCmsApp.mockApi', [
 //        })
       }
     ];
-    var userIndex = Math.floor(Math.random() * mockApiData.users.length);
 
-    $httpBackend.whenGET(/\/cms\/api\/v1\/me\//).respond(mockApiData.users[userIndex]);
+    var lsUserKey = 'devLoggedInUser';
+    $httpBackend.whenPOST('/token/auth').respond(function (method, url, data) {
+      var parsed = JSON.parse(data);
+      var user = _.findWhere(
+        mockApiData.users, {
+          username: parsed.username,
+          password: parsed.password
+        });
+      if (user) {
+        window.loggedInUser = user;
+        localStorageService.set(lsUserKey, window.loggedInUser);
+        return [200, {token: 'abc123'}];
+      }
+      return [400];
+    });
+    $httpBackend.whenPOST('/token/refresh').respond(function (method, url, data) {
+      var parsed = JSON.parse(data);
+      if (parsed.token) {
+        return [200, {token: 'abc123'}];
+      }
+      return [401];
+    });
+    $httpBackend.whenGET('/cms/api/v1/me/').respond(function () {
+      window.loggedInUser = localStorageService.get(lsUserKey);
+      if (window.loggedInUser) {
+        return [200, window.loggedInUser];
+      }
+      return [401];
+    });
 
     $httpBackend.when('OPTIONS', '/ads/targeting/').respond('');
 

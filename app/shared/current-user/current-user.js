@@ -7,41 +7,45 @@ angular.module('currentUser', [
     '$q', 'ContentFactory',
     function CurrentUser($q, ContentFactory) {
 
-      var userDefer = $q.defer(),
-          $userPromise = userDefer.promise;
+      var $userPromise;
 
       this.data = [];
 
       var self = this;
       this.getItems = function () {
-        ContentFactory.one('me').get().then(function (data) {
-          self.data = data;
-          userDefer.resolve(data);
-        });
-      };
+        if (!$userPromise) {
+          $userPromise = ContentFactory.one('me')
+            .get()
+            .then(function (data) {
+              self.data = data;
+              return data;
+            });
+        }
 
-      this.getItems();
+        return $userPromise;
+      };
 
       /**
        * Get promise that resolves when user data is populated.
        */
       this.$retrieveData = function () {
-        return $userPromise;
+        return this.getItems();
       };
 
       /**
        * Create a simplified version of this user for storage.
        */
       this.$simplified = function () {
-        return $userPromise.then(function (user) {
-          var displayName = user.first_name && user.last_name ?
-                              user.first_name + ' ' + user.last_name :
-                                (user.email || user.username);
-          return {
-            id: user.id,
-            displayName: displayName
-          };
-        });
+        return this.getItems()
+          .then(function (user) {
+            var displayName = user.first_name && user.last_name ?
+                                user.first_name + ' ' + user.last_name :
+                                  (user.email || user.username);
+            return {
+              id: user.id,
+              displayName: displayName
+            };
+          });
       };
     }
   ]);

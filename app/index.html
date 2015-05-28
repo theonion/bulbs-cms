@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="bower_components/pnotify/pnotify.core.css" />
     <link rel="stylesheet" href="bower_components/pnotify/pnotify.buttons.css" />
     <link rel="stylesheet" href="bower_components/pnotify/pnotify.history.css" />
+    <link rel="stylesheet" href="bower_components/token-auth-frontend/dist/token-auth-login-form.css" />
     <!-- endbower -->
     <link rel="stylesheet" href="bower_components/jcrop/css/jquery.Jcrop.min.css" />
     <!-- endbuild -->
@@ -126,6 +127,8 @@
     <script src="bower_components/raven-js/dist/raven.js"></script>
     <script src="bower_components/restangular/dist/restangular.js"></script>
     <script src="bower_components/restmod-style-drf-paged/restmod-style-drf-paged.js"></script>
+    <script src="bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
+    <script src="bower_components/token-auth-frontend/dist/token-auth.js"></script>
     <script src="bower_components/urlify/urlify.js"></script>
     <script src="bower_components/videohub-client-js/dist/videohub-client.js"></script>
     <!-- endbower -->
@@ -326,6 +329,8 @@
     <script src="bower_components/angular-mocks/angular-mocks.js"></script>
 
     <script type="text/javascript">
+        window.loggedInUser = null;
+
         //these probably don't need to be constants
         //but there probably isn't any reason for them to not be
         //so...
@@ -336,7 +341,8 @@
         angular.module('apiServices.settings', []).constant('API_URL_ROOT', '/cms/api/v1/');
 
         angular.module('bulbsCmsApp')
-          .config(function (CmsConfigProvider, routes) {
+          .config(function ($httpProvider, CmsConfigProvider, TokenAuthConfigProvider,
+              TokenAuthServiceProvider, routes) {
             CmsConfigProvider.setBackendRoot('');
             CmsConfigProvider.setLogoUrl('/images/onion-logo.png');
             CmsConfigProvider.setToolbarMappings({
@@ -346,9 +352,14 @@
               '/content_type_views/content_content.html',
               'content_content');
             CmsConfigProvider.setLogoutCallback(function () {
-              console.log('This is where you\'d be logged out');
+              TokenAuthServiceProvider.$get().logout();
             });
             CmsConfigProvider.setCreateContentTemplateUrl(routes.DIRECTIVE_PARTIALS_URL + 'create-content.html');
+
+            TokenAuthConfigProvider.setLogoUrl('/images/onion-logo.png');
+            TokenAuthConfigProvider.setApiHost('');
+
+            $httpProvider.interceptors.push('TokenAuthInterceptor');
           });
 
         angular.module('bulbsCmsApp.settings', [

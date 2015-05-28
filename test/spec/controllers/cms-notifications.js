@@ -6,11 +6,13 @@ describe('Controller: CmsNotificationsCtrl', function () {
   beforeEach(module('bulbsCmsApp.mockApi'));
 
   var CmsNotificationsCtrl,
+      CurrentUser,
       $httpBackend,
       $scope;
 
-  beforeEach(inject(function (_$httpBackend_, $rootScope) {
+  beforeEach(inject(function (_CurrentUser_, _$httpBackend_, $rootScope) {
 
+    CurrentUser = _CurrentUser_;
     $httpBackend = _$httpBackend_;
     $scope = $rootScope.$new();
 
@@ -28,6 +30,7 @@ describe('Controller: CmsNotificationsCtrl', function () {
         last_name: 'Zweibel',
         is_superuser: true
       });
+      CurrentUser.getItems();
 
     }));
 
@@ -148,6 +151,7 @@ describe('Controller: CmsNotificationsCtrl', function () {
         first_name: 'John',
         last_name: 'Smath'
       });
+      CurrentUser.getItems();
 
     }));
 
