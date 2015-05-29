@@ -4926,6 +4926,58 @@ angular.module('listPage', [
 
 'use strict';
 
+angular.module('sponsoredContentModal', [
+  'sponsoredContentModal.factory'
+])
+  .directive('sponsoredContentModalOpener', function (SponsoredContentModal) {
+    return {
+      restrict: 'A',
+      scope: {
+        article: '='
+      },
+      link: function (scope, element) {
+        var modalInstance = null;
+        element.addClass('sponsored-content-modal-opener');
+        element.on('click', function () {
+          modalInstance = new SponsoredContentModal(scope);
+        });
+      }
+    };
+  });
+
+'use strict';
+
+angular.module('sponsoredContentModal.factory', [
+  'ui.bootstrap.modal'
+])
+  .factory('SponsoredContentModal', function ($modal, routes) {
+
+    var SponsoredContentModal = function (scope) {
+      return (function (scope) {
+        $modal
+          .open({
+            controller: function ($scope, $modalInstance) {
+              $scope.confirm = function () {
+                $scope.$close();
+                $scope.modalOnOk();
+              };
+
+              $scope.cancel = function () {
+                $scope.$dismiss();
+                $scope.modalOnCancel();
+              };
+            },
+            scope: scope,
+            templateUrl: routes.SHARED_URL + 'sponsored-content-modal/sponsored-content-modal.html'
+          });
+      })(scope);
+    };
+
+    return SponsoredContentModal;
+  });
+
+'use strict';
+
 angular.module('utils', [])
   .service('Utils', function () {
     var Utils = this;
@@ -7210,17 +7262,6 @@ angular.module('bulbsCmsApp')
       return $modal.open({
         templateUrl: routes.PARTIALS_URL + 'modals/thumbnail-modal.html',
         controller: 'ThumbnailModalCtrl',
-        scope: $scope,
-        resolve: {
-          article: function () { return article; }
-        }
-      });
-    };
-
-    //deprecated
-    $scope.sponsoredContentModal = function (article) {
-      return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'modals/sponsored-content-modal.html',
         scope: $scope,
         resolve: {
           article: function () { return article; }
