@@ -62,7 +62,8 @@ angular.module('bulbsCmsApp', [
       $routeProvider
         .when('/', {
           templateUrl: routes.PARTIALS_URL + 'contentlist.html',
-          controller: 'ContentlistCtrl'
+          controller: 'ContentlistCtrl',
+          reloadOnSearch: false
         })
         .when('/cms/app/list/', {
           redirectTo: '/'
