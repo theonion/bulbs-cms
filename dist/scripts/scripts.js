@@ -4746,8 +4746,8 @@ angular.module('currentUser', [
   'contentServices.factory'
 ])
   .service('CurrentUser', [
-    '$q', 'ContentFactory',
-    function CurrentUser($q, ContentFactory) {
+    'ContentFactory',
+    function CurrentUser(ContentFactory) {
 
       var $userPromise;
 
@@ -4761,6 +4761,9 @@ angular.module('currentUser', [
             .then(function (data) {
               self.data = data;
               return data;
+            })
+            .catch(function () {
+              $userPromise = null;
             });
         }
 
