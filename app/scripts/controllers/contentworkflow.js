@@ -64,17 +64,6 @@ angular.module('bulbsCmsApp')
       });
     };
 
-    //deprecated
-    $scope.sponsoredContentModal = function (article) {
-      return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'modals/sponsored-content-modal.html',
-        scope: $scope,
-        resolve: {
-          article: function () { return article; }
-        }
-      });
-    };
-
     $scope.sponsorModal = function (article) {
       return $modal.open({
         templateUrl: routes.PARTIALS_URL + 'modals/sponsor-modal.html',

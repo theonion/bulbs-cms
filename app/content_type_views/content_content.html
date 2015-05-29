@@ -1,40 +1,13 @@
-<section>
-  <div class="metadata container-fluid">
-    <div class="row">
-      <featuretype-field article="article" class="pull-left"></featuretype-field>
-      <sections-field article="article" class="pull-left"></sections-field>
-    </div>
+<content-edit-metadata article="article"></content-edit-metadata>
+<content-edit-main-image article="article"></content-edit-main-image>
 
-    <div class="row">
-      <tags-field article="article"></tags-field>
-    </div>
+<content-edit-title
+    article="article"
+    class="article-header">
+</content-edit-title>
 
-    <div class="row">
-      <template-type-field
-          content="article"
-          class="form-group-sm">
-      <template-type-field>
-    </div>
-  </div>
-</section>
+<content-edit-authors article="article"></content-edit-authors>
 
-<section class="main-image row">
-  <div class="clearfix well">
-    <bettyeditable image="article.image" ratio="16x9" placeholder-text="Optional Main Image" add-styles="fa fa-picture-o add-feature-image"/></div></section>
+<encode-status></encode-status>
 
-<section>
-  <onion-editor id="content-title" ng-model="article.title" role="singleline" formatting="italic" placeholder="Title"></onion-editor>
-  <onion-editor id="content-subhead" ng-model="article.subhead" role="singleline" formatting="" placeholder="Subhead"></onion-editor></section>
-
-<section>
-  <div class="well clearfix">
-  <authors-field article="article"></authors-field></div></section>
-
-<onion-editor id="content-body"
-  ng-model="article.body"
-  role="multiline"
-  placeholder="Write here"
-  inline-objects="/components/content/content-edit/inline-objects.json"
-  link-domain="theonion.com"
-  link-search-handler="linkBrowser"
-  />
+<content-edit-body article="article"></content-edit-body>
