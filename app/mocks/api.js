@@ -459,6 +459,13 @@ angular.module('bulbsCmsApp.mockApi', [
       }
       return [401];
     });
+    $httpBackend.whenPOST('/token/verify').respond(function (method, url, data) {
+      var parsed = JSON.parse(data);
+      if (parsed.token) {
+        return [200];
+      }
+      return [400];
+    });
     $httpBackend.whenGET('/cms/api/v1/me/').respond(function () {
       window.loggedInUser = localStorageService.get(lsUserKey);
       if (window.loggedInUser) {
