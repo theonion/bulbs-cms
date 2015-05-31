@@ -321,6 +321,7 @@ angular.module('bulbsCmsApp', [
 
       TokenAuthConfigProvider.setApiEndpointAuth('/token/auth');
       TokenAuthConfigProvider.setApiEndpointRefresh('/token/refresh');
+      TokenAuthConfigProvider.setApiEndpointVerify('/token/verify');
       TokenAuthConfigProvider.setLoginPagePath('/cms/login/');
 
       //TODO: whitelist staticonion.

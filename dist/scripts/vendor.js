@@ -111690,6 +111690,8 @@ angular.module('tokenAuth.config', [])
     var apiEndpointAuth = '/api/token/auth';
     // endpoint for token refresh
     var apiEndpointRefresh = '/api/token/refresh';
+    // endpoint for token verification
+    var apiEndpointVerify = '/api/token/verify';
     // host where auth endpoints are located
     var apiHost = '';
     // callback called on successful login
@@ -111704,7 +111706,7 @@ angular.module('tokenAuth.config', [])
     var tokenKey = 'authToken';
 
     this.setAfterLoginPath = function (value) {
-      if (typeof(value) === 'string') {
+      if (_.isString(value)) {
         afterLoginPath = value;
       } else {
         throw new TypeError('TokenAuthConfig.afterLoginPath must be a string!');
@@ -111712,7 +111714,7 @@ angular.module('tokenAuth.config', [])
     };
 
     this.setApiEndpointAuth = function (value) {
-      if (typeof(value) === 'string') {
+      if (_.isString(value)) {
         apiEndpointAuth = value;
       } else {
         throw new TypeError('TokenAuthConfig.apiEndpointAuth must be a string!');
@@ -111720,15 +111722,23 @@ angular.module('tokenAuth.config', [])
     };
 
     this.setApiEndpointRefresh = function (value) {
-      if (typeof(value) === 'string') {
+      if (_.isString(value)) {
         apiEndpointRefresh = value;
       } else {
         throw new TypeError('TokenAuthConfig.apiEndpointRefresh must be a string!');
       }
     };
 
+    this.setApiEndpointVerify = function (value) {
+      if (_.isString(value)) {
+        apiEndpointVerify = value;
+      } else {
+        throw new TypeError('TokenAuthConfig.apiEndpointVerify must be a string!');
+      }
+    };
+
     this.setApiHost = function (value) {
-      if (typeof(value) === 'string') {
+      if (_.isString(value)) {
         apiHost = value;
       } else {
         throw new TypeError('TokenAuthConfig.apiHost must be a string!');
@@ -111736,7 +111746,7 @@ angular.module('tokenAuth.config', [])
     };
 
     this.setLoginCallback = function (func) {
-      if (typeof(func) === 'function') {
+      if (_.isFunction(func)) {
         loginCallback = func;
       } else {
         throw new TypeError('TokenAuthConfig.loginCallback must be a function!');
@@ -111744,7 +111754,7 @@ angular.module('tokenAuth.config', [])
     };
 
     this.setLoginPagePath = function (value) {
-      if (typeof(value) === 'string') {
+      if (_.isString(value)) {
         loginPagePath = value;
       } else {
         throw new TypeError('TokenAuthConfig.loginPagePath must be a string!');
@@ -111752,7 +111762,7 @@ angular.module('tokenAuth.config', [])
     };
 
     this.setLogoUrl = function (value) {
-      if (typeof(value) === 'string') {
+      if (_.isString(value)) {
         logoUrl = value;
       } else {
         throw new TypeError('TokenAuthConfig.logoUrl must be a string!');
@@ -111760,7 +111770,7 @@ angular.module('tokenAuth.config', [])
     };
 
     this.setLogoutCallback = function (func) {
-      if (typeof(func) === 'function') {
+      if (_.isFunction(func)) {
         logoutCallback = func;
       } else {
         throw new TypeError('TokenAuthConfig.logoutCallback must be a function!');
@@ -111768,7 +111778,7 @@ angular.module('tokenAuth.config', [])
     };
 
     this.setTokenKey = function (value) {
-      if (typeof(value) === 'string') {
+      if (_.isString(value)) {
         tokenKey = value;
       } else {
         throw new TypeError('TokenAuthConfig.tokenKey must be a string!');
@@ -111777,24 +111787,13 @@ angular.module('tokenAuth.config', [])
 
     this.$get = function () {
       return {
-        getAfterLoginPath: function () {
-          return afterLoginPath;
-        },
-        getApiEndpointAuth: function () {
-          return apiHost + apiEndpointAuth;
-        },
-        getApiEndpointRefresh: function () {
-          return apiHost + apiEndpointRefresh;
-        },
-        getLoginPagePath: function () {
-          return loginPagePath;
-        },
-        getLogoUrl: function () {
-          return logoUrl;
-        },
-        getTokenKey: function () {
-          return tokenKey;
-        },
+        getAfterLoginPath: _.constant(afterLoginPath),
+        getApiEndpointAuth: _.constant(apiHost + apiEndpointAuth),
+        getApiEndpointRefresh: _.constant(apiHost + apiEndpointRefresh),
+        getApiEndpointVerify: _.constant(apiHost + apiEndpointVerify),
+        getLoginPagePath: _.constant(loginPagePath),
+        getLogoUrl: _.constant(logoUrl),
+        getTokenKey: _.constant(tokenKey),
         loginCallback: loginCallback,
         logoutCallback: logoutCallback
      };
@@ -111809,10 +111808,13 @@ angular.module('tokenAuth.loginForm', [
   .directive('tokenAuthLoginForm', [function () {
     return {
       controller:
-        ['$scope', 'TokenAuthService', 'TokenAuthConfig', /*'AlertService', BettyService',*/
-        function ($scope, TokenAuthService, TokenAuthConfig /*, AlertService, BettyService*/) {
+        ['$location', '$scope', 'TokenAuthService', 'TokenAuthConfig', /*'AlertService', BettyService',*/
+        function ($location, $scope, TokenAuthService, TokenAuthConfig /*, AlertService, BettyService*/) {
 
           $scope.init = function () {
+            // check if user is already authenticated
+            TokenAuthService.verifyToken();
+
             $scope.username = '';
             $scope.password = '';
             $scope.submitted = '';
@@ -111950,6 +111952,31 @@ angular.module('tokenAuth.authService', [
   function ($q, $rootScope, $location, $http, HttpRequestBuffer, localStorageService,
         /*AlertService,*/ TokenAuthConfig) {
     var service = {};
+
+    service.verifyToken = function () {
+      var deferred = $q.defer();
+      var token = localStorageService.get(TokenAuthConfig.getTokenKey());
+
+      deferred.promise
+        .then(service.verifySuccess);
+
+      if (token) {
+        $http.post(
+          TokenAuthConfig.getApiEndpointVerify(),
+          {token: token},
+          {ignoreAuthModule: true})
+        .success(deferred.resolve)
+        .error(deferred.reject);
+      } else {
+        deferred.reject();
+      }
+
+      return deferred.promise;
+    };
+
+    service.verifySuccess = function () {
+      $location.path(TokenAuthConfig.getAfterLoginPath());
+    };
 
     service.login = function (username, password) {
       var deferred = $q.defer();
