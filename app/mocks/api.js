@@ -476,6 +476,11 @@ angular.module('bulbsCmsApp.mockApi', [
 
     $httpBackend.when('OPTIONS', '/ads/targeting/').respond('');
 
+    $httpBackend.when('GET', /\/cms\/api\/v1\/content\/\d+\/send\//)
+      .respond({editor_items: []});
+    $httpBackend.when('POST', /\/cms\/api\/v1\/content\/\d+\/send\//)
+      .respond({editor_items: []});
+
     // for anything that uses BC_ADMIN_URL
     $httpBackend.when('GET', /^http:\/\/localimages\.avclub\.com\/avclub.*/).respond('');
   }

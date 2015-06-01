@@ -47,10 +47,11 @@ angular.module('bulbsCmsApp', [
   'content',
   'filterWidget',
   'promotedContent',
-  'statusFilter',
-  'templateTypeField',
+  'sections',
+  'sendToEditor',
   'specialCoverage',
-  'sections'
+  'statusFilter',
+  'templateTypeField'
 ])
   .config([
     '$provide', '$httpProvider', '$locationProvider', '$routeProvider', '$sceProvider', 'routes',

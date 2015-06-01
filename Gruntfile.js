@@ -57,7 +57,8 @@ module.exports = function (grunt) {
           'less',
           'newer:karma:ci',
           'newer:jshint:all',
-          'injector:local_dependencies'
+          'injector:local_dependencies',
+          'ngtemplates:tmp'
         ]
       }
     },

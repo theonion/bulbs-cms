@@ -33,10 +33,6 @@ describe('Controller: ContentworkflowCtrl', function () {
       scope.pubTimeModal();
       expect(modalService.open).toHaveBeenCalled();
     });
-    it('sendToEditorModal', function () {
-      scope.sendToEditorModal();
-      expect(modalService.open).toHaveBeenCalled();
-    });
     it('changelogModal', function () {
       scope.changelogModal();
       expect(modalService.open).toHaveBeenCalled();
