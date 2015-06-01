@@ -14,7 +14,7 @@
           href=""
           ng-click="saveArticle();"
           hide-if-forbidden
-          options-url="{{'/cms/api/v1/content/' + article.id + '/' | backendHref}}">
+          options-url="{{'/cms/api/v1/content/' + article.id + '/'}}">
         <i class="glyphicon glyphicon-floppy-disk"></i>
         <span>Save</span>
       </a>
@@ -112,7 +112,7 @@
               ng-controller="ContentworkflowCtrl"
               ng-show="getStatus(article) == 'unpublished'"
               hide-if-forbidden
-              options-url="{{'/cms/api/v1/content/' + article.id + '/publish/' | backendHref}}">
+              options-url="{{'/cms/api/v1/content/' + article.id + '/publish/'}}">
             <a
                 href=""
                 ng-click="saveArticle().then(pubTimeModal);">
@@ -126,7 +126,7 @@
               ng-controller="ContentworkflowCtrl"
               ng-show="getStatus(article) == 'published'"
               hide-if-forbidden
-              options-url="{{'/cms/api/v1/content/' + article.id + '/publish/' | backendHref}}">
+              options-url="{{'/cms/api/v1/content/' + article.id + '/publish/'}}">
             <a
                 href=""
                 class="changeable"
@@ -141,7 +141,7 @@
               ng-controller="ContentworkflowCtrl"
               ng-show="getStatus(article) == 'scheduled'"
               hide-if-forbidden
-              options-url="{{'/cms/api/v1/content/' + article.id + '/publish/' | backendHref}}">
+              options-url="{{'/cms/api/v1/content/' + article.id + '/publish/'}}">
             <a
                 href=""
                 class="changeable"
@@ -152,7 +152,7 @@
           </li>
 
           <li class="content-status">
-            <a target="_blank" href="{{'/r/' + article.id | backendHref }}">
+            <a target="_blank" href="{{'/r/' + article.id }}">
               <i class="glyphicon glyphicon-share-alt"></i>
               <span>Preview</span>
             </a>
@@ -161,7 +161,7 @@
           <li
               class="hidden-xs"
               hide-if-forbidden
-              options-url="{{'/cms/api/v1/content/' + article.id + '/' | backendHref}}">
+              options-url="{{'/cms/api/v1/content/' + article.id + '/'}}">
             <button
                 id="save-article-btn"
                 class="navbar-save btn btn-success btn-sm navbar-btn"
