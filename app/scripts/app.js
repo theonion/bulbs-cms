@@ -16,16 +16,6 @@ angular.module('OnionEditor', []).constant('OnionEditor', window.OnionEditor);
 angular.module('bulbsCmsApp.settings', [
   'ngClipboard'
 ])
-  .constant('AUTO_ADD_AUTHOR', true)
-  .constant('CACHEBUSTER', '?' + Date.now())
-  .constant('CONTENT_PARTIALS_URL', '/content_type_views/')
-  .constant('DEFAULT_IMAGE_WIDTH', 1200)
-  .constant('DIRECTIVE_PARTIALS_URL', '/views/')
-  .constant('PARTIALS_URL', '/views/')
-  .constant('TAR_OPTIONS', {endpoint: '/ads/targeting'})
-  .constant('TIMEZONE_NAME', 'America/Chicago')
-  .constant('STATIC_URL', '/static/')
-  .constant('ZERO_CLIPBOARD_SWF', '/static/ZeroClipboard.swf')
   .config(function (ngClipProvider, ZERO_CLIPBOARD_SWF) {
     ngClipProvider.setPath(ZERO_CLIPBOARD_SWF);
   });

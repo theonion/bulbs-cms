@@ -233,6 +233,23 @@ angular.module('OnionEditor', []).constant('OnionEditor', window.OnionEditor);
 
 // ****** App Config ****** \\
 
+angular.module('bulbsCmsApp.settings', [
+  'ngClipboard'
+])
+  .constant('AUTO_ADD_AUTHOR', true)
+  .constant('CACHEBUSTER', '?' + Date.now())
+  .constant('CONTENT_PARTIALS_URL', '/content_type_views/')
+  .constant('DEFAULT_IMAGE_WIDTH', 1200)
+  .constant('DIRECTIVE_PARTIALS_URL', '/views/')
+  .constant('PARTIALS_URL', '/views/')
+  .constant('TAR_OPTIONS', {endpoint: '/ads/targeting'})
+  .constant('TIMEZONE_NAME', 'America/Chicago')
+  .constant('STATIC_URL', '/static/')
+  .constant('ZERO_CLIPBOARD_SWF', '/static/ZeroClipboard.swf')
+  .config(function (ngClipProvider, ZERO_CLIPBOARD_SWF) {
+    ngClipProvider.setPath(ZERO_CLIPBOARD_SWF);
+  });
+
 angular.module('bulbsCmsApp', [
   // unorganized
   'bulbsCmsApp.settings',
@@ -274,15 +291,17 @@ angular.module('bulbsCmsApp', [
   'templateTypeField'
 ])
   .config([
-    '$provide', '$httpProvider', '$locationProvider', '$routeProvider', '$sceProvider', 'routes',
+    '$provide', '$httpProvider', '$locationProvider', '$routeProvider', '$sceProvider',
       'TokenAuthConfigProvider', 'TokenAuthServiceProvider', 'CmsConfigProvider',
-    function ($provide, $httpProvider, $locationProvider, $routeProvider, $sceProvider, routes,
-        TokenAuthConfigProvider, TokenAuthServiceProvider, CmsConfigProvider) {
+      'COMPONENTS_URL', 'PARTIALS_URL',
+    function ($provide, $httpProvider, $locationProvider, $routeProvider, $sceProvider,
+        TokenAuthConfigProvider, TokenAuthServiceProvider, CmsConfigProvider,
+        COMPONENTS_URL, PARTIALS_URL) {
       $locationProvider.html5Mode(true);
 
       $routeProvider
         .when('/', {
-          templateUrl: routes.PARTIALS_URL + 'contentlist.html',
+          templateUrl: PARTIALS_URL + 'contentlist.html',
           controller: 'ContentlistCtrl',
           reloadOnSearch: false
         })
@@ -290,27 +309,27 @@ angular.module('bulbsCmsApp', [
           redirectTo: '/'
         })
         .when('/cms/app/edit/:id/contributions/', {
-          templateUrl: routes.PARTIALS_URL + 'contributions.html',
+          templateUrl: PARTIALS_URL + 'contributions.html',
           controller: 'ContributionsCtrl'
         })
         .when('/cms/app/targeting/', {
-          templateUrl: routes.PARTIALS_URL + 'targeting-editor.html',
+          templateUrl: PARTIALS_URL + 'targeting-editor.html',
           controller: 'TargetingCtrl'
         })
         .when('/cms/app/notifications/', {
-          templateUrl: routes.PARTIALS_URL + 'cms-notifications.html',
+          templateUrl: PARTIALS_URL + 'cms-notifications.html',
           controller: 'CmsNotificationsCtrl'
         })
         .when('/cms/app/reporting/', {
-          templateUrl: routes.PARTIALS_URL + 'reporting.html',
+          templateUrl: PARTIALS_URL + 'reporting.html',
           controller: 'ReportingCtrl'
         })
         .when('/cms/app/pzones/', {
-          templateUrl: routes.PARTIALS_URL + 'pzones.html',
+          templateUrl: PARTIALS_URL + 'pzones.html',
           controller: 'PzoneCtrl'
         })
         .when('/cms/login/', {
-          templateUrl: routes.COMPONENTS_URL + 'login/login.html'
+          templateUrl: COMPONENTS_URL + 'login/login.html'
         })
         .otherwise({
           templateUrl: '/404.html'
@@ -351,8 +370,7 @@ angular.module('bulbsCmsApp', [
       deleteHeaders['X-CSRFToken'] = $cookies.csrftoken;
       $http.defaults.headers.delete = deleteHeaders;
     }
-  ])
-  .constant('TIMEZONE_NAME', 'America/Chicago');
+  ]);
 
 'use strict';
 
@@ -756,7 +774,7 @@ angular.module('autocompleteBasic', [
   'bulbsCmsApp.settings'
 ])
   .value('AUTOCOMPLETE_BASIC_DEBOUNCE', 200)
-  .directive('autocompleteBasic', function (routes) {
+  .directive('autocompleteBasic', function (COMPONENTS_URL) {
     return {
       controller: function (_, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS, AUTOCOMPLETE_BASIC_DEBOUNCE) {
 
@@ -859,7 +877,7 @@ angular.module('autocompleteBasic', [
         onSelect: '&',              // selection callback, recieves selection as argument
         searchFunction: '='         // function to use for searching autocomplete results
       },
-      templateUrl: routes.COMPONENTS_URL + 'autocomplete-basic/autocomplete-basic.html'
+      templateUrl: COMPONENTS_URL + 'autocomplete-basic/autocomplete-basic.html'
     };
   });
 
@@ -874,7 +892,7 @@ angular.module('campaigns.edit.directive', [
   'saveButton.directive',
   'topBar'
 ])
-  .directive('campaignsEdit', function (routes) {
+  .directive('campaignsEdit', function (COMPONENTS_URL) {
     return {
       controller: function (_, $location, $q, $routeParams, $scope, Campaign) {
 
@@ -933,25 +951,22 @@ angular.module('campaigns.edit.directive', [
       scope: {
         getModelId: '&modelId'
       },
-      templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-edit/campaigns-edit.html',
+      templateUrl: COMPONENTS_URL + 'campaigns/campaigns-edit/campaigns-edit.html',
     };
   });
 
 'use strict';
 
 angular.module('campaigns.edit.sponsorPixel.directive', [
-]).constant('PIXEL_TYPES', [
+  'bulbsCmsApp.settings'
+])
+  .constant('PIXEL_TYPES', [
     {
       name: 'Logo',
       value: 'Logo'
     }
-    // TODO: Add more types (once added to API)
-    //{
-    //  name: 'Detail',
-    //  value: 'Detail'
-    //},
   ])
-  .directive('campaignsEditSponsorPixel', function (routes) {
+  .directive('campaignsEditSponsorPixel', function (COMPONENTS_URL) {
     return {
       controller: function($scope, PIXEL_TYPES) {
         $scope.PIXEL_TYPES = PIXEL_TYPES;
@@ -960,7 +975,7 @@ angular.module('campaigns.edit.sponsorPixel.directive', [
       scope: {
         model: '='
       },
-      templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-edit/campaigns-edit-sponsor-pixel/campaigns-edit-sponsor-pixel.html'
+      templateUrl: COMPONENTS_URL + 'campaigns/campaigns-edit/campaigns-edit-sponsor-pixel/campaigns-edit-sponsor-pixel.html'
     };
   });
 
@@ -975,13 +990,13 @@ angular.module('campaigns.edit.sponsorPixel', [
 angular.module('campaigns.edit', [
   'campaigns.edit.directive'
 ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($routeProvider, CMS_NAMESPACE) {
     $routeProvider
     .when('/cms/app/campaigns/edit/:id/', {
       controller: function ($routeParams, $scope, $window) {
 
         // set title
-        $window.document.title = routes.CMS_NAMESPACE + ' | Edit Campaign';
+        $window.document.title = CMS_NAMESPACE + ' | Edit Campaign';
 
         $scope.routeId = $routeParams.id;
       },
@@ -997,16 +1012,16 @@ angular.module('campaigns.list', [
   'bulbsCmsApp.settings',
   'listPage'
 ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($routeProvider, COMPONENTS_URL, CMS_NAMESPACE) {
     $routeProvider
       .when('/cms/app/campaigns/', {
         controller: function ($scope, $window, Campaign) {
           // set title
-          $window.document.title = routes.CMS_NAMESPACE + ' | Campaign';
+          $window.document.title = CMS_NAMESPACE + ' | Campaign';
 
           $scope.modelFactory = Campaign;
         },
-        templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-list/campaigns-list-page.html'
+        templateUrl: COMPONENTS_URL + 'campaigns/campaigns-list/campaigns-list-page.html'
       });
   });
 
@@ -1047,9 +1062,10 @@ angular.module('confirmationModal', [
 'use strict';
 
 angular.module('confirmationModal.factory', [
+  'bulbsCmsApp.settings',
   'ui.bootstrap.modal'
 ])
-  .factory('ConfirmationModal', function ($modal, routes) {
+  .factory('ConfirmationModal', function ($modal, COMPONENTS_URL) {
 
     var ConfirmationModal = function (scope) {
       return (function (scope) {
@@ -1067,7 +1083,7 @@ angular.module('confirmationModal.factory', [
               };
             },
             scope: scope,
-            templateUrl: routes.COMPONENTS_URL + 'confirmation-modal/confirmation-modal.html'
+            templateUrl: COMPONENTS_URL + 'confirmation-modal/confirmation-modal.html'
           });
       })(scope);
     };
@@ -1077,29 +1093,31 @@ angular.module('confirmationModal.factory', [
 
 'use strict';
 
-angular.module('content.edit.authors', [])
-  .directive('contentEditAuthors', function (routes) {
+angular.module('content.edit.authors', [
+  'bulbsCmsApp.settings'
+])
+  .directive('contentEditAuthors', function (COMPONENTS_URL) {
     return {
       restrict: 'E',
       scope: {
         article: '=',
         inlineObjectsUrl: '@'
       },
-      templateUrl: routes.COMPONENTS_URL + 'content/content-edit/content-edit-authors/content-edit-authors.html'
+      templateUrl: COMPONENTS_URL + 'content/content-edit/content-edit-authors/content-edit-authors.html'
     };
   });
 
 'use strict';
 
 angular.module('content.edit.body', [])
-  .directive('contentEditBody', function (routes) {
+  .directive('contentEditBody', function (COMPONENTS_URL) {
     return {
       restrict: 'E',
       scope: {
         article: '=',
         inlineObjectsUrl: '@'
       },
-      templateUrl: routes.COMPONENTS_URL + 'content/content-edit/content-edit-body/content-edit-body.html'
+      templateUrl: COMPONENTS_URL + 'content/content-edit/content-edit-body/content-edit-body.html'
     };
   });
 
@@ -1110,10 +1128,10 @@ angular.module('content.edit.controller', [])
     $scope, $routeParams, $http, $window, $location, $timeout, $interval, $compile,
     $q, $modal, $, _, moment, keypress, Raven, PNotify, IfExistsElse, VersionStorageApi,
     ContentFactory, FirebaseApi, FirebaseArticleFactory, VersionBrowserModalOpener,
-    routes)
+    PARTIALS_URL, MEDIA_ITEM_PARTIALS_URL, CACHEBUSTER, CMS_NAMESPACE)
   {
-    $scope.PARTIALS_URL = routes.PARTIALS_URL;
-    $scope.MEDIA_ITEM_PARTIALS_URL = routes.MEDIA_ITEM_PARTIALS_URL;
+    $scope.PARTIALS_URL = PARTIALS_URL;
+    $scope.MEDIA_ITEM_PARTIALS_URL = MEDIA_ITEM_PARTIALS_URL;
     $scope.page = 'edit';
 
     /*note on cachebuster:
@@ -1124,7 +1142,7 @@ angular.module('content.edit.controller', [])
       with cached version in the past and it was a bludgeon solution
         kill this someday! --SB
     */
-    $scope.CACHEBUSTER = routes.CACHEBUSTER;
+    $scope.CACHEBUSTER = CACHEBUSTER;
 
     var getArticleCallback = function (data) {
       $window.article = $scope.article = data; //exposing article on window for debugging
@@ -1257,7 +1275,7 @@ angular.module('content.edit.controller', [])
     getContent();
 
     $scope.$watch('article.title', function () {
-      $window.document.title = routes.CMS_NAMESPACE + ' | Editing ' + ($scope.article && $('<span>' + $scope.article.title + '</span>').text());
+      $window.document.title = CMS_NAMESPACE + ' | Editing ' + ($scope.article && $('<span>' + $scope.article.title + '</span>').text());
     });
 
     $scope.saveArticleDeferred = $q.defer();
@@ -1287,7 +1305,7 @@ angular.module('content.edit.controller', [])
             moment(data.last_modified) > moment($scope.article.last_modified)) {
             $scope.saveArticleDeferred.reject();
             $modal.open({
-              templateUrl: routes.PARTIALS_URL + 'modals/last-modified-guard-modal.html',
+              templateUrl: PARTIALS_URL + 'modals/last-modified-guard-modal.html',
               controller: 'LastmodifiedguardmodalCtrl',
               scope: $scope,
               resolve: {
@@ -1407,15 +1425,16 @@ angular.module('content.edit.editorItem.service', [
 'use strict';
 
 angular.module('content.edit.editorItem', [
+  'bulbsCmsApp.settings',
   'content.edit.editorItem.service',
   'moment'
 ])
   .directive('editorItem', [
-    'EditorItems', 'moment', 'routes',
-    function (EditorItems, moment, routes) {
+    'EditorItems', 'moment', 'COMPONENTS_URL',
+    function (EditorItems, moment, COMPONENTS_URL) {
       return {
         restrict: 'E',
-        templateUrl: routes.COMPONENTS_URL + 'content/content-edit/content-edit-editor-item/content-edit-editor-item.html',
+        templateUrl: COMPONENTS_URL + 'content/content-edit/content-edit-editor-item/content-edit-editor-item.html',
         scope: {
           article: '='
         },
@@ -1467,27 +1486,29 @@ angular.module('content.edit.linkBrowser', [
 angular.module('content.edit.mainImage', [
   'BettyCropper'
 ])
-  .directive('contentEditMainImage', function (routes) {
+  .directive('contentEditMainImage', function (COMPONENTS_URL) {
     return {
       restrict: 'E',
       scope: {
         article: '=',
         inlineObjectsUrl: '@'
       },
-      templateUrl: routes.COMPONENTS_URL + 'content/content-edit/content-edit-main-image/content-edit-main-image.html'
+      templateUrl: COMPONENTS_URL + 'content/content-edit/content-edit-main-image/content-edit-main-image.html'
     };
   });
 
 'use strict';
 
-angular.module('content.edit.metadata', [])
-  .directive('contentEditMetadata', function (routes) {
+angular.module('content.edit.metadata', [
+  'bulbsCmsApp.settings'
+])
+  .directive('contentEditMetadata', function (COMPONENTS_URL) {
     return {
       restrict: 'E',
       scope: {
         article: '='
       },
-      templateUrl: routes.COMPONENTS_URL + 'content/content-edit/content-edit-metadata/content-edit-metadata.html'
+      templateUrl: COMPONENTS_URL + 'content/content-edit/content-edit-metadata/content-edit-metadata.html'
     };
   });
 
@@ -1500,9 +1521,9 @@ angular.module('content.edit.templateChooser', [
   'cms.config'
 ])
   .directive('contentEditTemplateChooser', [
-    'CmsConfig', 'routes',
-    function (CmsConfig, routes) {
-      var defaultView = routes.COMPONENTS_URL + 'content/content-edit/type-error.html';
+    'CmsConfig', 'COMPONENTS_URL',
+    function (CmsConfig, COMPONENTS_URL) {
+      var defaultView = COMPONENTS_URL + 'content/content-edit/type-error.html';
 
       return {
         restrict: 'E',
@@ -1532,20 +1553,23 @@ angular.module('content.edit.templateChooser', [
 
 'use strict';
 
-angular.module('content.edit.title', [])
-  .directive('contentEditTitle', function (routes) {
+angular.module('content.edit.title', [
+  'bulbsCmsApp.settings'
+])
+  .directive('contentEditTitle', function (COMPONENTS_URL) {
     return {
       restrict: 'E',
       scope: {
         article: '='
       },
-      templateUrl: routes.COMPONENTS_URL + 'content/content-edit/content-edit-title/content-edit-title.html'
+      templateUrl: COMPONENTS_URL + 'content/content-edit/content-edit-title/content-edit-title.html'
     };
   });
 
 'use strict';
 
 angular.module('content.edit', [
+  'bulbsCmsApp.settings',
   'content.edit.authors',
   'content.edit.body',
   'content.edit.controller',
@@ -1557,11 +1581,11 @@ angular.module('content.edit', [
   'content.edit.templateChooser'
 ])
   .config([
-    '$routeProvider', 'routes',
-    function ($routeProvider, routes) {
+    '$routeProvider', 'COMPONENTS_URL',
+    function ($routeProvider, COMPONENTS_URL) {
       $routeProvider
         .when('/cms/app/edit/:id/', {
-          templateUrl: routes.COMPONENTS_URL + 'content/content-edit/content-edit.html',
+          templateUrl: COMPONENTS_URL + 'content/content-edit/content-edit.html',
           controller: 'ContentEdit'
         });
     }]);
@@ -1574,8 +1598,10 @@ angular.module('content', [
 
 'use strict';
 
-angular.module('customSearch.contentItem.directive', [])
-  .directive('customSearchContentItem', function (routes) {
+angular.module('customSearch.contentItem.directive', [
+  'bulbsCmsApp.settings'
+])
+  .directive('customSearchContentItem', function (COMPONENTS_URL) {
     return {
       restrict: 'E',
       scope: {
@@ -1583,7 +1609,7 @@ angular.module('customSearch.contentItem.directive', [])
         controllerService: '=',
         onUpdate: '&'
       },
-      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search-content-item/custom-search-content-item.html'
+      templateUrl: COMPONENTS_URL + 'custom-search/custom-search-content-item/custom-search-content-item.html'
     };
   });
 
@@ -1602,7 +1628,7 @@ angular.module('customSearch.directive', [
   'customSearch.simpleContentSearch',
   'customSearch.group'
 ])
-  .directive('customSearch', function (routes) {
+  .directive('customSearch', function (COMPONENTS_URL) {
     return {
       controller: function (_, $scope, CustomSearchService) {
 
@@ -1646,7 +1672,7 @@ angular.module('customSearch.directive', [
       scope: {
         onUpdate: '&'
       },
-      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search.html'
+      templateUrl: COMPONENTS_URL + 'custom-search/custom-search.html'
     };
   });
 
@@ -1656,9 +1682,10 @@ angular.module('customSearch.group.condition.directive', [
   'contentServices.factory',
   'customSearch.settings',
   'BulbsAutocomplete',
-  'BulbsAutocomplete.suggest'
+  'BulbsAutocomplete.suggest',
+  'bulbsCmsApp.settings'
 ])
-  .directive('customSearchGroupCondition', function (routes) {
+  .directive('customSearchGroupCondition', function (COMPONENTS_URL) {
     return {
       controller: function (_, $q, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS,
           ContentFactory, CUSTOM_SEARCH_CONDITION_FIELDS, CUSTOM_SEARCH_CONDITION_TYPES) {
@@ -1728,7 +1755,7 @@ angular.module('customSearch.group.condition.directive', [
         onUpdate: '&',
         remove: '&'
       },
-      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search-group/custom-search-group-condition/custom-search-group-condition.html'
+      templateUrl: COMPONENTS_URL + 'custom-search/custom-search-group/custom-search-group-condition/custom-search-group-condition.html'
     };
   });
 
@@ -1741,10 +1768,11 @@ angular.module('customSearch.group.condition', [
 'use strict';
 
 angular.module('customSearch.group.directive', [
+  'bulbsCmsApp.settings',
   'customSearch.settings',
   'uuid4'
 ])
-  .directive('customSearchGroup', function (routes) {
+  .directive('customSearchGroup', function (COMPONENTS_URL) {
     return {
       controller: function ($scope, CUSTOM_SEARCH_TIME_PERIODS, uuid4) {
         $scope.data = $scope.controllerService.groupsGet($scope.groupIndex);
@@ -1766,7 +1794,7 @@ angular.module('customSearch.group.directive', [
         remove: '&',
         onUpdate: '&'
       },
-      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search-group/custom-search-group.html'
+      templateUrl: COMPONENTS_URL + 'custom-search/custom-search-group/custom-search-group.html'
     };
   });
 
@@ -2094,9 +2122,10 @@ angular.module('customSearch.settings', [])
 
 angular.module('customSearch.simpleContentSearch.directive', [
   'BulbsAutocomplete',
-  'BulbsAutocomplete.suggest'
+  'BulbsAutocomplete.suggest',
+  'bulbsCmsApp.settings'
 ])
-  .directive('customSearchSimpleContentSearch', function (routes) {
+  .directive('customSearchSimpleContentSearch', function (COMPONENTS_URL) {
     return {
       controller: function (_, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS,
           ContentFactory) {
@@ -2156,7 +2185,7 @@ angular.module('customSearch.simpleContentSearch.directive', [
       scope: {
         onSelect: '&'
       },
-      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search-simple-content-search/custom-search-simple-content-search.html'
+      templateUrl: COMPONENTS_URL + 'custom-search/custom-search-simple-content-search/custom-search-simple-content-search.html'
     };
   });
 
@@ -2178,12 +2207,12 @@ angular.module('customSearch', [
 angular.module('EditorsPick', [
   'customSearch'
 ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($routeProvider, COMPONENTS_URL, CMS_NAMESPACE) {
     $routeProvider
       .when('/cms/app/sod/', {
         controller: function ($scope, $window) {
           // set title
-          $window.document.title = routes.CMS_NAMESPACE + ' | SoD';
+          $window.document.title = CMS_NAMESPACE + ' | SoD';
 
           $scope.$watch('queryData', function () { console.log(arguments); });
 
@@ -2221,7 +2250,7 @@ angular.module('EditorsPick', [
           };
 
         },
-        templateUrl: routes.COMPONENTS_URL + 'editors-pick/editors-pick.html',
+        templateUrl: COMPONENTS_URL + 'editors-pick/editors-pick.html',
         reloadOnSearch: false
       });
   });
@@ -2234,11 +2263,11 @@ angular.module('filterWidget.directive', [
   'contentServices.listService'
 ])
   .directive('filterWidget', function (_, $location, $timeout, $, ContentListService,
-      ContentFactory, routes) {
+      ContentFactory, COMPONENTS_URL) {
     return {
       restrict: 'E',
       scope: {},
-      templateUrl: routes.COMPONENTS_URL + 'filter-widget/filter-widget.html',
+      templateUrl: COMPONENTS_URL + 'filter-widget/filter-widget.html',
       link: function (scope, element, attrs) {
         var $element = $(element);
         var $input = $element.find('input');
@@ -2477,7 +2506,7 @@ angular.module('genericAjaxButton.directive', [
   'bulbsCmsApp.settings',
   'genericAjaxButton.controller'
 ])
-  .directive('genericAjaxButton', function (routes) {
+  .directive('genericAjaxButton', function (COMPONENTS_URL) {
     return {
       controller: 'GenericAjaxButtonController',
       restrict: 'E',
@@ -2493,7 +2522,7 @@ angular.module('genericAjaxButton.directive', [
         textProgress: '@',
         textComplete: '@'
       },
-      templateUrl: routes.COMPONENTS_URL + 'generic-ajax-button/generic-ajax-button.html'
+      templateUrl: COMPONENTS_URL + 'generic-ajax-button/generic-ajax-button.html'
     };
   });
 
@@ -2508,7 +2537,7 @@ angular.module('genericAjaxButton', [
 angular.module('saveButton.directive', [
   'genericAjaxButton'
 ])
-  .directive('saveButton', function (routes) {
+  .directive('saveButton', function (COMPONENTS_URL) {
     return {
       controller: 'GenericAjaxButtonController',
       link: {
@@ -2523,7 +2552,7 @@ angular.module('saveButton.directive', [
         disableWhen: '&',
         clickFunction: '=',
       },
-      templateUrl: routes.COMPONENTS_URL + 'generic-ajax-button/generic-ajax-button.html'
+      templateUrl: COMPONENTS_URL + 'generic-ajax-button/generic-ajax-button.html'
     };
   });
 
@@ -2532,13 +2561,13 @@ angular.module('saveButton.directive', [
 angular.module('promotedContentArticle.directive', [
   'bulbsCmsApp.settings'
 ])
-  .directive('promotedContentArticle', function (routes) {
+  .directive('promotedContentArticle', function (COMPONENTS_URL) {
     return {
       restrict: 'E',
       scope: {
         article: '='
       },
-      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-article/promoted-content-article.html'
+      templateUrl: COMPONENTS_URL + 'promoted-content/promoted-content-article/promoted-content-article.html'
     };
   });
 
@@ -2557,7 +2586,7 @@ angular.module('promotedContentList.directive', [
   'promotedContentSave',
   'ui.sortable'
 ])
-  .directive('promotedContentList', function ($, routes) {
+  .directive('promotedContentList', function ($, COMPONENTS_URL) {
     return {
       controller: function ($scope, PromotedContentService) {
 
@@ -2614,7 +2643,7 @@ angular.module('promotedContentList.directive', [
       },
       restrict: 'E',
       scope: {},
-      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-list/promoted-content-list.html'
+      templateUrl: COMPONENTS_URL + 'promoted-content/promoted-content-list/promoted-content-list.html'
     };
   });
 
@@ -2630,7 +2659,7 @@ angular.module('promotedContentOperationsList.directive', [
   'bulbsCmsApp.settings',
   'promotedContent.service'
 ])
-  .directive('promotedContentOperationsList', function (_, moment, routes) {
+  .directive('promotedContentOperationsList', function (_, moment, COMPONENTS_URL) {
     return {
       controller: function (moment, $scope, PromotedContentService) {
 
@@ -2716,7 +2745,7 @@ angular.module('promotedContentOperationsList.directive', [
       },
       restrict: 'E',
       scope: {},
-      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-operations-list/promoted-content-operations-list.html'
+      templateUrl: COMPONENTS_URL + 'promoted-content/promoted-content-operations-list/promoted-content-operations-list.html'
     };
   });
 
@@ -2732,7 +2761,7 @@ angular.module('promotedContentPzoneSelect.directive', [
   'bulbsCmsApp.settings',
   'promotedContent.service'
 ])
-  .directive('promotedContentPzoneSelect', function (routes) {
+  .directive('promotedContentPzoneSelect', function (COMPONENTS_URL) {
     return {
       controller: function ($scope, PromotedContentService) {
 
@@ -2753,7 +2782,7 @@ angular.module('promotedContentPzoneSelect.directive', [
       },
       restrict: 'E',
       scope: {},
-      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-pzone-select/promoted-content-pzone-select.html'
+      templateUrl: COMPONENTS_URL + 'promoted-content/promoted-content-pzone-select/promoted-content-pzone-select.html'
     };
   });
 
@@ -2769,7 +2798,7 @@ angular.module('promotedContentSave.directive', [
   'bulbsCmsApp.settings',
   'promotedContent.service'
 ])
-  .directive('promotedContentSave', function (routes) {
+  .directive('promotedContentSave', function (COMPONENTS_URL) {
     return {
       controller: function ($scope, PromotedContentService) {
 
@@ -2788,7 +2817,7 @@ angular.module('promotedContentSave.directive', [
       },
       restrict: 'E',
       scope: {},
-      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-save/promoted-content-save.html'
+      templateUrl: COMPONENTS_URL + 'promoted-content/promoted-content-save/promoted-content-save.html'
     };
   });
 
@@ -2807,7 +2836,7 @@ angular.module('promotedContentSearch.directive', [
   'promotedContent.service',
   'promotedContentArticle'
 ])
-  .directive('promotedContentSearch', function (routes) {
+  .directive('promotedContentSearch', function (COMPONENTS_URL) {
     return {
       controller: function (_, moment, $scope, $location, PromotedContentService) {
 
@@ -2874,7 +2903,7 @@ angular.module('promotedContentSearch.directive', [
       },
       restrict: 'E',
       scope: {},
-      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-search/promoted-content-search.html'
+      templateUrl: COMPONENTS_URL + 'promoted-content/promoted-content-search/promoted-content-search.html'
     };
   });
 
@@ -3396,7 +3425,7 @@ angular.module('promotedContentTimePicker.directive', [
   'bulbsCmsApp.settings',
   'promotedContent.service'
 ])
-  .directive('promotedContentTimePicker', function (routes) {
+  .directive('promotedContentTimePicker', function (COMPONENTS_URL) {
     return {
       controller: function (moment, $scope, PromotedContentService) {
 
@@ -3413,7 +3442,7 @@ angular.module('promotedContentTimePicker.directive', [
       },
       restrict: 'E',
       scope: {},
-      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-time-picker/promoted-content-time-picker.html'
+      templateUrl: COMPONENTS_URL + 'promoted-content/promoted-content-time-picker/promoted-content-time-picker.html'
     };
   });
 
@@ -3433,14 +3462,14 @@ angular.module('promotedContent', [
   'promotedContentTimePicker',
   'promotedContentOperationsList'
 ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($routeProvider, COMPONENTS_URL, CMS_NAMESPACE) {
     $routeProvider
       .when('/cms/app/promotion/', {
         controller: function ($window) {
           // set title
-          $window.document.title = routes.CMS_NAMESPACE + ' | Promotion Tool';
+          $window.document.title = CMS_NAMESPACE + ' | Promotion Tool';
         },
-        templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content.html',
+        templateUrl: COMPONENTS_URL + 'promoted-content/promoted-content.html',
         reloadOnSearch: false
       });
   });
@@ -3458,7 +3487,7 @@ angular.module('sections.edit.directive', [
   'sections.settings',
   'topBar'
 ])
-  .directive('sectionsEdit', function (routes) {
+  .directive('sectionsEdit', function (COMPONENTS_URL) {
     return {
       controller: function (_, $location, $q, $scope, EXTERNAL_URL,
           SECTIONS_LIST_REL_PATH, Section) {
@@ -3515,21 +3544,22 @@ angular.module('sections.edit.directive', [
       scope: {
         getModelId: '&modelId'
       },
-      templateUrl: routes.COMPONENTS_URL + 'sections/sections-edit/sections-edit.html'
+      templateUrl: COMPONENTS_URL + 'sections/sections-edit/sections-edit.html'
     };
   });
 
 'use strict';
 
 angular.module('sections.edit', [
+  'bulbsCmsApp.settings',
   'sections.edit.directive'
 ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($routeProvider, CMS_NAMESPACE) {
     $routeProvider
       .when('/cms/app/section/edit/:id/', {
         controller: function ($routeParams, $scope, $window) {
           // set title
-          $window.document.title = routes.CMS_NAMESPACE + ' | Edit Section';
+          $window.document.title = CMS_NAMESPACE + ' | Edit Section';
 
           $scope.routeId = $routeParams.id;
         },
@@ -3546,20 +3576,20 @@ angular.module('sections.list', [
   'listPage',
   'sections.settings'
 ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($routeProvider, COMPONENTS_URL) {
 
     $routeProvider
       .when('/cms/app/section/', {
         controller: function ($scope, $window, EXTERNAL_URL, SECTIONS_LIST_REL_PATH,
-            Section) {
+            Section, CMS_NAMESPACE) {
 
           // set title
-          $window.document.title = routes.CMS_NAMESPACE + ' | Section';
+          $window.document.title = CMS_NAMESPACE + ' | Section';
 
           $scope.modelFactory = Section;
           $scope.LIST_URL = EXTERNAL_URL + SECTIONS_LIST_REL_PATH;
         },
-        templateUrl: routes.COMPONENTS_URL + 'sections/sections-list/sections-list-page.html'
+        templateUrl: COMPONENTS_URL + 'sections/sections-list/sections-list-page.html'
       });
   });
 
@@ -3671,8 +3701,8 @@ angular.module('sendToEditor.modal', [
     }
   ])
   .factory('SendToEditorModal', [
-    '$modal', 'routes',
-    function ($modal, routes) {
+    '$modal', 'COMPONENTS_URL',
+    function ($modal, COMPONENTS_URL) {
 
       var SponsoredContentModal = function (scope) {
         return (function (scope) {
@@ -3680,7 +3710,7 @@ angular.module('sendToEditor.modal', [
             .open({
               controller: 'SendToEditorModal',
               scope: scope,
-              templateUrl: routes.COMPONENTS_URL + 'send-to-editor/send-to-editor-modal.html'
+              templateUrl: COMPONENTS_URL + 'send-to-editor/send-to-editor-modal.html'
             });
         })(scope);
       };
@@ -3709,7 +3739,7 @@ angular.module('specialCoverage.edit.directive', [
   'ui.bootstrap.tooltip',
   'videoList'
 ])
-  .directive('specialCoverageEdit', function (routes) {
+  .directive('specialCoverageEdit', function (COMPONENTS_URL) {
     return {
       controller: function (_, $location, $q, $scope, Campaign, EXTERNAL_URL,
           SPECIAL_COVERAGE_LIST_REL_PATH, SpecialCoverage) {
@@ -3771,7 +3801,7 @@ angular.module('specialCoverage.edit.directive', [
       scope: {
         getModelId: '&modelId'
       },
-      templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit.html'
+      templateUrl: COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit.html'
     };
   });
 
@@ -3780,12 +3810,12 @@ angular.module('specialCoverage.edit.directive', [
 angular.module('specialCoverage.edit', [
   'specialCoverage.edit.directive'
 ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($routeProvider, CMS_NAMESPACE) {
     $routeProvider
       .when('/cms/app/special-coverage/edit/:id/', {
         controller: function ($routeParams, $scope, $window) {
           // set title
-          $window.document.title = routes.CMS_NAMESPACE + ' | Edit Special Coverage';
+          $window.document.title = CMS_NAMESPACE + ' | Edit Special Coverage';
 
           $scope.routeId = $routeParams.id;
         },
@@ -3801,20 +3831,20 @@ angular.module('specialCoverage.list', [
   'listPage',
   'specialCoverage.settings'
 ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($routeProvider, COMPONENTS_URL) {
 
     $routeProvider
       .when('/cms/app/special-coverage/', {
         controller: function ($scope, $window, EXTERNAL_URL, SPECIAL_COVERAGE_LIST_REL_PATH,
-            SpecialCoverage) {
+            SpecialCoverage, CMS_NAMESPACE) {
 
           // set title
-          $window.document.title = routes.CMS_NAMESPACE + ' | Special Coverage';
+          $window.document.title = CMS_NAMESPACE + ' | Special Coverage';
 
           $scope.modelFactory = SpecialCoverage;
           $scope.LIST_URL = EXTERNAL_URL + SPECIAL_COVERAGE_LIST_REL_PATH;
         },
-        templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-list/special-coverage-list-page.html'
+        templateUrl: COMPONENTS_URL + 'special-coverage/special-coverage-list/special-coverage-list-page.html'
       });
   });
 
@@ -3857,9 +3887,9 @@ angular.module('statusFilter.directive', [
     };
 
   })
-  .directive('statusFilter', function ($location, _, StatusFilterOptions, ContentListService, routes) {
+  .directive('statusFilter', function ($location, _, StatusFilterOptions, ContentListService, COMPONENTS_URL) {
     return {
-      templateUrl: routes.COMPONENTS_URL + 'status-filter/status-filter.html',
+      templateUrl: COMPONENTS_URL + 'status-filter/status-filter.html',
       restrict: 'E',
       scope: {},
       controller: 'ContentlistCtrl',
@@ -3923,7 +3953,7 @@ angular.module('statusFilter', [
 'use strict';
 
 angular.module('templateTypeField.directive', [])
-  .directive('templateTypeField', function (routes) {
+  .directive('templateTypeField', function (COMPONENTS_URL) {
     return {
       controller: function (_, $scope, ContentFactory, TEMPLATE_TYPES) {
         $scope.templateTypes = _.filter(TEMPLATE_TYPES, {content_type: $scope.content.polymorphic_ctype});
@@ -3932,7 +3962,7 @@ angular.module('templateTypeField.directive', [])
       scope: {
         content: '='
       },
-      templateUrl: routes.COMPONENTS_URL + 'template-type-field/template-type-field.html'
+      templateUrl: COMPONENTS_URL + 'template-type-field/template-type-field.html'
     };
   });
 
@@ -3957,7 +3987,7 @@ angular.module('templateTypeField', [
  * Renders a topbar template based on a given path relative to "/components/".
  */
 angular.module('topBar.directive', [])
-  .directive('topBar', function (routes, CmsConfig) {
+  .directive('topBar', function (COMPONENTS_URL, CmsConfig) {
     return {
       restrict: 'E',
       scope: {
@@ -3968,7 +3998,7 @@ angular.module('topBar.directive', [])
         saveFunction: '=',
         saveDisableWhen: '&'
       },
-      templateUrl: routes.COMPONENTS_URL + 'top-bar/top-bar-base.html',
+      templateUrl: COMPONENTS_URL + 'top-bar/top-bar-base.html',
       link: function (scope) {
         scope.NAV_LOGO = CmsConfig.getLogoUrl();
       }
@@ -4841,7 +4871,7 @@ angular.module('contentServices', [
 'use strict';
 
 angular.module('copyButton', [])
-  .directive('copyButton', function (routes) {
+  .directive('copyButton', function (SHARED_URL) {
     return {
       controller: function ($scope, $timeout) {
 
@@ -4859,7 +4889,7 @@ angular.module('copyButton', [])
         buttonClassesSuccess: '@',
         content: '@'
       },
-      templateUrl: routes.SHARED_URL + 'copy-button/copy-button.html'
+      templateUrl: SHARED_URL + 'copy-button/copy-button.html'
     };
   });
 
@@ -4981,7 +5011,7 @@ angular.module('listPage', [
   'confirmationModal',
   'copyButton'
 ])
-  .directive('listPage', function (routes) {
+  .directive('listPage', function (SHARED_URL) {
     return {
       controller: function ($scope, $location, $parse) {
         $scope.name = $scope.modelFactory.identity();
@@ -5043,7 +5073,7 @@ angular.module('listPage', [
         modelFactory: '=',
         toolCopyContent: '@'
       },
-      templateUrl: routes.SHARED_URL + 'list-page/list-page.html'
+      templateUrl: SHARED_URL + 'list-page/list-page.html'
     };
   });
 
@@ -5073,7 +5103,7 @@ angular.module('sponsoredContentModal', [
 angular.module('sponsoredContentModal.factory', [
   'ui.bootstrap.modal'
 ])
-  .factory('SponsoredContentModal', function ($modal, routes) {
+  .factory('SponsoredContentModal', function ($modal, SHARED_URL) {
 
     var SponsoredContentModal = function (scope) {
       return (function (scope) {
@@ -5091,7 +5121,7 @@ angular.module('sponsoredContentModal.factory', [
               };
             },
             scope: scope,
-            templateUrl: routes.SHARED_URL + 'sponsored-content-modal/sponsored-content-modal.html'
+            templateUrl: SHARED_URL + 'sponsored-content-modal/sponsored-content-modal.html'
           });
       })(scope);
     };
@@ -5149,13 +5179,13 @@ angular.module('videoList.video.directive', [
   'bulbsCmsApp.settings',
   'filters.moment'
 ])
-  .directive('videoListVideo', function (routes) {
+  .directive('videoListVideo', function (SHARED_URL) {
     return {
       restrict: 'E',
       scope: {
         model: '='
       },
-      templateUrl: routes.SHARED_URL + 'video-list/video-list-video/video-list-video.html'
+      templateUrl: SHARED_URL + 'video-list/video-list-video/video-list-video.html'
     };
   });
 
@@ -5170,7 +5200,7 @@ angular.module('videoList', [
   'VideohubClient.api',
   'VideohubClient.settings'
 ])
-  .directive('videoList', function ($, routes) {
+  .directive('videoList', function ($, SHARED_URL) {
     return {
       controller: function (_, $scope, Utils, Video, VIDEOHUB_DEFAULT_CHANNEL) {
 
@@ -5228,7 +5258,7 @@ angular.module('videoList', [
         videos: '=',
         onUpdate: '&'
       },
-      templateUrl: routes.SHARED_URL + 'video-list/video-list.html'
+      templateUrl: SHARED_URL + 'video-list/video-list.html'
     };
   });
 
@@ -5254,10 +5284,10 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('addImage', function ($http, $window, routes) {
+  .directive('addImage', function ($http, $window, PARTIALS_URL) {
     return {
       restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'add-image.html',
+      templateUrl: PARTIALS_URL + 'add-image.html',
       scope: {
         article: '='
       },
@@ -5300,12 +5330,12 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('articlecontainer', function (routes, LOADING_IMG_SRC) {
+  .directive('articlecontainer', function (PARTIALS_URL, LOADING_IMG_SRC) {
     return {
       restrict: 'E',
-      templateUrl:  routes.PARTIALS_URL + 'promotion-tool-article-container.html',
+      templateUrl: PARTIALS_URL + 'promotion-tool-article-container.html',
       scope: {
-        'article': '='
+        article: '='
       },
       link: function postLink(scope, element, attrs) {
         scope.LOADING_IMG_SRC = LOADING_IMG_SRC;
@@ -5317,9 +5347,9 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('authorsField', function (routes, userFilter, $, CmsConfig) {
+  .directive('authorsField', function (PARTIALS_URL, userFilter, $, CmsConfig) {
     return {
-      templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
+      templateUrl: PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
       replace: true,
       scope: {
@@ -5363,10 +5393,10 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('bettyeditable', function ($http, routes, BettyCropper, openImageCropModal, DEFAULT_IMAGE_WIDTH) {
+  .directive('bettyeditable', function ($http, PARTIALS_URL, BettyCropper, openImageCropModal, DEFAULT_IMAGE_WIDTH) {
     return {
       restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'bettyeditable.html',
+      templateUrl: PARTIALS_URL + 'bettyeditable.html',
       scope: {
         'image': '=',
         'addStyles': '@',
@@ -5464,10 +5494,10 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('bugReporter', function ($http, $window, routes) {
+  .directive('bugReporter', function ($http, $window, PARTIALS_URL) {
     return {
       restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'bug-report-button.html',
+      templateUrl: PARTIALS_URL + 'bug-report-button.html',
       scope: {},
       controller: function ($scope, $element, $timeout) {
         $scope.report = {};
@@ -5673,10 +5703,10 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('cmsNotification', function (routes) {
+  .directive('cmsNotification', function (PARTIALS_URL) {
     return {
       restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'cms-notification.html',
+      templateUrl: PARTIALS_URL + 'cms-notification.html',
       scope: {
         notification: '='
       },
@@ -5687,11 +5717,11 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('cmsNotifyContainer', function (routes) {
+  .directive('cmsNotifyContainer', function (PARTIALS_URL) {
     return {
       restrict: 'E',
       scope: {},
-      templateUrl: routes.PARTIALS_URL + 'cms-notify-container.html',
+      templateUrl: PARTIALS_URL + 'cms-notify-container.html',
       controller: 'CmsNotifyContainerCtrl'
     };
   });
@@ -5700,7 +5730,7 @@ angular.module('bulbsCmsApp')
 
 angular.module('bulbsCmsApp')
   .directive('createContent', function ($http, $window, $, IfExistsElse, ContentFactory,
-      routes, AUTO_ADD_AUTHOR, Raven, CmsConfig) {
+      AUTO_ADD_AUTHOR, Raven, CmsConfig) {
 
     return {
       restrict: 'E',
@@ -5830,7 +5860,7 @@ angular.module('bulbsCmsApp')
  *  functionality is dependent on all dates being moment objects.
  */
 angular.module('bulbsCmsApp')
-  .directive('datetimeSelectionModalOpener', function ($modal, routes) {
+  .directive('datetimeSelectionModalOpener', function ($modal, PARTIALS_URL) {
     return {
       restrict: 'A',
       scope: {
@@ -5844,7 +5874,7 @@ angular.module('bulbsCmsApp')
         element.on('click', function () {
           modalInstance = $modal
             .open({
-              templateUrl: routes.PARTIALS_URL + 'modals/datetime-selection-modal.html',
+              templateUrl: PARTIALS_URL + 'modals/datetime-selection-modal.html',
               controller: 'DatetimeSelectionModalCtrl',
               scope: scope
             });
@@ -5861,10 +5891,10 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('devicepreview', function ($, routes) {
+  .directive('devicepreview', function ($, PARTIALS_URL) {
     return {
       restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'devicepreview.html',
+      templateUrl: PARTIALS_URL + 'devicepreview.html',
       link: function (scope, element, attrs) {
 
         var pP = $('#page-prev'),
@@ -5891,12 +5921,13 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('onionEditor', function (routes, $, Zencoder, BettyCropper, openImageCropModal, VIDEO_EMBED_URL, OnionEditor) {
+  .directive('onionEditor', function (PARTIALS_URL, $, Zencoder, BettyCropper,
+      openImageCropModal, VIDEO_EMBED_URL, OnionEditor) {
     return {
       require: 'ngModel',
       replace: true,
       restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'editor.html',
+      templateUrl: PARTIALS_URL + 'editor.html',
       scope: {ngModel: '='},
       link: function (scope, element, attrs, ngModel) {
 
@@ -6003,9 +6034,9 @@ function safeApply(scope, fn) {
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('encodeStatus', function ($http, $interval, $, Zencoder, routes) {
+  .directive('encodeStatus', function ($http, $interval, $, Zencoder, PARTIALS_URL) {
     return {
-      templateUrl: routes.PARTIALS_URL + 'encode-status.html',
+      templateUrl: PARTIALS_URL + 'encode-status.html',
       restrict: 'E',
       link: function postLink(scope, element, attrs) {
         scope.encodingVideos = {};
@@ -6068,9 +6099,9 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('featuretypeField', function (routes, IfExistsElse, ContentFactory, Raven, $) {
+  .directive('featuretypeField', function (PARTIALS_URL, IfExistsElse, ContentFactory, Raven, $) {
     return {
-      templateUrl: routes.PARTIALS_URL + 'textlike-autocomplete-field.html',
+      templateUrl: PARTIALS_URL + 'textlike-autocomplete-field.html',
       restrict: 'E',
       scope: {
         article: '='
@@ -6154,7 +6185,8 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('lazyInclude', function (routes, $, $compile, $q, $http, $templateCache, Gettemplate) {
+  .directive('lazyInclude', function (PARTIALS_URL, $, $compile, $q, $http,
+      $templateCache, Gettemplate) {
     /*
       this is like ng-include but it doesn't compile/render the included template
       until the child element is visible
@@ -6165,7 +6197,7 @@ angular.module('bulbsCmsApp')
       restrict: 'A',
       scope: true,
       link: function (scope, element, attrs) {
-        var templateUrl = routes.PARTIALS_URL + attrs.template;
+        var templateUrl = PARTIALS_URL + attrs.template;
         var $element = $(element);
 
         scope.$evalAsync(function () {
@@ -6190,7 +6222,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('loggedInUser', function (routes, CurrentUser, CmsConfig) {
+  .directive('loggedInUser', function (PARTIALS_URL, CurrentUser, CmsConfig) {
     return {
       controller: function ($scope) {
         CurrentUser.$simplified().then(function (user) {
@@ -6200,7 +6232,7 @@ angular.module('bulbsCmsApp')
       },
       restrict: 'E',
       replace: true,
-      templateUrl: routes.PARTIALS_URL + 'logged-in-user.html',
+      templateUrl: PARTIALS_URL + 'logged-in-user.html',
       scope: {}
     };
   });
@@ -6208,8 +6240,8 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('navBar', function (CmsConfig, routes) {
-    var defaultView = routes.PARTIALS_URL + 'nav.html';
+  .directive('navBar', function (CmsConfig, PARTIALS_URL) {
+    var defaultView = PARTIALS_URL + 'nav.html';
 
     return {
       restrict: 'E',
@@ -6254,11 +6286,11 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('saveButtonOld', function ($q, $timeout, $window, routes) {
+  .directive('saveButtonOld', function ($q, $timeout, $window, PARTIALS_URL) {
     return {
       replace: true,
       restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'save-button.html',
+      templateUrl: PARTIALS_URL + 'save-button.html',
       scope: {
         'getPromise': '&',
         'saveCbk': '&onSave',
@@ -6333,9 +6365,9 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('sectionsField', function (routes, _, IfExistsElse, ContentFactory, Raven, $) {
+  .directive('sectionsField', function (PARTIALS_URL, _, IfExistsElse, ContentFactory, Raven, $) {
     return {
-      templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
+      templateUrl: PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
       replace: true,
       link: function postLink(scope, element, attrs) {
@@ -6385,10 +6417,11 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('slideshowPane', function ($http, $window, $compile, $, routes) {
+  .directive('slideshowPane', function ($http, $window, $compile, $, LOADING_IMG_SRC,
+      PARTIALS_URL) {
     return {
       restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'slideshow-pane.html',
+      templateUrl: PARTIALS_URL + 'slideshow-pane.html',
       scope: {
         article: '=',
         image: '=',
@@ -6413,7 +6446,7 @@ angular.module('bulbsCmsApp')
             scope.article.slides[index].id,
             function (data) {
               function removeLoadingGif() {
-                $element.find('.image img[src=\"' + routes.LOADING_IMG_SRC + '\"]').remove();
+                $element.find('.image img[src=\"' + LOADING_IMG_SRC + '\"]').remove();
               }
 
               removeLoadingGif();
@@ -6423,7 +6456,7 @@ angular.module('bulbsCmsApp')
               }
 
               $element.find('.image img').on('load', removeLoadingGif);
-              $element.find('.image img').after('<img src=\"' + routes.LOADING_IMG_SRC + '\">');
+              $element.find('.image img').after('<img src=\"' + LOADING_IMG_SRC + '\">');
 
               scope.article.slides[index].id = data.id.toString();
               scope.$apply();
@@ -6444,9 +6477,9 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('staticImage', function (routes, STATIC_IMAGE_URL) {
+  .directive('staticImage', function (PARTIALS_URL, STATIC_IMAGE_URL) {
     return {
-      templateUrl: routes.PARTIALS_URL + 'static-image.html',
+      templateUrl: PARTIALS_URL + 'static-image.html',
       restrict: 'E',
       scope: {
         'image': '='
@@ -6468,9 +6501,9 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('tagsField', function (routes, _, IfExistsElse, ContentFactory, Raven, $) {
+  .directive('tagsField', function (PARTIALS_URL, _, IfExistsElse, ContentFactory, Raven, $) {
     return {
-      templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
+      templateUrl: PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
       scope: {
         article: '='
@@ -6523,10 +6556,10 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('targeting', function (routes) {
+  .directive('targeting', function (PARTIALS_URL) {
     return {
       restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'targeting.html',
+      templateUrl: PARTIALS_URL + 'targeting.html',
       link: function (scope, element, attrs) {
         scope.addTargetingRow = function (index) {
           scope.targetingArray.push([]);
@@ -6542,9 +6575,9 @@ angular.module('bulbsCmsApp')
 
 angular.module('bulbsCmsApp').directive(
   'videoUpload',
-  function ($http, $window, $timeout, $sce, $, routes, CmsConfig) {
+  function ($http, $window, $timeout, $sce, $, PARTIALS_URL, CmsConfig) {
     return {
-      templateUrl: routes.PARTIALS_URL + 'mainvideo.html',
+      templateUrl: PARTIALS_URL + 'mainvideo.html',
       scope: {
         'article': '='
       },
@@ -6713,9 +6746,9 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('videoField', function (Zencoder, routes) {
+  .directive('videoField', function (Zencoder, PARTIALS_URL) {
     return {
-      templateUrl: routes.PARTIALS_URL + 'video-field.html',
+      templateUrl: PARTIALS_URL + 'video-field.html',
       restrict: 'E',
       scope: {
         article: '='
@@ -6758,7 +6791,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('autocompleteMenu', function ($timeout, $animate, $compile, routes) {
+  .directive('autocompleteMenu', function ($timeout, $animate, $compile) {
     return {
       restrict: 'E',
       replace: true,
@@ -6770,10 +6803,10 @@ angular.module('bulbsCmsApp')
         select: '&select',
       },
       link: function ($scope, element, attrs) {
-        
+
         $scope.selectItem = function (index) {
           $scope.select(index);
-        }
+        };
 
         $scope.setIndex = function (index) {
           $scope.index = index;
@@ -6781,21 +6814,21 @@ angular.module('bulbsCmsApp')
           if (attrs.index) {
             $scope.pIndex = parseInt(index, 10);
           }
-        }
+        };
 
         if (attrs.index) {
           $scope.$watch('pIndex', function(value){
             $scope.index = parseInt(value, 10);
-          })
+          });
         }
 
         $scope.label = function(index) {
           var viewValue = $scope.items[index][attrs.labelAttr];
-          if (typeof(viewValue) === "function") {
+          if (typeof(viewValue) === 'function') {
             viewValue = viewValue();
           }
           return viewValue;
-        }
+        };
 
       },
       template: '<ul class="autocomplete-menu" ng-show="items.length !== 0"><li ng-repeat="item in items" ng-click="select($index)" ng-class="{\'active\': $index == index}" ng-mouseenter = "setIndex($index)"><span>{{ label($index) }}</span></li></ul>'
@@ -6805,7 +6838,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('autocomplete', function ($timeout, $animate, $compile, routes) {
+  .directive('autocomplete', function ($timeout, $animate, $compile, PARTIALS_URL) {
     return {
       restrict: 'E',
       replace: true,
@@ -6824,18 +6857,18 @@ angular.module('bulbsCmsApp')
         ngModel.$render = function() {
           if (ngModel.$viewValue) {
             var viewValue = ngModel.$viewValue[attrs.labelAttr];
-            if (typeof(viewValue) === "function") {
+            if (typeof(viewValue) === 'function') {
               viewValue = viewValue();
             }
             element.find('input').val(viewValue);
             inputEl.attr('disabled', 'disabled');
           }
-        }
+        };
 
         $scope.openMenu = function(e) {
           inputEl.removeAttr('disabled');
           inputEl[0].focus();
-        }
+        };
 
         inputEl.on('blur keyup change', function() {
           if (inputEl.attr('disabled') !== undefined) {
@@ -6847,7 +6880,9 @@ angular.module('bulbsCmsApp')
             if (timeoutId) {
               $timeout.cancel(timeoutId);
             }
-            timeoutId = $timeout(function(){ queryData(value)}, 150);
+            timeoutId = $timeout(function(){
+              queryData(value);
+            }, 150);
           }
         });
 
@@ -6857,7 +6892,7 @@ angular.module('bulbsCmsApp')
         menuScope.select = function(index) {
           ngModel.$setViewValue(menuScope.items[index]);
           reset();
-        }
+        };
 
         var menuEl = angular.element(document.createElement('autocomplete-menu'));
         menuEl.attr({
@@ -6866,7 +6901,9 @@ angular.module('bulbsCmsApp')
           'index': 'index',
           'label-attr': attrs.labelAttr,
         });
-        transclude(menuScope, function(clone){ menuEl.append(clone) });
+        transclude(menuScope, function(clone){
+          menuEl.append(clone);
+        });
         $compile(menuEl)(menuScope);
 
         element.find('input').on('keyup', function(e) {
@@ -6904,7 +6941,7 @@ angular.module('bulbsCmsApp')
         });
 
         function queryData(query) {
-          var searchParams = {}
+          var searchParams = {};
           searchParams[attrs.searchParam || 'search'] = query;
           $scope['service'].getList(searchParams).then(function (results) {
 
@@ -6936,7 +6973,6 @@ angular.module('bulbsCmsApp')
         }
 
         function styleMenu() {
-          var parentStyles = window.getComputedStyle(element[0]);
           var offset = element.offset();
 
           offset.left = 'auto';
@@ -6946,14 +6982,14 @@ angular.module('bulbsCmsApp')
 
           angular.forEach(offset, function (value, key) {
             if (!isNaN(value) && angular.isNumber(value)) {
-              value = value + "px"
+              value = value + 'px';
             }
             menuEl[0].style[key] = value;
             menuEl.css('z-index', 1000);
           });
         }
       },
-      templateUrl: routes.PARTIALS_URL + 'autocomplete.html'
+      templateUrl: PARTIALS_URL + 'autocomplete.html'
     };
   });
 
@@ -7081,10 +7117,10 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('CmsNotificationsCtrl', function ($q, $window, $scope, routes, CmsNotificationsApi, CurrentUser, _, moment) {
+  .controller('CmsNotificationsCtrl', function ($q, $window, $scope, CMS_NAMESPACE, CmsNotificationsApi, CurrentUser, _, moment) {
 
     // set title
-    $window.document.title = routes.CMS_NAMESPACE + ' | Notifications';
+    $window.document.title = CMS_NAMESPACE + ' | Notifications';
 
     // get user info
     CurrentUser.$retrieveData().then(function (user) {
@@ -7262,7 +7298,7 @@ angular.module('bulbsCmsApp')
   .controller('ContentlistCtrl', function (
     $scope, $http, $timeout, $location,
     $window, $q, $, ContentListService,
-    LOADING_IMG_SRC, routes)
+    LOADING_IMG_SRC, CMS_NAMESPACE)
   {
     $scope.contentData = [];
     ContentListService.$updateContent({page: 1})
@@ -7272,7 +7308,7 @@ angular.module('bulbsCmsApp')
 
     $scope.LOADING_IMG_SRC = LOADING_IMG_SRC;
     //set title
-    $window.document.title = routes.CMS_NAMESPACE + ' | Content';
+    $window.document.title = CMS_NAMESPACE + ' | Content';
 
     $scope.pageNumber = $location.search().page || '1';
     $scope.myStuff = false;
@@ -7329,14 +7365,14 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ContentworkflowCtrl', function ($scope, $http, $modal, $window, moment, routes,
+  .controller('ContentworkflowCtrl', function ($scope, $http, $modal, $window, moment,
                                                VersionBrowserModalOpener, TemporaryUrlModalOpener,
-                                               TIMEZONE_NAME) {
+                                               TIMEZONE_NAME, PARTIALS_URL) {
     $scope.TIMEZONE_LABEL = moment.tz(TIMEZONE_NAME).format('z');
 
     $scope.trashContentModal = function (articleId) {
       return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'modals/confirm-trash-modal.html',
+        templateUrl: PARTIALS_URL + 'modals/confirm-trash-modal.html',
         controller: 'TrashcontentmodalCtrl',
         scope: $scope,
         resolve: {
@@ -7349,7 +7385,7 @@ angular.module('bulbsCmsApp')
 
     $scope.pubTimeModal = function (article) {
       return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'modals/publish-date-modal.html',
+        templateUrl: PARTIALS_URL + 'modals/publish-date-modal.html',
         controller: 'PubtimemodalCtrl',
         scope: $scope,
         resolve: {
@@ -7360,7 +7396,7 @@ angular.module('bulbsCmsApp')
 
     $scope.changelogModal = function (article) {
       return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'modals/changelog-modal.html',
+        templateUrl: PARTIALS_URL + 'modals/changelog-modal.html',
         controller: 'ChangelogmodalCtrl',
         scope: $scope,
         resolve: {
@@ -7372,7 +7408,7 @@ angular.module('bulbsCmsApp')
     $scope.thumbnailModal = function (article) {
       // open thumbnail modal along with its controller
       return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'modals/thumbnail-modal.html',
+        templateUrl: PARTIALS_URL + 'modals/thumbnail-modal.html',
         controller: 'ThumbnailModalCtrl',
         scope: $scope,
         resolve: {
@@ -7383,7 +7419,7 @@ angular.module('bulbsCmsApp')
 
     $scope.sponsorModal = function (article) {
       return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'modals/sponsor-modal.html',
+        templateUrl: PARTIALS_URL + 'modals/sponsor-modal.html',
         scope: $scope,
         controller: 'SponsormodalCtrl',
         resolve: {
@@ -7402,7 +7438,7 @@ angular.module('bulbsCmsApp')
 
     $scope.descriptionModal = function (article) {
       return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'modals/description-modal.html',
+        templateUrl: PARTIALS_URL + 'modals/description-modal.html',
         controller: 'DescriptionModalCtrl',
         scope: $scope,
         size: 'lg',
@@ -7428,7 +7464,7 @@ angular.module('bulbsCmsApp')
 
 angular.module('bulbsCmsApp')
   .controller('ContributionsCtrl', function ($scope, $routeParams, $http, $window,
-    $location, $timeout, $compile, $q, $modal, _, routes, ContributionRoleService, ContentService,
+    $location, $timeout, $compile, $q, $modal, _, ContributionRoleService, ContentService,
     CmsConfig)
   {
 
@@ -7795,7 +7831,7 @@ angular.module('bulbsCmsApp')
 
 angular.module('bulbsCmsApp')
   .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance,
-      $, moment, routes, article, TIMEZONE_NAME, Raven, CmsConfig) {
+      $, moment, article, TIMEZONE_NAME, Raven, CmsConfig, PARTIALS_URL) {
     $scope.article = article;
 
     $scope.pubButton = {
@@ -7845,7 +7881,7 @@ angular.module('bulbsCmsApp')
       if (!$scope.article.feature_type) {
         $modalInstance.dismiss();
         $modal.open({
-          templateUrl: routes.PARTIALS_URL + 'modals/pubtime-validation-modal.html'
+          templateUrl: PARTIALS_URL + 'modals/pubtime-validation-modal.html'
         });
         return;
       }
@@ -7927,9 +7963,9 @@ angular.module('bulbsCmsApp')
 
 angular.module('bulbsCmsApp')
   .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter,
-      $interpolate, routes, ContributionReportingService, ContentReportingService,
+      $interpolate, CMS_NAMESPACE, ContributionReportingService, ContentReportingService,
       CmsConfig) {
-    $window.document.title = routes.CMS_NAMESPACE + ' | Reporting'; // set title
+    $window.document.title = CMS_NAMESPACE + ' | Reporting'; // set title
 
     $scope.reports = {
       'Contributions': {
@@ -8078,8 +8114,8 @@ angular.module('bulbsCmsApp')
 
 angular.module('bulbsCmsApp')
   .controller('TargetingCtrl', function ($scope, $http, $window, $q, $location,
-      tar_options, routes, CmsConfig) {
-    $window.document.title = routes.CMS_NAMESPACE + ' | Targeting Editor';
+      TAR_OPTIONS, CMS_NAMESPACE, CmsConfig) {
+    $window.document.title = CMS_NAMESPACE + ' | Targeting Editor';
 
     var canceller;
     $scope.search = function (url) {
@@ -8094,7 +8130,7 @@ angular.module('bulbsCmsApp')
 
       $http({
         method: 'GET',
-        url: CmsConfig.buildBackendUrl(tar_options.endpoint),
+        url: CmsConfig.buildBackendUrl(TAR_OPTIONS.endpoint),
         timeout: canceller.promise,
         params: {url: $scope.url}
       }).success(function (data) {
@@ -8118,7 +8154,7 @@ angular.module('bulbsCmsApp')
 
       return $http({
         method: 'POST',
-        url: CmsConfig.buildBackendUrl(tar_options.endpoint + '?url=' + $scope.url),
+        url: CmsConfig.buildBackendUrl(TAR_OPTIONS.endpoint + '?url=' + $scope.url),
         data: data
       }).success(function (data) {
         $scope.targetingArray = [];
@@ -8447,14 +8483,14 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .factory('BadRequestInterceptor', function ($q, $injector, routes) {
+  .factory('BadRequestInterceptor', function ($q, $injector, PARTIALS_URL) {
     return {
       responseError: function (rejection) {
         $injector.invoke(function ($modal) {
           if (rejection.status === 400) {
             var detail = rejection.data || {'something': ['Something was wrong with your request.']};
             $modal.open({
-              templateUrl: routes.PARTIALS_URL + 'modals/400-modal.html',
+              templateUrl: PARTIALS_URL + 'modals/400-modal.html',
               controller: 'BadrequestmodalCtrl',
               resolve: {
                 detail: function () { return detail; }
@@ -9032,11 +9068,11 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .factory('openImageCropModal', function ($modal, routes) {
+  .factory('openImageCropModal', function ($modal, PARTIALS_URL) {
     var openImageCropModal = function (imageData, ratios) {
 
       return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'image-crop-modal.html',
+        templateUrl: PARTIALS_URL + 'image-crop-modal.html',
         controller: 'ImageCropModalCtrl',
         resolve: {
           imageData: function () { return imageData; },
@@ -9053,7 +9089,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .factory('TemporaryUrlModalOpener', function ($modal, routes) {
+  .factory('TemporaryUrlModalOpener', function ($modal, PARTIALS_URL) {
 
     var modal = null;
 
@@ -9065,7 +9101,7 @@ angular.module('bulbsCmsApp')
         }
 
         modal = $modal.open({
-          templateUrl: routes.PARTIALS_URL + 'modals/temporary-url-modal.html',
+          templateUrl: PARTIALS_URL + 'modals/temporary-url-modal.html',
           controller: 'TemporaryUrlModalCtrl',
           scope: $scope,
           resolve: {
@@ -9307,7 +9343,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .factory('VersionBrowserModalOpener', function ($modal, routes) {
+  .factory('VersionBrowserModalOpener', function ($modal, PARTIALS_URL) {
 
     var modal = null;
 
@@ -9319,7 +9355,7 @@ angular.module('bulbsCmsApp')
         }
 
         modal = $modal.open({
-          templateUrl: routes.PARTIALS_URL + 'modals/version-browser-modal.html',
+          templateUrl: PARTIALS_URL + 'modals/version-browser-modal.html',
           controller: 'VersionBrowserModalCtrl',
           scope: $scope,
           size: 'lg',
@@ -9334,10 +9370,11 @@ angular.module('bulbsCmsApp')
       }
     };
   });
+
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .service('Zencoder', function Zencoder($http, $q, $modal, $, routes, CmsConfig) {
+  .service('Zencoder', function Zencoder($http, $q, $modal, $, CmsConfig, PARTIALS_URL) {
     var newVideoUrl = '/video/new';
     var fileInputId = '#bulbs-cms-hidden-video-file-input';
     var inputTemplate = '<input id="bulbs-cms-hidden-video-file-input" type="file" accept="video/*" style="position: absolute; left:-99999px;" name="video" />';
@@ -9471,7 +9508,7 @@ angular.module('bulbsCmsApp')
 
     this.openVideoThumbnailModal = function (videoId) {
       return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'modals/video-thumbnail-modal.html',
+        templateUrl: PARTIALS_URL + 'modals/video-thumbnail-modal.html',
         controller: 'VideothumbnailmodalCtrl',
         resolve: {
           videoId: function () { return videoId; }

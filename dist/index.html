@@ -347,16 +347,16 @@
 
         angular.module('bulbsCmsApp')
           .config(function ($httpProvider, CmsConfigProvider, TokenAuthConfigProvider,
-              TokenAuthServiceProvider, routes) {
+              TokenAuthServiceProvider, PARTIALS_URL, DIRECTIVE_PARTIALS_URL) {
             CmsConfigProvider.setBackendRoot('');
             CmsConfigProvider.setLogoUrl('/images/onion-logo.png');
             CmsConfigProvider.setToolbarMappings({
-              toolbar: routes.PARTIALS_URL + 'toolbar.html'
+              toolbar: PARTIALS_URL + 'toolbar.html'
             });
             CmsConfigProvider.addEditPageMapping(
               '/content_type_views/content_content.html',
               'content_content');
-            CmsConfigProvider.setCreateContentTemplateUrl(routes.DIRECTIVE_PARTIALS_URL + 'create-content.html');
+            CmsConfigProvider.setCreateContentTemplateUrl(DIRECTIVE_PARTIALS_URL + 'create-content.html');
 
             TokenAuthConfigProvider.setLogoUrl('/images/onion-logo.png');
             TokenAuthConfigProvider.setApiHost('');
@@ -364,46 +364,30 @@
             $httpProvider.interceptors.push('TokenAuthInterceptor');
           });
 
-        angular.module('bulbsCmsApp.settings', [
-          'ngClipboard',
-        ])
-          .constant('routes', {
-              IMAGE_SERVER_URL: 'http://clickholeimg.local',
-              BC_ADMIN_URL: 'http://clickholeimg.local',
-              LOADING_IMG_SRC: '/images/loading.gif',
-              SHARED_URL: '/shared/',
-              COMPONENTS_URL: '/components/',
-              STATIC_URL: '/static/',
-              PARTIALS_URL: '/views/',
-              CONTENT_PARTIALS_URL: '/content_type_views/',
-              DIRECTIVE_PARTIALS_URL: '/views/',
-              MEDIA_ITEM_PARTIALS_URL: '/cms/api/partials/media_items/',
-              CACHEBUSTER: '?' + Date.now(),
-              CMS_NAMESPACE: 'Smoove'
-          })
-          .constant('RESTANGULAR_API_URL_ROOT', '/cms/api/v1')
-          .constant('IMAGE_SERVER_URL', 'http://clickholeimg.local')
-          .constant('BC_ADMIN_URL', 'http://clickholeimg.local')
-          .constant('LOADING_IMG_SRC', '/images/loading.gif')
-          .constant('STATIC_URL', '/static/')
-          .constant('PARTIALS_URL', '/views/')
-          .constant('CONTENT_PARTIALS_URL', '/content_type_views/')
-          .constant('DIRECTIVE_PARTIALS_URL', '/views/')
-          .constant('MEDIA_ITEM_PARTIALS_URL', '/cms/api/partials/media_items/')
-          .constant('CACHEBUSTER', '?' + Date.now())
-          .constant('TIMEZONE_NAME', 'America/Chicago')
+        angular.module('bulbsCmsApp.settings')
           .constant('AUTO_ADD_AUTHOR', true)
+          .constant('BC_ADMIN_URL', 'http://clickholeimg.local')
+          .constant('CACHEBUSTER', '?' + Date.now())
+          .constant('CMS_NAMESPACE', 'Smoove')
+          .constant('CONTENT_PARTIALS_URL', '/content_type_views/')
+          .constant('COMPONENTS_URL', '/components/')
+          .constant('CUSTOM_VIDEO_POSTER_URL', 'http://chimg.onionstatic.com/{{image}}/{{ratio}}/600.jpg')
           .constant('DEFAULT_IMAGE_WIDTH', 1200)
+          .constant('DIRECTIVE_PARTIALS_URL', '/views/')
+          .constant('EXTERNAL_URL', 'onion.local')
+          .constant('FIREBASE_ROOT', 'bulbs-cms-testing')
+          .constant('PARTIALS_URL', '/views/')
+          .constant('IMAGE_SERVER_URL', 'http://clickholeimg.local')
+          .constant('LOADING_IMG_SRC', '/images/loading.gif')
+          .constant('MEDIA_ITEM_PARTIALS_URL', '/cms/api/partials/media_items/')
+          .constant('RESTANGULAR_API_URL_ROOT', '/cms/api/v1')
+          .constant('STATIC_IMAGE_URL', 'http://chimg.onionstatic.com/{{image}}/{{ratio}}/600.jpg')
+          .constant('STATIC_URL', '/static/')
+          .constant('TAR_OPTIONS', { endpoint: '/ads/targeting' })
+          .constant('TIMEZONE_NAME', 'America/Chicago')
           .constant('VIDEO_EMBED_URL', 'http://www.avclub.com/videos/embed?id=')
           .constant('VIDEO_THUMBNAIL_URL', 'http://v.theonion.com/avclubmedia/video/{{video}}/frame_{{thumbnail}}.jpg')
-          .constant('STATIC_IMAGE_URL', 'http://chimg.onionstatic.com/{{image}}/{{ratio}}/600.jpg')
-          .constant('CUSTOM_VIDEO_POSTER_URL', 'http://chimg.onionstatic.com/{{image}}/{{ratio}}/600.jpg')
-          .constant('FIREBASE_ROOT', 'bulbs-cms-testing')
-          .constant('EXTERNAL_URL', 'onion.local')
-          // ****** CMS Plugins ****** \\
-          .constant('TAR_OPTIONS', { endpoint: '/ads/targeting' })
           .constant('ZERO_CLIPBOARD_SWF', 'bower_components/zeroclipboard/dist/ZeroClipboard.swf')
-          // finish off with config
           .config(function(ngClipProvider, ZERO_CLIPBOARD_SWF) {
             ngClipProvider.setPath(ZERO_CLIPBOARD_SWF);
           });
