@@ -267,10 +267,11 @@ angular.module('bulbsCmsApp', [
   'content',
   'filterWidget',
   'promotedContent',
-  'statusFilter',
-  'templateTypeField',
+  'sections',
+  'sendToEditor',
   'specialCoverage',
-  'sections'
+  'statusFilter',
+  'templateTypeField'
 ])
   .config([
     '$provide', '$httpProvider', '$locationProvider', '$routeProvider', '$sceProvider', 'routes',
@@ -3572,6 +3573,126 @@ angular.module('sections.settings', [])
 angular.module('sections', [
   'sections.list',
   'sections.edit'
+]);
+
+'use strict';
+
+angular.module('sendToEditor.modal.opener', [
+  'sendToEditor.modal'
+])
+  .directive('sendToEditorModalOpener', [
+    'SendToEditorModal',
+    function (SendToEditorModal) {
+      return {
+        restrict: 'A',
+        scope: {
+          article: '=',
+          saveArticle: '=',
+          publishSuccessCbk: '='
+        },
+        link: function (scope, element) {
+          var modalInstance = null;
+          element.addClass('send-to-editor-modal-opener');
+          element.on('click', function () {
+            scope.saveArticle().then(function () {
+              modalInstance = new SendToEditorModal(scope);
+            });
+          });
+        }
+      };
+    }
+  ]);
+
+'use strict';
+
+angular.module('sendToEditor.modal', [
+  'cms.config',
+  'ui.bootstrap.modal'
+])
+  .controller('SendToEditorModal',
+    ['$scope', '$http', '$modalInstance', 'CmsConfig', 'moment', 'TIMEZONE_NAME',
+    function ($scope, $http, $modalInstance, CmsConfig, moment, TIMEZONE_NAME) {
+
+      $scope.TIMEZONE_LABEL = moment.tz(TIMEZONE_NAME).format('z');
+      $scope.getStatus = function (article) {
+        if(!article || !article.published){
+          return 'unpublished';
+        }else if(moment(article.published) > moment()){
+          return 'scheduled';
+        }else{
+          return 'published';
+        }
+      };
+
+      $scope.confirm = function () {
+        $scope.$close();
+        $scope.modalOnOk();
+      };
+
+      $scope.cancel = function () {
+        $scope.$dismiss();
+        $scope.modalOnCancel();
+      };
+
+      $scope.buttonConfig = {
+        idle: 'Send',
+        busy: 'Sending',
+        finished: 'Sent!',
+        error: 'Error!'
+      };
+
+      $scope.articleStatuses = [
+        '-- Article Status --',
+        'Freelancer Filed',
+        'Ready for Copy Desk',
+        'Needs Second Pass'
+      ];
+      $scope.status = $scope.articleStatuses[0];
+
+      $scope.sendToEditor = function (article) {
+        var statusText = null;
+        if ($scope.status !== $scope.articleStatuses[0]) {
+          statusText = $scope.status;
+        }
+        return $http({
+          url: CmsConfig.buildBackendUrl('/cms/api/v1/content/' + article.id + '/send/'),
+          method: 'POST',
+          data: {
+            notes: $scope.noteToEditor,
+            status: statusText
+          }
+        }).success(function (data) {
+          $scope.publishSuccessCbk({article: article, response: data});
+          $modalInstance.close();
+        }).error(function (error, status) {
+          $modalInstance.dismiss();
+        });
+      };
+    }
+  ])
+  .factory('SendToEditorModal', [
+    '$modal', 'routes',
+    function ($modal, routes) {
+
+      var SponsoredContentModal = function (scope) {
+        return (function (scope) {
+          $modal
+            .open({
+              controller: 'SendToEditorModal',
+              scope: scope,
+              templateUrl: routes.COMPONENTS_URL + 'send-to-editor/send-to-editor-modal.html'
+            });
+        })(scope);
+      };
+
+      return SponsoredContentModal;
+    }
+  ]);
+
+'use strict';
+
+angular.module('sendToEditor', [
+  'sendToEditor.modal.opener'
 ]);
 
 'use strict';
@@ -7230,17 +7351,6 @@ angular.module('bulbsCmsApp')
       return $modal.open({
         templateUrl: routes.PARTIALS_URL + 'modals/publish-date-modal.html',
         controller: 'PubtimemodalCtrl',
-        scope: $scope,
-        resolve: {
-          article: function () { return article; }
-        }
-      });
-    };
-
-    $scope.sendToEditorModal = function (article) {
-      return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'modals/send-to-editor-modal.html',
-        controller: 'SendtoeditormodalCtrl',
         scope: $scope,
         resolve: {
           article: function () { return article; }
