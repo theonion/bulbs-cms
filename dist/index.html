@@ -387,10 +387,7 @@
           .constant('TIMEZONE_NAME', 'America/Chicago')
           .constant('VIDEO_EMBED_URL', 'http://www.avclub.com/videos/embed?id=')
           .constant('VIDEO_THUMBNAIL_URL', 'http://v.theonion.com/avclubmedia/video/{{video}}/frame_{{thumbnail}}.jpg')
-          .constant('ZERO_CLIPBOARD_SWF', 'bower_components/zeroclipboard/dist/ZeroClipboard.swf')
-          .config(function(ngClipProvider, ZERO_CLIPBOARD_SWF) {
-            ngClipProvider.setPath(ZERO_CLIPBOARD_SWF);
-          });
+          .constant('ZERO_CLIPBOARD_SWF', 'bower_components/zeroclipboard/dist/ZeroClipboard.swf');
 
         angular.module('customSearch.settings')
           .constant('CUSTOM_SEARCH_TIME_PERIODS', [{
