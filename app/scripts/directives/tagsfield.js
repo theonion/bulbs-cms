@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('tagsField', function (routes, _, IfExistsElse, ContentFactory, Raven, $) {
+  .directive('tagsField', function (PARTIALS_URL, _, IfExistsElse, ContentFactory, Raven, $) {
     return {
-      templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
+      templateUrl: PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
       scope: {
         article: '='

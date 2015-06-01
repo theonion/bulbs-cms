@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('authorsField', function (routes, userFilter, $, CmsConfig) {
+  .directive('authorsField', function (PARTIALS_URL, userFilter, $, CmsConfig) {
     return {
-      templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
+      templateUrl: PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
       replace: true,
       scope: {

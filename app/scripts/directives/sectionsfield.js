@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('sectionsField', function (routes, _, IfExistsElse, ContentFactory, Raven, $) {
+  .directive('sectionsField', function (PARTIALS_URL, _, IfExistsElse, ContentFactory, Raven, $) {
     return {
-      templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
+      templateUrl: PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
       replace: true,
       link: function postLink(scope, element, attrs) {

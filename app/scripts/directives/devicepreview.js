@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('devicepreview', function ($, routes) {
+  .directive('devicepreview', function ($, PARTIALS_URL) {
     return {
       restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'devicepreview.html',
+      templateUrl: PARTIALS_URL + 'devicepreview.html',
       link: function (scope, element, attrs) {
 
         var pP = $('#page-prev'),

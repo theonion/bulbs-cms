@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('loggedInUser', function (routes, CurrentUser, CmsConfig) {
+  .directive('loggedInUser', function (PARTIALS_URL, CurrentUser, CmsConfig) {
     return {
       controller: function ($scope) {
         CurrentUser.$simplified().then(function (user) {
@@ -11,7 +11,7 @@ angular.module('bulbsCmsApp')
       },
       restrict: 'E',
       replace: true,
-      templateUrl: routes.PARTIALS_URL + 'logged-in-user.html',
+      templateUrl: PARTIALS_URL + 'logged-in-user.html',
       scope: {}
     };
   });

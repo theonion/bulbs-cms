@@ -12,7 +12,7 @@ angular.module('specialCoverage.edit.directive', [
   'ui.bootstrap.tooltip',
   'videoList'
 ])
-  .directive('specialCoverageEdit', function (routes) {
+  .directive('specialCoverageEdit', function (COMPONENTS_URL) {
     return {
       controller: function (_, $location, $q, $scope, Campaign, EXTERNAL_URL,
           SPECIAL_COVERAGE_LIST_REL_PATH, SpecialCoverage) {
@@ -74,6 +74,6 @@ angular.module('specialCoverage.edit.directive', [
       scope: {
         getModelId: '&modelId'
       },
-      templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit.html'
+      templateUrl: COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit.html'
     };
   });

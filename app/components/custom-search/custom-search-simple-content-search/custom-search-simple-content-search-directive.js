@@ -2,9 +2,10 @@
 
 angular.module('customSearch.simpleContentSearch.directive', [
   'BulbsAutocomplete',
-  'BulbsAutocomplete.suggest'
+  'BulbsAutocomplete.suggest',
+  'bulbsCmsApp.settings'
 ])
-  .directive('customSearchSimpleContentSearch', function (routes) {
+  .directive('customSearchSimpleContentSearch', function (COMPONENTS_URL) {
     return {
       controller: function (_, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS,
           ContentFactory) {
@@ -64,6 +65,6 @@ angular.module('customSearch.simpleContentSearch.directive', [
       scope: {
         onSelect: '&'
       },
-      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search-simple-content-search/custom-search-simple-content-search.html'
+      templateUrl: COMPONENTS_URL + 'custom-search/custom-search-simple-content-search/custom-search-simple-content-search.html'
     };
   });

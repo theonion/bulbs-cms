@@ -15,19 +15,23 @@ describe('Controller: LastmodifiedguardmodalCtrl', function () {
     routeService;
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope, $httpBackend, routes, $modal, $route) {
+  beforeEach(inject(function ($controller, $rootScope, $httpBackend, PARTIALS_URL, $modal, $route) {
     lastSavedBy = {id: 1, username: 'whatever'};
 
     routeService = $route;
 
-    var modalUrl = routes.PARTIALS_URL + 'modals/last-modified-guard-modal.html';
+    var modalUrl = PARTIALS_URL + 'modals/last-modified-guard-modal.html';
     modal = $modal.open({
       templateUrl: modalUrl
-    })
+    });
 
-    modal.dismiss = function () { return true; }
-    modalService = $modal
-    modalService.open = function () { return true; }
+    modal.dismiss = function () {
+      return true;
+    };
+    modalService = $modal;
+    modalService.open = function () {
+      return true;
+    };
 
     scope = $rootScope.$new();
     httpBackend = $httpBackend;

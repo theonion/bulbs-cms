@@ -7,9 +7,9 @@ angular.module('content.edit.templateChooser', [
   'cms.config'
 ])
   .directive('contentEditTemplateChooser', [
-    'CmsConfig', 'routes',
-    function (CmsConfig, routes) {
-      var defaultView = routes.COMPONENTS_URL + 'content/content-edit/type-error.html';
+    'CmsConfig', 'COMPONENTS_URL',
+    function (CmsConfig, COMPONENTS_URL) {
+      var defaultView = COMPONENTS_URL + 'content/content-edit/type-error.html';
 
       return {
         restrict: 'E',

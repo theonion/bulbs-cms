@@ -6,11 +6,11 @@ angular.module('filterWidget.directive', [
   'contentServices.listService'
 ])
   .directive('filterWidget', function (_, $location, $timeout, $, ContentListService,
-      ContentFactory, routes) {
+      ContentFactory, COMPONENTS_URL) {
     return {
       restrict: 'E',
       scope: {},
-      templateUrl: routes.COMPONENTS_URL + 'filter-widget/filter-widget.html',
+      templateUrl: COMPONENTS_URL + 'filter-widget/filter-widget.html',
       link: function (scope, element, attrs) {
         var $element = $(element);
         var $input = $element.find('input');

@@ -1,9 +1,10 @@
 'use strict';
 
 angular.module('confirmationModal.factory', [
+  'bulbsCmsApp.settings',
   'ui.bootstrap.modal'
 ])
-  .factory('ConfirmationModal', function ($modal, routes) {
+  .factory('ConfirmationModal', function ($modal, COMPONENTS_URL) {
 
     var ConfirmationModal = function (scope) {
       return (function (scope) {
@@ -21,7 +22,7 @@ angular.module('confirmationModal.factory', [
               };
             },
             scope: scope,
-            templateUrl: routes.COMPONENTS_URL + 'confirmation-modal/confirmation-modal.html'
+            templateUrl: COMPONENTS_URL + 'confirmation-modal/confirmation-modal.html'
           });
       })(scope);
     };

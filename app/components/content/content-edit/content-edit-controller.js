@@ -5,10 +5,10 @@ angular.module('content.edit.controller', [])
     $scope, $routeParams, $http, $window, $location, $timeout, $interval, $compile,
     $q, $modal, $, _, moment, keypress, Raven, PNotify, IfExistsElse, VersionStorageApi,
     ContentFactory, FirebaseApi, FirebaseArticleFactory, VersionBrowserModalOpener,
-    routes)
+    PARTIALS_URL, MEDIA_ITEM_PARTIALS_URL, CACHEBUSTER, CMS_NAMESPACE)
   {
-    $scope.PARTIALS_URL = routes.PARTIALS_URL;
-    $scope.MEDIA_ITEM_PARTIALS_URL = routes.MEDIA_ITEM_PARTIALS_URL;
+    $scope.PARTIALS_URL = PARTIALS_URL;
+    $scope.MEDIA_ITEM_PARTIALS_URL = MEDIA_ITEM_PARTIALS_URL;
     $scope.page = 'edit';
 
     /*note on cachebuster:
@@ -19,7 +19,7 @@ angular.module('content.edit.controller', [])
       with cached version in the past and it was a bludgeon solution
         kill this someday! --SB
     */
-    $scope.CACHEBUSTER = routes.CACHEBUSTER;
+    $scope.CACHEBUSTER = CACHEBUSTER;
 
     var getArticleCallback = function (data) {
       $window.article = $scope.article = data; //exposing article on window for debugging
@@ -152,7 +152,7 @@ angular.module('content.edit.controller', [])
     getContent();
 
     $scope.$watch('article.title', function () {
-      $window.document.title = routes.CMS_NAMESPACE + ' | Editing ' + ($scope.article && $('<span>' + $scope.article.title + '</span>').text());
+      $window.document.title = CMS_NAMESPACE + ' | Editing ' + ($scope.article && $('<span>' + $scope.article.title + '</span>').text());
     });
 
     $scope.saveArticleDeferred = $q.defer();
@@ -182,7 +182,7 @@ angular.module('content.edit.controller', [])
             moment(data.last_modified) > moment($scope.article.last_modified)) {
             $scope.saveArticleDeferred.reject();
             $modal.open({
-              templateUrl: routes.PARTIALS_URL + 'modals/last-modified-guard-modal.html',
+              templateUrl: PARTIALS_URL + 'modals/last-modified-guard-modal.html',
               controller: 'LastmodifiedguardmodalCtrl',
               scope: $scope,
               resolve: {

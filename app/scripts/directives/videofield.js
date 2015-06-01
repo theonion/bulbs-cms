@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('videoField', function (Zencoder, routes) {
+  .directive('videoField', function (Zencoder, PARTIALS_URL) {
     return {
-      templateUrl: routes.PARTIALS_URL + 'video-field.html',
+      templateUrl: PARTIALS_URL + 'video-field.html',
       restrict: 'E',
       scope: {
         article: '='

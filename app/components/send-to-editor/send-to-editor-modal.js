@@ -66,8 +66,8 @@ angular.module('sendToEditor.modal', [
     }
   ])
   .factory('SendToEditorModal', [
-    '$modal', 'routes',
-    function ($modal, routes) {
+    '$modal', 'COMPONENTS_URL',
+    function ($modal, COMPONENTS_URL) {
 
       var SponsoredContentModal = function (scope) {
         return (function (scope) {
@@ -75,7 +75,7 @@ angular.module('sendToEditor.modal', [
             .open({
               controller: 'SendToEditorModal',
               scope: scope,
-              templateUrl: routes.COMPONENTS_URL + 'send-to-editor/send-to-editor-modal.html'
+              templateUrl: COMPONENTS_URL + 'send-to-editor/send-to-editor-modal.html'
             });
         })(scope);
       };

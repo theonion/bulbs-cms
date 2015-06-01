@@ -3,7 +3,7 @@
 angular.module('sponsoredContentModal.factory', [
   'ui.bootstrap.modal'
 ])
-  .factory('SponsoredContentModal', function ($modal, routes) {
+  .factory('SponsoredContentModal', function ($modal, SHARED_URL) {
 
     var SponsoredContentModal = function (scope) {
       return (function (scope) {
@@ -21,7 +21,7 @@ angular.module('sponsoredContentModal.factory', [
               };
             },
             scope: scope,
-            templateUrl: routes.SHARED_URL + 'sponsored-content-modal/sponsored-content-modal.html'
+            templateUrl: SHARED_URL + 'sponsored-content-modal/sponsored-content-modal.html'
           });
       })(scope);
     };

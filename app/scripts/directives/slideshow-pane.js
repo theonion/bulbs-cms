@@ -1,10 +1,11 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('slideshowPane', function ($http, $window, $compile, $, routes) {
+  .directive('slideshowPane', function ($http, $window, $compile, $, LOADING_IMG_SRC,
+      PARTIALS_URL) {
     return {
       restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'slideshow-pane.html',
+      templateUrl: PARTIALS_URL + 'slideshow-pane.html',
       scope: {
         article: '=',
         image: '=',
@@ -29,7 +30,7 @@ angular.module('bulbsCmsApp')
             scope.article.slides[index].id,
             function (data) {
               function removeLoadingGif() {
-                $element.find('.image img[src=\"' + routes.LOADING_IMG_SRC + '\"]').remove();
+                $element.find('.image img[src=\"' + LOADING_IMG_SRC + '\"]').remove();
               }
 
               removeLoadingGif();
@@ -39,7 +40,7 @@ angular.module('bulbsCmsApp')
               }
 
               $element.find('.image img').on('load', removeLoadingGif);
-              $element.find('.image img').after('<img src=\"' + routes.LOADING_IMG_SRC + '\">');
+              $element.find('.image img').after('<img src=\"' + LOADING_IMG_SRC + '\">');
 
               scope.article.slides[index].id = data.id.toString();
               scope.$apply();

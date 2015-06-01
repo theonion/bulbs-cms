@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('bugReporter', function ($http, $window, routes) {
+  .directive('bugReporter', function ($http, $window, PARTIALS_URL) {
     return {
       restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'bug-report-button.html',
+      templateUrl: PARTIALS_URL + 'bug-report-button.html',
       scope: {},
       controller: function ($scope, $element, $timeout) {
         $scope.report = {};

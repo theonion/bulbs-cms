@@ -25,9 +25,9 @@ angular.module('statusFilter.directive', [
     };
 
   })
-  .directive('statusFilter', function ($location, _, StatusFilterOptions, ContentListService, routes) {
+  .directive('statusFilter', function ($location, _, StatusFilterOptions, ContentListService, COMPONENTS_URL) {
     return {
-      templateUrl: routes.COMPONENTS_URL + 'status-filter/status-filter.html',
+      templateUrl: COMPONENTS_URL + 'status-filter/status-filter.html',
       restrict: 'E',
       scope: {},
       controller: 'ContentlistCtrl',

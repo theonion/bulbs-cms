@@ -9,7 +9,7 @@ angular.module('autocompleteBasic', [
   'bulbsCmsApp.settings'
 ])
   .value('AUTOCOMPLETE_BASIC_DEBOUNCE', 200)
-  .directive('autocompleteBasic', function (routes) {
+  .directive('autocompleteBasic', function (COMPONENTS_URL) {
     return {
       controller: function (_, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS, AUTOCOMPLETE_BASIC_DEBOUNCE) {
 
@@ -112,6 +112,6 @@ angular.module('autocompleteBasic', [
         onSelect: '&',              // selection callback, recieves selection as argument
         searchFunction: '='         // function to use for searching autocomplete results
       },
-      templateUrl: routes.COMPONENTS_URL + 'autocomplete-basic/autocomplete-basic.html'
+      templateUrl: COMPONENTS_URL + 'autocomplete-basic/autocomplete-basic.html'
     };
   });

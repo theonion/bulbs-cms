@@ -3,7 +3,7 @@
 angular.module('saveButton.directive', [
   'genericAjaxButton'
 ])
-  .directive('saveButton', function (routes) {
+  .directive('saveButton', function (COMPONENTS_URL) {
     return {
       controller: 'GenericAjaxButtonController',
       link: {
@@ -18,6 +18,6 @@ angular.module('saveButton.directive', [
         disableWhen: '&',
         clickFunction: '=',
       },
-      templateUrl: routes.COMPONENTS_URL + 'generic-ajax-button/generic-ajax-button.html'
+      templateUrl: COMPONENTS_URL + 'generic-ajax-button/generic-ajax-button.html'
     };
   });

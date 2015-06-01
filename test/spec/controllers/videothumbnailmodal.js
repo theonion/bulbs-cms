@@ -16,15 +16,15 @@ describe('Controller: VideothumbnailmodalCtrl', function () {
   var customVideoPosterUrlString = '{{ratio}}_{{image}}';
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope, $modal, routes, Zencoder) {
+  beforeEach(inject(function ($controller, $rootScope, $modal, PARTIALS_URL, Zencoder) {
     scope = $rootScope.$new();
     zencoderService = Zencoder;
-    
+
     zencoderService.getVideo = function () {
       return {then: function () {}}
     }
-    
-    var modalUrl = routes.PARTIALS_URL + 'modals/last-modified-guard-modal.html';
+
+    var modalUrl = PARTIALS_URL + 'modals/last-modified-guard-modal.html';
     modal = $modal.open({
       templateUrl: modalUrl
     });
@@ -33,7 +33,7 @@ describe('Controller: VideothumbnailmodalCtrl', function () {
     modal.close = function () { return true; }
     modalService = $modal
     modalService.open = function () { return true; }
-    
+
     VideothumbnailmodalCtrl = $controller('VideothumbnailmodalCtrl', {
       $scope: scope,
       $modal: modalService,
@@ -44,7 +44,7 @@ describe('Controller: VideothumbnailmodalCtrl', function () {
       videoId: 1
     });
   }));
-  
+
   describe('default thumbnail', function () {
     it('should have a function defaultThumb that sets thumbnail to current default of 4', function () {
       //note: 4 is just a number that we guessed would be high enough to give a good 'preview' thumbnail
@@ -53,7 +53,7 @@ describe('Controller: VideothumbnailmodalCtrl', function () {
       expect(scope.video.poster).toBe('thumbnails4you.com/1/thumbnail_0004')
     });
   });
-  
+
   describe('thumbnail scrolling', function () {
     it('should have a function nextThumb that increments thumbnail', function () {
       scope.currentThumbnail = 5;
@@ -80,7 +80,7 @@ describe('Controller: VideothumbnailmodalCtrl', function () {
       expect(scope.currentThumbnail).toBe(7);
       expect(scope.video.poster).toBe('thumbnails4you.com/1/thumbnail_0007')
     });
-    
+
     it('should have a function prevThumb that goes to max thumbnail (19) instead of below zero', function () {
       scope.currentThumbnail = 0;
       scope.video = {};
@@ -89,15 +89,15 @@ describe('Controller: VideothumbnailmodalCtrl', function () {
       expect(scope.currentThumbnail).toBe(19);
       expect(scope.video.poster).toBe('thumbnails4you.com/1/thumbnail_0019')
     });
-    
+
   });
-  
+
   it('if poster is not a Zencoded thumbnail, should not set a currentThumbnail', function (){
     scope.video = {poster: 'some url that surely is not a zencoder thumbnail!'};
     scope.$digest();
     expect(scope.currentThumbnail).toBe(false);
   });
-  
+
   describe('functions that call Zencoder service', function () {
     it('setPoster should call Zencoder.setVideo', function () {
       scope.video = {poster: 'dummy value'};

@@ -4,7 +4,7 @@ angular.module('promotedContentOperationsList.directive', [
   'bulbsCmsApp.settings',
   'promotedContent.service'
 ])
-  .directive('promotedContentOperationsList', function (_, moment, routes) {
+  .directive('promotedContentOperationsList', function (_, moment, COMPONENTS_URL) {
     return {
       controller: function (moment, $scope, PromotedContentService) {
 
@@ -90,6 +90,6 @@ angular.module('promotedContentOperationsList.directive', [
       },
       restrict: 'E',
       scope: {},
-      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-operations-list/promoted-content-operations-list.html'
+      templateUrl: COMPONENTS_URL + 'promoted-content/promoted-content-operations-list/promoted-content-operations-list.html'
     };
   });

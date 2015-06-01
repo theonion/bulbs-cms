@@ -3,12 +3,12 @@
 angular.module('specialCoverage.edit', [
   'specialCoverage.edit.directive'
 ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($routeProvider, CMS_NAMESPACE) {
     $routeProvider
       .when('/cms/app/special-coverage/edit/:id/', {
         controller: function ($routeParams, $scope, $window) {
           // set title
-          $window.document.title = routes.CMS_NAMESPACE + ' | Edit Special Coverage';
+          $window.document.title = CMS_NAMESPACE + ' | Edit Special Coverage';
 
           $scope.routeId = $routeParams.id;
         },

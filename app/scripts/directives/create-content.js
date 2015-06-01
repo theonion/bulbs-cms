@@ -2,7 +2,7 @@
 
 angular.module('bulbsCmsApp')
   .directive('createContent', function ($http, $window, $, IfExistsElse, ContentFactory,
-      routes, AUTO_ADD_AUTHOR, Raven, CmsConfig) {
+      AUTO_ADD_AUTHOR, Raven, CmsConfig) {
 
     return {
       restrict: 'E',

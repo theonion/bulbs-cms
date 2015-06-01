@@ -13,6 +13,23 @@ angular.module('OnionEditor', []).constant('OnionEditor', window.OnionEditor);
 
 // ****** App Config ****** \\
 
+angular.module('bulbsCmsApp.settings', [
+  'ngClipboard'
+])
+  .constant('AUTO_ADD_AUTHOR', true)
+  .constant('CACHEBUSTER', '?' + Date.now())
+  .constant('CONTENT_PARTIALS_URL', '/content_type_views/')
+  .constant('DEFAULT_IMAGE_WIDTH', 1200)
+  .constant('DIRECTIVE_PARTIALS_URL', '/views/')
+  .constant('PARTIALS_URL', '/views/')
+  .constant('TAR_OPTIONS', {endpoint: '/ads/targeting'})
+  .constant('TIMEZONE_NAME', 'America/Chicago')
+  .constant('STATIC_URL', '/static/')
+  .constant('ZERO_CLIPBOARD_SWF', '/static/ZeroClipboard.swf')
+  .config(function (ngClipProvider, ZERO_CLIPBOARD_SWF) {
+    ngClipProvider.setPath(ZERO_CLIPBOARD_SWF);
+  });
+
 angular.module('bulbsCmsApp', [
   // unorganized
   'bulbsCmsApp.settings',
@@ -54,15 +71,17 @@ angular.module('bulbsCmsApp', [
   'templateTypeField'
 ])
   .config([
-    '$provide', '$httpProvider', '$locationProvider', '$routeProvider', '$sceProvider', 'routes',
+    '$provide', '$httpProvider', '$locationProvider', '$routeProvider', '$sceProvider',
       'TokenAuthConfigProvider', 'TokenAuthServiceProvider', 'CmsConfigProvider',
-    function ($provide, $httpProvider, $locationProvider, $routeProvider, $sceProvider, routes,
-        TokenAuthConfigProvider, TokenAuthServiceProvider, CmsConfigProvider) {
+      'COMPONENTS_URL', 'PARTIALS_URL',
+    function ($provide, $httpProvider, $locationProvider, $routeProvider, $sceProvider,
+        TokenAuthConfigProvider, TokenAuthServiceProvider, CmsConfigProvider,
+        COMPONENTS_URL, PARTIALS_URL) {
       $locationProvider.html5Mode(true);
 
       $routeProvider
         .when('/', {
-          templateUrl: routes.PARTIALS_URL + 'contentlist.html',
+          templateUrl: PARTIALS_URL + 'contentlist.html',
           controller: 'ContentlistCtrl',
           reloadOnSearch: false
         })
@@ -70,27 +89,27 @@ angular.module('bulbsCmsApp', [
           redirectTo: '/'
         })
         .when('/cms/app/edit/:id/contributions/', {
-          templateUrl: routes.PARTIALS_URL + 'contributions.html',
+          templateUrl: PARTIALS_URL + 'contributions.html',
           controller: 'ContributionsCtrl'
         })
         .when('/cms/app/targeting/', {
-          templateUrl: routes.PARTIALS_URL + 'targeting-editor.html',
+          templateUrl: PARTIALS_URL + 'targeting-editor.html',
           controller: 'TargetingCtrl'
         })
         .when('/cms/app/notifications/', {
-          templateUrl: routes.PARTIALS_URL + 'cms-notifications.html',
+          templateUrl: PARTIALS_URL + 'cms-notifications.html',
           controller: 'CmsNotificationsCtrl'
         })
         .when('/cms/app/reporting/', {
-          templateUrl: routes.PARTIALS_URL + 'reporting.html',
+          templateUrl: PARTIALS_URL + 'reporting.html',
           controller: 'ReportingCtrl'
         })
         .when('/cms/app/pzones/', {
-          templateUrl: routes.PARTIALS_URL + 'pzones.html',
+          templateUrl: PARTIALS_URL + 'pzones.html',
           controller: 'PzoneCtrl'
         })
         .when('/cms/login/', {
-          templateUrl: routes.COMPONENTS_URL + 'login/login.html'
+          templateUrl: COMPONENTS_URL + 'login/login.html'
         })
         .otherwise({
           templateUrl: '/404.html'
@@ -131,5 +150,4 @@ angular.module('bulbsCmsApp', [
       deleteHeaders['X-CSRFToken'] = $cookies.csrftoken;
       $http.defaults.headers.delete = deleteHeaders;
     }
-  ])
-  .constant('TIMEZONE_NAME', 'America/Chicago');
+  ]);

@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('bettyeditable', function ($http, routes, BettyCropper, openImageCropModal, DEFAULT_IMAGE_WIDTH) {
+  .directive('bettyeditable', function ($http, PARTIALS_URL, BettyCropper, openImageCropModal, DEFAULT_IMAGE_WIDTH) {
     return {
       restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'bettyeditable.html',
+      templateUrl: PARTIALS_URL + 'bettyeditable.html',
       scope: {
         'image': '=',
         'addStyles': '@',

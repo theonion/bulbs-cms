@@ -1,15 +1,16 @@
 'use strict';
 
 angular.module('content.edit.editorItem', [
+  'bulbsCmsApp.settings',
   'content.edit.editorItem.service',
   'moment'
 ])
   .directive('editorItem', [
-    'EditorItems', 'moment', 'routes',
-    function (EditorItems, moment, routes) {
+    'EditorItems', 'moment', 'COMPONENTS_URL',
+    function (EditorItems, moment, COMPONENTS_URL) {
       return {
         restrict: 'E',
-        templateUrl: routes.COMPONENTS_URL + 'content/content-edit/content-edit-editor-item/content-edit-editor-item.html',
+        templateUrl: COMPONENTS_URL + 'content/content-edit/content-edit-editor-item/content-edit-editor-item.html',
         scope: {
           article: '='
         },

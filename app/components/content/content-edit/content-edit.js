@@ -1,6 +1,7 @@
 'use strict';
 
 angular.module('content.edit', [
+  'bulbsCmsApp.settings',
   'content.edit.authors',
   'content.edit.body',
   'content.edit.controller',
@@ -12,11 +13,11 @@ angular.module('content.edit', [
   'content.edit.templateChooser'
 ])
   .config([
-    '$routeProvider', 'routes',
-    function ($routeProvider, routes) {
+    '$routeProvider', 'COMPONENTS_URL',
+    function ($routeProvider, COMPONENTS_URL) {
       $routeProvider
         .when('/cms/app/edit/:id/', {
-          templateUrl: routes.COMPONENTS_URL + 'content/content-edit/content-edit.html',
+          templateUrl: COMPONENTS_URL + 'content/content-edit/content-edit.html',
           controller: 'ContentEdit'
         });
     }]);

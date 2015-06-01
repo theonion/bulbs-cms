@@ -4,7 +4,7 @@
  * Renders a topbar template based on a given path relative to "/components/".
  */
 angular.module('topBar.directive', [])
-  .directive('topBar', function (routes, CmsConfig) {
+  .directive('topBar', function (COMPONENTS_URL, CmsConfig) {
     return {
       restrict: 'E',
       scope: {
@@ -15,7 +15,7 @@ angular.module('topBar.directive', [])
         saveFunction: '=',
         saveDisableWhen: '&'
       },
-      templateUrl: routes.COMPONENTS_URL + 'top-bar/top-bar-base.html',
+      templateUrl: COMPONENTS_URL + 'top-bar/top-bar-base.html',
       link: function (scope) {
         scope.NAV_LOGO = CmsConfig.getLogoUrl();
       }

@@ -8,7 +8,7 @@ angular.module('genericAjaxButton.directive', [
   'bulbsCmsApp.settings',
   'genericAjaxButton.controller'
 ])
-  .directive('genericAjaxButton', function (routes) {
+  .directive('genericAjaxButton', function (COMPONENTS_URL) {
     return {
       controller: 'GenericAjaxButtonController',
       restrict: 'E',
@@ -24,6 +24,6 @@ angular.module('genericAjaxButton.directive', [
         textProgress: '@',
         textComplete: '@'
       },
-      templateUrl: routes.COMPONENTS_URL + 'generic-ajax-button/generic-ajax-button.html'
+      templateUrl: COMPONENTS_URL + 'generic-ajax-button/generic-ajax-button.html'
     };
   });

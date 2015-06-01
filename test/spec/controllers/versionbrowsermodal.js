@@ -52,13 +52,13 @@ describe('Controller: VersionBrowserModalCtrl', function () {
       ];
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($q, $controller, $rootScope, $modal, routes, FirebaseApi) {
+  beforeEach(inject(function ($q, $controller, $rootScope, $modal, PARTIALS_URL, FirebaseApi) {
 
     rootScope = $rootScope;
     scope = rootScope.$new();
 
     // open up version browser modal with mocked out stuff
-    var modalUrl = routes.PARTIALS_URL + 'modals/version-browser-modal.html';
+    var modalUrl = PARTIALS_URL + 'modals/version-browser-modal.html';
     modal = $modal.open({
       templateUrl: modalUrl
     });
@@ -115,7 +115,7 @@ describe('Controller: VersionBrowserModalCtrl', function () {
 
     expect(scope.selectedVersion).toEqual(versions[1]);
   });
-  
+
   it('should have a function to restore the selected version that will modify the article in scope', function () {
     scope.article = {
       title: 'I Have Not Been Saved',

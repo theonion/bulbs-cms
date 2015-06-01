@@ -9,7 +9,7 @@ angular.module('campaigns.edit.directive', [
   'saveButton.directive',
   'topBar'
 ])
-  .directive('campaignsEdit', function (routes) {
+  .directive('campaignsEdit', function (COMPONENTS_URL) {
     return {
       controller: function (_, $location, $q, $routeParams, $scope, Campaign) {
 
@@ -68,6 +68,6 @@ angular.module('campaigns.edit.directive', [
       scope: {
         getModelId: '&modelId'
       },
-      templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-edit/campaigns-edit.html',
+      templateUrl: COMPONENTS_URL + 'campaigns/campaigns-edit/campaigns-edit.html',
     };
   });

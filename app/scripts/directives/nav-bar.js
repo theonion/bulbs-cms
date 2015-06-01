@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('navBar', function (CmsConfig, routes) {
-    var defaultView = routes.PARTIALS_URL + 'nav.html';
+  .directive('navBar', function (CmsConfig, PARTIALS_URL) {
+    var defaultView = PARTIALS_URL + 'nav.html';
 
     return {
       restrict: 'E',

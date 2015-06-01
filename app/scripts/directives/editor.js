@@ -1,12 +1,13 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('onionEditor', function (routes, $, Zencoder, BettyCropper, openImageCropModal, VIDEO_EMBED_URL, OnionEditor) {
+  .directive('onionEditor', function (PARTIALS_URL, $, Zencoder, BettyCropper,
+      openImageCropModal, VIDEO_EMBED_URL, OnionEditor) {
     return {
       require: 'ngModel',
       replace: true,
       restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'editor.html',
+      templateUrl: PARTIALS_URL + 'editor.html',
       scope: {ngModel: '='},
       link: function (scope, element, attrs, ngModel) {
 

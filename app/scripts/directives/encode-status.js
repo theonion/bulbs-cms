@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('encodeStatus', function ($http, $interval, $, Zencoder, routes) {
+  .directive('encodeStatus', function ($http, $interval, $, Zencoder, PARTIALS_URL) {
     return {
-      templateUrl: routes.PARTIALS_URL + 'encode-status.html',
+      templateUrl: PARTIALS_URL + 'encode-status.html',
       restrict: 'E',
       link: function postLink(scope, element, attrs) {
         scope.encodingVideos = {};

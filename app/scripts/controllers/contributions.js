@@ -2,7 +2,7 @@
 
 angular.module('bulbsCmsApp')
   .controller('ContributionsCtrl', function ($scope, $routeParams, $http, $window,
-    $location, $timeout, $compile, $q, $modal, _, routes, ContributionRoleService, ContentService,
+    $location, $timeout, $compile, $q, $modal, _, ContributionRoleService, ContentService,
     CmsConfig)
   {
 

@@ -8,14 +8,14 @@ angular.module('promotedContent', [
   'promotedContentTimePicker',
   'promotedContentOperationsList'
 ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($routeProvider, COMPONENTS_URL, CMS_NAMESPACE) {
     $routeProvider
       .when('/cms/app/promotion/', {
         controller: function ($window) {
           // set title
-          $window.document.title = routes.CMS_NAMESPACE + ' | Promotion Tool';
+          $window.document.title = CMS_NAMESPACE + ' | Promotion Tool';
         },
-        templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content.html',
+        templateUrl: COMPONENTS_URL + 'promoted-content/promoted-content.html',
         reloadOnSearch: false
       });
   });
