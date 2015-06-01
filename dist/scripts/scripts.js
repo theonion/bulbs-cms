@@ -3908,8 +3908,7 @@ angular.module('apiServices.specialCoverage.factory', [
       },
       videos: {
         belongsToMany: 'Video',
-        keys: 'videos',
-        init: []
+        keys: 'videos'
       },
       active: {
         init: true
