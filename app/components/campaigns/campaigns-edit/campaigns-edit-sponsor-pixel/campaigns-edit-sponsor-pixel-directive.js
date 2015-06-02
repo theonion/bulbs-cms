@@ -7,6 +7,10 @@ angular.module('campaigns.edit.sponsorPixel.directive', [
     {
       name: 'Logo',
       value: 'Logo'
+    },
+    {
+      name: 'Homepage',
+      value: 'Homepage'
     }
   ])
   .directive('campaignsEditSponsorPixel', function (COMPONENTS_URL) {
