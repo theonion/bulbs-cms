@@ -329,6 +329,10 @@ angular.module('bulbsCmsApp', [
         TokenAuthServiceProvider.$get().logout();
       });
 
+      CmsConfigProvider.addEditPageMapping(
+        'components/edit-pages/video/video-container.html',
+        'core_video');
+
       TokenAuthConfigProvider.setApiEndpointAuth('/token/auth');
       TokenAuthConfigProvider.setApiEndpointRefresh('/token/refresh');
       TokenAuthConfigProvider.setApiEndpointVerify('/token/verify');
@@ -954,6 +958,10 @@ angular.module('campaigns.edit.sponsorPixel.directive', [
     {
       name: 'Logo',
       value: 'Logo'
+    },
+    {
+      name: 'Homepage',
+      value: 'Homepage'
     }
   ])
   .directive('campaignsEditSponsorPixel', function (COMPONENTS_URL) {
@@ -2191,6 +2199,25 @@ angular.module('customSearch', [
   'bulbsCmsApp.settings',
   'customSearch.directive'
 ]);
+
+'use strict';
+
+angular.module('content.video', [
+  'content',
+  'videoSearch'
+])
+  .directive('contentVideo', [
+    'COMPONENTS_URL',
+    function (COMPONENTS_URL) {
+      return {
+        restrict: 'E',
+        scope: {
+          article: '='
+        },
+        templateUrl: COMPONENTS_URL + 'edit-pages/video/video.html'
+      };
+    }
+  ]);
 
 'use strict';
 
@@ -4476,8 +4503,7 @@ angular.module('apiServices.specialCoverage.factory', [
       },
       videos: {
         belongsToMany: 'Video',
-        keys: 'videos',
-        init: []
+        keys: 'videos'
       },
       active: {
         init: true
@@ -5251,6 +5277,38 @@ angular.module('videoList', [
       templateUrl: SHARED_URL + 'video-list/video-list.html'
     };
   });
+
+'use strict';
+
+angular.module('videoSearch', [
+  'autocompleteBasic',
+  'VideohubClient.api',
+  'VideohubClient.settings'
+])
+  .directive('videoSearch', [
+    'SHARED_URL',
+    function (SHARED_URL) {
+      return {
+        restrict: 'E',
+        templateUrl: SHARED_URL + 'video-search/video-search.html',
+        scope: {
+          video: '='
+        },
+        controller: [
+          '$scope', 'Video', 'VIDEOHUB_DEFAULT_CHANNEL',
+          function ($scope, Video, VIDEOHUB_DEFAULT_CHANNEL) {
+            $scope.videoChannel = VIDEOHUB_DEFAULT_CHANNEL;
+            $scope.searchVideos = function (query) {
+              return Video.$postSearch({
+                query: query,
+                channel: VIDEOHUB_DEFAULT_CHANNEL
+              });
+            };
+          }
+        ]
+      };
+    }
+  ]);
 
 'use strict';
 
@@ -6729,51 +6787,6 @@ angular.module('bulbsCmsApp')
       restrict: 'E',
       link: function postLink(scope, element, attrs) {
         scope.videoUrl = VIDEO_EMBED_URL + attrs.videoId;
-      }
-    };
-  });
-
-'use strict';
-
-angular.module('bulbsCmsApp')
-  .directive('videoField', function (Zencoder, PARTIALS_URL) {
-    return {
-      templateUrl: PARTIALS_URL + 'video-field.html',
-      restrict: 'E',
-      scope: {
-        article: '='
-      },
-      link: function postLink(scope, element, attrs) {
-        scope.removeVideo = function () {
-          scope.article.video = null;
-        };
-
-        scope.uploadVideo = function () {
-          Zencoder.onVideoFileUpload().then(
-            function (success) {
-              console.log(success);
-              scope.article.video = success.attrs.id;
-            },
-            angular.noop,
-            function (progress) {
-              console.log(progress);
-              scope.uploadProgress = progress;
-            }
-          );
-        };
-
-        scope.thumbnailModal = function () {
-          Zencoder.openVideoThumbnailModal(scope.article.video).result.then(
-            function (resolve) {
-              console.log('thumbnail modal resolve');
-              console.log(resolve);
-              //article.poster_url = resolve;
-            },
-            function (reject) {
-              console.log('thumbnail modal rejected');
-            }
-          );
-        };
       }
     };
   });
