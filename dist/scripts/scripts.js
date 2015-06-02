@@ -272,13 +272,14 @@ angular.module('bulbsCmsApp', [
   // components
   'campaigns',
   'content',
+  'content.video',
   'filterWidget',
   'promotedContent',
   'sections',
   'sendToEditor',
   'specialCoverage',
   'statusFilter',
-  'templateTypeField'
+  'templateTypeField',
 ])
   .config([
     '$provide', '$httpProvider', '$locationProvider', '$routeProvider', '$sceProvider',
