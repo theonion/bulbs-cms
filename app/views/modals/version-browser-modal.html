@@ -7,12 +7,12 @@
   <div ng-show="versions.length > 0">
     <p class="text-info">
       <span ng-show="maxVersions && versions.length == maxVersions">
-        <i class="glyphicon glyphicon-info-sign"></i>
+        <i class="fa fa-info-circle"></i>
         A maximum of {{ maxVersions }} versions can be stored by the system. The oldest revisions will be deleted as
         new revisions are created.
       </span>
       <span ng-show="!maxVersions">
-        <i class="glyphicon glyphicon-info-sign"></i>
+        <i class="fa fa-info-circle"></i>
         Versions are being stored locally by your browser. If you run out of space, versions created before yesterday
         will be deleted from your local cache.
       </span>
@@ -43,15 +43,15 @@
 
 <div class="modal-footer">
     <span ng-show="articleIsDirty" class="text-danger version-browser-dirty-warning">
-        <i class="glyphicon glyphicon-warning-sign"></i>
+        <i class="fa fa-exclamation-triangle"></i>
         You have unsaved changes that will be overwritten by restoring an old version!
     </span>
     <button ng-show="selectedVersion" class="btn" ng-class="{'btn-danger': articleIsDirty, 'btn-success': !articleIsDirty}" aria-hidden="true" ng-click="restoreSelected();">
-        <i class="glyphicon" ng-class="{'glyphicon-warning-sign': articleIsDirty, 'glyphicon-open': !articleIsDirty}"></i>
+        <i class="fa" ng-class="{'fa-exclamation-triangle': articleIsDirty, 'fa-upload': !articleIsDirty}"></i>
         Restore Selected Version
     </button>
     <button class="btn btn-default" aria-hidden="true" ng-click="$dismiss();">
-        <i class="glyphicon glyphicon-remove"></i>
+        <i class="fa fa-times"></i>
         Cancel
     </button>
 </div>

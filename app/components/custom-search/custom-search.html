@@ -7,7 +7,7 @@
           resetFilters();
           customSearchService.groupsClear();
           $contentRetrieve()">
-      <i class="glyphicon glyphicon-remove"></i>
+      <i class="fa fa-times"></i>
       Clear All Search Parameters
     </button>
   </div>
@@ -31,7 +31,7 @@
         ng-click="
           customSearchService.groupsAdd();
           onUpdate();">
-      <i class="glyphicon glyphicon-plus"></i>
+      <i class="fa fa-plus"></i>
       Add Another Query
     </button>
   </div>
@@ -57,7 +57,7 @@
       <div class="search-input">
         <span class="label-container">
           <label for="contentFilterTerm">
-            <i class="glyphicon glyphicon-search"></i>
+            <i class="fa fa-search"></i>
           </label>
         </span>
         <span class="input-container">
@@ -76,7 +76,7 @@
                 customSearchService.setQuery('');
                 customSearchService.setPage(1);
                 $conditionalContentRetrieve()">
-            <i class="glyphicon glyphicon-remove"></i>
+            <i class="fa fa-times"></i>
           </button>
         </span>
       </div>

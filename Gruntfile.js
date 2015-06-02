@@ -366,13 +366,13 @@ module.exports = function (grunt) {
         dest: '<%= yeoman.dist %>/styles/',
         src: 'Jcrop.gif'
       },
-      bootstrapFonts: {
+      font_awesome_fonts_tmp: {
         expand: true,
-        cwd: '<%= yeoman.app %>/bower_components/bootstrap/dist/fonts',
-        dest: '<%= yeoman.dist %>/fonts/',
-        src: ['glyphicons-halflings-regular.*', 'glyphicons-halflings-regular.woff2']
+        cwd: '<%= yeoman.app %>/bower_components/font-awesome/fonts',
+        dest: '<%= yeoman.tmp %>/static/',
+        src: ['fontawesome-webfont.*']
       },
-      fontawesomeFonts: {
+      font_awesome_fonts_dist: {
         expand: true,
         cwd: '<%= yeoman.app %>/bower_components/font-awesome/fonts',
         dest: '<%= yeoman.dist %>/fonts/',
@@ -604,6 +604,7 @@ module.exports = function (grunt) {
       'concurrent:server',
       'injector:less_components',
       'less:project_styles',
+      'copy:font_awesome_fonts_tmp',
       'copy:font_awesome_less_tmp_styles',
       'less:font_awesome_styles',
       'autoprefixer',
@@ -674,8 +675,7 @@ module.exports = function (grunt) {
     'ngmin',
     'copy:dist',
     'copy:jcropGif',
-    'copy:bootstrapFonts',
-    'copy:fontawesomeFonts',
+    'copy:font_awesome_fonts_dist',
     'copy:zeroclipboard',
     'cdnify',
     'cssmin',

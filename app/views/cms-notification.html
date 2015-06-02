@@ -40,7 +40,7 @@
           <span
               tooltip="{{ !postDateValid ? 'This date must occur before promotion end date!' : '' }}"
               tooltip-placement="bottom">
-            <i class="glyphicon glyphicon-calendar"></i>
+            <i class="fa fa-calendar"></i>
             <span ng-show="postDate">{{ postDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
             <span ng-show="!postDate">&lt;choose date&gt;</span>
           </span>
@@ -56,7 +56,7 @@
           <span
               tooltip="{{ !notifyEndDateValid ? 'This date must occur after post date!' : '' }}"
               tooltip-placement="bottom">
-            <i class="glyphicon glyphicon-calendar"></i>
+            <i class="fa fa-calendar"></i>
             <span ng-show="notifyEndDate">{{ notifyEndDate.toDate() | date: 'MMM d, yyyy, h:mma' }}</span>
             <span ng-show="!notifyEndDate">&lt;choose date&gt;</span>
           </span>
@@ -67,11 +67,11 @@
             class="btn btn-success btn-xs"
             ng-disabled="!notificationDirty || !notificationValid"
             ng-click="saveNotification()">
-          <i class="glyphicon glyphicon-save"></i>
+          <i class="fa fa-floppy-o"></i>
           Save
         </button>
         <button class="btn btn-danger btn-xs" ng-click="deleteNotification()">
-          <i class="glyphicon glyphicon-remove"></i>
+          <i class="fa fa-times"></i>
           Delete
         </button>
       </div>

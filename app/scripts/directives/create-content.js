@@ -66,9 +66,9 @@ angular.module('bulbsCmsApp')
           }).error(function (data, status, headers, config) {
             if (status === 403) {
               $('button.go')
-                .html('<i class="glyphicon glyphicon-exclamation-sign"></i> Please Log In');
+                .html('<i class="fa fa-exclamation-triangle"></i> Please Log In');
             } else {
-              $('button.go').removeClass('btn-success').addClass('btn-danger').html('<i class="glyphicon glyphicon-remove"></i> Error');
+              $('button.go').removeClass('btn-success').addClass('btn-danger').html('<i class="fa fa-times"></i> Error');
             }
             $scope.gotSave = false;
           });

@@ -18,7 +18,7 @@ angular.module('bulbsCmsApp')
         attrs.$observe('config', function (val) {
           if (!angular.isDefined(val)) {
             scope.config = {
-              idle: '<i class=\'glyphicon glyphicon-floppy-disk\'></i> Save',
+              idle: '<i class=\'fa fa-floppy-o\'></i> Save',
               busy: 'Saving',
               finished: 'Saved',
               error: 'Error'
@@ -43,7 +43,7 @@ angular.module('bulbsCmsApp')
             scope.colors = scope.colors_tmp;
             element
               .prop('disabled', false)
-              .html('<i class=\'glyphicon glyphicon-ok\'></i> ' + scope.config.finished);
+              .html('<i class=\'fa fa-check\'></i> ' + scope.config.finished);
 
             return $timeout(function () {
               element.html(scope.config.idle);
@@ -61,7 +61,7 @@ angular.module('bulbsCmsApp')
                 scope.colors = 'btn-danger';
                 element
                   .prop('disabled', false)
-                  .html('<i class=\'glyphicon glyphicon-remove\'></i> ' + scope.config.error);
+                  .html('<i class=\'fa fa-times\'></i> ' + scope.config.error);
 
                 return $q.reject(reason);
               });

@@ -10,7 +10,7 @@
                 <span ng-show="article.first_image && article.first_image !== null">You are currently viewing the default thumbnail based off the article's image. Choose new thumbnail image if you'd like to show a custom thumbnail:</span>
                 <span ng-show="!article.first_image || article.first_image === null">There is currently no main image or thumbnail set. Choose a new thumbnail if you'd like to show a custom thumbnail.</span>
                 <button class="btn btn-xs btn-primary" ng-click="selectCustomThumbnail();">
-                    <i class="glyphicon glyphicon-picture"></i>
+                    <i class="fa fa-camera"></i>
                     Choose Thumbnail
                 </button>
             </p>
@@ -25,7 +25,7 @@
 </div><!--/modal-body-->
 <div class="modal-footer">
     <button class="btn btn-success" ng-click="$dismiss();">
-        <i class="glyphicon glyphicon-ok"></i>
+        <i class="fa fa-check"></i>
         Done
     </button>
 </div><!--/modal-footer-->

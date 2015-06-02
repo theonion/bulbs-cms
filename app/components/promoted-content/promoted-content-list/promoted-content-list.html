@@ -13,13 +13,13 @@
 <div
     class="alert alert-info"
     ng-show="pzoneData.previewTime && pzoneData.previewTime.isBefore(moment())">
-  <i class="glyphicon glyphicon-info-sign"></i>
+  <i class="fa fa-info-circle"></i>
   Viewing a past list, past lists cannot be modified.
 </div>
 <div
     class="alert-action-in-progress alert alert-info"
     ng-show="pzoneData.action">
-  <i class="glyphicon glyphicon-info-sign"></i>
+  <i class="fa fa-info-circle"></i>
   <span>Select an item below to finish your {{ pzoneData.action }} operation.</span>
   <button ng-click="stopAction()">Cancel</button>
 </div>
@@ -57,27 +57,27 @@
             ng-click="remove(article)"
             ng-disabled="pzoneData.action"
             ng-hide="pzoneData.previewTime && pzoneData.previewTime.isBefore(moment())">
-          <i class="glyphicon glyphicon-remove"></i>
+          <i class="fa fa-times"></i>
         </button>
         <!-- lock button for preventing removal in past content lists -->
         <button
             class="btn btn-default btn-link remove-content-btn"
             disabled="true"
             ng-show="pzoneData.previewTime && pzoneData.previewTime.isBefore(moment())">
-          <i class="glyphicon glyphicon-lock"></i>
+          <i class="fa fa-lock"></i>
         </button>
         <!-- up down buttons for reordering with preview time immediate -->
         <button
             class="btn btn-default btn-link up-content-btn"
             ng-click="moveUp($index)"
             ng-disabled="pzoneData.action || $first || pzoneData.previewTime">
-          <i class="glyphicon glyphicon-chevron-up"></i>
+          <i class="fa fa-chevron-up"></i>
         </button>
         <button
             class="btn btn-default btn-link dn-content-btn"
             ng-click="moveDown($index)"
             ng-disabled="pzoneData.action || $last || pzoneData.previewTime">
-          <i class="glyphicon glyphicon-chevron-down"></i>
+          <i class="fa fa-chevron-down"></i>
         </button>
       </div>
       <promoted-content-article article="article"></promoted-content-article>

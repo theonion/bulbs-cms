@@ -15,7 +15,7 @@
           ng-click="saveArticle();"
           hide-if-forbidden
           options-url="{{'/cms/api/v1/content/' + article.id + '/'}}">
-        <i class="glyphicon glyphicon-floppy-disk"></i>
+        <i class="fa fa-floppy-o"></i>
         <span>Save</span>
       </a>
     </div>
@@ -27,36 +27,36 @@
           <ul class="dropdown-menu">
             <li>
               <a href="" role="button" class="changelog-button" ng-controller="ContentworkflowCtrl" ng-click="changelogModal(article);">
-                <i class="glyphicon glyphicon-cog"></i> View Changelog</a></li>
+                <i class="fa fa-cog"></i> View Changelog</a></li>
             <li>
               <a href="" role="button" class="version-browser-button" ng-controller="ContentworkflowCtrl" ng-click="versionBrowserModal(article);">
-                <i class="glyphicon glyphicon-th-list"></i> Browse Versions</a></li>
+                <i class="fa fa-th-list"></i> Browse Versions</a></li>
             <li>
               <a href="" role="button" ng-controller="ContentworkflowCtrl" ng-click="thumbnailModal(article);">
-                <i class="glyphicon glyphicon-picture"></i> Edit Thumbnail</a></li>
+                <i class="fa fa-picture-o"></i> Edit Thumbnail</a></li>
             <li>
               <a
                   href=""
                   role="button"
                   sponsored-content-modal-opener
                   article="article">
-                <i class="glyphicon glyphicon-briefcase"></i>
+                <i class="fa fa-briefcase"></i>
                 <span>Edit Sponsor</span>
               </a>
             </li>
             <li>
                 <a href="" role="button" ng-controller="ContentworkflowCtrl" ng-click="descriptionModal(article)">
-                    <i class="glyphicon glyphicon-edit"></i> Edit Description</a></li>
+                    <i class="fa fa-pencil-square-o"></i> Edit Description</a></li>
             <li>
               <a href="" role="button" ng-controller="ContentworkflowCtrl" ng-click="temporaryUrlModal(article)">
-                <i class="glyphicon glyphicon-link"></i>
+                <i class="fa fa-link"></i>
                 Temporary Link
               </a>
             </li>
             <li role="presentation" class="divider"></li>
             <li>
               <a href="" ng-controller="ContentworkflowCtrl" role="button" ng-click="trashContentModal(article.id);">
-                <i class="glyphicon glyphicon-trash"></i> Delete Article</a></li>
+                <i class="fa fa-trash"></i> Delete Article</a></li>
           </ul>
         </li>
         <li ng-class="{active: page === 'edit'}">
@@ -69,7 +69,7 @@
       <ul class="nav navbar-nav navbar-right" ng-show="page === 'contributions'">
           <li>
             <button id="save-btn" class="navbar-save btn btn-success btn-sm navbar-btn" ng-class="{'btn-clean': clean}" href="" ng-click="save();">
-              <i class="glyphicon glyphicon-floppy-disk"></i>
+              <i class="fa fa-floppy-o"></i>
               <span>Save</span>
             </button>
           </li>
@@ -81,7 +81,7 @@
               ng-show="firebaseConnected && activeUsers.length > 0"
               ng-init="showActiveUsers = false;">
             <a href="" ng-mouseenter="showActiveUsers = true;" ng-mouseleave="showActiveUsers = false;">
-              <i class="glyphicon glyphicon-eye-open"></i>
+              <i class="fa fa-eye"></i>
               <span>Active Users ({{ activeUsers.length }})</span>
             </a>
             <div class="active-users" ng-show="showActiveUsers">
@@ -103,7 +103,7 @@
                 article="article"
                 save-article="saveArticleIfDirty"
                 publish-success-cbk="publishSuccessCbk">
-              <i class="glyphicon glyphicon-send"></i>
+              <i class="fa fa-paper-plane"></i>
               <span>Send to Editors...</span>
             </a>
           </li>
@@ -116,7 +116,7 @@
             <a
                 href=""
                 ng-click="saveArticle().then(pubTimeModal);">
-              <i class="glyphicon glyphicon-globe"></i>
+              <i class="fa fa-globe"></i>
               <span>Publish...</span>
             </a>
           </li>
@@ -131,7 +131,7 @@
                 href=""
                 class="changeable"
                 ng-click="saveArticle().then(pubTimeModal);">
-              <i class="glyphicon glyphicon-calendar"></i>
+              <i class="fa fa-calendar"></i>
               <span>Published: {{article.published|tzDate:"M/d/yy '@' h:mm a" }}</span>
             </a>
           </li>
@@ -146,14 +146,14 @@
                 href=""
                 class="changeable"
                 ng-click="saveArticle().then(pubTimeModal);">
-              <i class="glyphicon glyphicon-calendar"></i>
+              <i class="fa fa-calendar"></i>
               <span>Scheduled: {{article.published|tzDate:"M/d/yy '@' h:mm a" }}</span>
             </a>
           </li>
 
           <li class="content-status">
             <a target="_blank" href="{{'/r/' + article.id }}">
-              <i class="glyphicon glyphicon-share-alt"></i>
+              <i class="fa fa-share-alt"></i>
               <span>Preview</span>
             </a>
           </li>
@@ -168,7 +168,7 @@
                 ng-class="{'btn-clean': !articleIsDirty}"
                 href=""
                 ng-click="saveArticle();">
-              <i class="glyphicon glyphicon-floppy-disk"></i>
+              <i class="fa fa-floppy-disk"></i>
               <span>Save</span>
             </button>
           </li>

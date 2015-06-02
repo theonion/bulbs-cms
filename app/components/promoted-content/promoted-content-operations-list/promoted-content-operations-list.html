@@ -10,7 +10,7 @@
       datetime-selection-modal-opener
       ng-model="scheduleDateFrom"
       modal-title="See Schedule Starting At This Date">
-    <i class="glyphicon glyphicon-calendar"></i>
+    <i class="fa fa-calendar"></i>
     <span ng-show="scheduleDateFrom">{{ scheduleDateFrom.toDate() | date: 'MMM d, yyyy @ h:mma' }}</span>
     <span ng-show="!scheduleDateFrom">Select Date</span>
   </button>
@@ -20,7 +20,7 @@
       datetime-selection-modal-opener
       ng-model="scheduleDateTo"
       modal-title="See Schedule up to This Date">
-    <i class="glyphicon glyphicon-calendar"></i>
+    <i class="fa fa-calendar"></i>
     <span ng-show="scheduleDateTo">{{ scheduleDateTo.toDate() | date: 'MMM d, yyyy @ h:mma' }}</span>
     <span ng-show="!scheduleDateTo">Select Date</span>
   </button>
@@ -33,7 +33,7 @@
       'alert-success': !deleteStatus.isError,
       'alert-danger': deleteStatus.isError
     }">
-  <i class="glyphicon glyphicon-info-sign"></i>
+  <i class="fa fa-info-circle"></i>
   {{ deleteStatus.message }}
   <span
       class="alert-link"
@@ -54,12 +54,11 @@
     <div class="operation-list-group-title">
       <span ng-click="openGroups[$index] = !openGroups[$index]">
         <i
-            class="glyphicon"
+            class="fa"
             ng-class="{
-              'glyphicon-chevron-right': !openGroups[$index],
-              'glyphicon-chevron-down': openGroups[$index] === true
-            }"
-            class="glyphicon">
+              'fa-chevron-right': !openGroups[$index],
+              'fa-chevron-down': openGroups[$index] === true
+            }">
         </i>
         <span>{{ group[0].format(groupDateFormat) }}</span>
         <span>({{ group[1].length }} Events)</span>
@@ -67,7 +66,7 @@
       <button
           class="btn btn-xs btn-primary"
           ng-click="setPreviewTime(group[0])">
-        <i class="glyphicon glyphicon-time"></i>
+        <i class="fa fa-time"></i>
         View
       </button>
     </div>
@@ -86,12 +85,12 @@
               ng-if="operation.whenAsMoment.isAfter(moment())"
               class="btn btn-link btn-lg"
               ng-click="removeOperation(operation)">
-            <i class="glyphicon glyphicon-remove"></i>
+            <i class="fa fa-times"></i>
           </button>
           <div
               class="btn btn-link btn-lg disabled operation-delete-lock"
               ng-if="operation.whenAsMoment.isBefore(moment()) || operation.client_id >= 0">
-            <i class="glyphicon glyphicon-lock"></i>
+            <i class="fa fa-lock"></i>
           </div>
         </div>
         <div class="operation-body">

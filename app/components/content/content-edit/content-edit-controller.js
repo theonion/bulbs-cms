@@ -174,7 +174,7 @@ angular.module('content.edit.controller', [])
       $(navbarSave)
         .removeClass('btn-danger')
         .addClass('btn-success')
-        .html('<i class=\'glyphicon glyphicon-refresh fa-spin\'></i> Saving');
+        .html('<i class=\'fa fa-refresh fa-spin\'></i> Saving');
       ContentFactory.one('content', $routeParams.id).get()
         .then(function (data) {
           if (data.last_modified &&
@@ -212,7 +212,7 @@ angular.module('content.edit.controller', [])
       return $scope.saveArticleDeferred.promise;
     };
 
-    var saveHTML =  '<i class=\'glyphicon glyphicon-floppy-disk\'></i> Save';
+    var saveHTML =  '<i class=\'fa fa-floppy-o\'></i> Save';
     var navbarSave = '.navbar-save';
 
     function saveToContentApi() {
@@ -225,7 +225,7 @@ angular.module('content.edit.controller', [])
       $(navbarSave)
         .removeClass('btn-success')
         .addClass('btn-danger')
-        .html('<i class=\'glyphicon glyphicon-remove\'></i> Error');
+        .html('<i class=\'fa fa-times\'></i> Error');
       if (status === 400) {
         $scope.errors = data;
       }
@@ -239,7 +239,7 @@ angular.module('content.edit.controller', [])
       // store a version with version api
       VersionStorageApi.$create($scope.article, $scope.articleIsDirty);
 
-      $(navbarSave).html('<i class=\'glyphicon glyphicon-ok\'></i> Saved!');
+      $(navbarSave).html('<i class=\'fa fa-check\'></i> Saved!');
       setTimeout(function () {
           $(navbarSave).html(saveHTML);
         }, 2500);

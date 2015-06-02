@@ -25,11 +25,11 @@
 		<div class="filter-object-container">
 			<div class="taglikeobject label label-default" ng-repeat="(key, f) in filterObjects" data-key="{{key}}" ng-click="deleteFilter(key);">
 				<span
-						class="glyphicon"
+						class="fa"
 						ng-class="{
-							'glyphicon-tag': f.type == 'tags',
-							'glyphicon-user': f.type == 'authors',
-							'glyphicon-folder-open': f.type == 'feature_types'
+							'fa-tag': f.type == 'tags',
+							'fa-user': f.type == 'authors',
+							'fa-folder-open': f.type == 'feature_types'
 						}">
 				</span> {{queryToLabelMappings[f.query]}}
 			</div>
@@ -43,15 +43,15 @@
 	<ul class="autocomplete dropdown-menu" ng-show="filterInputValue.length > 0">
 		<li class="entry search">
 			<a ng-click="addFilter('search', filterInputValue);">
-				<span class="glyphicon glyphicon-search"></span> Find articles containing "{{filterInputValue}}"</a>
+				<span class="fa fa-search"></span> Find articles containing "{{filterInputValue}}"</a>
 		</li>
 		<li class="entry" ng-repeat="o in autocompleteArray">
 			<a ng-click="addFilter(o.param, o.value);"><span
-				class="glyphicon"
+				class="fa"
 				ng-class="{
-					'glyphicon-tag': o.type == 'tag',
-					'glyphicon-user': o.type == 'author',
-					'glyphicon-folder-open': o.type == 'feature_type'
+					'fa-tag': o.type == 'tag',
+					'fa-user': o.type == 'author',
+					'fa-folder-open': o.type == 'feature_type'
 				}"></span> {{o.name}}</a>
 		</li>
 	</ul>
