@@ -109,6 +109,10 @@ angular.module('bulbsCmsApp', [
         TokenAuthServiceProvider.$get().logout();
       });
 
+      CmsConfigProvider.addEditPageMapping(
+        'components/edit-pages/video/video-container.html',
+        'core_video');
+
       TokenAuthConfigProvider.setApiEndpointAuth('/token/auth');
       TokenAuthConfigProvider.setApiEndpointRefresh('/token/refresh');
       TokenAuthConfigProvider.setApiEndpointVerify('/token/verify');
