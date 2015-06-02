@@ -30,6 +30,7 @@ module.exports = function (grunt) {
     yeoman: {
       // configurable paths
       app: require('./bower.json').appPath || 'app',
+      tmp: '.tmp',
       dist: 'dist'
     },
 
@@ -54,7 +55,9 @@ module.exports = function (grunt) {
         ],
         tasks: [
           'injector:less_components',
-          'less',
+          'less:project_styles',
+          'copy:font_awesome_less_tmp_styles',
+          'less:font_awesome_styles',
           'newer:karma:ci',
           'newer:jshint:all',
           'injector:local_dependencies',
@@ -183,21 +186,36 @@ module.exports = function (grunt) {
               './build/editor-main.css',
               './build/onion-editor.js'
             ]
+          },
+          // don't use anything from font-awesome, we manually compile these
+          'font-awesome': {
+            'main': []
           }
         }
       },
     },
 
     less: {
-      production: {
+      project_styles: {
         files: [{
           expand: true,
+          flatten: true,
           cwd: '<%= yeoman.app %>',
           src: [
             'styles/**/*.less',
             '!**/_*.less'
           ],
-          dest: '.tmp/',
+          dest: '.tmp/styles',
+          ext: '.css'
+        }]
+      },
+      font_awesome_styles: {
+        files: [{
+          expand: true,
+          flatten: true,
+          cwd: '<%= yeoman.tmp %>',
+          src: 'font-awesome-less/font-awesome.less',
+          dest: '.tmp/styles',
           ext: '.css'
         }]
       }
@@ -354,17 +372,23 @@ module.exports = function (grunt) {
         dest: '<%= yeoman.dist %>/fonts/',
         src: ['glyphicons-halflings-regular.*', 'glyphicons-halflings-regular.woff2']
       },
-      fontawesome: {
+      fontawesomeFonts: {
         expand: true,
         cwd: '<%= yeoman.app %>/bower_components/font-awesome/fonts',
         dest: '<%= yeoman.dist %>/fonts/',
         src: ['fontawesome-webfont.*']
       },
-      fontawesomeCSS: {  // This is a hack for now. FontAwesome REALLY doesn't like getting minified, I guess.
+      // font awesome with our custom overrides
+      font_awesome_less_tmp_styles: {
         expand: true,
-        cwd: '<%= yeoman.app %>/bower_components/font-awesome/css',
-        dest: '<%= yeoman.dist %>/styles/',
-        src: ['font-awesome.min.css']
+        flatten: true,
+        cwd: '<%= yeoman.app %>/',
+        dest: '<%= yeoman.tmp %>/font-awesome-less/',
+        src: [
+          'styles/font-awesome/variables.less',
+          'bower_components/font-awesome/less/*.less',
+          '!bower_components/font-awesome/less/variables.less'
+        ]
       },
       zeroclipboard: {
         expand: true,
@@ -579,7 +603,9 @@ module.exports = function (grunt) {
       'wiredep',
       'concurrent:server',
       'injector:less_components',
-      'less',
+      'less:project_styles',
+      'copy:font_awesome_less_tmp_styles',
+      'less:font_awesome_styles',
       'autoprefixer',
       'injector:local_dependencies',
       'karma:ci',
@@ -602,7 +628,9 @@ module.exports = function (grunt) {
       'wiredep',
       'concurrent:server',
       'injector:less_components',
-      'less',
+      'less:project_styles',
+      'copy:font_awesome_less_tmp_styles',
+      'less:font_awesome_styles',
       'autoprefixer',
       'injector:local_dependencies',
       'jshint:all',
@@ -635,7 +663,9 @@ module.exports = function (grunt) {
     'wiredep',
     'ngtemplates:dist',
     'injector:less_components',
-    'less',
+    'less:project_styles',
+    'copy:font_awesome_less_tmp_styles',
+    'less:font_awesome_styles',
     'injector:local_dependencies',
     'useminPrepare',
     'concurrent:dist',
@@ -645,8 +675,7 @@ module.exports = function (grunt) {
     'copy:dist',
     'copy:jcropGif',
     'copy:bootstrapFonts',
-    'copy:fontawesome',
-    'copy:fontawesomeCSS',
+    'copy:fontawesomeFonts',
     'copy:zeroclipboard',
     'cdnify',
     'cssmin',
