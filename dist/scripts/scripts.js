@@ -330,7 +330,7 @@ angular.module('bulbsCmsApp', [
       });
 
       CmsConfigProvider.addEditPageMapping(
-        'components/edit-pages/video/video-container.html',
+        '/components/edit-pages/video/video-container.html',
         'core_video');
 
       TokenAuthConfigProvider.setApiEndpointAuth('/token/auth');
