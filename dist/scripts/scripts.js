@@ -1296,7 +1296,7 @@ angular.module('content.edit.controller', [])
       $(navbarSave)
         .removeClass('btn-danger')
         .addClass('btn-success')
-        .html('<i class=\'glyphicon glyphicon-refresh fa-spin\'></i> Saving');
+        .html('<i class=\'fa fa-refresh fa-spin\'></i> Saving');
       ContentFactory.one('content', $routeParams.id).get()
         .then(function (data) {
           if (data.last_modified &&
@@ -1334,7 +1334,7 @@ angular.module('content.edit.controller', [])
       return $scope.saveArticleDeferred.promise;
     };
 
-    var saveHTML =  '<i class=\'glyphicon glyphicon-floppy-disk\'></i> Save';
+    var saveHTML =  '<i class=\'fa fa-floppy-o\'></i> Save';
     var navbarSave = '.navbar-save';
 
     function saveToContentApi() {
@@ -1347,7 +1347,7 @@ angular.module('content.edit.controller', [])
       $(navbarSave)
         .removeClass('btn-success')
         .addClass('btn-danger')
-        .html('<i class=\'glyphicon glyphicon-remove\'></i> Error');
+        .html('<i class=\'fa fa-times\'></i> Error');
       if (status === 400) {
         $scope.errors = data;
       }
@@ -1361,7 +1361,7 @@ angular.module('content.edit.controller', [])
       // store a version with version api
       VersionStorageApi.$create($scope.article, $scope.articleIsDirty);
 
-      $(navbarSave).html('<i class=\'glyphicon glyphicon-ok\'></i> Saved!');
+      $(navbarSave).html('<i class=\'fa fa-check\'></i> Saved!');
       setTimeout(function () {
           $(navbarSave).html(saveHTML);
         }, 2500);
@@ -5843,9 +5843,9 @@ angular.module('bulbsCmsApp')
           }).error(function (data, status, headers, config) {
             if (status === 403) {
               $('button.go')
-                .html('<i class="glyphicon glyphicon-exclamation-sign"></i> Please Log In');
+                .html('<i class="fa fa-exclamation-triangle"></i> Please Log In');
             } else {
-              $('button.go').removeClass('btn-success').addClass('btn-danger').html('<i class="glyphicon glyphicon-remove"></i> Error');
+              $('button.go').removeClass('btn-success').addClass('btn-danger').html('<i class="fa fa-times"></i> Error');
             }
             $scope.gotSave = false;
           });
@@ -6352,7 +6352,7 @@ angular.module('bulbsCmsApp')
         attrs.$observe('config', function (val) {
           if (!angular.isDefined(val)) {
             scope.config = {
-              idle: '<i class=\'glyphicon glyphicon-floppy-disk\'></i> Save',
+              idle: '<i class=\'fa fa-floppy-o\'></i> Save',
               busy: 'Saving',
               finished: 'Saved',
               error: 'Error'
@@ -6377,7 +6377,7 @@ angular.module('bulbsCmsApp')
             scope.colors = scope.colors_tmp;
             element
               .prop('disabled', false)
-              .html('<i class=\'glyphicon glyphicon-ok\'></i> ' + scope.config.finished);
+              .html('<i class=\'fa fa-check\'></i> ' + scope.config.finished);
 
             return $timeout(function () {
               element.html(scope.config.idle);
@@ -6395,7 +6395,7 @@ angular.module('bulbsCmsApp')
                 scope.colors = 'btn-danger';
                 element
                   .prop('disabled', false)
-                  .html('<i class=\'glyphicon glyphicon-remove\'></i> ' + scope.config.error);
+                  .html('<i class=\'fa fa-times\'></i> ' + scope.config.error);
 
                 return $q.reject(reason);
               });
@@ -7489,14 +7489,14 @@ angular.module('bulbsCmsApp')
 
     function save() {
       // I know, I'm not supposed to do DOM manipulation in controllers. TOO BAD.
-      angular.element('#save-btn').html('<i class="glyphicon glyphicon-refresh fa-spin"></i> Saving');
+      angular.element('#save-btn').html('<i class="fa fa-refresh fa-spin"></i> Saving');
       $scope.contributions.save($scope.contributions).then(function (contributions) {
         angular.element('#save-btn').addClass('btn-success').removeClass('btn-danger');
-        angular.element('#save-btn').html('<i class="glyphicon glyphicon-floppy-disk"></i> Save</button>');
+        angular.element('#save-btn').html('<i class="fa fa-floppy-o"></i> Save</button>');
         $scope.clean = true;
       }, function(res) {
         angular.element('#save-btn').addClass('btn-danger').removeClass('btn-success');
-        angular.element('#save-btn').html('<i class="glyphicon glyphicon-remove"></i> Error</button>');
+        angular.element('#save-btn').html('<i class="fa fa-times"></i> Error</button>');
       });
     }
 
