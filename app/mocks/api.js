@@ -11,21 +11,12 @@ angular.module('bulbsCmsApp.mockApi', [
   'bulbsCmsApp.mockApi.sections',
 
   'VideohubClient.api.mocks'
-]).run([
+])
+.run([
   '$httpBackend', 'mockApiData', 'moment', '_',
   function($httpBackend, mockApiData, moment, _) {
 
     var today = moment();
-
-    var slugify = function (text) {
-      /// https://gist.github.com/mathewbyrne/1280286
-      return text.toString().toLowerCase()
-        .replace(/\s+/g, '-')           // Replace spaces with -
-        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-        .replace(/^-+/, '')             // Trim - from start of text
-        .replace(/-+$/, '');            // Trim - from end of text
-    };
 
     $httpBackend.when('OPTIONS', '/returns-a-403/').respond(function(){ //just for testing
       return [403, {'detail': 'No permission'}];

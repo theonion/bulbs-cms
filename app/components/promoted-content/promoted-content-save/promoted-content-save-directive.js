@@ -15,10 +15,15 @@ angular.module('promotedContentSave.directive', [
         };
 
         $scope.clearOperations = function () {
-          PromotedContentService.$refreshSelectedPZone($scope.pzoneData.previewTime)
-            .then(function () {
-              PromotedContentService.clearUnsavedOperations();
-            });
+          // clear any unsaved operations
+          PromotedContentService.clearUnsavedOperations();
+
+          // refresh selected pzone
+          PromotedContentService.$refreshSelectedPZone($scope.pzoneData.previewTime);
+        };
+
+        $scope.disableControls = function () {
+          return PromotedContentService.isPZoneRefreshPending();
         };
       },
       restrict: 'E',

@@ -1,14 +1,14 @@
 <button
     class="btn btn-sm btn-link"
     ng-click="clearOperations()"
-    ng-disabled="pzoneData.selectedPZone.saved || (data.previewTime && pzoneData.unsavedOperations.length < 1)">
+    ng-disabled="!pzoneData.selectedPZone || disableControls() || pzoneData.selectedPZone.saved || (data.previewTime && pzoneData.unsavedOperations.length < 1)">
   <i class='glyphicon glyphicon-remove'></i>
   <span>Reset</span>
 </button>
 <button
     class="btn btn-sm btn-success"
     ng-click="savePZone()"
-    ng-disabled="pzoneData.selectedPZone.saved || (data.previewTime && pzoneData.unsavedOperations.length < 1)">
+    ng-disabled="!pzoneData.selectedPZone || disableControls() || pzoneData.selectedPZone.saved || (data.previewTime && pzoneData.unsavedOperations.length < 1)">
   <i class='glyphicon glyphicon-floppy-disk'></i>
   <span
       ng-if="!pzoneData.previewTime">

@@ -46,6 +46,10 @@ angular.module('promotedContentOperationsList.directive', [
           //  minute can be previewed
           PromotedContentService.setPreviewTime(time.add(1, 'minute'));
         };
+
+        $scope.disableControls = function () {
+          return PromotedContentService.isPZoneRefreshPending();
+        };
       },
       link: function (scope, element, attr) {
 

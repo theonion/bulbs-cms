@@ -7,7 +7,8 @@
           <button
               class="btn form-control"
               ng-click="setPreviewTimeToImmediate()"
-              ng-class="{'btn-primary': !contentData.previewTime}">
+              ng-class="{'btn-primary': !contentData.previewTime}"
+              ng-disabled="disableControls()">
             <span>Immediately</span>
           </button>
         </div>
@@ -19,7 +20,8 @@
               datetime-selection-modal-opener
               ng-class="{'btn-primary': contentData.previewTime}"
               modal-title="Preview PZone at this Time"
-              modal-on-close="setPreviewTime(newDate)">
+              modal-on-close="setPreviewTime(newDate)"
+              ng-disabled="disableControls()">
             <span ng-show="contentData.previewTime">{{ contentData.previewTime.format('M/D/YY, h:mma') }}</span>
             <span ng-show="!contentData.previewTime">Use Date...</span>
             <i class="glyphicon glyphicon-time"></i>

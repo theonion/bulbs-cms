@@ -15,7 +15,7 @@
         ng-click="(toolsOpenFor(article) && closeTools()) || openToolsFor(article)">
     </promoted-content-article>
     <div
-        ng-if="toolsOpenFor(article)"
+        ng-if="toolsOpenFor(article) && !disableControls()"
         class="article-tools">
       <button
           class="btn btn-xs btn-primary"
