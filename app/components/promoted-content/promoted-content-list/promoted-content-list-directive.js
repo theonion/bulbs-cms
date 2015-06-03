@@ -11,32 +11,35 @@ angular.module('promotedContentList.directive', [
     return {
       controller: function ($scope, PromotedContentService) {
 
-          $scope.pzoneData = PromotedContentService.getData();
+        $scope.pzoneData = PromotedContentService.getData();
 
-          $scope.moveUp = function (index) {
-            PromotedContentService.moveContentUp(index);
-          };
+        $scope.moveUp = function (index) {
+          PromotedContentService.moveContentUp(index);
+        };
 
-          $scope.moveDown = function (index) {
-            PromotedContentService.moveContentDn(index);
-          };
+        $scope.moveDown = function (index) {
+          PromotedContentService.moveContentDn(index);
+        };
 
-          $scope.remove = function (article) {
-            PromotedContentService.$removeContentFromPZone(article.id);
-          };
+        $scope.remove = function (article) {
+          PromotedContentService.$removeContentFromPZone(article.id);
+        };
 
-          $scope.completeAction = function (index) {
-            PromotedContentService.$completeContentAction(index);
-          };
+        $scope.completeAction = function (index) {
+          PromotedContentService.$completeContentAction(index);
+        };
 
-          $scope.stopAction = function () {
-            PromotedContentService.stopContentAction();
-          };
+        $scope.stopAction = function () {
+          PromotedContentService.stopContentAction();
+        };
 
-          $scope.markDirty = function () {
-            PromotedContentService.markDirtySelectedPZone();
-          };
+        $scope.markDirty = function () {
+          PromotedContentService.markDirtySelectedPZone();
+        };
 
+        $scope.disableControls = function () {
+          return PromotedContentService.isPZoneRefreshPending();
+        };
       },
       link: function (scope, element, attr) {
 

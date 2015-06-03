@@ -1,16 +1,25 @@
 <div class="form-horizontal">
-<label for="pzone-select" class="control-label">Choose Location to Schedule:</label>
-<select
-    id="pzone-select"
-    name="pzone"
-    class="form-control"
-    ng-model="selectedPZoneName"
-    ng-change="changePZone(selectedPZoneName)">
-  <option
-      value="{{ pzone.name }}"
-      ng-selected="pzone.name === selectedPZoneName"
-      ng-repeat="pzone in pzoneData.pzones | orderBy:'name'">
-    {{ pzone.name }}
-  </option>
-</select>
+  <label for="pzone-select" class="control-label">Choose Location to Schedule:</label>
+  <div ng-hide="disableControls()">
+    <select
+        id="pzone-select"
+        name="pzone"
+        class="form-control"
+        ng-model="selectedPZoneName"
+        ng-change="changePZone(selectedPZoneName)"
+        ng-disabled="disableControls()">
+      <option
+          value="{{ pzone.name }}"
+          ng-selected="pzone.name === selectedPZoneName"
+          ng-repeat="pzone in pzoneData.pzones | orderBy:'name'">
+        {{ pzone.name }}
+      </option>
+    </select>
+  </div>
+  <div
+      ng-show="disableControls()"
+      class="loading-text">
+    <i class="fa fa-spinner fa-spin"></i>
+    <span>Loading {{ selectedPZoneName }}...</span>
+  </div>
 </div>

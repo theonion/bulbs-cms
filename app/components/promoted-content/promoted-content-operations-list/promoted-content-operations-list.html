@@ -9,7 +9,8 @@
       class="btn btn-xs btn-info"
       datetime-selection-modal-opener
       ng-model="scheduleDateFrom"
-      modal-title="See Schedule Starting At This Date">
+      modal-title="See Schedule Starting At This Date"
+      ng-disabled="disableControls()">
     <i class="fa fa-calendar"></i>
     <span ng-show="scheduleDateFrom">{{ scheduleDateFrom.toDate() | date: 'MMM d, yyyy @ h:mma' }}</span>
     <span ng-show="!scheduleDateFrom">Select Date</span>
@@ -19,7 +20,8 @@
       class="btn btn-xs btn-info"
       datetime-selection-modal-opener
       ng-model="scheduleDateTo"
-      modal-title="See Schedule up to This Date">
+      modal-title="See Schedule up to This Date"
+      ng-disabled="disableControls()">
     <i class="fa fa-calendar"></i>
     <span ng-show="scheduleDateTo">{{ scheduleDateTo.toDate() | date: 'MMM d, yyyy @ h:mma' }}</span>
     <span ng-show="!scheduleDateTo">Select Date</span>
@@ -65,9 +67,10 @@
       </span>
       <button
           class="btn btn-xs btn-primary"
-          ng-click="setPreviewTime(group[0])">
+          ng-click="setPreviewTime(group[0])"
+          ng-disabled="disableControls()">
         <i class="fa fa-time"></i>
-        View
+        <span>View</span>
       </button>
     </div>
     <ul
@@ -84,7 +87,8 @@
           <button
               ng-if="operation.whenAsMoment.isAfter(moment())"
               class="btn btn-link btn-lg"
-              ng-click="removeOperation(operation)">
+              ng-click="removeOperation(operation)"
+              ng-disabled="disableControls()">
             <i class="fa fa-times"></i>
           </button>
           <div

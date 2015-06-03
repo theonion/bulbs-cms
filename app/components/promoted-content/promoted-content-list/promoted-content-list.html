@@ -55,7 +55,7 @@
         <button
             class="btn btn-default btn-link remove-content-btn"
             ng-click="remove(article)"
-            ng-disabled="pzoneData.action"
+            ng-disabled="pzoneData.action || disableControls()"
             ng-hide="pzoneData.previewTime && pzoneData.previewTime.isBefore(moment())">
           <i class="fa fa-times"></i>
         </button>
@@ -70,13 +70,13 @@
         <button
             class="btn btn-default btn-link up-content-btn"
             ng-click="moveUp($index)"
-            ng-disabled="pzoneData.action || $first || pzoneData.previewTime">
+            ng-disabled="pzoneData.action || $first || pzoneData.previewTime || disableControls()">
           <i class="fa fa-chevron-up"></i>
         </button>
         <button
             class="btn btn-default btn-link dn-content-btn"
             ng-click="moveDown($index)"
-            ng-disabled="pzoneData.action || $last || pzoneData.previewTime">
+            ng-disabled="pzoneData.action || $last || pzoneData.previewTime || disableControls()">
           <i class="fa fa-chevron-down"></i>
         </button>
       </div>
