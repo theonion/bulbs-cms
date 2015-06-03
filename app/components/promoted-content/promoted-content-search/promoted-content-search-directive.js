@@ -54,13 +54,20 @@ angular.module('promotedContentSearch.directive', [
           PromotedContentService.stopContentAction();
         };
 
+        $scope.disableControls = function () {
+          return PromotedContentService.isPZoneRefreshPending();
+        };
       },
       link: function (scope, element, attr) {
 
         scope.tools = null;
         scope.openToolsFor = function (article) {
-          scope.tools = article.id;
-          return true;
+          var doOpen = false;
+          if (!scope.disableControls()) {
+            scope.tools = article.id;
+            doOpen = true;
+          }
+          return doOpen;
         };
 
         scope.closeTools = function () {

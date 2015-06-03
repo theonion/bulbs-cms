@@ -18,6 +18,10 @@ angular.module('promotedContentTimePicker.directive', [
           $scope.previewTime = null;
           PromotedContentService.setPreviewTimeToImmediate();
         };
+
+        $scope.disableControls = function () {
+          return PromotedContentService.isPZoneRefreshPending();
+        };
       },
       restrict: 'E',
       scope: {},

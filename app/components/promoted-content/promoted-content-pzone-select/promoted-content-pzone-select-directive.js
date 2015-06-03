@@ -19,8 +19,14 @@ angular.module('promotedContentPzoneSelect.directive', [
         $scope.changePZone = function (name) {
           (function (name) {
             PromotedContentService.$refreshPZones()
-              .then(function () { PromotedContentService.$selectPZone(name); });
+              .then(function () {
+                PromotedContentService.$selectPZone(name);
+              });
           })(name);
+        };
+
+        $scope.disableControls = function () {
+          return PromotedContentService.isPZoneRefreshPending();
         };
       },
       restrict: 'E',

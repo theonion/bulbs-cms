@@ -38,7 +38,6 @@ describe('Service: PromotedContentService', function () {
       $httpBackend.expectGET('/cms/api/v1/pzone/').respond(mockApiData['pzones.list']);
       $httpBackend.expectGET('/cms/api/v1/content/').respond(mockApiData['content.list']);
       $httpBackend.expectGET('/cms/api/v1/pzone/1/').respond(mockApiData['pzones.list']['results'][0]);
-      $httpBackend.expectGET('/cms/api/v1/pzone/1/operations/').respond(mockApiData['pzones.operations']);
       $httpBackend.flush();
     });
   });
@@ -58,6 +57,29 @@ describe('Service: PromotedContentService', function () {
 
     // ensure data is in order
     expect(pzones).toEqual(data.pzones);
+  });
+
+  it('should have a flag to check if a refresh is pending', function () {
+    PromotedContentService.$refreshSelectedPZone();
+
+    expect(PromotedContentService.isPZoneRefreshPending()).toBe(true);
+
+    $httpBackend.expectGET('/cms/api/v1/pzone/1/').respond(mockApiData['pzones.list']['results'][0]);
+    $httpBackend.flush();
+
+    expect(PromotedContentService.isPZoneRefreshPending()).toBe(false);
+  });
+
+  it('should prevent multiple pzone refresh requests', function () {
+    spyOn(PromotedContentService, '$refreshOperations').andCallThrough();
+
+    PromotedContentService.$refreshSelectedPZone();
+    PromotedContentService.$refreshSelectedPZone();
+
+    $httpBackend.expectGET('/cms/api/v1/pzone/1/').respond(mockApiData['pzones.list']['results'][0]);
+    $httpBackend.flush();
+
+    expect(PromotedContentService.isPZoneRefreshPending()).toBe(false);
   });
 
   it('should be able to mark the selected pzone as saved/dirty', function () {
@@ -83,6 +105,8 @@ describe('Service: PromotedContentService', function () {
       index: 1
     };
 
+    spyOn(PromotedContentService, 'makeOperationsStale').andCallThrough();
+
     // add this operation to service data manually
     data.unsavedOperations.push(operation);
 
@@ -99,10 +123,10 @@ describe('Service: PromotedContentService', function () {
 
     // expect requests then flush
     $httpBackend.expectPOST('/cms/api/v1/pzone/1/operations/').respond(operation);
-    $httpBackend.expectGET('/cms/api/v1/pzone/1/operations/').respond(mockApiData['pzones.operations']);
     $httpBackend.flush();
 
     // check everything is in order
+    expect(PromotedContentService.makeOperationsStale).toHaveBeenCalled();
     expect(data.unsavedOperations).toEqual([]);
     expect(operation.client_id).toBeUndefined();
     expect(operation.when).toEqual(previewTime.toISOString());
@@ -128,6 +152,8 @@ describe('Service: PromotedContentService', function () {
         index: 2
       }];
 
+    spyOn(PromotedContentService, 'makeOperationsStale').andCallThrough();
+
     // add the operations to service data manually
     data.unsavedOperations = operations;
 
@@ -144,10 +170,10 @@ describe('Service: PromotedContentService', function () {
 
     // expect requests then flush
     $httpBackend.expectPOST('/cms/api/v1/pzone/1/operations/').respond(operations);
-    $httpBackend.expectGET('/cms/api/v1/pzone/1/operations/').respond(mockApiData['pzones.operations']);
     $httpBackend.flush();
 
     // check everything is in order
+    expect(PromotedContentService.makeOperationsStale).toHaveBeenCalled();
     expect(data.unsavedOperations).toEqual([]);
     expect(operations[0].client_id).toBeUndefined();
     expect(operations[0].when).toEqual(previewTime.toISOString());
@@ -157,6 +183,8 @@ describe('Service: PromotedContentService', function () {
   it('should be able to save the selected pzone immediately', function () {
     // set preview time to immediate
     data.previewTime = null;
+
+    spyOn(PromotedContentService, 'makeOperationsStale').andCallThrough();
 
     var saveResp;
     PromotedContentService.$saveSelectedPZone().
@@ -170,6 +198,8 @@ describe('Service: PromotedContentService', function () {
       .respond(mockApiData['pzones.list'].results[0]);
     $httpBackend.flush();
 
+    // check everything is in order
+    expect(PromotedContentService.makeOperationsStale).toHaveBeenCalled();
     expect(data.unsavedOperations).toEqual([]);
     expect(saveResp).toEqual(data.selectedPZone);
     expect(data.selectedPZone.saved).toBe(true);
@@ -225,6 +255,11 @@ describe('Service: PromotedContentService', function () {
   });
 
   it('should be able to remove existing operations', function () {
+    PromotedContentService.$refreshOperations();
+
+    $httpBackend.expectGET('/cms/api/v1/pzone/1/operations/').respond(mockApiData['pzones.operations']);
+    $httpBackend.flush();
+
     var opLength = data.operations.length;
 
     // ensure our operation is in the future
@@ -247,6 +282,11 @@ describe('Service: PromotedContentService', function () {
   });
 
   it('should not be able to delete an operation in the past', function () {
+    PromotedContentService.$refreshOperations();
+
+    $httpBackend.expectGET('/cms/api/v1/pzone/1/operations/').respond(mockApiData['pzones.operations']);
+    $httpBackend.flush();
+
     var opLength = data.operations.length;
 
     // ensure our operation is in the past
@@ -304,6 +344,7 @@ describe('Service: PromotedContentService', function () {
     $httpBackend.expectGET('/cms/api/v1/pzone/1/operations/').respond(mockApiData['pzones.operations']);
     $httpBackend.flush();
 
+    expect(PromotedContentService.isPZoneOperationsStale()).toEqual(false);
     expect(operations.length > 0).toBe(true);
     expect(operations).toEqual(data.operations);
     _.each(data.operations, function (operation) {
@@ -315,12 +356,15 @@ describe('Service: PromotedContentService', function () {
   it('should be able to select a pzone', function () {
     var pzone = data.pzones[0];
 
+    spyOn(PromotedContentService, 'makeOperationsStale').andCallThrough();
+
     PromotedContentService.$selectPZone(pzone.name);
 
     // expect and flush requests
     $httpBackend.expectGET('/cms/api/v1/pzone/' + pzone.id + '/').respond(pzone);
     $httpBackend.flush();
 
+    expect(PromotedContentService.makeOperationsStale).toHaveBeenCalled();
     expect(data.unsavedOperations).toEqual([]);
     expect(data.selectedPZone.id).toBe(pzone.id);
   });
