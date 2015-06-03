@@ -2069,32 +2069,35 @@ angular.module('promotedContentList.directive', [
     return {
       controller: function ($scope, PromotedContentService) {
 
-          $scope.pzoneData = PromotedContentService.getData();
+        $scope.pzoneData = PromotedContentService.getData();
 
-          $scope.moveUp = function (index) {
-            PromotedContentService.moveContentUp(index);
-          };
+        $scope.moveUp = function (index) {
+          PromotedContentService.moveContentUp(index);
+        };
 
-          $scope.moveDown = function (index) {
-            PromotedContentService.moveContentDn(index);
-          };
+        $scope.moveDown = function (index) {
+          PromotedContentService.moveContentDn(index);
+        };
 
-          $scope.remove = function (article) {
-            PromotedContentService.$removeContentFromPZone(article.id);
-          };
+        $scope.remove = function (article) {
+          PromotedContentService.$removeContentFromPZone(article.id);
+        };
 
-          $scope.completeAction = function (index) {
-            PromotedContentService.$completeContentAction(index);
-          };
+        $scope.completeAction = function (index) {
+          PromotedContentService.$completeContentAction(index);
+        };
 
-          $scope.stopAction = function () {
-            PromotedContentService.stopContentAction();
-          };
+        $scope.stopAction = function () {
+          PromotedContentService.stopContentAction();
+        };
 
-          $scope.markDirty = function () {
-            PromotedContentService.markDirtySelectedPZone();
-          };
+        $scope.markDirty = function () {
+          PromotedContentService.markDirtySelectedPZone();
+        };
 
+        $scope.disableControls = function () {
+          return PromotedContentService.isPZoneRefreshPending();
+        };
       },
       link: function (scope, element, attr) {
 
@@ -2180,6 +2183,10 @@ angular.module('promotedContentOperationsList.directive', [
           //  minute can be previewed
           PromotedContentService.setPreviewTime(time.add(1, 'minute'));
         };
+
+        $scope.disableControls = function () {
+          return PromotedContentService.isPZoneRefreshPending();
+        };
       },
       link: function (scope, element, attr) {
 
@@ -2255,8 +2262,14 @@ angular.module('promotedContentPzoneSelect.directive', [
         $scope.changePZone = function (name) {
           (function (name) {
             PromotedContentService.$refreshPZones()
-              .then(function () { PromotedContentService.$selectPZone(name); });
+              .then(function () {
+                PromotedContentService.$selectPZone(name);
+              });
           })(name);
+        };
+
+        $scope.disableControls = function () {
+          return PromotedContentService.isPZoneRefreshPending();
         };
       },
       restrict: 'E',
@@ -2288,10 +2301,15 @@ angular.module('promotedContentSave.directive', [
         };
 
         $scope.clearOperations = function () {
-          PromotedContentService.$refreshSelectedPZone($scope.pzoneData.previewTime)
-            .then(function () {
-              PromotedContentService.clearUnsavedOperations();
-            });
+          // clear any unsaved operations
+          PromotedContentService.clearUnsavedOperations();
+
+          // refresh selected pzone
+          PromotedContentService.$refreshSelectedPZone($scope.pzoneData.previewTime);
+        };
+
+        $scope.disableControls = function () {
+          return PromotedContentService.isPZoneRefreshPending();
         };
       },
       restrict: 'E',
@@ -2362,13 +2380,20 @@ angular.module('promotedContentSearch.directive', [
           PromotedContentService.stopContentAction();
         };
 
+        $scope.disableControls = function () {
+          return PromotedContentService.isPZoneRefreshPending();
+        };
       },
       link: function (scope, element, attr) {
 
         scope.tools = null;
         scope.openToolsFor = function (article) {
-          scope.tools = article.id;
-          return true;
+          var doOpen = false;
+          if (!scope.disableControls()) {
+            scope.tools = article.id;
+            doOpen = true;
+          }
+          return doOpen;
         };
 
         scope.closeTools = function () {
@@ -2440,6 +2465,31 @@ angular.module('promotedContent.service', [
         return result;
       }, {});
 
+    // flag to check if there's a pzone data refresh pending
+    var pzoneRefreshPending = false;
+    // flag to check if operations data is stale
+    var pzoneOperationsStale = true;
+
+    /**
+     * Getter for refresh pending flag. Use this to check if a pzone is in the
+     *  process of loading its data, to prevent editing.
+     *
+     * @returns {Boolean} true if pzone data is refreshing, false otherwise.
+     */
+    PromotedContentService.isPZoneRefreshPending = function () {
+      return pzoneRefreshPending;
+    };
+
+    /**
+     * Getter for pzone operations stale flag. Use this to check if operations list
+     *  is out of sync and needs to be refreshed before data is accurate.
+     *
+     * @returns {Boolean} ture if pzone operations are stale, false otherwise.
+     */
+    PromotedContentService.isPZoneOperationsStale = function () {
+      return pzoneOperationsStale;
+    };
+
     /**
      * Refresh pzone data, given the following parameters:
      *
@@ -2447,16 +2497,37 @@ angular.module('promotedContent.service', [
      * @returns {Promise} resolves with pzone data, or rejects with an error message.
      */
     PromotedContentService.$refreshPZones = function (filters) {
-      return ContentFactory.all('pzone').getList(filters)
-        .then(function (data) {
-          _data.pzones = data;
-          // mark everything as saved
-          _.each(_data.pzones, function (pzone) { pzone.saved = true; });
-          // resolve with pzones
-          return _data.pzones;
-        }).catch(function (err) {
-          return err;
-        });
+      var deferred = $q.defer();
+
+      // start a new request if one isn't already pending
+      if (!pzoneRefreshPending) {
+        pzoneRefreshPending = true;
+
+        return ContentFactory.all('pzone').getList(filters)
+          .then(function (data) {
+            _data.pzones = data;
+            // mark everything as saved
+            _.each(_data.pzones, function (pzone) {
+              pzone.saved = true;
+            });
+
+            deferred.resolve();
+
+            // resolve with pzones
+            return _data.pzones;
+          })
+          .catch(function (err) {
+            deferred.reject();
+            return err;
+          })
+          .finally(function () {
+            pzoneRefreshPending = false;
+          });
+      } else {
+        deferred.reject();
+      }
+
+      return deferred.promise;
     };
 
     /**
@@ -2474,6 +2545,15 @@ angular.module('promotedContent.service', [
     };
 
     /**
+     * Make the list of operations stale, meaning the user will have to manually
+     *  refresh it.
+     */
+    PromotedContentService.makeOperationsStale = function () {
+      _data.operations = [];
+      pzoneOperationsStale = true;
+    };
+
+    /**
      * Save the currently selected pzone by posting all operations at currently
      *  selected time. If no time is selected, pzone will be immediately updated.
      *
@@ -2483,6 +2563,8 @@ angular.module('promotedContent.service', [
       var defer = $q.defer();
 
       if (_data.previewTime && _data.previewTime.isAfter(moment())) {
+        PromotedContentService.makeOperationsStale();
+
         // grab operations out of unsaved operations and post them into operations list
         _.each(_data.unsavedOperations, function (operation) {
           // use preview time, or send null if immediate
@@ -2492,19 +2574,23 @@ angular.module('promotedContent.service', [
         });
 
         // post all operations as an array
-        _data.operations.post(_data.unsavedOperations).then(function () {
-          PromotedContentService.$refreshOperations()
-            .then(function () {
-              PromotedContentService.clearUnsavedOperations();
-              defer.resolve(_data.selectedPZone);
-            });
-        });
+        _data.selectedPZone.all('operations').post(_data.unsavedOperations)
+          .then(function () {
+            defer.resolve(_data.selectedPZone);
+          });
+
+        // clear whatever unsaved operations we have, shouldn't be any in this case
+        PromotedContentService.clearUnsavedOperations();
 
       } else if (!_data.previewTime){
+        // clear whatever unsaved operations we have, shouldn't be an in this case
+        PromotedContentService.clearUnsavedOperations();
+
+        PromotedContentService.makeOperationsStale();
+
         // no preview time is set, post pzone immediately
         _data.selectedPZone.put()
           .then(function () {
-            PromotedContentService.clearUnsavedOperations();
             defer.resolve(_data.selectedPZone);
           })
           .catch(function (err) {
@@ -2554,7 +2640,9 @@ angular.module('promotedContent.service', [
             index: null
           }, props);
 
-          var operation = Restangular.restangularizeElement(_data.operations, allProps);
+          var operation = Restangular.restangularizeElement(
+            _data.selectedPZone.all('operations'), allProps
+          );
           _data.unsavedOperations.push(operation);
 
           defer.resolve(operation);
@@ -2621,17 +2709,23 @@ angular.module('promotedContent.service', [
      *  contain an additional property called cleanType that is the clean,
      *  displayable representation of the operation type.
      *
+     * GOD DAMN IT RACE CONDITIONS NOTE: To avoid race conditions, only call
+     *  this function as a result of user interaction.
+     *
      * @returns {Promise} resolves with operation data, or rejects with an error message.
      */
     PromotedContentService.$refreshOperations = function () {
       return _data.selectedPZone.getList('operations')
         .then(function (data) {
+
           _data.operations = data;
 
           _.each(_data.operations, function (operation) {
             operation.cleanType = operationTypeToReadable[operation.type_name];
             operation.whenAsMoment = moment(operation.when);
           });
+
+          pzoneOperationsStale = false;
 
           return _data.operations;
         })
@@ -2648,12 +2742,14 @@ angular.module('promotedContent.service', [
      * @returns {Promise} resolves based on $refreshSelectedPZone Promise.
      */
     PromotedContentService.$selectPZone = function (name) {
+      // select pzone to edit
       _data.selectedPZone = _.find(_data.pzones, {name: name}) || _data.pzones[0];
 
-      return PromotedContentService.$refreshSelectedPZone(_data.previewTime)
-        .then(function () {
-          PromotedContentService.clearUnsavedOperations();
-        });
+      // immediately clear any unsaved operations
+      PromotedContentService.clearUnsavedOperations();
+
+      // begin refreshing interface with new pzone data
+      return PromotedContentService.$refreshSelectedPZone(_data.previewTime);
     };
 
     /**
@@ -2806,11 +2902,14 @@ angular.module('promotedContent.service', [
      * @param {moment} time - moment to set _data.preview time as.
      */
     PromotedContentService.setPreviewTime = function (time) {
+      // set time to edit
       _data.previewTime = time;
-      return PromotedContentService.$refreshSelectedPZone(_data.previewTime)
-        .then(function () {
-          PromotedContentService.clearUnsavedOperations();
-        });
+
+      // clear all unsaved operations
+      PromotedContentService.clearUnsavedOperations();
+
+      // begin requesting pzone to edit
+      return PromotedContentService.$refreshSelectedPZone(_data.previewTime);
     };
 
     /**
@@ -2841,7 +2940,8 @@ angular.module('promotedContent.service', [
     };
 
     /**
-     * Refresh the currently selected pzone.
+     * Refresh the currently selected pzone. Prevents new requests until the
+     *  current one has resolved.
      *
      * @param {moment} [time] - optional time parameter to pass to get a preview.
      * @returns {Promise} resolves with selected pzone data or reject with an error.
@@ -2852,17 +2952,32 @@ angular.module('promotedContent.service', [
         params.preview = time.toISOString();
       }
 
-      return _data.selectedPZone.get(params)
-        .then(function (data) {
-          _data.selectedPZone = data;
-          return PromotedContentService.$refreshOperations();
-        })
-        .then(function () {
-          return _data.selectedPZone;
-        })
-        .catch(function (err) {
-          return err;
-        });
+      PromotedContentService.makeOperationsStale();
+
+      var deferred = $q.defer();
+
+      // start a new request if one isn't already pending
+      if (!pzoneRefreshPending) {
+        pzoneRefreshPending = true;
+        _data.selectedPZone.get(params)
+          .then(function (data) {
+            deferred.resolve();
+            _data.selectedPZone = data;
+            return _data.selectedPZone;
+          })
+          .catch(function (err) {
+            deferred.reject();
+            return err;
+          })
+          .finally(function () {
+            PromotedContentService.markSavedSelectedPZone();
+            pzoneRefreshPending = false;
+          });
+      } else {
+        deferred.reject();
+      }
+
+      return deferred.promise;
     };
 
     /**
@@ -2918,6 +3033,10 @@ angular.module('promotedContentTimePicker.directive', [
           $scope.previewTime = null;
           PromotedContentService.setPreviewTimeToImmediate();
         };
+
+        $scope.disableControls = function () {
+          return PromotedContentService.isPZoneRefreshPending();
+        };
       },
       restrict: 'E',
       scope: {},
@@ -2939,14 +3058,31 @@ angular.module('promotedContent', [
   'promotedContentList',
   'promotedContentSearch',
   'promotedContentTimePicker',
-  'promotedContentOperationsList'
+  'promotedContentOperationsList',
+  'promotedContent.service'
 ])
   .config(function ($routeProvider, routes) {
     $routeProvider
       .when('/cms/app/promotion/', {
-        controller: function ($window) {
+        controller: function ($scope, $window, PromotedContentService) {
           // set title
           $window.document.title = routes.CMS_NAMESPACE + ' | Promotion Tool';
+
+          $scope.operationsStale = function () {
+            return PromotedContentService.isPZoneOperationsStale();
+          };
+
+          $scope.refreshingOperations = false;
+          $scope.refreshOperations = function () {
+
+            if (!$scope.refreshingOperations) {
+              $scope.refreshingOperations = true;
+              PromotedContentService.$refreshOperations()
+                .finally(function () {
+                  $scope.refreshingOperations = false;
+                });
+            }
+          };
         },
         templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content.html',
         reloadOnSearch: false
