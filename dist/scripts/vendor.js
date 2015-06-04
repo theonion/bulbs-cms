@@ -111222,7 +111222,14 @@ angular.module('restmod.styles.drfPaged', [
             // a dirty hack so we don't have to copy/modify the DefaultPacker:
             // this is not a collection, make it so the single root is accessible by the packer
             var newData = {};
-            newData[singleRoot] = _req.data;
+            // check the type of data coming back to properly repack it
+            if (_.isArray(_req.data)) {
+              // dealing with an array, use many root
+              newData[manyRoot] = _req.data;
+            } else {
+              // dealing with a single record, use single root
+              newData[singleRoot] = _req.data;
+            }
             _req.data = newData;
           }
         },

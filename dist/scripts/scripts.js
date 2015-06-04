@@ -1095,6 +1095,7 @@ angular.module('confirmationModal.factory', [
 angular.module('content.edit.authors', [
   'apiServices.author.factory',
   'bulbsCmsApp.settings',
+  'filters.userDisplay',
   'lodash',
   'tagList',
   'uuid4'
@@ -1114,12 +1115,14 @@ angular.module('content.edit.authors', [
                 });
 
               if (!alreadyInList) {
-                $scope.article.authors.push({
+                var newAuthor = {
                   first_name: author.firstName,
                   id: author.id,
                   last_name: author.lastName,
                   username: author.username
-                });
+                };
+
+                $scope.article.authors.push(newAuthor);
               }
             };
 
@@ -4447,6 +4450,23 @@ angular.module('apiServices.author.factory', [
           name: 'Author',
           plural: 'Authors',
           primaryKey: 'id'
+        },
+        $extend: {
+          Record: {
+            displayName: function () {
+              var name = '';
+
+              if (this.firstName && this.lastName) {
+                name = this.firstName + ' ' + this.lastName;
+              } else if (this.lastName) {
+                name = this.lastName;
+              } else {
+                name = this.username;
+              }
+
+              return name;
+            }
+          }
         }
       });
     }
@@ -5216,6 +5236,27 @@ angular.module('filters.moment', [
       }
     };
   });
+
+'use strict';
+
+angular.module('filters.userDisplay', [])
+  .filter('userDisplay', [
+    function () {
+      return function (user) {
+        var name = '';
+
+        if (user.full_name) {
+          name = user.full_name;
+        } else if (user.first_name && user.last_name) {
+          name = user.first_name + ' ' + user.last_name;
+        } else {
+          name = user.username;
+        }
+
+        return name;
+      };
+    }
+  ]);
 
 'use strict';
 
@@ -9784,21 +9825,5 @@ angular.module('bulbsCmsApp')
         formattedDate += ' ' + inDate.format('z');
       }
       return formattedDate;
-    };
-  });
-
-'use strict';
-
-angular.module('bulbsCmsApp')
-  .filter('user', function () {
-    return function (user) {
-      if (!user) { return ''; }
-      if (user.full_name) {
-        return user.full_name;
-      } else if (user.first_name && user.last_name) {
-        return user.first_name + ' ' + user.last_name;
-      } else {
-        return user.username;
-      }
     };
   });
