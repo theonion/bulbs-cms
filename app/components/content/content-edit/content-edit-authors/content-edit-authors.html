@@ -1,3 +1,21 @@
 <div class="clearfix well">
-  <authors-field article="article"></authors-field>
+  <div class="col-sm-12">
+    <label for="ac-{{ uuid }}">Authors</label>
+  </div>
+  <div class="col-sm-4 form-group">
+    <autocomplete-basic
+        class="form-control"
+        item-display-formatter="item.firstName + ' ' + item.lastName"
+        on-select="addAuthor(selection.value)"
+        input-id="ac-{{ uuid }}"
+        input-placeholder="Search authors..."
+        search-function="searchAuthors">
+    </autocomplete-basic>
+  </div>
+  <div class="col-sm-8">
+    <tag-list
+        items="article.authors"
+        item-display-formatter="item.first_name + ' ' + item.last_name">
+    </tag-list>
+  </div>
 </div>
