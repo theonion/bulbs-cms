@@ -3,6 +3,7 @@
 angular.module('content.edit.authors', [
   'apiServices.author.factory',
   'bulbsCmsApp.settings',
+  'filters.userDisplay',
   'lodash',
   'tagList',
   'uuid4'
@@ -22,12 +23,14 @@ angular.module('content.edit.authors', [
                 });
 
               if (!alreadyInList) {
-                $scope.article.authors.push({
+                var newAuthor = {
                   first_name: author.firstName,
                   id: author.id,
                   last_name: author.lastName,
                   username: author.username
-                });
+                };
+
+                $scope.article.authors.push(newAuthor);
               }
             };
 

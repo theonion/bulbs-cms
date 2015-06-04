@@ -11,6 +11,23 @@ angular.module('apiServices.author.factory', [
           name: 'Author',
           plural: 'Authors',
           primaryKey: 'id'
+        },
+        $extend: {
+          Record: {
+            displayName: function () {
+              var name = '';
+
+              if (this.firstName && this.lastName) {
+                name = this.firstName + ' ' + this.lastName;
+              } else if (this.lastName) {
+                name = this.lastName;
+              } else {
+                name = this.username;
+              }
+
+              return name;
+            }
+          }
         }
       });
     }
