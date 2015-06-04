@@ -1093,18 +1093,56 @@ angular.module('confirmationModal.factory', [
 'use strict';
 
 angular.module('content.edit.authors', [
-  'bulbsCmsApp.settings'
+  'apiServices.author.factory',
+  'bulbsCmsApp.settings',
+  'lodash',
+  'tagList',
+  'uuid4'
 ])
-  .directive('contentEditAuthors', function (COMPONENTS_URL) {
-    return {
-      restrict: 'E',
-      scope: {
-        article: '=',
-        inlineObjectsUrl: '@'
-      },
-      templateUrl: COMPONENTS_URL + 'content/content-edit/content-edit-authors/content-edit-authors.html'
-    };
-  });
+  .directive('contentEditAuthors', [
+    'COMPONENTS_URL', 'uuid4',
+    function (COMPONENTS_URL, uuid4) {
+      return {
+        controller: [
+          '_', '$scope', 'Author',
+          function (_, $scope, Author) {
+
+            $scope.addAuthor = function (author) {
+              var alreadyInList =
+                _.find($scope.article.authors, function (articleAuthor) {
+                  return articleAuthor.id === author.id;
+                });
+
+              if (!alreadyInList) {
+                $scope.article.authors.push({
+                  first_name: author.firstName,
+                  id: author.id,
+                  last_name: author.lastName,
+                  username: author.username
+                });
+              }
+            };
+
+            $scope.searchAuthors = function (query) {
+              return Author.$search({
+                ordering: 'name',
+                search: query
+              })
+              .$asPromise();
+            };
+          }
+        ],
+        link: function (scope) {
+          scope.uuid = uuid4.generate();
+        },
+        restrict: 'E',
+        scope: {
+          article: '='
+        },
+        templateUrl: COMPONENTS_URL + 'content/content-edit/content-edit-authors/content-edit-authors.html'
+      };
+    }
+  ]);
 
 'use strict';
 
@@ -4106,6 +4144,38 @@ angular.module('statusFilter', [
 
 'use strict';
 
+/**
+ * List of tag-like things that has remove functionality.
+ */
+angular.module('tagList', [
+  'lodash',
+  'utils'
+])
+  .directive('tagList', [
+    'COMPONENTS_URL',
+    function (COMPONENTS_URL) {
+      return {
+        controller: [
+          '_', '$scope', 'Utils',
+          function (_, $scope, Utils) {
+            $scope.remove = function (item) {
+              var i = _.findIndex($scope.items, item);
+              Utils.removeFrom($scope.items, i);
+            };
+          }
+        ],
+        restrict: 'E',
+        scope: {
+          items: '=',
+          itemDisplayFormatter: '&'
+        },
+        templateUrl: COMPONENTS_URL + 'tag-list/tag-list.html'
+      };
+    }
+  ]);
+
+'use strict';
+
 angular.module('templateTypeField.directive', [])
   .directive('templateTypeField', function (COMPONENTS_URL) {
     return {
@@ -4363,6 +4433,24 @@ angular.module('apiServices', [
       }
     });
   });
+
+'use strict';
+
+angular.module('apiServices.author.factory', [
+  'apiServices'
+])
+  .factory('Author', [
+    'restmod',
+    function (restmod) {
+      return restmod.model('author').mix({
+        $config: {
+          name: 'Author',
+          plural: 'Authors',
+          primaryKey: 'id'
+        }
+      });
+    }
+  ]);
 
 'use strict';
 
@@ -5525,52 +5613,6 @@ angular.module('bulbsCmsApp')
       link: function postLink(scope, element, attrs) {
         scope.LOADING_IMG_SRC = LOADING_IMG_SRC;
         scope.ratio = attrs.ratio;
-      }
-    };
-  });
-
-'use strict';
-
-angular.module('bulbsCmsApp')
-  .directive('authorsField', function (PARTIALS_URL, userFilter, $, CmsConfig) {
-    return {
-      templateUrl: PARTIALS_URL + 'taglike-autocomplete-field.html',
-      restrict: 'E',
-      replace: true,
-      scope: {
-        article: '='
-      },
-      link: function postLink(scope, element, attrs) {
-        scope.name = 'author';
-        scope.label = 'Authors';
-        scope.placeholder = 'Authors';
-        scope.resourceUrl = CmsConfig.buildBackendUrl('/cms/api/v1/author/?ordering=name&search=');
-        scope.display = userFilter;
-
-        scope.$watch('article.authors', function () {
-          scope.objects = scope.article.authors;
-        }, true);
-
-        scope.add = function (o, input) {
-          for (var t in scope.article.authors) {
-            if (scope.article.authors[t].id === o.id) { return; }
-          }
-          scope.article.authors.push(o);
-          $(input).val('');
-        };
-
-        scope.delete = function (e) {
-          var author = $(e.target).parents('[data-taglikeobject]').data('taglikeobject');
-          var id = author.id;
-          var newauthors = [];
-          for (var i in scope.article.authors) {
-            if (scope.article.authors[i].id !== id) {
-              newauthors.push(scope.article.authors[i]);
-            }
-          }
-          scope.article.authors = newauthors;
-        };
-
       }
     };
   });
