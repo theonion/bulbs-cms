@@ -1504,12 +1504,12 @@ angular.module('content.edit.linkBrowser', [
      window.linkBrowser = function(term, resultsElement) {
        resultsElement.html('<div class="items"></div><hr><span class="type">Articles</span><ul class="content"></ul>');
 
-       $.ajax(CmsConfig.buildBackendUrl('/search/autocomplete?q=' + term))
+       $.ajax(CmsConfig.buildBackendUrl('search/autocomplete?q=' + term))
          .success(function(resp) {
            $('.items', resultsElement).html(resp);
          });
 
-       $.ajax(CmsConfig.buildBackendUrl('/cms/api/v1/content/?search=' + term))
+       $.ajax(CmsConfig.buildBackendUrl('content/?search=' + term))
          .success(function(resp) {
            for (var i=0; i < Math.min(resp.count, 20); i ++) {
              var link = $('<A>')
@@ -5801,7 +5801,7 @@ angular.module('bulbsCmsApp')
             url: $window.location.href,
             user_agent: $window.navigator.userAgent
           };
-          return $http.post(CmsConfig.buildBackendUrl('/report-bug/'), data);
+          return $http.post(CmsConfig.buildBackendUrl('report-bug/'), data);
         };
 
         $scope.sendToWebtechCbk = function (promise) {
@@ -6051,7 +6051,7 @@ angular.module('bulbsCmsApp')
         function saveArticle() {
           $('button.go').removeClass('btn-danger').addClass('btn-success').html('<i class="fa fa-refresh fa-spin"></i> Going');
           $http({
-            url: CmsConfig.buildBackendUrl('/content/?doctype=' + $scope.contentType),
+            url: CmsConfig.buildBackendUrl('content/?doctype=' + $scope.contentType),
             method: 'POST',
             data: $scope.init
           }).success(function (resp) {
@@ -6382,7 +6382,7 @@ angular.module('bulbsCmsApp')
         scope.name = 'feature_type';
         scope.label = 'Feature Type';
         scope.placeholder = 'Feature Type';
-        scope.resourceUrl = CmsConfig.buildBackendUrl('/things/?type=feature_type&q=');
+        scope.resourceUrl = CmsConfig.buildBackendUrl('things/?type=feature_type&q=');
 
         scope.$watch('article.feature_type', function () {
           scope.model = scope.article.feature_type;
@@ -6646,7 +6646,7 @@ angular.module('bulbsCmsApp')
         scope.name = 'section';
         scope.label = 'Sections';
         scope.placeholder = 'Enter a section';
-        scope.resourceUrl = CmsConfig.buildBackendUrl('/tag/?ordering=name&types=core_section&search=');
+        scope.resourceUrl = CmsConfig.buildBackendUrl('tag/?ordering=name&types=core_section&search=');
         scope.display = function (o) {
           return o.name;
         };
@@ -6786,7 +6786,7 @@ angular.module('bulbsCmsApp')
         scope.name = 'tag';
         scope.label = 'Tags';
         scope.placeholder = 'Enter a tag';
-        scope.resourceUrl = CmsConfig.buildBackendUrl('/tag/?ordering=name&types=content_tag&search=');
+        scope.resourceUrl = CmsConfig.buildBackendUrl('tag/?ordering=name&types=content_tag&search=');
         scope.display = function (o) {
           return o.name;
         };
@@ -6863,7 +6863,7 @@ angular.module('bulbsCmsApp').directive(
             scope.embedUrl = $sce.trustAsUrl('/video/embed?id=' + scope.article.video);
             $http({
               method: 'GET',
-              url: CmsConfig.buildBackendUrl('/videos/api/video/' + scope.article.video + '/')
+              url: CmsConfig.buildBackendUrl('videos/api/video/' + scope.article.video + '/')
             }).success(function (data) {
               console.log('getting video from API');
               console.log(data);
@@ -8205,7 +8205,7 @@ angular.module('bulbsCmsApp')
           {'title': 'Role', 'expression': 'role'},
           {'title': 'Notes', 'expression': 'notes'},
         ],
-        downloadURL: CmsConfig.buildBackendUrl('/contributions/reporting/'),
+        downloadURL: CmsConfig.buildBackendUrl('contributions/reporting/'),
         orderOptions: [
           {
             label: 'Order by User',
@@ -8225,7 +8225,7 @@ angular.module('bulbsCmsApp')
           {'title': 'URL', 'expression': 'url'},
         ],
         orderOptions: [],
-        downloadURL: CmsConfig.buildBackendUrl('/contributions/contentreporting/'),
+        downloadURL: CmsConfig.buildBackendUrl('contributions/contentreporting/'),
       }
     };
     $scope.items = [];
@@ -9718,7 +9718,7 @@ angular.module('bulbsCmsApp')
 
       $http({
         method: 'POST',
-        url: CmsConfig.buildBackendUrl('/video/' + videoObject.attrs.id + '/encode')
+        url: CmsConfig.buildBackendUrl('video/' + videoObject.attrs.id + '/encode')
       }).success(function (data) {
         videoObject.attrs['encode_status_endpoints'] = data;
         _encodingVideos[videoObject.attrs.id] = videoObject.attrs;
