@@ -350,7 +350,7 @@
         angular.module('bulbsCmsApp')
           .config(function ($httpProvider, CmsConfigProvider, TokenAuthConfigProvider,
               TokenAuthServiceProvider, PARTIALS_URL, DIRECTIVE_PARTIALS_URL) {
-            CmsConfigProvider.setBackendRoot('');
+            CmsConfigProvider.setBackendRoot('/cms/api/v1/');
             CmsConfigProvider.setLogoUrl('/images/onion-logo.png');
             CmsConfigProvider.setToolbarMappings({
               toolbar: PARTIALS_URL + 'toolbar.html'

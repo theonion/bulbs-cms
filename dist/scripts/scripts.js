@@ -3880,7 +3880,7 @@ angular.module('sendToEditor.modal', [
           statusText = $scope.status;
         }
         return $http({
-          url: CmsConfig.buildBackendUrl('/cms/api/v1/content/' + article.id + '/send/'),
+          url: CmsConfig.buildBackendUrl('content/' + article.id + '/send/'),
           method: 'POST',
           data: {
             notes: $scope.noteToEditor,
@@ -5764,7 +5764,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('bugReporter', function ($http, $window, PARTIALS_URL) {
+  .directive('bugReporter', function ($http, $window, PARTIALS_URL, CmsConfig) {
     return {
       restrict: 'E',
       templateUrl: PARTIALS_URL + 'bug-report-button.html',
@@ -5801,7 +5801,7 @@ angular.module('bulbsCmsApp')
             url: $window.location.href,
             user_agent: $window.navigator.userAgent
           };
-          return $http.post('/cms/api/v1/report-bug/', data);
+          return $http.post(CmsConfig.buildBackendUrl('/report-bug/'), data);
         };
 
         $scope.sendToWebtechCbk = function (promise) {
@@ -6051,7 +6051,7 @@ angular.module('bulbsCmsApp')
         function saveArticle() {
           $('button.go').removeClass('btn-danger').addClass('btn-success').html('<i class="fa fa-refresh fa-spin"></i> Going');
           $http({
-            url: CmsConfig.buildBackendUrl('/cms/api/v1/content/?doctype=' + $scope.contentType),
+            url: CmsConfig.buildBackendUrl('/content/?doctype=' + $scope.contentType),
             method: 'POST',
             data: $scope.init
           }).success(function (resp) {
@@ -6369,7 +6369,8 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('featuretypeField', function (PARTIALS_URL, IfExistsElse, ContentFactory, Raven, $) {
+  .directive('featuretypeField', function (PARTIALS_URL, IfExistsElse, ContentFactory,
+      Raven, $, CmsConfig) {
     return {
       templateUrl: PARTIALS_URL + 'textlike-autocomplete-field.html',
       restrict: 'E',
@@ -6381,7 +6382,7 @@ angular.module('bulbsCmsApp')
         scope.name = 'feature_type';
         scope.label = 'Feature Type';
         scope.placeholder = 'Feature Type';
-        scope.resourceUrl = '/cms/api/v1/things/?type=feature_type&q=';
+        scope.resourceUrl = CmsConfig.buildBackendUrl('/things/?type=feature_type&q=');
 
         scope.$watch('article.feature_type', function () {
           scope.model = scope.article.feature_type;
@@ -6635,7 +6636,8 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('sectionsField', function (PARTIALS_URL, _, IfExistsElse, ContentFactory, Raven, $) {
+  .directive('sectionsField', function (PARTIALS_URL, _, IfExistsElse, ContentFactory,
+      Raven, $, CmsConfig) {
     return {
       templateUrl: PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
@@ -6644,7 +6646,7 @@ angular.module('bulbsCmsApp')
         scope.name = 'section';
         scope.label = 'Sections';
         scope.placeholder = 'Enter a section';
-        scope.resourceUrl = '/cms/api/v1/tag/?ordering=name&types=core_section&search=';
+        scope.resourceUrl = CmsConfig.buildBackendUrl('/tag/?ordering=name&types=core_section&search=');
         scope.display = function (o) {
           return o.name;
         };
@@ -6771,7 +6773,8 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('tagsField', function (PARTIALS_URL, _, IfExistsElse, ContentFactory, Raven, $) {
+  .directive('tagsField', function (PARTIALS_URL, _, IfExistsElse, ContentFactory,
+      Raven, $, CmsConfig) {
     return {
       templateUrl: PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
@@ -6783,7 +6786,7 @@ angular.module('bulbsCmsApp')
         scope.name = 'tag';
         scope.label = 'Tags';
         scope.placeholder = 'Enter a tag';
-        scope.resourceUrl = '/cms/api/v1/tag/?ordering=name&types=content_tag&search=';
+        scope.resourceUrl = CmsConfig.buildBackendUrl('/tag/?ordering=name&types=content_tag&search=');
         scope.display = function (o) {
           return o.name;
         };
@@ -8123,7 +8126,7 @@ angular.module('bulbsCmsApp')
       var data = {published: newDateTime};
 
       return $http({
-        url: CmsConfig.buildBackendUrl('/cms/api/v1/content/' + $scope.article.id + '/publish/'),
+        url: CmsConfig.buildBackendUrl('content/' + $scope.article.id + '/publish/'),
         method: 'POST',
         data: data
       });
@@ -8154,7 +8157,7 @@ angular.module('bulbsCmsApp')
 
     $scope.unpublish = function () {
       return $http({
-        url: CmsConfig.buildBackendUrl('/cms/api/v1/content/' + $scope.article.id + '/publish/'),
+        url: CmsConfig.buildBackendUrl('content/' + $scope.article.id + '/publish/'),
         method: 'POST',
         data: {published: false}
       });
@@ -8202,7 +8205,7 @@ angular.module('bulbsCmsApp')
           {'title': 'Role', 'expression': 'role'},
           {'title': 'Notes', 'expression': 'notes'},
         ],
-        downloadURL: '/cms/api/v1/contributions/reporting/',
+        downloadURL: CmsConfig.buildBackendUrl('/contributions/reporting/'),
         orderOptions: [
           {
             label: 'Order by User',
@@ -8222,7 +8225,7 @@ angular.module('bulbsCmsApp')
           {'title': 'URL', 'expression': 'url'},
         ],
         orderOptions: [],
-        downloadURL: CmsConfig.buildBackendUrl('/cms/api/v1/contributions/contentreporting/'),
+        downloadURL: CmsConfig.buildBackendUrl('/contributions/contentreporting/'),
       }
     };
     $scope.items = [];
@@ -8506,7 +8509,7 @@ angular.module('bulbsCmsApp')
     $scope.trashContent = function () {
       return $http({
         'method': 'POST',
-        'url': CmsConfig.buildBackendUrl('/cms/api/v1/content/' + articleId + '/trash/')
+        'url': CmsConfig.buildBackendUrl('content/' + articleId + '/trash/')
       });
     };
 
@@ -8544,7 +8547,7 @@ angular.module('bulbsCmsApp')
 
     $scope.unpublish = function () {
       return $http({
-        url: CmsConfig.buildBackendUrl('/cms/api/v1/content/' + $scope.article.id + '/publish/'),
+        url: CmsConfig.buildBackendUrl('content/' + $scope.article.id + '/publish/'),
         method: 'POST',
         data: {published: false}
       });
