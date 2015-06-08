@@ -53,7 +53,7 @@ angular.module('bulbsCmsApp')
         function saveArticle() {
           $('button.go').removeClass('btn-danger').addClass('btn-success').html('<i class="fa fa-refresh fa-spin"></i> Going');
           $http({
-            url: CmsConfig.buildBackendUrl('/content/?doctype=' + $scope.contentType),
+            url: CmsConfig.buildBackendUrl('content/?doctype=' + $scope.contentType),
             method: 'POST',
             data: $scope.init
           }).success(function (resp) {

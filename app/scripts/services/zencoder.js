@@ -117,7 +117,7 @@ angular.module('bulbsCmsApp')
 
       $http({
         method: 'POST',
-        url: CmsConfig.buildBackendUrl('/video/' + videoObject.attrs.id + '/encode')
+        url: CmsConfig.buildBackendUrl('video/' + videoObject.attrs.id + '/encode')
       }).success(function (data) {
         videoObject.attrs['encode_status_endpoints'] = data;
         _encodingVideos[videoObject.attrs.id] = videoObject.attrs;

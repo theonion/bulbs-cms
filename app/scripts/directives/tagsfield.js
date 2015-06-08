@@ -14,7 +14,7 @@ angular.module('bulbsCmsApp')
         scope.name = 'tag';
         scope.label = 'Tags';
         scope.placeholder = 'Enter a tag';
-        scope.resourceUrl = CmsConfig.buildBackendUrl('/tag/?ordering=name&types=content_tag&search=');
+        scope.resourceUrl = CmsConfig.buildBackendUrl('tag/?ordering=name&types=content_tag&search=');
         scope.display = function (o) {
           return o.name;
         };
