@@ -13,7 +13,7 @@ angular.module('bulbsCmsApp')
 
     $scope.unpublish = function () {
       return $http({
-        url: CmsConfig.buildBackendUrl('/cms/api/v1/content/' + $scope.article.id + '/publish/'),
+        url: CmsConfig.buildBackendUrl('content/' + $scope.article.id + '/publish/'),
         method: 'POST',
         data: {published: false}
       });

@@ -11,7 +11,7 @@
       <div
           class="form-group"
           hide-if-forbidden
-          options-url="{{'/cms/api/v1/content/' + article.id + '/'}}">
+          options-url="{{'content/' + article.id + '/'}}">
         <a
             class="form-control btn btn-success"
             href="/cms/app/edit/{{article.id}}">
@@ -32,7 +32,7 @@
       <div
           class="form-group"
           hide-if-forbidden
-          options-url="{{'/cms/api/v1/content/' + article.id + '/publish/'}}">
+          options-url="{{'content/' + article.id + '/publish/'}}">
         <a
             class="form-control btn btn-primary"
             ng-show="article.id > -1"
@@ -45,7 +45,7 @@
       <div
           class="form-group"
           hide-if-forbidden
-          options-url="{{'/cms/api/v1/content/' + article.id + '/publish/'}}">
+          options-url="{{'content/' + article.id + '/publish/'}}">
         <save-button-old
             class="form-control"
             color-styling="btn-warning"
@@ -60,7 +60,7 @@
       <div
           class="form-group"
           hide-if-forbidden
-          options-url="{{'/cms/api/v1/content/' + article.id + '/trash/'}}">
+          options-url="{{'content/' + article.id + '/trash/'}}">
         <button
             ng-controller="ContentworkflowCtrl"
             class="form-control btn btn-danger"

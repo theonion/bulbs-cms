@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('bugReporter', function ($http, $window, PARTIALS_URL) {
+  .directive('bugReporter', function ($http, $window, PARTIALS_URL, CmsConfig) {
     return {
       restrict: 'E',
       templateUrl: PARTIALS_URL + 'bug-report-button.html',
@@ -38,7 +38,7 @@ angular.module('bulbsCmsApp')
             url: $window.location.href,
             user_agent: $window.navigator.userAgent
           };
-          return $http.post('/cms/api/v1/report-bug/', data);
+          return $http.post(CmsConfig.buildBackendUrl('/report-bug/'), data);
         };
 
         $scope.sendToWebtechCbk = function (promise) {

@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('sectionsField', function (PARTIALS_URL, _, IfExistsElse, ContentFactory, Raven, $) {
+  .directive('sectionsField', function (PARTIALS_URL, _, IfExistsElse, ContentFactory,
+      Raven, $, CmsConfig) {
     return {
       templateUrl: PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
@@ -10,7 +11,7 @@ angular.module('bulbsCmsApp')
         scope.name = 'section';
         scope.label = 'Sections';
         scope.placeholder = 'Enter a section';
-        scope.resourceUrl = '/cms/api/v1/tag/?ordering=name&types=core_section&search=';
+        scope.resourceUrl = CmsConfig.buildBackendUrl('/tag/?ordering=name&types=core_section&search=');
         scope.display = function (o) {
           return o.name;
         };

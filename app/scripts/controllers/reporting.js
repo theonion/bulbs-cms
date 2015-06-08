@@ -16,7 +16,7 @@ angular.module('bulbsCmsApp')
           {'title': 'Role', 'expression': 'role'},
           {'title': 'Notes', 'expression': 'notes'},
         ],
-        downloadURL: '/cms/api/v1/contributions/reporting/',
+        downloadURL: CmsConfig.buildBackendUrl('/contributions/reporting/'),
         orderOptions: [
           {
             label: 'Order by User',
@@ -36,7 +36,7 @@ angular.module('bulbsCmsApp')
           {'title': 'URL', 'expression': 'url'},
         ],
         orderOptions: [],
-        downloadURL: CmsConfig.buildBackendUrl('/cms/api/v1/contributions/contentreporting/'),
+        downloadURL: CmsConfig.buildBackendUrl('/contributions/contentreporting/'),
       }
     };
     $scope.items = [];
