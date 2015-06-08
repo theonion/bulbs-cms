@@ -11,12 +11,12 @@ angular.module('content.edit.linkBrowser', [
      window.linkBrowser = function(term, resultsElement) {
        resultsElement.html('<div class="items"></div><hr><span class="type">Articles</span><ul class="content"></ul>');
 
-       $.ajax(CmsConfig.buildBackendUrl('/search/autocomplete?q=' + term))
+       $.ajax(CmsConfig.buildBackendUrl('search/autocomplete?q=' + term))
          .success(function(resp) {
            $('.items', resultsElement).html(resp);
          });
 
-       $.ajax(CmsConfig.buildBackendUrl('/cms/api/v1/content/?search=' + term))
+       $.ajax(CmsConfig.buildBackendUrl('content/?search=' + term))
          .success(function(resp) {
            for (var i=0; i < Math.min(resp.count, 20); i ++) {
              var link = $('<A>')
