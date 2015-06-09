@@ -6881,7 +6881,7 @@ angular.module('bulbsCmsApp')
           if (scope.image && scope.image.id) {
             scope.imageUrl =
               CmsConfig.buildImageServerUrl(
-                '/' + ratio + '/' + scope.image.id + '/' + CmsConfig.getImageDefaultWidth() + '.jpg'
+                '/' + scope.image.id + '/' + ratio + '/' + CmsConfig.getImageDefaultWidth() + '.jpg'
               );
           } else {
             scope.imageUrl = false;
