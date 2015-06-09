@@ -17,7 +17,7 @@ angular.module('bulbsCmsApp').directive(
             scope.embedUrl = $sce.trustAsUrl('/video/embed?id=' + scope.article.video);
             $http({
               method: 'GET',
-              url: CmsConfig.buildBackendUrl('videos/api/video/' + scope.article.video + '/')
+              url: CmsConfig.buildBackendApiUrl('videos/api/video/' + scope.article.video + '/')
             }).success(function (data) {
               console.log('getting video from API');
               console.log(data);

@@ -7,7 +7,7 @@ angular.module('apiServices.settings', []).constant('API_URL_ROOT', '/cms/api/v1
 
 angular.module('bulbsCmsApp')
   .config(function (CmsConfigProvider, CONTENT_PARTIALS_URL, DIRECTIVE_PARTIALS_URL, PARTIALS_URL) {
-    CmsConfigProvider.setBackendRoot('/cms/api/v1/');
+    CmsConfigProvider.setApiPath('/cms/api/v1/');
     CmsConfigProvider.setLogoUrl('/images/onion-logo.png');
     CmsConfigProvider.setToolbarMappings({
       toolbar: PARTIALS_URL + 'toolbar.html'

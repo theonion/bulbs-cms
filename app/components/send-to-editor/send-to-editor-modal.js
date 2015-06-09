@@ -50,7 +50,7 @@ angular.module('sendToEditor.modal', [
           statusText = $scope.status;
         }
         return $http({
-          url: CmsConfig.buildBackendUrl('content/' + article.id + '/send/'),
+          url: CmsConfig.buildBackendApiUrl('content/' + article.id + '/send/'),
           method: 'POST',
           data: {
             notes: $scope.noteToEditor,

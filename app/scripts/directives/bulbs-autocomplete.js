@@ -71,7 +71,7 @@ angular.module('bulbsCmsApp')
           inputCounter = 0;
           $http({
             method: 'GET',
-            url: CmsConfig.buildBackendUrl(scope.resourceUrl + val)
+            url: CmsConfig.buildBackendApiUrl(scope.resourceUrl + val)
           }).success(function (data) {
             var results = data.results || data;
             scope.autocomplete_list = results.splice(0, 5);

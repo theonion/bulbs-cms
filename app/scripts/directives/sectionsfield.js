@@ -11,7 +11,7 @@ angular.module('bulbsCmsApp')
         scope.name = 'section';
         scope.label = 'Sections';
         scope.placeholder = 'Enter a section';
-        scope.resourceUrl = CmsConfig.buildBackendUrl('tag/?ordering=name&types=core_section&search=');
+        scope.resourceUrl = CmsConfig.buildBackendApiUrl('tag/?ordering=name&types=core_section&search=');
         scope.display = function (o) {
           return o.name;
         };

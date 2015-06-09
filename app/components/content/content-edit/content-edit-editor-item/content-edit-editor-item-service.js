@@ -10,7 +10,7 @@ angular.module('content.edit.editorItem.service', [
       var self = this;
       this.getItems = function (article) {
         $http.get(
-          CmsConfig.buildBackendUrl('content/' + article + '/send/')
+          CmsConfig.buildBackendApiUrl('content/' + article + '/send/')
         ).success(function (data, status) {
           self.data = data.editor_items;
         });

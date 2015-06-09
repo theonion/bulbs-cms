@@ -6,6 +6,8 @@ angular.module('cms.config', [
   .provider('CmsConfig', function CmsConfigProvider (_) {
     // root for all backend requests
     var backendRoot = '';
+    // relative api path
+    var apiPath = '';
     // create content modal template to use
     var createContentTemplateUrl = '';
     // url for logo to display in CMS
@@ -35,6 +37,14 @@ angular.module('cms.config', [
           return true;
         }
       });
+    };
+
+    this.setApiPath = function (value) {
+      if (_.isString(value)) {
+        apiPath = value;
+      } else {
+        throw error('apiPath must be a string!');
+      }
     };
 
     this.setBackendRoot = function (value) {
@@ -165,13 +175,22 @@ angular.module('cms.config', [
         getCreateContentTemplateUrl: _.constant(createContentTemplateUrl),
         logoutCallback: logoutCallback,
         /**
-         * Create an absolute url to the backend for the CMS by using the backendRoot.
+         * Create an absolute api url.
+         *
+         * @param {string} relUrl - relative url to get the absolute api url for.
+         * @returns absolute api url.
+         */
+        buildBackendApiUrl: function (relUrl) {
+          return backendRoot + apiPath + relUrl;
+        },
+        /**
+         * Build a url relative to backend root.
          *
          * @param {string} relUrl - relative url to get the absolute url for.
          * @returns absolute url.
          */
         buildBackendUrl: function (relUrl) {
-          return backendRoot + relUrl;
+
         }
      };
     };

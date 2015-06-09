@@ -56,7 +56,7 @@ angular.module('bulbsCmsApp')
 
       $http({
         method: 'POST',
-        url: CmsConfig.buildBackendUrl(newVideoUrl),
+        url: CmsConfig.buildBackendApiUrl(newVideoUrl),
         data: data,
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       }).success(function (data) {
@@ -117,7 +117,7 @@ angular.module('bulbsCmsApp')
 
       $http({
         method: 'POST',
-        url: CmsConfig.buildBackendUrl('video/' + videoObject.attrs.id + '/encode')
+        url: CmsConfig.buildBackendApiUrl('video/' + videoObject.attrs.id + '/encode')
       }).success(function (data) {
         videoObject.attrs['encode_status_endpoints'] = data;
         _encodingVideos[videoObject.attrs.id] = videoObject.attrs;
@@ -147,7 +147,7 @@ angular.module('bulbsCmsApp')
       var url = '/video/' + videoId;
       return $http({
         method: 'GET',
-        url: CmsConfig.buildBackendUrl(url)
+        url: CmsConfig.buildBackendApiUrl(url)
       });
     };
 
@@ -156,7 +156,7 @@ angular.module('bulbsCmsApp')
       var data = $.param(video);
       return $http({
         method: 'POST',
-        url: CmsConfig.buildBackendUrl(url),
+        url: CmsConfig.buildBackendApiUrl(url),
         data: data,
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       });

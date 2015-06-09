@@ -38,7 +38,7 @@ angular.module('bulbsCmsApp')
             url: $window.location.href,
             user_agent: $window.navigator.userAgent
           };
-          return $http.post(CmsConfig.buildBackendUrl('report-bug/'), data);
+          return $http.post(CmsConfig.buildBackendApiUrl('report-bug/'), data);
         };
 
         $scope.sendToWebtechCbk = function (promise) {

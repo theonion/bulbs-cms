@@ -13,7 +13,7 @@ angular.module('bulbsCmsApp')
     $scope.trashContent = function () {
       return $http({
         'method': 'POST',
-        'url': CmsConfig.buildBackendUrl('content/' + articleId + '/trash/')
+        'url': CmsConfig.buildBackendApiUrl('content/' + articleId + '/trash/')
       });
     };
 

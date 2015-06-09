@@ -18,7 +18,7 @@ angular.module('bulbsCmsApp')
 
       $http({
         method: 'GET',
-        url: CmsConfig.buildBackendUrl(TAR_OPTIONS.endpoint),
+        url: CmsConfig.buildBackendApiUrl(TAR_OPTIONS.endpoint),
         timeout: canceller.promise,
         params: {url: $scope.url}
       }).success(function (data) {
@@ -42,7 +42,7 @@ angular.module('bulbsCmsApp')
 
       return $http({
         method: 'POST',
-        url: CmsConfig.buildBackendUrl(TAR_OPTIONS.endpoint + '?url=' + $scope.url),
+        url: CmsConfig.buildBackendApiUrl(TAR_OPTIONS.endpoint + '?url=' + $scope.url),
         data: data
       }).success(function (data) {
         $scope.targetingArray = [];

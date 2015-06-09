@@ -28,7 +28,7 @@ describe('Directive: hideIfForbidden', function () {
   }));
 
   it('should make a not-forbidden element visible', inject(function ($compile) {
-    httpBackend.expect('OPTIONS', CmsConfig.buildBackendUrl(optionsUrl200)).respond(function(){
+    httpBackend.expect('OPTIONS', CmsConfig.buildBackendApiUrl(optionsUrl200)).respond(function(){
       return [200, {detail: "Great Job"}];
     });
 
@@ -41,7 +41,7 @@ describe('Directive: hideIfForbidden', function () {
   }));
 
   it('should make a forbidden element invisible', inject(function ($compile) {
-    httpBackend.expect('OPTIONS', CmsConfig.buildBackendUrl(optionsUrl403)).respond(function(){
+    httpBackend.expect('OPTIONS', CmsConfig.buildBackendApiUrl(optionsUrl403)).respond(function(){
       return [403, {detail: "Denied"}];
     });
 

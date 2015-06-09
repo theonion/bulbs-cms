@@ -44,7 +44,7 @@ angular.module('bulbsCmsApp', [
   'ui.bootstrap.datetimepicker',
   'URLify',
   // shared
-  'backendHref',
+  'backendApiHref',
   'contentServices',
   'cms.config',
   'cms.templates',
