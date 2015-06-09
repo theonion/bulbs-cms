@@ -481,7 +481,6 @@ angular.module('bulbsCmsApp.mockApi', [
     $httpBackend.when('POST', /\/cms\/api\/v1\/content\/\d+\/send\//)
       .respond({editor_items: []});
 
-    // for anything that uses BC_ADMIN_URL
-    $httpBackend.when('GET', /^http:\/\/localimages\.avclub\.com\/avclub.*/).respond('');
+    $httpBackend.when('GET', /^\/\/localimages\.avclub\.com\/avclub.*/).respond('');
   }
 ]);

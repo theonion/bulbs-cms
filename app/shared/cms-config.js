@@ -4,21 +4,27 @@ angular.module('cms.config', [
   'lodash'
 ])
   .provider('CmsConfig', function CmsConfigProvider (_) {
+    // relative api path, rel to backendRoot
+    var apiPath = '';
     // root for all backend requests
     var backendRoot = '';
-    // relative api path
-    var apiPath = '';
+    // default width to request for images
+    var imageDefaultWidth = 1200;
+    // image server root
+    var imageServerRoot = '';
+    // api key for accessing image server
+    var imageServerApiKey = '';
     // create content modal template to use
     var createContentTemplateUrl = '';
-    // url for logo to display in CMS
-    var logoUrl = '';
-    // mappings where pairs are <name>: <template-url> for looking up toolbar templates
-    var toolbarMappings = {};
     // mappings where pairs are <template-url>: <polymorphic_ctype[]>
     //  for looking up edit page templates
     var editPageMappings = {};
+    // url for logo to display in CMS
+    var logoUrl = '';
     // callback to fire when user is attempting to logout
     var logoutCallback = function () {};
+    // mappings where pairs are <name>: <template-url> for looking up toolbar templates
+    var toolbarMappings = {};
 
     var error = function (message) {
       return new ConfigError('CmsConfig', message);
@@ -52,6 +58,30 @@ angular.module('cms.config', [
         backendRoot = value;
       } else {
         throw error('backendRoot must be a string!');
+      }
+    };
+
+    this.setImageDefaultWidth = function (num) {
+      if (_.isNumber(num)) {
+        imageDefaultWidth = num;
+      } else {
+        throw error('imageDefaultWidth must be a number!');
+      }
+    };
+
+    this.setImageServerRoot = function (value) {
+      if (_.isString(value)) {
+        imageServerRoot = value;
+      } else {
+        throw error('imageServerRoot must be a string!');
+      }
+    };
+
+    this.setImageServerApiKey = function (value) {
+      if (_.isString(value)) {
+        imageServerApiKey = value;
+      } else {
+        throw error('imageServerApiKey must be a string!');
       }
     };
 
@@ -159,10 +189,26 @@ angular.module('cms.config', [
 
     this.$get = function () {
       return {
+        getCreateContentTemplateUrl: _.constant(createContentTemplateUrl),
+        getImageDefaultWidth: _.constant(imageDefaultWidth),
+        getImageServerApiKey: _.constant(imageServerApiKey),
         getLogoUrl: _.constant(logoUrl),
+        logoutCallback: logoutCallback,
+        /**
+         * Get the template url for given toolbar.
+         *
+         * @param {string} type - Type to find mapping for.
+         * @returns Template url mapped to given type.
+         */
         getToolbarTemplateUrl: function (type) {
           return getOrFail(toolbarMappings, type, 'Unable to find toolbar template for type "' + type + '"');
         },
+        /**
+         * Get edit page template for given type.
+         *
+         * @param {string} type - Type to find mapping for.
+         * @returns Template url mapped to given type.
+         */
         getEditPageTemplateUrl: function (type) {
           var template = findEditPageMapping(type);
 
@@ -172,8 +218,6 @@ angular.module('cms.config', [
             throw error('Unable to find edit page template for type "' + type + '"');
           }
         },
-        getCreateContentTemplateUrl: _.constant(createContentTemplateUrl),
-        logoutCallback: logoutCallback,
         /**
          * Create an absolute api url.
          *
@@ -181,7 +225,7 @@ angular.module('cms.config', [
          * @returns absolute api url.
          */
         buildBackendApiUrl: function (relUrl) {
-          return backendRoot + apiPath + relUrl;
+          return backendRoot + apiPath + (relUrl || '');
         },
         /**
          * Build a url relative to backend root.
@@ -190,7 +234,16 @@ angular.module('cms.config', [
          * @returns absolute url.
          */
         buildBackendUrl: function (relUrl) {
-          return backendRoot + relUrl;
+          return backendRoot + (relUrl || '');
+        },
+        /**
+         * Build a url relative to image server root.
+         *
+         * @param {string} relUrl - relative image server url to get absolute url for.
+         * @returns absolute url on image server.
+         */
+        buildImageServerUrl: function (relUrl) {
+          return imageServerRoot + (relUrl || '');
         }
      };
     };

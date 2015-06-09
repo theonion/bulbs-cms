@@ -43,8 +43,9 @@ describe('ImageCropModalCtrl', function () {
         ratios: null
       }
     );
+
     $httpBackend.flush();
-    $scope.$digest();
+
     angular.element('.crop-image-container img').trigger('load');  // The jcrop api can only get set up when the image loads.
 
     expect($scope.ratios).toEqual(['1x1', '16x9']);
@@ -78,8 +79,8 @@ describe('ImageCropModalCtrl', function () {
         ratios: ['1x1']
       }
     );
+
     $httpBackend.flush();
-    $scope.$digest();
 
     expect($scope.ratios).toEqual(['1x1']);
   });

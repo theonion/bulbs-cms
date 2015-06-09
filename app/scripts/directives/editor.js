@@ -2,7 +2,7 @@
 
 angular.module('bulbsCmsApp')
   .directive('onionEditor', function (PARTIALS_URL, $, Zencoder, BettyCropper,
-      openImageCropModal, VIDEO_EMBED_URL, OnionEditor) {
+      openImageCropModal, VIDEO_EMBED_URL, OnionEditor, CmsImage) {
     return {
       require: 'ngModel',
       replace: true,
@@ -93,9 +93,7 @@ angular.module('bulbsCmsApp')
 
         scope.$watch(ngModel, function () {
           editor.setContent(ngModel.$viewValue || defaultValue);
-          if (window.picturefill) {
-            window.picturefill(element[0]);
-          }
+          CmsImage.picturefill(element[0]);
         });
       }
     };

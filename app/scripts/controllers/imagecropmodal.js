@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ImageCropModalCtrl', function ($scope, $timeout, $modalInstance, BettyCropper, Selection, DEFAULT_IMAGE_WIDTH, imageData, ratios, $) {
+  .controller('ImageCropModalCtrl', function ($scope, $timeout, $modalInstance,
+      BettyCropper, CmsConfig, Selection, imageData, ratios, $) {
     $scope.selectedCrop = null;
     $scope.cropMode = false;
     $scope.ratios = ratios;
@@ -43,7 +44,7 @@ angular.module('bulbsCmsApp')
         });
       });
 
-      $scope.image_url = image.url('original', DEFAULT_IMAGE_WIDTH, 'jpg');
+      $scope.image_url = image.url('original', CmsConfig.getImageDefaultWidth(), 'jpg');
       if (!$scope.ratios) {
         $scope.ratios = Object.keys(image.selections);
       }

@@ -58,14 +58,6 @@
     <!-- don't bundle this -->
     <link rel="stylesheet" href="bower_components/onion-editor/build/inline.css" />
 
-
-    <script type="text/javascript">
-        var BC_ADMIN_URL = 'http://clickholeimg.local';
-        var IMAGE_URL = 'http://clickholeimg.local/{{id}}/{{crop}}/{{width}}.{{format}}';
-        var IMAGE_LISTENERS_DISABLED = true;
-        var DEFAULT_IMAGE_ID = 0;
-    </script>
-
     <script type="text/javascript">
         function jqueryCsrfSetup(){
             return;
@@ -136,8 +128,6 @@
     <!-- endbuild -->
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
-    <script src="cms-image.js"></script>
-
     <script src="scripts/libraries/editor-cms-bridge.js"></script>
 
     <script src="scripts/app.js"></script>
@@ -241,6 +231,7 @@
     <script src="shared/api-services/special-coverage/special-coverage-factory.js"></script>
     <script src="shared/backend-href/backend-href.js"></script>
     <script src="shared/cms-config.js"></script>
+    <script src="shared/cms-image/cms-image.js"></script>
     <script src="shared/config-error.js"></script>
     <script src="shared/content-services/content-factory.js"></script>
     <script src="shared/content-services/content-list-service.js"></script>
@@ -342,8 +333,6 @@
         //but there probably isn't any reason for them to not be
         //so...
         // ¯\_(ツ)_/¯
-        angular.module('BettyCropper').constant('IMAGE_SERVER_URL', 'http://clickholeimg.local');
-        angular.module('BettyCropper').constant('BC_API_KEY', 'http://clickholeimg.local');
 
         angular.module('apiServices.settings', []).constant('API_URL_ROOT', '/cms/api/v1/');
 
@@ -359,6 +348,8 @@
               '/content_type_views/content_content.html',
               'content_content');
             CmsConfigProvider.setCreateContentTemplateUrl(DIRECTIVE_PARTIALS_URL + 'create-content.html');
+            CmsConfigProvider.setImageServerRoot('http://clickholeimg.local');
+            CmsConfigProvider.setImageServerApiKey('some-bc-api-key');
 
             TokenAuthConfigProvider.setLogoUrl('/images/onion-logo.png');
             TokenAuthConfigProvider.setApiHost('');
@@ -368,23 +359,19 @@
 
         angular.module('bulbsCmsApp.settings')
           .constant('AUTO_ADD_AUTHOR', true)
-          .constant('BC_ADMIN_URL', 'http://clickholeimg.local')
           .constant('CACHEBUSTER', '?' + Date.now())
           .constant('CMS_NAMESPACE', 'Smoove')
           .constant('CONTENT_PARTIALS_URL', '/content_type_views/')
           .constant('COMPONENTS_URL', '/components/')
           .constant('CUSTOM_VIDEO_POSTER_URL', 'http://chimg.onionstatic.com/{{image}}/{{ratio}}/600.jpg')
-          .constant('DEFAULT_IMAGE_WIDTH', 1200)
           .constant('DIRECTIVE_PARTIALS_URL', '/views/')
           .constant('EXTERNAL_URL', 'onion.local')
           .constant('FIREBASE_ROOT', 'bulbs-cms-testing')
           .constant('PARTIALS_URL', '/views/')
-          .constant('IMAGE_SERVER_URL', 'http://clickholeimg.local')
           .constant('LOADING_IMG_SRC', '/images/loading.gif')
           .constant('MEDIA_ITEM_PARTIALS_URL', '/cms/api/partials/media_items/')
           .constant('RESTANGULAR_API_URL_ROOT', '/cms/api/v1')
           .constant('SHARED_URL', '/shared/')
-          .constant('STATIC_IMAGE_URL', 'http://chimg.onionstatic.com/{{image}}/{{ratio}}/600.jpg')
           .constant('STATIC_URL', '/static/')
           .constant('TAR_OPTIONS', { endpoint: '/ads/targeting' })
           .constant('TIMEZONE_NAME', 'America/Chicago')

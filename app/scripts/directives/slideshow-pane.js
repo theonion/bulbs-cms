@@ -2,7 +2,7 @@
 
 angular.module('bulbsCmsApp')
   .directive('slideshowPane', function ($http, $window, $compile, $, LOADING_IMG_SRC,
-      PARTIALS_URL) {
+      PARTIALS_URL, CmsImage) {
     return {
       restrict: 'E',
       templateUrl: PARTIALS_URL + 'slideshow-pane.html',
@@ -44,13 +44,13 @@ angular.module('bulbsCmsApp')
 
               scope.article.slides[index].id = data.id.toString();
               scope.$apply();
-              $window.picturefill();
+              CmsImage.picturefill();
               if ($element.find('.image img')[0].complete) { removeLoadingGif(); }
             },
             function () { return; },
             function (oldImage) {
               scope.article.slides[index] = oldImage;
-              $window.picturefill();
+              CmsImage.picturefill();
             }
           );
         };

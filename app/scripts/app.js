@@ -47,6 +47,7 @@ angular.module('bulbsCmsApp', [
   'backendApiHref',
   'contentServices',
   'cms.config',
+  'cms.image',
   'cms.templates',
   'currentUser',
   // components
