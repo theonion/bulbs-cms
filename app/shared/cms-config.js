@@ -190,7 +190,7 @@ angular.module('cms.config', [
          * @returns absolute url.
          */
         buildBackendUrl: function (relUrl) {
-
+          return backendRoot + relUrl;
         }
      };
     };
