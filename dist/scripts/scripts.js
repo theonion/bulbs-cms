@@ -264,7 +264,7 @@ angular.module('bulbsCmsApp', [
   'ui.bootstrap.datetimepicker',
   'URLify',
   // shared
-  'backendHref',
+  'backendApiHref',
   'contentServices',
   'cms.config',
   'cms.templates',
@@ -1455,7 +1455,7 @@ angular.module('content.edit.editorItem.service', [
       var self = this;
       this.getItems = function (article) {
         $http.get(
-          CmsConfig.buildBackendUrl('content/' + article + '/send/')
+          CmsConfig.buildBackendApiUrl('content/' + article + '/send/')
         ).success(function (data, status) {
           self.data = data.editor_items;
         });
@@ -1504,12 +1504,12 @@ angular.module('content.edit.linkBrowser', [
      window.linkBrowser = function(term, resultsElement) {
        resultsElement.html('<div class="items"></div><hr><span class="type">Articles</span><ul class="content"></ul>');
 
-       $.ajax(CmsConfig.buildBackendUrl('search/autocomplete?q=' + term))
+       $.ajax(CmsConfig.buildBackendApiUrl('search/autocomplete?q=' + term))
          .success(function(resp) {
            $('.items', resultsElement).html(resp);
          });
 
-       $.ajax(CmsConfig.buildBackendUrl('content/?search=' + term))
+       $.ajax(CmsConfig.buildBackendApiUrl('content/?search=' + term))
          .success(function(resp) {
            for (var i=0; i < Math.min(resp.count, 20); i ++) {
              var link = $('<A>')
@@ -3880,7 +3880,7 @@ angular.module('sendToEditor.modal', [
           statusText = $scope.status;
         }
         return $http({
-          url: CmsConfig.buildBackendUrl('content/' + article.id + '/send/'),
+          url: CmsConfig.buildBackendApiUrl('content/' + article.id + '/send/'),
           method: 'POST',
           data: {
             notes: $scope.noteToEditor,
@@ -4840,28 +4840,57 @@ angular.module('apiServices.specialCoverage.factory', [
 'use strict';
 
 /**
- * Filter and directive that can be used in templates to build correct urls for the CMS.
+ * Filter and directive that can be used in templates to build correct urls for
+ *  interaction with the backend.
  */
-angular.module('backendHref', [
+angular.module('backendApiHref', [
   'cms.config',
   'jquery'
 ])
-  .filter('backendHref', function(CmsConfig) {
-    return function (relUrl) {
-      return CmsConfig.buildBackendUrl(relUrl);
-    };
-  })
-  .directive('backendHref', function ($, $filter) {
-    return {
-      restrict: 'A',
-      scope: {
-        backendHref: '@'
-      },
-      link: function (scope, iElement) {
-        $(iElement).attr('href', $filter('backendHref')(scope.backendHref));
-      }
-    };
-  });
+  .filter('backendApiHref', [
+    'CmsConfig',
+    function(CmsConfig) {
+      return function (relUrl) {
+        return CmsConfig.buildBackendApiUrl(relUrl);
+      };
+    }]
+  )
+  .filter('backendHref', [
+    'CmsConfig',
+    function (CmsConfig) {
+      return function (relUrl) {
+        return CmsConfig.buildBackendUrl(relUrl);
+      };
+    }]
+  )
+  .directive('backendApiHref', [
+    '$', '$filter',
+    function ($, $filter) {
+      return {
+        restrict: 'A',
+        scope: {
+          backendApiHref: '@'
+        },
+        link: function (scope, iElement) {
+          $(iElement).attr('href', $filter('backendApiHref')(scope.backendApiHref));
+        }
+      };
+    }]
+  )
+  .directive('backendHref', [
+    '$', '$filter',
+    function ($, $filter) {
+      return {
+        restrict: 'A',
+        scope: {
+          backendHref: '@'
+        },
+        link: function (scope, iElement) {
+          $(iElement).attr('href', $filter('backendHref')(scope.backendHref));
+        }
+      };
+    }]
+  );
 
 'use strict';
 
@@ -4871,6 +4900,8 @@ angular.module('cms.config', [
   .provider('CmsConfig', function CmsConfigProvider (_) {
     // root for all backend requests
     var backendRoot = '';
+    // relative api path
+    var apiPath = '';
     // create content modal template to use
     var createContentTemplateUrl = '';
     // url for logo to display in CMS
@@ -4900,6 +4931,14 @@ angular.module('cms.config', [
           return true;
         }
       });
+    };
+
+    this.setApiPath = function (value) {
+      if (_.isString(value)) {
+        apiPath = value;
+      } else {
+        throw error('apiPath must be a string!');
+      }
     };
 
     this.setBackendRoot = function (value) {
@@ -5030,13 +5069,22 @@ angular.module('cms.config', [
         getCreateContentTemplateUrl: _.constant(createContentTemplateUrl),
         logoutCallback: logoutCallback,
         /**
-         * Create an absolute url to the backend for the CMS by using the backendRoot.
+         * Create an absolute api url.
+         *
+         * @param {string} relUrl - relative url to get the absolute api url for.
+         * @returns absolute api url.
+         */
+        buildBackendApiUrl: function (relUrl) {
+          return backendRoot + apiPath + relUrl;
+        },
+        /**
+         * Build a url relative to backend root.
          *
          * @param {string} relUrl - relative url to get the absolute url for.
          * @returns absolute url.
          */
         buildBackendUrl: function (relUrl) {
-          return backendRoot + relUrl;
+
         }
      };
     };
@@ -5801,7 +5849,7 @@ angular.module('bulbsCmsApp')
             url: $window.location.href,
             user_agent: $window.navigator.userAgent
           };
-          return $http.post(CmsConfig.buildBackendUrl('report-bug/'), data);
+          return $http.post(CmsConfig.buildBackendApiUrl('report-bug/'), data);
         };
 
         $scope.sendToWebtechCbk = function (promise) {
@@ -5906,7 +5954,7 @@ angular.module('bulbsCmsApp')
           inputCounter = 0;
           $http({
             method: 'GET',
-            url: CmsConfig.buildBackendUrl(scope.resourceUrl + val)
+            url: CmsConfig.buildBackendApiUrl(scope.resourceUrl + val)
           }).success(function (data) {
             var results = data.results || data;
             scope.autocomplete_list = results.splice(0, 5);
@@ -6051,7 +6099,7 @@ angular.module('bulbsCmsApp')
         function saveArticle() {
           $('button.go').removeClass('btn-danger').addClass('btn-success').html('<i class="fa fa-refresh fa-spin"></i> Going');
           $http({
-            url: CmsConfig.buildBackendUrl('content/?doctype=' + $scope.contentType),
+            url: CmsConfig.buildBackendApiUrl('content/?doctype=' + $scope.contentType),
             method: 'POST',
             data: $scope.init
           }).success(function (resp) {
@@ -6382,7 +6430,7 @@ angular.module('bulbsCmsApp')
         scope.name = 'feature_type';
         scope.label = 'Feature Type';
         scope.placeholder = 'Feature Type';
-        scope.resourceUrl = CmsConfig.buildBackendUrl('things/?type=feature_type&q=');
+        scope.resourceUrl = CmsConfig.buildBackendApiUrl('things/?type=feature_type&q=');
 
         scope.$watch('article.feature_type', function () {
           scope.model = scope.article.feature_type;
@@ -6437,7 +6485,7 @@ angular.module('bulbsCmsApp')
       link: function postLink(scope, element, attrs) {
         $http({
           method: 'OPTIONS',
-          url: CmsConfig.buildBackendUrl(attrs.optionsUrl),
+          url: CmsConfig.buildBackendApiUrl(attrs.optionsUrl),
           noPermissionIntercept: true
         }).success(function (data, status) {
           //I guess 403s aren't errors? I dont know.
@@ -6646,7 +6694,7 @@ angular.module('bulbsCmsApp')
         scope.name = 'section';
         scope.label = 'Sections';
         scope.placeholder = 'Enter a section';
-        scope.resourceUrl = CmsConfig.buildBackendUrl('tag/?ordering=name&types=core_section&search=');
+        scope.resourceUrl = CmsConfig.buildBackendApiUrl('tag/?ordering=name&types=core_section&search=');
         scope.display = function (o) {
           return o.name;
         };
@@ -6786,7 +6834,7 @@ angular.module('bulbsCmsApp')
         scope.name = 'tag';
         scope.label = 'Tags';
         scope.placeholder = 'Enter a tag';
-        scope.resourceUrl = CmsConfig.buildBackendUrl('tag/?ordering=name&types=content_tag&search=');
+        scope.resourceUrl = CmsConfig.buildBackendApiUrl('tag/?ordering=name&types=content_tag&search=');
         scope.display = function (o) {
           return o.name;
         };
@@ -6863,7 +6911,7 @@ angular.module('bulbsCmsApp').directive(
             scope.embedUrl = $sce.trustAsUrl('/video/embed?id=' + scope.article.video);
             $http({
               method: 'GET',
-              url: CmsConfig.buildBackendUrl('videos/api/video/' + scope.article.video + '/')
+              url: CmsConfig.buildBackendApiUrl('videos/api/video/' + scope.article.video + '/')
             }).success(function (data) {
               console.log('getting video from API');
               console.log(data);
@@ -8126,7 +8174,7 @@ angular.module('bulbsCmsApp')
       var data = {published: newDateTime};
 
       return $http({
-        url: CmsConfig.buildBackendUrl('content/' + $scope.article.id + '/publish/'),
+        url: CmsConfig.buildBackendApiUrl('content/' + $scope.article.id + '/publish/'),
         method: 'POST',
         data: data
       });
@@ -8157,7 +8205,7 @@ angular.module('bulbsCmsApp')
 
     $scope.unpublish = function () {
       return $http({
-        url: CmsConfig.buildBackendUrl('content/' + $scope.article.id + '/publish/'),
+        url: CmsConfig.buildBackendApiUrl('content/' + $scope.article.id + '/publish/'),
         method: 'POST',
         data: {published: false}
       });
@@ -8205,7 +8253,7 @@ angular.module('bulbsCmsApp')
           {'title': 'Role', 'expression': 'role'},
           {'title': 'Notes', 'expression': 'notes'},
         ],
-        downloadURL: CmsConfig.buildBackendUrl('contributions/reporting/'),
+        downloadURL: CmsConfig.buildBackendApiUrl('contributions/reporting/'),
         orderOptions: [
           {
             label: 'Order by User',
@@ -8225,7 +8273,7 @@ angular.module('bulbsCmsApp')
           {'title': 'URL', 'expression': 'url'},
         ],
         orderOptions: [],
-        downloadURL: CmsConfig.buildBackendUrl('contributions/contentreporting/'),
+        downloadURL: CmsConfig.buildBackendApiUrl('contributions/contentreporting/'),
       }
     };
     $scope.items = [];
@@ -8358,7 +8406,7 @@ angular.module('bulbsCmsApp')
 
       $http({
         method: 'GET',
-        url: CmsConfig.buildBackendUrl(TAR_OPTIONS.endpoint),
+        url: CmsConfig.buildBackendApiUrl(TAR_OPTIONS.endpoint),
         timeout: canceller.promise,
         params: {url: $scope.url}
       }).success(function (data) {
@@ -8382,7 +8430,7 @@ angular.module('bulbsCmsApp')
 
       return $http({
         method: 'POST',
-        url: CmsConfig.buildBackendUrl(TAR_OPTIONS.endpoint + '?url=' + $scope.url),
+        url: CmsConfig.buildBackendApiUrl(TAR_OPTIONS.endpoint + '?url=' + $scope.url),
         data: data
       }).success(function (data) {
         $scope.targetingArray = [];
@@ -8509,7 +8557,7 @@ angular.module('bulbsCmsApp')
     $scope.trashContent = function () {
       return $http({
         'method': 'POST',
-        'url': CmsConfig.buildBackendUrl('content/' + articleId + '/trash/')
+        'url': CmsConfig.buildBackendApiUrl('content/' + articleId + '/trash/')
       });
     };
 
@@ -8547,7 +8595,7 @@ angular.module('bulbsCmsApp')
 
     $scope.unpublish = function () {
       return $http({
-        url: CmsConfig.buildBackendUrl('content/' + $scope.article.id + '/publish/'),
+        url: CmsConfig.buildBackendApiUrl('content/' + $scope.article.id + '/publish/'),
         method: 'POST',
         data: {published: false}
       });
@@ -9657,7 +9705,7 @@ angular.module('bulbsCmsApp')
 
       $http({
         method: 'POST',
-        url: CmsConfig.buildBackendUrl(newVideoUrl),
+        url: CmsConfig.buildBackendApiUrl(newVideoUrl),
         data: data,
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       }).success(function (data) {
@@ -9718,7 +9766,7 @@ angular.module('bulbsCmsApp')
 
       $http({
         method: 'POST',
-        url: CmsConfig.buildBackendUrl('video/' + videoObject.attrs.id + '/encode')
+        url: CmsConfig.buildBackendApiUrl('video/' + videoObject.attrs.id + '/encode')
       }).success(function (data) {
         videoObject.attrs['encode_status_endpoints'] = data;
         _encodingVideos[videoObject.attrs.id] = videoObject.attrs;
@@ -9748,7 +9796,7 @@ angular.module('bulbsCmsApp')
       var url = '/video/' + videoId;
       return $http({
         method: 'GET',
-        url: CmsConfig.buildBackendUrl(url)
+        url: CmsConfig.buildBackendApiUrl(url)
       });
     };
 
@@ -9757,7 +9805,7 @@ angular.module('bulbsCmsApp')
       var data = $.param(video);
       return $http({
         method: 'POST',
-        url: CmsConfig.buildBackendUrl(url),
+        url: CmsConfig.buildBackendApiUrl(url),
         data: data,
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       });
