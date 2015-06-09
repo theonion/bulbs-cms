@@ -46,7 +46,7 @@
     "raven-js": "1.1.11",
     "restangular": "~1.4.0",
     "restmod-style-drf-paged": "~0.0.4",
-    "token-auth-frontend": "https://github.com/theonion/token-auth-frontend.git#0.0.30",
+    "token-auth-frontend": "https://github.com/theonion/token-auth-frontend.git#0.0.31",
     "urlify": "theonion/urlify",
     "videohub-client-js": "theonion/videohub-client-js#0.1.8",
     "zeroclipboard": "~2.1.6"
