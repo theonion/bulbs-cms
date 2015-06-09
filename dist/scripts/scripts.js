@@ -1,190 +1,3 @@
-(function( w ){
-    /* We can request an image at every possible width, but let's limit it to a reasonable number
-       We can set these so they correspond to our more common sizes.
-    */
-    function tmpl(text, dict) {
-        for (var k in dict) {
-            text = text.replace("{{" + k + "}}", dict[k]);
-        }
-        return text;
-    }
-    w.picturefill = function(element) {
-        var ps;
-        if (element && element.getAttribute('data-type') === 'image') {
-          ps = [element];
-        }
-        else { 
-          if (typeof element === "undefined") {
-            element = w.document;
-          }
-          ps = element.getElementsByTagName( "div" );
-        }
-
-        var imageData = [];
-        for( var i = 0, il = ps.length; i < il; i++ ){
-            var el = ps[i];
-            if(el.getAttribute( "data-type" ) !== "image" ){
-                continue;
-            }
-            var div = el.getElementsByTagName( "div" )[0];
-            if( el.getAttribute( "data-image-id" ) !== null ){
-                var id = el.getAttribute( "data-image-id" ),
-                    crop = el.getAttribute( "data-crop" );
-                var _w = div.offsetWidth,
-                    _h = div.offsetHeight;
-
-                if (!crop || crop === "" || crop === "auto") {
-                    crop = computeAspectRatio(_w, _h);
-                }
-                if (el.getAttribute("data-format")) {
-                    format = el.getAttribute("data-format");
-                }
-                else {
-                    format = "jpg";
-                }
-
-                var element = div;
-                if (id) {
-                    $(".image-css-" + id).remove();
-                    $.ajax({
-                        url: w.BC_ADMIN_URL + '/api/' + id,
-                        headers: {
-                            'X-Betty-Api-Key': w.BC_API_KEY,
-                            'Content-Type': undefined
-                        },
-                        success: $.proxy(function (res) {
-                            var imageData = res;
-                            if (this.crop === "original") {
-                                createStyle('.image[data-image-id="' + this.id + '"]>div', {
-                                        'padding-bottom':  ((res.height / res.width) * 100) + '%'
-                                }, "image-css-" + this.id);
-
-                                var cropDetails = {x0:0, x1:res.width, y0:0, y1:res.height};
-                            }
-                            else {
-                                var cropDetails = imageData.selections[this.crop]
-                            }
-                            
-                            computeStyle(this.element, imageData, cropDetails)
-                        }, {element: element, id: id, crop:crop}),
-                        error: $.proxy(function() {
-                            if (this.crop === "original") {
-                                //default to 16x9
-                                createStyle('.image[data-image-id="' + this.id + '"]>div', {
-                                    'padding-bottom':  '56.25%', // default to 16x9 for errors
-                                    'background-color':'rgba(200, 0,0, .5)'
-                                }, "image-css-" + this.id);
-                            }
-                        }, {id: id, crop:crop})
-                    });
-                }
-            }
-        }
-    };
-
-    function computeStyle(element, image, selection) {
-        var selector = '.image[data-image-id="' + image.id + '"]>div';
-        var elementWidth = $(selector).width();
-
-        var scale, styles,
-        elementHeight = (image.height / image.width) * elementWidth,
-        s_width = selection.x1 - selection.x0,
-        s_height = selection.y1 - selection.y0,
-        tmp_selection = selection;
-        
-
-        if (!s_width || !s_height) {
-          /*
-              If we have bogus selections, make
-              the crop equal to the whole image
-          */
-          s_width = elementWidth;
-          s_height = elementHeight;
-          tmp_selection = {
-            'x0': 0,
-            'y0': 0,
-            'x1': s_width,
-            'y1': s_height
-          };
-        }
-
-        var imageUrl = w.BC_ADMIN_URL + '/' + image.id + '/original/1200.jpg';
-        scale = elementWidth / s_width;
-
-        var rules = {
-            'background-image': 'url(' + imageUrl +')',
-            'background-size': scaleNumber(image.width, scale) + 'px',
-            'background-position':
-              '-' + scaleNumber(tmp_selection.x0, scale) + 'px ' +
-              '-' + scaleNumber(tmp_selection.y0, scale) + 'px',
-            'background-repeat': 'no-repeat'
-          }
-        createStyle(selector, rules,  "image-css-" + image.id);
-    }
-
-    function createStyle(selector, rules, classname) {
-        var styleNode = document.createElement("style");
-        styleNode.type = "text/css";
-        styleNode.className = classname;
-        var css = "";
-        
-        var temp = "" + selector + '{';
-        for (var rule in rules) {
-            temp += rule + ':' + rules[rule] + ';';
-        }
-        temp += '}';
-        css += temp;
-    
-        if (styleNode.styleSheet) {
-            styleNode.styleSheet.cssText = css;
-        } else {
-            styleNode.appendChild(document.createTextNode(css));
-        }
-        $(document).find("head").append(styleNode);
-    }
-
-
-    function scaleNumber(num, by_scale) {
-      return Math.floor(num * by_scale);
-    };
-
-
-    function computeAspectRatio(_w, _h) {
-        if (_w !== 0 && _h !== 0) {
-            var aspectRatio = Math.ceil(_w/_h * 10);
-            //smooth out rounding issues.
-            switch (aspectRatio) {
-                case 30:
-                case 31:
-                    crop = "3x1";
-                    break;
-                case 20:
-                    crop = "2x1";
-                    break;
-                case 14:
-                    crop = "4x3";
-                    break;
-                case 18:
-                    crop = "16x9";
-                    break;
-                case 8:
-                    crop = "3x4";
-                    break;
-                case 10:
-                    crop = "1x1";
-                    break;
-                default:
-                    crop = "original";
-            }
-            return crop;
-        }
-        else {
-            return "16x9"
-        }
-    }
-
-
-}( this ));;
 'use strict';
 /*
 
@@ -267,6 +80,7 @@ angular.module('bulbsCmsApp', [
   'backendApiHref',
   'contentServices',
   'cms.config',
+  'cms.image',
   'cms.templates',
   'currentUser',
   // components
@@ -468,13 +282,16 @@ angular.module('bulbs.api')
 
 'use strict';
 (function () {
-  angular.module('BettyCropper', ['restangular', 'jquery'])
-    .value('DEFAULT_IMAGE_WIDTH', 1200)
+  angular.module('BettyCropper', [
+      'cms.config',
+      'restangular',
+      'jquery'
+    ])
     .factory('Selection', SelectionFactory)
     .factory('BettyImage', BettyImageFactory)
     .service('BettyCropper', BettyCropperService);
 
-  function BettyCropperService($http, $interpolate, $q, IMAGE_SERVER_URL, BC_API_KEY, BettyImage, $) {
+  function BettyCropperService($http, $interpolate, $q, CmsConfig, BettyImage, $) {
       var fileInputId = '#bulbs-cms-hidden-image-file-input';
       var inputTemplate = '<input id="bulbs-cms-hidden-image-file-input" type="file" accept="image/*" style="position: absolute; left:-99999px;" name="image" />';
 
@@ -512,9 +329,9 @@ angular.module('bulbs.api')
 
           $http({
             method: 'POST',
-            url: IMAGE_SERVER_URL + '/api/new',
+            url: CmsConfig.buildImageServerUrl('/api/new'),
             headers: {
-              'X-Betty-Api-Key': BC_API_KEY,
+              'X-Betty-Api-Key': CmsConfig.getImageServerApiKey(),
               'Content-Type': undefined,
               'X-CSRFToken': undefined
             },
@@ -542,9 +359,9 @@ angular.module('bulbs.api')
       function get(id) {
         return $http({
           method: 'GET',
-          url: IMAGE_SERVER_URL + '/api/' + id,
+          url: CmsConfig.buildImageServerUrl('/api/' + id),
           headers: {
-            'X-Betty-Api-Key': BC_API_KEY,
+            'X-Betty-Api-Key': CmsConfig.getImageServerApiKey(),
             'Content-Type': undefined,
             'X-CSRFToken': undefined
           },
@@ -561,9 +378,9 @@ angular.module('bulbs.api')
       function detailPatch(id, name, credit, selections) {
         return $http({
           method: 'PATCH',
-          url: IMAGE_SERVER_URL + '/api/' + id,
+          url: CmsConfig.buildImageServerUrl('/api/' + id),
           headers: {
-            'X-Betty-Api-Key': BC_API_KEY,
+            'X-Betty-Api-Key': CmsConfig.getImageServerApiKey(),
             'Content-Type': undefined,
             'X-CSRFToken': undefined
           },
@@ -585,9 +402,9 @@ angular.module('bulbs.api')
       function updateSelection(id, ratio, selections) {
         return $http({
           method: 'POST',
-          url: IMAGE_SERVER_URL + '/api/' + id + '/' + ratio,
+          url: CmsConfig.buildImageServerUrl('/api/' + id + '/' + ratio),
           headers: {
-            'X-Betty-Api-Key': BC_API_KEY,
+            'X-Betty-Api-Key': CmsConfig.getImageServerApiKey(),
             'Content-Type': undefined,
             'X-CSRFToken': undefined
           },
@@ -596,7 +413,7 @@ angular.module('bulbs.api')
       }
     }
 
-  function BettyImageFactory($interpolate, $http, IMAGE_SERVER_URL, BC_API_KEY, DEFAULT_IMAGE_WIDTH, Selection, $) {
+  function BettyImageFactory($interpolate, $http, CmsConfig, Selection, $) {
     function BettyImage(data) {
       this.id = data.id;
       this.name = data.name;
@@ -643,7 +460,7 @@ angular.module('bulbs.api')
       var scaledSelection = selection.scaleToFit(width, height);
 
       return {
-        'background-image': 'url(' + this.url('original', DEFAULT_IMAGE_WIDTH, 'jpg') + ')',
+        'background-image': 'url(' + this.url('original', CmsConfig.getImageDefaultWidth(), 'jpg') + ')',
         'background-size': Math.floor(scaledSelection.width() / selection.width()  * this.width) + 'px',
         'background-position': '-' + scaledSelection.x0 + 'px -' + scaledSelection.y0 + 'px',
         'height': scaledSelection.height() + 'px',
@@ -666,7 +483,7 @@ angular.module('bulbs.api')
         segmentedId += idStr.substr(i, 1);
       }
       return exp({
-        base_url: IMAGE_SERVER_URL,
+        base_url: CmsConfig.buildImageServerUrl(),
         id: segmentedId,
         ratio: ratio,
         width: width,
@@ -686,9 +503,9 @@ angular.module('bulbs.api')
       }
       return $http({
         method: 'POST',
-        url: IMAGE_SERVER_URL + '/api/' + this.id + '/' + ratio,
+        url: CmsConfig.buildImageServerUrl('/api/' + this.id + '/' + ratio),
         headers: {
-          'X-Betty-Api-Key': BC_API_KEY,
+          'X-Betty-Api-Key': CmsConfig.getImageServerApiKey(),
           'Content-Type': undefined,
           'X-CSRFToken': undefined
         },
@@ -4898,21 +4715,27 @@ angular.module('cms.config', [
   'lodash'
 ])
   .provider('CmsConfig', function CmsConfigProvider (_) {
+    // relative api path, rel to backendRoot
+    var apiPath = '';
     // root for all backend requests
     var backendRoot = '';
-    // relative api path
-    var apiPath = '';
+    // default width to request for images
+    var imageDefaultWidth = 1200;
+    // image server root
+    var imageServerRoot = '';
+    // api key for accessing image server
+    var imageServerApiKey = '';
     // create content modal template to use
     var createContentTemplateUrl = '';
-    // url for logo to display in CMS
-    var logoUrl = '';
-    // mappings where pairs are <name>: <template-url> for looking up toolbar templates
-    var toolbarMappings = {};
     // mappings where pairs are <template-url>: <polymorphic_ctype[]>
     //  for looking up edit page templates
     var editPageMappings = {};
+    // url for logo to display in CMS
+    var logoUrl = '';
     // callback to fire when user is attempting to logout
     var logoutCallback = function () {};
+    // mappings where pairs are <name>: <template-url> for looking up toolbar templates
+    var toolbarMappings = {};
 
     var error = function (message) {
       return new ConfigError('CmsConfig', message);
@@ -4946,6 +4769,30 @@ angular.module('cms.config', [
         backendRoot = value;
       } else {
         throw error('backendRoot must be a string!');
+      }
+    };
+
+    this.setImageDefaultWidth = function (num) {
+      if (_.isNumber(num)) {
+        imageDefaultWidth = num;
+      } else {
+        throw error('imageDefaultWidth must be a number!');
+      }
+    };
+
+    this.setImageServerRoot = function (value) {
+      if (_.isString(value)) {
+        imageServerRoot = value;
+      } else {
+        throw error('imageServerRoot must be a string!');
+      }
+    };
+
+    this.setImageServerApiKey = function (value) {
+      if (_.isString(value)) {
+        imageServerApiKey = value;
+      } else {
+        throw error('imageServerApiKey must be a string!');
       }
     };
 
@@ -5053,10 +4900,26 @@ angular.module('cms.config', [
 
     this.$get = function () {
       return {
+        getCreateContentTemplateUrl: _.constant(createContentTemplateUrl),
+        getImageDefaultWidth: _.constant(imageDefaultWidth),
+        getImageServerApiKey: _.constant(imageServerApiKey),
         getLogoUrl: _.constant(logoUrl),
+        logoutCallback: logoutCallback,
+        /**
+         * Get the template url for given toolbar.
+         *
+         * @param {string} type - Type to find mapping for.
+         * @returns Template url mapped to given type.
+         */
         getToolbarTemplateUrl: function (type) {
           return getOrFail(toolbarMappings, type, 'Unable to find toolbar template for type "' + type + '"');
         },
+        /**
+         * Get edit page template for given type.
+         *
+         * @param {string} type - Type to find mapping for.
+         * @returns Template url mapped to given type.
+         */
         getEditPageTemplateUrl: function (type) {
           var template = findEditPageMapping(type);
 
@@ -5066,8 +4929,6 @@ angular.module('cms.config', [
             throw error('Unable to find edit page template for type "' + type + '"');
           }
         },
-        getCreateContentTemplateUrl: _.constant(createContentTemplateUrl),
-        logoutCallback: logoutCallback,
         /**
          * Create an absolute api url.
          *
@@ -5075,7 +4936,7 @@ angular.module('cms.config', [
          * @returns absolute api url.
          */
         buildBackendApiUrl: function (relUrl) {
-          return backendRoot + apiPath + relUrl;
+          return backendRoot + apiPath + (relUrl || '');
         },
         /**
          * Build a url relative to backend root.
@@ -5084,11 +4945,222 @@ angular.module('cms.config', [
          * @returns absolute url.
          */
         buildBackendUrl: function (relUrl) {
-          return backendRoot + relUrl;
+          return backendRoot + (relUrl || '');
+        },
+        /**
+         * Build a url relative to image server root.
+         *
+         * @param {string} relUrl - relative image server url to get absolute url for.
+         * @returns absolute url on image server.
+         */
+        buildImageServerUrl: function (relUrl) {
+          return imageServerRoot + (relUrl || '');
         }
      };
     };
   });
+
+'use strict';
+
+angular.module('cms.image', [
+  'cms.config',
+  'jquery'
+])
+  .service('CmsImage', [
+    '$', 'CmsConfig',
+    function ($, CmsConfig) {
+
+      /* We can request an image at every possible width, but let's limit it to a reasonable number
+         We can set these so they correspond to our more common sizes.
+      */
+
+      var styleCrop = function (response) {
+        var cropDetails;
+        if (this.crop === 'original') {
+          createStyle('.image[data-image-id="' + this.id + '"]>div', {
+            'padding-bottom': ((response.height / response.width) * 100) + '%'
+          }, 'image-css-' + this.id);
+
+          cropDetails = {
+            x0: 0,
+            x1: response.width,
+            y0: 0,
+            y1: response.height
+          };
+        } else {
+          cropDetails = response.selections[this.crop];
+        }
+
+        computeStyle(this.elementDiv, response, cropDetails);
+      };
+
+      var styleOriginalCrop = function () {
+        if (this.crop === 'original') {
+          //default to 16x9
+          createStyle('.image[data-image-id="' + this.id + '"]>div', {
+            'padding-bottom': '56.25%', // default to 16x9 for errors
+            'background-color': 'rgba(200, 0,0, .5)'
+          }, 'image-css-' + this.id);
+        }
+      };
+
+      var computeStyle = function (element, image, selection) {
+        var selector = '.image[data-image-id="' + image.id + '"]>div';
+        var elementWidth = $(selector).width();
+
+        var scale;
+        var elementHeight = (image.height / image.width) * elementWidth;
+        var s_width = selection.x1 - selection.x0;
+        var s_height = selection.y1 - selection.y0;
+        var tmp_selection = selection;
+
+        if (!s_width || !s_height) {
+          /*
+              If we have bogus selections, make
+              the crop equal to the whole image
+          */
+          s_width = elementWidth;
+          s_height = elementHeight;
+          tmp_selection = {
+            'x0': 0,
+            'y0': 0,
+            'x1': s_width,
+            'y1': s_height
+          };
+        }
+
+        var imageUrl = CmsConfig.buildImageServerUrl(
+          '/' + image.id + '/original/' + CmsConfig.getImageDefaultWidth() + '.jpg'
+        );
+        scale = elementWidth / s_width;
+
+        var rules = {
+          'background-image': 'url(' + imageUrl + ')',
+          'background-size': scaleNumber(image.width, scale) + 'px',
+          'background-position': '-' + scaleNumber(tmp_selection.x0, scale) + 'px ' +
+            '-' + scaleNumber(tmp_selection.y0, scale) + 'px',
+          'background-repeat': 'no-repeat'
+        };
+        createStyle(selector, rules, 'image-css-' + image.id);
+      };
+
+      var createStyle = function (selector, rules, classname) {
+        var styleNode = document.createElement('style');
+        styleNode.type = 'text/css';
+        styleNode.className = classname;
+        var css = '';
+
+        var temp = '' + selector + '{';
+        for (var rule in rules) {
+          temp += rule + ':' + rules[rule] + ';';
+        }
+        temp += '}';
+        css += temp;
+
+        if (styleNode.styleSheet) {
+          styleNode.styleSheet.cssText = css;
+        } else {
+          styleNode.appendChild(document.createTextNode(css));
+        }
+        $(document).find('head').append(styleNode);
+      };
+
+      var scaleNumber = function (num, by_scale) {
+        return Math.floor(num * by_scale);
+      };
+
+      var computeAspectRatio = function (_w, _h) {
+        if (_w !== 0 && _h !== 0) {
+          var aspectRatio = Math.ceil(_w / _h * 10);
+          var crop = 'original';
+          //smooth out rounding issues.
+          switch (aspectRatio) {
+            case 30:
+            case 31:
+              crop = '3x1';
+              break;
+            case 20:
+              crop = '2x1';
+              break;
+            case 14:
+              crop = '4x3';
+              break;
+            case 18:
+              crop = '16x9';
+              break;
+            case 8:
+              crop = '3x4';
+              break;
+            case 10:
+              crop = '1x1';
+              break;
+          }
+          return crop;
+        } else {
+          return '16x9';
+        }
+      };
+
+      this.picturefill = function (element) {
+        var ps;
+        if (element && element.getAttribute('data-type') === 'image') {
+          ps = [element];
+        } else {
+          if (typeof element === 'undefined') {
+            element = document;
+          }
+          ps = element.getElementsByTagName('div');
+        }
+
+        for (var i = 0, il = ps.length; i < il; i++) {
+          var el = ps[i];
+          if (el.getAttribute('data-type') !== 'image') {
+            continue;
+          }
+          var div = el.getElementsByTagName('div')[0];
+          if (el.getAttribute('data-image-id') !== null) {
+            var id = el.getAttribute('data-image-id'),
+              crop = el.getAttribute('data-crop'),
+              format = '';
+            var _w = div.offsetWidth,
+              _h = div.offsetHeight;
+
+            if (!crop || crop === '' || crop === 'auto') {
+              crop = computeAspectRatio(_w, _h);
+            }
+            if (el.getAttribute('data-format')) {
+              format = el.getAttribute('data-format');
+            } else {
+              format = 'jpg';
+            }
+
+            var elementDiv = div;
+            if (id) {
+              $('.image-css-' + id).remove();
+              $.ajax({
+                url: CmsConfig.buildImageServerUrl('/api/' + id),
+                headers: {
+                  'X-Betty-Api-Key': CmsConfig.getImageServerApiKey(),
+                  'Content-Type': undefined
+                },
+                success: styleCrop.bind({
+                  elementDiv: elementDiv,
+                  id: id,
+                  crop: crop
+                }),
+                error: styleOriginalCrop.bind({
+                  id: id,
+                  crop: crop
+                })
+              });
+            }
+          }
+        }
+      };
+
+      return this;
+    }
+  ]);
 
 'use strict';
 
@@ -5711,7 +5783,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('bettyeditable', function ($http, PARTIALS_URL, BettyCropper, openImageCropModal, DEFAULT_IMAGE_WIDTH) {
+  .directive('bettyeditable', function ($http, PARTIALS_URL, BettyCropper, openImageCropModal) {
     return {
       restrict: 'E',
       templateUrl: PARTIALS_URL + 'bettyeditable.html',
@@ -6240,7 +6312,7 @@ angular.module('bulbsCmsApp')
 
 angular.module('bulbsCmsApp')
   .directive('onionEditor', function (PARTIALS_URL, $, Zencoder, BettyCropper,
-      openImageCropModal, VIDEO_EMBED_URL, OnionEditor) {
+      openImageCropModal, VIDEO_EMBED_URL, OnionEditor, CmsImage) {
     return {
       require: 'ngModel',
       replace: true,
@@ -6331,9 +6403,7 @@ angular.module('bulbsCmsApp')
 
         scope.$watch(ngModel, function () {
           editor.setContent(ngModel.$viewValue || defaultValue);
-          if (window.picturefill) {
-            window.picturefill(element[0]);
-          }
+          CmsImage.picturefill(element[0]);
         });
       }
     };
@@ -6738,7 +6808,7 @@ angular.module('bulbsCmsApp')
 
 angular.module('bulbsCmsApp')
   .directive('slideshowPane', function ($http, $window, $compile, $, LOADING_IMG_SRC,
-      PARTIALS_URL) {
+      PARTIALS_URL, CmsImage) {
     return {
       restrict: 'E',
       templateUrl: PARTIALS_URL + 'slideshow-pane.html',
@@ -6780,13 +6850,13 @@ angular.module('bulbsCmsApp')
 
               scope.article.slides[index].id = data.id.toString();
               scope.$apply();
-              $window.picturefill();
+              CmsImage.picturefill();
               if ($element.find('.image img')[0].complete) { removeLoadingGif(); }
             },
             function () { return; },
             function (oldImage) {
               scope.article.slides[index] = oldImage;
-              $window.picturefill();
+              CmsImage.picturefill();
             }
           );
         };
@@ -6797,7 +6867,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('staticImage', function (PARTIALS_URL, STATIC_IMAGE_URL) {
+  .directive('staticImage', function (PARTIALS_URL, CmsConfig) {
     return {
       templateUrl: PARTIALS_URL + 'static-image.html',
       restrict: 'E',
@@ -6809,7 +6879,10 @@ angular.module('bulbsCmsApp')
 
         scope.$watch('image', function () {
           if (scope.image && scope.image.id) {
-            scope.imageUrl = STATIC_IMAGE_URL.replace('{{ratio}}', ratio).replace('{{image}}', scope.image.id);
+            scope.imageUrl =
+              CmsConfig.buildImageServerUrl(
+                '/' + ratio + '/' + scope.image.id + '/' + CmsConfig.getImageDefaultWidth() + '.jpg'
+              );
           } else {
             scope.imageUrl = false;
           }
@@ -7913,7 +7986,8 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ImageCropModalCtrl', function ($scope, $timeout, $modalInstance, BettyCropper, Selection, DEFAULT_IMAGE_WIDTH, imageData, ratios, $) {
+  .controller('ImageCropModalCtrl', function ($scope, $timeout, $modalInstance,
+      BettyCropper, CmsConfig, Selection, imageData, ratios, $) {
     $scope.selectedCrop = null;
     $scope.cropMode = false;
     $scope.ratios = ratios;
@@ -7955,7 +8029,7 @@ angular.module('bulbsCmsApp')
         });
       });
 
-      $scope.image_url = image.url('original', DEFAULT_IMAGE_WIDTH, 'jpg');
+      $scope.image_url = image.url('original', CmsConfig.getImageDefaultWidth(), 'jpg');
       if (!$scope.ratios) {
         $scope.ratios = Object.keys(image.selections);
       }
