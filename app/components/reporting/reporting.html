@@ -55,12 +55,11 @@
           ng-change="orderingChange()"></select>
     </div>
     <div class="col-md-2">
-      <a
-          href="{{ downloadURL }}"
-          target="_blank"
-          class="btn btn-primary">
+      <button
+          class="btn btn-primary"
+          ng-click="triggerDownload(downloadURL)">
         Download
-      </a>
+      </button>
     </div>
   </div>
 

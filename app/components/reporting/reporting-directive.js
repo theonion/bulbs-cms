@@ -6,9 +6,9 @@ angular.module('reporting.directive', [])
     function (COMPONENTS_URL) {
       return {
         controller: [
-          '$filter', '$interpolate', '$scope', 'ContentReportingService',
+          '$filter', '$http', '$interpolate', '$scope', 'ContentReportingService',
             'ContributionReportingService', 'CmsConfig',
-          function ($filter, $interpolate, $scope, ContentReportingService,
+          function ($filter, $http, $interpolate, $scope, ContentReportingService,
               ContributionReportingService, CmsConfig) {
 
             $scope.reports = {
@@ -92,6 +92,23 @@ angular.module('reporting.directive', [])
 
               loadReport($scope.report, start, end, $scope.orderBy);
             });
+
+            $scope.triggerDownload = function (url) {
+              $http({
+                url: url,
+                method: 'GET',
+                responseType: 'arraybuffer',
+                headers: {
+                  Accept: 'text/csv'
+                }
+              })
+              .success(function (data) {
+                var blob = new Blob([data], {
+                  type: 'text/csv'
+                });
+                window.open(URL.createObjectURL(blob));
+              });
+            };
 
             $scope.openStart = function ($event) {
               $event.preventDefault();
