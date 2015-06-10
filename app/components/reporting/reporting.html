@@ -56,8 +56,13 @@
     </div>
     <div class="col-md-2">
       <button
-          class="btn btn-primary"
-          ng-disable="downloading"
+          class="btn"
+          ng-class="{
+            'btn-success': !downloading && !downloadError,
+            'btn-info': downloading && !downloadError,
+            'btn-danger': !downloading && downloadError
+          }"
+          ng-disabled="downloading"
           ng-click="triggerDownload(downloadURL)">
         <span ng-if="!downloading && !downloadError">
           <i class="fa fa-download"></i>
@@ -88,7 +93,7 @@
       <tr ng-repeat="item in items">
         <td
             ng-repeat="value in item"
-            ng-bind="value">
+            ng-bind-html="value">
         </td>
       </tr>
     </tbody>
