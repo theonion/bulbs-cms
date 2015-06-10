@@ -89,6 +89,7 @@ angular.module('bulbsCmsApp', [
   'content.video',
   'filterWidget',
   'promotedContent',
+  'reporting',
   'sections',
   'sendToEditor',
   'specialCoverage',
@@ -124,10 +125,6 @@ angular.module('bulbsCmsApp', [
         .when('/cms/app/notifications/', {
           templateUrl: PARTIALS_URL + 'cms-notifications.html',
           controller: 'CmsNotificationsCtrl'
-        })
-        .when('/cms/app/reporting/', {
-          templateUrl: PARTIALS_URL + 'reporting.html',
-          controller: 'ReportingCtrl'
         })
         .when('/cms/app/pzones/', {
           templateUrl: PARTIALS_URL + 'pzones.html',
@@ -3518,6 +3515,200 @@ angular.module('promotedContent', [
         reloadOnSearch: false
       });
   });
+
+'use strict';
+
+angular.module('reporting.directive', [])
+  .directive('reporting', [
+    'COMPONENTS_URL',
+    function (COMPONENTS_URL) {
+      return {
+        controller: [
+          '$filter', '$http', '$interpolate', '$scope', 'ContentReportingService',
+            'ContributionReportingService', 'CmsConfig',
+          function ($filter, $http, $interpolate, $scope, ContentReportingService,
+              ContributionReportingService, CmsConfig) {
+
+            $scope.reports = {
+              Contributions: {
+                service: ContributionReportingService,
+                headings: [{
+                  title: 'Date',
+                  expression: 'content.published'
+                }, {
+                  title: 'Headline',
+                  expression: 'content.title'
+                }, {
+                  title: 'User',
+                  expression: 'user.full_name'
+                }, {
+                  title: 'Role',
+                  expression: 'role'
+                }, {
+                  title: 'Notes',
+                  expression: 'notes'
+                }],
+                downloadURL: CmsConfig.buildBackendApiUrl('contributions/reporting/'),
+                orderOptions: [
+                  {
+                    label: 'Order by User',
+                    key: 'user'
+                  },
+                  {
+                    label: 'Order by Content',
+                    key: 'content'
+                  },
+                ]
+              },
+              Content: {
+                service: ContentReportingService,
+                headings: [{
+                  title: 'Date',
+                  expression: 'published'
+                }, {
+                  title: 'Headline',
+                  expression: 'title'
+                }, {
+                  title: 'URL',
+                  expression: 'url'
+                }],
+                orderOptions: [],
+                downloadURL: CmsConfig.buildBackendApiUrl('contributions/contentreporting/'),
+              }
+            };
+            $scope.items = [];
+            $scope.headings = [];
+            $scope.orderOptions = [];
+
+            $scope.startOpen = false;
+            $scope.endOpen = false;
+
+            $scope.$watch('report', function (report) {
+              if (!report) {
+                return;
+              }
+              $scope.orderOptions = report.orderOptions;
+              if(report.orderOptions.length > 0) {
+                $scope.orderBy = report.orderOptions[0];
+              } else {
+                $scope.orderBy = null;
+              }
+              $scope.headings = [];
+              report.headings.forEach(function (heading) {
+                $scope.headings.push(heading.title);
+              });
+
+              loadReport(report, $scope.start, $scope.end, $scope.orderBy);
+            });
+
+            $scope.$watchCollection('[start, end]', function (params) {
+              if (!$scope.report) {
+                return;
+              }
+              var start = params[0];
+              var end = params[1];
+
+              loadReport($scope.report, start, end, $scope.orderBy);
+            });
+
+            $scope.triggerDownload = function (url) {
+              $http({
+                url: url,
+                method: 'GET',
+                responseType: 'arraybuffer',
+                headers: {
+                  Accept: 'text/csv'
+                }
+              })
+              .success(function (data) {
+                var blob = new Blob([data], {
+                  type: 'text/csv'
+                });
+                window.open(URL.createObjectURL(blob));
+              });
+            };
+
+            $scope.openStart = function ($event) {
+              $event.preventDefault();
+              $event.stopPropagation();
+              $scope.startOpen = true;
+            };
+
+            $scope.openEnd = function ($event) {
+              $event.preventDefault();
+              $event.stopPropagation();
+              $scope.endOpen = true;
+            };
+
+            $scope.orderingChange = function () {
+              loadReport($scope.report, $scope.start, $scope.end, $scope.orderBy);
+            };
+
+            var loadReport = function (report, start, end, order) {
+              $scope.items = [];
+              var reportParams = {};
+              $scope.downloadURL = report.downloadURL + '?format=csv';
+              if (end) {
+                var endParam = $filter('date')(end, 'yyyy-MM-dd');
+                reportParams['end'] = endParam;
+                $scope.downloadURL += ('&end=' + endParam);
+              }
+
+              if (start) {
+                var startParam = $filter('date')(start, 'yyyy-MM-dd');
+                reportParams['start'] = startParam;
+                $scope.downloadURL += ('&start=' + startParam);
+              }
+
+              if (order) {
+                $scope.downloadURL += ('&ordering=' + order.key);
+                reportParams['ordering'] = order.key;
+              }
+
+              report.service.getList(reportParams).then(function (data) {
+                $scope.items = [];
+                data.forEach(function (lineItem) {
+                  var item = [];
+                  report.headings.forEach(function (heading) {
+                    var exp = $interpolate('{{item.' + heading.expression + '}}');
+                    var value = exp({item: lineItem});
+                    item.push(value);
+                  });
+                  $scope.items.push(item);
+                });
+              });
+            };
+          }
+        ],
+        restrict: 'E',
+        scope: {},
+        templateUrl: COMPONENTS_URL + 'reporting/reporting.html'
+      };
+    }
+  ]);
+
+'use strict';
+
+angular.module('reporting', [
+  'reporting.directive'
+])
+  .config([
+    '$routeProvider', 'COMPONENTS_URL',
+    function ($routeProvider, COMPONENTS_URL) {
+
+      $routeProvider
+        .when('/cms/app/reporting/', {
+          controller: [
+            '$window', 'CMS_NAMESPACE',
+            function ($window, CMS_NAMESPACE) {
+              // set title
+              $window.document.title = CMS_NAMESPACE + ' | Reporting';
+            }
+          ],
+          templateUrl: COMPONENTS_URL + 'reporting/reporting-page.html'
+        });
+    }
+  ]);
 
 'use strict';
 
@@ -8338,136 +8529,6 @@ angular.module('bulbsCmsApp')
       $scope.pickerValue = moment.tz($scope.article.published, TIMEZONE_NAME);
     } else {
       $scope.setTimeShortcut('now');
-    }
-
-  });
-
-'use strict';
-
-angular.module('bulbsCmsApp')
-  .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter,
-      $interpolate, CMS_NAMESPACE, ContributionReportingService, ContentReportingService,
-      CmsConfig) {
-    $window.document.title = CMS_NAMESPACE + ' | Reporting'; // set title
-
-    $scope.reports = {
-      'Contributions': {
-        service: ContributionReportingService,
-        headings: [
-          {'title': 'Date', 'expression': 'content.published'},
-          {'title': 'Headline', 'expression': 'content.title'},
-          {'title': 'User', 'expression': 'user.full_name'},
-          {'title': 'Role', 'expression': 'role'},
-          {'title': 'Notes', 'expression': 'notes'},
-        ],
-        downloadURL: CmsConfig.buildBackendApiUrl('contributions/reporting/'),
-        orderOptions: [
-          {
-            label: 'Order by User',
-            key: 'user'
-          },
-          {
-            label: 'Order by Content',
-            key: 'content'
-          },
-        ]
-      },
-      'Content': {
-        service: ContentReportingService,
-        headings: [
-          {'title': 'Date', 'expression': 'published'},
-          {'title': 'Headline', 'expression': 'title'},
-          {'title': 'URL', 'expression': 'url'},
-        ],
-        orderOptions: [],
-        downloadURL: CmsConfig.buildBackendApiUrl('contributions/contentreporting/'),
-      }
-    };
-    $scope.items = [];
-    $scope.headings = [];
-    $scope.orderOptions = [];
-
-    $scope.startOpen = false;
-    $scope.endOpen = false;
-
-    $scope.openStart = function ($event) {
-      $event.preventDefault();
-      $event.stopPropagation();
-      $scope.startOpen = true;
-    };
-
-    $scope.openEnd = function ($event) {
-      $event.preventDefault();
-      $event.stopPropagation();
-      $scope.endOpen = true;
-    };
-
-    $scope.orderingChange = function () {
-      loadReport($scope.report, $scope.start, $scope.end, $scope.orderBy);
-    };
-
-    $scope.$watch('report', function (report) {
-      if (!report) {
-        return;
-      }
-      $scope.orderOptions = report.orderOptions;
-      if(report.orderOptions.length > 0) {
-        $scope.orderBy = report.orderOptions[0];
-      } else {
-        $scope.orderBy = null;
-      }
-      $scope.headings = [];
-      report.headings.forEach(function (heading) {
-        $scope.headings.push(heading.title);
-      });
-
-      loadReport(report, $scope.start, $scope.end, $scope.orderBy);
-    });
-
-    $scope.$watchCollection('[start, end]', function (params) {
-      if (!$scope.report) {
-        return;
-      }
-      var start = params[0];
-      var end = params[1];
-
-      loadReport($scope.report, start, end, $scope.orderBy);
-    });
-
-
-    function loadReport(report, start, end, order) {
-      $scope.items = [];
-      var reportParams = {};
-      $scope.downloadURL = report.downloadURL + '?format=csv';
-      if (end) {
-        var endParam = $filter('date')(end, 'yyyy-MM-dd');
-        reportParams['end'] = endParam;
-        $scope.downloadURL += ('&end=' + endParam);
-      }
-
-      if (start) {
-        var startParam = $filter('date')(start, 'yyyy-MM-dd');
-        reportParams['start'] = startParam;
-        $scope.downloadURL += ('&start=' + startParam);
-      }
-
-      if (order) {
-        $scope.downloadURL += ('&ordering=' + order.key);
-        reportParams['ordering'] = order.key;
-      }
-
-      report.service.getList(reportParams).then(function (data) {
-        $scope.items = [];
-        data.forEach(function (lineItem) {
-          var item = [];
-          report.headings.forEach(function (heading) {
-            var exp = $interpolate('{{item.' + heading.expression + '}}');
-            var value = exp({item: lineItem});
-            item.push(value);
-          });
-          $scope.items.push(item);
-        });
-      });
     }
 
   });
