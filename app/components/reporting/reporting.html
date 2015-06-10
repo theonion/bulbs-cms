@@ -57,8 +57,20 @@
     <div class="col-md-2">
       <button
           class="btn btn-primary"
+          ng-disable="downloading"
           ng-click="triggerDownload(downloadURL)">
-        Download
+        <span ng-if="!downloading && !downloadError">
+          <i class="fa fa-download"></i>
+          Download
+        </span>
+        <span ng-if="downloading && !downloadError">
+          <i class="fa fa-spinner fa-spin"></i>
+          Downloading...
+        </span>
+        <span ng-if="!downloading && downloadError">
+          <i class="fa fa-times"></i>
+          Error
+        </span>
       </button>
     </div>
   </div>

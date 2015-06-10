@@ -94,20 +94,47 @@ angular.module('reporting.directive', [])
             });
 
             $scope.triggerDownload = function (url) {
-              $http({
-                url: url,
-                method: 'GET',
-                responseType: 'arraybuffer',
-                headers: {
-                  Accept: 'text/csv'
-                }
-              })
-              .success(function (data) {
-                var blob = new Blob([data], {
-                  type: 'text/csv'
+              if (!$scope.downloading) {
+                $scope.downloading = true;
+                $scope.downloadError = false;
+
+                var fileName =
+                  'report_' +
+                  $filter('date')($scope.start, 'yyyy-MM-dd') +
+                  '_to_' +
+                  $filter('date')($scope.end, 'yyyy-MM-dd') +
+                  '.csv';
+
+                $http({
+                  url: url,
+                  method: 'GET',
+                  responseType: 'arraybuffer',
+                  headers: {
+                    Accept: 'text/csv'
+                  }
+                })
+                .success(function (data) {
+                  var blob = new Blob([data], {
+                    type: 'text/csv'
+                  });
+                  var url = URL.createObjectURL(blob);
+
+                  // make a link to be able to set file name http://stackoverflow.com/a/19328891/468160
+                  var a = document.createElement('a');
+                  a.href = url;
+                  a.download = fileName;
+                  a.click();
+                  a.remove();
+
+                  URL.revokeObjectURL(url);
+                })
+                .error(function () {
+                  $scope.downloadError = true;
+                })
+                .finally(function () {
+                  $scope.downloading = false;
                 });
-                window.open(URL.createObjectURL(blob));
-              });
+              }
             };
 
             $scope.openStart = function ($event) {
