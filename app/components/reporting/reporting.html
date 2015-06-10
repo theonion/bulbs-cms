@@ -4,7 +4,9 @@
       <select
           class="form-control"
           ng-options="options as name for (name, options) in reports"
-          ng-model="report"></select>
+          ng-model="report">
+        <option value="">Select a report type...</option>
+      </select>
     </div>
     <div class="col-md-2">
       <p class="input-group">
@@ -62,7 +64,7 @@
             'btn-info': downloading && !downloadError,
             'btn-danger': !downloading && downloadError
           }"
-          ng-disabled="downloading"
+          ng-disabled="downloading || !report"
           ng-click="triggerDownload(downloadURL)">
         <span ng-if="!downloading && !downloadError">
           <i class="fa fa-download"></i>
