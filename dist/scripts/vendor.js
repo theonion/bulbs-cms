@@ -111835,6 +111835,9 @@ angular.module('tokenAuth.config', [])
     var logoUrl = '';
     // callback called on successful logout
     var logoutCallback = function () {};
+    // list of regular expressions to match request urls, only matched urls will
+    //  be intercepted successfully
+    var matchers = [/.*/];
     // local storage key for token
     var tokenKey = 'authToken';
 
@@ -111910,6 +111913,21 @@ angular.module('tokenAuth.config', [])
       }
     };
 
+    this.setMatchers = function (matcherList) {
+      if (_.isArray(matcherList)) {
+        // check that all the items are regex
+        _.each(matcherList, function (matcher) {
+          if (!_.isRegExp(matcher)) {
+            throw new TypeError('TokenAuthConfig.matchers must include only RegExp objects! "' + matcher + '" is not a RegExp.');
+          }
+        });
+
+        matchers = matcherList;
+      } else {
+        throw new TypeError('TokenAuthConfig.matchers must be an array!');
+      }
+    };
+
     this.setTokenKey = function (value) {
       if (_.isString(value)) {
         tokenKey = value;
@@ -111928,7 +111946,21 @@ angular.module('tokenAuth.config', [])
         getLogoUrl: _.constant(logoUrl),
         getTokenKey: _.constant(tokenKey),
         loginCallback: loginCallback,
-        logoutCallback: logoutCallback
+        logoutCallback: logoutCallback,
+        /**
+         * Check if a given url should be intercepted by this library's interceptor.
+         *
+         * @param {string} url - Url to test against matchers.
+         * @returns {boolean} true if url should be intercepted, false otherwise.
+         */
+        shouldBeIntercepted: function (url) {
+          return _.chain(matchers)
+            .find(function (regex) {
+              return regex.test(url);
+            })
+            .isRegExp()
+            .value();
+        }
      };
     };
   });
@@ -112036,28 +112068,31 @@ angular.module('tokenAuth.authInterceptor', [
     var factory = {};
 
     factory.request = function (config) {
-      config.headers = config.headers || {};
-      var token = localStorageService.get(TokenAuthConfig.getTokenKey());
+      if (TokenAuthConfig.shouldBeIntercepted(config.url)) {
+        // this is a url that should be intercepted, deal with token auth
+        var token = localStorageService.get(TokenAuthConfig.getTokenKey());
+        config.headers = config.headers || {};
 
-      // check if we have a token, if not, prevent request from firing, send user to login
-      if (token) {
-        var isBettyCropperRequest = _.has(config.headers, 'X-Betty-Api-Key');
-        if (!config.ignoreAuthorizationHeader && !isBettyCropperRequest) {
-          config.headers.Authorization = 'JWT ' + token;
+        // check if we have a token, if not, prevent request from firing, send user to login
+        if (token) {
+          var isBettyCropperRequest = _.has(config.headers, 'X-Betty-Api-Key');
+          if (!config.ignoreAuthorizationHeader && !isBettyCropperRequest) {
+            config.headers.Authorization = 'JWT ' + token;
+          }
+        } else if (!(config.ignoreAuthModule || config.headers.ignoreAuthModule)) {
+          // abort requests where there's no token
+          var abort = $q.defer();
+          config.timeout = abort.promise;
+          abort.resolve();
+          $location.path(TokenAuthConfig.getLoginPagePath());
         }
-      } else if (!(config.ignoreAuthModule || config.headers.ignoreAuthModule)) {
-        // abort requests where there's no token
-        var abort = $q.defer();
-        config.timeout = abort.promise;
-        abort.resolve();
-        $location.path(TokenAuthConfig.getLoginPagePath());
       }
 
       return config;
     };
 
     factory.responseError = function (response) {
-      if (response.config) {
+      if (response.config && TokenAuthConfig.shouldBeIntercepted(response.config.url)) {
         var ignoreAuthModule = response.config.ignoreAuthModule || response.config.headers.ignoreAuthModule;
         if (!ignoreAuthModule && (response.status === 403 || response.status === 401)) {
           var deferred = $q.defer();

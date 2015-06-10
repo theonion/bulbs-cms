@@ -890,12 +890,16 @@ angular.module('confirmationModal.factory', [
             controller: function ($scope, $modalInstance) {
               $scope.confirm = function () {
                 $scope.$close();
-                $scope.modalOnOk();
+                if ($scope.modalOnOk) {
+                  $scope.modalOnOk();
+                }
               };
 
               $scope.cancel = function () {
                 $scope.$dismiss();
-                $scope.modalOnCancel();
+                if ($scope.modalOnCancel) {
+                  $scope.modalOnCancel();
+                }
               };
             },
             scope: scope,
@@ -980,29 +984,83 @@ angular.module('content.edit.body', [])
 
 'use strict';
 
-angular.module('content.edit.controller', [])
+angular.module('content.edit.controller', [
+  'confirmationModal.factory'
+])
   .controller('ContentEdit', function (
-    $scope, $routeParams, $http, $window, $location, $timeout, $interval, $compile,
-    $q, $modal, $, _, moment, keypress, Raven, PNotify, IfExistsElse, VersionStorageApi,
-    ContentFactory, FirebaseApi, FirebaseArticleFactory, VersionBrowserModalOpener,
-    PARTIALS_URL, MEDIA_ITEM_PARTIALS_URL, CACHEBUSTER, CMS_NAMESPACE)
-  {
+      $scope, $routeParams, $http, $window, $location, $timeout, $interval, $compile,
+      $q, $modal, $, _, moment, keypress, Raven, PNotify, IfExistsElse, VersionStorageApi,
+      ContentFactory, FirebaseApi, FirebaseArticleFactory, VersionBrowserModalOpener,
+      PARTIALS_URL, MEDIA_ITEM_PARTIALS_URL, CMS_NAMESPACE, ConfirmationModal) {
+
     $scope.PARTIALS_URL = PARTIALS_URL;
     $scope.MEDIA_ITEM_PARTIALS_URL = MEDIA_ITEM_PARTIALS_URL;
     $scope.page = 'edit';
+    $scope.saveArticleDeferred = $q.defer();
 
-    /*note on cachebuster:
-      contentedit ng-includes templates served by django
-      which are currently treated like templates
-      instead of static assets (which they are)
-      we're cachebuster those URLs because we've run into trouble
-      with cached version in the past and it was a bludgeon solution
-        kill this someday! --SB
-    */
-    $scope.CACHEBUSTER = CACHEBUSTER;
+    // bind save keys
+    var listener = new keypress.Listener();
+    listener.simple_combo('cmd s', function (e) {
+      $scope.saveArticle();
+    });
+    listener.simple_combo('ctrl s', function (e) {
+      $scope.saveArticle();
+    });
+
+    var saveHTML =  '<i class=\'fa fa-floppy-o\'></i> Save';
+    var navbarSave = '.navbar-save';
+
+    // keep track of if article is dirty or not
+    $scope.articleIsDirty = false;
+    $scope.$watch('article', function () {
+      $scope.articleIsDirty = !angular.equals($scope.article, $scope.last_saved_article);
+    }, true);
+
+    $scope.$watch('article.title', function () {
+      $window.document.title = CMS_NAMESPACE + ' | Editing ' + ($scope.article && $('<span>' + $scope.article.title + '</span>').text());
+    });
+
+    var initEditPage = function () {
+      setupUnsavedChangesGuard();
+      getContent();
+    };
+
+    var setupUnsavedChangesGuard = function () {
+      // browser navigation hook
+      $window.onbeforeunload = function () {
+        if ($scope.articleIsDirty) {
+          return 'You have unsaved changes. Do you want to continue?';
+        }
+      };
+      // angular navigation hook
+      $scope.$on('$locationChangeStart', function (e, newUrl) {
+        if ($scope.articleIsDirty && !$scope.ignoreGuard) {
+          // keep track of if navigation has accepted by user
+          $scope.ignoreGuard = false;
+
+          // set up modal
+          var modalScope = $scope.$new();
+          modalScope.modalOnOk = function () {
+            // user wants to navigate, ignore guard in this navigation action
+            $location.url(newUrl.substring($location.absUrl().length - $location.url().length));
+            $scope.ignoreGuard = true;
+          };
+          modalScope.modalTitle = 'Unsaved Changes!';
+          modalScope.modalBody = 'You have unsaved changes. Do you want to continue?';
+          modalScope.modalOkText = 'Yes';
+          modalScope.modalCancelText = 'No';
+
+          // open modal
+          new ConfirmationModal(modalScope);
+
+          // stop immediate navigation
+          e.preventDefault();
+        }
+      });
+    };
 
     var getArticleCallback = function (data) {
-      $window.article = $scope.article = data; //exposing article on window for debugging
+      $scope.article = data;
 
       $scope.last_saved_article = angular.copy(data);
 
@@ -1126,16 +1184,9 @@ angular.module('content.edit.controller', [])
 
     };
 
-    function getContent() {
+    var getContent = function () {
       return ContentFactory.one('content', $routeParams.id).get().then(getArticleCallback);
-    }
-    getContent();
-
-    $scope.$watch('article.title', function () {
-      $window.document.title = CMS_NAMESPACE + ' | Editing ' + ($scope.article && $('<span>' + $scope.article.title + '</span>').text());
-    });
-
-    $scope.saveArticleDeferred = $q.defer();
+    };
 
     $scope.saveArticleIfDirty = function () {
       /*this is only for operations that trigger a saveArticle (e.g. send to editor)
@@ -1180,28 +1231,13 @@ angular.module('content.edit.controller', [])
 
     };
 
-    var listener = new keypress.Listener();
-    listener.simple_combo('cmd s', function (e) { $scope.saveArticle(); });
-    listener.simple_combo('ctrl s', function (e) { $scope.saveArticle(); });
-
-    $scope.postValidationSaveArticle = function () {
-      if ($scope.article.status !== 'Published') {
-        $scope.article.slug = $window.URLify($scope.article.title, 50);
-      }
-      saveToContentApi();
-      return $scope.saveArticleDeferred.promise;
-    };
-
-    var saveHTML =  '<i class=\'fa fa-floppy-o\'></i> Save';
-    var navbarSave = '.navbar-save';
-
-    function saveToContentApi() {
+    var saveToContentApi = function () {
       $scope.article.put()
         .then(saveArticleSuccessCbk)
         .catch(saveArticleErrorCbk);
-    }
+    };
 
-    function saveArticleErrorCbk(data) {
+    var saveArticleErrorCbk = function (data) {
       $(navbarSave)
         .removeClass('btn-success')
         .addClass('btn-danger')
@@ -1210,12 +1246,12 @@ angular.module('content.edit.controller', [])
         $scope.errors = data;
       }
       $scope.saveArticleDeferred.reject();
-    }
+    };
 
     /**
      * Last thing to happen on a successful save.
      */
-    function saveArticleSuccessCbk(resp) {
+    var saveArticleSuccessCbk = function (resp) {
       // store a version with version api
       VersionStorageApi.$create($scope.article, $scope.articleIsDirty);
 
@@ -1223,29 +1259,21 @@ angular.module('content.edit.controller', [])
       setTimeout(function () {
           $(navbarSave).html(saveHTML);
         }, 2500);
-      $window.article = $scope.article = resp;
+      $scope.article = resp;
       $scope.last_saved_article = angular.copy(resp);
       $scope.articleIsDirty = false;
       $scope.errors = null;
       $location.search('rating_type', null); //maybe just kill the whole query string with $location.url($location.path())
       $scope.saveArticleDeferred.resolve(resp);
-    }
+    };
 
-    // keep track of if article is dirty or not
-    $scope.articleIsDirty = false;
-    $scope.$watch('article', function () {
-      $scope.articleIsDirty = !angular.equals($scope.article, $scope.last_saved_article);
-    }, true);
-
-    $scope.$watch('articleIsDirty', function () {
-      if ($scope.articleIsDirty) {
-        $window.onbeforeunload = function () {
-          return 'You have unsaved changes. Do you want to continue?';
-        };
-      } else {
-        $window.onbeforeunload = function () {};
+    $scope.postValidationSaveArticle = function () {
+      if ($scope.article.status !== 'Published') {
+        $scope.article.slug = $window.URLify($scope.article.title, 50);
       }
-    });
+      saveToContentApi();
+      return $scope.saveArticleDeferred.promise;
+    };
 
     $scope.publishSuccessCbk = function () {
       return getContent();
@@ -1258,6 +1286,8 @@ angular.module('content.edit.controller', [])
       }, 1500);
     };
 
+    // finish initialization
+    initEditPage();
   });
 
 'use strict';
