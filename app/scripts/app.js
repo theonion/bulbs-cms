@@ -56,6 +56,7 @@ angular.module('bulbsCmsApp', [
   'content.video',
   'filterWidget',
   'promotedContent',
+  'reporting',
   'sections',
   'sendToEditor',
   'specialCoverage',
@@ -91,10 +92,6 @@ angular.module('bulbsCmsApp', [
         .when('/cms/app/notifications/', {
           templateUrl: PARTIALS_URL + 'cms-notifications.html',
           controller: 'CmsNotificationsCtrl'
-        })
-        .when('/cms/app/reporting/', {
-          templateUrl: PARTIALS_URL + 'reporting.html',
-          controller: 'ReportingCtrl'
         })
         .when('/cms/app/pzones/', {
           templateUrl: PARTIALS_URL + 'pzones.html',
