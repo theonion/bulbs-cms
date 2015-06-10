@@ -1044,6 +1044,9 @@ angular.module('content.edit.controller', [
             // user wants to navigate, ignore guard in this navigation action
             $location.url(newUrl.substring($location.absUrl().length - $location.url().length));
             $scope.ignoreGuard = true;
+
+            // remove browser nav hook
+            $window.onbeforeunload = function () {};
           };
           modalScope.modalTitle = 'Unsaved Changes!';
           modalScope.modalBody = 'You have unsaved changes. Do you want to continue?';
