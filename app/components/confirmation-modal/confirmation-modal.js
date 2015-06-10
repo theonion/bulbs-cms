@@ -13,12 +13,16 @@ angular.module('confirmationModal.factory', [
             controller: function ($scope, $modalInstance) {
               $scope.confirm = function () {
                 $scope.$close();
-                $scope.modalOnOk();
+                if ($scope.modalOnOk) {
+                  $scope.modalOnOk();
+                }
               };
 
               $scope.cancel = function () {
                 $scope.$dismiss();
-                $scope.modalOnCancel();
+                if ($scope.modalOnCancel) {
+                  $scope.modalOnCancel();
+                }
               };
             },
             scope: scope,

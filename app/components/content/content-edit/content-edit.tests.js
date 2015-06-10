@@ -73,10 +73,6 @@ describe('Controller: ContentEdit', function () {
       expect(typeof scope.MEDIA_ITEM_PARTIALS_URL).toBe('string');
     });
 
-    it('should have string CACHEBUSTER in scope', function () {
-      expect(typeof scope.CACHEBUSTER).toBe('string');
-    });
-
     it('should have a saveArticle function in scope', function () {
       expect(scope.saveArticle).toBeDefined();
     });

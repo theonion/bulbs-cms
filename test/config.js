@@ -18,7 +18,6 @@ angular.module('bulbsCmsApp')
 
 angular.module('bulbsCmsApp.settings')
   .constant('AUTO_ADD_AUTHOR', false)
-  .constant('CACHEBUSTER', '?' + Date.now())
   .constant('CMS_NAMESPACE', 'Bulbs')
   .constant('COMPONENTS_URL', '/components/')
   .constant('CONTENT_PARTIALS_URL', '/content_type_views/')
