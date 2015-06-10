@@ -19,10 +19,6 @@ angular.module('bulbsCmsApp.mockApi', [
 
     var today = moment();
 
-    $httpBackend.when('OPTIONS', '/returns-a-403/').respond(function(){ //just for testing
-      return [403, {'detail': 'No permission'}];
-    });
-
     var detailRegex = /^\/cms\/api\/v1\/content\/(\d+)\/$/;
     function getContentId(url) {
       var index = detailRegex.exec(url)[1];
