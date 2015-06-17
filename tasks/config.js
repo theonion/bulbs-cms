@@ -5,14 +5,17 @@
 
 var grunt = require('grunt');
 
-var Config = {
+module.exports = {
+  const: {
+    CONNECT_PORT: 9069,
+    CONNECT_URL: '0.0.0.0',
+    LIVERELOAD_PORT: 35729
+  },
   environment: function () {
     return grunt.option('target') || process.env.APP_ENV || 'local';
   },
   paths: {
-    app: require('./bower.json').appPath || 'app',
+    app: 'app',
     dist: 'dist'
   }
 };
-
-module.exports = Config;
