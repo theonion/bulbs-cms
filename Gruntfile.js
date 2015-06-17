@@ -113,7 +113,7 @@ module.exports = function (grunt) {
     'build'
   ]);
 
-  var shell = require('shell');
+  var shell = require('shelljs');
 
   grunt.registerTask('commitBuild', function () {
     var stdout = shell.exec('git add dist/scripts/scripts.min.js.*.map dist/scripts/templates.js.*.map;' +

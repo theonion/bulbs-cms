@@ -46,20 +46,20 @@ module.exports = {
   },
   fontawesome: {
     expand: true,
-    cwd: config.app + '/bower_components/font-awesome/fonts',
-    dest: config.dist + '/fonts/',
+    cwd: config.paths.app + '/bower_components/font-awesome/fonts',
+    dest: config.paths.dist + '/fonts/',
     src: ['fontawesome-webfont.*']
   },
   fontawesomeCSS: {  // This is a hack for now. FontAwesome REALLY doesn't like getting minified, I guess.
     expand: true,
-    cwd: config.app + '/bower_components/font-awesome/css',
-    dest: config.dist + '/styles/',
+    cwd: config.paths.app + '/bower_components/font-awesome/css',
+    dest: config.paths.dist + '/styles/',
     src: ['font-awesome.min.css']
   },
   zeroclipboard: {
     expand: true,
-    cwd: config.app + '/bower_components/zeroclipboard/dist',
-    dest: config.dist + '/swf/',
+    cwd: config.paths.app + '/bower_components/zeroclipboard/dist',
+    dest: config.paths.dist + '/swf/',
     src: ['ZeroClipboard.swf']
   }
 };
