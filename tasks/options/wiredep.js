@@ -17,6 +17,18 @@ module.exports = {
           './dist/plugins/nested-dirty.js'
         ]
       },
+      bootstrap: {
+        main: [
+          './dist/css/bootstrap.css',
+          './dist/js/bootstrap.js'
+        ]
+      },
+      jcrop: {
+        main: [
+          './js/jquery.Jcrop.js',
+          './css/jquery.Jcrop.css'
+        ]
+      },
       'onion-editor': {
         'main': [
           './build/editor-main.css',
