@@ -5,7 +5,27 @@
 
   <list-page
       cms-page="special-coverage"
+      filter-buttons="[{
+        title: 'Active',
+        params: {
+          active: true,
+          promoted: false
+        }
+      }, {
+        title: 'Inactive',
+        params: {
+          active: false,
+          promoted: false
+        }
+      }, {
+        title: 'Pinned',
+        params: {
+          active: true,
+          promoted: true
+        }
+      }]"
       model-factory="modelFactory"
+      search-parameter="search"
       tool-copy-content="'{{ LIST_URL }}' + record.slug ">
   </list-page>
 </div>
