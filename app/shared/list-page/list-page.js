@@ -55,6 +55,14 @@ angular.module('listPage', [
 
         // toggled filters, only one set of these can be applied at a time
         $scope.filterButtonsParsed = $scope.filterButtons();
+        // set the active filter, either the first button with active === true,
+        //   or empty string for all
+        $scope.activeFilterButton =
+          _.chain($scope.filterButtonsParsed)
+            .findWhere({active: true})
+            .result('title')
+            .value() ||
+            '';
         $scope.$toggleFilters = function (params) {
           $scope.toggledFilters = params;
 

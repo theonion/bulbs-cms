@@ -11,12 +11,11 @@
   <div class="filter-tools">
     <div
         class="filter-buttons btn-group"
-        ng-if="filterButtonsParsed.length > 0"
-        ng-init="activeFilterButton = 'All'">
+        ng-if="filterButtonsParsed.length > 0">
       <button
           class="btn btn-default"
-          ng-class="{'active': activeFilterButton === 'All'}"
-          ng-click="$toggleFilters({}); activeFilterButton = 'All'">
+          ng-class="{'active': activeFilterButton === ''}"
+          ng-click="$toggleFilters({}); activeFilterButton = ''">
         All
       </button>
       <button
