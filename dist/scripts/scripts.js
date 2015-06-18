@@ -4200,6 +4200,7 @@ angular.module('listPage', [
         };
 
         $scope.$retrieve = _.debounce(function (addParams) {
+          $scope.loadingResults = true;
           var allParams = _.merge(
             {},
             $scope.orderingFilter,
@@ -4207,7 +4208,10 @@ angular.module('listPage', [
             $scope.searchFilter,
             addParams
           );
-          return $scope.$list.$refresh(allParams);
+          return $scope.$list.$refresh(allParams)
+            .$then(function () {
+              $scope.loadingResults = false;
+            });
         }, 250);
 
         // search functionality
@@ -4268,6 +4272,21 @@ angular.module('listPage', [
           $location.path('/cms/app/' + $scope.cmsPage + '/edit/' + item.id + '/');
         };
 
+        // set the active filter, either the first button with active === true,
+        //   or empty string for all
+        $scope.activeFilterButton =
+          _.chain($scope.filterButtonsParsed)
+            .findWhere({active: true})
+            .result('title')
+            .tap(function (button) {
+              // cheat here and set the params for the first retrieve
+              if (button) {
+                $scope.toggledFilters = button.params;
+              }
+            })
+            .value() ||
+            '';
+        // do initial retrieval
         $scope.$retrieve();
       },
       restrict: 'E',
