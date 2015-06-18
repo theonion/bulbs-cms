@@ -32,7 +32,14 @@
         class="search-bar"
         ng-if="searchParameter">
       <label class="form-control">
-        <i class="fa fa-search"></i>
+        <i
+            class="fa fa-spinner fa-spin"
+            ng-if="loadingResults">
+        </i>
+        <i
+          class="fa fa-search"
+          ng-if="!loadingResults">
+        </i>
         <input
             type="text"
             placeholder="Filter List..."
@@ -118,6 +125,6 @@
   </pagination>
 </div>
 
-<div class="text-primary no-items-message" ng-if="$list.length === 0">
+<div class="text-primary items-messages" ng-if="$list.length === 0">
   No {{ namePlural }}, click "Add {{ name }}" below to add the first {{ name }}!
 </div>

@@ -28,6 +28,7 @@ angular.module('listPage', [
         };
 
         $scope.$retrieve = _.debounce(function (addParams) {
+          $scope.loadingResults = true;
           var allParams = _.merge(
             {},
             $scope.orderingFilter,
@@ -35,7 +36,10 @@ angular.module('listPage', [
             $scope.searchFilter,
             addParams
           );
-          return $scope.$list.$refresh(allParams);
+          return $scope.$list.$refresh(allParams)
+            .$then(function () {
+              $scope.loadingResults = false;
+            });
         }, 250);
 
         // search functionality
