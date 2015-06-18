@@ -42,6 +42,10 @@ angular.module('listPage', [
         $scope.$search = function (query) {
           $scope.searchFilter = {};
           $scope.searchFilter[$scope.searchParameter] = query;
+
+          // go to page 1, new results may not have more than 1 page
+          $scope.$list.$page = 1;
+
           $scope.$retrieve();
         };
 
@@ -49,6 +53,10 @@ angular.module('listPage', [
         $scope.filterButtonsParsed = $scope.filterButtons();
         $scope.$toggleFilters = function (params) {
           $scope.toggledFilters = params;
+
+          // go to page 1, new results may not have more than 1 page
+          $scope.$list.$page = 1;
+
           $scope.$retrieve();
         };
 
