@@ -1,17 +1,61 @@
-<div class="list-page-heading">
-  <h2 class="pull-left">{{ namePlural }}</h2>
+<h2>{{ namePlural }}</h2>
 
+<div class="list-page-tools">
   <button
-      class="btn btn-primary pull-right"
+      class="add-item btn btn-primary"
       ng-click="$add()">
     <i class="glyphicon glyphicon-plus"></i>
     Add {{ name }}
   </button>
 
-  <div class="clearfix"></div>
+  <div class="filter-tools">
+    <div
+        class="filter-buttons btn-group"
+        ng-if="filterButtonsParsed.length > 0">
+      <button
+          class="btn btn-default"
+          ng-class="{'active': activeFilterButton === ''}"
+          ng-click="$toggleFilters({}); activeFilterButton = ''">
+        All
+      </button>
+      <button
+          class="btn btn-default"
+          ng-repeat="button in filterButtonsParsed"
+          ng-class="{'active': $parent.activeFilterButton === button.title}"
+          ng-click="$toggleFilters(button.params); $parent.activeFilterButton = button.title">
+        {{ button.title }}
+      </button>
+    </div>
+
+    <div
+        class="search-bar"
+        ng-if="searchParameter">
+      <label class="form-control">
+        <i
+            class="fa fa-spinner fa-spin"
+            ng-if="loadingResults">
+        </i>
+        <i
+          class="fa fa-search"
+          ng-if="!loadingResults">
+        </i>
+        <input
+            type="text"
+            placeholder="Filter List..."
+            ng-model="filterValue"
+            ng-change="$search(filterValue)">
+        <i
+            class="cursor-pointer fa fa-times"
+            ng-click="filterValue = ''">
+        </i>
+      </label>
+    </div>
+  </div>
 </div>
 
-<div ng-if="$list.length > 0">
+<div
+    class="table-responsive"
+    ng-if="$list.length > 0">
   <table class="table table-striped">
     <thead>
       <tr>
@@ -80,6 +124,6 @@
   </pagination>
 </div>
 
-<div class="text-primary no-items-message" ng-if="$list.length === 0">
+<div class="text-primary items-messages" ng-if="$list.length === 0">
   No {{ namePlural }}, click "Add {{ name }}" below to add the first {{ name }}!
 </div>

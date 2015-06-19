@@ -30,6 +30,37 @@
   }
 }
 
+/**
+ * A label with an icon and input inside of it, making an input field that looks
+ *  like it has an icon inside of it.
+ */
+.mixin-input-with-icon {
+  label {
+    background-color: #fff;
+    display: table;
+    font-weight: normal;
+    margin: 0;
+    width: 100%;
+
+    i {
+      display: table-cell;
+      text-align: center;
+      width: 1em;
+
+      + input {
+        margin-left: 10px;
+      }
+    }
+
+    input {
+      border: none;
+      display: table-cell;
+      outline: 0;
+      width: 100%;
+    }
+  }
+}
+
 .mixin-transition (@transition) {
   -webkit-transition: @transition;
   -moz-transition:    @transition;
