@@ -5,6 +5,19 @@
 
   <list-page
       cms-page="campaigns"
+      filter-buttons="[{
+        title: 'Active',
+        active: true,
+        params: {
+          active: true
+        }
+      }, {
+        title: 'Inactive',
+        params: {
+          active: false
+        }
+      }]"
+      search-parameter="search"
       model-factory="modelFactory">
   </list-page>
 </div>
