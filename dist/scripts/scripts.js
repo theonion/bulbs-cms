@@ -4277,13 +4277,13 @@ angular.module('listPage', [
         $scope.activeFilterButton =
           _.chain($scope.filterButtonsParsed)
             .findWhere({active: true})
-            .result('title')
             .tap(function (button) {
               // cheat here and set the params for the first retrieve
               if (button) {
                 $scope.toggledFilters = button.params;
               }
             })
+            .result('title')
             .value() ||
             '';
         // do initial retrieval
