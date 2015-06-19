@@ -45,7 +45,10 @@ angular.module('listPage', [
         // search functionality
         $scope.$search = function (query) {
           $scope.searchFilter = {};
-          $scope.searchFilter[$scope.searchParameter] = query;
+
+          if (query) {
+            $scope.searchFilter[$scope.searchParameter] = query;
+          }
 
           // go to page 1, new results may not have more than 1 page
           $scope.$list.$page = 1;
