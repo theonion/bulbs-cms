@@ -973,7 +973,8 @@ angular.module('campaigns.edit', [
 angular.module('campaigns.list', [
   'apiServices.campaign.factory',
   'bulbsCmsApp.settings',
-  'listPage'
+  'listPage',
+  'moment'
 ])
   .config(function ($routeProvider, routes) {
     $routeProvider
