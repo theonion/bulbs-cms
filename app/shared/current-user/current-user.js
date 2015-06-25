@@ -4,28 +4,31 @@ angular.module('currentUser', [
   'contentServices.factory'
 ])
   .service('CurrentUser', [
-    'ContentFactory',
-    function CurrentUser(ContentFactory) {
+    '$q', 'ContentFactory',
+    function CurrentUser($q, ContentFactory) {
 
-      var $userPromise;
+      var userDeferred;
 
       this.data = [];
 
       var self = this;
       this.getItems = function () {
-        if (!$userPromise) {
-          $userPromise = ContentFactory.one('me')
+        if (!userDeferred) {
+          userDeferred = $q.defer();
+
+          ContentFactory.one('me')
             .get()
             .then(function (data) {
               self.data = data;
-              return data;
+              userDeferred.resolve(data);
             })
             .catch(function () {
-              $userPromise = null;
+              userDeferred.reject();
+              userDeferred = null;
             });
         }
 
-        return $userPromise;
+        return userDeferred.promise;
       };
 
       /**
