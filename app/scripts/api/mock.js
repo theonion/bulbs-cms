@@ -74,7 +74,7 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
   });
 
   // ContributionRole Service
-  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/role/?$')).respond([
+  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/role/?')).respond([
     {
       id: 1,
       name: 'Author'
