@@ -1,0 +1,24 @@
+<top-bar
+  logo-href="/cms/app/roles"
+  save-function="saveModel"
+  save-disable-when="model.$dirty().length === 0 && !isNew">
+</top-bar>
+
+<div id="roles-edit">
+  <div class="container col-xs-offset-2 col-xs-8">
+    <h3>
+      <a href="/cms/app/roles/">Roles</a>
+      &gt;
+      <span ng-if="isNew && !model.name">New Role</span>
+      <span ng-if="!isNew || model.name">{{ model.name }}</span>
+    </h3>
+    <div class="row well">
+      <div class="row">
+        <div class="form-group col-md-6">
+          <label for="roleName">Name</label>
+          <input id="roleName" type="text" ng-model="model.name" class="form-control">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
