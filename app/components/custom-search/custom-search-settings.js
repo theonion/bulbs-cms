@@ -10,7 +10,7 @@ angular.module('customSearch.settings', [])
     }
   }, {
     name: 'Feature Type',
-    endpoint: 'feature-type',
+    endpoint: 'feature_type.slug',
     value_structure: {
       name: 'name',
       value: 'slug'
