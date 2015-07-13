@@ -19,6 +19,17 @@
           <input id="roleName" type="text" ng-model="model.name" class="form-control">
         </div>
       </div>
+      <div class="row">
+        <div class="col-md-10">
+          <label for="paymentType">Payment Type</label>
+          <div id="paymentType" class="form-group">
+            <div ng-repeat="paymentType in PAYMENT_TYPES" class="col-md-3">
+              <input id="{{ paymentType.value }}"  type="radio" name="{{ paymentType.name }}" value="{{ paymentType.value }}" ng-model="$parent.model.paymentType">
+              <label for="{{ paymentType.value }}">{{ paymentType.name }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

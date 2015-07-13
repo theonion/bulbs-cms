@@ -7,9 +7,29 @@ angular.module('roles.edit.directive', [
   'saveButton.directive',
   'topBar'
 ])
+  .constant('PAYMENT_TYPES', [
+    {
+      name: 'Flat Rate',
+      value: 'Flat Rate' 
+    },
+    {
+      name: 'FeatureType',
+      value: 'FeatureType' 
+    },
+    {
+      name: 'Hourly',
+      value: 'Hourly' 
+    },
+    {
+      name: 'Manual',
+      value: 'Manual' 
+    }
+  ])
   .directive('rolesEdit', function (routes) {
     return {
-      controller: function (_, $location, $q, $routeParams, $scope, Role) {
+      controller: function (_, $location, $q, $routeParams, $scope, Role, PAYMENT_TYPES) {
+
+        $scope.PAYMENT_TYPES = PAYMENT_TYPES;
         
         if ($routeParams.id === 'new') {
           $scope.model = Role.$build();

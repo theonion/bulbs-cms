@@ -20,7 +20,7 @@ angular.module('apiServices.reporting.factory', [
           },
           {
             title: 'Payment Type',
-            value: 'record'
+            value: 'record.paymentType'
           }
 
         ]

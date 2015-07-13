@@ -12,13 +12,16 @@ angular.module('bulbsCmsApp.mockApi.role', [
     };
     mockApiData.roles = [{
       id: 1,
-      name: 'Author'
+      name: 'Author',
+      paymentType: 'Flat Rate'
     }, {
       id: 2,
-      name: 'Editor'
+      name: 'Editor',
+      paymentType: 'FeatureType'
     }, {
       id: 3,
-      name: 'Programmer'
+      name: 'Programmer',
+      paymentType: 'Hourly'
     }];
     $httpBackend.whenGET(reRole.list).respond(function (method, url, data) {
       return [200, {
