@@ -30,6 +30,13 @@
           </div>
         </div>
       </div>
+      <div class="row" ng-show="rateEditable()">
+        <div class="form-group col-md-6">
+          <span>Set {{ model.paymentType }}</span>
+          <input type="integer" ng-hide="model.paymentType != 'Flat Rate'" ng-model="model.rates.FlatRate.rate">
+          <input type="integer" ng-hide="model.paymentType != 'Hourly'" ng-model="model.rates.Hourly.rate">
+        </div>
+      </div>
     </div>
   </div>
 </div>

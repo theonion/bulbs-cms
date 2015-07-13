@@ -48,6 +48,14 @@ angular.module('roles.edit.directive', [
           delete window.onbeforeunload;
         });
 
+        $scope.rateEditable = function () {
+          if ($scope.model.paymentType === 'Flat Rate' || $scope.model.paymentType === 'Hourly') {
+            return true;
+          }
+
+          return false;
+        };
+
         $scope.saveModel = function () {
           var promise;
 

@@ -13,15 +13,46 @@ angular.module('bulbsCmsApp.mockApi.role', [
     mockApiData.roles = [{
       id: 1,
       name: 'Author',
-      paymentType: 'Flat Rate'
+      paymentType: 'Flat Rate',
+      rates: {
+        'Flat Rate': {
+          id: 1,
+          name: 'Flat Rate',
+          updated_on: "2015-07-13T20:14:48.573940Z",
+          rate: 100
+        }, 
+        'Hourly': {
+          id: 2,
+          name: 'Hourly',
+          updated_on: "2015-07-14T20:14:48.573940Z",
+          rate: 60
+        }
+      }
     }, {
       id: 2,
       name: 'Editor',
-      paymentType: 'FeatureType'
+      paymentType: 'FeatureType',
+      rates: {
+        'Flat Rate': {name: 'Flat Rate'},
+        'Hourly': {name: 'Hourly'}
+      }
     }, {
       id: 3,
       name: 'Programmer',
-      paymentType: 'Hourly'
+      paymentType: 'Hourly',
+      rates: {
+        'Flat Rate': {
+          id: 3,
+          name: 'Flat Rate',
+          updated_on: "2015-07-15T20:14:48.573940Z",
+          rate: 50
+        },
+        'Hourly': {
+          id: 4,
+          name: 'Hourly',
+          updated_on: "2015-07-16T20:14:48.573940Z"
+        }
+      }
     }];
     $httpBackend.whenGET(reRole.list).respond(function (method, url, data) {
       return [200, {
