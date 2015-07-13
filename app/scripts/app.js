@@ -37,6 +37,7 @@ angular.module('bulbsCmsApp', [
   'contentServices',
   // components
   'bettyEditable',
+  'bugReporter',
   'campaigns',
   'filterWidget',
   'promotedContent',
