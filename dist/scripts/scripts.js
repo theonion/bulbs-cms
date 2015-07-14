@@ -256,6 +256,8 @@ angular.module('bulbsCmsApp', [
   // shared
   'contentServices',
   // components
+  'bettyEditable',
+  'bugReporter',
   'campaigns',
   'filterWidget',
   'promotedContent',
@@ -841,6 +843,188 @@ angular.module('autocompleteBasic', [
       templateUrl: routes.COMPONENTS_URL + 'autocomplete-basic/autocomplete-basic.html'
     };
   });
+
+'use strict';
+
+angular.module('bettyEditable', [
+  'BettyCropper',
+  'bulbsCmsApp.settings'
+])
+  .directive('bettyEditable',[
+    '$http', 'routes', 'BettyCropper', 'openImageCropModal', 'DEFAULT_IMAGE_WIDTH',
+    function ($http, routes, BettyCropper, openImageCropModal, DEFAULT_IMAGE_WIDTH) {
+      return {
+        restrict: 'E',
+        templateUrl: routes.COMPONENTS_URL + 'betty-editable/betty-editable.html',
+        scope: {
+          addStyles: '@',
+          editable: '=?',
+          hideMetas: '=',
+          image: '=',
+          placeholderText: '@',
+          ratio: '@'
+        },
+        controller: function ($scope, $element) {
+          $scope.editable = angular.isDefined($scope.editable) ? $scope.editable : true;
+          $scope.upload = function (e) {
+            BettyCropper.upload().then(
+              function (success) {
+                $scope.image = {
+                  id: success.id,
+                  caption: null,
+                  alt: null
+                };
+                $scope.bettyImage = success;
+              },
+              function (error) {
+                console.log(error);
+              },
+              function (progress) {
+                console.log(progress);
+              }
+            );
+          };
+
+          $scope.edit = function (e) {
+            openImageCropModal($scope.image).then(function (image) {
+              if (image.id === null) {
+                $scope.image = null;
+              } else {
+                $scope.image = image;
+                BettyCropper.get($scope.image.id).then(function (response) {
+                  $scope.bettyImage = response.data;
+                  $scope.setStyles();
+                });
+              }
+            });
+          };
+        },
+
+        link: function (scope, element, attrs) {
+
+          if (scope.bettyImage === undefined) {
+            scope.bettyImage = null;
+          }
+
+          scope.setStyles = function () {
+            if (scope.bettyImage) {
+              scope.imageStyling = scope.bettyImage.getStyles(element.parent().width(), null, scope.ratio);
+            } else {
+              var ratioWidth = parseInt(scope.ratio.split('x')[0], 10);
+              var ratioHeight = parseInt(scope.ratio.split('x')[1], 10);
+              scope.imageStyling = {
+                'background-color': '#333',
+                'position': 'relative',
+                'width': element.parent().width(),
+                'height': Math.floor(element.parent().width() * ratioHeight / ratioWidth) + 'px',
+              };
+            }
+          };
+
+          scope.$watch('image', function (newImage, oldImage) {
+            if (newImage && newImage.id) {
+              BettyCropper.get(newImage.id).then(function (response) {
+                scope.bettyImage = response.data;
+              });
+            }
+          });
+
+          scope.$watch('bettyImage', function (newImage, oldImage) {
+            scope.setStyles();
+          }, true);
+
+          element.resize(scope.setStyles);
+
+          scope.removeImage = function () {
+            scope.image = null;
+          };
+
+          scope.editImage = function () {
+            openImageCropModal(scope.image)
+            .then(function (success) {
+              console.log(success);
+            });
+          };
+
+        }
+      };
+    }
+  ]);
+
+'use strict';
+
+angular.module('bugReporter', [])
+  .directive('bugReporter', [
+    '$http', '$window', 'routes',
+    function ($http, $window, routes) {
+      return {
+        restrict: 'E',
+        templateUrl: routes.COMPONENTS_URL + 'bug-reporter/bug-reporter-button.html',
+        scope: {},
+        controller: function ($scope, $element, $timeout) {
+          $scope.report = {};
+          $scope.reportButton = {
+            idle: 'Submit',
+            busy: 'Sending',
+            finished: 'Sent!',
+            error: 'Error!'
+          };
+
+          $scope.modalVisible = false;
+          $scope.showThankYou = false;
+
+          $scope.showModal = function () {
+            $scope.modalVisible = true;
+          };
+
+          $scope.dismissModal = function () {
+            $scope.modalVisible = false;
+            $scope.showThankYou = false;
+          };
+
+          $scope.sendToWebtech = function () {
+            var report =
+              'When I tried to:\n\n' + $scope.report.firstRes + '\n\n' +
+              'I thought this would happen:\n\n' + $scope.report.secondRes + '\n\n' +
+              '...but this happened instead:\n\n' + $scope.report.thirdRes
+            ;
+            var data = {
+              report: report,
+              url: $window.location.href,
+              user_agent: $window.navigator.userAgent
+            };
+            return $http.post('/cms/api/v1/report-bug/', data);
+          };
+
+          $scope.sendToWebtechCbk = function (promise) {
+            promise
+              .then(function () {
+                $scope.showThankYou = true;
+                $timeout(function () {
+                  $scope.dismissModal();
+                  for (var entry in $scope.report) {
+                    $scope.report[entry] = '';
+                  }
+                }, 5000);
+              });
+          };
+
+          /*
+            Exposing this globally for PNotify.
+            Will revisit when we review how to
+            report bugs on the CMS.
+          */
+          $window.showBugReportModal = function () {
+            $scope.$apply($scope.showModal());
+          };
+
+        },
+        link: function (scope, element) {
+
+        }
+      };
+    }
+  ]);
 
 'use strict';
 
@@ -4741,179 +4925,6 @@ angular.module('bulbsCmsApp')
           }
           scope.article.authors = newauthors;
         };
-
-      }
-    };
-  });
-
-'use strict';
-
-angular.module('bulbsCmsApp')
-  .directive('bettyeditable', function ($http, routes, BettyCropper, openImageCropModal, DEFAULT_IMAGE_WIDTH) {
-    return {
-      restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'bettyeditable.html',
-      scope: {
-        'image': '=',
-        'addStyles': '@',
-        'placeholderText': '@',
-        'hideMetas': '=',
-        'ratio': '@',
-        'editable': '=?'
-      },
-      controller: function ($scope, $element) {
-        $scope.editable = angular.isDefined($scope.editable) ? $scope.editable : true;
-        $scope.upload = function (e) {
-          BettyCropper.upload().then(
-            function (success) {
-              $scope.image = {
-                id: success.id,
-                caption: null,
-                alt: null
-              };
-              $scope.bettyImage = success;
-            },
-            function (error) {
-              console.log(error);
-            },
-            function (progress) {
-              console.log(progress);
-            }
-          );
-        };
-
-        $scope.edit = function (e) {
-          openImageCropModal($scope.image).then(function (image) {
-            if (image.id === null) {
-              $scope.image = null;
-            } else {
-              $scope.image = image;
-              BettyCropper.get($scope.image.id).then(function (response) {
-                $scope.bettyImage = response.data;
-                $scope.setStyles();
-              });
-            }
-          });
-        };
-      },
-
-      link: function (scope, element, attrs) {
-
-        if (scope.bettyImage === undefined) {
-          scope.bettyImage = null;
-        }
-
-        scope.setStyles = function () {
-          if (scope.bettyImage) {
-            scope.imageStyling = scope.bettyImage.getStyles(element.parent().width(), null, scope.ratio);
-          } else {
-            var ratioWidth = parseInt(scope.ratio.split('x')[0], 10);
-            var ratioHeight = parseInt(scope.ratio.split('x')[1], 10);
-            scope.imageStyling = {
-              'background-color': '#333',
-              'position': 'relative',
-              'width': element.parent().width(),
-              'height': Math.floor(element.parent().width() * ratioHeight / ratioWidth) + 'px',
-            };
-          }
-        };
-
-        scope.$watch('image', function (newImage, oldImage) {
-          if (newImage && newImage.id) {
-            BettyCropper.get(newImage.id).then(function (response) {
-              scope.bettyImage = response.data;
-            });
-          }
-        });
-
-        scope.$watch('bettyImage', function (newImage, oldImage) {
-          scope.setStyles();
-        }, true);
-
-        element.resize(scope.setStyles);
-
-        scope.removeImage = function () {
-          scope.image.id = null;
-        };
-
-        scope.editImage = function () {
-          openImageCropModal(scope.image)
-          .then(function (success) {
-            console.log(success);
-          });
-        };
-
-      }
-    };
-  });
-
-'use strict';
-
-angular.module('bulbsCmsApp')
-  .directive('bugReporter', function ($http, $window, routes) {
-    return {
-      restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'bug-report-button.html',
-      scope: {},
-      controller: function ($scope, $element, $timeout) {
-        $scope.report = {};
-        $scope.reportButton = {
-          idle: 'Submit',
-          busy: 'Sending',
-          finished: 'Sent!',
-          error: 'Error!'
-        };
-
-        $scope.modalVisible = false;
-        $scope.showThankYou = false;
-
-        $scope.showModal = function () {
-          $scope.modalVisible = true;
-        };
-
-        $scope.dismissModal = function () {
-          $scope.modalVisible = false;
-          $scope.showThankYou = false;
-        };
-
-        $scope.sendToWebtech = function () {
-          var report =
-            'When I tried to:\n\n' + $scope.report.firstRes + '\n\n' +
-            'I thought this would happen:\n\n' + $scope.report.secondRes + '\n\n' +
-            '...but this happened instead:\n\n' + $scope.report.thirdRes
-          ;
-          var data = {
-            report: report,
-            url: $window.location.href,
-            user_agent: $window.navigator.userAgent
-          };
-          return $http.post('/cms/api/v1/report-bug/', data);
-        };
-
-        $scope.sendToWebtechCbk = function (promise) {
-          promise
-            .then(function () {
-              $scope.showThankYou = true;
-              $timeout(function () {
-                $scope.dismissModal();
-                for (var entry in $scope.report) {
-                  $scope.report[entry] = '';
-                }
-              }, 5000);
-            });
-        };
-
-        /*
-          Exposing this globally for PNotify.
-          Will revisit when we review how to
-          report bugs on the CMS.
-        */
-        $window.showBugReportModal = function () {
-          $scope.$apply($scope.showModal());
-        };
-
-      },
-      link: function (scope, element) {
 
       }
     };

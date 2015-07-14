@@ -38,6 +38,23 @@
     "restmod-style-drf-paged": "~0.0.2",
     "ng-clip": "~0.2.6"
   },
+  "ignore": [
+    "app",
+    "tasks",
+    "test",
+    ".git*",
+    ".jshintrc",
+    ".travis.yml",
+    "Gruntfile.js",
+    "karma.conf.js",
+    "package.json",
+    "protractor.conf.js"
+  ],
+  "main": [
+    "dist/scripts/scripts.js",
+    "dist/scripts/templates.js",
+    "dist/styles/main.css"
+  ],
   "resolutions": {
     "lodash": "~3.1.0"
   }
