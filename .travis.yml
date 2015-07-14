@@ -2,7 +2,7 @@ language: node_js
 before_script:
 - "./node_modules/.bin/bower install"
 script:
-- "./node_modules/.bin/grunt karma"
+- "./node_modules/.bin/grunt karma:ci"
 - "./node_modules/.bin/grunt lint"
 after_script:
 - "./node_modules/.bin/grunt coveralls"
