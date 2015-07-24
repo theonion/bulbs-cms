@@ -15,10 +15,22 @@
                 </button>
             </p>
             <div class="thumbnail-modal-image" ng-show="article.thumbnail_override && article.thumbnail_override.id !== null">
-                <bettyeditable image="article.thumbnail_override" editable="true" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o"></bettyeditable>
+                <betty-editable
+                    image="article.thumbnail_override"
+                    editable="true"
+                    ratio="16x9"
+                    placeholder-text="Thumbnail Image"
+                    add-styles="fa fa-picture-o">
+                </betty-editable>
             </div>
             <div class="thumbnail-modal-image" ng-show="(!article.thumbnail_override || article.thumbnail_override.id === null) && article.first_image && article.first_image.id">
-                <bettyeditable image="article.first_image" editable="false" ratio="16x9" placeholder-text="Thumbnail Image" add-styles="fa fa-picture-o"></bettyeditable>
+                <betty-editable
+                    image="article.first_image"
+                    editable="false"
+                    ratio="16x9"
+                    placeholder-text="Thumbnail Image"
+                    add-styles="fa fa-picture-o">
+                </betty-editable>
             </div>
         </div>
     </div>

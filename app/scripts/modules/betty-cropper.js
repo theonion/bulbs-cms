@@ -5,6 +5,7 @@
       'restangular',
       'jquery'
     ])
+    .value('DEFAULT_IMAGE_WIDTH', 1200)
     .factory('Selection', SelectionFactory)
     .factory('BettyImage', BettyImageFactory)
     .service('BettyCropper', BettyCropperService);

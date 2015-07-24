@@ -9210,7 +9210,7 @@ return jQuery;
 }));
 
 /**
- * @license AngularJS v1.3.16
+ * @license AngularJS v1.3.17
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -9265,7 +9265,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.16/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.17/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -11350,11 +11350,11 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.16',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.17',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
-  dot: 16,
-  codeName: 'cookie-oatmealification'
+  dot: 17,
+  codeName: 'tsktskskly-euouae'
 };
 
 
@@ -14165,7 +14165,7 @@ function Browser(window, document, $log, $sniffer) {
 
   function getHash(url) {
     var index = url.indexOf('#');
-    return index === -1 ? '' : url.substr(index + 1);
+    return index === -1 ? '' : url.substr(index);
   }
 
   /**
@@ -14292,7 +14292,7 @@ function Browser(window, document, $log, $sniffer) {
         // Do the assignment again so that those two variables are referentially identical.
         lastHistoryState = cachedState;
       } else {
-        if (!sameBase) {
+        if (!sameBase || reloadLocation) {
           reloadLocation = url;
         }
         if (replace) {
@@ -17165,7 +17165,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
       $compileNode.empty();
 
-      $templateRequest($sce.getTrustedResourceUrl(templateUrl))
+      $templateRequest(templateUrl)
         .then(function(content) {
           var compileNode, tempTemplateAttrs, $template, childBoundTranscludeFn;
 
@@ -19971,7 +19971,7 @@ function LocationHashbangUrl(appBase, hashPrefix) {
     var withoutBaseUrl = beginsWith(appBase, url) || beginsWith(appBaseNoFile, url);
     var withoutHashUrl;
 
-    if (withoutBaseUrl.charAt(0) === '#') {
+    if (!isUndefined(withoutBaseUrl) && withoutBaseUrl.charAt(0) === '#') {
 
       // The rest of the url starts with a hash so we have
       // got either a hashbang path or a plain hash fragment
@@ -19985,7 +19985,15 @@ function LocationHashbangUrl(appBase, hashPrefix) {
       // There was no hashbang path nor hash fragment:
       // If we are in HTML5 mode we use what is left as the path;
       // Otherwise we ignore what is left
-      withoutHashUrl = this.$$html5 ? withoutBaseUrl : '';
+      if (this.$$html5) {
+        withoutHashUrl = withoutBaseUrl;
+      } else {
+        withoutHashUrl = '';
+        if (isUndefined(withoutBaseUrl)) {
+          appBase = url;
+          this.replace();
+        }
+      }
     }
 
     parseAppUrl(withoutHashUrl, this);
@@ -25380,12 +25388,14 @@ var $compileMinErr = minErr('$compile');
  * @name $templateRequest
  *
  * @description
- * The `$templateRequest` service downloads the provided template using `$http` and, upon success,
- * stores the contents inside of `$templateCache`. If the HTTP request fails or the response data
- * of the HTTP request is empty, a `$compile` error will be thrown (the exception can be thwarted
- * by setting the 2nd parameter of the function to true).
+ * The `$templateRequest` service runs security checks then downloads the provided template using
+ * `$http` and, upon success, stores the contents inside of `$templateCache`. If the HTTP request
+ * fails or the response data of the HTTP request is empty, a `$compile` error will be thrown (the
+ * exception can be thwarted by setting the 2nd parameter of the function to true). Note that the
+ * contents of `$templateCache` are trusted, so the call to `$sce.getTrustedUrl(tpl)` is omitted
+ * when `tpl` is of type string and `$templateCache` has the matching entry.
  *
- * @param {string} tpl The HTTP request template URL
+ * @param {string|TrustedResourceUrl} tpl The HTTP request template URL
  * @param {boolean=} ignoreRequestError Whether or not to ignore the exception when the request fails or the template is empty
  *
  * @return {Promise} the HTTP Promise for the given.
@@ -25393,9 +25403,18 @@ var $compileMinErr = minErr('$compile');
  * @property {number} totalPendingRequests total amount of pending template requests being downloaded.
  */
 function $TemplateRequestProvider() {
-  this.$get = ['$templateCache', '$http', '$q', function($templateCache, $http, $q) {
+  this.$get = ['$templateCache', '$http', '$q', '$sce', function($templateCache, $http, $q, $sce) {
     function handleRequestFn(tpl, ignoreRequestError) {
       handleRequestFn.totalPendingRequests++;
+
+      // We consider the template cache holds only trusted templates, so
+      // there's no need to go through whitelisting again for keys that already
+      // are included in there. This also makes Angular accept any script
+      // directive, no matter its name. However, we still need to unwrap trusted
+      // types.
+      if (!isString(tpl) || !$templateCache.get(tpl)) {
+        tpl = $sce.getTrustedResourceUrl(tpl);
+      }
 
       var transformResponse = $http.defaults && $http.defaults.transformResponse;
 
@@ -31606,8 +31625,8 @@ var ngIfDirective = ['$animate', function($animate) {
  * @param {Object} angularEvent Synthetic event object.
  * @param {String} src URL of content to load.
  */
-var ngIncludeDirective = ['$templateRequest', '$anchorScroll', '$animate', '$sce',
-                  function($templateRequest,   $anchorScroll,   $animate,   $sce) {
+var ngIncludeDirective = ['$templateRequest', '$anchorScroll', '$animate',
+                  function($templateRequest,   $anchorScroll,   $animate) {
   return {
     restrict: 'ECA',
     priority: 400,
@@ -31643,7 +31662,7 @@ var ngIncludeDirective = ['$templateRequest', '$anchorScroll', '$animate', '$sce
           }
         };
 
-        scope.$watch($sce.parseAsResourceUrl(srcExp), function ngIncludeWatchAction(src) {
+        scope.$watch(srcExp, function ngIncludeWatchAction(src) {
           var afterAnimation = function() {
             if (isDefined(autoScrollExp) && (!autoScrollExp || scope.$eval(autoScrollExp))) {
               $anchorScroll();
@@ -44636,6 +44655,8 @@ factory('ipCookie', ['$document',
                 options.expires.setMinutes(options.expires.getMinutes() + expiresFor);
               } else if (options.expirationUnit === 'seconds') {
                 options.expires.setSeconds(options.expires.getSeconds() + expiresFor);
+              } else if (options.expirationUnit === 'milliseconds') {
+                options.expires.setMilliseconds(options.expires.getMilliseconds() + expiresFor);
               } else {
                 options.expires.setDate(options.expires.getDate() + expiresFor);
               }
@@ -44707,7 +44728,7 @@ factory('ipCookie', ['$document',
 ]);
 
 /**
- * @license AngularJS v1.3.16
+ * @license AngularJS v1.3.17
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -44915,7 +44936,7 @@ angular.module('ngCookies', ['ng']).
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.3.16
+ * @license AngularJS v1.3.17
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -49976,7 +49997,7 @@ angular.module('restmod').factory('NestedDirtyModel', ['restmod', function(restm
   });
 }]);})(angular);
 /**
- * @license AngularJS v1.3.16
+ * @license AngularJS v1.3.17
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -50573,9 +50594,8 @@ function $RouteProvider() {
                 if (angular.isFunction(templateUrl)) {
                   templateUrl = templateUrl(nextRoute.params);
                 }
-                templateUrl = $sce.getTrustedResourceUrl(templateUrl);
                 if (angular.isDefined(templateUrl)) {
-                  nextRoute.loadedTemplateUrl = templateUrl;
+                  nextRoute.loadedTemplateUrl = $sce.valueOf(templateUrl);
                   template = $templateRequest(templateUrl);
                 }
               }
@@ -50968,7 +50988,7 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.3.16
+ * @license AngularJS v1.3.17
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -51596,8 +51616,8 @@ angular.module('ngSanitize', []).provider('$sanitize', $SanitizeProvider);
  */
 angular.module('ngSanitize').filter('linky', ['$sanitize', function($sanitize) {
   var LINKY_URL_REGEXP =
-        /((ftp|https?):\/\/|(www\.)|(mailto:)?[A-Za-z0-9._%+-]+@)\S*[^\s.;,(){}<>"”’]/,
-      MAILTO_REGEXP = /^mailto:/;
+        /((ftp|https?):\/\/|(www\.)|(mailto:)?[A-Za-z0-9._%+-]+@)\S*[^\s.;,(){}<>"”’]/i,
+      MAILTO_REGEXP = /^mailto:/i;
 
   return function(text, target) {
     if (!text) return text;
@@ -103496,9 +103516,10 @@ define('scribe-plugin-link-ui',[],function () {
           $input = $('.link-tools input', editorEl),
           placeHolder = '#replaceme';
       var $results = $('.search-results', $linkTools);
+      var $filters = $('.filters', $linkTools);
 
       // this provides a way to externally udpate the results element. 
-      var searchHandler = config.searchHandler || function(term, resultsElement) { };
+      var searchHandler = config.searchHandler || function(term, resultsElement, filtersElement) { };
 
       linkPromptCommand.nodeName = 'A';
 
@@ -103518,6 +103539,13 @@ define('scribe-plugin-link-ui',[],function () {
       });
 
       $('.ok', $linkTools).click(confirmInput);
+
+      $filters.click(function(e) {
+        var buttonElement = $(e.target).closest('button');
+        if (buttonElement.length === 1) {
+            buttonElement.toggleClass('active');
+        }
+      });
 
       $results.click(function(e) {
         var linkElement = $(e.target).closest('a');
@@ -103553,7 +103581,7 @@ define('scribe-plugin-link-ui',[],function () {
         var v = $input.val();
         if (isSearchTerm(v)) {
           clearTimeout(searchTimeout);
-          searchTimeout = setTimeout(searchHandler, 200, v, $results);
+          searchTimeout = setTimeout(searchHandler, 200, v, $results, $filters);
           $results.show();
         }
         else {
@@ -113721,37 +113749,45 @@ angular.module('tokenAuth.authInterceptor', [
       };
 
       this.request = function (config) {
+        var newConfig;
+
         if (!doIgnoreAuth(config) && TokenAuthConfig.shouldBeIntercepted(config.url)) {
 
+          // get token from storage
+          var token = localStorageService.get(TokenAuthConfig.getTokenKey());
           // need to inject service here, otherwise we get a circular $http dep
           var TokenAuthService = $injector.get('TokenAuthService');
 
-          if (TokenAuthService.isAuthenticated()) {
-            // we've already been authenticated
-            var token = localStorageService.get(TokenAuthConfig.getTokenKey());
+          // check if we have a token, if not, prevent request from firing, send user to login
+          if (token) {
+            newConfig = TokenAuthService.tokenVerify()
+              .then(function () {
+                // add Authorization header
+                config.headers = config.headers || {};
+                config.headers.Authorization = 'JWT ' + token;
 
-            // check if we have a token, if not, prevent request from firing, send user to login
-            if (token) {
-              // add Authorization header
-              config.headers = config.headers || {};
-              config.headers.Authorization = 'JWT ' + token;
-            } else {
-              // abort requests where there's no token
-              abortRequest(config);
-
-              // navigate to login page
-              TokenAuthService.navToLogin();
-            }
+                return config;
+              })
+              .catch(function () {
+                // verification failed abort request
+                abortRequest(config);
+              });
           } else {
-            // abort request
+            // abort requests where there's no token
             abortRequest(config);
 
-            // not authenticated yet, buffer this request
-            TokenAuthService.requestBufferPush(config);
+            // navigate to login page
+            TokenAuthService.navToLogin();
+
+            // return aborted request
+            newConfig = config;
           }
+        } else {
+          // this is a request not being intercepted, just return it
+          newConfig = config;
         }
 
-        return config;
+        return newConfig;
       };
 
       this.responseError = function (response) {
@@ -113822,13 +113858,33 @@ angular.module('tokenAuth.authService', [
 
       var TokenAuthService = this;
       var requestInProgress = false;
+      // false if not verified at least once, otherwise promise that resolves when
+      //  verification endpoint returns
+      var $verified = false;
 
-      TokenAuthService._authenticated = false;
       TokenAuthService._requestBuffer = [];
+
+      /**
+       * Force verification promise to be resolved. Used whenever an endpoint
+       *  besides the verify endpoint has been used to successfully authenticate.
+       */
+      var forceAuthenticated = function () {
+        $verified = $q.defer();
+        $verified.resolve();
+      };
+
+      /**
+       * Force verification promise to be rejected. Used whenever an endpoint
+       *  besides the verify endpoint has been used to unauthenticate.
+       */
+      var forceUnauthenticated = function () {
+        $verified = $q.defer();
+        $verified.reject();
+      };
 
       var authSuccess = function (deferred) {
         return function () {
-          TokenAuthService._authenticated = true;
+          forceAuthenticated();
           TokenAuthService.requestBufferRetry();
 
           // if we're currently on the login page, navigate away from it
@@ -113842,7 +113898,7 @@ angular.module('tokenAuth.authService', [
 
       var noTokenFailure = function (deferred) {
         return function () {
-          TokenAuthService._authenticated = false;
+          forceUnauthenticated();
           TokenAuthService.navToLogin();
           deferred.reject();
         };
@@ -113852,16 +113908,20 @@ angular.module('tokenAuth.authService', [
        * Token verification endpoint. Should be used as the initial request when
        *  a page loads to check if user is authenticated. All requests should be
        *  buffered until verify endpoint returns successfully.
+
+       * Because token verification is meant only to occur once when the page loads,
+       *  subsequent calls to this function will return the promise from the original
+       *  call.
        *
        * @returns {promise} resolves when authenticated, rejects otherwise.
        */
       TokenAuthService.tokenVerify = function () {
-        var verification = $q.defer();
+        if (!$verified && !requestInProgress) {
+          // verify has not been called yet, set it up
+          $verified = $q.defer();
 
-        if (!requestInProgress) {
           // no currently running request, start a new one
           requestInProgress = true;
-          TokenAuthService._pendingVerification = verification;
 
           var token = localStorageService.get(TokenAuthConfig.getTokenKey());
           if (token) {
@@ -113872,21 +113932,21 @@ angular.module('tokenAuth.authService', [
               {token: token},
               {ignoreTokenAuth: true}
             )
-            .then(authSuccess(verification))
+            .then(authSuccess($verified))
             .catch(function (response) {
               // some error at the verify endpoint
-              TokenAuthService._authenticated = false;
               if (response.status === 400) {
                 // this is an expired token, attempt refresh
+                requestInProgress = false;
                 TokenAuthService.tokenRefresh()
-                  .then(verification.resolve)
-                  .catch(verification.reject);
+                  .then($verified.resolve)
+                  .catch($verified.reject);
               } else if (TokenAuthConfig.isStatusCodeToHandle(response.status)) {
                 // user is not authorized, send them to login page
-                noTokenFailure(verification)();
+                noTokenFailure($verified)();
               } else {
                 // this is not an auth error, reject verification
-                verification.reject();
+                $verified.reject();
               }
             })
             .finally(function () {
@@ -113894,20 +113954,14 @@ angular.module('tokenAuth.authService', [
               requestInProgress = false;
             });
           } else {
-            noTokenFailure(verification)();
+            noTokenFailure($verified)();
 
             // reset request flag so other requests can go through
             requestInProgress = false;
           }
-        } else if (!TokenAuthService._pendingVerification) {
-          // there is a request happening, and it's not a verify request, reject promise
-          verification.reject();
-        } else {
-          // request in progress and it's a verify request, return existing promise
-          verification = TokenAuthService._pendingVerification;
         }
 
-        return verification.promise;
+        return $verified ? $verified.promise : $q.reject();
       };
 
       /**
@@ -113984,14 +114038,14 @@ angular.module('tokenAuth.authService', [
             {ignoreTokenAuth: true}
           )
           .success(function (response) {
+            forceAuthenticated();
             localStorageService.set(TokenAuthConfig.getTokenKey(), response.token);
             $location.path(TokenAuthConfig.getAfterLoginPath());
-            TokenAuthService._authenticated = true;
             TokenAuthConfig.loginCallback();
             login.resolve();
           })
           .catch(function () {
-            TokenAuthService._authenticated = false;
+            forceUnauthenticated();
             login.reject();
           })
           .finally(function () {
@@ -114014,7 +114068,7 @@ angular.module('tokenAuth.authService', [
        *  login page.
        */
       TokenAuthService.logout = function () {
-        TokenAuthService._authenticated = false;
+        forceUnauthenticated();
         localStorageService.remove(TokenAuthConfig.getTokenKey());
         $location.path(TokenAuthConfig.getLoginPagePath());
         TokenAuthConfig.logoutCallback();
@@ -114069,13 +114123,6 @@ angular.module('tokenAuth.authService', [
       TokenAuthService.navToLogin = function () {
         TokenAuthService.requestBufferClear();
         $location.path(TokenAuthConfig.getLoginPagePath());
-      };
-
-      /**
-       * @returns {boolean} true when some authorization endpoint has successfully returned.
-       */
-      TokenAuthService.isAuthenticated = function () {
-        return TokenAuthService._authenticated;
       };
 
       return TokenAuthService;

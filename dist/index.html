@@ -128,6 +128,8 @@
 
     <!-- injector:js -->
     <script src="components/autocomplete-basic/autocomplete-basic.js"></script>
+    <script src="components/betty-editable/betty-editable.js"></script>
+    <script src="components/bug-reporter/bug-reporter.js"></script>
     <script src="components/campaigns/campaigns-edit/campaigns-edit-directive.js"></script>
     <script src="components/campaigns/campaigns-edit/campaigns-edit-sponsor-pixel/campaigns-edit-sponsor-pixel-directive.js"></script>
     <script src="components/campaigns/campaigns-edit/campaigns-edit-sponsor-pixel/campaigns-edit-sponsor-pixel.js"></script>
@@ -240,8 +242,6 @@
     <script src="scripts/directives/activenav.js"></script>
     <script src="scripts/directives/add-image.js"></script>
     <script src="scripts/directives/articlecontainer.js"></script>
-    <script src="scripts/directives/bettyeditable.js"></script>
-    <script src="scripts/directives/bugreporter.js"></script>
     <script src="scripts/directives/bulbs-autocomplete.js"></script>
     <script src="scripts/directives/cms-notification.js"></script>
     <script src="scripts/directives/cms-notify-container.js"></script>
@@ -383,7 +383,8 @@
           .constant('VIDEOHUB_SECRET_TOKEN', 'BLAH BLAH')
           .constant('VIDEOHUB_DEFAULT_CHANNEL', 'The Onion');
 
-        window.dummySearchHandler = function(term, resultsElement) {
+        window.dummySearchHandler = function(term, resultsElement, filtersElement) {
+          filtersElement.html('<b>Filtering on:</b><br><button class="toggle-filter active">Donald Trump</button><button class="toggle-filter">Parents</button>')
           resultsElement.html("<b>Searching for: " + term + "</b><br><a href='/fart/'>Fart</a><br><a href='/butt/'>Butt</a><br><a href='/dumb/'>Dumb</a><br>");
         };
 

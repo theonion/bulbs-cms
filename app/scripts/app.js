@@ -51,6 +51,8 @@ angular.module('bulbsCmsApp', [
   'cms.templates',
   'currentUser',
   // components
+  'bettyEditable',
+  'bugReporter',
   'campaigns',
   'content',
   'content.video',

@@ -21,7 +21,13 @@
   </div>
   <div class="text-center">
     <div ng-show="mode == 'upload'">
-      <bettyeditable image="uploadedImage" ratio="16x9" placeholder-text="Upload Image" add-styles="fa fa-picture-o" edit-ratios="['16x9']"></bettyeditable>
+      <betty-editable
+          image="uploadedImage"
+          ratio="16x9"
+          placeholder-text="Upload Image"
+          add-styles="fa fa-picture-o"
+          edit-ratios="['16x9']">
+        </betty-editable>
     </div>
   </div>
   <div style="margin-top:10px; margin-bottom: 10px;">
