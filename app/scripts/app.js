@@ -36,6 +36,8 @@ angular.module('bulbsCmsApp', [
   // shared
   'contentServices',
   // components
+  'bettyEditable',
+  'bugReporter',
   'campaigns',
   'filterWidget',
   'promotedContent',

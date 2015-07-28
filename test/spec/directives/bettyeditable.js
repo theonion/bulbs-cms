@@ -14,7 +14,7 @@ describe('Testing bettyeditable directive', function() {
     module('jsTemplates');
     module('BettyCropper.mockApi');
 
-    html = '<div style="width: 400px; height: 900px;""><bettyeditable image="image" ratio="16x9" /></div>';
+    html = '<div style="width: 400px; height: 900px;""><betty-editable image="image" ratio="16x9" /></div>';
 
     inject(function($injector, $rootScope){
       $compile = $injector.get('$compile');
