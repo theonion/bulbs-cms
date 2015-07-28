@@ -2,7 +2,7 @@
 
 <div class="container">
     <div class="row">
-        <div id="contributions" class="container col-xs-12 col-sm-pull-1 col-sm-push-1 col-sm-10 col-md-pull-2 col-md-push-2 col-md-8">
+        <div id="contributions" class="container col-xs-12 col-sm-12 col-md-11">
             <div class="contribution panel panel-default" ng-repeat="contribution in contributions">
 
                 <div class="panel-heading" data-toggle="collapse" href="#contribution{{$index}}">
@@ -11,9 +11,13 @@
                     </a>
                 </div>
 
-                <div id="contribution{{$index}}" ng-class="{collapse: true, in: collapsed[$index] == false}">
+                <div id="contribution{{$index}}">
                     <div class="panel-body" >
                         <div class="row">
+                            <div class="role col-sm-6" ng-class="{'has-error': !contribution.role}">
+                                <select name="role" class="form-control form-group" ng-change="updateLabel($index)" ng-options="role.id as role.name for role in roles" ng-model="contribution.role">
+                                </select>
+                            </div>
                             <div class="form-group col-sm-6">
                                 <autocomplete type="text"
                                     ng-model="contribution.contributor"
@@ -22,10 +26,6 @@
                                     search-param="search"
                                     ng-class="{'has-error': !contribution.contributor}"
                                     placeholder="Search for author"></autocomplete>
-                            </div>
-                            <div class="role col-sm-6" ng-class="{'has-error': !contribution.role}">
-                                <select name="role" class="form-control form-group" ng-change="updateLabel($index)" ng-options="role.id as role.name for role in roles" ng-model="contribution.role">
-                                </select>
                             </div>
                         </div>
                         <div class="form-group">
