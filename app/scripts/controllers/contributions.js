@@ -22,6 +22,30 @@ angular.module('bulbsCmsApp')
     $scope.remove = remove;
     $scope.updateLabel = updateLabel;
 
+    $scope.isFlatRate = function(contribution) {
+      if (contribution.payment_type === 'Flat Rate') {
+        return true;
+      }
+
+      return false;
+    };
+
+    $scope.isHourly = function(contribution) {
+      if (contribution.payment_type === 'Hourly') {
+        return true;
+      }
+
+      return false;
+    };
+
+    $scope.isManual = function(contribution) {
+      if (contribution.payment_type === 'Manual') {
+        return true;
+      }
+
+      return false;
+    };
+
     function save() {
       // I know, I'm not supposed to do DOM manipulation in controllers. TOO BAD.
       angular.element('#save-btn').html('<i class="glyphicon glyphicon-refresh fa-spin"></i> Saving');

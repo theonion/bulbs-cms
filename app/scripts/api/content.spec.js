@@ -23,7 +23,7 @@ describe('ContentService', function () {
 
   it('should return the contributions for content', function () {
     ContentService.one(6).all('contributions').getList().then(function (contributions) {
-      expect(contributions.length).toBe(2);
+      expect(contributions.length).toBe(3);
       expect(contributions[0].contributor.getFullName()).toBe('Chris Sinchok');
     });
     $httpBackend.flush();

@@ -54,7 +54,12 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
         last_name: 'Sinchok',
         username: 'csinchok'
       },
-      role: 1
+      force_pay: false,
+      force_date: '2015-8-14',
+      rate: 60,
+      override_rate: 100,
+      role: 1,
+      payment_type: 'Flat Rate'
     },
     {
       id: 1,
@@ -65,8 +70,29 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
         last_name: 'Wentz',
         username: 'awentz'
       },
-      role: 2
+      force_pay: true,
+      force_date: null,
+      rate: 70,
+      override_rate: null,
+      role: 2,
+      payment_type: 'Hourly'
     },
+    {
+      id: 3,
+      content: 12345,
+      contributor: {
+        id: 3,
+        first_name: 'Cameron',
+        last_name: 'Lowe',
+        username: 'Favorite Guy'
+      },
+      force_pay: false,
+      force_date: null,
+      rate: null,
+      override_rate: null,
+      role: 3,
+      payment_type: 'Manual'
+    }
   ]);
   // Contribution Service
   $httpBackend.when('POST', new RegExp('^/cms/api/v1/content/[0-9]+/contributions/?')).respond(function (method, url, data, headers) {
