@@ -10,19 +10,19 @@ angular.module('roles.edit.directive', [
   .constant('PAYMENT_TYPES', [
     {
       name: 'Flat Rate',
-      value: 'Flat Rate' 
+      value: 'Flat Rate'
     },
     {
       name: 'FeatureType',
-      value: 'FeatureType' 
+      value: 'FeatureType'
     },
     {
       name: 'Hourly',
-      value: 'Hourly' 
+      value: 'Hourly'
     },
     {
       name: 'Manual',
-      value: 'Manual' 
+      value: 'Manual'
     }
   ])
   .directive('rolesEdit', function (routes) {
@@ -30,7 +30,7 @@ angular.module('roles.edit.directive', [
       controller: function (_, $location, $q, $routeParams, $scope, Role, PAYMENT_TYPES) {
 
         $scope.PAYMENT_TYPES = PAYMENT_TYPES;
-        
+
         if ($routeParams.id === 'new') {
           $scope.model = Role.$build();
           $scope.isNew = true;
@@ -49,7 +49,8 @@ angular.module('roles.edit.directive', [
         });
 
         $scope.rateEditable = function () {
-          if ($scope.model.paymentType === 'Flat Rate' || $scope.model.paymentType === 'Hourly') {
+          var paymentTypes = ["Flat Rate", "Hourly", "FeatureType"]
+          if (paymentTypes.indexOf($scope.model.paymentType >= 0)) {
             return true;
           }
 

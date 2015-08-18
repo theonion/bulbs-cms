@@ -32,9 +32,67 @@
       </div>
       <div class="row" ng-show="rateEditable()">
         <div class="form-group col-md-6">
-          <span>Set {{ model.paymentType }}</span>
-          <input type="integer" ng-hide="model.paymentType != 'Flat Rate'" ng-model="model.rates.FlatRate.rate">
-          <input type="integer" ng-hide="model.paymentType != 'Hourly'" ng-model="model.rates.Hourly.rate">
+          <label for="setFlatRate">Set Flat Rate&nbsp&nbsp</label>
+          <div id="setFlatRate" class="input-group" ng-hide="model.paymentType != 'Flat Rate'">
+            <span class="input-group-btn">
+              <button class="btn btn-info">
+                $
+              </button>
+            </span>
+            <input
+              type="text"
+              class="form-control"
+              ng-model="model.rates.FlatRate.rate">
+          </div>
+
+          <div class="row" ng-hide="model.paymentType != 'Hourly'">
+            <label for="setHourly">Set Hourly Rate&nbsp&nbsp</label>
+            <div id="setHourly" class="input-group">
+              <span class="input-group-btn">
+                <button class="btn btn-info">
+                  $
+                </button>
+              </span>
+              <input
+                type="text"
+                class="form-control"
+                ng-model="model.rates.Hourly.rate">
+              <span class="input-group-btn">
+                <button class="btn btn-info">
+                  /hr
+                </button>
+              </span>
+            </div>
+          </div>
+          <div class="table-responsive ng-scope" ng-show="model.paymentType == 'FeatureType'">
+            <table class="table">
+              <thead>
+                <tr>
+                  <td>Feature Types</td>
+                  <td>Rates</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="rate in model.rates.FeatureType.rates">
+                  <td>{{ rate.name }}</td>
+                  <td>
+                    <div class="input-group">
+                      <span class="input-group-btn">
+                        <button class="btn btn-info">
+                          $
+                        </button>
+                      </span>
+                      <input
+                        type="text"
+                        value="{{ rate.rate }}"
+                        class="form-control">
+                      </input>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

@@ -20,12 +20,38 @@ angular.module('bulbsCmsApp.mockApi.role', [
           name: 'Flat Rate',
           updated_on: "2015-07-13T20:14:48.573940Z",
           rate: 100
-        }, 
+        },
         'Hourly': {
           id: 2,
           name: 'Hourly',
           updated_on: "2015-07-14T20:14:48.573940Z",
           rate: 60
+        },
+        'FeatureType': {
+          id: 3,
+          name: 'FeatureType',
+          updated_on: "2015-08-14T20:14:48.473940Z",
+          rates: [{
+            name: "100 Episodes",
+            slug: "100-episodes",
+            rate: "$100"
+          }, {
+            name: "11 Question",
+            slug: "11-questions",
+            rate: "$11"
+          }, {
+            name: "13 Days of Christmas",
+            slug: "13-days-of",
+            rate: "$13"
+          }, {
+            name: "15 Minutes or Less",
+            slug: "15-minutes-or",
+            rate: "$15"
+          }, {
+            name: "24 Hours Of",
+            slug: "5 To Watch",
+            rate: "$5"
+          }]
         }
       }
     }, {
