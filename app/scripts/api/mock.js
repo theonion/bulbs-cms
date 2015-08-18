@@ -121,6 +121,7 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
       id: 1,
       role: 'Author',
       notes: '',
+      rate: '$' + 100,
       content: {
         id: 1,
         title: 'Just an Article',
@@ -139,6 +140,7 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
       id: 2,
       role: 'Editor',
       notes: 'Did a real solid job editing this',
+      rate: '$' + 160,
       content: {
         id: 1,
         title: 'Just an Article',
@@ -157,6 +159,7 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
       id: 3,
       role: 'Lookie-Loo',
       notes: 'Just kinda sat around',
+      rate: '$' + 70,
       content: {
         id: 1,
         title: 'Just an Article',
@@ -181,23 +184,26 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
       url: '/articles/just-an-article-1',
       content_type: 'Article',
       feature_type: 'ICYMI',
-      published: '2011-04-03T16:20:00Z'
+      published: '2011-04-03T16:20:00Z',
+      value: '$' + 670
     },
     {
       id: 2,
-      title: 'Just an Article',
-      url: '/articles/just-an-article-1',
+      title: 'Another stand out article',
+      url: '/articles/another-stand-out-2',
       content_type: 'Article',
       feature_type: 'ICYMI',
-      published: '2011-04-03T16:20:00Z'
+      published: '2011-04-03T16:20:00Z',
+      value: '$' + 178
     },
     {
       id: 3,
-      title: 'Just an Article',
-      url: '/articles/just-an-article-1',
+      title: 'Perhaps this article is just fine',
+      url: '/articles/perhaps-this-article-3',
       content_type: 'Article',
       feature_type: 'ICYMI',
-      published: '2011-04-03T16:20:00Z'
+      published: '2011-04-03T16:20:00Z',
+      value: '$' + 300
     }
   ]);
 

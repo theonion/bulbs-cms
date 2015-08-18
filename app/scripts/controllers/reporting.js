@@ -8,10 +8,11 @@ angular.module('bulbsCmsApp')
       'Contributions': {
         service: ContributionReportingService,
         headings: [
-          {'title': 'Date', 'expression': 'content.published'},
           {'title': 'Headline', 'expression': 'content.title'},
           {'title': 'User', 'expression': 'user.full_name'},
           {'title': 'Role', 'expression': 'role'},
+          {'title': 'Rate', 'expression': 'rate'},
+          {'title': 'Date', 'expression': 'content.published'},
           {'title': 'Notes', 'expression': 'notes'},
         ],
         downloadURL: '/cms/api/v1/contributions/reporting/',
@@ -29,8 +30,9 @@ angular.module('bulbsCmsApp')
       'Content': {
         service: ContentReportingService,
         headings: [
-          {'title': 'Date', 'expression': 'published'},
           {'title': 'Headline', 'expression': 'title'},
+          {'title': 'Date', 'expression': 'published'},
+          {'title': 'value', 'expression': 'value'},
           {'title': 'URL', 'expression': 'url'},
         ],
         orderOptions: [],
@@ -65,7 +67,7 @@ angular.module('bulbsCmsApp')
         return;
       }
       $scope.orderOptions = report.orderOptions;
-      if(report.orderOptions.length > 0) {        
+      if(report.orderOptions.length > 0) {
         $scope.orderBy = report.orderOptions[0];
       } else {
         $scope.orderBy = null;
