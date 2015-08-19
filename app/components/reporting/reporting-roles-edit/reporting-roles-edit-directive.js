@@ -49,7 +49,7 @@ angular.module('roles.edit.directive', [
         });
 
         $scope.rateEditable = function () {
-          var paymentTypes = ["Flat Rate", "Hourly", "FeatureType"]
+          var paymentTypes = ['Flat Rate', 'Hourly', 'FeatureType'];
           if (paymentTypes.indexOf($scope.model.paymentType >= 0)) {
             return true;
           }
