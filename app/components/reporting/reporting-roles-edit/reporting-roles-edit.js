@@ -11,7 +11,7 @@ angular.module('roles.edit', [
 
         $scope.routeId = $routeParams.id;
       },
-      template: '<roles-edit model-id="routeId"></roles-dit>',
+      template: '<roles-edit model-id="routeId"></roles-edit>',
       reloadOnSearch: false
     });
   });

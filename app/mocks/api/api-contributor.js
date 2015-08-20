@@ -12,7 +12,7 @@ angular.module('bulbsCmsApp.mockApi.contributor', [
     mockApiData.contributors = [{
       id: 1,
       first_name: 'Big',
-      last_name: 'Papa',
+      last_name: 'Papa'
     }];
     $httpBackend.whenGET(reContributor.list).respond(function (method, url, data) {
       return [200, {
