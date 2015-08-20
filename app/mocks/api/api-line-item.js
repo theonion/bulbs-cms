@@ -55,7 +55,7 @@ angular.module('bulbsCmsApp.mockApi.lineItem', [
       var matches = url.match(reLineItem.edit);
       var lineItem = _.find(mockApiData.lineItems, {id: Number(matches[1])});
 
-      if (_is.Undefined(lineItem)) {
+      if (_.isUndefined(lineItem)) {
         return [404, null];
       }
 
