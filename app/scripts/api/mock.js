@@ -115,6 +115,27 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
     }
   ]);
 
+  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/staff/?')).respond([
+    {
+      id: 1,
+      full_name: 'Big Papa',
+      first_name: 'Big',
+      last_name: 'Papa'
+    },
+    {
+      id: 2,
+      full_name: 'Medium Papa',
+      first_name: 'Medium',
+      last_name: 'Papa'
+    },
+    {
+      id: 3,
+      full_name: 'Small Papa',
+      first_name: 'Small',
+      last_name: 'Papa'
+    }
+  ]);
+
   // ContributionReporting Service
   $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/reporting/?')).respond([
     {
