@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('reports', [
-  'contributors.list',
   'lineItems.edit',
   'lineItems.list',
+  'rateOverrides.list',
   'roles.edit',
   'roles.list'
 ]);

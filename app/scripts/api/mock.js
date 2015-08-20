@@ -115,24 +115,44 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
     }
   ]);
 
-  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/staff/?')).respond([
+  $httpBackend.when('GET', new RegExp('^/cms/api/v1/rate-overrides/?')).respond([
     {
       id: 1,
-      full_name: 'Big Papa',
-      first_name: 'Big',
-      last_name: 'Papa'
+      contributor: {
+        id: 1,
+        first_name: 'Big',
+        last_name: 'Papa',
+        full_name: 'Big Papa'
+      },
+      role: {
+        id: 1,
+        name: 'Author'
+      }
     },
     {
       id: 2,
-      full_name: 'Medium Papa',
-      first_name: 'Medium',
-      last_name: 'Papa'
+      contributor: {
+        id: 2,
+        full_name: 'Medium Papa',
+        first_name: 'Medium',
+        last_name: 'Papa'
+      },
+      role: {
+        id: 2,
+        name: 'Fun Person'
+      }
     },
     {
       id: 3,
-      full_name: 'Small Papa',
-      first_name: 'Small',
-      last_name: 'Papa'
+      contributor: {
+            full_name: 'Small Papa',
+            first_name: 'Small',
+            last_name: 'Papa'
+      },
+      role: {
+        id: 3,
+        name: 'Dumb Person'
+      }
     }
   ]);
 
