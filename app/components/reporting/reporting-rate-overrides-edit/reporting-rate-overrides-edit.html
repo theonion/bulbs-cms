@@ -1,0 +1,67 @@
+<top-bar
+  logo-href="/cms/app/rate-overrides"
+  save-function="saveModel"
+  save-disable-when="model.$dirty().length === 0 && !isNew">
+</top-bar>
+
+<div id="rate-overrides-edit">
+  <div class="container col-xs-offset-2 col-xs-8">
+    <h3>
+      Edit Rate Override
+    </h3>
+    <div class="row well">
+
+      <div class="row">
+        <div class="form-group col-md-6">
+          <label for="contributorSearch">CONTRIBUTOR</label>
+          <input id="contributorSearch" type="text" class="form-control">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group col-md-4">
+          <label for="roleSelect">ROLE</label>
+          <select
+            id="roleSelect"
+            class="form-control"
+            type="text">
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <td><label>Feature Types</label></td>
+                <td><label>Rate</label></td>
+                <td><label>Override Rate</label></td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="feature_type in model.feature_types">
+                <td>{{ feature_type.name }}</td>
+                <td>
+                  ${{ feature_type.rate }}
+                </td>
+                <td>
+                  <div class="input-group">
+                    <span class="input-group-btn">
+                      $
+                    </span>
+                    <input
+                      type="text"
+                      value="{{ feature_type.override_rate }}"
+                      class="form-control">
+                    </input>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
