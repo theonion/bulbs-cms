@@ -27,14 +27,18 @@ angular.module('apiServices.lineItem.factory', [
           },
           {
             title: 'Date',
-            value: 'record.date.format("MM/DD/YY") || "--"'
+            value: 'record.paymentDate.format("MM/DD/YY") || "--"',
           }
         ]
       },
 
-      date: {
+      paymentDate: {
         decode: 'date_string_to_moment',
         encode: 'moment_to_date_string'
+      },
+      payment_date: {
+        decode: 'date_string_to_moment',
+        encode: 'moment_to_date_string',
       }
 
     });

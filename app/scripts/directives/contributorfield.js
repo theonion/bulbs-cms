@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('contributorField', function (routes, userFilter, $) {
+  .directive('contributorField', function (routes, $) {
     return {
       templateUrl: routes.PARTIALS_URL + 'textlike-autocomplete-field.html',
       restrict: 'E',
@@ -14,10 +14,11 @@ angular.module('bulbsCmsApp')
         scope.label = 'Contributors';
         scope.placeholder = 'Contributors';
         scope.resourceUrl = '/cms/api/v1/author/?ordering=name&search=';
-        scope.display = userFilter;
 
-        scope.$watch('model.contributor', function () {
-          scope.model = scope.override.contributor;
+        scope.$watch('override.contributor', function () {
+          if (scope.override.hasOwnProperty('contributor')) {
+            scope.model = scope.override.contributor.full_name || scope.override.contributor.fullName;
+          }
         });
 
         scope.display = function (o) {
@@ -25,16 +26,15 @@ angular.module('bulbsCmsApp')
         };
 
         scope.add = function(o, input) {
-          if (!scope.override.hasOwnProperty('contributor')) {
-            scope.override.contributor = null;
-          }
-
           if (scope.override.hasOwnProperty('contributor')) {
-            if (scope.override.contributor.id === o.id) { return; }
+            if (scope.override.contributor.id === o.id) {
+              return;
+            }
           }
 
           scope.override.contributor = o;
-          $(input).val('');
+          $('#feature-type-container').removeClass('newtag');
+          $('#feature-type-container').addClass('newtag');
         };
 
         scope.delete = function (e) {
