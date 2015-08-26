@@ -103,15 +103,21 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
   $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/role/?')).respond([
     {
       id: 1,
-      name: 'Author'
+      name: 'Author',
+      description: 'eh',
+      payment_type: 'Manual'
     },
     {
-      id: 2,
-      name: 'Editor'
+      id: 1,
+      name: 'Editor',
+      description: 'eh',
+      payment_type: 'Flat Rate'
     },
     {
-      id: 3,
-      name: 'Programmer'
+      id: 1,
+      name: 'Programmer',
+      description: 'meh',
+      payment_type: 'Manual'
     }
   ]);
 
@@ -157,7 +163,7 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
   ]);
 
   // LineItem Service
-  $httpBackend.when('GET', new RegExp('^/cms/api/v1/line-items/?')).respond([
+  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/line-items/?')).respond([
     {
       id:1,
       contributor: 'Alasdair Wilkins',

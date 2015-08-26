@@ -8,6 +8,7 @@ angular.module('bulbsCmsApp.mockApi', [
   'bulbsCmsApp.mockApi.campaign',
   'bulbsCmsApp.mockApi.customSearch',
   'bulbsCmsApp.mockApi.lineItem',
+  'bulbsCmsApp.mockApi.override',
   'bulbsCmsApp.mockApi.role',
   'bulbsCmsApp.mockApi.specialCoverage',
   'bulbsCmsApp.mockApi.sections',

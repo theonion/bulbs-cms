@@ -12,20 +12,19 @@
     <div class="row well">
 
       <div class="row">
-        <div class="form-group col-md-6">
-          <label for="contributorSearch">CONTRIBUTOR</label>
-          <input id="contributorSearch" type="text" class="form-control">
+        <div class="form-group">
+
+          <contributor-field override=model></contributor-field>
+
         </div>
       </div>
 
       <div class="row">
         <div class="form-group col-md-4">
           <label for="roleSelect">ROLE</label>
-          <select
-            id="roleSelect"
-            class="form-control"
-            type="text">
-          </select>
+          <div class="roleSelect">
+            <role-field model=model></role-field>
+          </div>
         </div>
       </div>
 

@@ -7,40 +7,65 @@ angular.module('bulbsCmsApp.mockApi.lineItem', [
   function (_, $httpBackend, mockApiData) {
 
     var reLineItem = {
-      list: /^\/cms\/api\/v1\/line-items\/(\?.*)?$/,
-      edit: /^\/cms\/api\/v1\/line-items\/(\d+)\/$/,
+      list: /^\/cms\/api\/v1\/contributions\/line-items\/(\?.*)?$/,
+      edit: /^\/cms\/api\/v1\/contributions\/line-items\/(\d+)\/$/,
     };
     mockApiData.lineItems = [{
       id:1,
-      contributor: 'Alasdair Wilkins',
+      contributor: {
+        id: 1,
+        first_name: 'Alasdair',
+        last_name: 'Wilkins',
+        full_name: 'Alasdair Wilkins',
+      },
       amount: 25,
       note: 'A Note for the ages',
       date: '2015-05-01T16:20:00Z'
     },
     {
       id:2,
-      contributor: 'Brandon Nowalk',
+      contributor: {
+        id: 2,
+        first_name: 'Brandon',
+        last_name: 'Nowalk',
+        full_name: 'Brandon Nowalk'
+      },
       amount: 100,
       note: 'Simpson Week 2015 Illustration',
       date: '2015-05-01T16:20:00Z'
     },
     {
       id:3,
-      contributor: 'Cameron Esposito',
+      contributor: {
+        id: 3,
+        first_name: 'Cameron',
+        last_name: 'Esposito',
+        full_name: 'Cameron Esposito'
+      },
       amount: 120,
       note: 'Something Else',
       date: '2015-05-01T16:20:00Z'
     },
     {
       id:4,
-      contributor: 'Carline Framke',
+      contributor: {
+        id: 4,
+        first_name: 'Carline',
+        last_name: 'Framke',
+        full_name: 'Carline Framke'
+      },
       amount: 25,
       note: 'Something Else',
       date: '2015-05-01T16:20:00Z'
     },
     {
       id:5,
-      contributor: 'Jason Heller',
+      contributor: {
+        id: 5,
+        first_name: 'Jason',
+        last_name: 'Heller',
+        full_name: 'Jason Heller'
+      },
       amount: 35,
       note: 'Something Else',
       date: '2015-05-01T16:20:00Z'

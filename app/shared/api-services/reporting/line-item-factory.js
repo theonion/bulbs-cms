@@ -5,7 +5,7 @@ angular.module('apiServices.lineItem.factory', [
   'apiServices.mixins.fieldDisplay'
 ])
   .factory('LineItem', function (_, restmod) {
-    var contributorEndpoint = 'line-items';
+    var contributorEndpoint = 'contributions/line-items';
 
     return restmod.model(contributorEndpoint).mix('FieldDisplay', 'NestedDirtyModel', {
       $config: {
@@ -15,7 +15,7 @@ angular.module('apiServices.lineItem.factory', [
         fieldDisplays: [
           {
             title: 'Contributor',
-            value: 'record.contributor'
+            value: 'record.contributor.fullName'
           },
           {
             title: 'Amount $',

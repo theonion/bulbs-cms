@@ -69,6 +69,7 @@ module.exports = function(config) {
       'app/mocks/api/api-campaign.js',
       'app/mocks/api/api-custom-search.js',
       'app/mocks/api/api-line-item.js',
+      'app/mocks/api/api-override.js',
       'app/mocks/api/api-role.js',
       'app/mocks/api/api-sections.js',
       'app/mocks/api/api-special-coverage.js',
