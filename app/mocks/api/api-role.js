@@ -18,39 +18,35 @@ angular.module('bulbsCmsApp.mockApi.role', [
         'Flat Rate': {
           id: 1,
           name: 'Flat Rate',
-          updated_on: "2015-07-13T20:14:48.573940Z",
+          updated_on: '2015-07-13T20:14:48.573940Z',
           rate: 100
         },
         'Hourly': {
           id: 2,
           name: 'Hourly',
-          updated_on: "2015-07-14T20:14:48.573940Z",
+          updated_on: '2015-07-14T20:14:48.573940Z',
           rate: 60
         },
         'FeatureType': {
           id: 3,
           name: 'FeatureType',
-          updated_on: "2015-08-14T20:14:48.473940Z",
+          updated_on: '2015-08-14T20:14:48.473940Z',
           rates: [{
-            name: "100 Episodes",
-            slug: "100-episodes",
-            rate: "$100"
+            feature_type: '100 Episodes',
+            rate: '$100'
           }, {
-            name: "11 Question",
-            slug: "11-questions",
-            rate: "$11"
+            feature_type: '11 Question',
+            slug: '11-questions',
+            rate: '$11'
           }, {
-            name: "13 Days of Christmas",
-            slug: "13-days-of",
-            rate: "$13"
+            feature_type: '13 Days of Christmas',
+            rate: '$13'
           }, {
-            name: "15 Minutes or Less",
-            slug: "15-minutes-or",
-            rate: "$15"
+            feature_type: '15 Minutes or Less',
+            rate: '$15'
           }, {
-            name: "24 Hours Of",
-            slug: "5 To Watch",
-            rate: "$5"
+            feature_type: '24 Hours Of',
+            rate: '$5'
           }]
         }
       }
@@ -70,13 +66,13 @@ angular.module('bulbsCmsApp.mockApi.role', [
         'Flat Rate': {
           id: 3,
           name: 'Flat Rate',
-          updated_on: "2015-07-15T20:14:48.573940Z",
+          updated_on: '2015-07-15T20:14:48.573940Z',
           rate: 50
         },
         'Hourly': {
           id: 4,
           name: 'Hourly',
-          updated_on: "2015-07-16T20:14:48.573940Z"
+          updated_on: '2015-07-16T20:14:48.573940Z'
         }
       }
     }];
