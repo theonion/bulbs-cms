@@ -39,6 +39,7 @@ angular.module('bulbsCmsApp')
 
         scope.delete = function (e) {
           scope.override.contributor = null;
+          scope.model = null;
         };
 
       }
