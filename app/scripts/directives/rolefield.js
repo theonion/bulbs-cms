@@ -24,7 +24,6 @@ angular.module('bulbsCmsApp')
         });
 
         scope.$watch('roleValue', function () {
-          var b = 0;
           for (var i = 0; i < scope.roleOptions.length; i++) {
             if (scope.roleOptions[i].id === Number(scope.roleValue)) {
               scope.model.role = scope.roleOptions[i];
