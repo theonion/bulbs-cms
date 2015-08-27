@@ -16,39 +16,34 @@ angular.module('bulbsCmsApp.mockApi.role', [
       paymentType: 'Flat Rate',
       rates: {
         'Flat Rate': {
-          id: 1,
-          name: 'Flat Rate',
           updated_on: '2015-07-13T20:14:48.573940Z',
           rate: 100
         },
         'Hourly': {
-          id: 2,
-          name: 'Hourly',
           updated_on: '2015-07-14T20:14:48.573940Z',
           rate: 60
         },
-        'FeatureType': {
-          id: 3,
-          name: 'FeatureType',
-          updated_on: '2015-08-14T20:14:48.473940Z',
-          rates: [{
+        'FeatureType': [
+          {
             feature_type: '100 Episodes',
-            rate: '$100'
+            updated_on: '2015-08-14T20:14:48.473940Z',
+            rate: 100
           }, {
             feature_type: '11 Question',
-            slug: '11-questions',
-            rate: '$11'
+            rate: 11
           }, {
             feature_type: '13 Days of Christmas',
-            rate: '$13'
+            updated_on: '2015-08-14T20:14:48.473940Z',
+            rate: 13
           }, {
             feature_type: '15 Minutes or Less',
-            rate: '$15'
+            updated_on: '2015-08-14T20:14:48.473940Z',
+            rate: 15
           }, {
             feature_type: '24 Hours Of',
-            rate: '$5'
-          }]
-        }
+            updated_on: '2015-08-14T20:14:48.473940Z',
+            rate: 5
+        }]
       }
     }, {
       id: 2,
