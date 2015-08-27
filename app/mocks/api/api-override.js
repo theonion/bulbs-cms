@@ -20,25 +20,20 @@ angular.module('bulbsCmsApp.mockApi.override', [
       },
       role: {
         id: 1,
-        name: 'Author'
+        name: 'Author',
+        payment_type: 'FeatureType'
       },
       feature_types: [
         {
           id: 1,
           rate: 15,
           override_rate: 20,
-          feature_type: {
-            name: 'AV QA',
-            slug: 'av-qa'
-          }
+          feature_type: 'AV QA'
         }, {
           id: 2,
           rate: 25,
           override_rate: 50,
-          feature_type: {
-            name: 'AV QA',
-            slug: 'av-qa'
-          }
+          feature_type: 'TV Club'
         }
       ]
     }];

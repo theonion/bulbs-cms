@@ -27,6 +27,27 @@ angular.module('rateOverrides.edit.directive', [
           delete window.onbeforeunload;
         });
 
+        $scope.isFeatureRated = function () {
+          if ($scope.model.role.paymentType === 'FeatureType') {
+            return true;
+          }
+          return false;
+        };
+
+        $scope.isHourlyRated = function () {
+          if ($scope.model.role.paymentType === 'Hourly') {
+            return true;
+          }
+          return false;
+        };
+
+        $scope.isFlatRated = function () {
+          if ($scope.model.role.paymentType === 'Flat Rate') {
+            return true;
+          }
+          return false;
+        };
+
         $scope.saveModel = function () {
           var promise;
 

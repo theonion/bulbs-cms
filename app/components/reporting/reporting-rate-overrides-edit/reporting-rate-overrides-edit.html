@@ -26,10 +26,24 @@
             <role-field model=model></role-field>
           </div>
         </div>
+        <div class="form-group col-md-3" ng-show="isHourlyRated()">
+          <label for="hourly-override">Set Hourly Override</label>
+          <input
+            type="text"
+            class="form-control"
+            ng-model="model.rates.Hourly.override_rate">
+        </div>
+        <div class="form-group col-md-3" ng-show="isFlatRated()">
+          <label for="flat-rate-override">Set Flat Rate Override</label>
+          <input
+            type="text"
+            class="form-control"
+            ng-model="model.rates.FlatRate.override_rate">
+        </div>
       </div>
 
       <div class="row">
-        <div class="table-responsive">
+        <div class="table-responsive" ng-show="isFeatureRated()">
           <table class="table">
             <thead>
               <tr>
@@ -39,10 +53,10 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="feature_type in model.feature_types">
-                <td>{{ feature_type.name }}</td>
+              <tr ng-repeat="featureType in model.featureTypes">
+                <td>{{ featureType.featureType }}</td>
                 <td>
-                  ${{ feature_type.rate }}
+                  ${{ featureType.rate }}
                 </td>
                 <td>
                   <div class="input-group">
@@ -51,7 +65,7 @@
                     </span>
                     <input
                       type="text"
-                      value="{{ feature_type.override_rate }}"
+                      value="{{ featureType.overrideRate }}"
                       class="form-control">
                     </input>
                   </div>

@@ -14,10 +14,6 @@ angular.module('bulbsCmsApp')
         var resourceUrl = '/cms/api/v1/contributions/role/';
         scope.roleValue = scope.model.role.id || null;
 
-        scope.$watch('roleValue', function () {
-          scope.model.role = scope.roleValue;
-        });
-
         $http({
           method: 'GET',
           url: resourceUrl
@@ -25,6 +21,15 @@ angular.module('bulbsCmsApp')
           scope.roleOptions = data.results || data;
         }).error(function (data, status, headers, config) {
           Raven.captureMessage('Error fetching Roles', {extra: data});
+        });
+
+        scope.$watch('roleValue', function () {
+          var b = 0;
+          for (var i = 0; i < scope.roleOptions.length; i++) {
+            if (scope.roleOptions[i].id === Number(scope.roleValue)) {
+              scope.model.role = scope.roleOptions[i];
+            }
+          }
         });
       }
     };
