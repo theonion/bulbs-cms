@@ -286,6 +286,7 @@ angular.module('bulbs.api')
       'restangular',
       'jquery'
     ])
+    .value('DEFAULT_IMAGE_WIDTH', 1200)
     .factory('Selection', SelectionFactory)
     .factory('BettyImage', BettyImageFactory)
     .service('BettyCropper', BettyCropperService);
@@ -699,11 +700,11 @@ angular.module('bettyEditable', [
   'bulbsCmsApp.settings'
 ])
   .directive('bettyEditable',[
-    '$http', 'routes', 'BettyCropper', 'openImageCropModal', 'DEFAULT_IMAGE_WIDTH',
-    function ($http, routes, BettyCropper, openImageCropModal, DEFAULT_IMAGE_WIDTH) {
+    '$http', 'COMPONENTS_URL', 'BettyCropper', 'openImageCropModal', 'DEFAULT_IMAGE_WIDTH',
+    function ($http, COMPONENTS_URL, BettyCropper, openImageCropModal, DEFAULT_IMAGE_WIDTH) {
       return {
         restrict: 'E',
-        templateUrl: routes.COMPONENTS_URL + 'betty-editable/betty-editable.html',
+        templateUrl: COMPONENTS_URL + 'betty-editable/betty-editable.html',
         scope: {
           addStyles: '@',
           editable: '=?',
@@ -803,11 +804,11 @@ angular.module('bettyEditable', [
 
 angular.module('bugReporter', [])
   .directive('bugReporter', [
-    '$http', '$window', 'routes',
-    function ($http, $window, routes) {
+    '$http', '$window', 'COMPONENTS_URL',
+    function ($http, $window, COMPONENTS_URL) {
       return {
         restrict: 'E',
-        templateUrl: routes.COMPONENTS_URL + 'bug-reporter/bug-reporter-button.html',
+        templateUrl: COMPONENTS_URL + 'bug-reporter/bug-reporter-button.html',
         scope: {},
         controller: function ($scope, $element, $timeout) {
           $scope.report = {};
@@ -5336,6 +5337,8 @@ angular.module('cms.config', [
 
     this.$get = function () {
       return {
+        getBackendRoot: _.constant(backendRoot),
+        getApiPath: _.constant(apiPath),
         getCreateContentTemplateUrl: _.constant(createContentTemplateUrl),
         getImageDefaultWidth: _.constant(imageDefaultWidth),
         getImageServerApiKey: _.constant(imageServerApiKey),
@@ -6353,7 +6356,7 @@ angular.module('bulbsCmsApp')
           inputCounter = 0;
           $http({
             method: 'GET',
-            url: CmsConfig.buildBackendApiUrl(scope.resourceUrl + val)
+            url: scope.resourceUrl + val
           }).success(function (data) {
             var results = data.results || data;
             scope.autocomplete_list = results.splice(0, 5);
