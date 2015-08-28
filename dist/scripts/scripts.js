@@ -5337,8 +5337,6 @@ angular.module('cms.config', [
 
     this.$get = function () {
       return {
-        getBackendRoot: _.constant(backendRoot),
-        getApiPath: _.constant(apiPath),
         getCreateContentTemplateUrl: _.constant(createContentTemplateUrl),
         getImageDefaultWidth: _.constant(imageDefaultWidth),
         getImageServerApiKey: _.constant(imageServerApiKey),
