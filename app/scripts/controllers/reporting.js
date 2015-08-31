@@ -19,6 +19,22 @@ angular.module('bulbsCmsApp')
       }
     ];
 
+    $scope.publishedFilter = '';
+    $scope.publishedFilters = [
+      {
+        name: 'All Content',
+        value: ''
+      },
+      {
+        name: 'Published',
+        value: 'published'
+      },
+      {
+        name: 'Backlogged',
+        value: 'backlogged'
+      }
+    ];
+
     $scope.reports = {
       'Contributions': {
         service: ContributionReportingService,
@@ -81,6 +97,10 @@ angular.module('bulbsCmsApp')
 
     $scope.setUserFilter = function (value) {
       $scope.userFilter = value;
+    };
+
+    $scope.setPublishedFilter = function (value) {
+      $scope.publishedFilter = value;
     };
 
     $scope.openStart = function ($event) {

@@ -2,36 +2,39 @@
 <div class="wrapper container-fluid">
 
     <div class="row">
-        <div class="col-md-4">
-            <div class="input-group">
-              <div
-                class="btn-group">
-                <button
-                  class="btn btn-default"
-                  ng-class="{'active': report === service}"
-                  ng-repeat="(title, service) in reports"
-                  ng-click="setReport(service)"
-                >
-                  {{ title }}
-                </button>
-              </div>
-            </div>
-        </div>
+
         <div class="col-md-3">
-            <div class="input-group">
-              <div
-                class="btn-group">
-                <button
-                  class="btn btn-default"
-                  ng-class="{'active': userFilter === filter.value }"
-                  ng-repeat="filter in userFilters"
-                  ng-click="setUserFilter(filter.value)"
-                >
-                  {{ filter.name }}
-                </button>
-              </div>
+          <div class="input-group">
+            <div
+              class="btn-group">
+              <button
+                class="btn btn-default"
+                ng-class="{'active': publishedFilter === filter.value }"
+                ng-repeat="filter in publishedFilters"
+                ng-click="setPublishedFilter(filter.value)"
+              >
+                {{ filter.name }}
+              </button>
             </div>
+          </div>
         </div>
+
+        <div class="col-md-3">
+          <div class="input-group">
+            <div
+              class="btn-group">
+              <button
+                class="btn btn-default"
+                ng-class="{'active': userFilter === filter.value }"
+                ng-repeat="filter in userFilters"
+                ng-click="setUserFilter(filter.value)"
+              >
+                {{ filter.name }}
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div class="col-md-2">
             <p class="input-group">
               <input placeholder="Start Date" type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="start" is-open="startOpen" close-text="Close" />
@@ -54,6 +57,30 @@
         <div class="col-md-2">
             <a href="{{ downloadURL }}" target="_blank" class="btn btn-primary">Download</a>
         </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-12 navbar-btn filterwidget-container" style="padding: 0;">
+        <filter-widget></filter-widget>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="input-group">
+          <div
+            class="btn-group">
+            <button
+              class="btn btn-default"
+              ng-class="{'active': report === service}"
+              ng-repeat="(title, service) in reports"
+              ng-click="setReport(service)"
+            >
+              {{ title }}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <table class="table table-striped">
