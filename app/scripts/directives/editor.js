@@ -91,8 +91,7 @@ angular.module('bulbsCmsApp')
           });
         }
 
-        scope.$watch(ngModel, function () {
-          editor.setContent(ngModel.$viewValue || defaultValue);
+        scope.$watch('ngModel', function () {
           CmsImage.picturefill(element[0]);
         });
       }
