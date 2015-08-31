@@ -271,7 +271,10 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
       content_type: 'Article',
       feature_type: 'ICYMI',
       published: '2011-04-03T16:20:00Z',
-      value: '$' + 670
+      value: '$' + 670,
+      contributor: {
+        full_name: 'Chris Sinchock'
+      }
     },
     {
       id: 2,
@@ -280,7 +283,10 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
       content_type: 'Article',
       feature_type: 'ICYMI',
       published: '2011-04-03T16:20:00Z',
-      value: '$' + 178
+      value: '$' + 178,
+      contributor: {
+        full_name: 'Big Cam'
+      }
     },
     {
       id: 3,
@@ -289,7 +295,10 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
       content_type: 'Article',
       feature_type: 'ICYMI',
       published: '2011-04-03T16:20:00Z',
-      value: '$' + 300
+      value: '$' + 300,
+      contributor: {
+        full_name: 'Top Dog'
+      }
     }
   ]);
 

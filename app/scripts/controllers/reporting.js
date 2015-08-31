@@ -8,12 +8,13 @@ angular.module('bulbsCmsApp')
       'Contributions': {
         service: ContributionReportingService,
         headings: [
+          {'title': 'Content ID', 'expression': 'content.id'},
           {'title': 'Headline', 'expression': 'content.title'},
-          {'title': 'User', 'expression': 'user.full_name'},
+          {'title': 'FeatureType', 'expression': 'content.feature_type'},
+          {'title': 'Contributor', 'expression': 'user.full_name'},
           {'title': 'Role', 'expression': 'role'},
-          {'title': 'Rate', 'expression': 'rate'},
-          {'title': 'Date', 'expression': 'content.published'},
-          {'title': 'Notes', 'expression': 'notes'},
+          {'title': 'Pay', 'expression': 'rate'},
+          {'title': 'Date', 'expression': 'content.published'}
         ],
         downloadURL: '/cms/api/v1/contributions/reporting/',
         orderOptions: [
@@ -30,10 +31,12 @@ angular.module('bulbsCmsApp')
       'Content': {
         service: ContentReportingService,
         headings: [
+          {'title': 'Content ID', 'expression': 'id'},
           {'title': 'Headline', 'expression': 'title'},
-          {'title': 'Date', 'expression': 'published'},
-          {'title': 'value', 'expression': 'value'},
-          {'title': 'URL', 'expression': 'url'},
+          {'title': 'Feature Type', 'expression': 'feature_type'},
+          {'title': 'Contributor', 'expression': 'contributor.full_name'},
+          {'title': 'Article Cost', 'expression': 'value'},
+          {'title': 'Date Published', 'expression': 'published'}
         ],
         orderOptions: [],
         downloadURL: '/cms/api/v1/contributions/contentreporting/',
