@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter, $interpolate, Login, routes, ContributionReportingService, ContentReportingService) {
+  .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter, $interpolate, Login, routes, ContributionReportingService, ContentReportingService, FreelancePayReportingService) {
     $window.document.title = routes.CMS_NAMESPACE + ' | Reporting'; // set title
 
     $scope.reports = {
@@ -40,6 +40,17 @@ angular.module('bulbsCmsApp')
         ],
         orderOptions: [],
         downloadURL: '/cms/api/v1/contributions/contentreporting/',
+      },
+      'Freelance Pay': {
+        service: FreelancePayReportingService,
+        headings: [
+          {'title': 'Contributor', 'expression': 'contributor.full_name'},
+          {'title': 'Contributions', 'expression': 'count'},
+          {'title': 'Pay', 'expression': 'pay'},
+          {'title': 'Payment Date', 'expression': 'payment_date'}
+        ],
+        orderOptions: [],
+        downloadURL: '/cms/api/v1/contributions/contributors/'
       }
     };
     $scope.items = [];

@@ -99,6 +99,34 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
     return [200, data, {}];
   });
 
+  // Contribuor List
+  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/contributors/?')).respond([
+    {
+      contributor: {
+        full_name: 'Chris Sinchock'
+      },
+      count: 5,
+      pay: 600,
+      payment_date: '2015-05-01T16:20:00Z'
+    },
+    {
+      contributor: {
+        full_name: 'Cam Lowe'
+      },
+      count: 8,
+      pay: 800,
+      payment_date: '2015-05-01T16:20:00Z'
+    },
+    {
+      contributor: {
+        full_name: 'Andrew Kos'
+      },
+      count: 2,
+      pay: 100,
+      payment_date: '2015-05-01T16:20:00Z'
+    }
+  ]);
+
   // ContributionRole Service
   $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/role/?')).respond([
     {
@@ -121,7 +149,7 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
     }
   ]);
 
-  $httpBackend.when('GET', new RegExp('^/cms/api/v1/rate-overrides/?')).respond([
+  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/rate-overrides/?')).respond([
     {
       id: 1,
       contributor: {

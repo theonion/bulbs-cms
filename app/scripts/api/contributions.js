@@ -13,6 +13,12 @@ angular.module('bulbs.api')
       RestangularConfigurer.setRequestSuffix('/');
     }).service('contentreporting');
   })
+  .factory('FreelancePayReportingService', function(Restangular, moment) {
+    return Restangular.withConfig(function (RestangularConfigurer) {
+      RestangularConfigurer.setBaseUrl('/cms/api/v1/contributions/contributors/');
+      RestangularConfigurer.setRequestSuffix('/');
+    }).service('contributors');
+  })
   .factory('ContributionReportingService', function (Restangular, moment) {
 
     Restangular.extendModel('reporting', function (obj) {
