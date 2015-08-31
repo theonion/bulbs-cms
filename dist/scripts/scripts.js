@@ -5539,60 +5539,54 @@ angular.module('cms.image', [
       };
 
       this.picturefill = function (element) {
-        var ps;
-        if (element && element.getAttribute('data-type') === 'image') {
-          ps = [element];
+        var $el;
+        if (typeof element === 'undefined') {
+          $el = $(document);
         } else {
-          if (typeof element === 'undefined') {
-            element = document;
-          }
-          ps = element.getElementsByTagName('div');
+          $el = $(element);
         }
 
-        for (var i = 0, il = ps.length; i < il; i++) {
-          var el = ps[i];
-          if (el.getAttribute('data-type') !== 'image') {
-            continue;
-          }
-          var div = el.getElementsByTagName('div')[0];
-          if (el.getAttribute('data-image-id') !== null) {
-            var id = el.getAttribute('data-image-id'),
-              crop = el.getAttribute('data-crop'),
-              format = '';
-            var _w = div.offsetWidth,
-              _h = div.offsetHeight;
-
-            if (!crop || crop === '' || crop === 'auto') {
-              crop = computeAspectRatio(_w, _h);
-            }
-            if (el.getAttribute('data-format')) {
-              format = el.getAttribute('data-format');
-            } else {
-              format = 'jpg';
-            }
-
-            var elementDiv = div;
-            if (id) {
-              $('.image-css-' + id).remove();
-              $.ajax({
-                url: CmsConfig.buildImageServerUrl('/api/' + id),
-                headers: {
-                  'X-Betty-Api-Key': CmsConfig.getImageServerApiKey(),
-                  'Content-Type': undefined
-                },
-                success: styleCrop.bind({
-                  elementDiv: elementDiv,
-                  id: id,
-                  crop: crop
-                }),
-                error: styleOriginalCrop.bind({
-                  id: id,
-                  crop: crop
-                })
-              });
-            }
-          }
+        var $ps;
+        if ($el && $el.data('type') === 'image') {
+          $ps = $el;
+        } else {
+          $ps = $el.find('div[data-type="image"]');
         }
+
+        $ps.filter(':not([data-type="rendered"])').each(function (i, el) {
+          var $imgContainer = $(el);
+          var imgId = $imgContainer.data('imageId');
+          var imgCrop = $imgContainer.data('crop');
+
+          var $div = $imgContainer.children('div');
+          if (typeof imgId === 'number') {
+
+            var _w = $div.width(),
+              _h = $div.height();
+
+            if (!imgCrop || imgCrop === '' || imgCrop === 'auto') {
+              imgCrop = computeAspectRatio(_w, _h);
+            }
+
+            $('.image-css-' + imgId).remove();
+            $.ajax({
+              url: CmsConfig.buildImageServerUrl('/api/' + imgId),
+              headers: {
+                'X-Betty-Api-Key': CmsConfig.getImageServerApiKey(),
+                'Content-Type': undefined
+              },
+              success: styleCrop.bind({
+                elementDiv: $elementDiv[0],
+                id: imgId,
+                crop: imgCrop
+              }),
+              error: styleOriginalCrop.bind({
+                id: imgId,
+                crop: imgCrop
+              })
+            });
+          }
+        });
       };
 
       return this;
@@ -6729,8 +6723,7 @@ angular.module('bulbsCmsApp')
           });
         }
 
-        scope.$watch(ngModel, function () {
-          editor.setContent(ngModel.$viewValue || defaultValue);
+        scope.$watch('ngModel', function () {
           CmsImage.picturefill(element[0]);
         });
       }
