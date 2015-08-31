@@ -5,7 +5,7 @@ angular.module('apiServices.rateOverride.factory', [
   'apiServices.mixins.fieldDisplay'
 ])
   .factory('RateOverride', function (_, restmod) {
-    var rateOverrideEndpoint = 'rate-overrides';
+    var rateOverrideEndpoint = 'contributions/rate-overrides';
 
     return restmod.model(rateOverrideEndpoint).mix('FieldDisplay', 'NestedDirtyModel', {
       $config: {
@@ -23,12 +23,7 @@ angular.module('apiServices.rateOverride.factory', [
           }
         ]
       },
-      query: {
-        init: {}
-      },
-      promoted: {
-        init: true
-      },
+      role: {},
       $hooks: {
       }
     });

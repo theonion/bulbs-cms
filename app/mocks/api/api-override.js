@@ -7,7 +7,7 @@ angular.module('bulbsCmsApp.mockApi.override', [
   function (_, $httpBackend, mockApiData) {
 
     var reOverride = {
-      edit: /^\/cms\/api\/v1\/rate-overrides\/(\d+)\/$/
+      edit: /^\/cms\/api\/v1\/contributions\/rate-overrides\/(\d+)\/$/
     };
 
     mockApiData.rateOverrides = [{

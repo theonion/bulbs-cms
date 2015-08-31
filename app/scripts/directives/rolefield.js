@@ -12,7 +12,13 @@ angular.module('bulbsCmsApp')
 
       link: function (scope, element, attrs) {
         var resourceUrl = '/cms/api/v1/contributions/role/';
-        scope.roleValue = scope.model.role.id || null;
+
+        scope.roleValue = null;
+        scope.roleOptions = [];
+
+        if (scope.model.hasOwnProperty('role')) {
+          scope.roleValue = scope.model.role.id;
+        }
 
         $http({
           method: 'GET',

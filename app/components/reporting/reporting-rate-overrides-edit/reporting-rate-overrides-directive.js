@@ -28,22 +28,28 @@ angular.module('rateOverrides.edit.directive', [
         });
 
         $scope.isFeatureRated = function () {
-          if ($scope.model.role.paymentType === 'FeatureType') {
-            return true;
+          if ($scope.model.hasOwnProperty('role')) {
+            if ($scope.model.role.payment_type === 'FeatureType') {
+              return true;
+            }
           }
           return false;
         };
 
         $scope.isHourlyRated = function () {
-          if ($scope.model.role.paymentType === 'Hourly') {
-            return true;
+          if ($scope.model.hasOwnProperty('role')) {
+            if ($scope.model.role.payment_type === 'Hourly') {
+              return true;
+            }
           }
           return false;
         };
 
         $scope.isFlatRated = function () {
-          if ($scope.model.role.paymentType === 'Flat Rate') {
-            return true;
+          if ($scope.model.hasOwnProperty('role')) {
+            if ($scope.model.role.payment_type === 'Flat Rate') {
+              return true;
+            }
           }
           return false;
         };
