@@ -5411,33 +5411,33 @@ angular.module('cms.image', [
          We can set these so they correspond to our more common sizes.
       */
 
-      var styleCrop = function (response) {
+      var styleCrop = function (data, options) {
         var cropDetails;
-        if (this.crop === 'original') {
-          createStyle('.image[data-image-id="' + this.id + '"]>div', {
-            'padding-bottom': ((response.height / response.width) * 100) + '%'
-          }, 'image-css-' + this.id);
+        if (options.crop === 'original') {
+          createStyle('.image[data-image-id="' + options.id + '"]>div', {
+            'padding-bottom': ((data.height / data.width) * 100) + '%'
+          }, 'image-css-' + options.id);
 
           cropDetails = {
             x0: 0,
-            x1: response.width,
+            x1: data.width,
             y0: 0,
-            y1: response.height
+            y1: data.height
           };
         } else {
-          cropDetails = response.selections[this.crop];
+          cropDetails = data.selections[options.crop];
         }
 
-        computeStyle(this.elementDiv, response, cropDetails);
+        computeStyle(options.elementDiv, data, cropDetails);
       };
 
-      var styleOriginalCrop = function () {
-        if (this.crop === 'original') {
+      var styleOriginalCrop = function (data, options) {
+        if (options.crop === 'original') {
           //default to 16x9
-          createStyle('.image[data-image-id="' + this.id + '"]>div', {
+          createStyle('.image[data-image-id="' + options.id + '"]>div', {
             'padding-bottom': '56.25%', // default to 16x9 for errors
             'background-color': 'rgba(200, 0,0, .5)'
-          }, 'image-css-' + this.id);
+          }, 'image-css-' + options.id);
         }
       };
 
@@ -5573,15 +5573,15 @@ angular.module('cms.image', [
                   'Content-Type': undefined
                 }
               })
-              .done(function () {
-                styleCrop({
+              .done(function (data) {
+                styleCrop(data, {
                   elementDiv: $div[0],
                   id: imgId,
                   crop: newCrop
                 });
               })
-              .fail(function () {
-                styleOriginalCrop({
+              .fail(function (data) {
+                styleOriginalCrop(data, {
                   id: imgId,
                   crop: newCrop
                 });
