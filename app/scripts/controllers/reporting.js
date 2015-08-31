@@ -4,6 +4,21 @@ angular.module('bulbsCmsApp')
   .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter, $interpolate, Login, routes, ContributionReportingService, ContentReportingService, FreelancePayReportingService) {
     $window.document.title = routes.CMS_NAMESPACE + ' | Reporting'; // set title
 
+    $scope.userFilters = [
+      {
+        name: 'All',
+        value: 'all'
+      },
+      {
+        name: 'Staff',
+        value: 'staff'
+      },
+      {
+        name: 'Freelance',
+        value: 'freelance'
+      }
+    ];
+
     $scope.reports = {
       'Contributions': {
         service: ContributionReportingService,
@@ -59,6 +74,14 @@ angular.module('bulbsCmsApp')
 
     $scope.startOpen = false;
     $scope.endOpen = false;
+
+    $scope.setReport = function ($reportingService) {
+      $scope.report = $reportingService;
+    };
+
+    $scope.setUserFilter = function (value) {
+      $scope.userFilter = value;
+    };
 
     $scope.openStart = function ($event) {
       $event.preventDefault();

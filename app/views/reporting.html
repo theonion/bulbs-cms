@@ -1,8 +1,36 @@
 <nav-bar view="reportbar"></nav-bar>
 <div class="wrapper container-fluid">
+
     <div class="row">
-        <div class="col-md-2">
-            <select class="form-control" ng-options="options as name for (name, options) in reports" ng-model="report"></select>
+        <div class="col-md-4">
+            <div class="input-group">
+              <div
+                class="btn-group">
+                <button
+                  class="btn btn-default"
+                  ng-class="{'active': report === service}"
+                  ng-repeat="(title, service) in reports"
+                  ng-click="setReport(service)"
+                >
+                  {{ title }}
+                </button>
+              </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+              <div
+                class="btn-group">
+                <button
+                  class="btn btn-default"
+                  ng-class="{'active': userFilter === filter.value }"
+                  ng-repeat="filter in userFilters"
+                  ng-click="setUserFilter(filter.value)"
+                >
+                  {{ filter.name }}
+                </button>
+              </div>
+            </div>
         </div>
         <div class="col-md-2">
             <p class="input-group">
