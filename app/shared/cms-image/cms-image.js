@@ -177,7 +177,7 @@ angular.module('cms.image', [
                 'Content-Type': undefined
               },
               success: styleCrop.bind({
-                elementDiv: $elementDiv[0],
+                elementDiv: $div[0],
                 id: imgId,
                 crop: imgCrop
               }),
