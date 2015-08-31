@@ -5553,38 +5553,43 @@ angular.module('cms.image', [
           $ps = $el.find('div[data-type="image"]');
         }
 
-        $ps.filter(':not([data-type="rendered"])').each(function (i, el) {
+        $ps.each(function (i, el) {
           var $imgContainer = $(el);
           var imgId = $imgContainer.data('imageId');
-          var imgCrop = $imgContainer.data('crop');
+          var currCrop = $imgContainer.data('crop');
+          var isRendered = $imgContainer.data('rendered');
 
           var $div = $imgContainer.children('div');
           if (typeof imgId === 'number') {
 
-            var _w = $div.width(),
-              _h = $div.height();
+            var newCrop = computeAspectRatio($div.width, $div.height);
 
-            if (!imgCrop || imgCrop === '' || imgCrop === 'auto') {
-              imgCrop = computeAspectRatio(_w, _h);
-            }
-
-            $('.image-css-' + imgId).remove();
-            $.ajax({
-              url: CmsConfig.buildImageServerUrl('/api/' + imgId),
-              headers: {
-                'X-Betty-Api-Key': CmsConfig.getImageServerApiKey(),
-                'Content-Type': undefined
-              },
-              success: styleCrop.bind({
-                elementDiv: $div[0],
-                id: imgId,
-                crop: imgCrop
-              }),
-              error: styleOriginalCrop.bind({
-                id: imgId,
-                crop: imgCrop
+            if (!isRendered || newCrop !== currCrop) {
+              $('.image-css-' + imgId).remove();
+              $.ajax({
+                url: CmsConfig.buildImageServerUrl('/api/' + imgId),
+                headers: {
+                  'X-Betty-Api-Key': CmsConfig.getImageServerApiKey(),
+                  'Content-Type': undefined
+                }
               })
-            });
+              .done(function () {
+                styleCrop({
+                  elementDiv: $div[0],
+                  id: imgId,
+                  crop: newCrop
+                });
+              })
+              .fail(function () {
+                styleOriginalCrop({
+                  id: imgId,
+                  crop: newCrop
+                });
+              })
+              .always(function () {
+                $imgContainer.data('rendered', true);
+              });
+            }
           }
         });
       };

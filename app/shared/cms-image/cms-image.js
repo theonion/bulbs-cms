@@ -172,6 +172,7 @@ angular.module('cms.image', [
                 headers: {
                   'X-Betty-Api-Key': CmsConfig.getImageServerApiKey(),
                   'Content-Type': undefined
+                }
               })
               .done(function () {
                 styleCrop({
