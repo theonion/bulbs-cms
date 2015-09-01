@@ -9,13 +9,26 @@ angular.module('rateOverrides.edit.directive', [
 ])
   .directive('rateOverridesEdit', function (routes) {
     return {
-      controller: function (_, $location, $q, $routeParams, $scope, RateOverride) {
+      controller: function (_, $location, $http, $q, $routeParams, $scope, RateOverride, Raven) {
+        var resourceUrl = '/cms/api/v1/contributions/role/';
+
         if ($routeParams.id === 'new') {
           $scope.model = RateOverride.$build();
           $scope.isNew = true;
         } else {
           $scope.model = RateOverride.$find($routeParams.id);
+          $scope.model.$promise.then(function () {
+            if ($scope.model.hasOwnProperty('role')) {
+              $scope.model.role = $scope.model.role.id;
+            }
+          });
         }
+
+        $scope.$watch('$scope.model', function() {
+          if ($scope.model.$pending.length === 0) {
+            $scope.model.role= $scope.model.role.id;
+          }
+        });
 
         window.onbeforeunload = function (e) {
           if (!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
@@ -27,31 +40,47 @@ angular.module('rateOverrides.edit.directive', [
           delete window.onbeforeunload;
         });
 
-        $scope.isFeatureRated = function () {
-          if ($scope.model.hasOwnProperty('role')) {
-            if ($scope.model.role.payment_type === 'FeatureType') {
-              return true;
+        $scope.getPaymentType = function (roleId) {
+          if ($scope.hasOwnProperty('roles')) {
+            for (var i = 0; i < $scope.roles.length; i++) {
+              if ($scope.roles[i].id === roleId) {
+                return $scope.roles[i].payment_type;
+              }
             }
+            return null;
+          }
+        };
+
+        $scope.isFeatureRated = function () {
+          if ($scope.getPaymentType($scope.model.role) === 'FeatureType'){
+            return true;
           }
           return false;
         };
 
         $scope.isHourlyRated = function () {
-          if ($scope.model.hasOwnProperty('role')) {
-            if ($scope.model.role.payment_type === 'Hourly') {
-              return true;
-            }
+          if ($scope.getPaymentType($scope.model.role) === 'Hourly'){
+            return true;
           }
           return false;
         };
 
         $scope.isFlatRated = function () {
-          if ($scope.model.hasOwnProperty('role')) {
-            if ($scope.model.role.payment_type === 'Flat Rate') {
-              return true;
-            }
+          if ($scope.getPaymentType($scope.model.role) === 'Flat Rate'){
+            return true;
           }
           return false;
+        };
+
+        $scope.getRoles = function () {
+          $http({
+          method: 'GET',
+          url: resourceUrl
+            }).success(function (data) {
+              $scope.roles = data.results || data;
+            }).error(function (data, status, headers, config) {
+              Raven.captureMessage('Error fetching Roles', {extra: data});
+            });
         };
 
         $scope.saveModel = function () {
@@ -69,6 +98,8 @@ angular.module('rateOverrides.edit.directive', [
 
           return promise;
         };
+
+        $scope.getRoles();
       },
       restrict: 'E',
       scope: {

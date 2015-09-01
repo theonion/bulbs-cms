@@ -24,25 +24,30 @@ angular.module('bulbsCmsApp')
     $scope.updateLabel = updateLabel;
 
     $scope.isFlatRate = function(contribution) {
-      if ((contribution.paymentType === 'Flat Rate') || (contribution.payment_type === 'Flat Rate')) {
-        return true;
+      if (contribution.hasOwnProperty('roleObject')) {
+        if (contribution.roleObject.payment_type === 'Flat Rate') {
+          return true;
+        }
       }
 
       return false;
     };
 
     $scope.isHourly = function(contribution) {
-      if ((contribution.paymentType === 'Hourly') || (contribution.payment_type === 'Hourly')) {
-        return true;
+      if (contribution.hasOwnProperty('roleObject')) {
+        if (contribution.roleObject.payment_type === 'Hourly') {
+          return true;
+        }
       }
 
       return false;
     };
 
     $scope.isManual = function(contribution) {
-      if ((contribution.paymentType === 'Manual') || (contribution.payment_type === 'Manual')) {
-        // contribution.rate.name = 'Manual';
-        return true;
+      if (contribution.hasOwnProperty('roleObject')) {
+        if (contribution.roleObject.payment_type === 'Manual') {
+          return true;
+        }
       }
 
       return false;
@@ -65,6 +70,7 @@ angular.module('bulbsCmsApp')
       $scope.contributions.push({
         contributor: null,
         content: $scope.contentId,
+        rate: {},
         role: null
       });
       $scope.collapsed.push(false);
@@ -89,8 +95,14 @@ angular.module('bulbsCmsApp')
           if (contributions[i] === null || contributions[i].role === undefined) {
             continue;
           } else {
+
+            if (contributions[i].hasOwnProperty('rate') === 'object') {
+              contributions[i].rate = contributions[i].rate.rate;
+            }
+
             if (typeof(contributions[i].role) === 'object') {
               contributions[i].paymentType = contributions[i].role.payment_type;
+              contributions[i].roleObject = contributions[i].role;
               contributions[i].role = contributions[i].role.id;
             }
           }
@@ -98,7 +110,9 @@ angular.module('bulbsCmsApp')
         $scope.contributions = contributions;
         $scope.collapsed = new Array(contributions.length);
         $scope.contributions.forEach(function (item, index) {
+
           $scope.contributionLabels[index] = _.find($scope.roles, function (role) {
+            // item.roleObject = role;
             return role.id === item.role;
           }).name;
           $scope.collapsed[index] = true;
@@ -122,6 +136,8 @@ angular.module('bulbsCmsApp')
 
     function updateLabel(index) {
       $scope.contributionLabels[index] = _.find($scope.roles, function (role) {
+
+        $scope.contributions[index].roleObject = role;
         $scope.contributions[index].paymentType = role.payment_type;
         return role.id === $scope.contributions[index].role;
       }).name;

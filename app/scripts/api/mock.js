@@ -62,12 +62,42 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
         id: 1,
         name: 'Author',
         description: 'eh',
-        payment_type: 'Manual'
-      },
-      payment_type: 'Flat Rate'
+        payment_type: 'Flat Rate',
+        rates: {
+          'flat_rate': {
+            updated_on: '2015-07-13T20:14:48.573940Z',
+            rate: 100
+          },
+          'hourly': {
+            updated_on: '2015-07-14T20:14:48.573940Z',
+            rate: 60
+          },
+          feature_type: [
+            {
+              feature_type: '100 Episodes',
+              updated_on: '2015-08-14T20:14:48.473940Z',
+              rate: 100
+            }, {
+              feature_type: '11 Question',
+              rate: 11
+            }, {
+              feature_type: '13 Days of Christmas',
+              updated_on: '2015-08-14T20:14:48.473940Z',
+              rate: 13
+            }, {
+              feature_type: '15 Minutes or Less',
+              updated_on: '2015-08-14T20:14:48.473940Z',
+              rate: 15
+            }, {
+              feature_type: '24 Hours Of',
+              updated_on: '2015-08-14T20:14:48.473940Z',
+              rate: 5
+          }]
+        }
+      }
     },
     {
-      id: 1,
+      id: 2,
       content: 12345,
       contributor: {
         id: 2,
@@ -79,8 +109,19 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
       payment_date: null,
       rate: 70,
       override_rate: null,
-      role: 2,
-      payment_type: 'Hourly'
+      role: {
+        id: 2,
+        name: 'Editor',
+        description: 'eh',
+        payment_type: 'Flat Rate',
+        rates: {
+          'flat_rate': {
+              name: 'Flat Rate',
+              rate: 200
+          },
+          'hourly': {name: 'Hourly', rate: 400}
+        }
+      }
     },
     {
       id: 3,
@@ -93,10 +134,27 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
       },
       force_payment: false,
       payment_date: null,
-      rate: null,
+      rate: 50,
       override_rate: null,
-      role: 3,
-      payment_type: 'Manual'
+      role: {
+        id: 3,
+        name: 'Programmer',
+        description: 'meh',
+        payment_type: 'Manual',
+        rates: {
+          'flat_rate': {
+            id: 3,
+            name: 'Flat Rate',
+            updated_on: '2015-07-15T20:14:48.573940Z',
+            rate: 50
+          },
+          'Hourly': {
+            id: 4,
+            name: 'Hourly',
+            updated_on: '2015-07-16T20:14:48.573940Z'
+          }
+        }
+      }
     }
   ]);
   // Contribution Service
@@ -138,19 +196,70 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
       id: 1,
       name: 'Author',
       description: 'eh',
-      payment_type: 'Manual'
+      payment_type: 'Manual',
+      rates: {
+          'flat_rate': {
+            updated_on: '2015-07-13T20:14:48.573940Z',
+            rate: 100
+          },
+          'hourly': {
+            updated_on: '2015-07-14T20:14:48.573940Z',
+            rate: 60
+          },
+          feature_type: [
+            {
+              feature_type: '100 Episodes',
+              updated_on: '2015-08-14T20:14:48.473940Z',
+              rate: 100
+            }, {
+              feature_type: '11 Question',
+              rate: 11
+            }, {
+              feature_type: '13 Days of Christmas',
+              updated_on: '2015-08-14T20:14:48.473940Z',
+              rate: 13
+            }, {
+              feature_type: '15 Minutes or Less',
+              updated_on: '2015-08-14T20:14:48.473940Z',
+              rate: 15
+            }, {
+              feature_type: '24 Hours Of',
+              updated_on: '2015-08-14T20:14:48.473940Z',
+              rate: 5
+          }]
+        }
     },
     {
       id: 2,
       name: 'Editor',
       description: 'eh',
-      payment_type: 'Flat Rate'
+      payment_type: 'Flat Rate',
+        rates: {
+          'flat_rate': {
+              name: 'Flat Rate',
+              rate: 200
+          },
+          'hourly': {name: 'Hourly', rate: 400}
+        }
     },
     {
       id: 3,
       name: 'Programmer',
       description: 'meh',
-      payment_type: 'Manual'
+      payment_type: 'Manual',
+      rates: {
+          'flat_rate': {
+            id: 3,
+            name: 'Flat Rate',
+            updated_on: '2015-07-15T20:14:48.573940Z',
+            rate: 50
+          },
+          'Hourly': {
+            id: 4,
+            name: 'Hourly',
+            updated_on: '2015-07-16T20:14:48.573940Z'
+          }
+        }
     }
   ]);
 

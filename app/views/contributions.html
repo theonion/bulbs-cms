@@ -40,7 +40,7 @@
                         <div class="col-md-4">
                           <div class="form-group col-sm-5">
                             <label for="flatrate">Pay</label>
-                            <div id="flatrate">${{ contribution.rate }}</div>
+                            <div id="flatrate">$ {{ contribution.roleObject.rates.hourly.rate }}</div>
                           </div>
                           <label>Override Pay</label>
                           <div class="input-group col-sm-4">
@@ -83,7 +83,7 @@
                         <div class="col-md-4">
                           <div class="form-group col-sm-5">
                             <label for="flatrate">Pay</label>
-                            <div id="flatrate">${{ contribution.rate }}</div>
+                            <div id="flatrate">${{ contribution.role }}</div>
                           </div>
                           <label for="minutes">Minutes Worked</label>
                           <div id="minutes" class="input-group col-sm-4">

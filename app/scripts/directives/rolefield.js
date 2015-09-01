@@ -16,9 +16,14 @@ angular.module('bulbsCmsApp')
         scope.roleValue = null;
         scope.roleOptions = [];
 
-        if (scope.model.hasOwnProperty('role')) {
+        scope.$watch('model.role', function () {
+          for (var i = 0; i < scope.roleOptions.length; i++) {
+            if (scope.roleOptions[i].id === Number(scope.roleValue)) {
+              scope.model.role = scope.roleOptions[i];
+            }
+          }
           scope.roleValue = scope.model.role.id;
-        }
+        });
 
         $http({
           method: 'GET',
@@ -27,14 +32,6 @@ angular.module('bulbsCmsApp')
           scope.roleOptions = data.results || data;
         }).error(function (data, status, headers, config) {
           Raven.captureMessage('Error fetching Roles', {extra: data});
-        });
-
-        scope.$watch('roleValue', function () {
-          for (var i = 0; i < scope.roleOptions.length; i++) {
-            if (scope.roleOptions[i].id === Number(scope.roleValue)) {
-              scope.model.role = scope.roleOptions[i];
-            }
-          }
         });
       }
     };

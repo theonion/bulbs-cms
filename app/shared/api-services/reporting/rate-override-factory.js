@@ -23,7 +23,9 @@ angular.module('apiServices.rateOverride.factory', [
           }
         ]
       },
-      role: {},
+      role: {
+        init: {}
+      },
       $hooks: {
       }
     });

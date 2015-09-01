@@ -13,17 +13,17 @@ angular.module('bulbsCmsApp.mockApi.role', [
     mockApiData.roles = [{
       id: 1,
       name: 'Author',
-      paymentType: 'Flat Rate',
+      payment_type: 'Flat Rate',
       rates: {
-        'flat_rate': {
+        flat_rate: {
           updated_on: '2015-07-13T20:14:48.573940Z',
           rate: 100
         },
-        'hourly': {
+        hourly: {
           updated_on: '2015-07-14T20:14:48.573940Z',
           rate: 60
         },
-        'FeatureType': [
+        feature_type: [
           {
             feature_type: '100 Episodes',
             updated_on: '2015-08-14T20:14:48.473940Z',
@@ -48,23 +48,23 @@ angular.module('bulbsCmsApp.mockApi.role', [
     }, {
       id: 2,
       name: 'Editor',
-      paymentType: 'FeatureType',
+      payment_type: 'Manual',
       rates: {
-        'Flat Rate': {name: 'Flat Rate'},
-        'Hourly': {name: 'Hourly'}
+        flat_rate: {name: 'Flat Rate'},
+        hourly: {name: 'Hourly'}
       }
     }, {
       id: 3,
       name: 'Programmer',
-      paymentType: 'Hourly',
+      payment_type: 'Hourly',
       rates: {
-        'Flat Rate': {
+        flat_Rate: {
           id: 3,
           name: 'Flat Rate',
           updated_on: '2015-07-15T20:14:48.573940Z',
           rate: 50
         },
-        'Hourly': {
+        hourly: {
           id: 4,
           name: 'Hourly',
           updated_on: '2015-07-16T20:14:48.573940Z'

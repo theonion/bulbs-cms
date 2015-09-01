@@ -76,8 +76,14 @@
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="rate in model.rates.FeatureType">
-                  <td>{{ rate.featureType }}</td>
+                <tr ng-repeat="rate in model.rates.featureType">
+                  <td class="col-md-5">
+                    <featuretype-field
+                      article="rate"
+                      hide-label="true"
+                      class="pull-left">
+                    </featuretype-field>
+                  </td>
                   <td>
                     <div class="input-group">
                       <span class="input-group-btn">
@@ -88,6 +94,7 @@
                       <input
                         type="text"
                         value="{{ rate.rate }}"
+                        ng-model="rate.rate"
                         class="form-control">
                       </input>
                     </div>
@@ -95,6 +102,12 @@
                 </tr>
               </tbody>
             </table>
+            <button
+              class="add-item btn btn-primary"
+              ng-click="addFeatureType()">
+              <i class="glyphicon glyphicon-plus"></i>
+              Add FeatureType
+            </button>
           </div>
         </div>
       </div>
