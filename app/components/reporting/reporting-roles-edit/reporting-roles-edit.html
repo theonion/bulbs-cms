@@ -43,7 +43,8 @@
               id="setFlatRate"
               type="text"
               class="form-control"
-              ng-model="model.rates.FlatRate.rate">
+              value="{{model.rates.flatRate.rate}}"
+              ng-model="model.rates.flatRate.rate">
           </div>
 
           <div class="row" ng-hide="model.paymentType != 'Hourly'">
@@ -57,7 +58,7 @@
               <input
                 type="text"
                 class="form-control"
-                ng-model="model.rates.Hourly.rate">
+                ng-model="model.rates.hourly.rate">
               <span class="input-group-btn">
                 <button class="btn btn-info">
                   /hr

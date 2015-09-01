@@ -15,11 +15,11 @@ angular.module('bulbsCmsApp.mockApi.role', [
       name: 'Author',
       paymentType: 'Flat Rate',
       rates: {
-        'Flat Rate': {
+        'flat_rate': {
           updated_on: '2015-07-13T20:14:48.573940Z',
           rate: 100
         },
-        'Hourly': {
+        'hourly': {
           updated_on: '2015-07-14T20:14:48.573940Z',
           rate: 60
         },

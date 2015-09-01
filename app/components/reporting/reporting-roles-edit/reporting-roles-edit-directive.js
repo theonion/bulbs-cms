@@ -29,6 +29,7 @@ angular.module('roles.edit.directive', [
     return {
       controller: function (_, $location, $q, $routeParams, $scope, Role, PAYMENT_TYPES) {
 
+        $scope.page = 'contributions';
         $scope.PAYMENT_TYPES = PAYMENT_TYPES;
 
         if ($routeParams.id === 'new') {
