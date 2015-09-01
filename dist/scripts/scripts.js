@@ -5397,8 +5397,6 @@ angular.module('cms.config', [
     };
   });
 
-'use strict';
-
 angular.module('cms.image', [
   'cms.config',
   'jquery'
@@ -5481,25 +5479,24 @@ angular.module('cms.image', [
         createStyle(selector, rules, 'image-css-' + image.id);
       };
 
-      var createStyle = function (selector, rules, classname) {
-        var styleNode = document.createElement('style');
-        styleNode.type = 'text/css';
-        styleNode.className = classname;
-        var css = '';
+      var createStyle = function (selector, rules, styleId) {
+        var $existingStyle = $('#' + styleId);
 
-        var temp = '' + selector + '{';
-        for (var rule in rules) {
-          temp += rule + ':' + rules[rule] + ';';
-        }
-        temp += '}';
-        css += temp;
-
-        if (styleNode.styleSheet) {
-          styleNode.styleSheet.cssText = css;
+        var $styleNode;
+        if ($existingStyle.length > 0) {
+          $styleNode = $existingStyle;
         } else {
-          styleNode.appendChild(document.createTextNode(css));
+          $styleNode = $('<style id="' + styleId + '" type="text/css">')
+          $(document).find('head').append($styleNode);
         }
-        $(document).find('head').append(styleNode);
+
+        var css = '' + selector + '{';
+        for (var rule in rules) {
+          css += rule + ':' + rules[rule] + ';';
+        }
+        css += '}';
+
+        $styleNode.append(css);
       };
 
       var scaleNumber = function (num, by_scale) {
@@ -5547,7 +5544,7 @@ angular.module('cms.image', [
         }
 
         var $ps;
-        if ($el && $el.data('type') === 'image') {
+        if ($el.data('type') === 'image') {
           $ps = $el;
         } else {
           $ps = $el.find('div[data-type="image"]');
@@ -5556,16 +5553,25 @@ angular.module('cms.image', [
         $ps.each(function (i, el) {
           var $imgContainer = $(el);
           var imgId = $imgContainer.data('imageId');
-          var currCrop = $imgContainer.data('crop');
-          var isRendered = $imgContainer.data('rendered');
 
-          var $div = $imgContainer.children('div');
           if (typeof imgId === 'number') {
+            var $div = $imgContainer.children('div');
+            var currCrop = $imgContainer.attr('data-crop');
+            var computedCrop = computeAspectRatio($div.width(), $div.height());
+            var isCropChanged = computedCrop !== currCrop;
+            // HACK : something causes images to reload if using properties on elmeents
+            //  inside the editor
+            var isRendered = $('.image-css-' + imgId).length > 0;
 
-            var newCrop = computeAspectRatio($div.width, $div.height);
+            if (!isRendered || isCropChanged) {
 
-            if (!isRendered || newCrop !== currCrop) {
-              $('.image-css-' + imgId).remove();
+              var crop = 'original';
+              if (!isRendered) {
+                crop = currCrop;
+              } else if (isCropChanged){
+                crop = computedCrop;
+              }
+
               $.ajax({
                 url: CmsConfig.buildImageServerUrl('/api/' + imgId),
                 headers: {
@@ -5577,17 +5583,14 @@ angular.module('cms.image', [
                 styleCrop(data, {
                   elementDiv: $div[0],
                   id: imgId,
-                  crop: newCrop
+                  crop: crop
                 });
               })
               .fail(function (data) {
                 styleOriginalCrop(data, {
                   id: imgId,
-                  crop: newCrop
+                  crop: crop
                 });
-              })
-              .always(function () {
-                $imgContainer.data('rendered', true);
               });
             }
           }
@@ -6645,7 +6648,9 @@ angular.module('bulbsCmsApp')
       replace: true,
       restrict: 'E',
       templateUrl: PARTIALS_URL + 'editor.html',
-      scope: {ngModel: '='},
+      scope: {
+        ngModel: '='
+      },
       link: function (scope, element, attrs, ngModel) {
 
         if (!ngModel) {
@@ -6687,10 +6692,8 @@ angular.module('bulbsCmsApp')
               videoEmbedUrl: VIDEO_EMBED_URL
             }
           };
-        }
-        else {
+        } else {
           $('.document-tools, .embed-tools', element).hide();
-          defaultValue = '';
           options = {
             // global options
             multiline: false,
@@ -6706,10 +6709,8 @@ angular.module('bulbsCmsApp')
 
         ngModel.$render = function () {
           editor.setContent(ngModel.$viewValue || defaultValue);
-          // register on change here, after the initial load so angular doesn't get mad...
-          setTimeout(function () {
-            editor.setChangeHandler(read);
-          });
+          CmsImage.picturefill(element);
+          editor.setChangeHandler(read);
         };
 
         // Redefine what empty looks like
@@ -6718,32 +6719,18 @@ angular.module('bulbsCmsApp')
         };
 
         // Write data to the model
-        function read() {
-          safeApply(scope, function () {
-            var html = editor.getContent();
-            if (html === defaultValue) {
-              html = '';
-            }
-            ngModel.$setViewValue(html);
-          });
+        var read = function () {
+          var html = editor.getContent();
+          if (html === defaultValue) {
+            html = '';
+          } else {
+            CmsImage.picturefill(element);
+          }
+          ngModel.$setViewValue(html);
         }
-
-        scope.$watch('ngModel', function () {
-          CmsImage.picturefill(element[0]);
-        });
       }
     };
   });
-
-function safeApply(scope, fn) {
-  if (scope.$$phase || scope.$root.$$phase) {
-    fn();
-  } else {
-    scope.$apply(function () {
-      fn();
-    });
-  }
-}
 
 'use strict';
 
