@@ -4,10 +4,11 @@ angular.module('bulbsCmsApp')
   .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter, $interpolate, Login, routes, ContributionReportingService, ContentReportingService, FreelancePayReportingService) {
     $window.document.title = routes.CMS_NAMESPACE + ' | Reporting'; // set title
 
+    $scope.userFilter = '';
     $scope.userFilters = [
       {
         name: 'All',
-        value: 'all'
+        value: ''
       },
       {
         name: 'Staff',
@@ -167,6 +168,14 @@ angular.module('bulbsCmsApp')
       if (order) {
         $scope.downloadURL += ('&ordering=' + order.key);
         reportParams['ordering'] = order.key;
+      }
+
+      if ($scope.publishedFilter) {
+        $scope.downloadURL += ('&published=' + $scope.publishedFilter);
+      }
+
+      if ($scope.userFilter) {
+        $scope.downloadURL += ('&users=' + $scope.userFilter);
       }
 
       report.service.getList(reportParams).then(function (data) {
