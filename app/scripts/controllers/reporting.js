@@ -88,6 +88,7 @@ angular.module('bulbsCmsApp')
     $scope.items = [];
     $scope.headings = [];
     $scope.orderOptions = [];
+    $scope.moreFilters = [];
 
     $scope.startOpen = false;
     $scope.endOpen = false;

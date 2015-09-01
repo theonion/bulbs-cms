@@ -40,6 +40,7 @@ angular.module('bulbsCmsApp', [
   'bugReporter',
   'campaigns',
   'filterWidget',
+  'filterListWidget',
   'promotedContent',
   'statusFilter',
   'templateTypeField',
