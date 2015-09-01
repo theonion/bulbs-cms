@@ -24,7 +24,11 @@ angular.module('apiServices.reporting.factory', [
           }
         ]
       },
-      rate: {},
+      rates: {
+        init: {
+          featureType: []
+        }
+      },
       $hooks: {
       }
     });

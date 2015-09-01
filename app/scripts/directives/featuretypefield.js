@@ -6,7 +6,8 @@ angular.module('bulbsCmsApp')
       templateUrl: routes.PARTIALS_URL + 'textlike-autocomplete-field.html',
       restrict: 'E',
       scope: {
-        article: '='
+        article: '=',
+        hideLabel: '='
       },
       replace: true,
       link: function postLink(scope, element, attrs) {
@@ -17,6 +18,10 @@ angular.module('bulbsCmsApp')
 
         scope.$watch('article.feature_type', function () {
           scope.model = scope.article.feature_type;
+        });
+
+        scope.$watch('article.featureType', function () {
+          scope.model = scope.article.featureType;
         });
 
         scope.display = function (o) {

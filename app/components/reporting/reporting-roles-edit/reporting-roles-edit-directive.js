@@ -49,6 +49,13 @@ angular.module('roles.edit.directive', [
           delete window.onbeforeunload;
         });
 
+        $scope.addFeatureType = function () {
+          $scope.model.rates.featureType.push({
+            featureType: null,
+            rate: 0
+          });
+        };
+
         $scope.rateEditable = function () {
           var paymentTypes = ['Flat Rate', 'Hourly', 'FeatureType'];
           if (paymentTypes.indexOf($scope.model.paymentType >= 0)) {
