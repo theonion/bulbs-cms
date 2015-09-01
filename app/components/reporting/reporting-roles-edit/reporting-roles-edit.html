@@ -32,19 +32,20 @@
       </div>
       <div class="row" ng-show="rateEditable()">
         <div class="form-group col-md-6">
-          <div class="input-group" ng-hide="model.paymentType != 'Flat Rate'">
-            <label for="setFlatRate">Set Flat Rate&nbsp&nbsp</label>
-            <span class="input-group-btn">
-              <button class="btn btn-info">
-                $
-              </button>
-            </span>
-            <input
-              id="setFlatRate"
-              type="text"
-              class="form-control"
-              value="{{model.rates.flatRate.rate}}"
-              ng-model="model.rates.flatRate.rate">
+          <div class="row" ng-hide="model.paymentType != 'Flat Rate'">
+            <label for="setFlatRate">Set Flat Rate</label>
+            <div id="setFlatRate" class="input-group" ng-hide="model.paymentType != 'Flat Rate'">
+              <span class="input-group-btn">
+                <button class="btn btn-info">
+                  $
+                </button>
+              </span>
+              <input
+                type="text"
+                class="form-control"
+                value="{{model.rates.flatRate.rate}}"
+                ng-model="model.rates.flatRate.rate">
+            </div>
           </div>
 
           <div class="row" ng-hide="model.paymentType != 'Hourly'">
