@@ -8,7 +8,9 @@ angular.module('bulbsCmsApp')
       replace: true,
       restrict: 'E',
       templateUrl: PARTIALS_URL + 'editor.html',
-      scope: {ngModel: '='},
+      scope: {
+        ngModel: '='
+      },
       link: function (scope, element, attrs, ngModel) {
 
         if (!ngModel) {
@@ -50,10 +52,8 @@ angular.module('bulbsCmsApp')
               videoEmbedUrl: VIDEO_EMBED_URL
             }
           };
-        }
-        else {
+        } else {
           $('.document-tools, .embed-tools', element).hide();
-          defaultValue = '';
           options = {
             // global options
             multiline: false,
@@ -69,10 +69,8 @@ angular.module('bulbsCmsApp')
 
         ngModel.$render = function () {
           editor.setContent(ngModel.$viewValue || defaultValue);
-          // register on change here, after the initial load so angular doesn't get mad...
-          setTimeout(function () {
-            editor.setChangeHandler(read);
-          });
+          CmsImage.picturefill(element);
+          editor.setChangeHandler(read);
         };
 
         // Redefine what empty looks like
@@ -81,29 +79,15 @@ angular.module('bulbsCmsApp')
         };
 
         // Write data to the model
-        function read() {
-          safeApply(scope, function () {
-            var html = editor.getContent();
-            if (html === defaultValue) {
-              html = '';
-            }
-            ngModel.$setViewValue(html);
-          });
+        var read = function () {
+          var html = editor.getContent();
+          if (html === defaultValue) {
+            html = '';
+          } else {
+            CmsImage.picturefill(element);
+          }
+          ngModel.$setViewValue(html);
         }
-
-        scope.$watch('ngModel', function () {
-          CmsImage.picturefill(element[0]);
-        });
       }
     };
   });
-
-function safeApply(scope, fn) {
-  if (scope.$$phase || scope.$root.$$phase) {
-    fn();
-  } else {
-    scope.$apply(function () {
-      fn();
-    });
-  }
-}
