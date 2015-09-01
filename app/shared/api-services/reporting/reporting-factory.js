@@ -24,12 +24,7 @@ angular.module('apiServices.reporting.factory', [
           }
         ]
       },
-      query: {
-        init: {}
-      },
-      promoted: {
-        init: true
-      },
+      rate: {},
       $hooks: {
       }
     });

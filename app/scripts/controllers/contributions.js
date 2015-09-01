@@ -9,6 +9,7 @@ angular.module('bulbsCmsApp')
 
     $scope.NAV_LOGO = routes.NAV_LOGO;
     $scope.contentId = parseInt($routeParams.id, 10);
+    $scope.paymentType = '';
     $scope.contributions = [];
     $scope.contributionLabels = [];
     $scope.roles = [];
@@ -23,7 +24,7 @@ angular.module('bulbsCmsApp')
     $scope.updateLabel = updateLabel;
 
     $scope.isFlatRate = function(contribution) {
-      if (contribution.payment_type === 'Flat Rate') {
+      if ((contribution.paymentType === 'Flat Rate') || (contribution.payment_type === 'Flat Rate')) {
         return true;
       }
 
@@ -31,7 +32,7 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.isHourly = function(contribution) {
-      if (contribution.payment_type === 'Hourly') {
+      if ((contribution.paymentType === 'Hourly') || (contribution.payment_type === 'Hourly')) {
         return true;
       }
 
@@ -39,7 +40,8 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.isManual = function(contribution) {
-      if (contribution.payment_type === 'Manual') {
+      if ((contribution.paymentType === 'Manual') || (contribution.payment_type === 'Manual')) {
+        // contribution.rate.name = 'Manual';
         return true;
       }
 
@@ -86,6 +88,11 @@ angular.module('bulbsCmsApp')
         for (var i in contributions) {
           if (contributions[i] === null || contributions[i].role === undefined) {
             continue;
+          } else {
+            if (typeof(contributions[i].role) === 'object') {
+              contributions[i].paymentType = contributions[i].role.payment_type;
+              contributions[i].role = contributions[i].role.id;
+            }
           }
         }
         $scope.contributions = contributions;
@@ -115,6 +122,7 @@ angular.module('bulbsCmsApp')
 
     function updateLabel(index) {
       $scope.contributionLabels[index] = _.find($scope.roles, function (role) {
+        $scope.contributions[index].paymentType = role.payment_type;
         return role.id === $scope.contributions[index].role;
       }).name;
     }
