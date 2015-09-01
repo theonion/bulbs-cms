@@ -54,11 +54,16 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
         last_name: 'Sinchok',
         username: 'csinchok'
       },
-      force_pay: false,
-      force_date: '2015-8-14',
+      force_payment: false,
+      payment_date: '2015-8-14',
       rate: 60,
       override_rate: 100,
-      role: 1,
+      role: {
+        id: 1,
+        name: 'Author',
+        description: 'eh',
+        payment_type: 'Manual'
+      },
       payment_type: 'Flat Rate'
     },
     {
@@ -70,8 +75,8 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
         last_name: 'Wentz',
         username: 'awentz'
       },
-      force_pay: true,
-      force_date: null,
+      force_payment: true,
+      payment_date: null,
       rate: 70,
       override_rate: null,
       role: 2,
@@ -86,8 +91,8 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
         last_name: 'Lowe',
         username: 'Favorite Guy'
       },
-      force_pay: false,
-      force_date: null,
+      force_payment: false,
+      payment_date: null,
       rate: null,
       override_rate: null,
       role: 3,
@@ -136,13 +141,13 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
       payment_type: 'Manual'
     },
     {
-      id: 1,
+      id: 2,
       name: 'Editor',
       description: 'eh',
       payment_type: 'Flat Rate'
     },
     {
-      id: 1,
+      id: 3,
       name: 'Programmer',
       description: 'meh',
       payment_type: 'Manual'
