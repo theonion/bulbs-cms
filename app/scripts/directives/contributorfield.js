@@ -16,7 +16,7 @@ angular.module('bulbsCmsApp')
         scope.resourceUrl = '/cms/api/v1/author/?ordering=name&search=';
 
         scope.$watch('override.contributor', function () {
-          if (scope.override.hasOwnProperty('contributor')) {
+          if ((scope.override.hasOwnProperty('contributor')) && (scope.override.contributor !== null)) {
             scope.model = scope.override.contributor.full_name || scope.override.contributor.fullName;
           }
         });
@@ -26,7 +26,7 @@ angular.module('bulbsCmsApp')
         };
 
         scope.add = function(o, input) {
-          if (scope.override.hasOwnProperty('contributor')) {
+          if ((scope.override.hasOwnProperty('contributor')) && scope.override.contributor !== null) {
             if (scope.override.contributor.id === o.id) {
               return;
             }

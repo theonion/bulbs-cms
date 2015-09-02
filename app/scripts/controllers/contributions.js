@@ -96,7 +96,7 @@ angular.module('bulbsCmsApp')
             continue;
           } else {
 
-            if (contributions[i].hasOwnProperty('rate') === 'object') {
+            if ((contributions[i].hasOwnProperty('rate')) && (typeof(contributions[i].rate) === 'object')) {
               contributions[i].rate = contributions[i].rate.rate;
             }
 
@@ -112,7 +112,6 @@ angular.module('bulbsCmsApp')
         $scope.contributions.forEach(function (item, index) {
 
           $scope.contributionLabels[index] = _.find($scope.roles, function (role) {
-            // item.roleObject = role;
             return role.id === item.role;
           }).name;
           $scope.collapsed[index] = true;

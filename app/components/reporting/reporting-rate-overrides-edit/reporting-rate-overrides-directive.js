@@ -18,7 +18,7 @@ angular.module('rateOverrides.edit.directive', [
         } else {
           $scope.model = RateOverride.$find($routeParams.id);
           $scope.model.$promise.then(function () {
-            if ($scope.model.hasOwnProperty('role')) {
+            if (($scope.model.hasOwnProperty('role')) && ($scope.model.role !== null)){
               $scope.model.role = $scope.model.role.id;
             }
           });

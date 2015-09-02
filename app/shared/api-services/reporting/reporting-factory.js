@@ -28,8 +28,6 @@ angular.module('apiServices.reporting.factory', [
         init: {
           featureType: []
         }
-      },
-      $hooks: {
       }
     });
   });
