@@ -89,6 +89,9 @@ angular.module('rateOverrides.edit.directive', [
           if ($scope.model) {
             promise = $scope.model.$save().$asPromise().then(function (data) {
               $location.path('/cms/app/rate-overrides/edit/' + data.id + '/');
+              if (($scope.model.hasOwnProperty('role')) && ($scope.model.role !== null)){
+                $scope.model.role = $scope.model.role.id;
+              }
             });
           } else {
             var deferred = $q.defer();
