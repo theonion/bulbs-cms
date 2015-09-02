@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('cms.image', [
   'cms.config',
   'jquery'
@@ -87,7 +89,7 @@ angular.module('cms.image', [
         if ($existingStyle.length > 0) {
           $styleNode = $existingStyle;
         } else {
-          $styleNode = $('<style id="' + styleId + '" type="text/css">')
+          $styleNode = $('<style id="' + styleId + '" type="text/css">');
           $(document).find('head').append($styleNode);
         }
 

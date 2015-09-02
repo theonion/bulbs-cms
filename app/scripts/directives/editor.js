@@ -87,7 +87,7 @@ angular.module('bulbsCmsApp')
             CmsImage.picturefill(element);
           }
           ngModel.$setViewValue(html);
-        }
+        };
       }
     };
   });
