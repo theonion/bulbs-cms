@@ -1,0 +1,17 @@
+<div>
+  <div class="col-sm-12">
+    <label for="ac-{{ uuid }}">Section</label>
+  </div>
+  <div class="col-sm-4 form-group">
+    <autocomplete-basic
+        class="form-control"
+        ng-if="!article.section || article.section.$resolved"
+        ng-model="article.section"
+        item-display-formatter="item.name"
+        on-select="$parent.needsSave = true"
+        input-id="ac-{{ uuid }}"
+        input-placeholder="Search sections..."
+        search-function="searchSections">
+    </autocomplete-basic>
+  </div>
+</div>

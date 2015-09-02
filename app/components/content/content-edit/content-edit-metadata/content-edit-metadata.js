@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('content.edit.metadata', [
-  'bulbsCmsApp.settings'
+  'bulbsCmsApp.settings',
+  'content.edit.sections'
 ])
   .directive('contentEditMetadata', function (COMPONENTS_URL) {
     return {
