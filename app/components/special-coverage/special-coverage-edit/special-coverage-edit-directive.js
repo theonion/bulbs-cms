@@ -39,10 +39,14 @@ angular.module('specialCoverage.edit.directive', [
           }
         };
 
-        $scope.$on('$destroy', function() {
+        $scope.$on('$destroy', function () {
           // ensure even is cleaned up when we leave
           delete window.onbeforeunload;
         });
+
+        $scope.preview = function () {
+          $window.open('//' + $scope.LIST_URL + $scope.model.slug);
+        };
 
         $scope.saveModel = function () {
           var promise;

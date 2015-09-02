@@ -33,6 +33,17 @@
       </ul>
 
       <div class="nav navbar-nav navbar-right">
+        <button
+            ng-repeat="item in itemsTop"
+            class="{{ item.containerClasses }}"
+            ng-click="item.clickFunction()">
+          <i
+              ng-if="item.displayIconClasses"
+              class="{{ item.displayIconClasses }}">
+          </i>
+          {{ item.displayText }}
+        </button>
+
         <save-button
             ng-if="saveFunction"
             click-function="saveFunction"
