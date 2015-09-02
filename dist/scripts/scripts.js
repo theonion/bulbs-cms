@@ -649,7 +649,14 @@ angular.module('autocompleteBasic', [
         };
 
         $scope.handleSelect = function (selection) {
-          if (selection && $scope.updateNgModel) {
+          if (!selection && $scope.allowInputValueSelection()) {
+            selection = {
+              name: $scope.writables.searchTerm,
+              value: $scope.writables.searchTerm
+            };
+          }
+
+          if ($scope.updateNgModel) {
             $scope.updateNgModel(selection);
             $scope.showSelectionOverlay = true;
           }
@@ -672,22 +679,23 @@ angular.module('autocompleteBasic', [
 
           scope.updateNgModel = function (selection) {
             var newViewValue = null;
-            if (selection) {
+            if (selection && selection.value) {
               newViewValue = selection.value;
             }
             ngModelCtrl.$setViewValue(newViewValue);
           };
         }
       },
-      require: '?ngModel',          // optionally provide ng-model to have bind with an actual property
+      require: '?ngModel',            // optionally provide ng-model to have bind directly with a property
       restrict: 'E',
       scope: {
-        hideSearchIcon: '&',        // true to hide search icon inside autocomplete
-        inputId: '@',               // id to give input, useful if input has a label
-        inputPlaceholder: '@',      // placeholder for input
-        itemDisplayFormatter: '&',  // formatter to use for autocomplete results
-        onSelect: '&',              // selection callback, recieves selection as argument
-        searchFunction: '='         // function to use for searching autocomplete results
+        hideSearchIcon: '&',          // true to hide search icon inside autocomplete
+        inputId: '@',                 // id to give input, useful if input has a label
+        inputPlaceholder: '@',        // placeholder for input
+        itemDisplayFormatter: '&',    // formatter to use for autocomplete results
+        onSelect: '&',                // selection callback, recieves selection as argument
+        searchFunction: '=',          // function to use for searching autocomplete results
+        allowInputValueSelection: '&' // true to allow input to retain the value of the input even if that value hasn't been selected from results
       },
       templateUrl: COMPONENTS_URL + 'autocomplete-basic/autocomplete-basic.html'
     };
@@ -1573,7 +1581,9 @@ angular.module('content.edit.mainImage', [
 'use strict';
 
 angular.module('content.edit.metadata', [
-  'bulbsCmsApp.settings'
+  'bulbsCmsApp.settings',
+  'content.edit.sections',
+  'content.edit.tags'
 ])
   .directive('contentEditMetadata', function (COMPONENTS_URL) {
     return {
@@ -1584,6 +1594,104 @@ angular.module('content.edit.metadata', [
       templateUrl: COMPONENTS_URL + 'content/content-edit/content-edit-metadata/content-edit-metadata.html'
     };
   });
+
+'use strict';
+
+angular.module('content.edit.sections', [
+  'apiServices.section.factory',
+  'bulbsCmsApp.settings',
+  'uuid4'
+])
+  .directive('contentEditSections', [
+    'COMPONENTS_URL', 'uuid4',
+    function (COMPONENTS_URL, uuid4) {
+      return {
+        controller: [
+          '$scope', 'Section',
+          function ($scope, Section) {
+
+            $scope.searchSections = function (query) {
+              return Section.$search({
+                ordering: 'name',
+                search: query
+              })
+              .$asPromise();
+            };
+          }
+        ],
+        link: function (scope) {
+          scope.uuid = uuid4.generate();
+        },
+        restrict: 'E',
+        scope: {
+          article: '='
+        },
+        templateUrl: COMPONENTS_URL + 'content/content-edit/content-edit-sections/content-edit-sections.html'
+      };
+    }
+  ]);
+
+'use strict';
+
+angular.module('content.edit.tags', [
+  'apiServices.tag.factory',
+  'bulbsCmsApp.settings',
+  'lodash',
+  'tagList',
+  'uuid4'
+])
+  .directive('contentEditTags', [
+    'COMPONENTS_URL', 'uuid4',
+    function (COMPONENTS_URL, uuid4) {
+      return {
+        controller: [
+          '_', '$scope', 'Tag',
+          function (_, $scope, Tag) {
+
+            $scope.addTag = function (tag) {
+              var tagIsString = typeof tag === 'string';
+
+              var alreadyInList =
+                _.find($scope.article.tags, function (articleTag) {
+                  return tagIsString ? articleTag.name === tag : articleTag.id === tag.id;
+                });
+
+              if (!alreadyInList) {
+                var newTag = {
+                  type: 'content_tag'
+                };
+                if (tagIsString) {
+                  newTag.name = tag;
+                  newTag.new = true;
+                } else {
+                  newTag.id = tag.id;
+                  newTag.name = tag.name;
+                }
+
+                $scope.article.tags.push(newTag);
+              }
+            };
+
+            $scope.searchTags = function (query) {
+              return Tag.$search({
+                ordering: 'name',
+                search: query
+              })
+              .$asPromise();
+            };
+          }
+        ],
+        link: function (scope) {
+          scope.uuid = uuid4.generate();
+        },
+        restrict: 'E',
+        scope: {
+          article: '='
+        },
+        templateUrl: COMPONENTS_URL + 'content/content-edit/content-edit-tags/content-edit-tags.html'
+      };
+    }
+  ]);
 
 'use strict';
 
@@ -5101,6 +5209,21 @@ angular.module('apiServices.specialCoverage.factory', [
 
 'use strict';
 
+angular.module('apiServices.tag.factory', [
+  'apiServices'
+])
+  .factory('Tag', function (_, restmod) {
+    return restmod.model('tags').mix({
+      $config: {
+        name: 'Tag',
+        plural: 'Tags',
+        primaryKey: 'id'
+      }
+    });
+  });
+
+'use strict';
+
 /**
  * Filter and directive that can be used in templates to build correct urls for
  *  interaction with the backend.
@@ -7070,59 +7193,6 @@ angular.module('bulbsCmsApp')
             saveSuccess();
           }
         };
-      }
-    };
-  });
-
-'use strict';
-
-angular.module('bulbsCmsApp')
-  .directive('sectionsField', function (PARTIALS_URL, _, IfExistsElse, ContentFactory,
-      Raven, $, CmsConfig) {
-    return {
-      templateUrl: PARTIALS_URL + 'taglike-autocomplete-field.html',
-      restrict: 'E',
-      replace: true,
-      link: function postLink(scope, element, attrs) {
-        scope.name = 'section';
-        scope.label = 'Sections';
-        scope.placeholder = 'Enter a section';
-        scope.resourceUrl = CmsConfig.buildBackendApiUrl('tag/?ordering=name&types=core_section&search=');
-        scope.display = function (o) {
-          return o.name;
-        };
-
-        scope.$watch('article.tags', function () {
-          scope.objects = _.where(scope.article.tags, {type: 'core_section'});
-        }, true);
-
-        scope.add = function (o, input, freeForm) {
-          var tagVal = freeForm ? o : o.name;
-          IfExistsElse.ifExistsElse(
-            ContentFactory.all('tag').getList({
-              ordering: 'name',
-              search: tagVal
-            }),
-            {name: tagVal},
-            function (tag) { scope.article.tags.push(tag); },
-            function () { console.log('Can\'t create sections.'); },
-            function (data, status) { Raven.captureMessage('Error Adding Section', {extra: data}); }
-          );
-          $(input).val('');
-        };
-
-        scope.delete = function (e) {
-          var tag = $(e.target).parents('[data-taglikeobject]').data('taglikeobject');
-          var name = tag.name;
-          var newtags = [];
-          for (var i in scope.article.tags) {
-            if (scope.article.tags[i].name !== name) {
-              newtags.push(scope.article.tags[i]);
-            }
-          }
-          scope.article.tags = newtags;
-        };
-
       }
     };
   });

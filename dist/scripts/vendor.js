@@ -90224,22 +90224,20 @@ angular.module('BulbsAutocomplete.suggest.directive', [])
             switch (keyEvent.keyCode) {
               case 13:
                 // enter
-                if (scope.selectedIndex !== -1) {
-                  scope.onSelect({
-                    selection: scope.items[scope.selectedIndex]
-                  });
-                }
+                scope.onSelect({
+                  selection: scope.selectedIndex === -1 ? null : scope.items[scope.selectedIndex]
+                });
                 break;
               case 38:
                 // up
                 if (!scope.mouseActive) {
-                  scope.selectedIndex = scope.selectedIndex <= 0 ? lastIndexOfItems : scope.selectedIndex - 1;
+                  scope.selectedIndex = scope.selectedIndex <= -1 ? lastIndexOfItems : scope.selectedIndex - 1;
                 }
                 break;
               case 40:
                 //Down
                 if (!scope.mouseActive) {
-                  scope.selectedIndex = scope.selectedIndex >= lastIndexOfItems ? 0 : scope.selectedIndex + 1;
+                  scope.selectedIndex = scope.selectedIndex >= lastIndexOfItems ? -1 : scope.selectedIndex + 1;
                 }
                 break;
             }
