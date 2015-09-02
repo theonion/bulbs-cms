@@ -77,7 +77,7 @@ angular.module('bulbsCmsApp')
         service: FreelancePayReportingService,
         headings: [
           {'title': 'Contributor', 'expression': 'contributor.full_name'},
-          {'title': 'Contributions', 'expression': 'count'},
+          {'title': 'Contribution #', 'expression': 'contributions_count'},
           {'title': 'Pay', 'expression': 'pay'},
           {'title': 'Payment Date', 'expression': 'payment_date'}
         ],

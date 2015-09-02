@@ -444,6 +444,39 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
     }
   ]);
 
+  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/freelancereporting/?')).respond([
+    {
+      id: 1,
+      contributor: {
+        id: 1,
+        full_name: 'Chris Sinchock'
+      },
+      payment_date: '2011-04-03T16:20:00Z',
+      pay: 500,
+      contributions_count: 2
+    },
+    {
+      id: 2,
+      contributor: {
+        id: 2,
+        full_name: 'Big Vinnie'
+      },
+      payment_date: '2011-04-05T16:20:00Z',
+      pay: 1200,
+      contributions_count: 10
+    },
+    {
+      id: 3,
+      contributor: {
+        id: 3,
+        full_name: 'Doppelgang man'
+      },
+      payment_date: '2011-04-03T16:20:00Z',
+      pay: 30,
+      contributions_count: 1000
+    }
+  ]);
+
   // TODO: Do this better.
   $httpBackend.when('GET', new RegExp('^/cms/api/v1/content/[0-9]+/?$')).respond({
     id: 6,
