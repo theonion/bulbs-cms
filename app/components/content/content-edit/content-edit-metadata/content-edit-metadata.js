@@ -2,7 +2,8 @@
 
 angular.module('content.edit.metadata', [
   'bulbsCmsApp.settings',
-  'content.edit.sections'
+  'content.edit.sections',
+  'content.edit.tags'
 ])
   .directive('contentEditMetadata', function (COMPONENTS_URL) {
     return {

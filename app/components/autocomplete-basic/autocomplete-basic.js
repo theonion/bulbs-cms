@@ -72,7 +72,14 @@ angular.module('autocompleteBasic', [
         };
 
         $scope.handleSelect = function (selection) {
-          if (selection && $scope.updateNgModel) {
+          if (!selection && $scope.allowInputValueSelection()) {
+            selection = {
+              name: $scope.writables.searchTerm,
+              value: $scope.writables.searchTerm
+            };
+          }
+
+          if ($scope.updateNgModel) {
             $scope.updateNgModel(selection);
             $scope.showSelectionOverlay = true;
           }
@@ -95,22 +102,23 @@ angular.module('autocompleteBasic', [
 
           scope.updateNgModel = function (selection) {
             var newViewValue = null;
-            if (selection) {
+            if (selection && selection.value) {
               newViewValue = selection.value;
             }
             ngModelCtrl.$setViewValue(newViewValue);
           };
         }
       },
-      require: '?ngModel',          // optionally provide ng-model to have bind with an actual property
+      require: '?ngModel',            // optionally provide ng-model to have bind directly with a property
       restrict: 'E',
       scope: {
-        hideSearchIcon: '&',        // true to hide search icon inside autocomplete
-        inputId: '@',               // id to give input, useful if input has a label
-        inputPlaceholder: '@',      // placeholder for input
-        itemDisplayFormatter: '&',  // formatter to use for autocomplete results
-        onSelect: '&',              // selection callback, recieves selection as argument
-        searchFunction: '='         // function to use for searching autocomplete results
+        hideSearchIcon: '&',          // true to hide search icon inside autocomplete
+        inputId: '@',                 // id to give input, useful if input has a label
+        inputPlaceholder: '@',        // placeholder for input
+        itemDisplayFormatter: '&',    // formatter to use for autocomplete results
+        onSelect: '&',                // selection callback, recieves selection as argument
+        searchFunction: '=',          // function to use for searching autocomplete results
+        allowInputValueSelection: '&' // true to allow input to retain the value of the input even if that value hasn't been selected from results
       },
       templateUrl: COMPONENTS_URL + 'autocomplete-basic/autocomplete-basic.html'
     };

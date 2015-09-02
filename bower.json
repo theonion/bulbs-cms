@@ -20,7 +20,7 @@
     "angular-uuid4": "~0.3.0",
     "angularfire": "~0.8.2",
     "bootstrap": "~3.1.1",
-    "bulbs-autocomplete": "~0.2.1",
+    "bulbs-autocomplete": "~0.2.3",
     "es5-shim": "~2.1.0",
     "firebase": "1.0.21",
     "firebase-token-generator": "~1.1.3",
