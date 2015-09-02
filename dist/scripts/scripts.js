@@ -3938,7 +3938,7 @@ angular.module('sections.edit.directive', [
 ])
   .directive('sectionsEdit', function (COMPONENTS_URL) {
     return {
-      controller: function (_, $location, $q, $scope, EXTERNAL_URL,
+      controller: function (_, $location, $q, $scope, $window, EXTERNAL_URL,
           SECTIONS_LIST_REL_PATH, Section) {
 
         $scope.LIST_URL = EXTERNAL_URL + SECTIONS_LIST_REL_PATH;
@@ -3962,10 +3962,14 @@ angular.module('sections.edit.directive', [
           }
         };
 
-        $scope.$on('$destroy', function() {
-          // ensure even is cleaned up when we leave
+        $scope.$on('$destroy', function () {
+          // ensure event is cleaned up when we leave
           delete window.onbeforeunload;
         });
+
+        $scope.preview = function () {
+          $window.open('//' + $scope.LIST_URL + $scope.model.slug);
+        };
 
         $scope.saveModel = function () {
           var promise;
@@ -4215,10 +4219,14 @@ angular.module('specialCoverage.edit.directive', [
           }
         };
 
-        $scope.$on('$destroy', function() {
+        $scope.$on('$destroy', function () {
           // ensure even is cleaned up when we leave
           delete window.onbeforeunload;
         });
+
+        $scope.preview = function () {
+          $window.open('//' + $scope.LIST_URL + $scope.model.slug);
+        };
 
         $scope.saveModel = function () {
           var promise;
@@ -5397,6 +5405,8 @@ angular.module('cms.config', [
     };
   });
 
+'use strict';
+
 angular.module('cms.image', [
   'cms.config',
   'jquery'
@@ -5486,7 +5496,7 @@ angular.module('cms.image', [
         if ($existingStyle.length > 0) {
           $styleNode = $existingStyle;
         } else {
-          $styleNode = $('<style id="' + styleId + '" type="text/css">')
+          $styleNode = $('<style id="' + styleId + '" type="text/css">');
           $(document).find('head').append($styleNode);
         }
 
@@ -6727,7 +6737,7 @@ angular.module('bulbsCmsApp')
             CmsImage.picturefill(element);
           }
           ngModel.$setViewValue(html);
-        }
+        };
       }
     };
   });
