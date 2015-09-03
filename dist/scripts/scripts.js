@@ -1610,6 +1610,13 @@ angular.module('content.edit.sections', [
           '$scope', 'Section',
           function ($scope, Section) {
 
+            $scope.setSection = function (section) {
+              $scope.article.section = {
+                id: section.value.id,
+                name: section.value.name
+              };
+            };
+
             $scope.searchSections = function (query) {
               return Section.$search({
                 ordering: 'name',
