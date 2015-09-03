@@ -10,14 +10,16 @@ angular.module('content.edit', [
   'content.edit.mainImage',
   'content.edit.metadata',
   'content.edit.title',
-  'content.edit.templateChooser'
+  'content.edit.templateChooser',
+  'content.edit.versionBrowser',
+  'utils'
 ])
   .config([
-    '$routeProvider', 'COMPONENTS_URL',
-    function ($routeProvider, COMPONENTS_URL) {
+    '$routeProvider', 'COMPONENTS_URL', 'UtilsProvider',
+    function ($routeProvider, COMPONENTS_URL, UtilsProvider) {
       $routeProvider
-        .when('/cms/app/edit/:id/', {
-          templateUrl: COMPONENTS_URL + 'content/content-edit/content-edit.html',
+        .when(UtilsProvider.path.join('/cms', 'app', 'edit', ':id/'), {
+          templateUrl: UtilsProvider.path.join(COMPONENTS_URL, 'content', 'content-edit', 'content-edit.html'),
           controller: 'ContentEdit'
         });
     }]);

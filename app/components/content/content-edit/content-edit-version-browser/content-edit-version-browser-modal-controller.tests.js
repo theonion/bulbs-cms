@@ -3,8 +3,9 @@
 describe('Controller: VersionBrowserModalCtrl', function () {
 
   // load the controller's module
-  beforeEach(module('bulbsCmsApp'))
+  beforeEach(module('bulbsCmsApp'));
   beforeEach(module('bulbsCmsApp.mockApi'));
+  beforeEach(module('content.edit.versionBrowser.modal.controller'));
   beforeEach(module('cms.templates'));
 
   var VersionBrowserModalCtrl,
@@ -12,53 +13,61 @@ describe('Controller: VersionBrowserModalCtrl', function () {
       rootScope,
       scope,
       modal,
-      // dates for testing timestamp parsing, ordered from most recent to oldest
-      dates = [
-        moment('2014-09-23T12:03'),
-        moment('2014-08-01T09:30'),
-        moment('2013-10-21T16:09'),
-        moment('2013-09-01T20:23')
-      ],
-      // versions, out of order since modal should know to order them
-      versions = [
-        {
-          timestamp: dates[2].valueOf(),
-          content: {
-            title: 'The Third Latest Article',
-            body: 'Something something.'
-          }
-        },
-        {
-          timestamp: dates[0].valueOf(),
-          content: {
-            title: 'The Latest Article',
-            body: 'Just great.'
-          }
-        },
-        {
-          timestamp: dates[1].valueOf(),
-          content: {
-            title: 'The Second Latest Article',
-            body: 'Just great. Hey this got deleted later.'
-          }
-        },
-        {
-          timestamp: dates[3].valueOf(),
-          content: {
-            title: 'The Oldest Article',
-            body: 'Just starting this thing out'
-          }
-        }
-      ];
+      dates,
+      versions;
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($q, $controller, $rootScope, $modal, PARTIALS_URL, FirebaseApi) {
+  beforeEach(inject(function ($q, $controller, $rootScope, $modal, COMPONENTS_URL,
+    FirebaseApi, moment, Utils) {
 
     rootScope = $rootScope;
     scope = rootScope.$new();
 
+    // dates for testing timestamp parsing, ordered from most recent to oldest
+    dates = [
+      moment('2014-09-23T12:03'),
+      moment('2014-08-01T09:30'),
+      moment('2013-10-21T16:09'),
+      moment('2013-09-01T20:23')
+    ];
+
+    versions = // versions, out of order since modal should know to order them
+    versions = [{
+      timestamp: dates[2].valueOf(),
+      content: {
+        title: 'The Third Latest Article',
+        body: 'Something something.'
+      }
+    },
+    {
+      timestamp: dates[0].valueOf(),
+      content: {
+        title: 'The Latest Article',
+        body: 'Just great.'
+      }
+    },
+    {
+      timestamp: dates[1].valueOf(),
+      content: {
+        title: 'The Second Latest Article',
+        body: 'Just great. Hey this got deleted later.'
+      }
+    },
+    {
+      timestamp: dates[3].valueOf(),
+      content: {
+        title: 'The Oldest Article',
+        body: 'Just starting this thing out'
+      }
+    }];
+
     // open up version browser modal with mocked out stuff
-    var modalUrl = PARTIALS_URL + 'modals/version-browser-modal.html';
+    var modalUrl = Utils.path.join(
+      COMPONENTS_URL,
+      'content',
+      'content-edit',
+      'content-edit-version-browser',
+      'content-edit-version-browser-modal.html');
     modal = $modal.open({
       templateUrl: modalUrl
     });

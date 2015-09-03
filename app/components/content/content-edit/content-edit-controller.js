@@ -1,6 +1,8 @@
 'use strict';
 
 angular.module('content.edit.controller', [
+  'content.edit.versionBrowser.api',
+  'cms.firebase',
   'confirmationModal.factory'
 ])
   .controller('ContentEdit', function (

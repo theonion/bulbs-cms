@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('utils', [])
-  .service('Utils', function () {
+  .provider('Utils', function () {
     var Utils = this;
 
     Utils.slugify = function (text) {
@@ -35,9 +35,35 @@ angular.module('utils', [])
       return ret;
     };
 
+    /**
+     * Remove an item from a list.
+     *
+     * @param {List} list - list to remove an item from.
+     * @param {Number} index - index of item to remove.
+     * @returns {Boolean} true if item was removed from list, false otherwise.
+     */
     Utils.removeFrom = function (list, index) {
       return list.splice(index, 1).length > 0;
     };
 
-    return Utils;
+    Utils.path = {
+      /**
+       * Join path strings.
+       *
+       * @param {...String} A variable number of strings to join into path.
+       * @returns {String} joined path.
+       */
+      join: function () {
+        var sep = '/';
+        var replace = new RegExp(sep + '{1,}', 'g');
+        var argsArr = Array.prototype.slice.call(arguments);
+        return argsArr.join(sep).replace(replace, sep);
+      }
+    };
+
+    // allow this to be used anywhere
+    this.$get = function () {
+      return Utils;
+    };
+    return this;
   });

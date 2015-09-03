@@ -4,6 +4,7 @@ describe('Service: VersionStorageApi', function () {
 
   beforeEach(module('bulbsCmsApp'));
   beforeEach(module('bulbsCmsApp.mockApi'));
+  beforeEach(module('content.edit.versionBrowser.api'));
 
   var VersionStorageApiTest,
       liveArticleMock,
@@ -28,7 +29,7 @@ describe('Service: VersionStorageApi', function () {
 
       // let's cheat here and say if articleData has error property, we reject createDeferred so we can test reject
       if ('hasAnError' in articleData) {
-        createDeferred.reject()
+        createDeferred.reject();
       } else {
         liveArticleMock.versions.push(versionData);
         createDeferred.resolve(versionData);
@@ -77,7 +78,7 @@ describe('Service: VersionStorageApi', function () {
         versionsDefer.resolve(localStorageBackupMock.versionsBack);
         return versionsPromise;
       });
-      return localStorageBackupMock
+      return localStorageBackupMock;
     });
   }));
 

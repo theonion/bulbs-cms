@@ -26,7 +26,6 @@ angular.module('bulbsCmsApp', [
   'bulbs.api',
   // external
   'BettyCropper',
-  'firebase',
   'ipCookie',
   'jquery',
   'keypress',
@@ -47,6 +46,7 @@ angular.module('bulbsCmsApp', [
   'backendApiHref',
   'contentServices',
   'cms.config',
+  'cms.firebase.config',
   'cms.image',
   'cms.templates',
   'currentUser',
@@ -64,14 +64,22 @@ angular.module('bulbsCmsApp', [
   'specialCoverage',
   'statusFilter',
   'templateTypeField',
+
+  // TODO : remove these, here because they are used by unrefactored compontents
+  'content.edit.versionBrowser.modal.opener'
 ])
   .config([
     '$provide', '$httpProvider', '$locationProvider', '$routeProvider', '$sceProvider',
       'TokenAuthConfigProvider', 'TokenAuthServiceProvider', 'CmsConfigProvider',
-      'COMPONENTS_URL', 'PARTIALS_URL',
+      'COMPONENTS_URL', 'PARTIALS_URL', 'FirebaseConfigProvider',
     function ($provide, $httpProvider, $locationProvider, $routeProvider, $sceProvider,
         TokenAuthConfigProvider, TokenAuthServiceProvider, CmsConfigProvider,
-        COMPONENTS_URL, PARTIALS_URL) {
+        COMPONENTS_URL, PARTIALS_URL, FirebaseConfigProvider) {
+
+      // FirebaseConfigProvider
+      //   .setDbUrl('')
+      //   .setSiteRoot('sites/bulbs-cms-testing');
+
       $locationProvider.html5Mode(true);
 
       $routeProvider

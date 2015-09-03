@@ -37,6 +37,7 @@ module.exports = function(config) {
       'app/bower_components/jcrop/js/jquery.Jcrop.js',
       'app/bower_components/bootstrap/dist/js/bootstrap.js',
       'app/bower_components/firebase/firebase-debug.js',
+      'app/bower_components/firebase-token-generator/build/firebase-token-generator.js',
       'app/bower_components/angular/angular.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
       'app/bower_components/angular-resource/angular-resource.js',
