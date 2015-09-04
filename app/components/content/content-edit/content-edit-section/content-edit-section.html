@@ -8,7 +8,7 @@
         ng-if="!article.section || article.section.$resolved"
         ng-model="article.section"
         item-display-formatter="item.name"
-        on-select="$parent.needsSave = true"
+        on-select="onSelect(selection); $parent.needsSave = true"
         input-id="ac-{{ uuid }}"
         input-placeholder="Search sections..."
         search-function="searchSections">

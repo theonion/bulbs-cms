@@ -8,9 +8,10 @@ angular.module('content.edit', [
   'content.edit.editorItem',
   'content.edit.linkBrowser',
   'content.edit.mainImage',
-  'content.edit.metadata',
-  'content.edit.title',
+  'content.edit.section',
+  'content.edit.tags',
   'content.edit.templateChooser',
+  'content.edit.title',
   'content.edit.versionBrowser',
   'utils'
 ])
@@ -19,7 +20,12 @@ angular.module('content.edit', [
     function ($routeProvider, COMPONENTS_URL, UtilsProvider) {
       $routeProvider
         .when(UtilsProvider.path.join('/cms', 'app', 'edit', ':id/'), {
-          templateUrl: UtilsProvider.path.join(COMPONENTS_URL, 'content', 'content-edit', 'content-edit.html'),
+          templateUrl: UtilsProvider.path.join(
+            COMPONENTS_URL,
+            'content',
+            'content-edit',
+            'content-edit.html'
+          ),
           controller: 'ContentEdit'
         });
     }]);

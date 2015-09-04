@@ -1,13 +1,14 @@
 'use strict';
 
-angular.module('content.edit.sections', [
+angular.module('content.edit.section', [
   'apiServices.section.factory',
   'bulbsCmsApp.settings',
+  'utils',
   'uuid4'
 ])
-  .directive('contentEditSections', [
-    'COMPONENTS_URL', 'uuid4',
-    function (COMPONENTS_URL, uuid4) {
+  .directive('contentEditSection', [
+    'COMPONENTS_URL', 'Utils', 'uuid4',
+    function (COMPONENTS_URL, Utils, uuid4) {
       return {
         controller: [
           '$scope', 'Section',
@@ -27,9 +28,16 @@ angular.module('content.edit.sections', [
         },
         restrict: 'E',
         scope: {
-          article: '='
+          article: '=',
+          onSelect: '&'
         },
-        templateUrl: COMPONENTS_URL + 'content/content-edit/content-edit-sections/content-edit-sections.html'
+        templateUrl: Utils.path.join(
+          COMPONENTS_URL,
+          'content',
+          'content-edit',
+          'content-edit-section',
+          'content-edit-section.html'
+        )
       };
     }
   ]);
