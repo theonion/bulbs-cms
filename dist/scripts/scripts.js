@@ -4651,6 +4651,26 @@ angular.module('sections', [
 
 'use strict';
 
+angular.module('sendToEditor.config', [
+  'lodash'
+])
+  .provider('SendToEditorConfig', function (_) {
+    // getter and setter for 'Send to Editor' article statuses
+    var articleStatuses = [];
+
+    this.addArticleStatus = function (status) {
+      articleStatuses.push(status);
+    };
+
+    this.$get = function () {
+      return {
+          getArticleStatuses: _.constant(articleStatuses)
+      };
+    };
+  });
+
+'use strict';
+
 angular.module('sendToEditor.modal.opener', [
   'sendToEditor.modal'
 ])
@@ -4681,11 +4701,12 @@ angular.module('sendToEditor.modal.opener', [
 
 angular.module('sendToEditor.modal', [
   'cms.config',
+  'sendToEditor.config',
   'ui.bootstrap.modal'
 ])
   .controller('SendToEditorModal',
-    ['$scope', '$http', '$modalInstance', 'CmsConfig', 'moment', 'TIMEZONE_NAME',
-    function ($scope, $http, $modalInstance, CmsConfig, moment, TIMEZONE_NAME) {
+    ['$scope', '$http', '$modalInstance', 'CmsConfig', 'SendToEditorConfig', 'moment', 'TIMEZONE_NAME',
+    function ($scope, $http, $modalInstance, CmsConfig, SendToEditorConfig, moment, TIMEZONE_NAME) {
 
       $scope.TIMEZONE_LABEL = moment.tz(TIMEZONE_NAME).format('z');
       $scope.getStatus = function (article) {
@@ -4715,12 +4736,7 @@ angular.module('sendToEditor.modal', [
         error: 'Error!'
       };
 
-      $scope.articleStatuses = [
-        '-- Article Status --',
-        'Freelancer Filed',
-        'Ready for Copy Desk',
-        'Needs Second Pass'
-      ];
+      $scope.articleStatuses = SendToEditorConfig.getArticleStatuses();
       $scope.status = $scope.articleStatuses[0];
 
       $scope.sendToEditor = function (article) {
