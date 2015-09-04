@@ -175,8 +175,10 @@ angular.module('bulbsCmsApp')
         $scope.downloadURL += ('&published=' + $scope.publishedFilter);
       }
 
-      if ($scope.userFilter) {
-        $scope.downloadURL += ('&users=' + $scope.userFilter);
+      if ($scope.moreFilters) {
+        for (var key in $scope.moreFilters) {
+          $scope.downloadURL += ('&' + $scope.moreFilters[key].type + '=' + $scope.moreFilters[key].query);
+        }
       }
 
       report.service.getList(reportParams).then(function (data) {
