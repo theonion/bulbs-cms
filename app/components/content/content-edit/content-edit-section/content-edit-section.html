@@ -5,7 +5,7 @@
   <div class="form-group">
     <autocomplete-basic
         class="form-control"
-        ng-if="!article.section || article.section.$resolved"
+        ng-if="!article.section || article.section.$resolved !== false"
         ng-model="article.section"
         item-display-formatter="item.name"
         on-select="onSelect(selection); $parent.needsSave = true"
