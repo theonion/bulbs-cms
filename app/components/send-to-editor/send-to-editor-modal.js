@@ -14,7 +14,7 @@ angular.module('sendToEditor.modal', [
         if(!article || !article.published){
           return 'unpublished';
         }else if(moment(article.published) > moment()){
-          return 'scheduled'
+          return 'scheduled';
         }else{
           return 'published';
         }
@@ -37,7 +37,7 @@ angular.module('sendToEditor.modal', [
         error: 'Error!'
       };
 
-      $scope.articleStatuses = SendToEditorConfig.getArticleStatuses();;
+      $scope.articleStatuses = SendToEditorConfig.getArticleStatuses();
       $scope.status = $scope.articleStatuses[0];
 
       $scope.sendToEditor = function (article) {

@@ -1,3 +1,5 @@
+"use strict";
+
 angular.module('sendToEditor.config', [
   'lodash'
 ])
@@ -12,6 +14,6 @@ angular.module('sendToEditor.config', [
     this.$get = function () {
       return {
           getArticleStatuses: _.constant(articleStatuses)
-      }
+      };
     };
   });
