@@ -1590,31 +1590,15 @@ angular.module('content.edit.mainImage', [
 
 'use strict';
 
-angular.module('content.edit.metadata', [
-  'bulbsCmsApp.settings',
-  'content.edit.sections',
-  'content.edit.tags'
-])
-  .directive('contentEditMetadata', function (COMPONENTS_URL) {
-    return {
-      restrict: 'E',
-      scope: {
-        article: '='
-      },
-      templateUrl: COMPONENTS_URL + 'content/content-edit/content-edit-metadata/content-edit-metadata.html'
-    };
-  });
-
-'use strict';
-
-angular.module('content.edit.sections', [
+angular.module('content.edit.section', [
   'apiServices.section.factory',
   'bulbsCmsApp.settings',
+  'utils',
   'uuid4'
 ])
-  .directive('contentEditSections', [
-    'COMPONENTS_URL', 'uuid4',
-    function (COMPONENTS_URL, uuid4) {
+  .directive('contentEditSection', [
+    'COMPONENTS_URL', 'Utils', 'uuid4',
+    function (COMPONENTS_URL, Utils, uuid4) {
       return {
         controller: [
           '$scope', 'Section',
@@ -1634,9 +1618,16 @@ angular.module('content.edit.sections', [
         },
         restrict: 'E',
         scope: {
-          article: '='
+          article: '=',
+          onSelect: '&'
         },
-        templateUrl: COMPONENTS_URL + 'content/content-edit/content-edit-sections/content-edit-sections.html'
+        templateUrl: Utils.path.join(
+          COMPONENTS_URL,
+          'content',
+          'content-edit',
+          'content-edit-section',
+          'content-edit-section.html'
+        )
       };
     }
   ]);
@@ -2238,9 +2229,10 @@ angular.module('content.edit', [
   'content.edit.editorItem',
   'content.edit.linkBrowser',
   'content.edit.mainImage',
-  'content.edit.metadata',
-  'content.edit.title',
+  'content.edit.section',
+  'content.edit.tags',
   'content.edit.templateChooser',
+  'content.edit.title',
   'content.edit.versionBrowser',
   'utils'
 ])
@@ -2249,7 +2241,12 @@ angular.module('content.edit', [
     function ($routeProvider, COMPONENTS_URL, UtilsProvider) {
       $routeProvider
         .when(UtilsProvider.path.join('/cms', 'app', 'edit', ':id/'), {
-          templateUrl: UtilsProvider.path.join(COMPONENTS_URL, 'content', 'content-edit', 'content-edit.html'),
+          templateUrl: UtilsProvider.path.join(
+            COMPONENTS_URL,
+            'content',
+            'content-edit',
+            'content-edit.html'
+          ),
           controller: 'ContentEdit'
         });
     }]);
@@ -4651,6 +4648,26 @@ angular.module('sections', [
 
 'use strict';
 
+angular.module('sendToEditor.config', [
+  'lodash'
+])
+  .provider('SendToEditorConfig', function (_) {
+    // getter and setter for 'Send to Editor' article statuses
+    var articleStatuses = [];
+
+    this.addArticleStatus = function (status) {
+      articleStatuses.push(status);
+    };
+
+    this.$get = function () {
+      return {
+          getArticleStatuses: _.constant(articleStatuses)
+      };
+    };
+  });
+
+'use strict';
+
 angular.module('sendToEditor.modal.opener', [
   'sendToEditor.modal'
 ])
@@ -4681,11 +4698,12 @@ angular.module('sendToEditor.modal.opener', [
 
 angular.module('sendToEditor.modal', [
   'cms.config',
+  'sendToEditor.config',
   'ui.bootstrap.modal'
 ])
   .controller('SendToEditorModal',
-    ['$scope', '$http', '$modalInstance', 'CmsConfig', 'moment', 'TIMEZONE_NAME',
-    function ($scope, $http, $modalInstance, CmsConfig, moment, TIMEZONE_NAME) {
+    ['$scope', '$http', '$modalInstance', 'CmsConfig', 'SendToEditorConfig', 'moment', 'TIMEZONE_NAME',
+    function ($scope, $http, $modalInstance, CmsConfig, SendToEditorConfig, moment, TIMEZONE_NAME) {
 
       $scope.TIMEZONE_LABEL = moment.tz(TIMEZONE_NAME).format('z');
       $scope.getStatus = function (article) {
@@ -4715,12 +4733,7 @@ angular.module('sendToEditor.modal', [
         error: 'Error!'
       };
 
-      $scope.articleStatuses = [
-        '-- Article Status --',
-        'Freelancer Filed',
-        'Ready for Copy Desk',
-        'Needs Second Pass'
-      ];
+      $scope.articleStatuses = SendToEditorConfig.getArticleStatuses();
       $scope.status = $scope.articleStatuses[0];
 
       $scope.sendToEditor = function (article) {
