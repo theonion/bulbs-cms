@@ -6228,7 +6228,9 @@ ConfigError.prototype.constructor = window.ConfigError;
 
 'use strict';
 
-angular.module('contentServices.factory', [])
+angular.module('contentServices.factory', [
+  'restangular'
+])
   .factory('ContentFactory', function (Restangular) {
 // TODO : stupid passthrough until we get rid of restangular
     return Restangular;
@@ -6448,12 +6450,19 @@ angular.module('cms.firebase.api', [
   'cms.firebase.refFactory',
   'currentUser'
 ])
-  .factory('FirebaseApi', [
+  .service('FirebaseApi', [
     '$q', '$rootScope', 'CurrentUser', 'FirebaseConfig', 'FirebaseRefFactory',
     function ($q, $rootScope, CurrentUser, FirebaseConfig, FirebaseRefFactory) {
 
       // get root reference in firebase for this site
-      var rootRef = FirebaseRefFactory.newRef(FirebaseConfig.getSiteDbUrl());
+      var rootRef;
+      var connectedRef;
+      try {
+        rootRef = FirebaseRefFactory.newRef(FirebaseConfig.getSiteDbUrl());
+        connectedRef = FirebaseRefFactory.newRef(FirebaseConfig.getConnectionStatusUrl());
+      } catch (e) {
+        console.warn('Firebase url is invalid, FirebaseApi will prevent firebase from working: ' + e.message);
+      }
 
       // set up a promise for authorization
       var authDefer = $q.defer(),
@@ -6469,56 +6478,42 @@ angular.module('cms.firebase.api', [
         });
 
       // log current session in when their current user data is available
-      CurrentUser.$retrieveData().then(function (user) {
+      if (rootRef) {
+        CurrentUser.$retrieveData().then(function (user) {
+          // attempt to login if user has firebase token, if they don't auth
+          //  promise will reject with no error message which is okay if we're
+          //  in an environment where firebase isn't set up yet
+          if ('firebase_token' in user && user.firebase_token) {
+            // authorize user
+            rootRef.auth(user.firebase_token, function (error) {
+              if (error) {
+                // authorization failed
+                authDefer.reject(error);
+              } else {
+                // authorization success, resolve deferred authorization with rootRef
+                authDefer.resolve(rootRef);
+              }
+            });
+          } else {
+            // user doesn't have a firebase token, reject authorization without an error message
+            authDefer.reject();
+          }
+        });
+      }
 
-        // attempt to login if user has firebase token, if they don't auth promise will reject with no error message
-        //  which is okay if we're in an environment where firebase isn't set up yet
-        if ('firebase_token' in user && user.firebase_token) {
-
-          // authorize user
-          rootRef.auth(user.firebase_token, function (error) {
-
-            if (error) {
-
-              // authorization failed
-              authDefer.reject(error);
-
-            } else {
-
-              // authorization success, resolve deferred authorization with rootRef
-              authDefer.resolve(rootRef);
-
-            }
-
-          });
-
-        } else {
-
-          // user doesn't have a firebase token, reject authorization without an error message
-          authDefer.reject();
-
-        }
-
-      });
-
-      // emit events when firebase reconnects or disconnects, disconnect event should not be used in place of onDisconnect
-      //  function provided by firebase reference objects
-      var connectedRef = FirebaseRefFactory.newRef(FirebaseConfig.getConnectionStatusUrl());
-      connectedRef.on('value', function (connected) {
-
-        if (connected.val()) {
-
-          $rootScope.$emit('firebase-reconnected');
-
-        } else {
-
-          $rootScope.$emit('firebase-disconnected');
-
-        }
-
-        $rootScope.$emit('firebase-connection-state-changed');
-
-      });
+      // emit events when firebase reconnects or disconnects, disconnect event
+      //  should not be used in place of onDisconnect function provided by
+      //  firebase reference objects
+      if (connectedRef) {
+        connectedRef.on('value', function (connected) {
+          if (connected.val()) {
+            $rootScope.$emit('firebase-reconnected');
+          } else {
+            $rootScope.$emit('firebase-disconnected');
+          }
+          $rootScope.$emit('firebase-connection-state-changed');
+        });
+      }
 
       // connection object
       var $connection = {
@@ -6536,10 +6531,9 @@ angular.module('cms.firebase.api', [
       };
 
       return {
-
         /**
-         * Authorization deferred promise that resolves with the root firebase reference, or rejects with an error
-         *  message.
+         * Authorization deferred promise that resolves with the root firebase
+         *  reference, or rejects with an error message.
          */
         $authorize: function () { return $authorize; },
 
@@ -6547,7 +6541,6 @@ angular.module('cms.firebase.api', [
          * Provides access to Firebase connection and disconnection event listeners.
          */
         $connection: $connection
-
       };
 
     }
