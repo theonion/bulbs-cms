@@ -2,18 +2,19 @@
 
 angular.module('sendToEditor.modal', [
   'cms.config',
+  'sendToEditor.config',
   'ui.bootstrap.modal'
 ])
   .controller('SendToEditorModal',
-    ['$scope', '$http', '$modalInstance', 'CmsConfig', 'moment', 'TIMEZONE_NAME',
-    function ($scope, $http, $modalInstance, CmsConfig, moment, TIMEZONE_NAME) {
+    ['$scope', '$http', '$modalInstance', 'CmsConfig', 'SendToEditorConfig', 'moment', 'TIMEZONE_NAME',
+    function ($scope, $http, $modalInstance, CmsConfig, SendToEditorConfig, moment, TIMEZONE_NAME) {
 
       $scope.TIMEZONE_LABEL = moment.tz(TIMEZONE_NAME).format('z');
       $scope.getStatus = function (article) {
         if(!article || !article.published){
           return 'unpublished';
         }else if(moment(article.published) > moment()){
-          return 'scheduled';
+          return 'scheduled'
         }else{
           return 'published';
         }
@@ -36,12 +37,7 @@ angular.module('sendToEditor.modal', [
         error: 'Error!'
       };
 
-      $scope.articleStatuses = [
-        '-- Article Status --',
-        'Freelancer Filed',
-        'Ready for Copy Desk',
-        'Needs Second Pass'
-      ];
+      $scope.articleStatuses = SendToEditorConfig.getArticleStatuses();;
       $scope.status = $scope.articleStatuses[0];
 
       $scope.sendToEditor = function (article) {
