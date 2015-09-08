@@ -66,7 +66,6 @@ angular.module('bulbsCmsApp')
           {'title': 'Content ID', 'expression': 'id'},
           {'title': 'Headline', 'expression': 'title'},
           {'title': 'Feature Type', 'expression': 'feature_type'},
-          {'title': 'Contributor', 'expression': 'contributor.full_name'},
           {'title': 'Article Cost', 'expression': 'value'},
           {'title': 'Date Published', 'expression': 'published'}
         ],

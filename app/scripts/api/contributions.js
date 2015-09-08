@@ -15,7 +15,7 @@ angular.module('bulbs.api')
   })
   .factory('FreelancePayReportingService', function(Restangular, moment) {
     return Restangular.withConfig(function (RestangularConfigurer) {
-      RestangularConfigurer.setBaseUrl('/cms/api/v1/contributions/freelancereporting/');
+      RestangularConfigurer.setBaseUrl('/cms/api/v1/contributions/');
       RestangularConfigurer.setRequestSuffix('/');
     }).service('freelancereporting');
   })
