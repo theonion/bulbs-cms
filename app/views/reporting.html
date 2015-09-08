@@ -102,7 +102,7 @@
           </thead>
           <tbody>
               <tr ng-repeat="item in items">
-                  <td ng-repeat="value in item" ng-bind="value"></td>
+                  <td ng-repeat="value in item track by $index" ng-bind="value"></td>
               </tr>
           </tbody>
       </table>
