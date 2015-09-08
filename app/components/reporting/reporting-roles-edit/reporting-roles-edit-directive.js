@@ -50,6 +50,10 @@ angular.module('roles.edit.directive', [
         });
 
         $scope.addFeatureType = function () {
+          if (!$scope.model.rates.hasOwnProperty('featureType')) {
+            $scope.model.rates.featureType = [];
+          }
+
           $scope.model.rates.featureType.push({
             featureType: null,
             rate: 0
