@@ -41,16 +41,12 @@ angular.module('sendToEditor.modal', [
       $scope.status = $scope.articleStatuses[0];
 
       $scope.sendToEditor = function (article) {
-        var statusText = null;
-        if ($scope.status !== $scope.articleStatuses[0]) {
-          statusText = $scope.status;
-        }
         return $http({
           url: CmsConfig.buildBackendApiUrl('content/' + article.id + '/send/'),
           method: 'POST',
           data: {
             notes: $scope.noteToEditor,
-            status: statusText
+            status: $scope.status
           }
         }).success(function (data) {
           $scope.publishSuccessCbk({article: article, response: data});
