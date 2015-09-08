@@ -10,6 +10,7 @@
 </div>
 <div class="modal-body">
   <div class="form-group row">
+    <h5 class="col-sm-4">Article Status</h5>
     <div class="col-sm-4">
       <select
           id="status"
@@ -17,7 +18,6 @@
           ng-model="status"
           ng-options="status for status in articleStatuses"
           name="status">
-      <option>-- Article Status --</option>
       </select>
     </div>
   </div>
