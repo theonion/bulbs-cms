@@ -7,7 +7,7 @@
     ng-model="article.body"
     role="multiline"
     placeholder="<p>Write here</p>"
-    link-domain="avclub.com"
-    link-search-handler="avLinkBrowser"
+    link-domain="{{ linkDomain }}"
+    link-search-handler="{{ searchHandler }}"
     inline-objects="{{ inlineObjectsUrl }}" >
 </onion-editor>
