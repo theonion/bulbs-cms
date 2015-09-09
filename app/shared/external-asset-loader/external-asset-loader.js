@@ -12,7 +12,7 @@
 
     var _insert = function (element, type, insertLocation) {
       var firstOfType = insertLocation.querySelectorAll(type);
-      insertLocation.insertBefore(element, firstOfType);
+      insertLocation.insertBefore(element, firstOfType[0]);
     };
 
     var service = {};
