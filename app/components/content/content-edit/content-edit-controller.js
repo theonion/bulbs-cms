@@ -227,12 +227,20 @@ angular.module('content.edit.controller', [
         .removeClass('btn-danger')
         .addClass('btn-success')
         .html('<i class=\'fa fa-refresh fa-spin\'></i> Saving');
+
+      if ($scope.saveArticleDeferred.promise.$$state.status !== 0) {
+        // there isn't a article already in the process of saving, use a new deferred
+        $scope.saveArticleDeferred = $q.defer();
+      }
+
       ContentFactory.one('content', $routeParams.id).get()
         .then(function (data) {
           if (data.last_modified &&
-            $scope.article.last_modified &&
-            moment(data.last_modified) > moment($scope.article.last_modified)) {
+              $scope.article.last_modified &&
+              moment(data.last_modified) > moment($scope.article.last_modified)) {
+
             $scope.saveArticleDeferred.reject();
+
             $modal.open({
               templateUrl: PARTIALS_URL + 'modals/last-modified-guard-modal.html',
               controller: 'LastmodifiedguardmodalCtrl',

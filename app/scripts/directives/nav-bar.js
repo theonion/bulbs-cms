@@ -5,6 +5,7 @@ angular.module('bulbsCmsApp')
     var defaultView = PARTIALS_URL + 'nav.html';
 
     return {
+      controller: 'ContentworkflowCtrl',
       restrict: 'E',
       scope: false,
       templateUrl: function (tElement, tAttrs) {
