@@ -6423,12 +6423,14 @@ angular.module('currentUser', [
       insertLocation.insertBefore(element, firstOfType);
     };
 
-    this.TYPES = {
+    var service = {};
+
+    service.TYPES = {
       STYLE: 'link',
       SCRIPT: 'script'
     };
 
-    this.addAsset = function (optsIn) {
+    service.addAsset = function (optsIn) {
       var element;
 
       if (typeof optsIn.url !== 'string') {
@@ -6455,7 +6457,7 @@ angular.module('currentUser', [
       return element;
     };
 
-    return this;
+    return service;
   })();
 })(window);
 
