@@ -1,6 +1,7 @@
 'use strict';
 
 angular.module('content.edit.controller', [
+  'content.edit.linkBrowser',
   'content.edit.versionBrowser.api',
   'cms.firebase',
   'confirmationModal.factory'
@@ -8,7 +9,7 @@ angular.module('content.edit.controller', [
   .controller('ContentEdit', function (
       $scope, $routeParams, $http, $window, $location, $timeout, $interval, $compile,
       $q, $modal, $, _, moment, keypress, Raven, PNotify, IfExistsElse, VersionStorageApi,
-      ContentFactory, FirebaseApi, FirebaseArticleFactory, VersionBrowserModalOpener,
+      ContentFactory, FirebaseApi, FirebaseArticleFactory, LinkBrowser, VersionBrowserModalOpener,
       PARTIALS_URL, MEDIA_ITEM_PARTIALS_URL, CMS_NAMESPACE, ConfirmationModal) {
 
     $scope.PARTIALS_URL = PARTIALS_URL;
