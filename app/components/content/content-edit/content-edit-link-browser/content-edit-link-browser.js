@@ -7,16 +7,16 @@ angular.module('content.edit.linkBrowser', [
   'cms.config',
   'jquery'
 ])
-  .service('LinkBrowser', function ($, CmsConfig) {
+  .service('LinkBrowser', function ($, $http, CmsConfig) {
      window.linkBrowser = function(term, resultsElement) {
        resultsElement.html('<div class="items"></div><hr><span class="type">Articles</span><ul class="content"></ul>');
 
-       $.ajax(CmsConfig.buildBackendApiUrl('search/autocomplete?q=' + term))
+       $http.get(CmsConfig.buildBackendApiUrl('search/autocomplete?q=' + term))
          .success(function(resp) {
            $('.items', resultsElement).html(resp);
          });
 
-       $.ajax(CmsConfig.buildBackendApiUrl('content/?search=' + term))
+       $http.get(CmsConfig.buildBackendApiUrl('content/?search=' + term))
          .success(function(resp) {
            for (var i=0; i < Math.min(resp.count, 20); i ++) {
              var link = $('<A>')
