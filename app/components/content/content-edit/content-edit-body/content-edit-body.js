@@ -6,7 +6,9 @@ angular.module('content.edit.body', [])
       restrict: 'E',
       scope: {
         article: '=',
-        inlineObjectsUrl: '@'
+        inlineObjectsUrl: '@',
+        linkDomain: '@',
+        searchHandler: '@'
       },
       templateUrl: COMPONENTS_URL + 'content/content-edit/content-edit-body/content-edit-body.html'
     };
