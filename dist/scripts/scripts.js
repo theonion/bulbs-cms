@@ -5833,6 +5833,7 @@ angular.module('cms.config', [
       } else {
         throw error('apiPath must be a string!');
       }
+      return this;
     };
 
     this.setBackendRoot = function (value) {
@@ -5841,6 +5842,7 @@ angular.module('cms.config', [
       } else {
         throw error('backendRoot must be a string!');
       }
+      return this;
     };
 
     this.setImageDefaultWidth = function (num) {
@@ -5849,6 +5851,7 @@ angular.module('cms.config', [
       } else {
         throw error('imageDefaultWidth must be a number!');
       }
+      return this;
     };
 
     this.setImageServerRoot = function (value) {
@@ -5857,6 +5860,7 @@ angular.module('cms.config', [
       } else {
         throw error('imageServerRoot must be a string!');
       }
+      return this;
     };
 
     this.setImageServerApiKey = function (value) {
@@ -5865,6 +5869,7 @@ angular.module('cms.config', [
       } else {
         throw error('imageServerApiKey must be a string!');
       }
+      return this;
     };
 
     this.setCreateContentTemplateUrl = function (value) {
@@ -5873,6 +5878,7 @@ angular.module('cms.config', [
       } else {
         throw error('createContentTemplateUrl must be a string!');
       }
+      return this;
     };
 
     this.setLogoUrl = function (value) {
@@ -5881,6 +5887,7 @@ angular.module('cms.config', [
       } else {
         throw error('logoUrl must be a string!');
       }
+      return this;
     };
 
     this.setToolbarMappings = function (obj) {
@@ -5889,13 +5896,13 @@ angular.module('cms.config', [
       } else {
         throw error('toolbarMappings must be an object!');
       }
+      return this;
     };
 
     /**
      * Remove a polymorphic_ctype from edit page mappings.
      *
      * @param {String} type - polymorphic_ctype to remove from mappings.
-     * @returns {Boolean} true if type was removed from list, false otherwise.
      */
     this.removeEditPageMapping = function (type) {
       var template = findEditPageMapping(type);
@@ -5903,9 +5910,9 @@ angular.module('cms.config', [
       if (template) {
         // found mapping, remove type
         editPageMappings[template] = _.without(type);
-        return true;
       }
-      return false;
+
+      return this;
     };
 
     /**
@@ -5913,8 +5920,6 @@ angular.module('cms.config', [
      *
      * @param {String} templateUrl - url for edit page template.
      * @param {String|String[]} type - content type to map to template.
-     * @returns {Boolean} true if type was added, throws an error if something
-     *  fails and type is not added.
      */
     this.addEditPageMapping = function (templateUrl, type) {
       if (!_.isString(templateUrl)) {
@@ -5950,7 +5955,7 @@ angular.module('cms.config', [
         }
       });
 
-      return true;
+      return this;
     };
 
     this.setEditPageMappings = function (obj) {
@@ -5959,6 +5964,7 @@ angular.module('cms.config', [
       } else {
         throw error('editPageMappings must be an object!');
       }
+      return this;
     };
 
     this.setLogoutCallback = function (func) {
@@ -5967,6 +5973,7 @@ angular.module('cms.config', [
       } else {
         throw error('logoutCallback must be a function!');
       }
+      return this;
     };
 
     this.$get = function () {
