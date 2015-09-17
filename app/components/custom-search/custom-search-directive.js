@@ -49,7 +49,8 @@ angular.module('customSearch.directive', [
       require: 'ngModel',
       restrict: 'E',
       scope: {
-        onUpdate: '&'
+        onUpdate: '&',
+        queryParams: '&'
       },
       templateUrl: COMPONENTS_URL + 'custom-search/custom-search.html'
     };
