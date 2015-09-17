@@ -10,11 +10,12 @@ angular.module('specialCoverage.edit.directive', [
   'specialCoverage.settings',
   'topBar',
   'ui.bootstrap.tooltip',
-  'videoList'
+  'videoList',
+  'moment'
 ])
   .directive('specialCoverageEdit', function (COMPONENTS_URL) {
     return {
-      controller: function (_, $location, $q, $scope, $window, Campaign, EXTERNAL_URL,
+      controller: function (_, $location, $q, $scope, $window, moment, Campaign, EXTERNAL_URL,
           SPECIAL_COVERAGE_LIST_REL_PATH, SpecialCoverage) {
 
         $scope.ACTIVE_STATES = SpecialCoverage.ACTIVE_STATES;
@@ -43,6 +44,12 @@ angular.module('specialCoverage.edit.directive', [
           // ensure even is cleaned up when we leave
           delete window.onbeforeunload;
         });
+
+        $scope.getQueryParams = function () {
+          return {
+            before: moment().format('YYYY-MM-DDTHH:mmZ')
+          };
+        };
 
         $scope.preview = function () {
           $window.open('//' + $scope.LIST_URL + $scope.model.slug);

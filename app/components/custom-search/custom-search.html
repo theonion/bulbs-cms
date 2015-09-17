@@ -41,7 +41,8 @@
     on-select="
       resetFilters();
       customSearchService.includesAdd(id);
-      $contentRetrieve()">
+      $contentRetrieve()"
+    query-params='queryParams()'>
 </custom-search-simple-content-search>
 
 <hr>
