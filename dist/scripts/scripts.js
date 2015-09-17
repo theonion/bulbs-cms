@@ -2342,7 +2342,8 @@ angular.module('customSearch.directive', [
       require: 'ngModel',
       restrict: 'E',
       scope: {
-        onUpdate: '&'
+        onUpdate: '&',
+        queryParams: '&'
       },
       templateUrl: COMPONENTS_URL + 'custom-search/custom-search.html'
     };
@@ -2809,8 +2810,11 @@ angular.module('customSearch.simpleContentSearch.directive', [
         $scope.autocompleteItems = [];
 
         var $getItems = function () {
+          var queryParams = $scope.queryParams();
+          var searchParams = {search: $scope.writables.searchTerm};
+          angular.extend(searchParams, queryParams);
           return ContentFactory.all('content')
-            .getList({search: $scope.writables.searchTerm})
+            .getList(searchParams)
             .then(function (results) {
               return _.chain(results)
                 .take(10)
@@ -2855,6 +2859,7 @@ angular.module('customSearch.simpleContentSearch.directive', [
       },
       restrict: 'E',
       scope: {
+        queryParams: '&',
         onSelect: '&'
       },
       templateUrl: COMPONENTS_URL + 'custom-search/custom-search-simple-content-search/custom-search-simple-content-search.html'
@@ -4801,11 +4806,12 @@ angular.module('specialCoverage.edit.directive', [
   'specialCoverage.settings',
   'topBar',
   'ui.bootstrap.tooltip',
-  'videoList'
+  'videoList',
+  'moment'
 ])
   .directive('specialCoverageEdit', function (COMPONENTS_URL) {
     return {
-      controller: function (_, $location, $q, $scope, $window, Campaign, EXTERNAL_URL,
+      controller: function (_, $location, $q, $scope, $window, moment, Campaign, EXTERNAL_URL,
           SPECIAL_COVERAGE_LIST_REL_PATH, SpecialCoverage) {
 
         $scope.ACTIVE_STATES = SpecialCoverage.ACTIVE_STATES;
@@ -4834,6 +4840,12 @@ angular.module('specialCoverage.edit.directive', [
           // ensure even is cleaned up when we leave
           delete window.onbeforeunload;
         });
+
+        $scope.getQueryParams = function () {
+          return {
+            before: moment().format('YYYY-MM-DDTHH:mmZ')
+          };
+        };
 
         $scope.preview = function () {
           $window.open('//' + $scope.LIST_URL + $scope.model.slug);
