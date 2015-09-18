@@ -32,7 +32,9 @@
     "template":
       "<div data-type='embed' data-crop='{{crop}}' class='inline embed size-{{size}} crop-{{crop}}' data-code='{{escaped_code}}' data-source='{{source}}'><div>{{code}}</div><span class='caption'>{{caption}}</span></div>"
   },
-
+  "embed-instagram": {
+    "template": "<div data-type=\"embed-instagram\" class=\"inline embed embed-instagram crop-1x1\"><div class=\"embed-container\" instagram-embed-html-unsanitized=\"{{html}}\"><div class=\"unrendered\"><i class=\"fa fa-instagram\"></i><span>Instagram Embed</span></div></div><span class=\"caption\">{{caption}}</span></div>"
+  },
   "youtube": {
     "size": ["big", "small"],
     "crop": ["16x9", "4x3"],
