@@ -17,8 +17,11 @@ angular.module('customSearch.simpleContentSearch.directive', [
         $scope.autocompleteItems = [];
 
         var $getItems = function () {
+          var queryParams = $scope.queryParams();
+          var searchParams = {search: $scope.writables.searchTerm};
+          angular.extend(searchParams, queryParams);
           return ContentFactory.all('content')
-            .getList({search: $scope.writables.searchTerm})
+            .getList(searchParams)
             .then(function (results) {
               return _.chain(results)
                 .take(10)
@@ -63,6 +66,7 @@ angular.module('customSearch.simpleContentSearch.directive', [
       },
       restrict: 'E',
       scope: {
+        queryParams: '&',
         onSelect: '&'
       },
       templateUrl: COMPONENTS_URL + 'custom-search/custom-search-simple-content-search/custom-search-simple-content-search.html'
