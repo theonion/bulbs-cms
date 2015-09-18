@@ -66,6 +66,7 @@
     <!-- build:js(app) scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/Keypress/keypress.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
@@ -88,8 +89,8 @@
     <script src="bower_components/angularfire/dist/angularfire.min.js"></script>
     <script src="bower_components/lodash/lodash.js"></script>
     <script src="bower_components/bulbs-autocomplete/dist/bulbs-autocomplete.js"></script>
+    <script src="bower_components/bulbs-public-embed-instagram/dist/jquery.instagram-embed-processor.js"></script>
     <script src="bower_components/jcrop/js/jquery.Jcrop.js"></script>
-    <script src="bower_components/Keypress/keypress.js"></script>
     <script src="bower_components/moment-timezone/builds/moment-timezone-with-data-2010-2020.js"></script>
     <script src="bower_components/zeroclipboard/dist/ZeroClipboard.js"></script>
     <script src="bower_components/ng-clip/src/ngClip.js"></script>
@@ -332,17 +333,20 @@
         angular.module('bulbsCmsApp')
           .config(function ($httpProvider, CmsConfigProvider, TokenAuthConfigProvider,
               TokenAuthServiceProvider, PARTIALS_URL, DIRECTIVE_PARTIALS_URL) {
-            CmsConfigProvider.setApiPath('/cms/api/v1/');
-            CmsConfigProvider.setLogoUrl('/images/onion-logo.png');
-            CmsConfigProvider.setToolbarMappings({
-              toolbar: PARTIALS_URL + 'toolbar.html'
-            });
-            CmsConfigProvider.addEditPageMapping(
-              '/content_type_views/content_content.html',
-              'content_content');
-            CmsConfigProvider.setCreateContentTemplateUrl(DIRECTIVE_PARTIALS_URL + 'create-content.html');
-            CmsConfigProvider.setImageServerRoot('http://clickholeimg.local');
-            CmsConfigProvider.setImageServerApiKey('some-bc-api-key');
+            CmsConfigProvider
+                .setApiPath('/cms/api/v1/')
+                .setLogoUrl('/images/onion-logo.png')
+                .setToolbarMappings({
+                  toolbar: PARTIALS_URL + 'toolbar.html'
+                })
+                .addEditPageMapping(
+                  '/content_type_views/content_content.html',
+                  'content_content'
+                )
+                .setCreateContentTemplateUrl(DIRECTIVE_PARTIALS_URL + 'create-content.html')
+                .setImageServerRoot('http://clickholeimg.local')
+                .setImageServerApiKey('some-bc-api-key')
+                .setInlineObjectsUrl('/static/inline-objects.json');
 
             TokenAuthConfigProvider.setLogoUrl('/images/onion-logo.png');
             TokenAuthConfigProvider.setApiHost('');
