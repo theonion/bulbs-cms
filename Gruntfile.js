@@ -35,32 +35,8 @@ module.exports = function (grunt) {
       'concurrent:server',
       'injector:less_components',
       'less:project_styles',
+      'copy:static_tmp',
       'copy:font_awesome_fonts_tmp',
-      'copy:font_awesome_less_tmp_styles',
-      'less:font_awesome_styles',
-      'autoprefixer',
-      'injector:local_dependencies',
-      'karma:ci',
-      'jshint:all',
-      'connect:livereload',
-      'watch:livereload'
-    ]);
-  });
-
-  grunt.registerTask('serve-no-test', function (target) {
-
-    if (target === 'dist') {
-      // use built files in dist instead of raw files
-      return grunt.task.run(['build', 'connect:dist:keepalive']);
-    }
-
-    // run task list
-    grunt.task.run([
-      'clean:server',
-      'wiredep',
-      'concurrent:server',
-      'injector:less_components',
-      'less:project_styles',
       'copy:font_awesome_less_tmp_styles',
       'less:font_awesome_styles',
       'autoprefixer',

@@ -14,6 +14,8 @@ angular.module('cms.config', [
     var imageServerRoot = '';
     // api key for accessing image server
     var imageServerApiKey = '';
+    // url to inline objects file
+    var inlineObjectsUrl = '';
     // create content modal template to use
     var createContentTemplateUrl = '';
     // mappings where pairs are <template-url>: <polymorphic_ctype[]>
@@ -86,6 +88,15 @@ angular.module('cms.config', [
         imageServerApiKey = value;
       } else {
         throw error('imageServerApiKey must be a string!');
+      }
+      return this;
+    };
+
+    this.setInlineObjectsUrl = function (value) {
+      if (_.isString(value)) {
+        inlineObjectsUrl = value;
+      } else {
+        throw error('inlineObjectsUrl must be a string!');
       }
       return this;
     };
@@ -199,6 +210,7 @@ angular.module('cms.config', [
         getCreateContentTemplateUrl: _.constant(createContentTemplateUrl),
         getImageDefaultWidth: _.constant(imageDefaultWidth),
         getImageServerApiKey: _.constant(imageServerApiKey),
+        getInlineObjectsUrl: _.constant(inlineObjectsUrl),
         getLogoUrl: _.constant(logoUrl),
         logoutCallback: logoutCallback,
         /**

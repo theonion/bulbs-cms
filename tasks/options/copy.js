@@ -26,6 +26,12 @@ module.exports = {
       src: ['generated/*']
     }]
   },
+  static_tmp: {
+    expand: true,
+    cwd: config.paths.app('mocks'),
+    dest: config.paths.tmp('static'),
+    src: 'inline-objects.json'
+  },
   styles: {
     expand: true,
     cwd: config.paths.app(),

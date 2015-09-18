@@ -7,8 +7,7 @@ angular.module('content.edit.mainImage', [
     return {
       restrict: 'E',
       scope: {
-        article: '=',
-        inlineObjectsUrl: '@'
+        article: '='
       },
       templateUrl: COMPONENTS_URL + 'content/content-edit/content-edit-main-image/content-edit-main-image.html'
     };
