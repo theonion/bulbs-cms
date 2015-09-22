@@ -9210,7 +9210,7 @@ return jQuery;
 }));
 
 /**
- * @license AngularJS v1.3.17
+ * @license AngularJS v1.3.19
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -9265,7 +9265,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.17/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.19/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -11350,11 +11350,11 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.17',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.19',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
-  dot: 17,
-  codeName: 'tsktskskly-euouae'
+  dot: 19,
+  codeName: 'glutinous-shriek'
 };
 
 
@@ -15401,7 +15401,7 @@ function $TemplateCacheProvider() {
  *
  * ### Transclusion
  *
- * Transclusion is the process of extracting a collection of DOM element from one part of the DOM and
+ * Transclusion is the process of extracting a collection of DOM elements from one part of the DOM and
  * copying them to another part of the DOM, while maintaining their connection to the original AngularJS
  * scope from where they were taken.
  *
@@ -18951,8 +18951,8 @@ function $HttpProvider() {
        * Resolves the raw $http promise.
        */
       function resolvePromise(response, status, headers, statusText) {
-        // normalize internal statuses to 0
-        status = Math.max(status, 0);
+        //status: HTTP response status code, 0, -1 (aborted by timeout / promise)
+        status = status >= -1 ? status : 0;
 
         (isSuccess(status) ? deferred.resolve : deferred.reject)({
           data: response,
@@ -19059,7 +19059,7 @@ function createHttpBackend($browser, createXhr, $browserDefer, callbacks, rawDoc
       xhr.onload = function requestLoaded() {
         var statusText = xhr.statusText || '';
 
-        // responseText is the old-school way of retrieving response (supported by IE8 & 9)
+        // responseText is the old-school way of retrieving response (supported by IE9)
         // response/responseType properties were introduced in XHR Level2 spec (supported by IE10)
         var response = ('response' in xhr) ? xhr.response : xhr.responseText;
 
@@ -19875,12 +19875,12 @@ function serverBase(url) {
  *
  * @constructor
  * @param {string} appBase application base URL
+ * @param {string} appBaseNoFile application base URL stripped of any filename
  * @param {string} basePrefix url path prefix
  */
-function LocationHtml5Url(appBase, basePrefix) {
+function LocationHtml5Url(appBase, appBaseNoFile, basePrefix) {
   this.$$html5 = true;
   basePrefix = basePrefix || '';
-  var appBaseNoFile = stripFile(appBase);
   parseAbsoluteUrl(appBase, this);
 
 
@@ -19954,10 +19954,10 @@ function LocationHtml5Url(appBase, basePrefix) {
  *
  * @constructor
  * @param {string} appBase application base URL
+ * @param {string} appBaseNoFile application base URL stripped of any filename
  * @param {string} hashPrefix hashbang prefix
  */
-function LocationHashbangUrl(appBase, hashPrefix) {
-  var appBaseNoFile = stripFile(appBase);
+function LocationHashbangUrl(appBase, appBaseNoFile, hashPrefix) {
 
   parseAbsoluteUrl(appBase, this);
 
@@ -20066,13 +20066,12 @@ function LocationHashbangUrl(appBase, hashPrefix) {
  *
  * @constructor
  * @param {string} appBase application base URL
+ * @param {string} appBaseNoFile application base URL stripped of any filename
  * @param {string} hashPrefix hashbang prefix
  */
-function LocationHashbangInHtml5Url(appBase, hashPrefix) {
+function LocationHashbangInHtml5Url(appBase, appBaseNoFile, hashPrefix) {
   this.$$html5 = true;
   LocationHashbangUrl.apply(this, arguments);
-
-  var appBaseNoFile = stripFile(appBase);
 
   this.$$parseLinkUrl = function(url, relHref) {
     if (relHref && relHref[0] === '#') {
@@ -20103,7 +20102,7 @@ function LocationHashbangInHtml5Url(appBase, hashPrefix) {
         hash = this.$$hash ? '#' + encodeUriSegment(this.$$hash) : '';
 
     this.$$url = encodePath(this.$$path) + (search ? '?' + search : '') + hash;
-    // include hashPrefix in $$absUrl when $$url is empty so IE8 & 9 do not reload page because of removal of '#'
+    // include hashPrefix in $$absUrl when $$url is empty so IE9 does not reload page because of removal of '#'
     this.$$absUrl = appBase + hashPrefix + this.$$url;
   };
 
@@ -20609,7 +20608,9 @@ function $LocationProvider() {
       appBase = stripHash(initialUrl);
       LocationMode = LocationHashbangUrl;
     }
-    $location = new LocationMode(appBase, '#' + hashPrefix);
+    var appBaseNoFile = stripFile(appBase);
+
+    $location = new LocationMode(appBase, appBaseNoFile, '#' + hashPrefix);
     $location.$$parseLinkUrl(initialUrl, initialUrl);
 
     $location.$$state = $browser.state();
@@ -20689,6 +20690,13 @@ function $LocationProvider() {
 
     // update $location when $browser url changes
     $browser.onUrlChange(function(newUrl, newState) {
+
+      if (isUndefined(beginsWith(appBaseNoFile, newUrl))) {
+        // If we are navigating outside of the app then force a reload
+        $window.location.href = newUrl;
+        return;
+      }
+
       $rootScope.$evalAsync(function() {
         var oldUrl = $location.absUrl();
         var oldState = $location.$$state;
@@ -20966,6 +20974,15 @@ var $parseMinErr = minErr('$parse');
 
 
 function ensureSafeMemberName(name, fullExpression) {
+  // From the JavaScript docs:
+  // Property names must be strings. This means that non-string objects cannot be used
+  // as keys in an object. Any non-string object, including a number, is typecasted
+  // into a string via the toString method.
+  //
+  // So, to ensure that we are checking the same `name` that JavaScript would use,
+  // we cast it to a string, if possible
+  name =  (isObject(name) && name.toString) ? name.toString() : name;
+
   if (name === "__defineGetter__" || name === "__defineSetter__"
       || name === "__lookupGetter__" || name === "__lookupSetter__"
       || name === "__proto__") {
@@ -22940,12 +22957,9 @@ function $RootScopeProvider() {
      * A root scope can be retrieved using the {@link ng.$rootScope $rootScope} key from the
      * {@link auto.$injector $injector}. Child scopes are created using the
      * {@link ng.$rootScope.Scope#$new $new()} method. (Most scopes are created automatically when
-     * compiled HTML template is executed.)
+     * compiled HTML template is executed.) See also the {@link guide/scope Scopes guide} for
+     * an in-depth introduction and usage examples.
      *
-     * Here is a simple scope snippet to show how you can interact with the scope.
-     * ```html
-     * <file src="./test/ng/rootScopeSpec.js" tag="docs1" />
-     * ```
      *
      * # Inheritance
      * A scope can inherit from a parent scope, as in this example:
@@ -23106,9 +23120,9 @@ function $RootScopeProvider() {
        *
        *
        * If you want to be notified whenever {@link ng.$rootScope.Scope#$digest $digest} is called,
-       * you can register a `watchExpression` function with no `listener`. (Since `watchExpression`
-       * can execute multiple times per {@link ng.$rootScope.Scope#$digest $digest} cycle when a
-       * change is detected, be prepared for multiple calls to your listener.)
+       * you can register a `watchExpression` function with no `listener`. (Be prepared for
+       * multiple calls to your `watchExpression` because it will execute multiple times in a
+       * single {@link ng.$rootScope.Scope#$digest $digest} cycle if a change is detected.)
        *
        * After a watcher is registered with the scope, the `listener` fn is called asynchronously
        * (via {@link ng.$rootScope.Scope#$evalAsync $evalAsync}) to initialize the
@@ -24780,7 +24794,7 @@ function $SceDelegateProvider() {
  *      characters: '`:`', '`/`', '`.`', '`?`', '`&`' and ';'.  It's a useful wildcard for use
  *      in a whitelist.
  *    - `**`: matches zero or more occurrences of *any* character.  As such, it's not
- *      not appropriate to use in for a scheme, domain, etc. as it would match too much.  (e.g.
+ *      appropriate for use in a scheme, domain, etc. as it would match too much.  (e.g.
  *      http://**.example.com/ would match http://evil.com/?ignore=.example.com/ and that might
  *      not have been the intention.)  Its usage at the very end of the path is ok.  (e.g.
  *      http://foo.example.com/templates/**).
@@ -24788,11 +24802,11 @@ function $SceDelegateProvider() {
  *    - *Caveat*:  While regular expressions are powerful and offer great flexibility,  their syntax
  *      (and all the inevitable escaping) makes them *harder to maintain*.  It's easy to
  *      accidentally introduce a bug when one updates a complex expression (imho, all regexes should
- *      have good test coverage.).  For instance, the use of `.` in the regex is correct only in a
+ *      have good test coverage).  For instance, the use of `.` in the regex is correct only in a
  *      small number of cases.  A `.` character in the regex used when matching the scheme or a
  *      subdomain could be matched against a `:` or literal `.` that was likely not intended.   It
  *      is highly recommended to use the string patterns and only fall back to regular expressions
- *      if they as a last resort.
+ *      as a last resort.
  *    - The regular expression must be an instance of RegExp (i.e. not a string.)  It is
  *      matched against the **entire** *normalized / absolute URL* of the resource being tested
  *      (even when the RegExp did not have the `^` and `$` codes.)  In addition, any flags
@@ -24802,7 +24816,7 @@ function $SceDelegateProvider() {
  *      remember to escape your regular expression (and be aware that you might need more than
  *      one level of escaping depending on your templating engine and the way you interpolated
  *      the value.)  Do make use of your platform's escaping mechanism as it might be good
- *      enough before coding your own.  e.g. Ruby has
+ *      enough before coding your own.  E.g. Ruby has
  *      [Regexp.escape(str)](http://www.ruby-doc.org/core-2.0.0/Regexp.html#method-c-escape)
  *      and Python has [re.escape](http://docs.python.org/library/re.html#re.escape).
  *      Javascript lacks a similar built in function for escaping.  Take a look at Google
@@ -25676,19 +25690,12 @@ var originUrl = urlResolve(window.location.href);
  *
  * Implementation Notes for IE
  * ---------------------------
- * IE >= 8 and <= 10 normalizes the URL when assigned to the anchor node similar to the other
+ * IE <= 10 normalizes the URL when assigned to the anchor node similar to the other
  * browsers.  However, the parsed components will not be set if the URL assigned did not specify
  * them.  (e.g. if you assign a.href = "foo", then a.protocol, a.host, etc. will be empty.)  We
  * work around that by performing the parsing in a 2nd step by taking a previously normalized
  * URL (e.g. by assigning to a.href) and assigning it a.href again.  This correctly populates the
  * properties such as protocol, hostname, port, etc.
- *
- * IE7 does not normalize the URL when assigned to an anchor node.  (Apparently, it does, if one
- * uses the inner HTML approach to assign the URL as part of an HTML snippet -
- * http://stackoverflow.com/a/472729)  However, setting img[src] does normalize the URL.
- * Unfortunately, setting img[src] to something like "javascript:foo" on IE throws an exception.
- * Since the primary usage for normalizing URLs is to sanitize such URLs, we can't use that
- * method and IE < 8 is unsupported.
  *
  * References:
  *   http://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement
@@ -28112,7 +28119,7 @@ var ngFormDirective = formDirectiveFactory(true);
   DIRTY_CLASS: false,
   UNTOUCHED_CLASS: false,
   TOUCHED_CLASS: false,
-  $ngModelMinErr: false,
+  ngModelMinErr: false,
 */
 
 // Regex code is obtained from SO: https://stackoverflow.com/questions/3143070/javascript-regex-iso-datetime#answer-3143231
@@ -29276,7 +29283,7 @@ function createDateInputType(type, regexp, parseDate, format) {
 
     ctrl.$formatters.push(function(value) {
       if (value && !isDate(value)) {
-        throw $ngModelMinErr('datefmt', 'Expected `{0}` to be a date', value);
+        throw ngModelMinErr('datefmt', 'Expected `{0}` to be a date', value);
       }
       if (isValidDate(value)) {
         previousDate = value;
@@ -29353,7 +29360,7 @@ function numberInputType(scope, element, attr, ctrl, $sniffer, $browser) {
   ctrl.$formatters.push(function(value) {
     if (!ctrl.$isEmpty(value)) {
       if (!isNumber(value)) {
-        throw $ngModelMinErr('numfmt', 'Expected `{0}` to be a number', value);
+        throw ngModelMinErr('numfmt', 'Expected `{0}` to be a number', value);
       }
       value = value.toString();
     }
@@ -29446,7 +29453,7 @@ function parseConstantExpr($parse, context, name, expression, fallback) {
   if (isDefined(expression)) {
     parseFn = $parse(expression);
     if (!parseFn.constant) {
-      throw minErr('ngModel')('constexpr', 'Expected constant expression for `{0}`, but saw ' +
+      throw ngModelMinErr('constexpr', 'Expected constant expression for `{0}`, but saw ' +
                                    '`{1}`.', name, expression);
     }
     return parseFn(context);
@@ -31950,8 +31957,7 @@ var VALID_CLASS = 'ng-valid',
     TOUCHED_CLASS = 'ng-touched',
     PENDING_CLASS = 'ng-pending';
 
-
-var $ngModelMinErr = new minErr('ngModel');
+var ngModelMinErr = minErr('ngModel');
 
 /**
  * @ngdoc type
@@ -32202,7 +32208,7 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
         }
       };
     } else if (!parsedNgModel.assign) {
-      throw $ngModelMinErr('nonassign', "Expression '{0}' is non-assignable. Element: {1}",
+      throw ngModelMinErr('nonassign', "Expression '{0}' is non-assignable. Element: {1}",
           $attr.ngModel, startingTag($element));
     }
   };
@@ -32531,7 +32537,7 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
       forEach(ctrl.$asyncValidators, function(validator, name) {
         var promise = validator(modelValue, viewValue);
         if (!isPromiseLike(promise)) {
-          throw $ngModelMinErr("$asyncValidators",
+          throw ngModelMinErr("$asyncValidators",
             "Expected asynchronous validator to return a promise but got '{0}' instead.", promise);
         }
         setValidity(name, undefined);
@@ -35586,8 +35592,9 @@ var patternDirective = function() {
         ctrl.$validate();
       });
 
-      ctrl.$validators.pattern = function(value) {
-        return ctrl.$isEmpty(value) || isUndefined(regexp) || regexp.test(value);
+      ctrl.$validators.pattern = function(modelValue, viewValue) {
+        // HTML5 pattern constraint validates the input value, so we validate the viewValue
+        return ctrl.$isEmpty(viewValue) || isUndefined(regexp) || regexp.test(viewValue);
       };
     }
   };
@@ -35651,9 +35658,9 @@ var minlengthDirective = function() {
 
 })(window, document);
 
-!window.angular.$$csp() && window.angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}</style>');
+!window.angular.$$csp() && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}</style>');
 /**
- * @license AngularJS v1.3.17
+ * @license AngularJS v1.3.19
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -36322,7 +36329,7 @@ angular.module('ngResource', ['ng']).
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.3.17
+ * @license AngularJS v1.3.19
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -36530,7 +36537,7 @@ angular.module('ngCookies', ['ng']).
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.3.17
+ * @license AngularJS v1.3.19
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -37210,7 +37217,7 @@ angular.module('ngSanitize').filter('linky', ['$sanitize', function($sanitize) {
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.3.17
+ * @license AngularJS v1.3.19
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -37623,7 +37630,9 @@ function $RouteProvider() {
      * @name $route#$routeChangeSuccess
      * @eventType broadcast on root scope
      * @description
-     * Broadcasted after a route dependencies are resolved.
+     * Broadcasted after a route change has happened successfully.
+     * The `resolve` dependencies are now available in the `current.locals` property.
+     *
      * {@link ngRoute.directive:ngView ngView} listens for the directive
      * to instantiate the controller and render the view.
      *
@@ -55406,1805 +55415,8 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
     "");
 }]);
 
-/*! Raven.js 1.1.11 (11645a0) | github.com/getsentry/raven-js */
-
-/*
- * Includes TraceKit
- * https://github.com/getsentry/TraceKit
- *
- * Copyright 2014 Matt Robenolt and other contributors
- * Released under the BSD license
- * https://github.com/getsentry/raven-js/blob/master/LICENSE
- *
- */
-;(function(window, undefined){
-'use strict';
-
-/*
- TraceKit - Cross brower stack traces - github.com/occ/TraceKit
- MIT license
-*/
-
-var TraceKit = {
-    remoteFetching: false,
-    collectWindowErrors: true,
-    // 3 lines before, the offending line, 3 lines after
-    linesOfContext: 7
-};
-
-// global reference to slice
-var _slice = [].slice;
-var UNKNOWN_FUNCTION = '?';
-
-
-/**
- * TraceKit.wrap: Wrap any function in a TraceKit reporter
- * Example: func = TraceKit.wrap(func);
- *
- * @param {Function} func Function to be wrapped
- * @return {Function} The wrapped func
- */
-TraceKit.wrap = function traceKitWrapper(func) {
-    function wrapped() {
-        try {
-            return func.apply(this, arguments);
-        } catch (e) {
-            TraceKit.report(e);
-            throw e;
-        }
-    }
-    return wrapped;
-};
-
-/**
- * TraceKit.report: cross-browser processing of unhandled exceptions
- *
- * Syntax:
- *   TraceKit.report.subscribe(function(stackInfo) { ... })
- *   TraceKit.report.unsubscribe(function(stackInfo) { ... })
- *   TraceKit.report(exception)
- *   try { ...code... } catch(ex) { TraceKit.report(ex); }
- *
- * Supports:
- *   - Firefox: full stack trace with line numbers, plus column number
- *              on top frame; column number is not guaranteed
- *   - Opera:   full stack trace with line and column numbers
- *   - Chrome:  full stack trace with line and column numbers
- *   - Safari:  line and column number for the top frame only; some frames
- *              may be missing, and column number is not guaranteed
- *   - IE:      line and column number for the top frame only; some frames
- *              may be missing, and column number is not guaranteed
- *
- * In theory, TraceKit should work on all of the following versions:
- *   - IE5.5+ (only 8.0 tested)
- *   - Firefox 0.9+ (only 3.5+ tested)
- *   - Opera 7+ (only 10.50 tested; versions 9 and earlier may require
- *     Exceptions Have Stacktrace to be enabled in opera:config)
- *   - Safari 3+ (only 4+ tested)
- *   - Chrome 1+ (only 5+ tested)
- *   - Konqueror 3.5+ (untested)
- *
- * Requires TraceKit.computeStackTrace.
- *
- * Tries to catch all unhandled exceptions and report them to the
- * subscribed handlers. Please note that TraceKit.report will rethrow the
- * exception. This is REQUIRED in order to get a useful stack trace in IE.
- * If the exception does not reach the top of the browser, you will only
- * get a stack trace from the point where TraceKit.report was called.
- *
- * Handlers receive a stackInfo object as described in the
- * TraceKit.computeStackTrace docs.
- */
-TraceKit.report = (function reportModuleWrapper() {
-    var handlers = [],
-        lastArgs = null,
-        lastException = null,
-        lastExceptionStack = null;
-
-    /**
-     * Add a crash handler.
-     * @param {Function} handler
-     */
-    function subscribe(handler) {
-        installGlobalHandler();
-        handlers.push(handler);
-    }
-
-    /**
-     * Remove a crash handler.
-     * @param {Function} handler
-     */
-    function unsubscribe(handler) {
-        for (var i = handlers.length - 1; i >= 0; --i) {
-            if (handlers[i] === handler) {
-                handlers.splice(i, 1);
-            }
-        }
-    }
-
-    /**
-     * Remove all crash handlers.
-     */
-    function unsubscribeAll() {
-        uninstallGlobalHandler();
-        handlers = [];
-    }
-
-    /**
-     * Dispatch stack information to all handlers.
-     * @param {Object.<string, *>} stack
-     */
-    function notifyHandlers(stack, isWindowError) {
-        var exception = null;
-        if (isWindowError && !TraceKit.collectWindowErrors) {
-          return;
-        }
-        for (var i in handlers) {
-            if (hasKey(handlers, i)) {
-                try {
-                    handlers[i].apply(null, [stack].concat(_slice.call(arguments, 2)));
-                } catch (inner) {
-                    exception = inner;
-                }
-            }
-        }
-
-        if (exception) {
-            throw exception;
-        }
-    }
-
-    var _oldOnerrorHandler, _onErrorHandlerInstalled;
-
-    /**
-     * Ensures all global unhandled exceptions are recorded.
-     * Supported by Gecko and IE.
-     * @param {string} message Error message.
-     * @param {string} url URL of script that generated the exception.
-     * @param {(number|string)} lineNo The line number at which the error
-     * occurred.
-     * @param {?(number|string)} colNo The column number at which the error
-     * occurred.
-     * @param {?Error} ex The actual Error object.
-     */
-    function traceKitWindowOnError(message, url, lineNo, colNo, ex) {
-        var stack = null;
-
-        if (lastExceptionStack) {
-            TraceKit.computeStackTrace.augmentStackTraceWithInitialElement(lastExceptionStack, url, lineNo, message);
-            processLastException();
-        } else if (ex) {
-            // New chrome and blink send along a real error object
-            // Let's just report that like a normal error.
-            // See: https://mikewest.org/2013/08/debugging-runtime-errors-with-window-onerror
-            stack = TraceKit.computeStackTrace(ex);
-            notifyHandlers(stack, true);
-        } else {
-            var location = {
-                'url': url,
-                'line': lineNo,
-                'column': colNo
-            };
-            location.func = TraceKit.computeStackTrace.guessFunctionName(location.url, location.line);
-            location.context = TraceKit.computeStackTrace.gatherContext(location.url, location.line);
-            stack = {
-                'message': message,
-                'url': document.location.href,
-                'stack': [location]
-            };
-            notifyHandlers(stack, true);
-        }
-
-        if (_oldOnerrorHandler) {
-            return _oldOnerrorHandler.apply(this, arguments);
-        }
-
-        return false;
-    }
-
-    function installGlobalHandler ()
-    {
-        if (_onErrorHandlerInstalled) {
-            return;
-        }
-        _oldOnerrorHandler = window.onerror;
-        window.onerror = traceKitWindowOnError;
-        _onErrorHandlerInstalled = true;
-    }
-
-    function uninstallGlobalHandler ()
-    {
-        if (!_onErrorHandlerInstalled) {
-            return;
-        }
-        window.onerror = _oldOnerrorHandler;
-        _onErrorHandlerInstalled = false;
-        _oldOnerrorHandler = undefined;
-    }
-
-    function processLastException() {
-        var _lastExceptionStack = lastExceptionStack,
-            _lastArgs = lastArgs;
-        lastArgs = null;
-        lastExceptionStack = null;
-        lastException = null;
-        notifyHandlers.apply(null, [_lastExceptionStack, false].concat(_lastArgs));
-    }
-
-    /**
-     * Reports an unhandled Error to TraceKit.
-     * @param {Error} ex
-     * @param {?boolean} rethrow If false, do not re-throw the exception.
-     * Only used for window.onerror to not cause an infinite loop of
-     * rethrowing.
-     */
-    function report(ex, rethrow) {
-        var args = _slice.call(arguments, 1);
-        if (lastExceptionStack) {
-            if (lastException === ex) {
-                return; // already caught by an inner catch block, ignore
-            } else {
-              processLastException();
-            }
-        }
-
-        var stack = TraceKit.computeStackTrace(ex);
-        lastExceptionStack = stack;
-        lastException = ex;
-        lastArgs = args;
-
-        // If the stack trace is incomplete, wait for 2 seconds for
-        // slow slow IE to see if onerror occurs or not before reporting
-        // this exception; otherwise, we will end up with an incomplete
-        // stack trace
-        window.setTimeout(function () {
-            if (lastException === ex) {
-                processLastException();
-            }
-        }, (stack.incomplete ? 2000 : 0));
-
-        if (rethrow !== false) {
-            throw ex; // re-throw to propagate to the top level (and cause window.onerror)
-        }
-    }
-
-    report.subscribe = subscribe;
-    report.unsubscribe = unsubscribe;
-    report.uninstall = unsubscribeAll;
-    return report;
-}());
-
-/**
- * TraceKit.computeStackTrace: cross-browser stack traces in JavaScript
- *
- * Syntax:
- *   s = TraceKit.computeStackTrace.ofCaller([depth])
- *   s = TraceKit.computeStackTrace(exception) // consider using TraceKit.report instead (see below)
- * Returns:
- *   s.name              - exception name
- *   s.message           - exception message
- *   s.stack[i].url      - JavaScript or HTML file URL
- *   s.stack[i].func     - function name, or empty for anonymous functions (if guessing did not work)
- *   s.stack[i].args     - arguments passed to the function, if known
- *   s.stack[i].line     - line number, if known
- *   s.stack[i].column   - column number, if known
- *   s.stack[i].context  - an array of source code lines; the middle element corresponds to the correct line#
- *
- * Supports:
- *   - Firefox:  full stack trace with line numbers and unreliable column
- *               number on top frame
- *   - Opera 10: full stack trace with line and column numbers
- *   - Opera 9-: full stack trace with line numbers
- *   - Chrome:   full stack trace with line and column numbers
- *   - Safari:   line and column number for the topmost stacktrace element
- *               only
- *   - IE:       no line numbers whatsoever
- *
- * Tries to guess names of anonymous functions by looking for assignments
- * in the source code. In IE and Safari, we have to guess source file names
- * by searching for function bodies inside all page scripts. This will not
- * work for scripts that are loaded cross-domain.
- * Here be dragons: some function names may be guessed incorrectly, and
- * duplicate functions may be mismatched.
- *
- * TraceKit.computeStackTrace should only be used for tracing purposes.
- * Logging of unhandled exceptions should be done with TraceKit.report,
- * which builds on top of TraceKit.computeStackTrace and provides better
- * IE support by utilizing the window.onerror event to retrieve information
- * about the top of the stack.
- *
- * Note: In IE and Safari, no stack trace is recorded on the Error object,
- * so computeStackTrace instead walks its *own* chain of callers.
- * This means that:
- *  * in Safari, some methods may be missing from the stack trace;
- *  * in IE, the topmost function in the stack trace will always be the
- *    caller of computeStackTrace.
- *
- * This is okay for tracing (because you are likely to be calling
- * computeStackTrace from the function you want to be the topmost element
- * of the stack trace anyway), but not okay for logging unhandled
- * exceptions (because your catch block will likely be far away from the
- * inner function that actually caused the exception).
- *
- * Tracing example:
- *     function trace(message) {
- *         var stackInfo = TraceKit.computeStackTrace.ofCaller();
- *         var data = message + "\n";
- *         for(var i in stackInfo.stack) {
- *             var item = stackInfo.stack[i];
- *             data += (item.func || '[anonymous]') + "() in " + item.url + ":" + (item.line || '0') + "\n";
- *         }
- *         if (window.console)
- *             console.info(data);
- *         else
- *             alert(data);
- *     }
- */
-TraceKit.computeStackTrace = (function computeStackTraceWrapper() {
-    var debug = false,
-        sourceCache = {};
-
-    /**
-     * Attempts to retrieve source code via XMLHttpRequest, which is used
-     * to look up anonymous function names.
-     * @param {string} url URL of source code.
-     * @return {string} Source contents.
-     */
-    function loadSource(url) {
-        if (!TraceKit.remoteFetching) { //Only attempt request if remoteFetching is on.
-            return '';
-        }
-        try {
-            var getXHR = function() {
-                try {
-                    return new window.XMLHttpRequest();
-                } catch (e) {
-                    // explicitly bubble up the exception if not found
-                    return new window.ActiveXObject('Microsoft.XMLHTTP');
-                }
-            };
-
-            var request = getXHR();
-            request.open('GET', url, false);
-            request.send('');
-            return request.responseText;
-        } catch (e) {
-            return '';
-        }
-    }
-
-    /**
-     * Retrieves source code from the source code cache.
-     * @param {string} url URL of source code.
-     * @return {Array.<string>} Source contents.
-     */
-    function getSource(url) {
-        if (!isString(url)) return [];
-        if (!hasKey(sourceCache, url)) {
-            // URL needs to be able to fetched within the acceptable domain.  Otherwise,
-            // cross-domain errors will be triggered.
-            var source = '';
-            if (url.indexOf(document.domain) !== -1) {
-                source = loadSource(url);
-            }
-            sourceCache[url] = source ? source.split('\n') : [];
-        }
-
-        return sourceCache[url];
-    }
-
-    /**
-     * Tries to use an externally loaded copy of source code to determine
-     * the name of a function by looking at the name of the variable it was
-     * assigned to, if any.
-     * @param {string} url URL of source code.
-     * @param {(string|number)} lineNo Line number in source code.
-     * @return {string} The function name, if discoverable.
-     */
-    function guessFunctionName(url, lineNo) {
-        var reFunctionArgNames = /function ([^(]*)\(([^)]*)\)/,
-            reGuessFunction = /['"]?([0-9A-Za-z$_]+)['"]?\s*[:=]\s*(function|eval|new Function)/,
-            line = '',
-            maxLines = 10,
-            source = getSource(url),
-            m;
-
-        if (!source.length) {
-            return UNKNOWN_FUNCTION;
-        }
-
-        // Walk backwards from the first line in the function until we find the line which
-        // matches the pattern above, which is the function definition
-        for (var i = 0; i < maxLines; ++i) {
-            line = source[lineNo - i] + line;
-
-            if (!isUndefined(line)) {
-                if ((m = reGuessFunction.exec(line))) {
-                    return m[1];
-                } else if ((m = reFunctionArgNames.exec(line))) {
-                    return m[1];
-                }
-            }
-        }
-
-        return UNKNOWN_FUNCTION;
-    }
-
-    /**
-     * Retrieves the surrounding lines from where an exception occurred.
-     * @param {string} url URL of source code.
-     * @param {(string|number)} line Line number in source code to centre
-     * around for context.
-     * @return {?Array.<string>} Lines of source code.
-     */
-    function gatherContext(url, line) {
-        var source = getSource(url);
-
-        if (!source.length) {
-            return null;
-        }
-
-        var context = [],
-            // linesBefore & linesAfter are inclusive with the offending line.
-            // if linesOfContext is even, there will be one extra line
-            //   *before* the offending line.
-            linesBefore = Math.floor(TraceKit.linesOfContext / 2),
-            // Add one extra line if linesOfContext is odd
-            linesAfter = linesBefore + (TraceKit.linesOfContext % 2),
-            start = Math.max(0, line - linesBefore - 1),
-            end = Math.min(source.length, line + linesAfter - 1);
-
-        line -= 1; // convert to 0-based index
-
-        for (var i = start; i < end; ++i) {
-            if (!isUndefined(source[i])) {
-                context.push(source[i]);
-            }
-        }
-
-        return context.length > 0 ? context : null;
-    }
-
-    /**
-     * Escapes special characters, except for whitespace, in a string to be
-     * used inside a regular expression as a string literal.
-     * @param {string} text The string.
-     * @return {string} The escaped string literal.
-     */
-    function escapeRegExp(text) {
-        return text.replace(/[\-\[\]{}()*+?.,\\\^$|#]/g, '\\$&');
-    }
-
-    /**
-     * Escapes special characters in a string to be used inside a regular
-     * expression as a string literal. Also ensures that HTML entities will
-     * be matched the same as their literal friends.
-     * @param {string} body The string.
-     * @return {string} The escaped string.
-     */
-    function escapeCodeAsRegExpForMatchingInsideHTML(body) {
-        return escapeRegExp(body).replace('<', '(?:<|&lt;)').replace('>', '(?:>|&gt;)').replace('&', '(?:&|&amp;)').replace('"', '(?:"|&quot;)').replace(/\s+/g, '\\s+');
-    }
-
-    /**
-     * Determines where a code fragment occurs in the source code.
-     * @param {RegExp} re The function definition.
-     * @param {Array.<string>} urls A list of URLs to search.
-     * @return {?Object.<string, (string|number)>} An object containing
-     * the url, line, and column number of the defined function.
-     */
-    function findSourceInUrls(re, urls) {
-        var source, m;
-        for (var i = 0, j = urls.length; i < j; ++i) {
-            // console.log('searching', urls[i]);
-            if ((source = getSource(urls[i])).length) {
-                source = source.join('\n');
-                if ((m = re.exec(source))) {
-                    // console.log('Found function in ' + urls[i]);
-
-                    return {
-                        'url': urls[i],
-                        'line': source.substring(0, m.index).split('\n').length,
-                        'column': m.index - source.lastIndexOf('\n', m.index) - 1
-                    };
-                }
-            }
-        }
-
-        // console.log('no match');
-
-        return null;
-    }
-
-    /**
-     * Determines at which column a code fragment occurs on a line of the
-     * source code.
-     * @param {string} fragment The code fragment.
-     * @param {string} url The URL to search.
-     * @param {(string|number)} line The line number to examine.
-     * @return {?number} The column number.
-     */
-    function findSourceInLine(fragment, url, line) {
-        var source = getSource(url),
-            re = new RegExp('\\b' + escapeRegExp(fragment) + '\\b'),
-            m;
-
-        line -= 1;
-
-        if (source && source.length > line && (m = re.exec(source[line]))) {
-            return m.index;
-        }
-
-        return null;
-    }
-
-    /**
-     * Determines where a function was defined within the source code.
-     * @param {(Function|string)} func A function reference or serialized
-     * function definition.
-     * @return {?Object.<string, (string|number)>} An object containing
-     * the url, line, and column number of the defined function.
-     */
-    function findSourceByFunctionBody(func) {
-        var urls = [window.location.href],
-            scripts = document.getElementsByTagName('script'),
-            body,
-            code = '' + func,
-            codeRE = /^function(?:\s+([\w$]+))?\s*\(([\w\s,]*)\)\s*\{\s*(\S[\s\S]*\S)\s*\}\s*$/,
-            eventRE = /^function on([\w$]+)\s*\(event\)\s*\{\s*(\S[\s\S]*\S)\s*\}\s*$/,
-            re,
-            parts,
-            result;
-
-        for (var i = 0; i < scripts.length; ++i) {
-            var script = scripts[i];
-            if (script.src) {
-                urls.push(script.src);
-            }
-        }
-
-        if (!(parts = codeRE.exec(code))) {
-            re = new RegExp(escapeRegExp(code).replace(/\s+/g, '\\s+'));
-        }
-
-        // not sure if this is really necessary, but I don’t have a test
-        // corpus large enough to confirm that and it was in the original.
-        else {
-            var name = parts[1] ? '\\s+' + parts[1] : '',
-                args = parts[2].split(',').join('\\s*,\\s*');
-
-            body = escapeRegExp(parts[3]).replace(/;$/, ';?'); // semicolon is inserted if the function ends with a comment.replace(/\s+/g, '\\s+');
-            re = new RegExp('function' + name + '\\s*\\(\\s*' + args + '\\s*\\)\\s*{\\s*' + body + '\\s*}');
-        }
-
-        // look for a normal function definition
-        if ((result = findSourceInUrls(re, urls))) {
-            return result;
-        }
-
-        // look for an old-school event handler function
-        if ((parts = eventRE.exec(code))) {
-            var event = parts[1];
-            body = escapeCodeAsRegExpForMatchingInsideHTML(parts[2]);
-
-            // look for a function defined in HTML as an onXXX handler
-            re = new RegExp('on' + event + '=[\\\'"]\\s*' + body + '\\s*[\\\'"]', 'i');
-
-            if ((result = findSourceInUrls(re, urls[0]))) {
-                return result;
-            }
-
-            // look for ???
-            re = new RegExp(body);
-
-            if ((result = findSourceInUrls(re, urls))) {
-                return result;
-            }
-        }
-
-        return null;
-    }
-
-    // Contents of Exception in various browsers.
-    //
-    // SAFARI:
-    // ex.message = Can't find variable: qq
-    // ex.line = 59
-    // ex.sourceId = 580238192
-    // ex.sourceURL = http://...
-    // ex.expressionBeginOffset = 96
-    // ex.expressionCaretOffset = 98
-    // ex.expressionEndOffset = 98
-    // ex.name = ReferenceError
-    //
-    // FIREFOX:
-    // ex.message = qq is not defined
-    // ex.fileName = http://...
-    // ex.lineNumber = 59
-    // ex.columnNumber = 69
-    // ex.stack = ...stack trace... (see the example below)
-    // ex.name = ReferenceError
-    //
-    // CHROME:
-    // ex.message = qq is not defined
-    // ex.name = ReferenceError
-    // ex.type = not_defined
-    // ex.arguments = ['aa']
-    // ex.stack = ...stack trace...
-    //
-    // INTERNET EXPLORER:
-    // ex.message = ...
-    // ex.name = ReferenceError
-    //
-    // OPERA:
-    // ex.message = ...message... (see the example below)
-    // ex.name = ReferenceError
-    // ex.opera#sourceloc = 11  (pretty much useless, duplicates the info in ex.message)
-    // ex.stacktrace = n/a; see 'opera:config#UserPrefs|Exceptions Have Stacktrace'
-
-    /**
-     * Computes stack trace information from the stack property.
-     * Chrome and Gecko use this property.
-     * @param {Error} ex
-     * @return {?Object.<string, *>} Stack trace information.
-     */
-    function computeStackTraceFromStackProp(ex) {
-        if (!ex.stack) {
-            return null;
-        }
-
-        var chrome = /^\s*at (?:((?:\[object object\])?\S+(?: \[as \S+\])?) )?\(?((?:file|https?):.*?):(\d+)(?::(\d+))?\)?\s*$/i,
-            gecko = /^\s*(\S*)(?:\((.*?)\))?@((?:file|https?).*?):(\d+)(?::(\d+))?\s*$/i,
-            lines = ex.stack.split('\n'),
-            stack = [],
-            parts,
-            element,
-            reference = /^(.*) is undefined$/.exec(ex.message);
-
-        for (var i = 0, j = lines.length; i < j; ++i) {
-            if ((parts = gecko.exec(lines[i]))) {
-                element = {
-                    'url': parts[3],
-                    'func': parts[1] || UNKNOWN_FUNCTION,
-                    'args': parts[2] ? parts[2].split(',') : '',
-                    'line': +parts[4],
-                    'column': parts[5] ? +parts[5] : null
-                };
-            } else if ((parts = chrome.exec(lines[i]))) {
-                element = {
-                    'url': parts[2],
-                    'func': parts[1] || UNKNOWN_FUNCTION,
-                    'line': +parts[3],
-                    'column': parts[4] ? +parts[4] : null
-                };
-            } else {
-                continue;
-            }
-
-            if (!element.func && element.line) {
-                element.func = guessFunctionName(element.url, element.line);
-            }
-
-            if (element.line) {
-                element.context = gatherContext(element.url, element.line);
-            }
-
-            stack.push(element);
-        }
-
-        if (!stack.length) {
-            return null;
-        }
-
-        if (stack[0].line && !stack[0].column && reference) {
-            stack[0].column = findSourceInLine(reference[1], stack[0].url, stack[0].line);
-        } else if (!stack[0].column && !isUndefined(ex.columnNumber)) {
-            // FireFox uses this awesome columnNumber property for its top frame
-            // Also note, Firefox's column number is 0-based and everything else expects 1-based,
-            // so adding 1
-            stack[0].column = ex.columnNumber + 1;
-        }
-
-        return {
-            'name': ex.name,
-            'message': ex.message,
-            'url': document.location.href,
-            'stack': stack
-        };
-    }
-
-    /**
-     * Computes stack trace information from the stacktrace property.
-     * Opera 10 uses this property.
-     * @param {Error} ex
-     * @return {?Object.<string, *>} Stack trace information.
-     */
-    function computeStackTraceFromStacktraceProp(ex) {
-        // Access and store the stacktrace property before doing ANYTHING
-        // else to it because Opera is not very good at providing it
-        // reliably in other circumstances.
-        var stacktrace = ex.stacktrace;
-
-        var testRE = / line (\d+), column (\d+) in (?:<anonymous function: ([^>]+)>|([^\)]+))\((.*)\) in (.*):\s*$/i,
-            lines = stacktrace.split('\n'),
-            stack = [],
-            parts;
-
-        for (var i = 0, j = lines.length; i < j; i += 2) {
-            if ((parts = testRE.exec(lines[i]))) {
-                var element = {
-                    'line': +parts[1],
-                    'column': +parts[2],
-                    'func': parts[3] || parts[4],
-                    'args': parts[5] ? parts[5].split(',') : [],
-                    'url': parts[6]
-                };
-
-                if (!element.func && element.line) {
-                    element.func = guessFunctionName(element.url, element.line);
-                }
-                if (element.line) {
-                    try {
-                        element.context = gatherContext(element.url, element.line);
-                    } catch (exc) {}
-                }
-
-                if (!element.context) {
-                    element.context = [lines[i + 1]];
-                }
-
-                stack.push(element);
-            }
-        }
-
-        if (!stack.length) {
-            return null;
-        }
-
-        return {
-            'name': ex.name,
-            'message': ex.message,
-            'url': document.location.href,
-            'stack': stack
-        };
-    }
-
-    /**
-     * NOT TESTED.
-     * Computes stack trace information from an error message that includes
-     * the stack trace.
-     * Opera 9 and earlier use this method if the option to show stack
-     * traces is turned on in opera:config.
-     * @param {Error} ex
-     * @return {?Object.<string, *>} Stack information.
-     */
-    function computeStackTraceFromOperaMultiLineMessage(ex) {
-        // Opera includes a stack trace into the exception message. An example is:
-        //
-        // Statement on line 3: Undefined variable: undefinedFunc
-        // Backtrace:
-        //   Line 3 of linked script file://localhost/Users/andreyvit/Projects/TraceKit/javascript-client/sample.js: In function zzz
-        //         undefinedFunc(a);
-        //   Line 7 of inline#1 script in file://localhost/Users/andreyvit/Projects/TraceKit/javascript-client/sample.html: In function yyy
-        //           zzz(x, y, z);
-        //   Line 3 of inline#1 script in file://localhost/Users/andreyvit/Projects/TraceKit/javascript-client/sample.html: In function xxx
-        //           yyy(a, a, a);
-        //   Line 1 of function script
-        //     try { xxx('hi'); return false; } catch(ex) { TraceKit.report(ex); }
-        //   ...
-
-        var lines = ex.message.split('\n');
-        if (lines.length < 4) {
-            return null;
-        }
-
-        var lineRE1 = /^\s*Line (\d+) of linked script ((?:file|https?)\S+)(?:: in function (\S+))?\s*$/i,
-            lineRE2 = /^\s*Line (\d+) of inline#(\d+) script in ((?:file|https?)\S+)(?:: in function (\S+))?\s*$/i,
-            lineRE3 = /^\s*Line (\d+) of function script\s*$/i,
-            stack = [],
-            scripts = document.getElementsByTagName('script'),
-            inlineScriptBlocks = [],
-            parts,
-            i,
-            len,
-            source;
-
-        for (i in scripts) {
-            if (hasKey(scripts, i) && !scripts[i].src) {
-                inlineScriptBlocks.push(scripts[i]);
-            }
-        }
-
-        for (i = 2, len = lines.length; i < len; i += 2) {
-            var item = null;
-            if ((parts = lineRE1.exec(lines[i]))) {
-                item = {
-                    'url': parts[2],
-                    'func': parts[3],
-                    'line': +parts[1]
-                };
-            } else if ((parts = lineRE2.exec(lines[i]))) {
-                item = {
-                    'url': parts[3],
-                    'func': parts[4]
-                };
-                var relativeLine = (+parts[1]); // relative to the start of the <SCRIPT> block
-                var script = inlineScriptBlocks[parts[2] - 1];
-                if (script) {
-                    source = getSource(item.url);
-                    if (source) {
-                        source = source.join('\n');
-                        var pos = source.indexOf(script.innerText);
-                        if (pos >= 0) {
-                            item.line = relativeLine + source.substring(0, pos).split('\n').length;
-                        }
-                    }
-                }
-            } else if ((parts = lineRE3.exec(lines[i]))) {
-                var url = window.location.href.replace(/#.*$/, ''),
-                    line = parts[1];
-                var re = new RegExp(escapeCodeAsRegExpForMatchingInsideHTML(lines[i + 1]));
-                source = findSourceInUrls(re, [url]);
-                item = {
-                    'url': url,
-                    'line': source ? source.line : line,
-                    'func': ''
-                };
-            }
-
-            if (item) {
-                if (!item.func) {
-                    item.func = guessFunctionName(item.url, item.line);
-                }
-                var context = gatherContext(item.url, item.line);
-                var midline = (context ? context[Math.floor(context.length / 2)] : null);
-                if (context && midline.replace(/^\s*/, '') === lines[i + 1].replace(/^\s*/, '')) {
-                    item.context = context;
-                } else {
-                    // if (context) alert("Context mismatch. Correct midline:\n" + lines[i+1] + "\n\nMidline:\n" + midline + "\n\nContext:\n" + context.join("\n") + "\n\nURL:\n" + item.url);
-                    item.context = [lines[i + 1]];
-                }
-                stack.push(item);
-            }
-        }
-        if (!stack.length) {
-            return null; // could not parse multiline exception message as Opera stack trace
-        }
-
-        return {
-            'name': ex.name,
-            'message': lines[0],
-            'url': document.location.href,
-            'stack': stack
-        };
-    }
-
-    /**
-     * Adds information about the first frame to incomplete stack traces.
-     * Safari and IE require this to get complete data on the first frame.
-     * @param {Object.<string, *>} stackInfo Stack trace information from
-     * one of the compute* methods.
-     * @param {string} url The URL of the script that caused an error.
-     * @param {(number|string)} lineNo The line number of the script that
-     * caused an error.
-     * @param {string=} message The error generated by the browser, which
-     * hopefully contains the name of the object that caused the error.
-     * @return {boolean} Whether or not the stack information was
-     * augmented.
-     */
-    function augmentStackTraceWithInitialElement(stackInfo, url, lineNo, message) {
-        var initial = {
-            'url': url,
-            'line': lineNo
-        };
-
-        if (initial.url && initial.line) {
-            stackInfo.incomplete = false;
-
-            if (!initial.func) {
-                initial.func = guessFunctionName(initial.url, initial.line);
-            }
-
-            if (!initial.context) {
-                initial.context = gatherContext(initial.url, initial.line);
-            }
-
-            var reference = / '([^']+)' /.exec(message);
-            if (reference) {
-                initial.column = findSourceInLine(reference[1], initial.url, initial.line);
-            }
-
-            if (stackInfo.stack.length > 0) {
-                if (stackInfo.stack[0].url === initial.url) {
-                    if (stackInfo.stack[0].line === initial.line) {
-                        return false; // already in stack trace
-                    } else if (!stackInfo.stack[0].line && stackInfo.stack[0].func === initial.func) {
-                        stackInfo.stack[0].line = initial.line;
-                        stackInfo.stack[0].context = initial.context;
-                        return false;
-                    }
-                }
-            }
-
-            stackInfo.stack.unshift(initial);
-            stackInfo.partial = true;
-            return true;
-        } else {
-            stackInfo.incomplete = true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Computes stack trace information by walking the arguments.caller
-     * chain at the time the exception occurred. This will cause earlier
-     * frames to be missed but is the only way to get any stack trace in
-     * Safari and IE. The top frame is restored by
-     * {@link augmentStackTraceWithInitialElement}.
-     * @param {Error} ex
-     * @return {?Object.<string, *>} Stack trace information.
-     */
-    function computeStackTraceByWalkingCallerChain(ex, depth) {
-        var functionName = /function\s+([_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*)?\s*\(/i,
-            stack = [],
-            funcs = {},
-            recursion = false,
-            parts,
-            item,
-            source;
-
-        for (var curr = computeStackTraceByWalkingCallerChain.caller; curr && !recursion; curr = curr.caller) {
-            if (curr === computeStackTrace || curr === TraceKit.report) {
-                // console.log('skipping internal function');
-                continue;
-            }
-
-            item = {
-                'url': null,
-                'func': UNKNOWN_FUNCTION,
-                'line': null,
-                'column': null
-            };
-
-            if (curr.name) {
-                item.func = curr.name;
-            } else if ((parts = functionName.exec(curr.toString()))) {
-                item.func = parts[1];
-            }
-
-            if ((source = findSourceByFunctionBody(curr))) {
-                item.url = source.url;
-                item.line = source.line;
-
-                if (item.func === UNKNOWN_FUNCTION) {
-                    item.func = guessFunctionName(item.url, item.line);
-                }
-
-                var reference = / '([^']+)' /.exec(ex.message || ex.description);
-                if (reference) {
-                    item.column = findSourceInLine(reference[1], source.url, source.line);
-                }
-            }
-
-            if (funcs['' + curr]) {
-                recursion = true;
-            }else{
-                funcs['' + curr] = true;
-            }
-
-            stack.push(item);
-        }
-
-        if (depth) {
-            // console.log('depth is ' + depth);
-            // console.log('stack is ' + stack.length);
-            stack.splice(0, depth);
-        }
-
-        var result = {
-            'name': ex.name,
-            'message': ex.message,
-            'url': document.location.href,
-            'stack': stack
-        };
-        augmentStackTraceWithInitialElement(result, ex.sourceURL || ex.fileName, ex.line || ex.lineNumber, ex.message || ex.description);
-        return result;
-    }
-
-    /**
-     * Computes a stack trace for an exception.
-     * @param {Error} ex
-     * @param {(string|number)=} depth
-     */
-    function computeStackTrace(ex, depth) {
-        var stack = null;
-        depth = (depth == null ? 0 : +depth);
-
-        try {
-            // This must be tried first because Opera 10 *destroys*
-            // its stacktrace property if you try to access the stack
-            // property first!!
-            stack = computeStackTraceFromStacktraceProp(ex);
-            if (stack) {
-                return stack;
-            }
-        } catch (e) {
-            if (debug) {
-                throw e;
-            }
-        }
-
-        try {
-            stack = computeStackTraceFromStackProp(ex);
-            if (stack) {
-                return stack;
-            }
-        } catch (e) {
-            if (debug) {
-                throw e;
-            }
-        }
-
-        try {
-            stack = computeStackTraceFromOperaMultiLineMessage(ex);
-            if (stack) {
-                return stack;
-            }
-        } catch (e) {
-            if (debug) {
-                throw e;
-            }
-        }
-
-        try {
-            stack = computeStackTraceByWalkingCallerChain(ex, depth + 1);
-            if (stack) {
-                return stack;
-            }
-        } catch (e) {
-            if (debug) {
-                throw e;
-            }
-        }
-
-        return {};
-    }
-
-    /**
-     * Logs a stacktrace starting from the previous call and working down.
-     * @param {(number|string)=} depth How many frames deep to trace.
-     * @return {Object.<string, *>} Stack trace information.
-     */
-    function computeStackTraceOfCaller(depth) {
-        depth = (depth == null ? 0 : +depth) + 1; // "+ 1" because "ofCaller" should drop one frame
-        try {
-            throw new Error();
-        } catch (ex) {
-            return computeStackTrace(ex, depth + 1);
-        }
-    }
-
-    computeStackTrace.augmentStackTraceWithInitialElement = augmentStackTraceWithInitialElement;
-    computeStackTrace.guessFunctionName = guessFunctionName;
-    computeStackTrace.gatherContext = gatherContext;
-    computeStackTrace.ofCaller = computeStackTraceOfCaller;
-
-    return computeStackTrace;
-}());
-
-'use strict';
-
-// First, check for JSON support
-// If there is no JSON, we no-op the core features of Raven
-// since JSON is required to encode the payload
-var _Raven = window.Raven,
-    hasJSON = !!(window.JSON && window.JSON.stringify),
-    lastCapturedException,
-    lastEventId,
-    globalServer,
-    globalUser,
-    globalKey,
-    globalProject,
-    globalOptions = {
-        logger: 'javascript',
-        ignoreErrors: [],
-        ignoreUrls: [],
-        whitelistUrls: [],
-        includePaths: [],
-        collectWindowErrors: true,
-        tags: {},
-        extra: {}
-    };
-
-/*
- * The core Raven singleton
- *
- * @this {Raven}
- */
-var Raven = {
-    VERSION: '1.1.11',
-
-    // Expose TraceKit to the Raven namespace
-    TraceKit: TraceKit,
-
-    /*
-     * Allow Raven to be configured as soon as it is loaded
-     * It uses a global RavenConfig = {dsn: '...', config: {}}
-     *
-     * @return undefined
-     */
-    afterLoad: function() {
-        var globalConfig = window.RavenConfig;
-        if (globalConfig) {
-            this.config(globalConfig.dsn, globalConfig.config).install();
-        }
-    },
-
-    /*
-     * Allow multiple versions of Raven to be installed.
-     * Strip Raven from the global context and returns the instance.
-     *
-     * @return {Raven}
-     */
-    noConflict: function() {
-        window.Raven = _Raven;
-        return Raven;
-    },
-
-    /*
-     * Configure Raven with a DSN and extra options
-     *
-     * @param {string} dsn The public Sentry DSN
-     * @param {object} options Optional set of of global options [optional]
-     * @return {Raven}
-     */
-    config: function(dsn, options) {
-        if (!dsn) return Raven;
-
-        var uri = parseDSN(dsn),
-            lastSlash = uri.path.lastIndexOf('/'),
-            path = uri.path.substr(1, lastSlash);
-
-        // merge in options
-        if (options) {
-            each(options, function(key, value){
-                globalOptions[key] = value;
-            });
-        }
-
-        // "Script error." is hard coded into browsers for errors that it can't read.
-        // this is the result of a script being pulled in from an external domain and CORS.
-        globalOptions.ignoreErrors.push('Script error.');
-        globalOptions.ignoreErrors.push('Script error');
-
-        // join regexp rules into one big rule
-        globalOptions.ignoreErrors = joinRegExp(globalOptions.ignoreErrors);
-        globalOptions.ignoreUrls = globalOptions.ignoreUrls.length ? joinRegExp(globalOptions.ignoreUrls) : false;
-        globalOptions.whitelistUrls = globalOptions.whitelistUrls.length ? joinRegExp(globalOptions.whitelistUrls) : false;
-        globalOptions.includePaths = joinRegExp(globalOptions.includePaths);
-
-        globalKey = uri.user;
-        globalProject = uri.path.substr(lastSlash + 1);
-
-        // assemble the endpoint from the uri pieces
-        globalServer = '//' + uri.host +
-                      (uri.port ? ':' + uri.port : '') +
-                      '/' + path + 'api/' + globalProject + '/store/';
-
-        if (uri.protocol) {
-            globalServer = uri.protocol + ':' + globalServer;
-        }
-
-        if (globalOptions.fetchContext) {
-            TraceKit.remoteFetching = true;
-        }
-
-        if (globalOptions.linesOfContext) {
-            TraceKit.linesOfContext = globalOptions.linesOfContext;
-        }
-
-        TraceKit.collectWindowErrors = !!globalOptions.collectWindowErrors;
-
-        // return for chaining
-        return Raven;
-    },
-
-    /*
-     * Installs a global window.onerror error handler
-     * to capture and report uncaught exceptions.
-     * At this point, install() is required to be called due
-     * to the way TraceKit is set up.
-     *
-     * @return {Raven}
-     */
-    install: function() {
-        if (isSetup()) {
-            TraceKit.report.subscribe(handleStackInfo);
-        }
-
-        return Raven;
-    },
-
-    /*
-     * Wrap code within a context so Raven can capture errors
-     * reliably across domains that is executed immediately.
-     *
-     * @param {object} options A specific set of options for this context [optional]
-     * @param {function} func The callback to be immediately executed within the context
-     * @param {array} args An array of arguments to be called with the callback [optional]
-     */
-    context: function(options, func, args) {
-        if (isFunction(options)) {
-            args = func || [];
-            func = options;
-            options = undefined;
-        }
-
-        return Raven.wrap(options, func).apply(this, args);
-    },
-
-    /*
-     * Wrap code within a context and returns back a new function to be executed
-     *
-     * @param {object} options A specific set of options for this context [optional]
-     * @param {function} func The function to be wrapped in a new context
-     * @return {function} The newly wrapped functions with a context
-     */
-    wrap: function(options, func) {
-        // 1 argument has been passed, and it's not a function
-        // so just return it
-        if (isUndefined(func) && !isFunction(options)) {
-            return options;
-        }
-
-        // options is optional
-        if (isFunction(options)) {
-            func = options;
-            options = undefined;
-        }
-
-        // At this point, we've passed along 2 arguments, and the second one
-        // is not a function either, so we'll just return the second argument.
-        if (!isFunction(func)) {
-            return func;
-        }
-
-        // We don't wanna wrap it twice!
-        if (func.__raven__) {
-            return func;
-        }
-
-        function wrapped() {
-            var args = [], i = arguments.length,
-                deep = !options || options && options.deep !== false;
-            // Recursively wrap all of a function's arguments that are
-            // functions themselves.
-
-            while(i--) args[i] = deep ? Raven.wrap(options, arguments[i]) : arguments[i];
-
-            try {
-                /*jshint -W040*/
-                return func.apply(this, args);
-            } catch(e) {
-                Raven.captureException(e, options);
-                throw e;
-            }
-        }
-
-        // copy over properties of the old function
-        for (var property in func) {
-            if (func.hasOwnProperty(property)) {
-                wrapped[property] = func[property];
-            }
-        }
-
-        // Signal that this function has been wrapped already
-        // for both debugging and to prevent it to being wrapped twice
-        wrapped.__raven__ = true;
-
-        return wrapped;
-    },
-
-    /*
-     * Uninstalls the global error handler.
-     *
-     * @return {Raven}
-     */
-    uninstall: function() {
-        TraceKit.report.uninstall();
-
-        return Raven;
-    },
-
-    /*
-     * Manually capture an exception and send it over to Sentry
-     *
-     * @param {error} ex An exception to be logged
-     * @param {object} options A specific set of options for this error [optional]
-     * @return {Raven}
-     */
-    captureException: function(ex, options) {
-        // If a string is passed through, recall as a message
-        if (isString(ex)) return Raven.captureMessage(ex, options);
-
-        // Store the raw exception object for potential debugging and introspection
-        lastCapturedException = ex;
-
-        // TraceKit.report will re-raise any exception passed to it,
-        // which means you have to wrap it in try/catch. Instead, we
-        // can wrap it here and only re-raise if TraceKit.report
-        // raises an exception different from the one we asked to
-        // report on.
-        try {
-            TraceKit.report(ex, options);
-        } catch(ex1) {
-            if(ex !== ex1) {
-                throw ex1;
-            }
-        }
-
-        return Raven;
-    },
-
-    /*
-     * Manually send a message to Sentry
-     *
-     * @param {string} msg A plain message to be captured in Sentry
-     * @param {object} options A specific set of options for this message [optional]
-     * @return {Raven}
-     */
-    captureMessage: function(msg, options) {
-        // Fire away!
-        send(
-            objectMerge({
-                message: msg
-            }, options)
-        );
-
-        return Raven;
-    },
-
-    /*
-     * Set/clear a user to be sent along with the payload.
-     *
-     * @param {object} user An object representing user data [optional]
-     * @return {Raven}
-     */
-    setUser: function(user) {
-       globalUser = user;
-
-       return Raven;
-    },
-
-    /*
-     * Get the latest raw exception that was captured by Raven.
-     *
-     * @return {error}
-     */
-    lastException: function() {
-        return lastCapturedException;
-    },
-
-    /*
-     * Get the last event id
-     *
-     * @return {string}
-     */
-    lastEventId: function() {
-        return lastEventId;
-    }
-};
-
-function triggerEvent(eventType, options) {
-    var event, key;
-
-    options = options || {};
-
-    eventType = 'raven' + eventType.substr(0,1).toUpperCase() + eventType.substr(1);
-
-    if (document.createEvent) {
-        event = document.createEvent('HTMLEvents');
-        event.initEvent(eventType, true, true);
-    } else {
-        event = document.createEventObject();
-        event.eventType = eventType;
-    }
-
-    for (key in options) if (options.hasOwnProperty(key)) {
-        event[key] = options[key];
-    }
-
-    if (document.createEvent) {
-        // IE9 if standards
-        document.dispatchEvent(event);
-    } else {
-        // IE8 regardless of Quirks or Standards
-        // IE9 if quirks
-        try {
-            document.fireEvent('on' + event.eventType.toLowerCase(), event);
-        } catch(e) {}
-    }
-}
-
-var dsnKeys = 'source protocol user pass host port path'.split(' '),
-    dsnPattern = /^(?:(\w+):)?\/\/(\w+)(:\w+)?@([\w\.-]+)(?::(\d+))?(\/.*)/;
-
-function RavenConfigError(message) {
-    this.name = 'RavenConfigError';
-    this.message = message;
-}
-RavenConfigError.prototype = new Error();
-RavenConfigError.prototype.constructor = RavenConfigError;
-
-/**** Private functions ****/
-function parseDSN(str) {
-    var m = dsnPattern.exec(str),
-        dsn = {},
-        i = 7;
-
-    try {
-        while (i--) dsn[dsnKeys[i]] = m[i] || '';
-    } catch(e) {
-        throw new RavenConfigError('Invalid DSN: ' + str);
-    }
-
-    if (dsn.pass)
-        throw new RavenConfigError('Do not specify your private key in the DSN!');
-
-    return dsn;
-}
-
-function isUndefined(what) {
-    return typeof what === 'undefined';
-}
-
-function isFunction(what) {
-    return typeof what === 'function';
-}
-
-function isString(what) {
-    return typeof what === 'string';
-}
-
-function isEmptyObject(what) {
-    for (var k in what) return false;
-    return true;
-}
-
-/**
- * hasKey, a better form of hasOwnProperty
- * Example: hasKey(MainHostObject, property) === true/false
- *
- * @param {Object} host object to check property
- * @param {string} key to check
- */
-function hasKey(object, key) {
-    return Object.prototype.hasOwnProperty.call(object, key);
-}
-
-function each(obj, callback) {
-    var i, j;
-
-    if (isUndefined(obj.length)) {
-        for (i in obj) {
-            if (obj.hasOwnProperty(i)) {
-                callback.call(null, i, obj[i]);
-            }
-        }
-    } else {
-        j = obj.length;
-        if (j) {
-            for (i = 0; i < j; i++) {
-                callback.call(null, i, obj[i]);
-            }
-        }
-    }
-}
-
-var cachedAuth;
-
-function getAuthQueryString() {
-    if (cachedAuth) return cachedAuth;
-
-    var qs = [
-        'sentry_version=4',
-        'sentry_client=raven-js/' + Raven.VERSION
-    ];
-    if (globalKey) {
-        qs.push('sentry_key=' + globalKey);
-    }
-
-    cachedAuth = '?' + qs.join('&');
-    return cachedAuth;
-}
-
-function handleStackInfo(stackInfo, options) {
-    var frames = [];
-
-    if (stackInfo.stack && stackInfo.stack.length) {
-        each(stackInfo.stack, function(i, stack) {
-            var frame = normalizeFrame(stack);
-            if (frame) {
-                frames.push(frame);
-            }
-        });
-    }
-
-    triggerEvent('handle', {
-        stackInfo: stackInfo,
-        options: options
-    });
-
-    processException(
-        stackInfo.name,
-        stackInfo.message,
-        stackInfo.url,
-        stackInfo.lineno,
-        frames,
-        options
-    );
-}
-
-function normalizeFrame(frame) {
-    if (!frame.url) return;
-
-    // normalize the frames data
-    var normalized = {
-        filename:   frame.url,
-        lineno:     frame.line,
-        colno:      frame.column,
-        'function': frame.func || '?'
-    }, context = extractContextFromFrame(frame), i;
-
-    if (context) {
-        var keys = ['pre_context', 'context_line', 'post_context'];
-        i = 3;
-        while (i--) normalized[keys[i]] = context[i];
-    }
-
-    normalized.in_app = !( // determine if an exception came from outside of our app
-        // first we check the global includePaths list.
-        !globalOptions.includePaths.test(normalized.filename) ||
-        // Now we check for fun, if the function name is Raven or TraceKit
-        /(Raven|TraceKit)\./.test(normalized['function']) ||
-        // finally, we do a last ditch effort and check for raven.min.js
-        /raven\.(min\.)js$/.test(normalized.filename)
-    );
-
-    return normalized;
-}
-
-function extractContextFromFrame(frame) {
-    // immediately check if we should even attempt to parse a context
-    if (!frame.context || !globalOptions.fetchContext) return;
-
-    var context = frame.context,
-        pivot = ~~(context.length / 2),
-        i = context.length, isMinified = false;
-
-    while (i--) {
-        // We're making a guess to see if the source is minified or not.
-        // To do that, we make the assumption if *any* of the lines passed
-        // in are greater than 300 characters long, we bail.
-        // Sentry will see that there isn't a context
-        if (context[i].length > 300) {
-            isMinified = true;
-            break;
-        }
-    }
-
-    if (isMinified) {
-        // The source is minified and we don't know which column. Fuck it.
-        if (isUndefined(frame.column)) return;
-
-        // If the source is minified and has a frame column
-        // we take a chunk of the offending line to hopefully shed some light
-        return [
-            [],  // no pre_context
-            context[pivot].substr(frame.column, 50), // grab 50 characters, starting at the offending column
-            []   // no post_context
-        ];
-    }
-
-    return [
-        context.slice(0, pivot),    // pre_context
-        context[pivot],             // context_line
-        context.slice(pivot + 1)    // post_context
-    ];
-}
-
-function processException(type, message, fileurl, lineno, frames, options) {
-    var stacktrace, label, i;
-
-    // Sometimes an exception is getting logged in Sentry as
-    // <no message value>
-    // This can only mean that the message was falsey since this value
-    // is hardcoded into Sentry itself.
-    // At this point, if the message is falsey, we bail since it's useless
-    if (!message) return;
-
-    if (globalOptions.ignoreErrors.test(message)) return;
-
-    if (frames && frames.length) {
-        fileurl = frames[0].filename || fileurl;
-        // Sentry expects frames oldest to newest
-        // and JS sends them as newest to oldest
-        frames.reverse();
-        stacktrace = {frames: frames};
-    } else if (fileurl) {
-        stacktrace = {
-            frames: [{
-                filename: fileurl,
-                lineno: lineno
-            }]
-        };
-    }
-
-    if (globalOptions.ignoreUrls && globalOptions.ignoreUrls.test(fileurl)) return;
-    if (globalOptions.whitelistUrls && !globalOptions.whitelistUrls.test(fileurl)) return;
-
-    label = lineno ? message + ' at ' + lineno : message;
-
-    // Fire away!
-    send(
-        objectMerge({
-            // sentry.interfaces.Exception
-            exception: {
-                type: type,
-                value: message
-            },
-            // sentry.interfaces.Stacktrace
-            stacktrace: stacktrace,
-            culprit: fileurl,
-            message: label
-        }, options)
-    );
-}
-
-function objectMerge(obj1, obj2) {
-    if (!obj2) {
-        return obj1;
-    }
-    each(obj2, function(key, value){
-        obj1[key] = value;
-    });
-    return obj1;
-}
-
-function getHttpData() {
-    var http = {
-        url: document.location.href,
-        headers: {
-            'User-Agent': navigator.userAgent
-        }
-    };
-
-    if (document.referrer) {
-        http.headers.Referer = document.referrer;
-    }
-
-    return http;
-}
-
-function send(data) {
-    if (!isSetup()) return;
-
-    data = objectMerge({
-        project: globalProject,
-        logger: globalOptions.logger,
-        site: globalOptions.site,
-        platform: 'javascript',
-        // sentry.interfaces.Http
-        request: getHttpData()
-    }, data);
-
-    // Merge in the tags and extra separately since objectMerge doesn't handle a deep merge
-    data.tags = objectMerge(globalOptions.tags, data.tags);
-    data.extra = objectMerge(globalOptions.extra, data.extra);
-
-    // If there are no tags/extra, strip the key from the payload alltogther.
-    if (isEmptyObject(data.tags)) delete data.tags;
-    if (isEmptyObject(data.extra)) delete data.extra;
-
-    if (globalUser) {
-        // sentry.interfaces.User
-        data.user = globalUser;
-    }
-
-    if (isFunction(globalOptions.dataCallback)) {
-        data = globalOptions.dataCallback(data);
-    }
-
-    // Check if the request should be filtered or not
-    if (isFunction(globalOptions.shouldSendCallback) && !globalOptions.shouldSendCallback(data)) {
-        return;
-    }
-
-    // Send along an event_id if not explicitly passed.
-    // This event_id can be used to reference the error within Sentry itself.
-    // Set lastEventId after we know the error should actually be sent
-    lastEventId = data.event_id || (data.event_id = generateUUID4());
-
-    makeRequest(data);
-}
-
-
-function makeRequest(data) {
-    var img = new Image(),
-        src = globalServer + getAuthQueryString() + '&sentry_data=' + encodeURIComponent(JSON.stringify(data));
-
-    img.onload = function success() {
-        triggerEvent('success', {
-            data: data,
-            src: src
-        });
-    };
-    img.onerror = img.onabort = function failure() {
-        triggerEvent('failure', {
-            data: data,
-            src: src
-        });
-    };
-    img.src = src;
-}
-
-function isSetup() {
-    if (!hasJSON) return false;  // needs JSON support
-    if (!globalServer) {
-        if (window.console && console.error) {
-            console.error("Error: Raven has not been configured.");
-        }
-        return false;
-    }
-    return true;
-}
-
-function joinRegExp(patterns) {
-    // Combine an array of regular expressions and strings into one large regexp
-    // Be mad.
-    var sources = [],
-        i = 0, len = patterns.length,
-        pattern;
-
-    for (; i < len; i++) {
-        pattern = patterns[i];
-        if (isString(pattern)) {
-            // If it's a string, we need to escape it
-            // Taken from: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
-            sources.push(pattern.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1"));
-        } else if (pattern && pattern.source) {
-            // If it's a regexp already, we want to extract the source
-            sources.push(pattern.source);
-        }
-        // Intentionally skip other cases
-    }
-    return new RegExp(sources.join('|'), 'i');
-}
-
-// http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/2117523#2117523
-function generateUUID4() {
-    return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random()*16|0,
-            v = c == 'x' ? r : (r&0x3|0x8);
-        return v.toString(16);
-    });
-}
-
-Raven.afterLoad();
-
-// Expose Raven to the world
-window.Raven = Raven;
-
-// AMD
-if (typeof define === 'function' && define.amd) {
-    define('raven', [], function() { return Raven; });
-}
-
-})(window);
-
 //! moment.js
-//! version : 2.10.3
+//! version : 2.10.6
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
@@ -57299,6 +55511,7 @@ if (typeof define === 'function' && define.amd) {
                 flags.overflow < 0 &&
                 !flags.empty &&
                 !flags.invalidMonth &&
+                !flags.invalidWeekday &&
                 !flags.nullInput &&
                 !flags.invalidFormat &&
                 !flags.userInvalidated;
@@ -57379,7 +55592,7 @@ if (typeof define === 'function' && define.amd) {
     // Moment prototype object
     function Moment(config) {
         copyConfig(this, config);
-        this._d = new Date(+config._d);
+        this._d = new Date(config._d != null ? config._d.getTime() : NaN);
         // Prevent infinite loop in case updateOffset creates new moment
         // objects.
         if (updateInProgress === false) {
@@ -57393,16 +55606,20 @@ if (typeof define === 'function' && define.amd) {
         return obj instanceof Moment || (obj != null && obj._isAMomentObject != null);
     }
 
+    function absFloor (number) {
+        if (number < 0) {
+            return Math.ceil(number);
+        } else {
+            return Math.floor(number);
+        }
+    }
+
     function toInt(argumentForCoercion) {
         var coercedNumber = +argumentForCoercion,
             value = 0;
 
         if (coercedNumber !== 0 && isFinite(coercedNumber)) {
-            if (coercedNumber >= 0) {
-                value = Math.floor(coercedNumber);
-            } else {
-                value = Math.ceil(coercedNumber);
-            }
+            value = absFloor(coercedNumber);
         }
 
         return value;
@@ -57500,9 +55717,7 @@ if (typeof define === 'function' && define.amd) {
     function defineLocale (name, values) {
         if (values !== null) {
             values.abbr = name;
-            if (!locales[name]) {
-                locales[name] = new Locale();
-            }
+            locales[name] = locales[name] || new Locale();
             locales[name].set(values);
 
             // backwards compat for now: also set the locale
@@ -57606,16 +55821,14 @@ if (typeof define === 'function' && define.amd) {
     }
 
     function zeroFill(number, targetLength, forceSign) {
-        var output = '' + Math.abs(number),
+        var absNumber = '' + Math.abs(number),
+            zerosToFill = targetLength - absNumber.length,
             sign = number >= 0;
-
-        while (output.length < targetLength) {
-            output = '0' + output;
-        }
-        return (sign ? (forceSign ? '+' : '') : '-') + output;
+        return (sign ? (forceSign ? '+' : '') : '-') +
+            Math.pow(10, Math.max(0, zerosToFill)).toString().substr(1) + absNumber;
     }
 
-    var formattingTokens = /(\[[^\[]*\])|(\\)?(Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Q|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|mm?|ss?|S{1,4}|x|X|zz?|ZZ?|.)/g;
+    var formattingTokens = /(\[[^\[]*\])|(\\)?(Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Q|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g;
 
     var localFormattingTokens = /(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g;
 
@@ -57683,10 +55896,7 @@ if (typeof define === 'function' && define.amd) {
         }
 
         format = expandFormat(format, m.localeData());
-
-        if (!formatFunctions[format]) {
-            formatFunctions[format] = makeFormatFunction(format);
-        }
+        formatFunctions[format] = formatFunctions[format] || makeFormatFunction(format);
 
         return formatFunctions[format](m);
     }
@@ -57730,8 +55940,15 @@ if (typeof define === 'function' && define.amd) {
 
     var regexes = {};
 
+    function isFunction (sth) {
+        // https://github.com/moment/moment/issues/2325
+        return typeof sth === 'function' &&
+            Object.prototype.toString.call(sth) === '[object Function]';
+    }
+
+
     function addRegexToken (token, regex, strictRegex) {
-        regexes[token] = typeof regex === 'function' ? regex : function (isStrict) {
+        regexes[token] = isFunction(regex) ? regex : function (isStrict) {
             return (isStrict && strictRegex) ? strictRegex : regex;
         };
     }
@@ -57939,12 +56156,11 @@ if (typeof define === 'function' && define.amd) {
     }
 
     function deprecate(msg, fn) {
-        var firstTime = true,
-            msgWithStack = msg + '\n' + (new Error()).stack;
+        var firstTime = true;
 
         return extend(function () {
             if (firstTime) {
-                warn(msgWithStack);
+                warn(msg + '\n' + (new Error()).stack);
                 firstTime = false;
             }
             return fn.apply(this, arguments);
@@ -57992,14 +56208,14 @@ if (typeof define === 'function' && define.amd) {
             getParsingFlags(config).iso = true;
             for (i = 0, l = isoDates.length; i < l; i++) {
                 if (isoDates[i][1].exec(string)) {
-                    // match[5] should be 'T' or undefined
-                    config._f = isoDates[i][0] + (match[6] || ' ');
+                    config._f = isoDates[i][0];
                     break;
                 }
             }
             for (i = 0, l = isoTimes.length; i < l; i++) {
                 if (isoTimes[i][1].exec(string)) {
-                    config._f += isoTimes[i][0];
+                    // match[6] should be 'T' or space
+                    config._f += (match[6] || ' ') + isoTimes[i][0];
                     break;
                 }
             }
@@ -58078,7 +56294,10 @@ if (typeof define === 'function' && define.amd) {
     addRegexToken('YYYYY',  match1to6, match6);
     addRegexToken('YYYYYY', match1to6, match6);
 
-    addParseToken(['YYYY', 'YYYYY', 'YYYYYY'], YEAR);
+    addParseToken(['YYYYY', 'YYYYYY'], YEAR);
+    addParseToken('YYYY', function (input, array) {
+        array[YEAR] = input.length === 2 ? utils_hooks__hooks.parseTwoDigitYear(input) : toInt(input);
+    });
     addParseToken('YY', function (input, array) {
         array[YEAR] = utils_hooks__hooks.parseTwoDigitYear(input);
     });
@@ -58205,18 +56424,18 @@ if (typeof define === 'function' && define.amd) {
 
     //http://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
     function dayOfYearFromWeeks(year, week, weekday, firstDayOfWeekOfYear, firstDayOfWeek) {
-        var d = createUTCDate(year, 0, 1).getUTCDay();
-        var daysToAdd;
-        var dayOfYear;
+        var week1Jan = 6 + firstDayOfWeek - firstDayOfWeekOfYear, janX = createUTCDate(year, 0, 1 + week1Jan), d = janX.getUTCDay(), dayOfYear;
+        if (d < firstDayOfWeek) {
+            d += 7;
+        }
 
-        d = d === 0 ? 7 : d;
-        weekday = weekday != null ? weekday : firstDayOfWeek;
-        daysToAdd = firstDayOfWeek - d + (d > firstDayOfWeekOfYear ? 7 : 0) - (d < firstDayOfWeek ? 7 : 0);
-        dayOfYear = 7 * (week - 1) + (weekday - firstDayOfWeek) + daysToAdd + 1;
+        weekday = weekday != null ? 1 * weekday : firstDayOfWeek;
+
+        dayOfYear = 1 + week1Jan + 7 * (week - 1) - d + weekday;
 
         return {
-            year      : dayOfYear > 0 ? year      : year - 1,
-            dayOfYear : dayOfYear > 0 ? dayOfYear : daysInYear(year - 1) + dayOfYear
+            year: dayOfYear > 0 ? year : year - 1,
+            dayOfYear: dayOfYear > 0 ?  dayOfYear : daysInYear(year - 1) + dayOfYear
         };
     }
 
@@ -58502,9 +56721,19 @@ if (typeof define === 'function' && define.amd) {
     }
 
     function createFromConfig (config) {
+        var res = new Moment(checkOverflow(prepareConfig(config)));
+        if (res._nextDay) {
+            // Adding is smart enough around DST
+            res.add(1, 'd');
+            res._nextDay = undefined;
+        }
+
+        return res;
+    }
+
+    function prepareConfig (config) {
         var input = config._i,
-            format = config._f,
-            res;
+            format = config._f;
 
         config._locale = config._locale || locale_locales__getLocale(config._l);
 
@@ -58528,14 +56757,7 @@ if (typeof define === 'function' && define.amd) {
             configFromInput(config);
         }
 
-        res = new Moment(checkOverflow(config));
-        if (res._nextDay) {
-            // Adding is smart enough around DST
-            res.add(1, 'd');
-            res._nextDay = undefined;
-        }
-
-        return res;
+        return config;
     }
 
     function configFromInput(config) {
@@ -58615,7 +56837,7 @@ if (typeof define === 'function' && define.amd) {
         }
         res = moments[0];
         for (i = 1; i < moments.length; ++i) {
-            if (moments[i][fn](res)) {
+            if (!moments[i].isValid() || moments[i][fn](res)) {
                 res = moments[i];
             }
         }
@@ -58727,7 +56949,6 @@ if (typeof define === 'function' && define.amd) {
         } else {
             return local__createLocal(input).local();
         }
-        return model._isUTC ? local__createLocal(input).zone(model._offset || 0) : local__createLocal(input).local();
     }
 
     function getDateOffset (m) {
@@ -58827,12 +57048,7 @@ if (typeof define === 'function' && define.amd) {
     }
 
     function hasAlignedHourOffset (input) {
-        if (!input) {
-            input = 0;
-        }
-        else {
-            input = local__createLocal(input).utcOffset();
-        }
+        input = input ? local__createLocal(input).utcOffset() : 0;
 
         return (this.utcOffset() - input) % 60 === 0;
     }
@@ -58845,12 +57061,24 @@ if (typeof define === 'function' && define.amd) {
     }
 
     function isDaylightSavingTimeShifted () {
-        if (this._a) {
-            var other = this._isUTC ? create_utc__createUTC(this._a) : local__createLocal(this._a);
-            return this.isValid() && compareArrays(this._a, other.toArray()) > 0;
+        if (typeof this._isDSTShifted !== 'undefined') {
+            return this._isDSTShifted;
         }
 
-        return false;
+        var c = {};
+
+        copyConfig(c, this);
+        c = prepareConfig(c);
+
+        if (c._a) {
+            var other = c._isUTC ? create_utc__createUTC(c._a) : local__createLocal(c._a);
+            this._isDSTShifted = this.isValid() &&
+                compareArrays(c._a, other.toArray()) > 0;
+        } else {
+            this._isDSTShifted = false;
+        }
+
+        return this._isDSTShifted;
     }
 
     function isLocal () {
@@ -59010,7 +57238,7 @@ if (typeof define === 'function' && define.amd) {
     var add_subtract__add      = createAdder(1, 'add');
     var add_subtract__subtract = createAdder(-1, 'subtract');
 
-    function moment_calendar__calendar (time) {
+    function moment_calendar__calendar (time, formats) {
         // We want to compare the start of today, vs this.
         // Getting start-of-today depends on whether we're local/utc/offset or not.
         var now = time || local__createLocal(),
@@ -59022,7 +57250,7 @@ if (typeof define === 'function' && define.amd) {
                 diff < 1 ? 'sameDay' :
                 diff < 2 ? 'nextDay' :
                 diff < 7 ? 'nextWeek' : 'sameElse';
-        return this.format(this.localeData().calendar(format, this, local__createLocal(now)));
+        return this.format(formats && formats[format] || this.localeData().calendar(format, this, local__createLocal(now)));
     }
 
     function clone () {
@@ -59066,14 +57294,6 @@ if (typeof define === 'function' && define.amd) {
         } else {
             inputMs = +local__createLocal(input);
             return +(this.clone().startOf(units)) <= inputMs && inputMs <= +(this.clone().endOf(units));
-        }
-    }
-
-    function absFloor (number) {
-        if (number < 0) {
-            return Math.ceil(number);
-        } else {
-            return Math.floor(number);
         }
     }
 
@@ -59267,6 +57487,19 @@ if (typeof define === 'function' && define.amd) {
         return [m.year(), m.month(), m.date(), m.hour(), m.minute(), m.second(), m.millisecond()];
     }
 
+    function toObject () {
+        var m = this;
+        return {
+            years: m.year(),
+            months: m.month(),
+            date: m.date(),
+            hours: m.hours(),
+            minutes: m.minutes(),
+            seconds: m.seconds(),
+            milliseconds: m.milliseconds()
+        };
+    }
+
     function moment_valid__isValid () {
         return valid__isValid(this);
     }
@@ -59438,18 +57671,20 @@ if (typeof define === 'function' && define.amd) {
     // HELPERS
 
     function parseWeekday(input, locale) {
-        if (typeof input === 'string') {
-            if (!isNaN(input)) {
-                input = parseInt(input, 10);
-            }
-            else {
-                input = locale.weekdaysParse(input);
-                if (typeof input !== 'number') {
-                    return null;
-                }
-            }
+        if (typeof input !== 'string') {
+            return input;
         }
-        return input;
+
+        if (!isNaN(input)) {
+            return parseInt(input, 10);
+        }
+
+        input = locale.weekdaysParse(input);
+        if (typeof input === 'number') {
+            return input;
+        }
+
+        return null;
     }
 
     // LOCALES
@@ -59472,9 +57707,7 @@ if (typeof define === 'function' && define.amd) {
     function localeWeekdaysParse (weekdayName) {
         var i, mom, regex;
 
-        if (!this._weekdaysParse) {
-            this._weekdaysParse = [];
-        }
+        this._weekdaysParse = this._weekdaysParse || [];
 
         for (i = 0; i < 7; i++) {
             // make the regex if we don't have it already
@@ -59621,12 +57854,26 @@ if (typeof define === 'function' && define.amd) {
         return ~~(this.millisecond() / 10);
     });
 
-    function millisecond__milliseconds (token) {
-        addFormatToken(0, [token, 3], 0, 'millisecond');
-    }
+    addFormatToken(0, ['SSS', 3], 0, 'millisecond');
+    addFormatToken(0, ['SSSS', 4], 0, function () {
+        return this.millisecond() * 10;
+    });
+    addFormatToken(0, ['SSSSS', 5], 0, function () {
+        return this.millisecond() * 100;
+    });
+    addFormatToken(0, ['SSSSSS', 6], 0, function () {
+        return this.millisecond() * 1000;
+    });
+    addFormatToken(0, ['SSSSSSS', 7], 0, function () {
+        return this.millisecond() * 10000;
+    });
+    addFormatToken(0, ['SSSSSSSS', 8], 0, function () {
+        return this.millisecond() * 100000;
+    });
+    addFormatToken(0, ['SSSSSSSSS', 9], 0, function () {
+        return this.millisecond() * 1000000;
+    });
 
-    millisecond__milliseconds('SSS');
-    millisecond__milliseconds('SSSS');
 
     // ALIASES
 
@@ -59637,11 +57884,19 @@ if (typeof define === 'function' && define.amd) {
     addRegexToken('S',    match1to3, match1);
     addRegexToken('SS',   match1to3, match2);
     addRegexToken('SSS',  match1to3, match3);
-    addRegexToken('SSSS', matchUnsigned);
-    addParseToken(['S', 'SS', 'SSS', 'SSSS'], function (input, array) {
-        array[MILLISECOND] = toInt(('0.' + input) * 1000);
-    });
 
+    var token;
+    for (token = 'SSSS'; token.length <= 9; token += 'S') {
+        addRegexToken(token, matchUnsigned);
+    }
+
+    function parseMs(input, array) {
+        array[MILLISECOND] = toInt(('0.' + input) * 1000);
+    }
+
+    for (token = 'S'; token.length <= 9; token += 'S') {
+        addParseToken(token, parseMs);
+    }
     // MOMENTS
 
     var getSetMillisecond = makeGetSet('Milliseconds', false);
@@ -59688,6 +57943,7 @@ if (typeof define === 'function' && define.amd) {
     momentPrototype__proto.startOf      = startOf;
     momentPrototype__proto.subtract     = add_subtract__subtract;
     momentPrototype__proto.toArray      = toArray;
+    momentPrototype__proto.toObject     = toObject;
     momentPrototype__proto.toDate       = toDate;
     momentPrototype__proto.toISOString  = moment_format__toISOString;
     momentPrototype__proto.toJSON       = moment_format__toISOString;
@@ -59787,19 +58043,23 @@ if (typeof define === 'function' && define.amd) {
         LT   : 'h:mm A',
         L    : 'MM/DD/YYYY',
         LL   : 'MMMM D, YYYY',
-        LLL  : 'MMMM D, YYYY LT',
-        LLLL : 'dddd, MMMM D, YYYY LT'
+        LLL  : 'MMMM D, YYYY h:mm A',
+        LLLL : 'dddd, MMMM D, YYYY h:mm A'
     };
 
     function longDateFormat (key) {
-        var output = this._longDateFormat[key];
-        if (!output && this._longDateFormat[key.toUpperCase()]) {
-            output = this._longDateFormat[key.toUpperCase()].replace(/MMMM|MM|DD|dddd/g, function (val) {
-                return val.slice(1);
-            });
-            this._longDateFormat[key] = output;
+        var format = this._longDateFormat[key],
+            formatUpper = this._longDateFormat[key.toUpperCase()];
+
+        if (format || !formatUpper) {
+            return format;
         }
-        return output;
+
+        this._longDateFormat[key] = formatUpper.replace(/MMMM|MM|DD|dddd/g, function (val) {
+            return val.slice(1);
+        });
+
+        return this._longDateFormat[key];
     }
 
     var defaultInvalidDate = 'Invalid date';
@@ -60008,12 +58268,29 @@ if (typeof define === 'function' && define.amd) {
         return duration_add_subtract__addSubtract(this, input, value, -1);
     }
 
+    function absCeil (number) {
+        if (number < 0) {
+            return Math.floor(number);
+        } else {
+            return Math.ceil(number);
+        }
+    }
+
     function bubble () {
         var milliseconds = this._milliseconds;
         var days         = this._days;
         var months       = this._months;
         var data         = this._data;
-        var seconds, minutes, hours, years = 0;
+        var seconds, minutes, hours, years, monthsFromDays;
+
+        // if we have a mix of positive and negative values, bubble down first
+        // check: https://github.com/moment/moment/issues/2166
+        if (!((milliseconds >= 0 && days >= 0 && months >= 0) ||
+                (milliseconds <= 0 && days <= 0 && months <= 0))) {
+            milliseconds += absCeil(monthsToDays(months) + days) * 864e5;
+            days = 0;
+            months = 0;
+        }
 
         // The following code bubbles up values, see the tests for
         // examples of what that means.
@@ -60030,17 +58307,13 @@ if (typeof define === 'function' && define.amd) {
 
         days += absFloor(hours / 24);
 
-        // Accurately convert days to years, assume start from year 0.
-        years = absFloor(daysToYears(days));
-        days -= absFloor(yearsToDays(years));
-
-        // 30 days to a month
-        // TODO (iskren): Use anchor date (like 1st Jan) to compute this.
-        months += absFloor(days / 30);
-        days   %= 30;
+        // convert days to months
+        monthsFromDays = absFloor(daysToMonths(days));
+        months += monthsFromDays;
+        days -= absCeil(monthsToDays(monthsFromDays));
 
         // 12 months -> 1 year
-        years  += absFloor(months / 12);
+        years = absFloor(months / 12);
         months %= 12;
 
         data.days   = days;
@@ -60050,15 +58323,15 @@ if (typeof define === 'function' && define.amd) {
         return this;
     }
 
-    function daysToYears (days) {
+    function daysToMonths (days) {
         // 400 years have 146097 days (taking into account leap year rules)
-        return days * 400 / 146097;
+        // 400 years have 12 months === 4800
+        return days * 4800 / 146097;
     }
 
-    function yearsToDays (years) {
-        // years * 365 + absFloor(years / 4) -
-        //     absFloor(years / 100) + absFloor(years / 400);
-        return years * 146097 / 400;
+    function monthsToDays (months) {
+        // the reverse of daysToMonths
+        return months * 146097 / 4800;
     }
 
     function as (units) {
@@ -60070,11 +58343,11 @@ if (typeof define === 'function' && define.amd) {
 
         if (units === 'month' || units === 'year') {
             days   = this._days   + milliseconds / 864e5;
-            months = this._months + daysToYears(days) * 12;
+            months = this._months + daysToMonths(days);
             return units === 'month' ? months : months / 12;
         } else {
             // handle milliseconds separately because of floating point math errors (issue #1867)
-            days = this._days + Math.round(yearsToDays(this._months / 12));
+            days = this._days + Math.round(monthsToDays(this._months));
             switch (units) {
                 case 'week'   : return days / 7     + milliseconds / 6048e5;
                 case 'day'    : return days         + milliseconds / 864e5;
@@ -60124,7 +58397,7 @@ if (typeof define === 'function' && define.amd) {
         };
     }
 
-    var duration_get__milliseconds = makeGetter('milliseconds');
+    var milliseconds = makeGetter('milliseconds');
     var seconds      = makeGetter('seconds');
     var minutes      = makeGetter('minutes');
     var hours        = makeGetter('hours');
@@ -60202,13 +58475,36 @@ if (typeof define === 'function' && define.amd) {
     var iso_string__abs = Math.abs;
 
     function iso_string__toISOString() {
+        // for ISO strings we do not use the normal bubbling rules:
+        //  * milliseconds bubble up until they become hours
+        //  * days do not bubble at all
+        //  * months bubble up until they become years
+        // This is because there is no context-free conversion between hours and days
+        // (think of clock changes)
+        // and also not between days and months (28-31 days per month)
+        var seconds = iso_string__abs(this._milliseconds) / 1000;
+        var days         = iso_string__abs(this._days);
+        var months       = iso_string__abs(this._months);
+        var minutes, hours, years;
+
+        // 3600 seconds -> 60 minutes -> 1 hour
+        minutes           = absFloor(seconds / 60);
+        hours             = absFloor(minutes / 60);
+        seconds %= 60;
+        minutes %= 60;
+
+        // 12 months -> 1 year
+        years  = absFloor(months / 12);
+        months %= 12;
+
+
         // inspired by https://github.com/dordille/moment-isoduration/blob/master/moment.isoduration.js
-        var Y = iso_string__abs(this.years());
-        var M = iso_string__abs(this.months());
-        var D = iso_string__abs(this.days());
-        var h = iso_string__abs(this.hours());
-        var m = iso_string__abs(this.minutes());
-        var s = iso_string__abs(this.seconds() + this.milliseconds() / 1000);
+        var Y = years;
+        var M = months;
+        var D = days;
+        var h = hours;
+        var m = minutes;
+        var s = seconds;
         var total = this.asSeconds();
 
         if (!total) {
@@ -60245,7 +58541,7 @@ if (typeof define === 'function' && define.amd) {
     duration_prototype__proto.valueOf        = duration_as__valueOf;
     duration_prototype__proto._bubble        = bubble;
     duration_prototype__proto.get            = duration_get__get;
-    duration_prototype__proto.milliseconds   = duration_get__milliseconds;
+    duration_prototype__proto.milliseconds   = milliseconds;
     duration_prototype__proto.seconds        = seconds;
     duration_prototype__proto.minutes        = minutes;
     duration_prototype__proto.hours          = hours;
@@ -60283,7 +58579,7 @@ if (typeof define === 'function' && define.amd) {
     // Side effect imports
 
 
-    utils_hooks__hooks.version = '2.10.3';
+    utils_hooks__hooks.version = '2.10.6';
 
     setHookCallback(local__createLocal);
 
@@ -74328,6 +72624,115 @@ angular.module('ui.bootstrap.datetimepicker', [])
       }
     };
   }]);
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var InstagramEmbedProcessor = function ($element, options) {
+  this._settings = $.extend({
+    instagramEmbedScriptUrl: '//platform.instagram.com/en_US/embeds.js'
+  }, options);
+  this.$container = $element;
+  this.$container.data('pluginInstagramEmbedProcessor', this);
+
+  this.$container.attr('instagram-processor-version', this._getVersion());
+};
+
+// store deferred for getting instagram object, use same deferred accross all instances
+InstagramEmbedProcessor.prototype._shared = {instagramLoaded: null};
+
+InstagramEmbedProcessor.prototype._getInstagramEmbedScript = function () {
+  if (!this._shared.instagramLoaded || this._shared.instagramLoaded.state() === 'rejected') {
+
+    this._shared.instagramLoaded = $.Deferred();
+
+    var self = this;
+    $.getScript(this._settings.instagramEmbedScriptUrl)
+      .done(function () {
+        self._shared.instagramLoaded.resolve();
+      })
+      .fail(function () {
+        self._shared.instagramLoaded.reject(arguments);
+        console.error('Unable to load instagram embed script!', arguments);
+      });
+  }
+
+  return this._shared.instagramLoaded.promise();
+};
+
+InstagramEmbedProcessor.prototype._sanitizeHtml = function (unsanitizedHtml) {
+  var html;
+  if (typeof(unsanitizedHtml) === 'string') {
+    html = unsanitizedHtml;
+  } else {
+    html = unescape(this.$container.attr('instagram-embed-html-unsanitized'));
+    this.$container.attr('instagram-embed-html-unsanitized', '');
+  }
+
+  return $(html).not('script').prop('outerHTML');
+};
+
+InstagramEmbedProcessor.prototype._getVersion = function () {
+  return '1.0.0';
+};
+
+InstagramEmbedProcessor.prototype.html = function (unescapedHtml) {
+  if (typeof(unescapedHtml) === 'string') {
+    this.$container.attr('instagram-embed-html', escape(unescapedHtml));
+  }
+
+  return unescape(this.$container.attr('instagram-embed-html'));
+};
+
+InstagramEmbedProcessor.prototype.isRendered = function (val) {
+  return this.$container.data('instagramEmbedRendered') === true;
+};
+
+InstagramEmbedProcessor.prototype.prep = function (embedHtml) {
+  var sanitized = this._sanitizeHtml(embedHtml);
+  this.html(sanitized);
+};
+
+InstagramEmbedProcessor.prototype.insertUnrenderedHtml = function () {
+  this.$container.html(this.html());
+};
+
+InstagramEmbedProcessor.prototype.render = function () {
+  var rendered;
+
+  if (!this.isRendered()) {
+    this.insertUnrenderedHtml();
+
+    var self = this;
+    rendered = this._getInstagramEmbedScript().done(function () {
+      instgrm.Embeds.process();
+
+      self.$container.data('instagramEmbedRendered', true);
+    });
+  } else {
+    rendered = this._getInstagramEmbedScript();
+  }
+
+  return rendered;
+};
+
+InstagramEmbedProcessor.prototype.clear = function () {
+  this.$container.empty();
+  this.$container.data('instagramEmbedRendered', false);
+};
+
+var createInstagramEmbedProcessor = function (options) {
+  this.each(function () {
+    var $this = $(this);
+    if (!$this.data('pluginInstagramEmbedProcessor')) {
+      $this.data('pluginInstagramEmbedProcessor', new InstagramEmbedProcessor($this, options));
+    }
+  });
+
+  return this;
+};
+
+$.fn.instagramEmbedProcessor = createInstagramEmbedProcessor;
+
+},{}]},{},[1]);
+
 // wrap-start.frag.js
 (function (global, factory) {
   if (typeof define === 'function') {
@@ -84395,12 +82800,15 @@ define('scribe-plugin-inline-objects',[],function () {
           scribe.trigger('inline:insert:' + objectType, [
             function(values) {
               scribe.updateContents(function() {
-                var html = render(
+                var $newEl = $(render(
                     templates[objectType].template,
                     $.extend(templates[objectType].defaults, values)
-                );
-                $(elementToPlaceNear)[beforeOrAfter](html);
-                $('.inline', editorEl).attr('contenteditable', 'false');
+                ));
+
+                $(elementToPlaceNear)[beforeOrAfter]($newEl);
+                $('.inline', editorEl).attr('contenteditable', false);
+
+                scribe.trigger('inline:insert:' + objectType + ':done', [$newEl]);
               });
             }
           ]);
@@ -84568,12 +82976,15 @@ define('scribe-plugin-inline-objects',[],function () {
                 activeElement,
                 function(element, values) {
                   var type = $(element).attr('data-type');
+
                   scribe.updateContents(function() {
                     element.outerHTML =
                       render(
                         templates[type].template,
                         $.extend(templates[type].defaults, values)
                       );
+
+                    scribe.trigger('inline:edit:' + type + ':done', [$(activeElement)]);
                   });
                 }
               ]
@@ -84623,6 +83034,7 @@ define('scribe-plugin-inline-objects',[],function () {
     };
   };
 });
+
 
 define('scribe-plugin-betty-cropper',[],function () {
   return function (config) {
@@ -84828,6 +83240,89 @@ define('scribe-plugin-embed',[],function () {
     };
   }
 });
+define('scribe-plugin-embed-instagram', [], function () {
+
+  return function (config) {
+    return function (scribe) {
+      var $modal = $(scribe.el.parentNode).find('.embed-modal');
+      var $modalCaption = $modal.find('.embed-caption');
+      var $modalError = $modal.find('.embed-error');
+      var $modalInput = $modal.find('.embed-body');
+      var $modalOk = $modal.find('.set-embed-button');
+
+      $modal.on('hide.bs.modal', function () {
+        $modalOk.off('click');
+        $modalError.hide();
+      });
+
+      var insert = function (callback) {
+        $modalInput.val('');
+        $modalCaption.val('');
+
+        $modalOk.on('click', function () {
+          var html = $modalInput.val();
+
+          if (!html.trim()) {
+            $modalError.show();
+          } else {
+            $modalError.hide();
+
+            callback({
+              html: escape(html),
+              caption: $modalCaption.val()
+            });
+
+            $modal.modal('hide');
+          }
+        });
+        $modal.modal('show');
+      };
+
+      var edit = function (block, callback) {
+        var $block = $(block);
+        var $embedContainer = $block.children('.embed-container');
+        var processor = $embedContainer
+            .instagramEmbedProcessor()
+            .data('pluginInstagramEmbedProcessor');
+
+        $modalInput.val(processor.html());
+        $modalCaption.val($block.children('.caption').text());
+
+        $modalOk.on('click', function () {
+          var html = $modalInput.val();
+
+          if (!html.trim()) {
+            $modalError.show();
+          } else {
+            $modalError.hide();
+
+            callback(block, {
+              html: escape(html),
+              caption: $modalCaption.val()
+            });
+
+            $modal.modal('hide');
+          }
+        });
+        $modal.modal('show');
+      };
+
+      var after = function ($inserted) {
+        var $embedContainer = $inserted.find('.embed-container');
+        var processor = $embedContainer
+            .instagramEmbedProcessor()
+            .data('pluginInstagramEmbedProcessor');
+        processor.prep();
+      };
+
+      scribe.on('inline:insert:embed-instagram', insert);
+      scribe.on('inline:insert:embed-instagram:done', after);
+      scribe.on('inline:edit:embed-instagram', edit);
+      scribe.on('inline:edit:embed-instagram:done', after);
+    };
+  };
+});
+
 define('scribe-plugin-onion-video',[],function () {
   return function (config) {
     return function (scribe) {
@@ -85502,6 +83997,7 @@ define('onion-editor',[
   'scribe-plugin-betty-cropper',
   'scribe-plugin-youtube',
   'scribe-plugin-embed',
+  'scribe-plugin-embed-instagram',
   'scribe-plugin-onion-video',
   'scribe-plugin-hr',
   'scribe-plugin-placeholder',
@@ -85533,6 +84029,7 @@ define('onion-editor',[
   scribePluginBettyCropper,
   scribePluginYoutube,
   scribePluginEmbed,
+  scribePluginEmbedInstagram,
   scribePluginOnionVideo,
   scribePluginHr,
   scribePluginPlaceholder,
@@ -85572,8 +84069,8 @@ define('onion-editor',[
   function OnionEditor(element, options) {
     options = $.extend(defaults, options);
     $('.inline', element).attr('contenteditable', 'false');
-  
-    var scribe = new Scribe(element, { allowBlockElements: options.multiline });      
+
+    var scribe = new Scribe(element, { allowBlockElements: options.multiline });
 
     /* if a node running through the sanitizer passes this test, it won't get sanitized true */
     function skipSanitization(node) {
@@ -85657,7 +84154,7 @@ define('onion-editor',[
       }
     };
     scribe.commandPatches['italic'] = italicCommand;
-    
+
     var underlineCommand = new scribe.api.CommandPatch('underline');
     underlineCommand.execute = function (value) {
       if (this.selection === undefined) {
@@ -85676,7 +84173,7 @@ define('onion-editor',[
 
     // Allowable Tags
     var tags = {};
-    
+
     // Multiline
     if (options.multiline) {
       tags.p = {'id': true};
@@ -85706,13 +84203,13 @@ define('onion-editor',[
       tags.s = {'id': true};
     }
 
-    // Underline 
+    // Underline
     if (options.formatting.indexOf('underline') !== -1) {
       keyCommands.underline = function (event) { return event.metaKey && event.keyCode === 85; }; // u
       tags.u = {'id': true};
     }
 
-    // Remove formatting... 
+    // Remove formatting...
     keyCommands.removeFormat = function (event) { return event.altKey && event.shiftKey && event.keyCode === 65; }; // a
 
     // Links
@@ -85729,7 +84226,7 @@ define('onion-editor',[
     if (options.multiline && options.formatting.indexOf('list') !== -1) {
       keyCommands.insertUnorderedList = function (event) { return event.altKey && event.shiftKey && event.keyCode === 66; }; // b
       keyCommands.insertOrderedList = function (event) { return event.altKey && event.shiftKey && event.keyCode === 78; }; // n
-      
+
       scribe.use(scribePluginSmartLists());
       tags.ol = {id:true};
       tags.ul = {id:true};
@@ -85757,12 +84254,13 @@ define('onion-editor',[
     // Inline Objects
     if (options.multiline && options.inlineObjects) {
       scribe.use(scribePluginInlineObjects(options.inlineObjects));
-      
+
       // Maybe make optionally load these similar to formatting. For now, it's an all or nothing.
 
       scribe.use(scribePluginBettyCropper(options.image));
       scribe.use(scribePluginYoutube());
       scribe.use(scribePluginEmbed());
+      scribe.use(scribePluginEmbedInstagram());
       scribe.use(scribePluginHr());
       scribe.use(scribePluginAnchor());
       scribe.use(scribePluginOnionVideo(options.video));
@@ -85778,8 +84276,8 @@ define('onion-editor',[
     scribe.use(pasteSanitize());
     scribe.use(pasteStripNewlines());
     scribe.use(pasteStripNbsps());
-    // Word count 
-    
+    // Word count
+
     if (options.statsContainer) {
       setInterval(function () {
         $(options.statsContainer).html(
@@ -85789,35 +84287,35 @@ define('onion-editor',[
     }
 
 
-    /* This is necessary for a few dumb reasons. Scribe's transaction manager doesn't work when there 
+    /* This is necessary for a few dumb reasons. Scribe's transaction manager doesn't work when there
       ins't a selection inside of the editor. This means any changes made when the editor ins't in focus,
-      like adding an image, stuff breaks. This works around that particular issue. 
+      like adding an image, stuff breaks. This works around that particular issue.
 
       I'm not really sure the right way to fix this or how to avoid this problem.
 
-      The scroll stuff is a consequence of this. 
+      The scroll stuff is a consequence of this.
     */
     scribe.updateContents = function(fn, skipFormatters) {
-      // Default is to skipFormatters. Only place this needs to be set to false is when updating links. 
-      // We want formatters to run on links. Embeds & other shit seem to get sanitized 
+      // Default is to skipFormatters. Only place this needs to be set to false is when updating links.
+      // We want formatters to run on links. Embeds & other shit seem to get sanitized
       // despite there being safegaurds for that.
       if (typeof skipFormatters === 'undefined') {
         skipFormatters = true;
       }
       scribe._skipFormatters = skipFormatters;
       var scrollY = window.scrollY;
-      setTimeout(function() {        
+      setTimeout(function() {
         scribe.el.focus();
         setTimeout(function() {
           scribe.transactionManager.run(fn);
           window.scrollTo(0, scrollY);
 
-          // This should notify any changes that happen outside of typing 
+          // This should notify any changes that happen outside of typing
           scribe.trigger('content-changed');
         }, 20);
       }, 20);
     };
-    
+
     scribe.use(scribePluginCurlyQuotes());
     scribe.use(scribePluginKeyboardShortcuts(Object.freeze(keyCommands)));
 
@@ -85829,14 +84327,14 @@ define('onion-editor',[
       $('.document-tools .toolbar-contents', element.parentNode).hide();
     }
 
-    // a little hacky to prevent deletion of images and other inline elements via the backspace key. 
+    // a little hacky to prevent deletion of images and other inline elements via the backspace key.
     scribe.el.addEventListener('keydown', function(event) {
       if (event.keyCode === 8) {
         // is the previous immediate child of editor an inline item?
         var sel = new scribe.api.Selection();
         var prev = $(sel.selection.anchorNode).closest('.editor>*').prev();
-        if (prev.hasClass('inline') 
-          && sel.selection.anchorOffset === 0 
+        if (prev.hasClass('inline')
+          && sel.selection.anchorOffset === 0
           && sel.selection.isCollapsed) {
           event.preventDefault();
         }
@@ -85846,7 +84344,7 @@ define('onion-editor',[
     scribe.use(scribePluginFormatterPlainTextConvertNewLinesToHtml());
 
     this.setChangeHandler = function(func) {
-      scribe.on('content-changed', func); 
+      scribe.on('content-changed', func);
     };
 
     this.setContent = function(content) {
@@ -85867,7 +84365,7 @@ define('onion-editor',[
 
     this.scribe = scribe;
     return this;
-  } 
+  }
 
   return OnionEditor;
 
@@ -85876,6 +84374,1803 @@ define('onion-editor',[
   // wrap-end.frag
   return require('onion-editor');
 }));
+/*! Raven.js 1.1.11 (11645a0) | github.com/getsentry/raven-js */
+
+/*
+ * Includes TraceKit
+ * https://github.com/getsentry/TraceKit
+ *
+ * Copyright 2014 Matt Robenolt and other contributors
+ * Released under the BSD license
+ * https://github.com/getsentry/raven-js/blob/master/LICENSE
+ *
+ */
+;(function(window, undefined){
+'use strict';
+
+/*
+ TraceKit - Cross brower stack traces - github.com/occ/TraceKit
+ MIT license
+*/
+
+var TraceKit = {
+    remoteFetching: false,
+    collectWindowErrors: true,
+    // 3 lines before, the offending line, 3 lines after
+    linesOfContext: 7
+};
+
+// global reference to slice
+var _slice = [].slice;
+var UNKNOWN_FUNCTION = '?';
+
+
+/**
+ * TraceKit.wrap: Wrap any function in a TraceKit reporter
+ * Example: func = TraceKit.wrap(func);
+ *
+ * @param {Function} func Function to be wrapped
+ * @return {Function} The wrapped func
+ */
+TraceKit.wrap = function traceKitWrapper(func) {
+    function wrapped() {
+        try {
+            return func.apply(this, arguments);
+        } catch (e) {
+            TraceKit.report(e);
+            throw e;
+        }
+    }
+    return wrapped;
+};
+
+/**
+ * TraceKit.report: cross-browser processing of unhandled exceptions
+ *
+ * Syntax:
+ *   TraceKit.report.subscribe(function(stackInfo) { ... })
+ *   TraceKit.report.unsubscribe(function(stackInfo) { ... })
+ *   TraceKit.report(exception)
+ *   try { ...code... } catch(ex) { TraceKit.report(ex); }
+ *
+ * Supports:
+ *   - Firefox: full stack trace with line numbers, plus column number
+ *              on top frame; column number is not guaranteed
+ *   - Opera:   full stack trace with line and column numbers
+ *   - Chrome:  full stack trace with line and column numbers
+ *   - Safari:  line and column number for the top frame only; some frames
+ *              may be missing, and column number is not guaranteed
+ *   - IE:      line and column number for the top frame only; some frames
+ *              may be missing, and column number is not guaranteed
+ *
+ * In theory, TraceKit should work on all of the following versions:
+ *   - IE5.5+ (only 8.0 tested)
+ *   - Firefox 0.9+ (only 3.5+ tested)
+ *   - Opera 7+ (only 10.50 tested; versions 9 and earlier may require
+ *     Exceptions Have Stacktrace to be enabled in opera:config)
+ *   - Safari 3+ (only 4+ tested)
+ *   - Chrome 1+ (only 5+ tested)
+ *   - Konqueror 3.5+ (untested)
+ *
+ * Requires TraceKit.computeStackTrace.
+ *
+ * Tries to catch all unhandled exceptions and report them to the
+ * subscribed handlers. Please note that TraceKit.report will rethrow the
+ * exception. This is REQUIRED in order to get a useful stack trace in IE.
+ * If the exception does not reach the top of the browser, you will only
+ * get a stack trace from the point where TraceKit.report was called.
+ *
+ * Handlers receive a stackInfo object as described in the
+ * TraceKit.computeStackTrace docs.
+ */
+TraceKit.report = (function reportModuleWrapper() {
+    var handlers = [],
+        lastArgs = null,
+        lastException = null,
+        lastExceptionStack = null;
+
+    /**
+     * Add a crash handler.
+     * @param {Function} handler
+     */
+    function subscribe(handler) {
+        installGlobalHandler();
+        handlers.push(handler);
+    }
+
+    /**
+     * Remove a crash handler.
+     * @param {Function} handler
+     */
+    function unsubscribe(handler) {
+        for (var i = handlers.length - 1; i >= 0; --i) {
+            if (handlers[i] === handler) {
+                handlers.splice(i, 1);
+            }
+        }
+    }
+
+    /**
+     * Remove all crash handlers.
+     */
+    function unsubscribeAll() {
+        uninstallGlobalHandler();
+        handlers = [];
+    }
+
+    /**
+     * Dispatch stack information to all handlers.
+     * @param {Object.<string, *>} stack
+     */
+    function notifyHandlers(stack, isWindowError) {
+        var exception = null;
+        if (isWindowError && !TraceKit.collectWindowErrors) {
+          return;
+        }
+        for (var i in handlers) {
+            if (hasKey(handlers, i)) {
+                try {
+                    handlers[i].apply(null, [stack].concat(_slice.call(arguments, 2)));
+                } catch (inner) {
+                    exception = inner;
+                }
+            }
+        }
+
+        if (exception) {
+            throw exception;
+        }
+    }
+
+    var _oldOnerrorHandler, _onErrorHandlerInstalled;
+
+    /**
+     * Ensures all global unhandled exceptions are recorded.
+     * Supported by Gecko and IE.
+     * @param {string} message Error message.
+     * @param {string} url URL of script that generated the exception.
+     * @param {(number|string)} lineNo The line number at which the error
+     * occurred.
+     * @param {?(number|string)} colNo The column number at which the error
+     * occurred.
+     * @param {?Error} ex The actual Error object.
+     */
+    function traceKitWindowOnError(message, url, lineNo, colNo, ex) {
+        var stack = null;
+
+        if (lastExceptionStack) {
+            TraceKit.computeStackTrace.augmentStackTraceWithInitialElement(lastExceptionStack, url, lineNo, message);
+            processLastException();
+        } else if (ex) {
+            // New chrome and blink send along a real error object
+            // Let's just report that like a normal error.
+            // See: https://mikewest.org/2013/08/debugging-runtime-errors-with-window-onerror
+            stack = TraceKit.computeStackTrace(ex);
+            notifyHandlers(stack, true);
+        } else {
+            var location = {
+                'url': url,
+                'line': lineNo,
+                'column': colNo
+            };
+            location.func = TraceKit.computeStackTrace.guessFunctionName(location.url, location.line);
+            location.context = TraceKit.computeStackTrace.gatherContext(location.url, location.line);
+            stack = {
+                'message': message,
+                'url': document.location.href,
+                'stack': [location]
+            };
+            notifyHandlers(stack, true);
+        }
+
+        if (_oldOnerrorHandler) {
+            return _oldOnerrorHandler.apply(this, arguments);
+        }
+
+        return false;
+    }
+
+    function installGlobalHandler ()
+    {
+        if (_onErrorHandlerInstalled) {
+            return;
+        }
+        _oldOnerrorHandler = window.onerror;
+        window.onerror = traceKitWindowOnError;
+        _onErrorHandlerInstalled = true;
+    }
+
+    function uninstallGlobalHandler ()
+    {
+        if (!_onErrorHandlerInstalled) {
+            return;
+        }
+        window.onerror = _oldOnerrorHandler;
+        _onErrorHandlerInstalled = false;
+        _oldOnerrorHandler = undefined;
+    }
+
+    function processLastException() {
+        var _lastExceptionStack = lastExceptionStack,
+            _lastArgs = lastArgs;
+        lastArgs = null;
+        lastExceptionStack = null;
+        lastException = null;
+        notifyHandlers.apply(null, [_lastExceptionStack, false].concat(_lastArgs));
+    }
+
+    /**
+     * Reports an unhandled Error to TraceKit.
+     * @param {Error} ex
+     * @param {?boolean} rethrow If false, do not re-throw the exception.
+     * Only used for window.onerror to not cause an infinite loop of
+     * rethrowing.
+     */
+    function report(ex, rethrow) {
+        var args = _slice.call(arguments, 1);
+        if (lastExceptionStack) {
+            if (lastException === ex) {
+                return; // already caught by an inner catch block, ignore
+            } else {
+              processLastException();
+            }
+        }
+
+        var stack = TraceKit.computeStackTrace(ex);
+        lastExceptionStack = stack;
+        lastException = ex;
+        lastArgs = args;
+
+        // If the stack trace is incomplete, wait for 2 seconds for
+        // slow slow IE to see if onerror occurs or not before reporting
+        // this exception; otherwise, we will end up with an incomplete
+        // stack trace
+        window.setTimeout(function () {
+            if (lastException === ex) {
+                processLastException();
+            }
+        }, (stack.incomplete ? 2000 : 0));
+
+        if (rethrow !== false) {
+            throw ex; // re-throw to propagate to the top level (and cause window.onerror)
+        }
+    }
+
+    report.subscribe = subscribe;
+    report.unsubscribe = unsubscribe;
+    report.uninstall = unsubscribeAll;
+    return report;
+}());
+
+/**
+ * TraceKit.computeStackTrace: cross-browser stack traces in JavaScript
+ *
+ * Syntax:
+ *   s = TraceKit.computeStackTrace.ofCaller([depth])
+ *   s = TraceKit.computeStackTrace(exception) // consider using TraceKit.report instead (see below)
+ * Returns:
+ *   s.name              - exception name
+ *   s.message           - exception message
+ *   s.stack[i].url      - JavaScript or HTML file URL
+ *   s.stack[i].func     - function name, or empty for anonymous functions (if guessing did not work)
+ *   s.stack[i].args     - arguments passed to the function, if known
+ *   s.stack[i].line     - line number, if known
+ *   s.stack[i].column   - column number, if known
+ *   s.stack[i].context  - an array of source code lines; the middle element corresponds to the correct line#
+ *
+ * Supports:
+ *   - Firefox:  full stack trace with line numbers and unreliable column
+ *               number on top frame
+ *   - Opera 10: full stack trace with line and column numbers
+ *   - Opera 9-: full stack trace with line numbers
+ *   - Chrome:   full stack trace with line and column numbers
+ *   - Safari:   line and column number for the topmost stacktrace element
+ *               only
+ *   - IE:       no line numbers whatsoever
+ *
+ * Tries to guess names of anonymous functions by looking for assignments
+ * in the source code. In IE and Safari, we have to guess source file names
+ * by searching for function bodies inside all page scripts. This will not
+ * work for scripts that are loaded cross-domain.
+ * Here be dragons: some function names may be guessed incorrectly, and
+ * duplicate functions may be mismatched.
+ *
+ * TraceKit.computeStackTrace should only be used for tracing purposes.
+ * Logging of unhandled exceptions should be done with TraceKit.report,
+ * which builds on top of TraceKit.computeStackTrace and provides better
+ * IE support by utilizing the window.onerror event to retrieve information
+ * about the top of the stack.
+ *
+ * Note: In IE and Safari, no stack trace is recorded on the Error object,
+ * so computeStackTrace instead walks its *own* chain of callers.
+ * This means that:
+ *  * in Safari, some methods may be missing from the stack trace;
+ *  * in IE, the topmost function in the stack trace will always be the
+ *    caller of computeStackTrace.
+ *
+ * This is okay for tracing (because you are likely to be calling
+ * computeStackTrace from the function you want to be the topmost element
+ * of the stack trace anyway), but not okay for logging unhandled
+ * exceptions (because your catch block will likely be far away from the
+ * inner function that actually caused the exception).
+ *
+ * Tracing example:
+ *     function trace(message) {
+ *         var stackInfo = TraceKit.computeStackTrace.ofCaller();
+ *         var data = message + "\n";
+ *         for(var i in stackInfo.stack) {
+ *             var item = stackInfo.stack[i];
+ *             data += (item.func || '[anonymous]') + "() in " + item.url + ":" + (item.line || '0') + "\n";
+ *         }
+ *         if (window.console)
+ *             console.info(data);
+ *         else
+ *             alert(data);
+ *     }
+ */
+TraceKit.computeStackTrace = (function computeStackTraceWrapper() {
+    var debug = false,
+        sourceCache = {};
+
+    /**
+     * Attempts to retrieve source code via XMLHttpRequest, which is used
+     * to look up anonymous function names.
+     * @param {string} url URL of source code.
+     * @return {string} Source contents.
+     */
+    function loadSource(url) {
+        if (!TraceKit.remoteFetching) { //Only attempt request if remoteFetching is on.
+            return '';
+        }
+        try {
+            var getXHR = function() {
+                try {
+                    return new window.XMLHttpRequest();
+                } catch (e) {
+                    // explicitly bubble up the exception if not found
+                    return new window.ActiveXObject('Microsoft.XMLHTTP');
+                }
+            };
+
+            var request = getXHR();
+            request.open('GET', url, false);
+            request.send('');
+            return request.responseText;
+        } catch (e) {
+            return '';
+        }
+    }
+
+    /**
+     * Retrieves source code from the source code cache.
+     * @param {string} url URL of source code.
+     * @return {Array.<string>} Source contents.
+     */
+    function getSource(url) {
+        if (!isString(url)) return [];
+        if (!hasKey(sourceCache, url)) {
+            // URL needs to be able to fetched within the acceptable domain.  Otherwise,
+            // cross-domain errors will be triggered.
+            var source = '';
+            if (url.indexOf(document.domain) !== -1) {
+                source = loadSource(url);
+            }
+            sourceCache[url] = source ? source.split('\n') : [];
+        }
+
+        return sourceCache[url];
+    }
+
+    /**
+     * Tries to use an externally loaded copy of source code to determine
+     * the name of a function by looking at the name of the variable it was
+     * assigned to, if any.
+     * @param {string} url URL of source code.
+     * @param {(string|number)} lineNo Line number in source code.
+     * @return {string} The function name, if discoverable.
+     */
+    function guessFunctionName(url, lineNo) {
+        var reFunctionArgNames = /function ([^(]*)\(([^)]*)\)/,
+            reGuessFunction = /['"]?([0-9A-Za-z$_]+)['"]?\s*[:=]\s*(function|eval|new Function)/,
+            line = '',
+            maxLines = 10,
+            source = getSource(url),
+            m;
+
+        if (!source.length) {
+            return UNKNOWN_FUNCTION;
+        }
+
+        // Walk backwards from the first line in the function until we find the line which
+        // matches the pattern above, which is the function definition
+        for (var i = 0; i < maxLines; ++i) {
+            line = source[lineNo - i] + line;
+
+            if (!isUndefined(line)) {
+                if ((m = reGuessFunction.exec(line))) {
+                    return m[1];
+                } else if ((m = reFunctionArgNames.exec(line))) {
+                    return m[1];
+                }
+            }
+        }
+
+        return UNKNOWN_FUNCTION;
+    }
+
+    /**
+     * Retrieves the surrounding lines from where an exception occurred.
+     * @param {string} url URL of source code.
+     * @param {(string|number)} line Line number in source code to centre
+     * around for context.
+     * @return {?Array.<string>} Lines of source code.
+     */
+    function gatherContext(url, line) {
+        var source = getSource(url);
+
+        if (!source.length) {
+            return null;
+        }
+
+        var context = [],
+            // linesBefore & linesAfter are inclusive with the offending line.
+            // if linesOfContext is even, there will be one extra line
+            //   *before* the offending line.
+            linesBefore = Math.floor(TraceKit.linesOfContext / 2),
+            // Add one extra line if linesOfContext is odd
+            linesAfter = linesBefore + (TraceKit.linesOfContext % 2),
+            start = Math.max(0, line - linesBefore - 1),
+            end = Math.min(source.length, line + linesAfter - 1);
+
+        line -= 1; // convert to 0-based index
+
+        for (var i = start; i < end; ++i) {
+            if (!isUndefined(source[i])) {
+                context.push(source[i]);
+            }
+        }
+
+        return context.length > 0 ? context : null;
+    }
+
+    /**
+     * Escapes special characters, except for whitespace, in a string to be
+     * used inside a regular expression as a string literal.
+     * @param {string} text The string.
+     * @return {string} The escaped string literal.
+     */
+    function escapeRegExp(text) {
+        return text.replace(/[\-\[\]{}()*+?.,\\\^$|#]/g, '\\$&');
+    }
+
+    /**
+     * Escapes special characters in a string to be used inside a regular
+     * expression as a string literal. Also ensures that HTML entities will
+     * be matched the same as their literal friends.
+     * @param {string} body The string.
+     * @return {string} The escaped string.
+     */
+    function escapeCodeAsRegExpForMatchingInsideHTML(body) {
+        return escapeRegExp(body).replace('<', '(?:<|&lt;)').replace('>', '(?:>|&gt;)').replace('&', '(?:&|&amp;)').replace('"', '(?:"|&quot;)').replace(/\s+/g, '\\s+');
+    }
+
+    /**
+     * Determines where a code fragment occurs in the source code.
+     * @param {RegExp} re The function definition.
+     * @param {Array.<string>} urls A list of URLs to search.
+     * @return {?Object.<string, (string|number)>} An object containing
+     * the url, line, and column number of the defined function.
+     */
+    function findSourceInUrls(re, urls) {
+        var source, m;
+        for (var i = 0, j = urls.length; i < j; ++i) {
+            // console.log('searching', urls[i]);
+            if ((source = getSource(urls[i])).length) {
+                source = source.join('\n');
+                if ((m = re.exec(source))) {
+                    // console.log('Found function in ' + urls[i]);
+
+                    return {
+                        'url': urls[i],
+                        'line': source.substring(0, m.index).split('\n').length,
+                        'column': m.index - source.lastIndexOf('\n', m.index) - 1
+                    };
+                }
+            }
+        }
+
+        // console.log('no match');
+
+        return null;
+    }
+
+    /**
+     * Determines at which column a code fragment occurs on a line of the
+     * source code.
+     * @param {string} fragment The code fragment.
+     * @param {string} url The URL to search.
+     * @param {(string|number)} line The line number to examine.
+     * @return {?number} The column number.
+     */
+    function findSourceInLine(fragment, url, line) {
+        var source = getSource(url),
+            re = new RegExp('\\b' + escapeRegExp(fragment) + '\\b'),
+            m;
+
+        line -= 1;
+
+        if (source && source.length > line && (m = re.exec(source[line]))) {
+            return m.index;
+        }
+
+        return null;
+    }
+
+    /**
+     * Determines where a function was defined within the source code.
+     * @param {(Function|string)} func A function reference or serialized
+     * function definition.
+     * @return {?Object.<string, (string|number)>} An object containing
+     * the url, line, and column number of the defined function.
+     */
+    function findSourceByFunctionBody(func) {
+        var urls = [window.location.href],
+            scripts = document.getElementsByTagName('script'),
+            body,
+            code = '' + func,
+            codeRE = /^function(?:\s+([\w$]+))?\s*\(([\w\s,]*)\)\s*\{\s*(\S[\s\S]*\S)\s*\}\s*$/,
+            eventRE = /^function on([\w$]+)\s*\(event\)\s*\{\s*(\S[\s\S]*\S)\s*\}\s*$/,
+            re,
+            parts,
+            result;
+
+        for (var i = 0; i < scripts.length; ++i) {
+            var script = scripts[i];
+            if (script.src) {
+                urls.push(script.src);
+            }
+        }
+
+        if (!(parts = codeRE.exec(code))) {
+            re = new RegExp(escapeRegExp(code).replace(/\s+/g, '\\s+'));
+        }
+
+        // not sure if this is really necessary, but I don’t have a test
+        // corpus large enough to confirm that and it was in the original.
+        else {
+            var name = parts[1] ? '\\s+' + parts[1] : '',
+                args = parts[2].split(',').join('\\s*,\\s*');
+
+            body = escapeRegExp(parts[3]).replace(/;$/, ';?'); // semicolon is inserted if the function ends with a comment.replace(/\s+/g, '\\s+');
+            re = new RegExp('function' + name + '\\s*\\(\\s*' + args + '\\s*\\)\\s*{\\s*' + body + '\\s*}');
+        }
+
+        // look for a normal function definition
+        if ((result = findSourceInUrls(re, urls))) {
+            return result;
+        }
+
+        // look for an old-school event handler function
+        if ((parts = eventRE.exec(code))) {
+            var event = parts[1];
+            body = escapeCodeAsRegExpForMatchingInsideHTML(parts[2]);
+
+            // look for a function defined in HTML as an onXXX handler
+            re = new RegExp('on' + event + '=[\\\'"]\\s*' + body + '\\s*[\\\'"]', 'i');
+
+            if ((result = findSourceInUrls(re, urls[0]))) {
+                return result;
+            }
+
+            // look for ???
+            re = new RegExp(body);
+
+            if ((result = findSourceInUrls(re, urls))) {
+                return result;
+            }
+        }
+
+        return null;
+    }
+
+    // Contents of Exception in various browsers.
+    //
+    // SAFARI:
+    // ex.message = Can't find variable: qq
+    // ex.line = 59
+    // ex.sourceId = 580238192
+    // ex.sourceURL = http://...
+    // ex.expressionBeginOffset = 96
+    // ex.expressionCaretOffset = 98
+    // ex.expressionEndOffset = 98
+    // ex.name = ReferenceError
+    //
+    // FIREFOX:
+    // ex.message = qq is not defined
+    // ex.fileName = http://...
+    // ex.lineNumber = 59
+    // ex.columnNumber = 69
+    // ex.stack = ...stack trace... (see the example below)
+    // ex.name = ReferenceError
+    //
+    // CHROME:
+    // ex.message = qq is not defined
+    // ex.name = ReferenceError
+    // ex.type = not_defined
+    // ex.arguments = ['aa']
+    // ex.stack = ...stack trace...
+    //
+    // INTERNET EXPLORER:
+    // ex.message = ...
+    // ex.name = ReferenceError
+    //
+    // OPERA:
+    // ex.message = ...message... (see the example below)
+    // ex.name = ReferenceError
+    // ex.opera#sourceloc = 11  (pretty much useless, duplicates the info in ex.message)
+    // ex.stacktrace = n/a; see 'opera:config#UserPrefs|Exceptions Have Stacktrace'
+
+    /**
+     * Computes stack trace information from the stack property.
+     * Chrome and Gecko use this property.
+     * @param {Error} ex
+     * @return {?Object.<string, *>} Stack trace information.
+     */
+    function computeStackTraceFromStackProp(ex) {
+        if (!ex.stack) {
+            return null;
+        }
+
+        var chrome = /^\s*at (?:((?:\[object object\])?\S+(?: \[as \S+\])?) )?\(?((?:file|https?):.*?):(\d+)(?::(\d+))?\)?\s*$/i,
+            gecko = /^\s*(\S*)(?:\((.*?)\))?@((?:file|https?).*?):(\d+)(?::(\d+))?\s*$/i,
+            lines = ex.stack.split('\n'),
+            stack = [],
+            parts,
+            element,
+            reference = /^(.*) is undefined$/.exec(ex.message);
+
+        for (var i = 0, j = lines.length; i < j; ++i) {
+            if ((parts = gecko.exec(lines[i]))) {
+                element = {
+                    'url': parts[3],
+                    'func': parts[1] || UNKNOWN_FUNCTION,
+                    'args': parts[2] ? parts[2].split(',') : '',
+                    'line': +parts[4],
+                    'column': parts[5] ? +parts[5] : null
+                };
+            } else if ((parts = chrome.exec(lines[i]))) {
+                element = {
+                    'url': parts[2],
+                    'func': parts[1] || UNKNOWN_FUNCTION,
+                    'line': +parts[3],
+                    'column': parts[4] ? +parts[4] : null
+                };
+            } else {
+                continue;
+            }
+
+            if (!element.func && element.line) {
+                element.func = guessFunctionName(element.url, element.line);
+            }
+
+            if (element.line) {
+                element.context = gatherContext(element.url, element.line);
+            }
+
+            stack.push(element);
+        }
+
+        if (!stack.length) {
+            return null;
+        }
+
+        if (stack[0].line && !stack[0].column && reference) {
+            stack[0].column = findSourceInLine(reference[1], stack[0].url, stack[0].line);
+        } else if (!stack[0].column && !isUndefined(ex.columnNumber)) {
+            // FireFox uses this awesome columnNumber property for its top frame
+            // Also note, Firefox's column number is 0-based and everything else expects 1-based,
+            // so adding 1
+            stack[0].column = ex.columnNumber + 1;
+        }
+
+        return {
+            'name': ex.name,
+            'message': ex.message,
+            'url': document.location.href,
+            'stack': stack
+        };
+    }
+
+    /**
+     * Computes stack trace information from the stacktrace property.
+     * Opera 10 uses this property.
+     * @param {Error} ex
+     * @return {?Object.<string, *>} Stack trace information.
+     */
+    function computeStackTraceFromStacktraceProp(ex) {
+        // Access and store the stacktrace property before doing ANYTHING
+        // else to it because Opera is not very good at providing it
+        // reliably in other circumstances.
+        var stacktrace = ex.stacktrace;
+
+        var testRE = / line (\d+), column (\d+) in (?:<anonymous function: ([^>]+)>|([^\)]+))\((.*)\) in (.*):\s*$/i,
+            lines = stacktrace.split('\n'),
+            stack = [],
+            parts;
+
+        for (var i = 0, j = lines.length; i < j; i += 2) {
+            if ((parts = testRE.exec(lines[i]))) {
+                var element = {
+                    'line': +parts[1],
+                    'column': +parts[2],
+                    'func': parts[3] || parts[4],
+                    'args': parts[5] ? parts[5].split(',') : [],
+                    'url': parts[6]
+                };
+
+                if (!element.func && element.line) {
+                    element.func = guessFunctionName(element.url, element.line);
+                }
+                if (element.line) {
+                    try {
+                        element.context = gatherContext(element.url, element.line);
+                    } catch (exc) {}
+                }
+
+                if (!element.context) {
+                    element.context = [lines[i + 1]];
+                }
+
+                stack.push(element);
+            }
+        }
+
+        if (!stack.length) {
+            return null;
+        }
+
+        return {
+            'name': ex.name,
+            'message': ex.message,
+            'url': document.location.href,
+            'stack': stack
+        };
+    }
+
+    /**
+     * NOT TESTED.
+     * Computes stack trace information from an error message that includes
+     * the stack trace.
+     * Opera 9 and earlier use this method if the option to show stack
+     * traces is turned on in opera:config.
+     * @param {Error} ex
+     * @return {?Object.<string, *>} Stack information.
+     */
+    function computeStackTraceFromOperaMultiLineMessage(ex) {
+        // Opera includes a stack trace into the exception message. An example is:
+        //
+        // Statement on line 3: Undefined variable: undefinedFunc
+        // Backtrace:
+        //   Line 3 of linked script file://localhost/Users/andreyvit/Projects/TraceKit/javascript-client/sample.js: In function zzz
+        //         undefinedFunc(a);
+        //   Line 7 of inline#1 script in file://localhost/Users/andreyvit/Projects/TraceKit/javascript-client/sample.html: In function yyy
+        //           zzz(x, y, z);
+        //   Line 3 of inline#1 script in file://localhost/Users/andreyvit/Projects/TraceKit/javascript-client/sample.html: In function xxx
+        //           yyy(a, a, a);
+        //   Line 1 of function script
+        //     try { xxx('hi'); return false; } catch(ex) { TraceKit.report(ex); }
+        //   ...
+
+        var lines = ex.message.split('\n');
+        if (lines.length < 4) {
+            return null;
+        }
+
+        var lineRE1 = /^\s*Line (\d+) of linked script ((?:file|https?)\S+)(?:: in function (\S+))?\s*$/i,
+            lineRE2 = /^\s*Line (\d+) of inline#(\d+) script in ((?:file|https?)\S+)(?:: in function (\S+))?\s*$/i,
+            lineRE3 = /^\s*Line (\d+) of function script\s*$/i,
+            stack = [],
+            scripts = document.getElementsByTagName('script'),
+            inlineScriptBlocks = [],
+            parts,
+            i,
+            len,
+            source;
+
+        for (i in scripts) {
+            if (hasKey(scripts, i) && !scripts[i].src) {
+                inlineScriptBlocks.push(scripts[i]);
+            }
+        }
+
+        for (i = 2, len = lines.length; i < len; i += 2) {
+            var item = null;
+            if ((parts = lineRE1.exec(lines[i]))) {
+                item = {
+                    'url': parts[2],
+                    'func': parts[3],
+                    'line': +parts[1]
+                };
+            } else if ((parts = lineRE2.exec(lines[i]))) {
+                item = {
+                    'url': parts[3],
+                    'func': parts[4]
+                };
+                var relativeLine = (+parts[1]); // relative to the start of the <SCRIPT> block
+                var script = inlineScriptBlocks[parts[2] - 1];
+                if (script) {
+                    source = getSource(item.url);
+                    if (source) {
+                        source = source.join('\n');
+                        var pos = source.indexOf(script.innerText);
+                        if (pos >= 0) {
+                            item.line = relativeLine + source.substring(0, pos).split('\n').length;
+                        }
+                    }
+                }
+            } else if ((parts = lineRE3.exec(lines[i]))) {
+                var url = window.location.href.replace(/#.*$/, ''),
+                    line = parts[1];
+                var re = new RegExp(escapeCodeAsRegExpForMatchingInsideHTML(lines[i + 1]));
+                source = findSourceInUrls(re, [url]);
+                item = {
+                    'url': url,
+                    'line': source ? source.line : line,
+                    'func': ''
+                };
+            }
+
+            if (item) {
+                if (!item.func) {
+                    item.func = guessFunctionName(item.url, item.line);
+                }
+                var context = gatherContext(item.url, item.line);
+                var midline = (context ? context[Math.floor(context.length / 2)] : null);
+                if (context && midline.replace(/^\s*/, '') === lines[i + 1].replace(/^\s*/, '')) {
+                    item.context = context;
+                } else {
+                    // if (context) alert("Context mismatch. Correct midline:\n" + lines[i+1] + "\n\nMidline:\n" + midline + "\n\nContext:\n" + context.join("\n") + "\n\nURL:\n" + item.url);
+                    item.context = [lines[i + 1]];
+                }
+                stack.push(item);
+            }
+        }
+        if (!stack.length) {
+            return null; // could not parse multiline exception message as Opera stack trace
+        }
+
+        return {
+            'name': ex.name,
+            'message': lines[0],
+            'url': document.location.href,
+            'stack': stack
+        };
+    }
+
+    /**
+     * Adds information about the first frame to incomplete stack traces.
+     * Safari and IE require this to get complete data on the first frame.
+     * @param {Object.<string, *>} stackInfo Stack trace information from
+     * one of the compute* methods.
+     * @param {string} url The URL of the script that caused an error.
+     * @param {(number|string)} lineNo The line number of the script that
+     * caused an error.
+     * @param {string=} message The error generated by the browser, which
+     * hopefully contains the name of the object that caused the error.
+     * @return {boolean} Whether or not the stack information was
+     * augmented.
+     */
+    function augmentStackTraceWithInitialElement(stackInfo, url, lineNo, message) {
+        var initial = {
+            'url': url,
+            'line': lineNo
+        };
+
+        if (initial.url && initial.line) {
+            stackInfo.incomplete = false;
+
+            if (!initial.func) {
+                initial.func = guessFunctionName(initial.url, initial.line);
+            }
+
+            if (!initial.context) {
+                initial.context = gatherContext(initial.url, initial.line);
+            }
+
+            var reference = / '([^']+)' /.exec(message);
+            if (reference) {
+                initial.column = findSourceInLine(reference[1], initial.url, initial.line);
+            }
+
+            if (stackInfo.stack.length > 0) {
+                if (stackInfo.stack[0].url === initial.url) {
+                    if (stackInfo.stack[0].line === initial.line) {
+                        return false; // already in stack trace
+                    } else if (!stackInfo.stack[0].line && stackInfo.stack[0].func === initial.func) {
+                        stackInfo.stack[0].line = initial.line;
+                        stackInfo.stack[0].context = initial.context;
+                        return false;
+                    }
+                }
+            }
+
+            stackInfo.stack.unshift(initial);
+            stackInfo.partial = true;
+            return true;
+        } else {
+            stackInfo.incomplete = true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Computes stack trace information by walking the arguments.caller
+     * chain at the time the exception occurred. This will cause earlier
+     * frames to be missed but is the only way to get any stack trace in
+     * Safari and IE. The top frame is restored by
+     * {@link augmentStackTraceWithInitialElement}.
+     * @param {Error} ex
+     * @return {?Object.<string, *>} Stack trace information.
+     */
+    function computeStackTraceByWalkingCallerChain(ex, depth) {
+        var functionName = /function\s+([_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*)?\s*\(/i,
+            stack = [],
+            funcs = {},
+            recursion = false,
+            parts,
+            item,
+            source;
+
+        for (var curr = computeStackTraceByWalkingCallerChain.caller; curr && !recursion; curr = curr.caller) {
+            if (curr === computeStackTrace || curr === TraceKit.report) {
+                // console.log('skipping internal function');
+                continue;
+            }
+
+            item = {
+                'url': null,
+                'func': UNKNOWN_FUNCTION,
+                'line': null,
+                'column': null
+            };
+
+            if (curr.name) {
+                item.func = curr.name;
+            } else if ((parts = functionName.exec(curr.toString()))) {
+                item.func = parts[1];
+            }
+
+            if ((source = findSourceByFunctionBody(curr))) {
+                item.url = source.url;
+                item.line = source.line;
+
+                if (item.func === UNKNOWN_FUNCTION) {
+                    item.func = guessFunctionName(item.url, item.line);
+                }
+
+                var reference = / '([^']+)' /.exec(ex.message || ex.description);
+                if (reference) {
+                    item.column = findSourceInLine(reference[1], source.url, source.line);
+                }
+            }
+
+            if (funcs['' + curr]) {
+                recursion = true;
+            }else{
+                funcs['' + curr] = true;
+            }
+
+            stack.push(item);
+        }
+
+        if (depth) {
+            // console.log('depth is ' + depth);
+            // console.log('stack is ' + stack.length);
+            stack.splice(0, depth);
+        }
+
+        var result = {
+            'name': ex.name,
+            'message': ex.message,
+            'url': document.location.href,
+            'stack': stack
+        };
+        augmentStackTraceWithInitialElement(result, ex.sourceURL || ex.fileName, ex.line || ex.lineNumber, ex.message || ex.description);
+        return result;
+    }
+
+    /**
+     * Computes a stack trace for an exception.
+     * @param {Error} ex
+     * @param {(string|number)=} depth
+     */
+    function computeStackTrace(ex, depth) {
+        var stack = null;
+        depth = (depth == null ? 0 : +depth);
+
+        try {
+            // This must be tried first because Opera 10 *destroys*
+            // its stacktrace property if you try to access the stack
+            // property first!!
+            stack = computeStackTraceFromStacktraceProp(ex);
+            if (stack) {
+                return stack;
+            }
+        } catch (e) {
+            if (debug) {
+                throw e;
+            }
+        }
+
+        try {
+            stack = computeStackTraceFromStackProp(ex);
+            if (stack) {
+                return stack;
+            }
+        } catch (e) {
+            if (debug) {
+                throw e;
+            }
+        }
+
+        try {
+            stack = computeStackTraceFromOperaMultiLineMessage(ex);
+            if (stack) {
+                return stack;
+            }
+        } catch (e) {
+            if (debug) {
+                throw e;
+            }
+        }
+
+        try {
+            stack = computeStackTraceByWalkingCallerChain(ex, depth + 1);
+            if (stack) {
+                return stack;
+            }
+        } catch (e) {
+            if (debug) {
+                throw e;
+            }
+        }
+
+        return {};
+    }
+
+    /**
+     * Logs a stacktrace starting from the previous call and working down.
+     * @param {(number|string)=} depth How many frames deep to trace.
+     * @return {Object.<string, *>} Stack trace information.
+     */
+    function computeStackTraceOfCaller(depth) {
+        depth = (depth == null ? 0 : +depth) + 1; // "+ 1" because "ofCaller" should drop one frame
+        try {
+            throw new Error();
+        } catch (ex) {
+            return computeStackTrace(ex, depth + 1);
+        }
+    }
+
+    computeStackTrace.augmentStackTraceWithInitialElement = augmentStackTraceWithInitialElement;
+    computeStackTrace.guessFunctionName = guessFunctionName;
+    computeStackTrace.gatherContext = gatherContext;
+    computeStackTrace.ofCaller = computeStackTraceOfCaller;
+
+    return computeStackTrace;
+}());
+
+'use strict';
+
+// First, check for JSON support
+// If there is no JSON, we no-op the core features of Raven
+// since JSON is required to encode the payload
+var _Raven = window.Raven,
+    hasJSON = !!(window.JSON && window.JSON.stringify),
+    lastCapturedException,
+    lastEventId,
+    globalServer,
+    globalUser,
+    globalKey,
+    globalProject,
+    globalOptions = {
+        logger: 'javascript',
+        ignoreErrors: [],
+        ignoreUrls: [],
+        whitelistUrls: [],
+        includePaths: [],
+        collectWindowErrors: true,
+        tags: {},
+        extra: {}
+    };
+
+/*
+ * The core Raven singleton
+ *
+ * @this {Raven}
+ */
+var Raven = {
+    VERSION: '1.1.11',
+
+    // Expose TraceKit to the Raven namespace
+    TraceKit: TraceKit,
+
+    /*
+     * Allow Raven to be configured as soon as it is loaded
+     * It uses a global RavenConfig = {dsn: '...', config: {}}
+     *
+     * @return undefined
+     */
+    afterLoad: function() {
+        var globalConfig = window.RavenConfig;
+        if (globalConfig) {
+            this.config(globalConfig.dsn, globalConfig.config).install();
+        }
+    },
+
+    /*
+     * Allow multiple versions of Raven to be installed.
+     * Strip Raven from the global context and returns the instance.
+     *
+     * @return {Raven}
+     */
+    noConflict: function() {
+        window.Raven = _Raven;
+        return Raven;
+    },
+
+    /*
+     * Configure Raven with a DSN and extra options
+     *
+     * @param {string} dsn The public Sentry DSN
+     * @param {object} options Optional set of of global options [optional]
+     * @return {Raven}
+     */
+    config: function(dsn, options) {
+        if (!dsn) return Raven;
+
+        var uri = parseDSN(dsn),
+            lastSlash = uri.path.lastIndexOf('/'),
+            path = uri.path.substr(1, lastSlash);
+
+        // merge in options
+        if (options) {
+            each(options, function(key, value){
+                globalOptions[key] = value;
+            });
+        }
+
+        // "Script error." is hard coded into browsers for errors that it can't read.
+        // this is the result of a script being pulled in from an external domain and CORS.
+        globalOptions.ignoreErrors.push('Script error.');
+        globalOptions.ignoreErrors.push('Script error');
+
+        // join regexp rules into one big rule
+        globalOptions.ignoreErrors = joinRegExp(globalOptions.ignoreErrors);
+        globalOptions.ignoreUrls = globalOptions.ignoreUrls.length ? joinRegExp(globalOptions.ignoreUrls) : false;
+        globalOptions.whitelistUrls = globalOptions.whitelistUrls.length ? joinRegExp(globalOptions.whitelistUrls) : false;
+        globalOptions.includePaths = joinRegExp(globalOptions.includePaths);
+
+        globalKey = uri.user;
+        globalProject = uri.path.substr(lastSlash + 1);
+
+        // assemble the endpoint from the uri pieces
+        globalServer = '//' + uri.host +
+                      (uri.port ? ':' + uri.port : '') +
+                      '/' + path + 'api/' + globalProject + '/store/';
+
+        if (uri.protocol) {
+            globalServer = uri.protocol + ':' + globalServer;
+        }
+
+        if (globalOptions.fetchContext) {
+            TraceKit.remoteFetching = true;
+        }
+
+        if (globalOptions.linesOfContext) {
+            TraceKit.linesOfContext = globalOptions.linesOfContext;
+        }
+
+        TraceKit.collectWindowErrors = !!globalOptions.collectWindowErrors;
+
+        // return for chaining
+        return Raven;
+    },
+
+    /*
+     * Installs a global window.onerror error handler
+     * to capture and report uncaught exceptions.
+     * At this point, install() is required to be called due
+     * to the way TraceKit is set up.
+     *
+     * @return {Raven}
+     */
+    install: function() {
+        if (isSetup()) {
+            TraceKit.report.subscribe(handleStackInfo);
+        }
+
+        return Raven;
+    },
+
+    /*
+     * Wrap code within a context so Raven can capture errors
+     * reliably across domains that is executed immediately.
+     *
+     * @param {object} options A specific set of options for this context [optional]
+     * @param {function} func The callback to be immediately executed within the context
+     * @param {array} args An array of arguments to be called with the callback [optional]
+     */
+    context: function(options, func, args) {
+        if (isFunction(options)) {
+            args = func || [];
+            func = options;
+            options = undefined;
+        }
+
+        return Raven.wrap(options, func).apply(this, args);
+    },
+
+    /*
+     * Wrap code within a context and returns back a new function to be executed
+     *
+     * @param {object} options A specific set of options for this context [optional]
+     * @param {function} func The function to be wrapped in a new context
+     * @return {function} The newly wrapped functions with a context
+     */
+    wrap: function(options, func) {
+        // 1 argument has been passed, and it's not a function
+        // so just return it
+        if (isUndefined(func) && !isFunction(options)) {
+            return options;
+        }
+
+        // options is optional
+        if (isFunction(options)) {
+            func = options;
+            options = undefined;
+        }
+
+        // At this point, we've passed along 2 arguments, and the second one
+        // is not a function either, so we'll just return the second argument.
+        if (!isFunction(func)) {
+            return func;
+        }
+
+        // We don't wanna wrap it twice!
+        if (func.__raven__) {
+            return func;
+        }
+
+        function wrapped() {
+            var args = [], i = arguments.length,
+                deep = !options || options && options.deep !== false;
+            // Recursively wrap all of a function's arguments that are
+            // functions themselves.
+
+            while(i--) args[i] = deep ? Raven.wrap(options, arguments[i]) : arguments[i];
+
+            try {
+                /*jshint -W040*/
+                return func.apply(this, args);
+            } catch(e) {
+                Raven.captureException(e, options);
+                throw e;
+            }
+        }
+
+        // copy over properties of the old function
+        for (var property in func) {
+            if (func.hasOwnProperty(property)) {
+                wrapped[property] = func[property];
+            }
+        }
+
+        // Signal that this function has been wrapped already
+        // for both debugging and to prevent it to being wrapped twice
+        wrapped.__raven__ = true;
+
+        return wrapped;
+    },
+
+    /*
+     * Uninstalls the global error handler.
+     *
+     * @return {Raven}
+     */
+    uninstall: function() {
+        TraceKit.report.uninstall();
+
+        return Raven;
+    },
+
+    /*
+     * Manually capture an exception and send it over to Sentry
+     *
+     * @param {error} ex An exception to be logged
+     * @param {object} options A specific set of options for this error [optional]
+     * @return {Raven}
+     */
+    captureException: function(ex, options) {
+        // If a string is passed through, recall as a message
+        if (isString(ex)) return Raven.captureMessage(ex, options);
+
+        // Store the raw exception object for potential debugging and introspection
+        lastCapturedException = ex;
+
+        // TraceKit.report will re-raise any exception passed to it,
+        // which means you have to wrap it in try/catch. Instead, we
+        // can wrap it here and only re-raise if TraceKit.report
+        // raises an exception different from the one we asked to
+        // report on.
+        try {
+            TraceKit.report(ex, options);
+        } catch(ex1) {
+            if(ex !== ex1) {
+                throw ex1;
+            }
+        }
+
+        return Raven;
+    },
+
+    /*
+     * Manually send a message to Sentry
+     *
+     * @param {string} msg A plain message to be captured in Sentry
+     * @param {object} options A specific set of options for this message [optional]
+     * @return {Raven}
+     */
+    captureMessage: function(msg, options) {
+        // Fire away!
+        send(
+            objectMerge({
+                message: msg
+            }, options)
+        );
+
+        return Raven;
+    },
+
+    /*
+     * Set/clear a user to be sent along with the payload.
+     *
+     * @param {object} user An object representing user data [optional]
+     * @return {Raven}
+     */
+    setUser: function(user) {
+       globalUser = user;
+
+       return Raven;
+    },
+
+    /*
+     * Get the latest raw exception that was captured by Raven.
+     *
+     * @return {error}
+     */
+    lastException: function() {
+        return lastCapturedException;
+    },
+
+    /*
+     * Get the last event id
+     *
+     * @return {string}
+     */
+    lastEventId: function() {
+        return lastEventId;
+    }
+};
+
+function triggerEvent(eventType, options) {
+    var event, key;
+
+    options = options || {};
+
+    eventType = 'raven' + eventType.substr(0,1).toUpperCase() + eventType.substr(1);
+
+    if (document.createEvent) {
+        event = document.createEvent('HTMLEvents');
+        event.initEvent(eventType, true, true);
+    } else {
+        event = document.createEventObject();
+        event.eventType = eventType;
+    }
+
+    for (key in options) if (options.hasOwnProperty(key)) {
+        event[key] = options[key];
+    }
+
+    if (document.createEvent) {
+        // IE9 if standards
+        document.dispatchEvent(event);
+    } else {
+        // IE8 regardless of Quirks or Standards
+        // IE9 if quirks
+        try {
+            document.fireEvent('on' + event.eventType.toLowerCase(), event);
+        } catch(e) {}
+    }
+}
+
+var dsnKeys = 'source protocol user pass host port path'.split(' '),
+    dsnPattern = /^(?:(\w+):)?\/\/(\w+)(:\w+)?@([\w\.-]+)(?::(\d+))?(\/.*)/;
+
+function RavenConfigError(message) {
+    this.name = 'RavenConfigError';
+    this.message = message;
+}
+RavenConfigError.prototype = new Error();
+RavenConfigError.prototype.constructor = RavenConfigError;
+
+/**** Private functions ****/
+function parseDSN(str) {
+    var m = dsnPattern.exec(str),
+        dsn = {},
+        i = 7;
+
+    try {
+        while (i--) dsn[dsnKeys[i]] = m[i] || '';
+    } catch(e) {
+        throw new RavenConfigError('Invalid DSN: ' + str);
+    }
+
+    if (dsn.pass)
+        throw new RavenConfigError('Do not specify your private key in the DSN!');
+
+    return dsn;
+}
+
+function isUndefined(what) {
+    return typeof what === 'undefined';
+}
+
+function isFunction(what) {
+    return typeof what === 'function';
+}
+
+function isString(what) {
+    return typeof what === 'string';
+}
+
+function isEmptyObject(what) {
+    for (var k in what) return false;
+    return true;
+}
+
+/**
+ * hasKey, a better form of hasOwnProperty
+ * Example: hasKey(MainHostObject, property) === true/false
+ *
+ * @param {Object} host object to check property
+ * @param {string} key to check
+ */
+function hasKey(object, key) {
+    return Object.prototype.hasOwnProperty.call(object, key);
+}
+
+function each(obj, callback) {
+    var i, j;
+
+    if (isUndefined(obj.length)) {
+        for (i in obj) {
+            if (obj.hasOwnProperty(i)) {
+                callback.call(null, i, obj[i]);
+            }
+        }
+    } else {
+        j = obj.length;
+        if (j) {
+            for (i = 0; i < j; i++) {
+                callback.call(null, i, obj[i]);
+            }
+        }
+    }
+}
+
+var cachedAuth;
+
+function getAuthQueryString() {
+    if (cachedAuth) return cachedAuth;
+
+    var qs = [
+        'sentry_version=4',
+        'sentry_client=raven-js/' + Raven.VERSION
+    ];
+    if (globalKey) {
+        qs.push('sentry_key=' + globalKey);
+    }
+
+    cachedAuth = '?' + qs.join('&');
+    return cachedAuth;
+}
+
+function handleStackInfo(stackInfo, options) {
+    var frames = [];
+
+    if (stackInfo.stack && stackInfo.stack.length) {
+        each(stackInfo.stack, function(i, stack) {
+            var frame = normalizeFrame(stack);
+            if (frame) {
+                frames.push(frame);
+            }
+        });
+    }
+
+    triggerEvent('handle', {
+        stackInfo: stackInfo,
+        options: options
+    });
+
+    processException(
+        stackInfo.name,
+        stackInfo.message,
+        stackInfo.url,
+        stackInfo.lineno,
+        frames,
+        options
+    );
+}
+
+function normalizeFrame(frame) {
+    if (!frame.url) return;
+
+    // normalize the frames data
+    var normalized = {
+        filename:   frame.url,
+        lineno:     frame.line,
+        colno:      frame.column,
+        'function': frame.func || '?'
+    }, context = extractContextFromFrame(frame), i;
+
+    if (context) {
+        var keys = ['pre_context', 'context_line', 'post_context'];
+        i = 3;
+        while (i--) normalized[keys[i]] = context[i];
+    }
+
+    normalized.in_app = !( // determine if an exception came from outside of our app
+        // first we check the global includePaths list.
+        !globalOptions.includePaths.test(normalized.filename) ||
+        // Now we check for fun, if the function name is Raven or TraceKit
+        /(Raven|TraceKit)\./.test(normalized['function']) ||
+        // finally, we do a last ditch effort and check for raven.min.js
+        /raven\.(min\.)js$/.test(normalized.filename)
+    );
+
+    return normalized;
+}
+
+function extractContextFromFrame(frame) {
+    // immediately check if we should even attempt to parse a context
+    if (!frame.context || !globalOptions.fetchContext) return;
+
+    var context = frame.context,
+        pivot = ~~(context.length / 2),
+        i = context.length, isMinified = false;
+
+    while (i--) {
+        // We're making a guess to see if the source is minified or not.
+        // To do that, we make the assumption if *any* of the lines passed
+        // in are greater than 300 characters long, we bail.
+        // Sentry will see that there isn't a context
+        if (context[i].length > 300) {
+            isMinified = true;
+            break;
+        }
+    }
+
+    if (isMinified) {
+        // The source is minified and we don't know which column. Fuck it.
+        if (isUndefined(frame.column)) return;
+
+        // If the source is minified and has a frame column
+        // we take a chunk of the offending line to hopefully shed some light
+        return [
+            [],  // no pre_context
+            context[pivot].substr(frame.column, 50), // grab 50 characters, starting at the offending column
+            []   // no post_context
+        ];
+    }
+
+    return [
+        context.slice(0, pivot),    // pre_context
+        context[pivot],             // context_line
+        context.slice(pivot + 1)    // post_context
+    ];
+}
+
+function processException(type, message, fileurl, lineno, frames, options) {
+    var stacktrace, label, i;
+
+    // Sometimes an exception is getting logged in Sentry as
+    // <no message value>
+    // This can only mean that the message was falsey since this value
+    // is hardcoded into Sentry itself.
+    // At this point, if the message is falsey, we bail since it's useless
+    if (!message) return;
+
+    if (globalOptions.ignoreErrors.test(message)) return;
+
+    if (frames && frames.length) {
+        fileurl = frames[0].filename || fileurl;
+        // Sentry expects frames oldest to newest
+        // and JS sends them as newest to oldest
+        frames.reverse();
+        stacktrace = {frames: frames};
+    } else if (fileurl) {
+        stacktrace = {
+            frames: [{
+                filename: fileurl,
+                lineno: lineno
+            }]
+        };
+    }
+
+    if (globalOptions.ignoreUrls && globalOptions.ignoreUrls.test(fileurl)) return;
+    if (globalOptions.whitelistUrls && !globalOptions.whitelistUrls.test(fileurl)) return;
+
+    label = lineno ? message + ' at ' + lineno : message;
+
+    // Fire away!
+    send(
+        objectMerge({
+            // sentry.interfaces.Exception
+            exception: {
+                type: type,
+                value: message
+            },
+            // sentry.interfaces.Stacktrace
+            stacktrace: stacktrace,
+            culprit: fileurl,
+            message: label
+        }, options)
+    );
+}
+
+function objectMerge(obj1, obj2) {
+    if (!obj2) {
+        return obj1;
+    }
+    each(obj2, function(key, value){
+        obj1[key] = value;
+    });
+    return obj1;
+}
+
+function getHttpData() {
+    var http = {
+        url: document.location.href,
+        headers: {
+            'User-Agent': navigator.userAgent
+        }
+    };
+
+    if (document.referrer) {
+        http.headers.Referer = document.referrer;
+    }
+
+    return http;
+}
+
+function send(data) {
+    if (!isSetup()) return;
+
+    data = objectMerge({
+        project: globalProject,
+        logger: globalOptions.logger,
+        site: globalOptions.site,
+        platform: 'javascript',
+        // sentry.interfaces.Http
+        request: getHttpData()
+    }, data);
+
+    // Merge in the tags and extra separately since objectMerge doesn't handle a deep merge
+    data.tags = objectMerge(globalOptions.tags, data.tags);
+    data.extra = objectMerge(globalOptions.extra, data.extra);
+
+    // If there are no tags/extra, strip the key from the payload alltogther.
+    if (isEmptyObject(data.tags)) delete data.tags;
+    if (isEmptyObject(data.extra)) delete data.extra;
+
+    if (globalUser) {
+        // sentry.interfaces.User
+        data.user = globalUser;
+    }
+
+    if (isFunction(globalOptions.dataCallback)) {
+        data = globalOptions.dataCallback(data);
+    }
+
+    // Check if the request should be filtered or not
+    if (isFunction(globalOptions.shouldSendCallback) && !globalOptions.shouldSendCallback(data)) {
+        return;
+    }
+
+    // Send along an event_id if not explicitly passed.
+    // This event_id can be used to reference the error within Sentry itself.
+    // Set lastEventId after we know the error should actually be sent
+    lastEventId = data.event_id || (data.event_id = generateUUID4());
+
+    makeRequest(data);
+}
+
+
+function makeRequest(data) {
+    var img = new Image(),
+        src = globalServer + getAuthQueryString() + '&sentry_data=' + encodeURIComponent(JSON.stringify(data));
+
+    img.onload = function success() {
+        triggerEvent('success', {
+            data: data,
+            src: src
+        });
+    };
+    img.onerror = img.onabort = function failure() {
+        triggerEvent('failure', {
+            data: data,
+            src: src
+        });
+    };
+    img.src = src;
+}
+
+function isSetup() {
+    if (!hasJSON) return false;  // needs JSON support
+    if (!globalServer) {
+        if (window.console && console.error) {
+            console.error("Error: Raven has not been configured.");
+        }
+        return false;
+    }
+    return true;
+}
+
+function joinRegExp(patterns) {
+    // Combine an array of regular expressions and strings into one large regexp
+    // Be mad.
+    var sources = [],
+        i = 0, len = patterns.length,
+        pattern;
+
+    for (; i < len; i++) {
+        pattern = patterns[i];
+        if (isString(pattern)) {
+            // If it's a string, we need to escape it
+            // Taken from: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+            sources.push(pattern.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1"));
+        } else if (pattern && pattern.source) {
+            // If it's a regexp already, we want to extract the source
+            sources.push(pattern.source);
+        }
+        // Intentionally skip other cases
+    }
+    return new RegExp(sources.join('|'), 'i');
+}
+
+// http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/2117523#2117523
+function generateUUID4() {
+    return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random()*16|0,
+            v = c == 'x' ? r : (r&0x3|0x8);
+        return v.toString(16);
+    });
+}
+
+Raven.afterLoad();
+
+// Expose Raven to the world
+window.Raven = Raven;
+
+// AMD
+if (typeof define === 'function' && define.amd) {
+    define('raven', [], function() { return Raven; });
+}
+
+})(window);
+
 /**
  * Restful Resources service for AngularJS apps
  * @version v1.4.0 - 2014-04-25 * @link https://github.com/mgonto/restangular
@@ -90026,22 +90321,20 @@ angular.module('BulbsAutocomplete.suggest.directive', [])
             switch (keyEvent.keyCode) {
               case 13:
                 // enter
-                if (scope.selectedIndex !== -1) {
-                  scope.onSelect({
-                    selection: scope.items[scope.selectedIndex]
-                  });
-                }
+                scope.onSelect({
+                  selection: scope.selectedIndex === -1 ? null : scope.items[scope.selectedIndex]
+                });
                 break;
               case 38:
                 // up
                 if (!scope.mouseActive) {
-                  scope.selectedIndex = scope.selectedIndex <= 0 ? lastIndexOfItems : scope.selectedIndex - 1;
+                  scope.selectedIndex = scope.selectedIndex <= -1 ? lastIndexOfItems : scope.selectedIndex - 1;
                 }
                 break;
               case 40:
                 //Down
                 if (!scope.mouseActive) {
-                  scope.selectedIndex = scope.selectedIndex >= lastIndexOfItems ? 0 : scope.selectedIndex + 1;
+                  scope.selectedIndex = scope.selectedIndex >= lastIndexOfItems ? -1 : scope.selectedIndex + 1;
                 }
                 break;
             }
