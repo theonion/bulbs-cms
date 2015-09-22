@@ -18,14 +18,33 @@
     "angularfire": "~0.8.2",
     "font-awesome": "~4.1.0",
     "angular-bootstrap": "~0.11.0",
-    "raven-js": "1.1.11",
     "moment": "~2.6.0",
     "moment-timezone": "~0.2.4",
     "lodash": "~3.1.0",
     "jcrop": "0.9.12",
     "urlify": "theonion/urlify",
     "angular-bootstrap-datetimepicker": "~0.2.2",
-    "onion-editor": "0.2.40",
+
+
+
+
+
+
+
+
+
+    "onion-editor": "https://github.com/theonion/editor.git#embed-instagram",
+
+
+
+
+
+
+
+
+
+
+    "raven-js": "1.1.11",
     "restangular": "~1.4.0",
     "Keypress": "~2.0.2",
     "pnotify": "~2.0.0",
