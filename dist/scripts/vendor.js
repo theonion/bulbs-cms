@@ -91413,10 +91413,10 @@ InstagramEmbedProcessor.prototype._getInstagramEmbedScript = function () {
     var self = this;
     $.getScript(this._settings.instagramEmbedScriptUrl)
       .done(function () {
-        self.shared.instagramLoaded.resolve();
+        self._shared.instagramLoaded.resolve();
       })
       .fail(function () {
-        self.shared.instagramLoaded.reject(arguments);
+        self._shared.instagramLoaded.reject(arguments);
         console.error('Unable to load instagram embed script!', arguments);
       });
   }
