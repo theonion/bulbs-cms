@@ -29,10 +29,6 @@ angular.module('bulbsCmsApp')
       {
         name: 'Published',
         value: 'published'
-      },
-      {
-        name: 'Backlogged',
-        value: 'backlogged'
       }
     ];
 
@@ -45,7 +41,7 @@ angular.module('bulbsCmsApp')
           {'title': 'FeatureType', 'expression': 'content.feature_type'},
           {'title': 'Contributor', 'expression': 'user.full_name'},
           {'title': 'Role', 'expression': 'role'},
-          {'title': 'Pay', 'expression': 'rate'},
+          {'title': 'Pay', 'expression': 'pay'},
           {'title': 'Date', 'expression': 'content.published'}
         ],
         downloadURL: '/cms/api/v1/contributions/reporting/',
@@ -172,11 +168,23 @@ angular.module('bulbsCmsApp')
 
       if ($scope.publishedFilter) {
         $scope.downloadURL += ('&published=' + $scope.publishedFilter);
+        reportParams['published'] = $scope.publishedFilter;
+      }
+
+      if ($scope.userFilter) {
+        $scope.downloadURL += ('&staff=' + $scope.userFilter);
+        reportParams['staff'] = $scope.userFilter;
       }
 
       if ($scope.moreFilters) {
         for (var key in $scope.moreFilters) {
-          $scope.downloadURL += ('&' + $scope.moreFilters[key].type + '=' + $scope.moreFilters[key].query);
+          if ($scope.moreFilters[key].type === 'authors') {
+            $scope.downloadURL += ('&' + 'contributors=' + $scope.moreFilters[key].query);
+            reportParams['contributors'] = $scope.moreFilters[key].query;
+          } else {
+            $scope.downloadURL += ('&' + $scope.moreFilters[key].type + '=' + $scope.moreFilters[key].query);
+            reportParams[$scope.moreFilters[key].type] = $scope.moreFilters[key].query;
+          }
         }
       }
 
