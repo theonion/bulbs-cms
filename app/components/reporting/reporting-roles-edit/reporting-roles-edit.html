@@ -31,83 +31,75 @@
         </div>
       </div>
       <div class="row" ng-show="rateEditable()">
-        <div class="form-group col-md-6">
-          <div class="row" ng-hide="model.paymentType != 'Flat Rate'">
-            <label for="setFlatRate">Set Flat Rate</label>
-            <div id="setFlatRate" class="input-group" ng-hide="model.paymentType != 'Flat Rate'">
-              <span class="input-group-btn">
-                <button class="btn btn-info">
-                  $
-                </button>
-              </span>
-              <input
-                type="text"
-                class="form-control"
-                value="{{model.rates.flatRate.rate}}"
-                ng-model="model.rates.flatRate.rate">
+        <div class="form-group col-md-10 form-control-static">
+          <div class="col-md-8">
+            <div class="row" ng-hide="model.paymentType != 'Flat Rate'">
+              <label for="setFlatRate">Set Flat Rate</label>
+              <div id="setFlatRate" class="input-group" ng-hide="model.paymentType != 'Flat Rate'">
+                <span class="input-group-btn">
+                  <button class="btn btn-info">
+                    $
+                  </button>
+                </span>
+                <input
+                  type="text"
+                  class="form-control"
+                  value="{{model.rates.flatRate.rate}}"
+                  ng-model="model.rates.flatRate.rate">
+              </div>
             </div>
-          </div>
 
-          <div class="row" ng-hide="model.paymentType != 'Hourly'">
-            <label for="setHourly">Set Hourly Rate&nbsp&nbsp</label>
-            <div id="setHourly" class="input-group">
-              <span class="input-group-btn">
-                <button class="btn btn-info">
-                  $
-                </button>
-              </span>
-              <input
-                type="text"
-                class="form-control"
-                ng-model="model.rates.hourly.rate">
-              <span class="input-group-btn">
-                <button class="btn btn-info">
-                  /hr
-                </button>
-              </span>
+            <div class="row" ng-hide="model.paymentType != 'Hourly'">
+              <label for="setHourly">Set Hourly Rate&nbsp&nbsp</label>
+              <div id="setHourly" class="input-group">
+                <span class="input-group-btn">
+                  <button class="btn btn-info">
+                    $
+                  </button>
+                </span>
+                <input
+                  type="text"
+                  class="form-control"
+                  ng-model="model.rates.hourly.rate">
+                <span class="input-group-btn">
+                  <button class="btn btn-info">
+                    /hr
+                  </button>
+                </span>
+              </div>
             </div>
-          </div>
-          <div class="table-responsive ng-scope" ng-show="model.paymentType == 'FeatureType'">
-            <table class="table">
-              <thead>
-                <tr>
-                  <td>Feature Types</td>
-                  <td>Rates</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="rate in model.rates.featureType">
-                  <td class="col-md-5">
-                    <featuretype-field
-                      article="rate"
-                      hide-label="true"
-                      class="pull-left">
-                    </featuretype-field>
-                  </td>
-                  <td>
-                    <div class="input-group">
-                      <span class="input-group-btn">
-                        <button class="btn btn-info">
-                          $
-                        </button>
-                      </span>
-                      <input
-                        type="text"
-                        value="{{ rate.rate }}"
-                        ng-model="rate.rate"
-                        class="form-control">
-                      </input>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <button
-              class="add-item btn btn-primary"
-              ng-click="addFeatureType()">
-              <i class="glyphicon glyphicon-plus"></i>
-              Add FeatureType
-            </button>
+            <div class="table-responsive ng-scope" ng-show="model.paymentType == 'FeatureType'">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <td>Feature Types</td>
+                    <td>Rates</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="rate in model.rates.featureType">
+                    <td class="col-md-5">
+                      {{ rate.featureType }}
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <span class="input-group-btn">
+                          <button class="btn btn-info">
+                            $
+                          </button>
+                        </span>
+                        <input
+                          type="text"
+                          value="{{ rate.rate }}"
+                          ng-model="rate.rate"
+                          class="form-control">
+                        </input>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
