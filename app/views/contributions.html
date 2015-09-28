@@ -125,18 +125,24 @@
 
                       <div ng-show="isHourly(contribution)">
                         <div class="col-md-4">
-                          <div class="form-group col-sm-5">
-                            <label for="flatrate">Pay</label>
-                            <div id="flatrate">${{ contribution.role }}</div>
+                          <div class="col-md-5">
+                            <label for="minutes">Minutes Worked</label>
+                            <div id="minutes" class="input-group">
+                              <input type="text"
+                                  class="form-control col-sm-4"
+                                  ng-model="contribution.minutes_worked">
+                              </input>
+                              <span class="input-group-addon">Min.</span>
+                            </div>
                           </div>
-                          <label for="minutes">Minutes Worked</label>
-                          <div id="minutes" class="input-group col-sm-4">
-                            <input type="text"
-                                class="form-control col-sm-4"
-                                ng-model="contribution.minutes_worked">
-                            </input>
-                            <span class="input-group-addon">Min.</span>
+
+                          <div class="col-md-4">
+                            <div class="form-group col-sm-4">
+                              <label for="hourlyPay">Pay</label>
+                              <div id="hourlyPay" style="padding-top:20px;">${{ getHourlyPay(contribution) }}</div>
+                            </div>
                           </div>
+
                         </div>
                         <div class="col-sm-4" style="margin-top:20px;padding-left:25px;">
                           <input

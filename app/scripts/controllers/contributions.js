@@ -73,6 +73,13 @@ angular.module('bulbsCmsApp')
       return false;
     };
 
+    $scope.getHourlyPay = function (contribution) {
+      if (!contribution.rate) {
+        return 0;
+      }
+      return ((contribution.rate/60) * (contribution.minutes_worked || 0));
+    };
+
     function save() {
       // I know, I'm not supposed to do DOM manipulation in controllers. TOO BAD.
       angular.element('#save-btn').html('<i class="glyphicon glyphicon-refresh fa-spin"></i> Saving');
