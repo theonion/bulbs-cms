@@ -25,12 +25,32 @@ angular.module('bulbsCmsApp')
 
     $scope.isFlatRate = function(contribution) {
       if (contribution.hasOwnProperty('roleObject')) {
-        if (contribution.roleObject.payment_type === 'Flat Rate') {
+        if (contribution.roleObject.payment_type === 'Flat Rate'){
           return true;
         }
       }
 
       return false;
+    };
+
+    $scope.isFeatureType = function(contribution) {
+      if (contribution.hasOwnProperty('roleObject')) {
+        if (contribution.roleObject.payment_type === 'FeatureType'){
+          $scope.setFeatureRate(contribution);
+          return true;
+        }
+      }
+
+      return false;
+    };
+
+    $scope.setFeatureRate = function(contribution) {
+      for (var i in contribution.roleObject.rates.feature_type) {
+        var featureTypeRate = contribution.roleObject.rates.feature_type[i];
+        if ($scope.content.feature_type === featureTypeRate.feature_type) {
+          contribution.featureTypeRate = featureTypeRate.rate;
+        }
+      }
     };
 
     $scope.isHourly = function(contribution) {

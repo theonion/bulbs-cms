@@ -36,11 +36,55 @@
                           <textarea id="contribution-notes" class="form-control" rows="3" placeholder="Add notes about this contribution..." ng-model="contribution.notes"></textarea>
                         </div>
                       </div>
+
                       <div ng-show="isFlatRate(contribution)">
                         <div class="col-md-4">
                           <div class="form-group col-sm-5">
                             <label for="flatrate">Pay</label>
                             <div id="flatrate">$ {{ contribution.roleObject.rates.flat_rate.rate }}</div>
+                          </div>
+                          <label>Override Pay</label>
+                          <div class="input-group col-sm-4">
+                            <span class="input-group-addon">$</span>
+                            <input type="text"
+                                id="override"
+                                class="form-control col-sm-2"
+                                ng-model="contribution.override_rate">
+                            </input>
+                          </div>
+                        </div>
+                        <div class="col-sm-4" style="margin-top:20px; padding-left:25px;">
+                          <input
+                            type="checkbox"
+                            ng-model="contribution.force_payment">
+                          </input>
+                          <span>Force Payment Submission</span>
+                        </div>
+                        <br>
+                        <label for="forceStartDate" style="margin-top:20px;padding-left:25px;">Forced Payment Submission Date</label>
+                        <div id="forceStartDate" class="input-group col-sm-3" style="padding-left:25px;">
+                          <input
+                              type="text"
+                              ng-model="contribution.force_date"
+                              class="form-control"
+                              readonly>
+                          <div class="input-group-btn">
+                            <button
+                                class="btn btn-default"
+                                datetime-selection-modal-opener
+                                ng-model="contribution.force_date"
+                                modal-title="Submission Date">
+                              <i class="glyphicon glyphicon-calendar"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div ng-show="isFeatureType(contribution)">
+                        <div class="col-md-4">
+                          <div class="form-group col-sm-5">
+                            <label for="feauturetype">Pay</label>
+                            <div id="featuretype">$ {{ contribution.featureTypeRate }}</div>
                           </div>
                           <label>Override Pay</label>
                           <div class="input-group col-sm-4">

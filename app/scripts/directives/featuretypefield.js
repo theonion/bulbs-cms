@@ -20,10 +20,6 @@ angular.module('bulbsCmsApp')
           scope.model = scope.article.feature_type;
         });
 
-        scope.$watch('article.featureType', function () {
-          scope.model = scope.article.featureType;
-        });
-
         scope.display = function (o) {
           return (o && o.name) || '';
         };
