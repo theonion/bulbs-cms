@@ -125,7 +125,9 @@ angular.module('bulbsCmsApp')
             continue;
           } else {
 
-            if ((contributions[i].hasOwnProperty('rate')) && (typeof(contributions[i].rate) === 'object')) {
+            if ((contributions[i].hasOwnProperty('rate')) &&
+                (typeof(contributions[i].rate) === 'object') &&
+                (contributions[i].rate !== null)) {
               contributions[i].rate = contributions[i].rate.rate;
             }
 
