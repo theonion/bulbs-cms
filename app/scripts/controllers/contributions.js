@@ -97,7 +97,7 @@ angular.module('bulbsCmsApp')
       $scope.contributions.push({
         contributor: null,
         content: $scope.contentId,
-        rate: {},
+        rate: null,
         role: null
       });
       $scope.collapsed.push(false);
