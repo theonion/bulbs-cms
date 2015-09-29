@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter, $interpolate, Login, routes, ContributionReportingService, ContentReportingService, FreelancePayReportingService) {
+  .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter, $interpolate, Login, routes, moment, ContributionReportingService, ContentReportingService, FreelancePayReportingService) {
     $window.document.title = routes.CMS_NAMESPACE + ' | Reporting'; // set title
 
     $scope.userFilter = '';
@@ -87,6 +87,9 @@ angular.module('bulbsCmsApp')
 
     $scope.startOpen = false;
     $scope.endOpen = false;
+
+    $scope.startInitial = moment().startOf('month').format('YYYY-MM-DD');
+    $scope.endInitial = moment().endOf('month').format('YYYY-MM-DD');
 
     $scope.setReport = function ($reportingService) {
       $scope.report = $reportingService;
