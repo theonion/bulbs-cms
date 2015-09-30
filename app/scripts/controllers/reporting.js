@@ -42,7 +42,7 @@ angular.module('bulbsCmsApp')
           {'title': 'Contributor', 'expression': 'user.full_name'},
           {'title': 'Role', 'expression': 'role'},
           {'title': 'Pay', 'expression': 'pay'},
-          {'title': 'Date', 'expression': 'content.published'}
+          {'title': 'Date', 'expression': 'content.published | date: \'MM/dd/yyyy\''}
         ],
         downloadURL: '/cms/api/v1/contributions/reporting/',
         orderOptions: [
@@ -63,7 +63,7 @@ angular.module('bulbsCmsApp')
           {'title': 'Headline', 'expression': 'title'},
           {'title': 'Feature Type', 'expression': 'feature_type'},
           {'title': 'Article Cost', 'expression': 'value'},
-          {'title': 'Date Published', 'expression': 'published'}
+          {'title': 'Date Published', 'expression': 'published | date: \'MM/dd/yyyy\''}
         ],
         orderOptions: [],
         downloadURL: '/cms/api/v1/contributions/contentreporting/',
@@ -74,7 +74,7 @@ angular.module('bulbsCmsApp')
           {'title': 'Contributor', 'expression': 'contributor.full_name'},
           {'title': 'Contribution #', 'expression': 'contributions_count'},
           {'title': 'Pay', 'expression': 'pay'},
-          {'title': 'Payment Date', 'expression': 'payment_date'}
+          {'title': 'Payment Date', 'expression': 'payment_date | date: \'MM/dd/yyyy\''}
         ],
         orderOptions: [],
         downloadURL: '/cms/api/v1/contributions/contributors/'
@@ -97,10 +97,12 @@ angular.module('bulbsCmsApp')
 
     $scope.setUserFilter = function (value) {
       $scope.userFilter = value;
+      loadReport($scope.report, $scope.start, $scope.end, $scope.orderBy);
     };
 
     $scope.setPublishedFilter = function (value) {
       $scope.publishedFilter = value;
+      loadReport($scope.report, $scope.start, $scope.end, $scope.orderBy);
     };
 
     $scope.openStart = function ($event) {
@@ -146,7 +148,6 @@ angular.module('bulbsCmsApp')
 
       loadReport($scope.report, start, end, $scope.orderBy);
     });
-
 
     function loadReport(report, start, end, order) {
       $scope.items = [];
