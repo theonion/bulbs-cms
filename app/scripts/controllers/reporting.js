@@ -102,6 +102,9 @@ angular.module('bulbsCmsApp')
 
     $scope.setPublishedFilter = function (value) {
       $scope.publishedFilter = value;
+      if (value === 'published') {
+        $scope.end = moment().format('YYYY-MM-DD');
+      }
       loadReport($scope.report, $scope.start, $scope.end, $scope.orderBy);
     };
 
