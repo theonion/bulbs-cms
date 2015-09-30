@@ -77,7 +77,7 @@ angular.module('bulbsCmsApp')
           {'title': 'Payment Date', 'expression': 'payment_date | date: \'MM/dd/yyyy\''}
         ],
         orderOptions: [],
-        downloadURL: '/cms/api/v1/contributions/contributors/'
+        downloadURL: '/cms/api/v1/contributions/freelancereporting/'
       }
     };
     $scope.items = [];
