@@ -3550,6 +3550,7 @@ angular.module('lineItems.list', [
 
 angular.module('rateOverrides.edit.directive', [
   'apiServices.rateOverride.factory',
+  'apiServices.featureType.factory',
   'bulbsCmsApp.settings',
   'lodash',
   'saveButton.directive',
@@ -3557,7 +3558,7 @@ angular.module('rateOverrides.edit.directive', [
 ])
   .directive('rateOverridesEdit', function (routes) {
     return {
-      controller: function (_, $location, $http, $q, $routeParams, $scope, RateOverride, Raven) {
+      controller: function (_, $location, $http, $q, $routeParams, $scope, ContentFactory, FeatureType, RateOverride, Raven) {
         var resourceUrl = '/cms/api/v1/contributions/role/';
 
         if ($routeParams.id === 'new') {
@@ -3571,12 +3572,6 @@ angular.module('rateOverrides.edit.directive', [
             }
           });
         }
-
-        $scope.$watch('$scope.model', function() {
-          if ($scope.model.$pending.length === 0) {
-            $scope.model.role= $scope.model.role.id;
-          }
-        });
 
         window.onbeforeunload = function (e) {
           if (!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
@@ -3620,6 +3615,28 @@ angular.module('rateOverrides.edit.directive', [
           return false;
         };
 
+        $scope.addFeatureType = function () {
+          if (!$scope.model.hasOwnProperty('featureTypes')) {
+            $scope.model.featureTypes = [];
+          }
+
+          $scope.model.featureTypes.push({
+            featureType: null,
+            rate: 0,
+          });
+        };
+
+        $scope.getFeatureTypes = function () {
+          $http({
+            method: 'GET',
+            url: resourceUrl
+          }).success(function (data) {
+            $scope.featureTypes = data.results || data;
+          }).error(function (data, status, headers, config) {
+            Raven.captureMessage('Error fetching FeatureTypes', {extra: data});
+          });
+        };
+
         $scope.getRoles = function () {
           $http({
           method: 'GET',
@@ -3629,6 +3646,10 @@ angular.module('rateOverrides.edit.directive', [
             }).error(function (data, status, headers, config) {
               Raven.captureMessage('Error fetching Roles', {extra: data});
             });
+        };
+
+        $scope.searchFeatureTypes = function (searchTerm) {
+          return FeatureType.simpleSearch(searchTerm);
         };
 
         $scope.saveModel = function () {
@@ -3651,6 +3672,7 @@ angular.module('rateOverrides.edit.directive', [
         };
 
         $scope.getRoles();
+        $scope.getFeatureTypes();
       },
       restrict: 'E',
       scope: {
@@ -4598,6 +4620,31 @@ angular.module('apiServices.customSearch.settings', [])
 
 'use strict';
 
+angular.module('apiServices.featureType.factory', [
+  'apiServices'
+])
+  .factory('FeatureType', [
+    'restmod',
+    function (restmod) {
+      return restmod.model('things').mix('NestedDirtyModel', {
+        $config: {
+          name: 'FeatureType',
+          plural: 'FeatureTypes',
+          primaryKey: 'id',
+        },
+
+        $extend: {
+          Model: {
+            simpleSearch: function (searchTerm) {
+              return this.$search({type: 'feature_type', q: searchTerm}).$asPromise();
+            }
+          }
+        }
+      });
+    }]
+  );
+'use strict';
+
 angular.module('apiServices.lineItem.factory', [
   'apiServices',
   'apiServices.mixins.fieldDisplay'
@@ -4668,6 +4715,34 @@ angular.module('apiServices.rateOverride.factory', [
       },
       role: {
         init: {}
+      },
+      $hooks: {
+        'before-save': function(_req) {
+          var featureTypes = _req.data.feature_types;
+          if (featureTypes.length > 0) {
+            for (var key in featureTypes) {
+              var obj = featureTypes[key];
+              if (obj.hasOwnProperty('featureType')) {
+                if (obj.featureType.hasOwnProperty('name')) {
+                  _req.data.feature_types[key].feature_type = obj.featureType.name;
+                } else if (obj.featureType.hasOwnProperty('value')) {
+                  _req.data.feature_types[key].feature_type.slug = obj.featureType.value;
+                }
+              }
+            }
+          }
+        },
+        'before-render': function(record) {
+          if (record.hasOwnProperty('feature_types')) {
+            for (var key in record.feature_types) {
+              if (record.feature_types[key].hasOwnProperty('feature_type')){
+                if (record.feature_types[key].feature_type.hasOwnProperty('name')) {
+                  record.feature_types[key].feature_type = record.feature_types[key].feature_type.name;
+                }
+              }
+            }
+          }
+        }
       }
     });
   });
@@ -7780,10 +7855,12 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.getHourlyPay = function (contribution) {
-      if (!contribution.rate) {
-        return 0;
+      if (contribution.roleObject) {
+        if (!contribution.roleObject.rate) {
+          return 0;
+        }
+        return ((contribution.roleObject.rate/60) * (contribution.minutes_worked || 0));
       }
-      return ((contribution.rate/60) * (contribution.minutes_worked || 0));
     };
 
     function save() {
@@ -8339,7 +8416,7 @@ angular.module('bulbsCmsApp')
           {'title': 'Contributor', 'expression': 'user.full_name'},
           {'title': 'Role', 'expression': 'role'},
           {'title': 'Pay', 'expression': 'pay'},
-          {'title': 'Date', 'expression': 'content.published'}
+          {'title': 'Date', 'expression': 'content.published | date: \'MM/dd/yyyy\''}
         ],
         downloadURL: '/cms/api/v1/contributions/reporting/',
         orderOptions: [
@@ -8360,7 +8437,7 @@ angular.module('bulbsCmsApp')
           {'title': 'Headline', 'expression': 'title'},
           {'title': 'Feature Type', 'expression': 'feature_type'},
           {'title': 'Article Cost', 'expression': 'value'},
-          {'title': 'Date Published', 'expression': 'published'}
+          {'title': 'Date Published', 'expression': 'published | date: \'MM/dd/yyyy\''}
         ],
         orderOptions: [],
         downloadURL: '/cms/api/v1/contributions/contentreporting/',
@@ -8371,10 +8448,10 @@ angular.module('bulbsCmsApp')
           {'title': 'Contributor', 'expression': 'contributor.full_name'},
           {'title': 'Contribution #', 'expression': 'contributions_count'},
           {'title': 'Pay', 'expression': 'pay'},
-          {'title': 'Payment Date', 'expression': 'payment_date'}
+          {'title': 'Payment Date', 'expression': 'payment_date | date: \'MM/dd/yyyy\''}
         ],
         orderOptions: [],
-        downloadURL: '/cms/api/v1/contributions/contributors/'
+        downloadURL: '/cms/api/v1/contributions/freelancereporting/'
       }
     };
     $scope.items = [];
@@ -8394,10 +8471,15 @@ angular.module('bulbsCmsApp')
 
     $scope.setUserFilter = function (value) {
       $scope.userFilter = value;
+      loadReport($scope.report, $scope.start, $scope.end, $scope.orderBy);
     };
 
     $scope.setPublishedFilter = function (value) {
       $scope.publishedFilter = value;
+      if (value === 'published') {
+        $scope.end = moment().format('YYYY-MM-DD');
+      }
+      loadReport($scope.report, $scope.start, $scope.end, $scope.orderBy);
     };
 
     $scope.openStart = function ($event) {
@@ -8443,7 +8525,6 @@ angular.module('bulbsCmsApp')
 
       loadReport($scope.report, start, end, $scope.orderBy);
     });
-
 
     function loadReport(report, start, end, order) {
       $scope.items = [];
