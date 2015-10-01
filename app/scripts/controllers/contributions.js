@@ -74,10 +74,12 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.getHourlyPay = function (contribution) {
-      if (!contribution.rate) {
-        return 0;
+      if (contribution.roleObject) {
+        if (!contribution.roleObject.rate) {
+          return 0;
+        }
+        return ((contribution.roleObject.rate/60) * (contribution.minutes_worked || 0));
       }
-      return ((contribution.rate/60) * (contribution.minutes_worked || 0));
     };
 
     function save() {

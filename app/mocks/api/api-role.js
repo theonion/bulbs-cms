@@ -56,7 +56,7 @@ angular.module('bulbsCmsApp.mockApi.role', [
     }, {
       id: 3,
       name: 'Programmer',
-      payment_type: 'Hourly',
+      payment_type: 'FeatureType',
       rates: {
         flat_Rate: {
           id: 3,

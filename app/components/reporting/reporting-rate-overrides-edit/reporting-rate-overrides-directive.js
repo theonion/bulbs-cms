@@ -2,6 +2,7 @@
 
 angular.module('rateOverrides.edit.directive', [
   'apiServices.rateOverride.factory',
+  'apiServices.featureType.factory',
   'bulbsCmsApp.settings',
   'lodash',
   'saveButton.directive',
@@ -9,7 +10,7 @@ angular.module('rateOverrides.edit.directive', [
 ])
   .directive('rateOverridesEdit', function (routes) {
     return {
-      controller: function (_, $location, $http, $q, $routeParams, $scope, RateOverride, Raven) {
+      controller: function (_, $location, $http, $q, $routeParams, $scope, ContentFactory, FeatureType, RateOverride, Raven) {
         var resourceUrl = '/cms/api/v1/contributions/role/';
 
         if ($routeParams.id === 'new') {
@@ -23,12 +24,6 @@ angular.module('rateOverrides.edit.directive', [
             }
           });
         }
-
-        $scope.$watch('$scope.model', function() {
-          if ($scope.model.$pending.length === 0) {
-            $scope.model.role= $scope.model.role.id;
-          }
-        });
 
         window.onbeforeunload = function (e) {
           if (!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
@@ -72,6 +67,28 @@ angular.module('rateOverrides.edit.directive', [
           return false;
         };
 
+        $scope.addFeatureType = function () {
+          if (!$scope.model.hasOwnProperty('featureTypes')) {
+            $scope.model.featureTypes = [];
+          }
+
+          $scope.model.featureTypes.push({
+            featureType: null,
+            rate: 0,
+          });
+        };
+
+        $scope.getFeatureTypes = function () {
+          $http({
+            method: 'GET',
+            url: resourceUrl
+          }).success(function (data) {
+            $scope.featureTypes = data.results || data;
+          }).error(function (data, status, headers, config) {
+            Raven.captureMessage('Error fetching FeatureTypes', {extra: data});
+          });
+        };
+
         $scope.getRoles = function () {
           $http({
           method: 'GET',
@@ -81,6 +98,10 @@ angular.module('rateOverrides.edit.directive', [
             }).error(function (data, status, headers, config) {
               Raven.captureMessage('Error fetching Roles', {extra: data});
             });
+        };
+
+        $scope.searchFeatureTypes = function (searchTerm) {
+          return FeatureType.simpleSearch(searchTerm);
         };
 
         $scope.saveModel = function () {
@@ -103,6 +124,7 @@ angular.module('rateOverrides.edit.directive', [
         };
 
         $scope.getRoles();
+        $scope.getFeatureTypes();
       },
       restrict: 'E',
       scope: {

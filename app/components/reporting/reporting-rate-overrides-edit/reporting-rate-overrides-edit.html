@@ -49,16 +49,21 @@
             <thead>
               <tr>
                 <td><label>Feature Types</label></td>
-                <td><label>Rate</label></td>
                 <td><label>Override Rate</label></td>
               </tr>
             </thead>
             <tbody>
               <tr ng-repeat="featureType in model.featureTypes">
-                <td>{{ featureType.featureType }}</td>
                 <td>
-                  ${{ featureType.rate }}
+                  <autocomplete-basic
+                    class="form-control"
+                    ng-model="featureType.featureType"
+                    item-display-formatter="item.name || item"
+                    input-id="searchFeatureType"
+                    search-function="searchFeatureTypes">
+                    </autocomplete-basic>
                 </td>
+
                 <td>
                   <div class="input-group">
                     <span class="input-group-btn">
@@ -66,7 +71,7 @@
                     </span>
                     <input
                       type="text"
-                      value="{{ featureType.overrideRate }}"
+                      ng-model="featureType.rate"
                       class="form-control">
                     </input>
                   </div>
@@ -74,6 +79,12 @@
               </tr>
             </tbody>
           </table>
+          <button
+            class="add-item btn btn-primary"
+            ng-click="addFeatureType()">
+            <i class="glyphicon glyphicon-plus"></i>
+              Add FeatureType
+          </button>
         </div>
       </div>
     </div>
