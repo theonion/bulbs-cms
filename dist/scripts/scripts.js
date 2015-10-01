@@ -7756,7 +7756,7 @@ angular.module('bulbsCmsApp')
 
 angular.module('bulbsCmsApp')
   .directive('onionEditor', function (PARTIALS_URL, $, Zencoder, BettyCropper,
-      openImageCropModal, VIDEO_EMBED_URL, OnionEditor, CmsImage) {
+      openImageCropModal, VIDEO_EMBED_URL, OnionEditor, CmsImage, CmsConfig) {
     return {
       require: 'ngModel',
       replace: true,
@@ -7795,7 +7795,7 @@ angular.module('bulbsCmsApp')
               searchHandler: window[attrs.linkSearchHandler] || false
             },
             statsContainer: '.wordcount',
-            inlineObjects: attrs.inlineObjects,
+            inlineObjects: CmsConfig.getInlineObjectsUrl(),
             image: {
               insertDialog: BettyCropper.upload,
               editDialog: openImageCropModal,
