@@ -293,10 +293,11 @@ angular.module('promotedContent.service', [
      * GOD DAMN IT RACE CONDITIONS NOTE: To avoid race conditions, only call
      *  this function as a result of user interaction.
      *
+     * @param {object} params - query parameters to append to request.
      * @returns {Promise} resolves with operation data, or rejects with an error message.
      */
-    PromotedContentService.$refreshOperations = function () {
-      return _data.selectedPZone.getList('operations')
+    PromotedContentService.$refreshOperations = function (params) {
+      return _data.selectedPZone.getList('operations', params)
         .then(function (data) {
 
           _data.operations = data;

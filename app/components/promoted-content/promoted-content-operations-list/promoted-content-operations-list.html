@@ -1,116 +1,138 @@
-<h3>
-  Schedule
-  <small class="title">{{ pzoneData.selectedPZone.name }}</small>
-</h3>
+<div ng-hide="refreshingOperations || operationsStale()">
+  <h3>
+    <span>Schedule</span>
+    <small class="title">{{ pzoneData.selectedPZone.name }}</small>
+  </h3>
 
-<div class="form-group">
-  From:
-  <button
-      class="btn btn-xs btn-info"
-      datetime-selection-modal-opener
-      ng-model="scheduleDateFrom"
-      modal-title="See Schedule Starting At This Date"
-      ng-disabled="disableControls()">
-    <i class="glyphicon glyphicon-calendar"></i>
-    <span ng-show="scheduleDateFrom">{{ scheduleDateFrom.toDate() | date: 'MMM d, yyyy @ h:mma' }}</span>
-    <span ng-show="!scheduleDateFrom">Select Date</span>
-  </button>
-  to:
-  <button
-      class="btn btn-xs btn-info"
-      datetime-selection-modal-opener
-      ng-model="scheduleDateTo"
-      modal-title="See Schedule up to This Date"
-      ng-disabled="disableControls()">
-    <i class="glyphicon glyphicon-calendar"></i>
-    <span ng-show="scheduleDateTo">{{ scheduleDateTo.toDate() | date: 'MMM d, yyyy @ h:mma' }}</span>
-    <span ng-show="!scheduleDateTo">Select Date</span>
-  </button>
+  <div class="form-group">
+    <span>From:</span>
+    <button
+        class="btn btn-xs btn-info"
+        datetime-selection-modal-opener
+        modal-on-close="refreshOperations()"
+        ng-model="scheduleDateFrom"
+        modal-title="See Schedule Starting At This Date"
+        ng-disabled="disableControls()">
+      <i class="glyphicon glyphicon-calendar"></i>
+      <span ng-show="scheduleDateFrom">{{ scheduleDateFrom.toDate() | date: 'MMM d, yyyy @ h:mma' }}</span>
+      <span ng-show="!scheduleDateFrom">Select Date</span>
+    </button>
+    <span>to:</span>
+    <button
+        class="btn btn-xs btn-info"
+        datetime-selection-modal-opener
+        modal-on-close="refreshOperations()"
+        ng-model="scheduleDateTo"
+        modal-title="See Schedule up to This Date"
+        ng-disabled="disableControls()">
+      <i class="glyphicon glyphicon-calendar"></i>
+      <span ng-show="scheduleDateTo">{{ scheduleDateTo.toDate() | date: 'MMM d, yyyy @ h:mma' }}</span>
+      <span ng-show="!scheduleDateTo">Select Date</span>
+    </button>
+  </div>
+
+  <div
+      class="delete-status-message alert"
+      ng-show="deleteStatus.message"
+      ng-class="{
+        'alert-success': !deleteStatus.isError,
+        'alert-danger': deleteStatus.isError
+      }">
+    <i class="glyphicon glyphicon-info-sign"></i>
+    {{ deleteStatus.message }}
+    <span
+        class="alert-link"
+        ng-click="clearDeleteStatus()">
+      Dismiss
+    </span>
+  </div>
+
+  <ul
+      class="operation-list-groups"
+      ng-init="openGroups = {}">
+    <li
+        class="operation-list-group"
+        ng-repeat="group in aggregatedOperations"
+        ng-show="
+          (group[0].isSame(scheduleDateFrom, 'minute') || group[0].isAfter(scheduleDateFrom, 'minute')) &&
+            group[0].isBefore(scheduleDateTo, 'minute')">
+      <div class="operation-list-group-title">
+        <span ng-click="openGroups[$index] = !openGroups[$index]">
+          <i
+              class="glyphicon"
+              ng-class="{
+                'glyphicon-chevron-right': !openGroups[$index],
+                'glyphicon-chevron-down': openGroups[$index] === true
+              }"
+              class="glyphicon">
+          </i>
+          <span>{{ group[0].format(groupDateFormat) }}</span>
+          <span>({{ group[1].length }} Events)</span>
+        </span>
+        <button
+            class="btn btn-xs btn-primary"
+            ng-click="setPreviewTime(group[0])"
+            ng-disabled="disableControls()">
+          <i class="glyphicon glyphicon-time"></i>
+          View
+        </button>
+      </div>
+      <ul
+          class="operation-list-group-operations list-group"
+          ng-show="openGroups[$index] === true">
+        <li
+            class="operation-list-operation list-group-item"
+            ng-repeat="operation in group[1]"
+            ng-class="{
+              'text-muted': operation.whenAsMoment.isBefore(moment()),
+              'list-group-item-warning': !operation.whenAsMoment && operation.client_id >= 0
+            }">
+          <div class="operation-delete pull-left">
+            <button
+                ng-if="operation.whenAsMoment.isAfter(moment())"
+                class="btn btn-link btn-lg"
+                ng-click="removeOperation(operation)"
+                ng-disabled="disableControls()">
+              <i class="glyphicon glyphicon-remove"></i>
+            </button>
+            <div
+                class="btn btn-link btn-lg disabled operation-delete-lock"
+                ng-if="operation.whenAsMoment.isBefore(moment()) || operation.client_id >= 0">
+              <i class="glyphicon glyphicon-lock"></i>
+            </div>
+          </div>
+          <div class="operation-body">
+            <div class="small">
+              <span>{{ operation.cleanType }}</span>
+              <span ng-if="operation.cleanType === 'INSERT' || operation.cleanType === 'REPLACE'">
+                @ position {{operation.index + 1}}
+              </span>
+            </div>
+            <div
+                class="operation-title"
+                ng-bind-html="operation.content_title">
+            </div>
+          </div>
+        </li>
+      </ul>
+    </li>
+  <ul>
 </div>
 
 <div
-    class="delete-status-message alert"
-    ng-show="deleteStatus.message"
-    ng-class="{
-      'alert-success': !deleteStatus.isError,
-      'alert-danger': deleteStatus.isError
-    }">
-  <i class="glyphicon glyphicon-info-sign"></i>
-  {{ deleteStatus.message }}
-  <span
-      class="alert-link"
-      ng-click="clearDeleteStatus()">
-    Dismiss
-  </span>
+    class="operations-loader"
+    ng-show="refreshingOperations">
+  <i class="fa fa-spinner fa-spin"></i>
+  <span>Loading operations...</span>
 </div>
-
-<ul
-    class="operation-list-groups"
-    ng-init="openGroups = {}">
-  <li
-      class="operation-list-group"
-      ng-repeat="group in aggregatedOperations"
-      ng-show="
-        (group[0].isSame(scheduleDateFrom, 'minute') || group[0].isAfter(scheduleDateFrom, 'minute')) &&
-          group[0].isBefore(scheduleDateTo, 'minute')">
-    <div class="operation-list-group-title">
-      <span ng-click="openGroups[$index] = !openGroups[$index]">
-        <i
-            class="glyphicon"
-            ng-class="{
-              'glyphicon-chevron-right': !openGroups[$index],
-              'glyphicon-chevron-down': openGroups[$index] === true
-            }"
-            class="glyphicon">
-        </i>
-        <span>{{ group[0].format(groupDateFormat) }}</span>
-        <span>({{ group[1].length }} Events)</span>
-      </span>
-      <button
-          class="btn btn-xs btn-primary"
-          ng-click="setPreviewTime(group[0])"
-          ng-disabled="disableControls()">
-        <i class="glyphicon glyphicon-time"></i>
-        View
-      </button>
-    </div>
-    <ul
-        class="operation-list-group-operations list-group"
-        ng-show="openGroups[$index] === true">
-      <li
-          class="operation-list-operation list-group-item"
-          ng-repeat="operation in group[1]"
-          ng-class="{
-            'text-muted': operation.whenAsMoment.isBefore(moment()),
-            'list-group-item-warning': !operation.whenAsMoment && operation.client_id >= 0
-          }">
-        <div class="operation-delete pull-left">
-          <button
-              ng-if="operation.whenAsMoment.isAfter(moment())"
-              class="btn btn-link btn-lg"
-              ng-click="removeOperation(operation)"
-              ng-disabled="disableControls()">
-            <i class="glyphicon glyphicon-remove"></i>
-          </button>
-          <div
-              class="btn btn-link btn-lg disabled operation-delete-lock"
-              ng-if="operation.whenAsMoment.isBefore(moment()) || operation.client_id >= 0">
-            <i class="glyphicon glyphicon-lock"></i>
-          </div>
-        </div>
-        <div class="operation-body">
-          <div class="small">
-            <span>{{ operation.cleanType }}</span>
-            <span ng-if="operation.cleanType === 'INSERT' || operation.cleanType === 'REPLACE'">
-              @ position {{operation.index + 1}}
-            </span>
-          </div>
-          <div
-              class="operation-title"
-              ng-bind-html="operation.content_title">
-          </div>
-        </div>
-      </li>
-    </ul>
-  </li>
-<ul>
+<div
+    class="operations-reloader"
+    ng-show="!refreshingOperations && operationsStale()">
+  <button
+      class="btn btn-xs btn-primary"
+      ng-click="refreshOperations()"
+      ng-disabled="disableControls()">
+    <i class="fa fa-refresh"></i>
+    <span>Refresh Schedule</span>
+  </button>
+</div>
