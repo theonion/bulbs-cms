@@ -1,0 +1,58 @@
+<div class="filterwidget">
+  <div class="input-container">
+    <div class="input-group has-feedback">
+      <input
+        class="filter-input form-control input-lg"
+        ng-class="{flattenbottom: tags.length > 0 || users.length > 0}"
+        type="text"
+        autocomplete="off"
+        placeholder="Filter..."
+        ng-model="filterInputValue"
+        tabindex="1">
+      <div class="input-group-btn">
+        <button
+            class="btn btn-lg btn-primary search-button"
+            ng-click="search()">
+          <span class="fa fa-search"></span>
+        </button>
+        <button
+            class="btn btn-lg btn-danger search-button"
+            ng-click="clearSearch()">
+          <span class="fa fa-times"></span>
+        </button>
+      </div>
+    </div>
+    <div class="filter-object-container">
+      <div class="taglikeobject label label-default" ng-repeat="(key, f) in filters" data-key="{{key}}" ng-click="deleteFilter(key);">
+        <span
+            class="glyphicon"
+            ng-class="{
+              'glyphicon-tag': f.type == 'tags',
+              'glyphicon-user': f.type == 'authors',
+              'glyphicon-folder-open': f.type == 'feature_types'
+            }">
+        </span> {{queryToLabelMappings[f.query]}}
+      </div>
+      <div class="label label-default clear-button" ng-click="clearFilters()">
+        <span class="fa fa-times-circle"></span>
+        <span>Clear filters</span>
+      </div>
+    </div>
+  </div>
+
+  <ul class="autocomplete dropdown-menu" ng-show="filterInputValue.length > 0">
+    <li class="entry search">
+      <a ng-click="addFilter('search', filterInputValue);">
+        <span class="glyphicon glyphicon-search"></span> Find articles containing "{{filterInputValue}}"</a>
+    </li>
+    <li class="entry" ng-repeat="o in autocompleteArray">
+      <a ng-click="addFilter(o.param, o.value);"><span
+        class="glyphicon"
+        ng-class="{
+          'glyphicon-tag': o.type == 'tag',
+          'glyphicon-user': o.type == 'author',
+          'glyphicon-folder-open': o.type == 'feature_type'
+        }"></span> {{o.name}}</a>
+    </li>
+  </ul>
+</div>

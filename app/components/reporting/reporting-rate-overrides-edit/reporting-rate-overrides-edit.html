@@ -1,0 +1,92 @@
+<top-bar
+  logo-href="/cms/app/rate-overrides"
+  save-function="saveModel"
+  save-disable-when="model.$dirty().length === 0 && !isNew">
+</top-bar>
+
+<div id="rate-overrides-edit">
+  <div class="container col-xs-offset-2 col-xs-8">
+    <h3>
+      Edit Rate Override
+    </h3>
+    <div class="row well">
+
+      <div class="row">
+        <div class="form-group">
+
+          <contributor-field override=model></contributor-field>
+
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group col-md-4">
+          <label for="roleSelect">ROLE</label>
+          <div class="roleSelect">
+            <select name="role" id="role-name" class="form-control form-group" ng-options="role.id as role.name for role in roles" ng-model="model.role">
+            </select>
+          </div>
+        </div>
+        <div class="form-group col-md-3" ng-show="isHourlyRated()">
+          <label for="hourly-override">Set Hourly Override</label>
+          <input
+            type="text"
+            class="form-control"
+            ng-model="model.rate">
+        </div>
+        <div class="form-group col-md-3" ng-show="isFlatRated()">
+          <label for="flat-rate-override">Set Flat Rate Override</label>
+          <input
+            type="text"
+            class="form-control"
+            ng-model="model.rate">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="table-responsive" ng-show="isFeatureRated()">
+          <table class="table">
+            <thead>
+              <tr>
+                <td><label>Feature Types</label></td>
+                <td><label>Override Rate</label></td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="featureType in model.featureTypes">
+                <td>
+                  <autocomplete-basic
+                    class="form-control"
+                    ng-model="featureType.featureType"
+                    item-display-formatter="item.name || item"
+                    input-id="searchFeatureType"
+                    search-function="searchFeatureTypes">
+                    </autocomplete-basic>
+                </td>
+
+                <td>
+                  <div class="input-group">
+                    <span class="input-group-btn">
+                      $
+                    </span>
+                    <input
+                      type="text"
+                      ng-model="featureType.rate"
+                      class="form-control">
+                    </input>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <button
+            class="add-item btn btn-primary"
+            ng-click="addFeatureType()">
+            <i class="glyphicon glyphicon-plus"></i>
+              Add FeatureType
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
