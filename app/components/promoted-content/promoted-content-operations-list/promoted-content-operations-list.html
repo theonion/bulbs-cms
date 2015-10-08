@@ -1,25 +1,28 @@
-<h3>
-  Schedule
-  <small class="title">{{ pzoneData.selectedPZone.name }}</small>
-</h3>
+<div ng-hide="refreshingOperations || operationsStale()">
+  <h3>
+    <span>Schedule</span>
+    <small class="title">{{ pzoneData.selectedPZone.name }}</small>
+  </h3>
 
 <div class="form-group">
-  From:
+  <span>From:</span>
   <button
       class="btn btn-xs btn-info"
       datetime-selection-modal-opener
       ng-model="scheduleDateFrom"
+      modal-on-close="refreshOperations()"
       modal-title="See Schedule Starting At This Date"
       ng-disabled="disableControls()">
     <i class="fa fa-calendar"></i>
     <span ng-show="scheduleDateFrom">{{ scheduleDateFrom.toDate() | date: 'MMM d, yyyy @ h:mma' }}</span>
     <span ng-show="!scheduleDateFrom">Select Date</span>
   </button>
-  to:
+  <span>to:</span>
   <button
       class="btn btn-xs btn-info"
       datetime-selection-modal-opener
       ng-model="scheduleDateTo"
+      modal-on-close="refreshOperations()"
       modal-title="See Schedule up to This Date"
       ng-disabled="disableControls()">
     <i class="fa fa-calendar"></i>
@@ -104,12 +107,38 @@
               @ position {{operation.index + 1}}
             </span>
           </div>
-          <div
-              class="operation-title"
-              ng-bind-html="operation.content_title">
+          <div class="operation-body">
+            <div class="small">
+              <span>{{ operation.cleanType }}</span>
+              <span ng-if="operation.cleanType === 'INSERT' || operation.cleanType === 'REPLACE'">
+                @ position {{operation.index + 1}}
+              </span>
+            </div>
+            <div
+                class="operation-title"
+                ng-bind-html="operation.content_title">
+            </div>
           </div>
-        </div>
-      </li>
-    </ul>
-  </li>
-<ul>
+        </li>
+      </ul>
+    </li>
+  <ul>
+</div>
+
+<div
+    class="operations-loader"
+    ng-show="refreshingOperations">
+  <i class="fa fa-spinner fa-spin"></i>
+  <span>Loading operations...</span>
+</div>
+<div
+    class="operations-reloader"
+    ng-show="!refreshingOperations && operationsStale()">
+  <button
+      class="btn btn-xs btn-primary"
+      ng-click="refreshOperations()"
+      ng-disabled="disableControls()">
+    <i class="fa fa-refresh"></i>
+    <span>Refresh Schedule</span>
+  </button>
+</div>

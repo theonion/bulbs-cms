@@ -275,7 +275,7 @@ angular.module('bulbsCmsApp.mockApi', [
     pzones.results[3].content = mockApiData['content.list'].results.slice(1,3);
     pzones.results[4].content = mockApiData['content.list'].results.slice(0,3);
 
-    var pzoneOperationsRegex = /^\/cms\/api\/v1\/pzone\/(\d+)\/operations\/((\d+)\/)?$/;
+    var pzoneOperationsRegex = /^\/cms\/api\/v1\/pzone\/(\d+)\/operations\/((\d+)\/)?\?(.*)$/;
     $httpBackend.whenGET(pzoneOperationsRegex).respond(function (method, url) {
       // return the operation matching given id
       var matches = url.match(pzoneOperationsRegex);

@@ -3407,6 +3407,25 @@ angular.module('promotedContentOperationsList.directive', [
         $scope.disableControls = function () {
           return PromotedContentService.isPZoneRefreshPending();
         };
+
+        $scope.operationsStale = function () {
+          return PromotedContentService.isPZoneOperationsStale();
+        };
+
+        $scope.refreshingOperations = false;
+        $scope.refreshOperations = function () {
+
+          if (!$scope.refreshingOperations) {
+            $scope.refreshingOperations = true;
+            PromotedContentService.$refreshOperations({
+              from: $scope.scheduleDateFrom.toISOString(),
+              to: $scope.scheduleDateTo.toISOString()
+            })
+              .finally(function () {
+                $scope.refreshingOperations = false;
+              });
+          }
+        };
       },
       link: function (scope, element, attr) {
 
@@ -3932,10 +3951,11 @@ angular.module('promotedContent.service', [
      * GOD DAMN IT RACE CONDITIONS NOTE: To avoid race conditions, only call
      *  this function as a result of user interaction.
      *
+     * @param {object} params - query parameters to append to request.
      * @returns {Promise} resolves with operation data, or rejects with an error message.
      */
-    PromotedContentService.$refreshOperations = function () {
-      return _data.selectedPZone.getList('operations')
+    PromotedContentService.$refreshOperations = function (params) {
+      return _data.selectedPZone.getList('operations', params)
         .then(function (data) {
 
           _data.operations = data;
@@ -4279,31 +4299,17 @@ angular.module('promotedContent', [
   'promotedContentSearch',
   'promotedContentTimePicker',
   'promotedContentOperationsList',
-  'promotedContent.service'
 ])
   .config(function ($routeProvider, COMPONENTS_URL, CMS_NAMESPACE) {
     $routeProvider
       .when('/cms/app/promotion/', {
-        controller: function ($scope, $window, PromotedContentService) {
-          // set title
-          $window.document.title = CMS_NAMESPACE + ' | Promotion Tool';
-
-          $scope.operationsStale = function () {
-            return PromotedContentService.isPZoneOperationsStale();
-          };
-
-          $scope.refreshingOperations = false;
-          $scope.refreshOperations = function () {
-
-            if (!$scope.refreshingOperations) {
-              $scope.refreshingOperations = true;
-              PromotedContentService.$refreshOperations()
-                .finally(function () {
-                  $scope.refreshingOperations = false;
-                });
-            }
-          };
-        },
+        controller: [
+          '$window',
+          function ($window) {
+            // set title
+            $window.document.title = routes.CMS_NAMESPACE + ' | Promotion Tool';
+          }
+        ],
         templateUrl: COMPONENTS_URL + 'promoted-content/promoted-content.html',
         reloadOnSearch: false
       });
