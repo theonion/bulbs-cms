@@ -50,6 +50,25 @@ angular.module('promotedContentOperationsList.directive', [
         $scope.disableControls = function () {
           return PromotedContentService.isPZoneRefreshPending();
         };
+
+        $scope.operationsStale = function () {
+          return PromotedContentService.isPZoneOperationsStale();
+        };
+
+        $scope.refreshingOperations = false;
+        $scope.refreshOperations = function () {
+
+          if (!$scope.refreshingOperations) {
+            $scope.refreshingOperations = true;
+            PromotedContentService.$refreshOperations({
+              from: $scope.scheduleDateFrom.toISOString(),
+              to: $scope.scheduleDateTo.toISOString()
+            })
+              .finally(function () {
+                $scope.refreshingOperations = false;
+              });
+          }
+        };
       },
       link: function (scope, element, attr) {
 

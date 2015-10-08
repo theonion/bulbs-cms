@@ -44,27 +44,7 @@
         <div
             id="withOperations"
             class="tab-pane">
-          <promoted-content-operations-list
-              ng-hide="refreshingOperations || operationsStale()"
-              class="tab-pane">
-          </promoted-content-operations-list>
-          <div
-              class="operations-loader"
-              ng-show="refreshingOperations">
-            <i class="fa fa-spinner fa-spin"></i>
-            <span>Loading operations...</span>
-          </div>
-          <div
-              class="operations-reloader"
-              ng-show="!refreshingOperations && operationsStale()">
-            <button
-                class="btn btn-xs btn-primary"
-                ng-click="refreshOperations()"
-                ng-disabled="disableControls()">
-              <i class="fa fa-refresh"></i>
-              <span>Refresh Schedule</span>
-            </button>
-          </div>
+          <promoted-content-operations-list class="tab-pane"></promoted-content-operations-list>
         </div>
       </div>
     </div>
