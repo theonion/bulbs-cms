@@ -15,7 +15,7 @@ angular.module('promotedContent', [
           '$window',
           function ($window) {
             // set title
-            $window.document.title = routes.CMS_NAMESPACE + ' | Promotion Tool';
+            $window.document.title = CMS_NAMESPACE + ' | Promotion Tool';
           }
         ],
         templateUrl: COMPONENTS_URL + 'promoted-content/promoted-content.html',
