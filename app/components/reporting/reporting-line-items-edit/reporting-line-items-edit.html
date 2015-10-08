@@ -1,0 +1,69 @@
+
+<top-bar
+  logo-href="/cms/app/line-items"
+  save-function="saveModel"
+  save-disable-when="model.$dirty().length === 0 && !isNew">
+</top-bar>
+
+<div id="line-items-edit">
+  <div class="container col-xs-offset-2 col-xs-8">
+    <h3>
+      <a href="/cms/app/line-items/">Line Items</a>
+      &gt;
+      <span ng-if="isNew && !model.name">New Line Item</span>
+      <span ng-if="!isNew || model.name">Edit Line Item</span>
+    </h3>
+    <div class="row well">
+      <div class="row">
+        <div class="form-group col-md-6">
+          <contributor-field override=model></contributor-field>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="lineItemAmount">Amount $</label>
+          <div class="input-group" id="lineItemAmount">
+            <span class="input-group-btn">
+              <button class="btn btn-info">
+                  $
+              </button>
+            </span>
+            <input type="text" ng-model="model.amount" class="form-control">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label for="forcedPayment">Forced Payment Submission Date</label>
+          <div id="forcedPayment" class="input-group">
+            <input
+                type="text"
+                value="{{ model.paymentDate.format('MM/DD/YY') }}"
+                class="form-control"
+                readonly>
+            <span class="input-group-btn">
+              <button
+                  class="btn btn-info"
+                  datetime-selection-modal-opener
+                  ng-model="model.paymentDate"
+                  modal-title="Forced Payment Submission Date">
+                <i class="glyphicon glyphicon-calendar"></i>
+              </button>
+              <button
+                  class="btn btn-danger"
+                  ng-click="model.paymentDate = null;">
+                <i class="glyphicon glyphicon-remove"></i>
+              </button>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-md-10">
+          <label for="lineItemNotes">Notes</label>
+          <div id="lineItemNotes" class="input-group">
+            <textarea type="text" ng-model="model.note" class="form-control"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

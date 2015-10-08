@@ -1,18 +1,48 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter, $interpolate, Login, routes, ContributionReportingService, ContentReportingService) {
+  .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter, $interpolate, Login, routes, moment, ContributionReportingService, ContentReportingService, FreelancePayReportingService) {
     $window.document.title = routes.CMS_NAMESPACE + ' | Reporting'; // set title
+
+    $scope.userFilter = '';
+    $scope.userFilters = [
+      {
+        name: 'All',
+        value: ''
+      },
+      {
+        name: 'Staff',
+        value: 'staff'
+      },
+      {
+        name: 'Freelance',
+        value: 'freelance'
+      }
+    ];
+
+    $scope.publishedFilter = '';
+    $scope.publishedFilters = [
+      {
+        name: 'All Content',
+        value: ''
+      },
+      {
+        name: 'Published',
+        value: 'published'
+      }
+    ];
 
     $scope.reports = {
       'Contributions': {
         service: ContributionReportingService,
         headings: [
-          {'title': 'Date', 'expression': 'content.published'},
+          {'title': 'Content ID', 'expression': 'content.id'},
           {'title': 'Headline', 'expression': 'content.title'},
-          {'title': 'User', 'expression': 'user.full_name'},
+          {'title': 'FeatureType', 'expression': 'content.feature_type'},
+          {'title': 'Contributor', 'expression': 'user.full_name'},
           {'title': 'Role', 'expression': 'role'},
-          {'title': 'Notes', 'expression': 'notes'},
+          {'title': 'Pay', 'expression': 'pay'},
+          {'title': 'Date', 'expression': 'content.published | date: \'MM/dd/yyyy\''}
         ],
         downloadURL: '/cms/api/v1/contributions/reporting/',
         orderOptions: [
@@ -29,20 +59,54 @@ angular.module('bulbsCmsApp')
       'Content': {
         service: ContentReportingService,
         headings: [
-          {'title': 'Date', 'expression': 'published'},
+          {'title': 'Content ID', 'expression': 'id'},
           {'title': 'Headline', 'expression': 'title'},
-          {'title': 'URL', 'expression': 'url'},
+          {'title': 'Feature Type', 'expression': 'feature_type'},
+          {'title': 'Article Cost', 'expression': 'value'},
+          {'title': 'Date Published', 'expression': 'published | date: \'MM/dd/yyyy\''}
         ],
         orderOptions: [],
         downloadURL: '/cms/api/v1/contributions/contentreporting/',
+      },
+      'Freelance Pay': {
+        service: FreelancePayReportingService,
+        headings: [
+          {'title': 'Contributor', 'expression': 'contributor.full_name'},
+          {'title': 'Contribution #', 'expression': 'contributions_count'},
+          {'title': 'Pay', 'expression': 'pay'},
+          {'title': 'Payment Date', 'expression': 'payment_date | date: \'MM/dd/yyyy\''}
+        ],
+        orderOptions: [],
+        downloadURL: '/cms/api/v1/contributions/freelancereporting/'
       }
     };
     $scope.items = [];
     $scope.headings = [];
     $scope.orderOptions = [];
+    $scope.moreFilters = [];
 
     $scope.startOpen = false;
     $scope.endOpen = false;
+
+    $scope.startInitial = moment().startOf('month').format('YYYY-MM-DD');
+    $scope.endInitial = moment().endOf('month').format('YYYY-MM-DD');
+
+    $scope.setReport = function ($reportingService) {
+      $scope.report = $reportingService;
+    };
+
+    $scope.setUserFilter = function (value) {
+      $scope.userFilter = value;
+      loadReport($scope.report, $scope.start, $scope.end, $scope.orderBy);
+    };
+
+    $scope.setPublishedFilter = function (value) {
+      $scope.publishedFilter = value;
+      if (value === 'published') {
+        $scope.end = moment().format('YYYY-MM-DD');
+      }
+      loadReport($scope.report, $scope.start, $scope.end, $scope.orderBy);
+    };
 
     $scope.openStart = function ($event) {
       $event.preventDefault();
@@ -65,7 +129,7 @@ angular.module('bulbsCmsApp')
         return;
       }
       $scope.orderOptions = report.orderOptions;
-      if(report.orderOptions.length > 0) {        
+      if(report.orderOptions.length > 0) {
         $scope.orderBy = report.orderOptions[0];
       } else {
         $scope.orderBy = null;
@@ -88,7 +152,6 @@ angular.module('bulbsCmsApp')
       loadReport($scope.report, start, end, $scope.orderBy);
     });
 
-
     function loadReport(report, start, end, order) {
       $scope.items = [];
       var reportParams = {};
@@ -108,6 +171,28 @@ angular.module('bulbsCmsApp')
       if (order) {
         $scope.downloadURL += ('&ordering=' + order.key);
         reportParams['ordering'] = order.key;
+      }
+
+      if ($scope.publishedFilter) {
+        $scope.downloadURL += ('&published=' + $scope.publishedFilter);
+        reportParams['published'] = $scope.publishedFilter;
+      }
+
+      if ($scope.userFilter) {
+        $scope.downloadURL += ('&staff=' + $scope.userFilter);
+        reportParams['staff'] = $scope.userFilter;
+      }
+
+      if ($scope.moreFilters) {
+        for (var key in $scope.moreFilters) {
+          if ($scope.moreFilters[key].type === 'authors') {
+            $scope.downloadURL += ('&' + 'contributors=' + $scope.moreFilters[key].query);
+            reportParams['contributors'] = $scope.moreFilters[key].query;
+          } else {
+            $scope.downloadURL += ('&' + $scope.moreFilters[key].type + '=' + $scope.moreFilters[key].query);
+            reportParams[$scope.moreFilters[key].type] = $scope.moreFilters[key].query;
+          }
+        }
       }
 
       report.service.getList(reportParams).then(function (data) {

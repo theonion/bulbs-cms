@@ -40,11 +40,13 @@ angular.module('bulbsCmsApp', [
   'bugReporter',
   'campaigns',
   'filterWidget',
+  'filterListWidget',
   'promotedContent',
   'statusFilter',
   'templateTypeField',
   'specialCoverage',
-  'sections'
+  'sections',
+  'reports'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);

@@ -7,6 +7,9 @@ angular.module('bulbsCmsApp.mockApi', [
 
   'bulbsCmsApp.mockApi.campaign',
   'bulbsCmsApp.mockApi.customSearch',
+  'bulbsCmsApp.mockApi.lineItem',
+  'bulbsCmsApp.mockApi.override',
+  'bulbsCmsApp.mockApi.role',
   'bulbsCmsApp.mockApi.specialCoverage',
   'bulbsCmsApp.mockApi.sections',
 
@@ -415,6 +418,7 @@ angular.module('bulbsCmsApp.mockApi', [
         email: 'jadams@theonion.com',
         first_name: 'John',
         last_name: 'Adams',
+        is_manager: true
 //        firebase_token: tokenGenerator.createToken({
 //          id: 1,
 //          username: 'jadams',
@@ -428,6 +432,7 @@ angular.module('bulbsCmsApp.mockApi', [
         email: 'bdole@theonion.com',
         first_name: 'Bob',
         last_name: 'Dole Dole Dole Dole Dole Dole',
+        is_manager: false
 //        firebase_token: tokenGenerator.createToken({
 //          id: 2,
 //          username: 'bdoledoledoledoledoledole',
