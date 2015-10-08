@@ -353,6 +353,28 @@ describe('Service: PromotedContentService', function () {
     });
   });
 
+  it('should allow operation list to be filtered by to and from dates', function () {
+
+    var dateFrom = moment().toISOString();
+    var dateTo = moment().toISOString();
+
+    PromotedContentService.$refreshOperations({from: dateFrom, to: dateTo});
+
+    var hasFrom;
+    var hasTo;
+    $httpBackend.expectGET(/\/cms\/api\/v1\/pzone\/1\/operations\/\?.*/)
+      .respond(function (method, url) {
+        hasFrom = url.match('from=' + dateFrom).length > 0;
+        hasTo = url.match('to=' + dateTo).length > 0;
+
+        return [200, []];
+      });
+    $httpBackend.flush();
+
+    expect(hasFrom).toEqual(true);
+    expect(hasTo).toEqual(true);
+  });
+
   it('should be able to select a pzone', function () {
     var pzone = data.pzones[0];
 
