@@ -260,11 +260,13 @@ angular.module('bulbsCmsApp', [
   'bugReporter',
   'campaigns',
   'filterWidget',
+  'filterListWidget',
   'promotedContent',
   'statusFilter',
   'templateTypeField',
   'specialCoverage',
-  'sections'
+  'sections',
+  'reports'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
@@ -410,6 +412,12 @@ angular.module('bulbs.api')
       RestangularConfigurer.setBaseUrl('/cms/api/v1/contributions/');
       RestangularConfigurer.setRequestSuffix('/');
     }).service('contentreporting');
+  })
+  .factory('FreelancePayReportingService', function(Restangular, moment) {
+    return Restangular.withConfig(function (RestangularConfigurer) {
+      RestangularConfigurer.setBaseUrl('/cms/api/v1/contributions/');
+      RestangularConfigurer.setRequestSuffix('/');
+    }).service('freelancereporting');
   })
   .factory('ContributionReportingService', function (Restangular, moment) {
 
@@ -1928,6 +1936,216 @@ angular.module('EditorsPick', [
 
 'use strict';
 
+angular.module('filterListWidget.directive', [
+  'bulbsCmsApp.settings'
+])
+  .directive('filterListWidget', function (_, $http, $location, $timeout, $, routes) {
+    return {
+      restrict: 'E',
+      scope: {
+        filters: '='
+      },
+      templateUrl: routes.COMPONENTS_URL + 'filter-list-widget/filter-list-widget.html',
+      link: function (scope, element, attrs) {
+        var $element = $(element);
+        var $input = $element.find('input');
+
+        scope.autocompleteArray = [];
+
+        var filterInputCounter = 0, filterInputTimeout;
+
+        $input.on('input', function (e) {
+          var search = $input.val();
+          scope.searchTerm = search;
+
+          $timeout.cancel(filterInputTimeout);
+          filterInputTimeout = $timeout(function () { getAutocompletes(search); }, 200);
+
+          if (filterInputCounter > 2) {
+            getAutocompletes(search);
+          }
+        });
+        function getAutocompletes(search) {
+          $timeout.cancel(filterInputTimeout);
+          filterInputCounter = 0;
+          if (search.length < 1) {
+            scope.autocompleteArray = [];
+            scope.$apply();
+            return;
+          }
+
+          $http({
+            url: '/cms/api/v1/things/?type=tag&type=feature_type&type=author',
+            method: 'GET',
+            params: {'q': search}
+          }).success(function (data) {
+            scope.autocompleteArray = data;
+          });
+        }
+
+        $input.on('keyup', function (e) {
+          if (e.keyCode === 38) { arrowSelect('up'); }//up
+          if (e.keyCode === 40) { arrowSelect('down'); } //down
+          if (e.keyCode === 13) { //enter
+            if ($element.find('.selected').length > 0) {
+              // To trigger the click we need to first break out of the
+              // current $apply() cycle. Hence the $timeout()
+              $timeout(function () {
+                angular.element('.selected > a').triggerHandler('click');
+              }, 0);
+            } else {
+              scope.addFilter('search', $input.val());
+            }
+          }
+        });
+
+        scope.search = function () {
+          scope.addFilter('search', scope.filterInputValue);
+        };
+
+        scope.clearSearch = function () {
+          scope.filterInputValue = '';
+        };
+
+        scope.clearFilters = function () {
+          scope.filters = {};
+          scope.filterInputValue = '';
+          return applyFilterChange({});
+        };
+
+        $element.on('mouseover', '.entry', function () {
+          scope.selectEntry(this);
+        });
+
+        function arrowSelect(direction) {
+          var $entries = $element.find('.entry');
+          var $selected = $element.find('.entry.selected');
+          var $toSelect;
+          if ($selected.length > 0) {
+            if (direction === 'up') { $toSelect = $selected.first().prev(); }
+            if (direction === 'down') { $toSelect = $selected.first().next(); }
+          } else {
+            if (direction === 'up') { $toSelect = $entries.last(); }
+            if (direction === 'down') { $toSelect = $entries.first(); }
+          }
+          scope.selectEntry($toSelect);
+        }
+        scope.selectEntry = function (entry) {
+          $element.find('.selected').removeClass('selected');
+          $(entry).addClass('selected');
+        };
+
+        $input.on('blur', function () {
+          $element.find('.dropdown-menu').fadeOut(200);
+        });
+        $input.on('focus', function () {
+          $element.find('.dropdown-menu').fadeIn(200);
+        });
+
+        scope.addFilter = function (type, newFilterValue) {
+          var filterObject = $location.search();
+          if (type === 'search') {
+            filterObject.search = newFilterValue;
+          } else {
+            if (!filterObject[type]) {
+              filterObject[type] = [];
+            }
+            if (typeof(filterObject[type]) === 'string') {
+              filterObject[type] = [filterObject[type]];
+            }
+            if (!_.contains(filterObject[type], newFilterValue)) {
+              // this value is not already in
+              filterObject[type].push(newFilterValue);
+            }
+          }
+          return applyFilterChange(filterObject);
+        };
+
+        scope.deleteFilter = function (key) {
+          var filterObject = $location.search();
+          var toDelete = scope.filters[key];
+          if (typeof(filterObject[toDelete.type]) === 'string') {
+            filterObject[toDelete.type] = [filterObject[toDelete.type]];
+          }
+          var toSplice;
+          for (var i in filterObject[toDelete.type]) {
+            if (filterObject[toDelete.type][i] === toDelete.query) {
+              toSplice = i;
+              break;
+            }
+          }
+          filterObject[toDelete.type].splice(i, 1);
+          filterObject.search = $input.val();
+          delete scope.filters[key];
+          return applyFilterChange(filterObject);
+        };
+
+        function applyFilterChange(filterObject) {
+          filterObject.page = 1;
+          $location.search(filterObject);
+          scope.autocompleteArray = [];
+          $input.trigger('blur');
+        }
+
+        function getFilterObjects() {
+          var search = $location.search();
+          scope.filters = {};
+          if (typeof(search) === 'undefined') { console.log('undefined'); return; }
+          //TODO: this sucks
+          var filterParamsToTypes = {'authors': 'author', 'tags': 'tag', 'feature_types': 'feature_type'};
+          for (var filterParam in filterParamsToTypes) {
+            var filterType = filterParamsToTypes[filterParam];
+            if (typeof(search[filterParam]) === 'string') { search[filterParam] = [search[filterParam]]; }
+            for (var i in search[filterParam]) {
+              var value = search[filterParam][i];
+              scope.filters[filterType + value] = {'query': value, 'type': filterParam};
+              getQueryToLabelMappings(filterType, value);
+            }
+          }
+          if (search.search) {
+            scope.filterInputValue = search.search;
+          }
+        }
+
+        scope.$on('$routeUpdate', function () {
+          getFilterObjects();
+        });
+
+        getFilterObjects();
+
+        function getQueryToLabelMappings(type, query) {
+          //this is pretty stupid
+          //TODO: Maybe do this with some localStorage caching?
+          //TODO: Maybe just dont do this at all? I dont know if thats possible
+          //    because there is no guarantee of any state (like if a user comes
+          //    directly to a filtered search page via URL)
+          scope.queryToLabelMappings = scope.queryToLabelMappings || {};
+
+          if (query in scope.queryToLabelMappings) { return; }
+
+          $http({
+            url: '/cms/api/v1/things/?type=' + type,
+            method: 'GET',
+            params: {'q': query}
+          }).success(function (data) {
+            for (var i in data) {
+              scope.queryToLabelMappings[data[i].value] = data[i].name;
+            }
+          });
+
+        }
+
+      }
+
+    };
+  });
+'use strict';
+
+angular.module('filterListWidget', [
+  'filterListWidget.directive'
+]);
+'use strict';
+
 angular.module('filterWidget.directive', [
   'bulbsCmsApp.settings',
   'contentServices.listService'
@@ -3282,6 +3500,394 @@ angular.module('promotedContent', [
 
 'use strict';
 
+angular.module('lineItems.edit.directive', [
+  'apiServices.lineItem.factory',
+  'bulbsCmsApp.settings',
+  'lodash',
+  'saveButton.directive',
+  'topBar'
+])
+  .directive('lineItemsEdit', function (routes) {
+    return {
+      controller: function (_, $location, $q, $routeParams, $scope, LineItem) {
+        if ($routeParams.id === 'new') {
+          $scope.model = LineItem.$build();
+          $scope.isNew = true;
+        } else {
+          $scope.model = LineItem.$find($routeParams.id);
+        }
+
+        window.onbeforeunload = function (e) {
+          if (!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
+            return 'You have unsaved changes.';
+          }
+        };
+
+        $scope.$on('$destroy', function() {
+          delete window.onbeforeunload;
+        });
+
+        $scope.saveModel = function () {
+          var promise;
+
+          if ($scope.model) {
+            promise = $scope.model.$save().$asPromise().then(function (data) {
+              $location.path('/cms/app/line-items/edit/' + data.id + '/');
+            });
+          } else {
+            var deferred = $q.defer();
+            deferred.reject();
+            promise = deferred.promise;
+          }
+
+          return promise;
+        };
+      },
+      restrict: 'E',
+      scope: {
+        getModelId: '&modelId'
+      },
+      templateUrl: routes.COMPONENTS_URL + 'reporting/reporting-line-items-edit/reporting-line-items-edit.html'
+    };
+  });
+'use strict';
+
+angular.module('lineItems.edit', [
+  'lineItems.edit.directive'
+])
+  .config(function ($routeProvider, routes) {
+    $routeProvider
+    .when('/cms/app/line-items/edit/:id/', {
+      controller: function ($routeParams, $scope, $window) {
+        $window.document.title = routes.CMS_NAMESPACE + ' | Edit Line Item';
+
+        $scope.routeId = $routeParams.id;
+      },
+      template: '<line-items-edit id="routeId"></line-items-edit>',
+      reloadOnSearch: false
+    });
+  });
+'use strict';
+
+angular.module('lineItems.list', [
+    'apiServices.lineItem.factory',
+    'bulbsCmsApp.settings',
+    'listPage'
+  ])
+  .config(function ($routeProvider, routes) {
+    $routeProvider
+      .when('/cms/app/line-items/', {
+        controller: function($scope, $window, LineItem) {
+          $window.document.title = routes.CMS_NAMESPACE + ' | Line Items';
+
+          $scope.modelFactory = LineItem;
+        },
+
+        templateUrl: routes.COMPONENTS_URL + 'reporting/reporting-line-items-list/reporting-line-items-list.html'
+      });
+  });
+'use strict';
+
+angular.module('rateOverrides.edit.directive', [
+  'apiServices.rateOverride.factory',
+  'apiServices.featureType.factory',
+  'bulbsCmsApp.settings',
+  'lodash',
+  'saveButton.directive',
+  'topBar'
+])
+  .directive('rateOverridesEdit', function (routes) {
+    return {
+      controller: function (_, $location, $http, $q, $routeParams, $scope, ContentFactory, FeatureType, RateOverride, Raven) {
+        var resourceUrl = '/cms/api/v1/contributions/role/';
+
+        if ($routeParams.id === 'new') {
+          $scope.model = RateOverride.$build();
+          $scope.isNew = true;
+        } else {
+          $scope.model = RateOverride.$find($routeParams.id);
+          $scope.model.$promise.then(function () {
+            if (($scope.model.hasOwnProperty('role')) && ($scope.model.role !== null)){
+              $scope.model.role = $scope.model.role.id;
+            }
+          });
+        }
+
+        window.onbeforeunload = function (e) {
+          if (!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
+            return 'You have unsaved changes.';
+          }
+        };
+
+        $scope.$on('$destroy', function() {
+          delete window.onbeforeunload;
+        });
+
+        $scope.getPaymentType = function (roleId) {
+          if ($scope.hasOwnProperty('roles')) {
+            for (var i = 0; i < $scope.roles.length; i++) {
+              if ($scope.roles[i].id === roleId) {
+                return $scope.roles[i].payment_type;
+              }
+            }
+            return null;
+          }
+        };
+
+        $scope.isFeatureRated = function () {
+          if ($scope.getPaymentType($scope.model.role) === 'FeatureType'){
+            return true;
+          }
+          return false;
+        };
+
+        $scope.isHourlyRated = function () {
+          if ($scope.getPaymentType($scope.model.role) === 'Hourly'){
+            return true;
+          }
+          return false;
+        };
+
+        $scope.isFlatRated = function () {
+          if ($scope.getPaymentType($scope.model.role) === 'Flat Rate'){
+            return true;
+          }
+          return false;
+        };
+
+        $scope.addFeatureType = function () {
+          if (!$scope.model.hasOwnProperty('featureTypes')) {
+            $scope.model.featureTypes = [];
+          }
+
+          $scope.model.featureTypes.push({
+            featureType: null,
+            rate: 0,
+          });
+        };
+
+        $scope.getFeatureTypes = function () {
+          $http({
+            method: 'GET',
+            url: resourceUrl
+          }).success(function (data) {
+            $scope.featureTypes = data.results || data;
+          }).error(function (data, status, headers, config) {
+            Raven.captureMessage('Error fetching FeatureTypes', {extra: data});
+          });
+        };
+
+        $scope.getRoles = function () {
+          $http({
+          method: 'GET',
+          url: resourceUrl
+            }).success(function (data) {
+              $scope.roles = data.results || data;
+            }).error(function (data, status, headers, config) {
+              Raven.captureMessage('Error fetching Roles', {extra: data});
+            });
+        };
+
+        $scope.searchFeatureTypes = function (searchTerm) {
+          return FeatureType.simpleSearch(searchTerm);
+        };
+
+        $scope.saveModel = function () {
+          var promise;
+
+          if ($scope.model) {
+            promise = $scope.model.$save().$asPromise().then(function (data) {
+              $location.path('/cms/app/rate-overrides/edit/' + data.id + '/');
+              if (($scope.model.hasOwnProperty('role')) && ($scope.model.role !== null)){
+                $scope.model.role = $scope.model.role.id;
+              }
+            });
+          } else {
+            var deferred = $q.defer();
+            deferred.reject();
+            promise = deferred.promise;
+          }
+
+          return promise;
+        };
+
+        $scope.getRoles();
+        $scope.getFeatureTypes();
+      },
+      restrict: 'E',
+      scope: {
+        getModelId: '&modelId'
+      },
+      templateUrl: routes.COMPONENTS_URL + 'reporting/reporting-rate-overrides-edit/reporting-rate-overrides-edit.html'
+    };
+  });
+'use strict';
+
+angular.module('rateOverrides.edit', [
+  'rateOverrides.edit.directive'
+])
+  .config(function ($routeProvider, routes) {
+    $routeProvider
+    .when('/cms/app/rate-overrides/edit/:id/', {
+      controller: function ($routeParams, $scope, $window) {
+        $window.document.title = routes.CMS_NAMESPACE + ' | Edit Rate Override';
+        $scope.routeId = $routeParams.id;
+      },
+      template: '<rate-overrides-edit id="routeId"></rate-overrides-edit>',
+      reloadOnSearch: false
+    });
+  });
+'use strict';
+
+angular.module('rateOverrides.list', [
+    'apiServices.rateOverride.factory',
+    'bulbsCmsApp.settings',
+    'listPage'
+  ])
+  .config(function ($routeProvider, routes) {
+    $routeProvider
+      .when('/cms/app/rate-overrides/', {
+        controller: function($scope, $window, RateOverride) {
+          $window.document.title = routes.CMS_NAMESPACE + ' | Rate Overrides';
+
+          $scope.modelFactory = RateOverride;
+        },
+
+        templateUrl: routes.COMPONENTS_URL + 'reporting/reporting-rate-overrides-list/reporting-rate-overrides-list.html'
+      });
+  });
+'use strict';
+
+angular.module('roles.edit.directive', [
+  'apiServices.reporting.factory',
+  'bulbsCmsApp.settings',
+  'lodash',
+  'saveButton.directive',
+  'topBar'
+])
+  .constant('PAYMENT_TYPES', [
+    {
+      name: 'Flat Rate',
+      value: 'Flat Rate'
+    },
+    {
+      name: 'FeatureType',
+      value: 'FeatureType'
+    },
+    {
+      name: 'Hourly',
+      value: 'Hourly'
+    },
+    {
+      name: 'Manual',
+      value: 'Manual'
+    }
+  ])
+  .directive('rolesEdit', function (routes) {
+    return {
+      controller: function (_, $location, $q, $routeParams, $scope, Role, PAYMENT_TYPES) {
+
+        $scope.page = 'contributions';
+        $scope.PAYMENT_TYPES = PAYMENT_TYPES;
+
+        if ($routeParams.id === 'new') {
+          $scope.model = Role.$build();
+          $scope.isNew = true;
+        } else {
+          $scope.model = Role.$find($routeParams.id);
+        }
+
+        window.onbeforeunload = function (e) {
+          if (!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
+            return 'You have unsaved changes.';
+          }
+        };
+
+        $scope.$on('$destroy', function() {
+          delete window.onbeforeunload;
+        });
+
+        $scope.rateEditable = function () {
+          var paymentTypes = PAYMENT_TYPES.slice(0, 3);
+          if (paymentTypes.indexOf($scope.model.paymentType >= 0)) {
+            return true;
+          }
+
+          return false;
+        };
+
+        $scope.saveModel = function () {
+          var promise;
+
+          if ($scope.model) {
+            promise = $scope.model.$save().$asPromise().then(function (data) {
+              $location.path('/cms/app/roles/edit/' + data.id + '/');
+            });
+          } else {
+            var deferred = $q.defer();
+            deferred.reject();
+            promise = deferred.promise;
+          }
+
+          return promise;
+        };
+      },
+      restrict: 'E',
+      scope: {
+        getModelId: '&modelId'
+      },
+      templateUrl: routes.COMPONENTS_URL + 'reporting/reporting-roles-edit/reporting-roles-edit.html'
+    };
+  });
+'use strict';
+
+angular.module('roles.edit', [
+  'roles.edit.directive'
+])
+  .config(function ($routeProvider, routes) {
+    $routeProvider
+    .when('/cms/app/roles/edit/:id/', {
+      controller: function ($routeParams, $scope, $window) {
+        $window.document.title = routes.CMS_NAMESPACE + ' | Edit Role';
+
+        $scope.routeId = $routeParams.id;
+      },
+      template: '<roles-edit model-id="routeId"></roles-edit>',
+      reloadOnSearch: false
+    });
+  });
+'use strict';
+
+angular.module('roles.list', [
+    'apiServices.reporting.factory',
+    'bulbsCmsApp.settings',
+    'listPage'
+  ])
+  .config(function ($routeProvider, routes) {
+    $routeProvider
+      .when('/cms/app/roles/', {
+        controller: function($scope, $window, Role) {
+          $window.document.title = routes.CMS_NAMESPACE + ' | Roles';
+
+          $scope.modelFactory = Role;
+        },
+
+        templateUrl: routes.COMPONENTS_URL + 'reporting/reporting-roles-list/reporting-roles-list.html'
+      });
+  });
+'use strict';
+
+angular.module('reports', [
+  'lineItems.edit',
+  'lineItems.list',
+  'rateOverrides.edit',
+  'rateOverrides.list',
+  'roles.edit',
+  'roles.list'
+]);
+
+'use strict';
+
 angular.module('sections.edit.directive', [
   'apiServices.section.factory',
   'BettyCropper',
@@ -3793,7 +4399,7 @@ angular.module('topBar', [
  *    a direction--'asc'/undefined for the default direction, 'desc' for the opposite
  *    direction--and return an ordering string.
  *
- * Field display objecs are available at the model level as the $fieldDisplays function.
+ * Field display objects are available at the model level as the $fieldDisplays function.
  *  Returns a list of field displays to be used in templates.
  */
 angular.module('apiServices.mixins.fieldDisplay', [
@@ -4116,6 +4722,167 @@ angular.module('apiServices.customSearch.settings', [])
     };
   });
 
+'use strict';
+
+angular.module('apiServices.featureType.factory', [
+  'apiServices'
+])
+  .factory('FeatureType', [
+    'restmod',
+    function (restmod) {
+      return restmod.model('things').mix('NestedDirtyModel', {
+        $config: {
+          name: 'FeatureType',
+          plural: 'FeatureTypes',
+          primaryKey: 'id',
+        },
+
+        $extend: {
+          Model: {
+            simpleSearch: function (searchTerm) {
+              return this.$search({type: 'feature_type', q: searchTerm}).$asPromise();
+            }
+          }
+        }
+      });
+    }]
+  );
+'use strict';
+
+angular.module('apiServices.lineItem.factory', [
+  'apiServices',
+  'apiServices.mixins.fieldDisplay'
+])
+  .factory('LineItem', function (_, restmod) {
+    var contributorEndpoint = 'contributions/line-items';
+
+    return restmod.model(contributorEndpoint).mix('FieldDisplay', 'NestedDirtyModel', {
+      $config: {
+        name: 'Line Item',
+        plural: 'Line Items',
+        primaryKey: 'id',
+        fieldDisplays: [
+          {
+            title: 'Contributor',
+            value: 'record.contributor.fullName'
+          },
+          {
+            title: 'Amount $',
+            value: 'record.amount'
+          },
+          {
+            title: 'Note',
+            value: 'record.note'
+          },
+          {
+            title: 'Date',
+            value: 'record.paymentDate.format("MM/DD/YY") || "--"',
+          }
+        ]
+      },
+
+      paymentDate: {
+        decode: 'date_string_to_moment',
+        encode: 'moment_to_date_string'
+      },
+      payment_date: {
+        decode: 'date_string_to_moment',
+        encode: 'moment_to_date_string',
+      }
+
+    });
+  });
+'use strict';
+
+angular.module('apiServices.rateOverride.factory', [
+  'apiServices',
+  'apiServices.mixins.fieldDisplay'
+])
+  .factory('RateOverride', function (_, restmod) {
+    var rateOverrideEndpoint = 'contributions/rate-overrides';
+
+    return restmod.model(rateOverrideEndpoint).mix('FieldDisplay', 'NestedDirtyModel', {
+      $config: {
+        name: 'Rate Override',
+        plural: 'Rate Overrides',
+        primaryKey: 'id',
+        fieldDisplays: [
+          {
+            title: 'Name',
+            value: 'record.contributor.fullName'
+          },
+          {
+            title: 'Role',
+            value: 'record.role.name'
+          }
+        ]
+      },
+      role: {
+        init: {}
+      },
+      $hooks: {
+        'before-save': function(_req) {
+          var featureTypes = _req.data.feature_types;
+          if (featureTypes.length > 0) {
+            for (var key in featureTypes) {
+              var obj = featureTypes[key];
+              if (obj.hasOwnProperty('featureType')) {
+                if (obj.featureType.hasOwnProperty('name')) {
+                  _req.data.feature_types[key].feature_type = obj.featureType.name;
+                } else if (obj.featureType.hasOwnProperty('value')) {
+                  _req.data.feature_types[key].feature_type.slug = obj.featureType.value;
+                }
+              }
+            }
+          }
+        },
+        'before-render': function(record) {
+          if (record.hasOwnProperty('feature_types')) {
+            for (var key in record.feature_types) {
+              if (record.feature_types[key].hasOwnProperty('feature_type')){
+                if (record.feature_types[key].feature_type.hasOwnProperty('name')) {
+                  record.feature_types[key].feature_type = record.feature_types[key].feature_type.name;
+                }
+              }
+            }
+          }
+        }
+      }
+    });
+  });
+'use strict';
+
+angular.module('apiServices.reporting.factory', [
+  'apiServices',
+  'apiServices.mixins.fieldDisplay'
+])
+  .factory('Role', function (_, restmod) {
+    // var contributionsEndpoint = 'contributions';
+    var roleEndpoint = 'contributions/role';
+
+    return restmod.model(roleEndpoint).mix('FieldDisplay', 'NestedDirtyModel', {
+      $config: {
+        name: 'Role',
+        plural: 'Roles',
+        primaryKey: 'id',
+        fieldDisplays: [
+          {
+            title: 'Role',
+            value: 'record.name'
+          },
+          {
+            title: 'Payment Type',
+            value: 'record.paymentType'
+          }
+        ]
+      },
+      rates: {
+        init: {
+          featureType: []
+        }
+      }
+    });
+  });
 'use strict';
 
 angular.module('apiServices.section.factory', [
@@ -5101,6 +5868,53 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
+  .directive('contributorField', function (routes, $) {
+    return {
+      templateUrl: routes.PARTIALS_URL + 'textlike-autocomplete-field.html',
+      restrict: 'E',
+      replace: true,
+      scope: {
+        override: '='
+      },
+      link: function postLink(scope, element, attrs) {
+        scope.name = 'contributor';
+        scope.label = 'Contributors';
+        scope.placeholder = 'Contributors';
+        scope.resourceUrl = '/cms/api/v1/author/?ordering=name&search=';
+
+        scope.$watch('override.contributor', function () {
+          if ((scope.override.hasOwnProperty('contributor')) && (scope.override.contributor !== null)) {
+            scope.model = scope.override.contributor.full_name || scope.override.contributor.fullName;
+          }
+        });
+
+        scope.display = function (o) {
+          return (o && o.full_name) || '';
+        };
+
+        scope.add = function(o, input) {
+          if ((scope.override.hasOwnProperty('contributor')) && scope.override.contributor !== null) {
+            if (scope.override.contributor.id === o.id) {
+              return;
+            }
+          }
+
+          scope.override.contributor = o;
+          $('#feature-type-container').removeClass('newtag');
+          $('#feature-type-container').addClass('newtag');
+        };
+
+        scope.delete = function (e) {
+          scope.override.contributor = null;
+          scope.model = null;
+        };
+
+      }
+    };
+  });
+'use strict';
+
+angular.module('bulbsCmsApp')
   .directive('createContent', function ($http, $window, $, IfExistsElse, Login, ContentFactory, routes, AUTO_ADD_AUTHOR, Raven) {
     return {
       restrict: 'E',
@@ -5473,7 +6287,8 @@ angular.module('bulbsCmsApp')
       templateUrl: routes.PARTIALS_URL + 'textlike-autocomplete-field.html',
       restrict: 'E',
       scope: {
-        article: '='
+        article: '=',
+        hideLabel: '='
       },
       replace: true,
       link: function postLink(scope, element, attrs) {
@@ -5595,7 +6410,7 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('navBar', function (routes, navbar_options) {
+  .directive('navBar', function (routes, navbar_options, CurrentUser) {
     return {
       restrict: 'E',
       scope: false,
@@ -5609,6 +6424,7 @@ angular.module('bulbsCmsApp')
       },
       link: function (scope) {
         scope.NAV_LOGO = routes.NAV_LOGO;
+        scope.current_user = CurrentUser;
       }
     };
   });
@@ -5633,6 +6449,44 @@ angular.module('bulbsCmsApp')
     };
   });
 
+'use strict';
+
+angular.module('bulbsCmsApp')
+  .directive('roleField', function ($http, routes, $, Raven) {
+    return {
+      templateUrl: routes.PARTIALS_URL + 'rolefield.html',
+      restrict: 'E',
+      replace: true,
+      scope: {
+        model: '='
+      },
+
+      link: function (scope, element, attrs) {
+        var resourceUrl = '/cms/api/v1/contributions/role/';
+
+        scope.roleValue = null;
+        scope.roleOptions = [];
+
+        scope.$watch('model.role', function () {
+          for (var i = 0; i < scope.roleOptions.length; i++) {
+            if (scope.roleOptions[i].id === Number(scope.roleValue)) {
+              scope.model.role = scope.roleOptions[i];
+            }
+          }
+          scope.roleValue = scope.model.role.id;
+        });
+
+        $http({
+          method: 'GET',
+          url: resourceUrl
+        }).success(function (data) {
+          scope.roleOptions = data.results || data;
+        }).error(function (data, status, headers, config) {
+          Raven.captureMessage('Error fetching Roles', {extra: data});
+        });
+      }
+    };
+  });
 'use strict';
 
 angular.module('bulbsCmsApp')
@@ -7123,6 +7977,7 @@ angular.module('bulbsCmsApp')
 
     $scope.NAV_LOGO = routes.NAV_LOGO;
     $scope.contentId = parseInt($routeParams.id, 10);
+    $scope.paymentType = '';
     $scope.contributions = [];
     $scope.contributionLabels = [];
     $scope.roles = [];
@@ -7135,6 +7990,65 @@ angular.module('bulbsCmsApp')
     $scope.add = add;
     $scope.remove = remove;
     $scope.updateLabel = updateLabel;
+
+    $scope.isFlatRate = function(contribution) {
+      if (contribution.hasOwnProperty('roleObject')) {
+        if (contribution.roleObject.payment_type === 'Flat Rate'){
+          return true;
+        }
+      }
+
+      return false;
+    };
+
+    $scope.isFeatureType = function(contribution) {
+      if (contribution.hasOwnProperty('roleObject')) {
+        if (contribution.roleObject.payment_type === 'FeatureType'){
+          $scope.setFeatureRate(contribution);
+          return true;
+        }
+      }
+
+      return false;
+    };
+
+    $scope.setFeatureRate = function(contribution) {
+      for (var i in contribution.roleObject.rates.feature_type) {
+        var featureTypeRate = contribution.roleObject.rates.feature_type[i];
+        if ($scope.content.feature_type === featureTypeRate.feature_type) {
+          contribution.featureTypeRate = featureTypeRate.rate;
+        }
+      }
+    };
+
+    $scope.isHourly = function(contribution) {
+      if (contribution.hasOwnProperty('roleObject')) {
+        if (contribution.roleObject.payment_type === 'Hourly') {
+          return true;
+        }
+      }
+
+      return false;
+    };
+
+    $scope.isManual = function(contribution) {
+      if (contribution.hasOwnProperty('roleObject')) {
+        if (contribution.roleObject.payment_type === 'Manual') {
+          return true;
+        }
+      }
+
+      return false;
+    };
+
+    $scope.getHourlyPay = function (contribution) {
+      if (contribution.roleObject) {
+        if (!contribution.roleObject.rate) {
+          return 0;
+        }
+        return ((contribution.roleObject.rate/60) * (contribution.minutes_worked || 0));
+      }
+    };
 
     function save() {
       // I know, I'm not supposed to do DOM manipulation in controllers. TOO BAD.
@@ -7153,6 +8067,9 @@ angular.module('bulbsCmsApp')
       $scope.contributions.push({
         contributor: null,
         content: $scope.contentId,
+        rate: {
+          rate: 0
+        },
         role: null
       });
       $scope.collapsed.push(false);
@@ -7176,11 +8093,25 @@ angular.module('bulbsCmsApp')
         for (var i in contributions) {
           if (contributions[i] === null || contributions[i].role === undefined) {
             continue;
+          } else {
+
+            if ((contributions[i].hasOwnProperty('rate')) &&
+                (typeof(contributions[i].rate) === 'object') &&
+                (contributions[i].rate !== null)) {
+              contributions[i].rate = contributions[i].rate.rate;
+            }
+
+            if (typeof(contributions[i].role) === 'object') {
+              contributions[i].paymentType = contributions[i].role.payment_type;
+              contributions[i].roleObject = contributions[i].role;
+              contributions[i].role = contributions[i].role.id;
+            }
           }
         }
         $scope.contributions = contributions;
         $scope.collapsed = new Array(contributions.length);
         $scope.contributions.forEach(function (item, index) {
+
           $scope.contributionLabels[index] = _.find($scope.roles, function (role) {
             return role.id === item.role;
           }).name;
@@ -7205,6 +8136,9 @@ angular.module('bulbsCmsApp')
 
     function updateLabel(index) {
       $scope.contributionLabels[index] = _.find($scope.roles, function (role) {
+
+        $scope.contributions[index].roleObject = role;
+        $scope.contributions[index].paymentType = role.payment_type;
         return role.id === $scope.contributions[index].role;
       }).name;
     }
@@ -7628,18 +8562,48 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter, $interpolate, Login, routes, ContributionReportingService, ContentReportingService) {
+  .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter, $interpolate, Login, routes, moment, ContributionReportingService, ContentReportingService, FreelancePayReportingService) {
     $window.document.title = routes.CMS_NAMESPACE + ' | Reporting'; // set title
+
+    $scope.userFilter = '';
+    $scope.userFilters = [
+      {
+        name: 'All',
+        value: ''
+      },
+      {
+        name: 'Staff',
+        value: 'staff'
+      },
+      {
+        name: 'Freelance',
+        value: 'freelance'
+      }
+    ];
+
+    $scope.publishedFilter = '';
+    $scope.publishedFilters = [
+      {
+        name: 'All Content',
+        value: ''
+      },
+      {
+        name: 'Published',
+        value: 'published'
+      }
+    ];
 
     $scope.reports = {
       'Contributions': {
         service: ContributionReportingService,
         headings: [
-          {'title': 'Date', 'expression': 'content.published'},
+          {'title': 'Content ID', 'expression': 'content.id'},
           {'title': 'Headline', 'expression': 'content.title'},
-          {'title': 'User', 'expression': 'user.full_name'},
+          {'title': 'FeatureType', 'expression': 'content.feature_type'},
+          {'title': 'Contributor', 'expression': 'user.full_name'},
           {'title': 'Role', 'expression': 'role'},
-          {'title': 'Notes', 'expression': 'notes'},
+          {'title': 'Pay', 'expression': 'pay'},
+          {'title': 'Date', 'expression': 'content.published | date: \'MM/dd/yyyy\''}
         ],
         downloadURL: '/cms/api/v1/contributions/reporting/',
         orderOptions: [
@@ -7656,20 +8620,54 @@ angular.module('bulbsCmsApp')
       'Content': {
         service: ContentReportingService,
         headings: [
-          {'title': 'Date', 'expression': 'published'},
+          {'title': 'Content ID', 'expression': 'id'},
           {'title': 'Headline', 'expression': 'title'},
-          {'title': 'URL', 'expression': 'url'},
+          {'title': 'Feature Type', 'expression': 'feature_type'},
+          {'title': 'Article Cost', 'expression': 'value'},
+          {'title': 'Date Published', 'expression': 'published | date: \'MM/dd/yyyy\''}
         ],
         orderOptions: [],
         downloadURL: '/cms/api/v1/contributions/contentreporting/',
+      },
+      'Freelance Pay': {
+        service: FreelancePayReportingService,
+        headings: [
+          {'title': 'Contributor', 'expression': 'contributor.full_name'},
+          {'title': 'Contribution #', 'expression': 'contributions_count'},
+          {'title': 'Pay', 'expression': 'pay'},
+          {'title': 'Payment Date', 'expression': 'payment_date | date: \'MM/dd/yyyy\''}
+        ],
+        orderOptions: [],
+        downloadURL: '/cms/api/v1/contributions/freelancereporting/'
       }
     };
     $scope.items = [];
     $scope.headings = [];
     $scope.orderOptions = [];
+    $scope.moreFilters = [];
 
     $scope.startOpen = false;
     $scope.endOpen = false;
+
+    $scope.startInitial = moment().startOf('month').format('YYYY-MM-DD');
+    $scope.endInitial = moment().endOf('month').format('YYYY-MM-DD');
+
+    $scope.setReport = function ($reportingService) {
+      $scope.report = $reportingService;
+    };
+
+    $scope.setUserFilter = function (value) {
+      $scope.userFilter = value;
+      loadReport($scope.report, $scope.start, $scope.end, $scope.orderBy);
+    };
+
+    $scope.setPublishedFilter = function (value) {
+      $scope.publishedFilter = value;
+      if (value === 'published') {
+        $scope.end = moment().format('YYYY-MM-DD');
+      }
+      loadReport($scope.report, $scope.start, $scope.end, $scope.orderBy);
+    };
 
     $scope.openStart = function ($event) {
       $event.preventDefault();
@@ -7692,7 +8690,7 @@ angular.module('bulbsCmsApp')
         return;
       }
       $scope.orderOptions = report.orderOptions;
-      if(report.orderOptions.length > 0) {        
+      if(report.orderOptions.length > 0) {
         $scope.orderBy = report.orderOptions[0];
       } else {
         $scope.orderBy = null;
@@ -7715,7 +8713,6 @@ angular.module('bulbsCmsApp')
       loadReport($scope.report, start, end, $scope.orderBy);
     });
 
-
     function loadReport(report, start, end, order) {
       $scope.items = [];
       var reportParams = {};
@@ -7735,6 +8732,28 @@ angular.module('bulbsCmsApp')
       if (order) {
         $scope.downloadURL += ('&ordering=' + order.key);
         reportParams['ordering'] = order.key;
+      }
+
+      if ($scope.publishedFilter) {
+        $scope.downloadURL += ('&published=' + $scope.publishedFilter);
+        reportParams['published'] = $scope.publishedFilter;
+      }
+
+      if ($scope.userFilter) {
+        $scope.downloadURL += ('&staff=' + $scope.userFilter);
+        reportParams['staff'] = $scope.userFilter;
+      }
+
+      if ($scope.moreFilters) {
+        for (var key in $scope.moreFilters) {
+          if ($scope.moreFilters[key].type === 'authors') {
+            $scope.downloadURL += ('&' + 'contributors=' + $scope.moreFilters[key].query);
+            reportParams['contributors'] = $scope.moreFilters[key].query;
+          } else {
+            $scope.downloadURL += ('&' + $scope.moreFilters[key].type + '=' + $scope.moreFilters[key].query);
+            reportParams[$scope.moreFilters[key].type] = $scope.moreFilters[key].query;
+          }
+        }
       }
 
       report.service.getList(reportParams).then(function (data) {
