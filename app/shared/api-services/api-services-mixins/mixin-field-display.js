@@ -15,7 +15,7 @@
  *    a direction--'asc'/undefined for the default direction, 'desc' for the opposite
  *    direction--and return an ordering string.
  *
- * Field display objecs are available at the model level as the $fieldDisplays function.
+ * Field display objects are available at the model level as the $fieldDisplays function.
  *  Returns a list of field displays to be used in templates.
  */
 angular.module('apiServices.mixins.fieldDisplay', [
@@ -86,6 +86,7 @@ angular.module('apiServices.mixins.fieldDisplay', [
             }
 
             // set up storting function if sorts was provided
+            fieldDisplay.getOrdering = function () {};
             if (fieldDisplay.sorts) {
               if (typeof fieldDisplay.sorts === 'function') {
                 // sort function was provided, use that

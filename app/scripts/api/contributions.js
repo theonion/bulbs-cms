@@ -7,6 +7,12 @@ angular.module('bulbs.api')
   .factory('ContentReportingService', function (Restangular) {
     return Restangular.service('contributions/contentreporting');
   })
+  .factory('FreelancePayReportingService', function(Restangular, moment) {
+    return Restangular.withConfig(function (RestangularConfigurer) {
+      RestangularConfigurer.setBaseUrl('/cms/api/v1/contributions/');
+      RestangularConfigurer.setRequestSuffix('/');
+    }).service('freelancereporting');
+  })
   .factory('ContributionReportingService', function (Restangular, moment) {
 
     Restangular.extendModel('reporting', function (obj) {

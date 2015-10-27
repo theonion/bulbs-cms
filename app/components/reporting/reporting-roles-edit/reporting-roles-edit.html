@@ -1,0 +1,108 @@
+<top-bar
+  logo-href="/cms/app/roles"
+  save-function="saveModel"
+  save-disable-when="model.$dirty().length === 0 && !isNew">
+</top-bar>
+
+<div id="roles-edit">
+  <div class="container col-xs-offset-2 col-xs-8">
+    <h3>
+      <a href="/cms/app/roles/">Roles</a>
+      &gt;
+      <span ng-if="isNew && !model.name">New Role</span>
+      <span ng-if="!isNew || model.name">{{ model.name }}</span>
+    </h3>
+    <div class="row well">
+      <div class="row">
+        <div class="form-group col-md-6">
+          <label for="roleName">Name</label>
+          <input id="roleName" type="text" ng-model="model.name" class="form-control">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-10">
+          <label for="paymentType">Payment Type</label>
+          <div id="paymentType" class="form-group">
+            <div ng-repeat="paymentType in PAYMENT_TYPES" class="col-md-3">
+              <input id="{{ paymentType.value }}"  type="radio" name="{{ paymentType.name }}" value="{{ paymentType.value }}" ng-model="$parent.model.paymentType">
+              <label for="{{ paymentType.value }}">{{ paymentType.name }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" ng-show="rateEditable()">
+        <div class="form-group col-md-10 form-control-static">
+          <div class="col-md-8">
+            <div class="row" ng-hide="model.paymentType != 'Flat Rate'">
+              <label for="setFlatRate">Set Flat Rate</label>
+              <div id="setFlatRate" class="input-group" ng-hide="model.paymentType != 'Flat Rate'">
+                <span class="input-group-btn">
+                  <button class="btn btn-info">
+                    $
+                  </button>
+                </span>
+                <input
+                  type="text"
+                  class="form-control"
+                  value="{{model.rates.flatRate.rate}}"
+                  ng-model="model.rates.flatRate.rate">
+              </div>
+            </div>
+
+            <div class="row" ng-hide="model.paymentType != 'Hourly'">
+              <label for="setHourly">Set Hourly Rate&nbsp&nbsp</label>
+              <div id="setHourly" class="input-group">
+                <span class="input-group-btn">
+                  <button class="btn btn-info">
+                    $
+                  </button>
+                </span>
+                <input
+                  type="text"
+                  class="form-control"
+                  ng-model="model.rates.hourly.rate">
+                <span class="input-group-btn">
+                  <button class="btn btn-info">
+                    /hr
+                  </button>
+                </span>
+              </div>
+            </div>
+            <div class="table-responsive ng-scope" ng-show="model.paymentType == 'FeatureType'">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <td>Feature Types</td>
+                    <td>Rates</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="rate in model.rates.featureType">
+                    <td class="col-md-5">
+                      {{ rate.featureType }}
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <span class="input-group-btn">
+                          <button class="btn btn-info">
+                            $
+                          </button>
+                        </span>
+                        <input
+                          type="text"
+                          value="{{ rate.rate }}"
+                          ng-model="rate.rate"
+                          class="form-control">
+                        </input>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

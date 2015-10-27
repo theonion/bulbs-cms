@@ -5,7 +5,7 @@
 
 <div class="container">
     <div class="row">
-        <div id="contributions" class="container col-xs-12 col-sm-pull-1 col-sm-push-1 col-sm-10 col-md-pull-2 col-md-push-2 col-md-8">
+        <div id="contributions" class="container col-xs-12 col-sm-12 col-md-11">
             <div class="contribution panel panel-default" ng-repeat="contribution in contributions">
 
                 <div class="panel-heading" data-toggle="collapse" href="#contribution{{$index}}">
@@ -14,33 +14,215 @@
                     </a>
                 </div>
 
-                <div id="contribution{{$index}}" ng-class="{collapse: true, in: collapsed[$index] == false}">
-                    <div class="panel-body" >
+                <div id="contribution{{$index}}">
+                  <div class="panel-body">
+                    <div class="col-md-8">
+                        <div class="role col-sm-6" ng-class="{'has-error': !contribution.role}">
+                            <label for="role-name">Role</label>
+                            <select name="role" id="role-name" class="form-control form-group" ng-change="updateLabel($index)" ng-options="role.id as role.name for role in roles" ng-model="contribution.role">
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-6">
+                          <label for="contributor-name">Contributor Search</label>
+                          <autocomplete type="text"
+                            id="contributor-name"
+                            ng-model="contribution.contributor"
+                            service="AuthorService"
+                            label-attr="getFullName"
+                            search-param="search"
+                            ng-class="{'has-error': !contribution.contributor}"
+                            placeholder="Search for author"></autocomplete>
+                        </div>
+
+                        <div class="form-group col-sm-12">
+                          <label for="contribution-notes">Notes</label>
+                          <textarea id="contribution-notes" class="form-control" rows="3" placeholder="Add notes about this contribution..." ng-model="contribution.notes"></textarea>
+                        </div>
+                      </div>
+
+                      <div ng-show="isFlatRate(contribution)">
+                        <div class="col-md-4">
+                          <div class="form-group col-sm-5">
+                            <label for="flatrate">Pay</label>
+                            <div id="flatrate">$ {{ contribution.roleObject.rates.flat_rate.rate }}</div>
+                          </div>
+                          <label>Override Pay</label>
+                          <div class="input-group col-sm-4">
+                            <span class="input-group-addon">$</span>
+                            <input type="text"
+                                id="override"
+                                class="form-control col-sm-2"
+                                ng-model="contribution.override_rate">
+                            </input>
+                          </div>
+                        </div>
+                        <div class="col-sm-4" style="margin-top:20px; padding-left:25px;">
+                          <input
+                            type="checkbox"
+                            ng-model="contribution.force_payment">
+                          </input>
+                          <span>Force Payment Submission</span>
+                        </div>
+                        <br>
+                        <label for="forceStartDate" style="margin-top:20px;padding-left:25px;">Forced Payment Submission Date</label>
+                        <div id="forceStartDate" class="input-group col-sm-3" style="padding-left:25px;">
+                          <input
+                              type="text"
+                              ng-model="contribution.force_date"
+                              class="form-control"
+                              readonly>
+                          <div class="input-group-btn">
+                            <button
+                                class="btn btn-default"
+                                datetime-selection-modal-opener
+                                ng-model="contribution.force_date"
+                                modal-title="Submission Date">
+                              <i class="glyphicon glyphicon-calendar"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div ng-show="isFeatureType(contribution)">
+                        <div class="col-md-4">
+                          <div class="form-group col-sm-5">
+                            <label for="feauturetype">Pay</label>
+                            <div id="featuretype">$ {{ contribution.featureTypeRate }}</div>
+                          </div>
+                          <label>Override Pay</label>
+                          <div class="input-group col-sm-4">
+                            <span class="input-group-addon">$</span>
+                            <input type="text"
+                                id="override"
+                                class="form-control col-sm-2"
+                                ng-model="contribution.override_rate">
+                            </input>
+                          </div>
+                        </div>
+                        <div class="col-sm-4" style="margin-top:20px; padding-left:25px;">
+                          <input
+                            type="checkbox"
+                            ng-model="contribution.force_payment">
+                          </input>
+                          <span>Force Payment Submission</span>
+                        </div>
+                        <br>
+                        <label for="forceStartDate" style="margin-top:20px;padding-left:25px;">Forced Payment Submission Date</label>
+                        <div id="forceStartDate" class="input-group col-sm-3" style="padding-left:25px;">
+                          <input
+                              type="text"
+                              ng-model="contribution.force_date"
+                              class="form-control"
+                              readonly>
+                          <div class="input-group-btn">
+                            <button
+                                class="btn btn-default"
+                                datetime-selection-modal-opener
+                                ng-model="contribution.force_date"
+                                modal-title="Submission Date">
+                              <i class="glyphicon glyphicon-calendar"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div ng-show="isHourly(contribution)">
+                        <div class="col-md-4">
+                          <div class="col-md-5">
+                            <label for="minutes">Minutes Worked</label>
+                            <div id="minutes" class="input-group">
+                              <input type="text"
+                                  class="form-control col-sm-4"
+                                  ng-model="contribution.minutes_worked">
+                              </input>
+                              <span class="input-group-addon">Min.</span>
+                            </div>
+                          </div>
+
+                          <div class="col-md-4">
+                            <div class="form-group col-sm-4">
+                              <label for="hourlyPay">Pay</label>
+                              <div id="hourlyPay" style="padding-top:20px;">${{ getHourlyPay(contribution) }}</div>
+                            </div>
+                          </div>
+
+                        </div>
+                        <div class="col-sm-4" style="margin-top:20px;padding-left:25px;">
+                          <input
+                            type="checkbox"
+                            ng-model="contribution.force_payment">
+                          </input>
+                          <span>Force Payment Submission</span>
+                        </div>
+                        <br>
+                        <label for="forceStartDate" style="margin-top:20px;padding-left:25px">Forced Payment Submission Date</label>
+                        <div class="input-group col-sm-3" style="padding-left:25px;">
+                          <input
+                              id=""
+                              type="text"
+                              ng-model="contribution.force_date"
+                              class="form-control"
+                              readonly>
+                          <div class="input-group-btn">
+                            <button
+                                class="btn btn-default"
+                                datetime-selection-modal-opener
+                                ng-model="contribution.force_date"
+                                modal-title="Submission Date">
+                              <i class="glyphicon glyphicon-calendar"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div ng-show="isManual(contribution)">
+                        <div class="col-md-4">
+                          <div class="form-group col-sm-7">
+                            <label for="setPay">Set Pay</label>
+                            <input type="text"
+                                id="setPay"
+                                class="form-control col-sm-4"
+                                ng-model="contribution.rate">
+                            </input>
+                          </div>
+                        </div>
                         <div class="row">
-                            <div class="form-group col-sm-6">
-                                <autocomplete type="text"
-                                    ng-model="contribution.contributor"
-                                    service="AuthorService"
-                                    label-attr="getFullName"
-                                    search-param="search"
-                                    ng-class="{'has-error': !contribution.contributor}"
-                                    placeholder="Search for author"></autocomplete>
-                            </div>
-                            <div class="role col-sm-6" ng-class="{'has-error': !contribution.role}">
-                                <select name="role" class="form-control form-group" ng-change="updateLabel($index)" ng-options="role.id as role.name for role in roles" ng-model="contribution.role">
-                                </select>
-                            </div>
+                          <div class="col-sm-4" style="padding-left:25px;">
+                            <input
+                              type="checkbox"
+                              id="forceBox"
+                              ng-model="contribution.force_payment">
+                            </input>
+                            <span>Force Payment Submission</span>
+                          </div>
+
+                        <br>
+                        <label for="forceStartDate" style="margin-top:20px;padding-left:25px;">Forced Payment Submission Date</label>
+                        <div class="input-group col-sm-3" style="padding-left:25px;">
+                          <input
+                              id=""
+                              type="text"
+                              ng-model="contribution.payment_date"
+                              class="form-control"
+                              readonly>
+                          <div class="input-group-btn">
+                            <button
+                                class="btn btn-default"
+                                datetime-selection-modal-opener
+                                ng-model="contribution.payment_date"
+                                modal-title="Submission Date">
+                              <i class="glyphicon glyphicon-calendar"></i>
+                            </button>
+                          </div>
                         </div>
-                        <div class="form-group">
-                            <textarea class="form-control" rows="3" placeholder="Notes" ng-model="contribution.notes"></textarea>
-                        </div>
-                    </div>
+                      </div>
+                  </div>
                 </div>
             </div>
+          </div>
 
-            <div class="form-group pull-right">
-                <button class="btn btn-success" ng-click="add()">Add Contributor</button>
-            </div>
+          <div class="form-group pull-right">
+              <button class="btn btn-success" ng-click="add()">Add Contributor</button>
+          </div>
 
         </div>
     </div>

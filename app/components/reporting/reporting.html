@@ -1,103 +1,112 @@
+<nav-bar view="reportbar"></nav-bar>
 <div class="wrapper container-fluid">
-  <div class="row">
-    <div class="col-md-2">
-      <select
-          class="form-control"
-          ng-options="options as name for (name, options) in reports"
-          ng-model="report">
-        <option value="">Select a report type...</option>
-      </select>
+  <div class="container col-xs-offset-2 col-xs-8">
+    <div class="row well">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="input-group">
+            <div
+              class="btn-group">
+              <button
+                class="btn btn-default btn-sm"
+                ng-class="{'active': publishedFilter === filter.value }"
+                ng-repeat="filter in publishedFilters"
+                ng-click="setPublishedFilter(filter.value)"
+              >
+                {{ filter.name }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="input-group">
+            <div
+              class="btn-group">
+              <button
+                class="btn btn-default btn-sm"
+                ng-class="{'active': userFilter === filter.value }"
+                ng-repeat="filter in userFilters"
+                ng-click="setUserFilter(filter.value)"
+              >
+                {{ filter.name }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" style="padding-top:20px">
+        <div class="col-md-4">
+            <p class="input-group">
+              <input placeholder="{{ startInitial }}" type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="start" is-open="startOpen" close-text="Close" />
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="openStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+            </p>
+        </div>
+        <div class="col-md-4">
+            <p class="input-group">
+              <input placeholder="{{ endInitial }}" type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="end" is-open="endOpen" close-text="Close" />
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="openEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+            </p>
+        </div>
+        <div class="col-md-2">
+            <a href="{{ downloadURL }}" target="_blank" class="btn btn-primary">Apply</a>
+        </div>
+      </div>
+
+      <div class="row">
+        <div style="margin-left: 15px;margin-top: 10px;">
+          <div class="col-xs-9 navbar-btn filterwidget-container" style="padding: 0; margin: 0 auto;">
+            <filter-list-widget filters=moreFilters></filter-list-widget>
+          </div>
+
+          <div class="col-md-2">
+              <a href="{{ downloadURL }}" target="_blank" class="btn btn-primary">Save Search</a>
+          </div>
+        </div>
+      </div>
+
     </div>
-    <div class="col-md-2">
-      <p class="input-group">
-        <input
-            placeholder="Start Date"
-            type="text"
-            class="form-control"
-            datepicker-popup="yyyy-MM-dd"
-            ng-model="start"
-            is-open="startOpen"
-            close-text="Close" />
-        <span class="input-group-btn">
-          <button
-              type="button"
-              class="btn btn-default"
-              ng-click="openStart($event)">
-            <i class="fa fa-calendar"></i>
-          </button>
-        </span>
-      </p>
-    </div>
-    <div class="col-md-2">
-      <p class="input-group">
-        <input
-            placeholder="End Date"
-            type="text"
-            class="form-control"
-            datepicker-popup="yyyy-MM-dd"
-            ng-model="end"
-            is-open="endOpen"
-            close-text="Close" />
-        <span class="input-group-btn">
-          <button
-              type="button"
-              class="btn btn-default"
-              ng-click="openEnd($event)">
-            <i class="fa fa-calendar"></i>
-          </button>
-        </span>
-      </p>
-    </div>
-    <div class="col-md-2"
-        ng-show="orderOptions.length > 0">
-      <select
-          class="form-control"
-          ng-options="option as option.label for option in orderOptions"
-          ng-model="orderBy"
-          ng-change="orderingChange()"></select>
-    </div>
-    <div class="col-md-2">
-      <button
-          class="btn"
-          ng-class="{
-            'btn-success': !downloading && !downloadError,
-            'btn-info': downloading && !downloadError,
-            'btn-danger': !downloading && downloadError
-          }"
-          ng-disabled="downloading || !report"
-          ng-click="triggerDownload(downloadURL)">
-        <span ng-if="!downloading && !downloadError">
-          <i class="fa fa-download"></i>
-          Download
-        </span>
-        <span ng-if="downloading && !downloadError">
-          <i class="fa fa-spinner fa-spin"></i>
-          Downloading...
-        </span>
-        <span ng-if="!downloading && downloadError">
-          <i class="fa fa-times"></i>
-          Error
-        </span>
-      </button>
+
+    <div class="row well">
+      <div class="row">
+        <div class="col-md-2">
+            <a href="{{ downloadURL }}" target="_blank" class="btn btn-primary">Export Data</a>
+        </div>
+        <div class="col-md-5">
+          <div class="input-group">
+            <div
+              class="btn-group">
+              <button
+                class="btn btn-default"
+                ng-class="{'active': report === service}"
+                ng-repeat="(title, service) in reports"
+                ng-click="setReport(service)">
+                {{ title }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <table class="table table-striped">
+          <thead>
+              <tr>
+                  <th ng-repeat="heading in headings" ng-bind="heading"></th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr ng-repeat="item in items">
+                  <td ng-repeat="value in item track by $index" ng-bind="value"></td>
+              </tr>
+          </tbody>
+      </table>
     </div>
   </div>
 
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th
-            ng-repeat="heading in headings"
-            ng-bind="heading">
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="item in items">
-        <td
-            ng-repeat="value in item"
-            ng-bind-html="value">
-        </td>
-      </tr>
-    </tbody>
-  </table>
 </div>

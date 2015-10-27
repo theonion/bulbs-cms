@@ -19,7 +19,11 @@
             hide-if-forbidden
             options-url="pzone/">
         </active-nav>
-        <active-nav href="/cms/app/reporting/" label="Reporting"></active-nav>
+        <active-nav
+            ng-show="current_user.data.is_manager"
+            href="/cms/app/reporting/"
+            label="Reporting">    
+        </active-nav>
         <active-nav href="/cms/app/notifications/" label="Notifications"></active-nav>
         <active-nav href="/cms/app/campaigns/" label="Campaigns"></active-nav>
         <active-nav href="/cms/app/special-coverage/" label="Special Coverage"></active-nav>

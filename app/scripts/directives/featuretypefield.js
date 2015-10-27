@@ -7,7 +7,8 @@ angular.module('bulbsCmsApp')
       templateUrl: PARTIALS_URL + 'textlike-autocomplete-field.html',
       restrict: 'E',
       scope: {
-        article: '='
+        article: '=',
+        hideLabel: '='
       },
       replace: true,
       link: function postLink(scope, element, attrs) {
