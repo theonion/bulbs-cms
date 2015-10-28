@@ -17,7 +17,7 @@ angular.module('cms.image', [
         if (options.crop === 'original') {
           createStyle('.image[data-image-id="' + options.id + '"]>div', {
             'padding-bottom': ((data.height / data.width) * 100) + '%'
-          }, 'image-css-' + options.id);
+          }, 'image-css-' + options.id + '-crop');
 
           cropDetails = {
             x0: 0,
@@ -38,7 +38,7 @@ angular.module('cms.image', [
           createStyle('.image[data-image-id="' + options.id + '"]>div', {
             'padding-bottom': '56.25%', // default to 16x9 for errors
             'background-color': 'rgba(200, 0,0, .5)'
-          }, 'image-css-' + options.id);
+          }, 'image-css-' + options.id + '-crop');
         }
       };
 
@@ -79,7 +79,7 @@ angular.module('cms.image', [
             '-' + scaleNumber(tmp_selection.y0, scale) + 'px',
           'background-repeat': 'no-repeat'
         };
-        createStyle(selector, rules, 'image-css-' + image.id);
+        createStyle(selector, rules, 'image-css-' + image.id + '-computed-style');
       };
 
       var createStyle = function (selector, rules, styleId) {
@@ -88,6 +88,7 @@ angular.module('cms.image', [
         var $styleNode;
         if ($existingStyle.length > 0) {
           $styleNode = $existingStyle;
+          $styleNode.empty();
         } else {
           $styleNode = $('<style id="' + styleId + '" type="text/css">');
           $(document).find('head').append($styleNode);
@@ -95,7 +96,7 @@ angular.module('cms.image', [
 
         var css = '' + selector + '{';
         for (var rule in rules) {
-          css += rule + ':' + rules[rule] + ';';
+          css += rule + ':' + rules[rule] + ' !important;';
         }
         css += '}';
 
