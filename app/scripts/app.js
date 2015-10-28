@@ -13,103 +13,146 @@ angular.module('OnionEditor', []).constant('OnionEditor', window.OnionEditor);
 
 // ****** App Config ****** \\
 
+angular.module('bulbsCmsApp.settings', [
+  'ngClipboard'
+])
+  .config(function (ngClipProvider, ZERO_CLIPBOARD_SWF) {
+    ngClipProvider.setPath(ZERO_CLIPBOARD_SWF);
+  });
+
 angular.module('bulbsCmsApp', [
+  // unorganized
   'bulbsCmsApp.settings',
+  'bulbs.api',
+  // external
+  'BettyCropper',
+  'ipCookie',
+  'jquery',
+  'keypress',
+  'lodash',
+  'moment',
   'ngCookies',
   'ngResource',
   'ngRoute',
+  'OnionEditor',
+  'PNotify',
+  'Raven',
+  'restangular',
+  'tokenAuth',
   'ui.bootstrap',
   'ui.bootstrap.datetimepicker',
-  'restangular',
-  'BettyCropper',
-  'jquery',
-  'lodash',
   'URLify',
-  'moment',
-  'PNotify',
-  'keypress',
-  'Raven',
-  'firebase',
-  'ipCookie',
-  'bulbs.api',
-  'OnionEditor',
   // shared
+  'backendApiHref',
   'contentServices',
+  'cms.config',
+  'cms.firebase.config',
+  'cms.image',
+  'cms.templates',
+  'currentUser',
   // components
   'bettyEditable',
   'bugReporter',
   'campaigns',
+  'content',
+  'content.video',
   'filterWidget',
   'filterListWidget',
   'promotedContent',
+  'sections',
+  'sendToEditor',
+  'specialCoverage',
   'statusFilter',
   'templateTypeField',
   'specialCoverage',
   'sections',
-  'reports'
+  'reports',
+  // TODO : remove these, here because they are used by unrefactored compontents
+  'content.edit.versionBrowser.modal.opener'
 ])
-.config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
-  $locationProvider.html5Mode(true);
+  .config([
+    '$provide', '$httpProvider', '$locationProvider', '$routeProvider', '$sceProvider',
+      'TokenAuthConfigProvider', 'TokenAuthServiceProvider', 'CmsConfigProvider',
+      'COMPONENTS_URL', 'PARTIALS_URL', 'FirebaseConfigProvider',
+    function ($provide, $httpProvider, $locationProvider, $routeProvider, $sceProvider,
+        TokenAuthConfigProvider, TokenAuthServiceProvider, CmsConfigProvider,
+        COMPONENTS_URL, PARTIALS_URL, FirebaseConfigProvider) {
 
-  $routeProvider
-    .when('/cms/app/list/', {
-      templateUrl: routes.PARTIALS_URL + 'contentlist.html',
-      controller: 'ContentlistCtrl',
-      reloadOnSearch: false
-    })
-    .when('/cms/app/edit/:id/', {
-      templateUrl: routes.PARTIALS_URL + 'contentedit.html',
-      controller: 'ContenteditCtrl',
-      reloadOnSearch: false
-    })
-    .when('/cms/app/edit/:id/contributions/', {
-      templateUrl: routes.PARTIALS_URL + 'contributions.html',
-      controller: 'ContributionsCtrl'
-    })
-    .when('/cms/app/targeting/', {
-      templateUrl: routes.PARTIALS_URL + 'targeting-editor.html',
-      controller: 'TargetingCtrl'
-    })
-    .when('/cms/app/notifications/', {
-      templateUrl: routes.PARTIALS_URL + 'cms-notifications.html',
-      controller: 'CmsNotificationsCtrl'
-    })
-    .when('/cms/app/reporting/', {
-      templateUrl: routes.PARTIALS_URL + 'reporting.html',
-      controller: 'ReportingCtrl'
-    })
-    .when('/cms/app/pzones/', {
-      templateUrl: routes.PARTIALS_URL + 'pzones.html',
-      controller: 'PzoneCtrl'
-    })
-    .otherwise({
-      redirectTo: '/cms/app/list/'
-    });
+      // FirebaseConfigProvider
+      //   .setDbUrl('')
+      //   .setSiteRoot('sites/bulbs-cms-testing');
 
-  //TODO: whitelist staticonion.
-  $sceProvider.enabled(false);
-  /*.resourceUrlWhitelist([
-  'self',
-  STATIC_URL + "**"]);*/
+      $locationProvider.html5Mode(true);
 
-})
-.config(function ($provide, $httpProvider) {
-  $provide.decorator('$exceptionHandler', function ($delegate) {
-    return function (exception, cause) {
-      $delegate(exception, cause);
-      window.Raven.captureException(exception);
-    };
-  });
+      $routeProvider
+        .when('/', {
+          templateUrl: PARTIALS_URL + 'contentlist.html',
+          controller: 'ContentlistCtrl',
+          reloadOnSearch: false
+        })
+        .when('/cms/app/list/', {
+          redirectTo: '/'
+        })
+        .when('/cms/app/edit/:id/contributions/', {
+          templateUrl: PARTIALS_URL + 'contributions.html',
+          controller: 'ContributionsCtrl'
+        })
+        .when('/cms/app/targeting/', {
+          templateUrl: PARTIALS_URL + 'targeting-editor.html',
+          controller: 'TargetingCtrl'
+        })
+        .when('/cms/app/notifications/', {
+          templateUrl: PARTIALS_URL + 'cms-notifications.html',
+          controller: 'CmsNotificationsCtrl'
+        })
+        .when('/cms/app/pzones/', {
+          templateUrl: PARTIALS_URL + 'pzones.html',
+          controller: 'PzoneCtrl'
+        })
+        .when('/cms/login/', {
+          templateUrl: COMPONENTS_URL + 'login/login.html'
+        })
+        .otherwise({
+          templateUrl: '/404.html'
+        });
 
-  $httpProvider.interceptors.push('BugReportInterceptor');
-  $httpProvider.interceptors.push('PermissionsInterceptor');
-  $httpProvider.interceptors.push('BadRequestInterceptor');
-})
-.run(function ($rootScope, $http, $cookies) {
-  // set the CSRF token here
-  $http.defaults.headers.common['X-CSRFToken'] = $cookies.csrftoken;
-  var deleteHeaders = $http.defaults.headers.delete || {};
-  deleteHeaders['X-CSRFToken'] = $cookies.csrftoken;
-  $http.defaults.headers.delete = deleteHeaders;
-})
-.constant('TIMEZONE_NAME', 'America/Chicago');
+      CmsConfigProvider.setLogoutCallback(function () {
+        TokenAuthServiceProvider.$get().logout();
+      });
+
+      CmsConfigProvider.addEditPageMapping(
+        '/components/edit-pages/video/video-container.html',
+        'core_video');
+
+      TokenAuthConfigProvider.setApiEndpointAuth('/token/auth');
+      TokenAuthConfigProvider.setApiEndpointRefresh('/token/refresh');
+      TokenAuthConfigProvider.setApiEndpointVerify('/token/verify');
+      TokenAuthConfigProvider.setLoginPagePath('/cms/login/');
+
+      //TODO: whitelist staticonion.
+      $sceProvider.enabled(false);
+      /*.resourceUrlWhitelist([
+      'self',
+      STATIC_URL + "**"]);*/
+
+      $provide.decorator('$exceptionHandler', function ($delegate) {
+        return function (exception, cause) {
+          $delegate(exception, cause);
+          window.Raven.captureException(exception);
+        };
+      });
+
+      $httpProvider.interceptors.push('BugReportInterceptor');
+      $httpProvider.interceptors.push('BadRequestInterceptor');
+    }
+  ])
+  .run([
+    '$rootScope', '$http', '$cookies',
+    function ($rootScope, $http, $cookies) {
+      // set the CSRF token here
+      $http.defaults.headers.common['X-CSRFToken'] = $cookies.csrftoken;
+      var deleteHeaders = $http.defaults.headers.delete || {};
+      deleteHeaders['X-CSRFToken'] = $cookies.csrftoken;
+      $http.defaults.headers.delete = deleteHeaders;
+    }
+  ]);

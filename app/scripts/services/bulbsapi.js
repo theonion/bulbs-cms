@@ -2,7 +2,8 @@
 
 angular.module('bulbsCmsApp')
   .config(function (RestangularProvider, bulbsApiConfig) {
-    // This is specific to Django Rest Framework      
+
+    // This is specific to Django Rest Framework
     RestangularProvider.setResponseExtractor(function (response, operation, what, url) {
       var newResponse = response;
       if (operation === 'getList') {

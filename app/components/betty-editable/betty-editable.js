@@ -5,11 +5,11 @@ angular.module('bettyEditable', [
   'bulbsCmsApp.settings'
 ])
   .directive('bettyEditable',[
-    '$http', 'routes', 'BettyCropper', 'openImageCropModal', 'DEFAULT_IMAGE_WIDTH',
-    function ($http, routes, BettyCropper, openImageCropModal, DEFAULT_IMAGE_WIDTH) {
+    '$http', 'COMPONENTS_URL', 'BettyCropper', 'openImageCropModal', 'DEFAULT_IMAGE_WIDTH',
+    function ($http, COMPONENTS_URL, BettyCropper, openImageCropModal, DEFAULT_IMAGE_WIDTH) {
       return {
         restrict: 'E',
-        templateUrl: routes.COMPONENTS_URL + 'betty-editable/betty-editable.html',
+        templateUrl: COMPONENTS_URL + 'betty-editable/betty-editable.html',
         scope: {
           addStyles: '@',
           editable: '=?',

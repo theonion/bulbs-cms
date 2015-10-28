@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('campaigns.edit.sponsorPixel.directive', [
-]).constant('PIXEL_TYPES', [
+  'bulbsCmsApp.settings'
+])
+  .constant('PIXEL_TYPES', [
     {
       name: 'Listing',
       value: 'Listing'
@@ -11,7 +13,7 @@ angular.module('campaigns.edit.sponsorPixel.directive', [
       value: 'Detail'
     }
   ])
-  .directive('campaignsEditSponsorPixel', function (routes) {
+  .directive('campaignsEditSponsorPixel', function (COMPONENTS_URL) {
     return {
       controller: function($scope, PIXEL_TYPES) {
         $scope.PIXEL_TYPES = PIXEL_TYPES;
@@ -20,6 +22,6 @@ angular.module('campaigns.edit.sponsorPixel.directive', [
       scope: {
         model: '='
       },
-      templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-edit/campaigns-edit-sponsor-pixel/campaigns-edit-sponsor-pixel.html'
+      templateUrl: COMPONENTS_URL + 'campaigns/campaigns-edit/campaigns-edit-sponsor-pixel/campaigns-edit-sponsor-pixel.html'
     };
   });

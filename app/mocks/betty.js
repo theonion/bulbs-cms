@@ -1,7 +1,14 @@
 'use strict';
-angular.module('BettyCropper.mockApi', []).run(function ($httpBackend) {
-  $httpBackend.when('OPTIONS', /^http:\/\/localimages\.avclub\.com.*/).respond('');
-  $httpBackend.when('GET', /^http:\/\/localimages\.avclub\.com\/api\/\d+/).respond(function (method, url, data, headers) {
+
+angular.module('BettyCropper.mockApi', [
+  'cms.config'
+])
+.config(function (CmsConfigProvider) {
+  CmsConfigProvider.setImageServerRoot('//localimages.avclub.com');
+})
+.run(function ($httpBackend) {
+  $httpBackend.when('OPTIONS', /^\/\/localimages\.avclub\.com.*/).respond('');
+  $httpBackend.when('GET', /^\/\/localimages\.avclub\.com\/api\/\d+/).respond(function (method, url, data, headers) {
     var id = url.substring(url.lastIndexOf('/') + 1, url.length);
     return [200, {
       'id': parseInt(id, 10),
@@ -14,7 +21,7 @@ angular.module('BettyCropper.mockApi', []).run(function ($httpBackend) {
       }
     }, {}];
   });
-  $httpBackend.when('POST', /^http:\/\/localimages\.avclub\.com\/api\/new/).respond(function (method, url, data, headers) {
+  $httpBackend.when('POST', /^\/\/localimages\.avclub\.com\/api\/new/).respond(function (method, url, data, headers) {
     var imageData = {
       'id': 12345,
       'name': 'Lenna.png',
@@ -27,7 +34,7 @@ angular.module('BettyCropper.mockApi', []).run(function ($httpBackend) {
     };
     return [200, imageData, {}];
   });
-  $httpBackend.when('POST', /^http:\/\/localimages\.avclub\.com\/api\/\d+\/.*$/).respond(function (method, url, data, headers) {
+  $httpBackend.when('POST', /^\/\/localimages\.avclub\.com\/api\/\d+\/.*$/).respond(function (method, url, data, headers) {
     var splitUrl = url.split('/');
     var ratio = splitUrl[splitUrl.length];
     var id = splitUrl[splitUrl.length - 1];

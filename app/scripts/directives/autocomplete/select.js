@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('autocomplete', function ($timeout, $animate, $compile, routes) {
+  .directive('autocomplete', function ($timeout, $animate, $compile, PARTIALS_URL) {
     return {
       restrict: 'E',
       replace: true,
@@ -20,18 +20,18 @@ angular.module('bulbsCmsApp')
         ngModel.$render = function() {
           if (ngModel.$viewValue) {
             var viewValue = ngModel.$viewValue[attrs.labelAttr];
-            if (typeof(viewValue) === "function") {
+            if (typeof(viewValue) === 'function') {
               viewValue = viewValue();
             }
             element.find('input').val(viewValue);
             inputEl.attr('disabled', 'disabled');
           }
-        }
+        };
 
         $scope.openMenu = function(e) {
           inputEl.removeAttr('disabled');
           inputEl[0].focus();
-        }
+        };
 
         inputEl.on('blur keyup change', function() {
           if (inputEl.attr('disabled') !== undefined) {
@@ -43,7 +43,9 @@ angular.module('bulbsCmsApp')
             if (timeoutId) {
               $timeout.cancel(timeoutId);
             }
-            timeoutId = $timeout(function(){ queryData(value)}, 150);
+            timeoutId = $timeout(function(){
+              queryData(value);
+            }, 150);
           }
         });
 
@@ -53,7 +55,7 @@ angular.module('bulbsCmsApp')
         menuScope.select = function(index) {
           ngModel.$setViewValue(menuScope.items[index]);
           reset();
-        }
+        };
 
         var menuEl = angular.element(document.createElement('autocomplete-menu'));
         menuEl.attr({
@@ -62,7 +64,9 @@ angular.module('bulbsCmsApp')
           'index': 'index',
           'label-attr': attrs.labelAttr,
         });
-        transclude(menuScope, function(clone){ menuEl.append(clone) });
+        transclude(menuScope, function(clone){
+          menuEl.append(clone);
+        });
         $compile(menuEl)(menuScope);
 
         element.find('input').on('keyup', function(e) {
@@ -100,7 +104,7 @@ angular.module('bulbsCmsApp')
         });
 
         function queryData(query) {
-          var searchParams = {}
+          var searchParams = {};
           searchParams[attrs.searchParam || 'search'] = query;
           $scope['service'].getList(searchParams).then(function (results) {
 
@@ -132,7 +136,6 @@ angular.module('bulbsCmsApp')
         }
 
         function styleMenu() {
-          var parentStyles = window.getComputedStyle(element[0]);
           var offset = element.offset();
 
           offset.left = 'auto';
@@ -142,13 +145,13 @@ angular.module('bulbsCmsApp')
 
           angular.forEach(offset, function (value, key) {
             if (!isNaN(value) && angular.isNumber(value)) {
-              value = value + "px"
+              value = value + 'px';
             }
             menuEl[0].style[key] = value;
             menuEl.css('z-index', 1000);
           });
         }
       },
-      templateUrl: routes.PARTIALS_URL + 'autocomplete.html'
+      templateUrl: PARTIALS_URL + 'autocomplete.html'
     };
   });

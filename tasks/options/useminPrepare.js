@@ -6,9 +6,9 @@
 var config = require('../config');
 
 module.exports = {
-  html: config.paths.app + '/index.html',
+  html: config.paths.app('index.html'),
   options: {
-    dest: config.paths.dist,
+    dest: config.paths.dist(),
     flow: {
       steps: {
         'js': ['concat'],

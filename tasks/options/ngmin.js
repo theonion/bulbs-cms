@@ -9,17 +9,17 @@ module.exports = {
   templates: {
     files: [{
       expand: true,
-      cwd: '.tmp/concat/scripts',
+      cwd: config.paths.tmp('concat/scripts'),
       src: '*.js',
-      dest: '.tmp/concat/scripts'
+      dest: config.paths.tmp('concat/scripts')
     }]
   },
   dist: {
     files: [{
       expand: true,
-      cwd: config.paths.dist + '/scripts',
+      cwd: config.paths.dist('scripts'),
       src: '*.js',
-      dest: '.tmp/concat/scripts'
+      dest: config.paths.tmp('concat/scripts')
     }]
   }
 };

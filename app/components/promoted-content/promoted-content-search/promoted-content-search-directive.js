@@ -7,7 +7,7 @@ angular.module('promotedContentSearch.directive', [
   'promotedContent.service',
   'promotedContentArticle'
 ])
-  .directive('promotedContentSearch', function (routes) {
+  .directive('promotedContentSearch', function (COMPONENTS_URL) {
     return {
       controller: function (_, moment, $scope, $location, PromotedContentService) {
 
@@ -81,6 +81,6 @@ angular.module('promotedContentSearch.directive', [
       },
       restrict: 'E',
       scope: {},
-      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-search/promoted-content-search.html'
+      templateUrl: COMPONENTS_URL + 'promoted-content/promoted-content-search/promoted-content-search.html'
     };
   });

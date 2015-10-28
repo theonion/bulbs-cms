@@ -1,0 +1,22 @@
+<div>
+  <div>
+    <label for="ac-{{ uuid }}">Tags</label>
+  </div>
+  <div class="col-sm-4 form-group">
+    <autocomplete-basic
+        class="form-control"
+        item-display-formatter="item.name"
+        on-select="addTag(selection.value)"
+        input-id="ac-{{ uuid }}"
+        input-placeholder="Search tags..."
+        search-function="searchTags"
+        allow-input-value-selection="true">
+    </autocomplete-basic>
+  </div>
+  <div class="col-sm-8">
+    <tag-list
+        items="article.tags"
+        item-display-formatter="item.name">
+    </tag-list>
+  </div>
+</div>

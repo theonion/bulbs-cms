@@ -11,7 +11,7 @@ describe('Testing bettyeditable directive', function() {
 
   beforeEach(function () {
     module('bulbsCmsApp');
-    module('jsTemplates');
+    module('cms.templates');
     module('BettyCropper.mockApi');
 
     html = '<div style="width: 400px; height: 900px;""><betty-editable image="image" ratio="16x9" /></div>';

@@ -7,7 +7,7 @@ angular.module('promotedContentList.directive', [
   'promotedContentSave',
   'ui.sortable'
 ])
-  .directive('promotedContentList', function ($, routes) {
+  .directive('promotedContentList', function ($, COMPONENTS_URL) {
     return {
       controller: function ($scope, PromotedContentService) {
 
@@ -67,6 +67,6 @@ angular.module('promotedContentList.directive', [
       },
       restrict: 'E',
       scope: {},
-      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-list/promoted-content-list.html'
+      templateUrl: COMPONENTS_URL + 'promoted-content/promoted-content-list/promoted-content-list.html'
     };
   });

@@ -4,7 +4,7 @@
     <button
         class="group-remove btn btn-danger btn-xs"
         ng-click="remove()">
-      <i class="glyphicon glyphicon-remove"></i>
+      <i class="fa fa-times"></i>
     </button>
   </div>
   <div class="panel-body">
@@ -35,21 +35,21 @@
       <button
           class="group-time-period-remove btn btn-xs btn-danger"
           ng-click="controllerService.groupsTimePeriodRemove(groupIndex); $update()">
-        <i class="glyphicon glyphicon-remove"></i>
+        <i class="fa fa-times"></i>
       </button>
     </div>
 
     <button
         class="btn btn-xs btn-info"
         ng-click="controllerService.groupsConditionsAdd(groupIndex); $update()">
-      <i class="glyphicon glyphicon-plus"></i>
+      <i class="fa fa-plus"></i>
       Add a Condition
     </button>
     <button
         class="btn btn-xs btn-info"
         ng-if="!controllerService.groupsTimePeriodGet(groupIndex)"
         ng-click="controllerService.groupsTimePeriodSet(groupIndex); $update()">
-      <i class="glyphicon glyphicon-plus"></i>
+      <i class="fa fa-plus"></i>
       Add Time Period
     </button>
   </div>

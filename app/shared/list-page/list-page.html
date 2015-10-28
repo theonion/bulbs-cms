@@ -4,7 +4,7 @@
   <button
       class="add-item btn btn-primary"
       ng-click="$add()">
-    <i class="glyphicon glyphicon-plus"></i>
+    <i class="fa fa-plus"></i>
     Add {{ name }}
   </button>
 
@@ -87,9 +87,9 @@
         </td>
         <td>
           <button
-              class="btn btn-xs btn-info"
+              class="btn btn-xs btn-info edit-btn"
               ng-click="goToEditPage(item)">
-            <i class="glyphicon glyphicon-pencil"></i>
+            <i class="fa fa-pencil"></i>
           </button>
           <copy-button
               ng-if="toolCopyContent"
@@ -104,7 +104,7 @@
               modal-title="Delete {{ name }}"
               modal-ok-text="Delete"
               modal-on-ok="$remove(item)">
-            <i class="glyphicon glyphicon-remove"></i>
+            <i class="fa fa-times"></i>
           </button>
         </td>
       </tr>

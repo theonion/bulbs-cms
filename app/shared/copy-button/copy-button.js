@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('copyButton', [])
-  .directive('copyButton', function (routes) {
+  .directive('copyButton', function (SHARED_URL) {
     return {
       controller: function ($scope, $timeout) {
 
@@ -19,6 +19,6 @@ angular.module('copyButton', [])
         buttonClassesSuccess: '@',
         content: '@'
       },
-      templateUrl: routes.SHARED_URL + 'copy-button/copy-button.html'
+      templateUrl: SHARED_URL + 'copy-button/copy-button.html'
     };
   });

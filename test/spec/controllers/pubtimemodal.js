@@ -5,7 +5,7 @@ describe('Controller: PubtimemodalCtrl', function () {
   // load the controller's module
   beforeEach(module('bulbsCmsApp'));
   beforeEach(module('bulbsCmsApp.mockApi'));
-  beforeEach(module('jsTemplates'));
+  beforeEach(module('cms.templates'));
 
   var PubtimemodalCtrl,
     scope,
@@ -19,44 +19,45 @@ describe('Controller: PubtimemodalCtrl', function () {
     id: 1,
     feature_type: null,
     published: null,
-    title: "No feature type"
-  }
+    title: 'No feature type'
+  };
 
   var publishUrl = '/cms/api/v1/content/1/publish/';
 
   var articleWithFeatureType = {
     id: 1,
-    feature_type: "Feature Type",
+    feature_type: 'Feature Type',
     published: null,
-    title: "Hi"
-  }
+    title: 'Hi'
+  };
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope, $httpBackend, $modal, moment, routes, TIMEZONE_NAME) {
+  beforeEach(inject(function ($controller, $rootScope, $httpBackend, $modal, moment,
+      PARTIALS_URL, TIMEZONE_NAME) {
     httpBackend = $httpBackend;
     timezoneName = TIMEZONE_NAME;
-    var modalUrl = routes.PARTIALS_URL + 'modals/publish-date-modal.html';
+    var modalUrl = PARTIALS_URL + 'modals/publish-date-modal.html';
     modal = $modal.open({
       templateUrl: modalUrl
-    })
+    });
 
-    modal.dismiss = function () { return true; }
-    modalService = $modal
-    modalService.open = function () { return true; }
+    modal.dismiss = function () { return true; };
+    modalService = $modal;
+    modalService.open = function () { return true; };
 
     mockmoment = function(param) {
       if(param){
         return moment(param);
       }else{
-        return moment("Fri Apr 25 2014 14:22:00");
+        return moment('Fri Apr 25 2014 14:22:00');
       }
-    }
+    };
     mockmoment.tz = function () {
-      if (arguments.length == 1) {
+      if (arguments.length === 1) {
         return moment.tz('Fri Apr 25 2014 14:22:00', timezoneName);
       }
       return moment.tz.apply(this, arguments);
-    }
+    };
 
     scope = $rootScope.$new();
     PubtimemodalCtrl = $controller('PubtimemodalCtrl', {
@@ -91,9 +92,9 @@ describe('Controller: PubtimemodalCtrl', function () {
     });
 
     it('should make an http request to the publis endpoint', function () {
-      httpBackend.expectPOST(publishUrl).respond({status: "Published"});
+      httpBackend.expectPOST(publishUrl).respond({status: 'Published'});
 
-      scope.dateTimePickerValue = "aha";
+      scope.dateTimePickerValue = 'aha';
       scope.setPubTime(articleWithFeatureType);
 
       httpBackend.flush();
@@ -119,7 +120,7 @@ describe('Controller: PubtimemodalCtrl', function () {
         scope.setTimeShortcut('now');
         scope.$apply();
 
-        httpBackend.expectPOST(publishUrl, {published: "2014-04-25T14:22-05:00"}).respond({status: "Published"});
+        httpBackend.expectPOST(publishUrl, {published: '2014-04-25T14:22-05:00'}).respond({status: 'Published'});
 
         scope.setPubTime();
 
@@ -142,7 +143,7 @@ describe('Controller: PubtimemodalCtrl', function () {
         scope.setTimeShortcut('midnight');
         scope.$apply();
 
-        httpBackend.expectPOST(publishUrl, {published: "2014-04-26T00:00-05:00"}).respond({status: "Published"});
+        httpBackend.expectPOST(publishUrl, {published: '2014-04-26T00:00-05:00'}).respond({status: 'Published'});
 
         scope.setPubTime();
 
@@ -161,13 +162,13 @@ describe('Controller: PubtimemodalCtrl', function () {
           }else{
             return moment('Fri Apr 25 2014 12:22:10');
           }
-        }
+        };
         mockmoment.tz = function () {
-          if (arguments.length == 1) {
+          if (arguments.length === 1) {
             return moment.tz('Fri Apr 25 2014 12:22:00', otherTz);
           }
             return moment.tz.apply(this, arguments);
-        }
+        };
 
         PubtimemodalCtrl = $controller('PubtimemodalCtrl', {
           $scope: scope,

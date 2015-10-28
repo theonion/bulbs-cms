@@ -15,7 +15,7 @@ describe('Directive: filterWidget', function () {
   beforeEach(function () {
     module('bulbsCmsApp');
     module('bulbsCmsApp.mockApi');
-    module('jsTemplates');
+    module('cms.templates');
 
     inject(function (_$rootScope_, _$httpBackend_, $compile, _$location_, _$browser_,
         _ContentListService_) {

@@ -3,12 +3,12 @@
 angular.module('saveButton.directive', [
   'genericAjaxButton'
 ])
-  .directive('saveButton', function (routes) {
+  .directive('saveButton', function (COMPONENTS_URL) {
     return {
       controller: 'GenericAjaxButtonController',
       link: {
         pre: function (scope) {
-          scope.cssIconComplete = 'glyphicon-floppy-disk';
+          scope.cssIconComplete = 'fa-floppy-o';
           scope.textProgress = 'Saving...';
           scope.textComplete = 'Save';
         }
@@ -18,6 +18,6 @@ angular.module('saveButton.directive', [
         disableWhen: '&',
         clickFunction: '=',
       },
-      templateUrl: routes.COMPONENTS_URL + 'generic-ajax-button/generic-ajax-button.html'
+      templateUrl: COMPONENTS_URL + 'generic-ajax-button/generic-ajax-button.html'
     };
   });

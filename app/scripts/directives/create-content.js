@@ -1,10 +1,12 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('createContent', function ($http, $window, $, IfExistsElse, Login, ContentFactory, routes, AUTO_ADD_AUTHOR, Raven) {
+  .directive('createContent', function ($http, $window, $, IfExistsElse, ContentFactory,
+      AUTO_ADD_AUTHOR, Raven, CmsConfig) {
+
     return {
       restrict: 'E',
-      templateUrl:  routes.DIRECTIVE_PARTIALS_URL + 'create-content.html',
+      templateUrl: CmsConfig.getCreateContentTemplateUrl,
       controller: function ($scope) {
         $scope.gotTags = false;
         $scope.gotUser = false;
@@ -51,7 +53,7 @@ angular.module('bulbsCmsApp')
         function saveArticle() {
           $('button.go').removeClass('btn-danger').addClass('btn-success').html('<i class="fa fa-refresh fa-spin"></i> Going');
           $http({
-            url: '/cms/api/v1/content/?doctype=' + $scope.contentType,
+            url: CmsConfig.buildBackendApiUrl('content/?doctype=' + $scope.contentType),
             method: 'POST',
             data: $scope.init
           }).success(function (resp) {
@@ -64,9 +66,9 @@ angular.module('bulbsCmsApp')
           }).error(function (data, status, headers, config) {
             if (status === 403) {
               $('button.go')
-                .html('<i class="glyphicon glyphicon-exclamation-sign"></i> Please Log In');
+                .html('<i class="fa fa-exclamation-triangle"></i> Please Log In');
             } else {
-              $('button.go').removeClass('btn-success').addClass('btn-danger').html('<i class="glyphicon glyphicon-remove"></i> Error');
+              $('button.go').removeClass('btn-success').addClass('btn-danger').html('<i class="fa fa-times"></i> Error');
             }
             $scope.gotSave = false;
           });

@@ -6,11 +6,13 @@ describe('Controller: CmsNotificationsCtrl', function () {
   beforeEach(module('bulbsCmsApp.mockApi'));
 
   var CmsNotificationsCtrl,
+      CurrentUser,
       $httpBackend,
       $scope;
 
-  beforeEach(inject(function (_$httpBackend_, $rootScope) {
+  beforeEach(inject(function (_CurrentUser_, _$httpBackend_, $rootScope) {
 
+    CurrentUser = _CurrentUser_;
     $httpBackend = _$httpBackend_;
     $scope = $rootScope.$new();
 
@@ -28,10 +30,11 @@ describe('Controller: CmsNotificationsCtrl', function () {
         last_name: 'Zweibel',
         is_superuser: true
       });
+      CurrentUser.getItems();
 
     }));
 
-    beforeEach(inject(function ($rootScope, $controller, CmsNotificationsApi, $window, routes,
+    beforeEach(inject(function ($rootScope, $controller, CmsNotificationsApi, $window, CMS_NAMESPACE,
                                 mockApiData, CurrentUser) {
 
       $httpBackend.expectGET('/cms/api/v1/notifications/').respond(mockApiData.notifications);
@@ -39,7 +42,7 @@ describe('Controller: CmsNotificationsCtrl', function () {
       CmsNotificationsCtrl = $controller('CmsNotificationsCtrl', {
         $window: $window,
         $scope: $scope,
-        routes: routes,
+        CMS_NAMESPACE: CMS_NAMESPACE,
         CmsNotificationsApi: CmsNotificationsApi,
         CurrentUser: CurrentUser
       });
@@ -148,10 +151,11 @@ describe('Controller: CmsNotificationsCtrl', function () {
         first_name: 'John',
         last_name: 'Smath'
       });
+      CurrentUser.getItems();
 
     }));
 
-    beforeEach(inject(function ($rootScope, $controller, CmsNotificationsApi, $window, routes, moment, CurrentUser) {
+    beforeEach(inject(function ($rootScope, $controller, CmsNotificationsApi, $window, CMS_NAMESPACE, moment, CurrentUser) {
 
       var today = moment();
       $httpBackend.expectGET('/cms/api/v1/notifications/').respond([
@@ -170,7 +174,7 @@ describe('Controller: CmsNotificationsCtrl', function () {
       CmsNotificationsCtrl = $controller('CmsNotificationsCtrl', {
         $window: $window,
         $scope: $scope,
-        routes: routes,
+        CMS_NAMESPACE: CMS_NAMESPACE,
         CmsNotificationsApi: CmsNotificationsApi,
         CurrentUser: CurrentUser
       });

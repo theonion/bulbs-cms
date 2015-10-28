@@ -86,6 +86,7 @@ angular.module('apiServices.mixins.fieldDisplay', [
             }
 
             // set up storting function if sorts was provided
+            fieldDisplay.getOrdering = function () {};
             if (fieldDisplay.sorts) {
               if (typeof fieldDisplay.sorts === 'function') {
                 // sort function was provided, use that

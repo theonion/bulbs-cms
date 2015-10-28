@@ -4,7 +4,7 @@ angular.module('promotedContentSave.directive', [
   'bulbsCmsApp.settings',
   'promotedContent.service'
 ])
-  .directive('promotedContentSave', function (routes) {
+  .directive('promotedContentSave', function (COMPONENTS_URL) {
     return {
       controller: function ($scope, PromotedContentService) {
 
@@ -28,6 +28,6 @@ angular.module('promotedContentSave.directive', [
       },
       restrict: 'E',
       scope: {},
-      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-save/promoted-content-save.html'
+      templateUrl: COMPONENTS_URL + 'promoted-content/promoted-content-save/promoted-content-save.html'
     };
   });

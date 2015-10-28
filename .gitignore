@@ -1,3 +1,8 @@
+# HACK : need dist until this is in a different repo
+# dist
+
+
+
 node_modules
 .tmp
 .sass-cache

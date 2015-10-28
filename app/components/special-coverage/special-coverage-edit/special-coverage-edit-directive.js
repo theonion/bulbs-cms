@@ -10,11 +10,12 @@ angular.module('specialCoverage.edit.directive', [
   'specialCoverage.settings',
   'topBar',
   'ui.bootstrap.tooltip',
-  'videoList'
+  'videoList',
+  'moment'
 ])
-  .directive('specialCoverageEdit', function (routes) {
+  .directive('specialCoverageEdit', function (COMPONENTS_URL) {
     return {
-      controller: function (_, $location, $q, $scope, Campaign, EXTERNAL_URL,
+      controller: function (_, $location, $q, $scope, $window, moment, Campaign, EXTERNAL_URL,
           SPECIAL_COVERAGE_LIST_REL_PATH, SpecialCoverage) {
 
         $scope.ACTIVE_STATES = SpecialCoverage.ACTIVE_STATES;
@@ -39,10 +40,20 @@ angular.module('specialCoverage.edit.directive', [
           }
         };
 
-        $scope.$on('$destroy', function() {
+        $scope.$on('$destroy', function () {
           // ensure even is cleaned up when we leave
           delete window.onbeforeunload;
         });
+
+        $scope.getQueryParams = function () {
+          return {
+            before: moment().format('YYYY-MM-DDTHH:mmZ')
+          };
+        };
+
+        $scope.preview = function () {
+          $window.open('//' + $scope.LIST_URL + $scope.model.slug);
+        };
 
         $scope.saveModel = function () {
           var promise;
@@ -74,6 +85,6 @@ angular.module('specialCoverage.edit.directive', [
       scope: {
         getModelId: '&modelId'
       },
-      templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit.html'
+      templateUrl: COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit.html'
     };
   });

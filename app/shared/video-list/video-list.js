@@ -9,7 +9,7 @@ angular.module('videoList', [
   'VideohubClient.api',
   'VideohubClient.settings'
 ])
-  .directive('videoList', function ($, routes) {
+  .directive('videoList', function ($, SHARED_URL) {
     return {
       controller: function (_, $scope, Utils, Video, VIDEOHUB_DEFAULT_CHANNEL) {
 
@@ -67,6 +67,6 @@ angular.module('videoList', [
         videos: '=',
         onUpdate: '&'
       },
-      templateUrl: routes.SHARED_URL + 'video-list/video-list.html'
+      templateUrl: SHARED_URL + 'video-list/video-list.html'
     };
   });

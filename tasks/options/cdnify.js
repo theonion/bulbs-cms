@@ -7,6 +7,6 @@ var config = require('../config');
 
 module.exports = {
   dist: {
-    html: [config.paths.dist + '/*.html']
+    html: [config.paths.dist('*.html')]
   }
 };

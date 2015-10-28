@@ -2,11 +2,11 @@
 
 angular.module('bugReporter', [])
   .directive('bugReporter', [
-    '$http', '$window', 'routes',
-    function ($http, $window, routes) {
+    '$http', '$window', 'COMPONENTS_URL',
+    function ($http, $window, COMPONENTS_URL) {
       return {
         restrict: 'E',
-        templateUrl: routes.COMPONENTS_URL + 'bug-reporter/bug-reporter-button.html',
+        templateUrl: COMPONENTS_URL + 'bug-reporter/bug-reporter-button.html',
         scope: {},
         controller: function ($scope, $element, $timeout) {
           $scope.report = {};

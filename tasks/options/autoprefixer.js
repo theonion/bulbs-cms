@@ -3,6 +3,8 @@
  */
 'ust strict';
 
+var config = require('../config');
+
 module.exports = {
   options: {
     browsers: ['last 1 version']
@@ -10,9 +12,9 @@ module.exports = {
   dist: {
     files: [{
       expand: true,
-      cwd: '.tmp/styles/',
+      cwd: config.paths.tmp('styles/'),
       src: '{,*/}*.css',
-      dest: '.tmp/styles/'
+      dest: config.paths.tmp('styles/')
     }]
   }
 };

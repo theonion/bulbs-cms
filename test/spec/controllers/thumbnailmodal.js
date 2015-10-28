@@ -4,7 +4,7 @@ describe('Controller: ThumbnailModalCtrl', function () {
 
   // load some modules we need
   beforeEach(module('bulbsCmsApp'));
-  beforeEach(module('jsTemplates'));
+  beforeEach(module('cms.templates'));
 
   describe('test modal functionality', function () {
 

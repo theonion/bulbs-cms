@@ -1,7 +1,13 @@
 <top-bar
-  logo-href="/cms/app/special-coverage/"
-  save-function="saveModel"
-  save-disable-when="model.$dirty().length === 0 && !isNew && !needsSave">
+    items-top="[{
+      clickFunction: preview,
+      containerClasses: 'btn btn-primary',
+      displayIconClasses: 'fa fa-share',
+      displayText: 'Preview'
+    }]"
+    logo-href="/cms/app/special-coverage/"
+    save-function="saveModel"
+    save-disable-when="model.$dirty().length === 0 && !isNew && !needsSave">
 </top-bar>
 
 <div class="container col-xs-offset-2 col-xs-8">
@@ -41,7 +47,7 @@
         <label for="specialCoverageActiveState">
           Active
           <i
-              class="glyphicon glyphicon-info-sign text-info"
+              class="fa fa-info-circle text-info"
               tooltip="'Active' lists will rotate through all site promotion areas. To always display on the homepage select 'Pin To HP'. Note: there are only three homepage slots so please limit the number of pinned lists."
               tooltip-trigger="mouseenter"
               tooltip-placement="top">
@@ -91,7 +97,8 @@
       <h4>Content List</h4>
       <custom-search
           ng-model="model.query"
-          on-update="needsSave = true">
+          on-update="needsSave = true"
+          query-params="getQueryParams()">
       </custom-search>
     </div>
     <div id="paneVideos" role="tabpanel" class="tab-pane">

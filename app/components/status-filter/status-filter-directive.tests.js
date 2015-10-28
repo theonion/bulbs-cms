@@ -16,7 +16,7 @@ describe('Directive: statusFilter', function () {
   beforeEach(function () {
     module('bulbsCmsApp');
     module('bulbsCmsApp.mockApi');
-    module('jsTemplates');
+    module('cms.templates');
 
     inject(function ($rootScope, $httpBackend, $compile, _$location_, _$browser_) {
       httpBackend = $httpBackend;

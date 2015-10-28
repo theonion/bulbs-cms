@@ -6,16 +6,27 @@
 var config = require('../config');
 
 module.exports = {
-  production: {
-    files: [{
-      expand: true,
-      cwd: config.paths.app,
-      src: [
-        'styles/**/*.less',
-        '!**/_*.less'
-      ],
-      dest: '.tmp/',
-      ext: '.css'
-    }]
-  }
+  project_styles: {
+     files: [{
+       expand: true,
+       flatten: true,
+       cwd: config.paths.app(),
+       src: [
+         'styles/**/*.less',
+         '!**/_*.less'
+       ],
+       dest: config.paths.tmp('styles'),
+       ext: '.css'
+     }]
+   },
+   font_awesome_styles: {
+     files: [{
+       expand: true,
+       flatten: true,
+       cwd: config.paths.tmp(),
+       src: 'font-awesome-less/font-awesome.less',
+       dest: config.paths.tmp('styles'),
+       ext: '.css'
+     }]
+   }
 };

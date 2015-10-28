@@ -88,11 +88,11 @@ describe('Image object', function () {
       'height': 512
     });
 
-    expect(image.url('16x9', 200, 'jpg')).toBe('http://localimages.avclub.com/9/16x9/200.jpg');
+    expect(image.url('16x9', 200, 'jpg')).toBe('//localimages.avclub.com/9/16x9/200.jpg');
 
     image.id = 12345;
-    
-    expect(image.url('16x9', 200, 'jpg')).toBe('http://localimages.avclub.com/1234/5/16x9/200.jpg');
+
+    expect(image.url('16x9', 200, 'jpg')).toBe('//localimages.avclub.com/1234/5/16x9/200.jpg');
   });
 
   it('should generate proper styles', function () {
@@ -124,7 +124,7 @@ describe('Image object', function () {
 });
 
 describe('BettyCropper service', function () {
-  
+
   var BettyImage, $httpBackend, BettyCropper;
   beforeEach(function() {
 

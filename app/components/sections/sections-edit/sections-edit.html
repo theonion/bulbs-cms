@@ -1,7 +1,13 @@
 <top-bar
-  logo-href="/cms/app/section/"
-  save-function="saveModel"
-  save-disable-when="model.$dirty().length === 0 && !isNew && !needsSave">
+    items-top="[{
+      clickFunction: preview,
+      containerClasses: 'btn btn-primary',
+      displayIconClasses: 'fa fa-share',
+      displayText: 'Preview'
+    }]"
+    logo-href="/cms/app/section/"
+    save-function="saveModel"
+    save-disable-when="model.$dirty().length === 0 && !isNew && !needsSave">
 </top-bar>
 
 <div class="container col-xs-offset-2 col-xs-8">

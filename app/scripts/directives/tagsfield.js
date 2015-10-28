@@ -1,9 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('tagsField', function (routes, _, IfExistsElse, ContentFactory, Raven, $) {
+  .directive('tagsField', function (PARTIALS_URL, _, IfExistsElse, ContentFactory,
+      Raven, $, CmsConfig) {
     return {
-      templateUrl: routes.PARTIALS_URL + 'taglike-autocomplete-field.html',
+      templateUrl: PARTIALS_URL + 'taglike-autocomplete-field.html',
       restrict: 'E',
       scope: {
         article: '='
@@ -13,7 +14,7 @@ angular.module('bulbsCmsApp')
         scope.name = 'tag';
         scope.label = 'Tags';
         scope.placeholder = 'Enter a tag';
-        scope.resourceUrl = '/cms/api/v1/tag/?ordering=name&types=content_tag&search=';
+        scope.resourceUrl = CmsConfig.buildBackendApiUrl('tag/?ordering=name&types=content_tag&search=');
         scope.display = function (o) {
           return o.name;
         };

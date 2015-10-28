@@ -1,6 +1,14 @@
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Logged in as {{ current_user.data|user }} <b class="caret"></b></a>
+  <a
+      href="#"
+      class="dropdown-toggle"
+      data-toggle="dropdown">
+    <span>Logged in as {{ user.displayName }}</span>
+    <b class="caret"></b>
+  </a>
   <ul class="dropdown-menu">
-    <li><a href="/cms/api/v1/me/logout/">Logout</a></li>
+    <li ng-click="logout()">
+      <a>Logout</a>
+    </li>
   </ul>
 </li>

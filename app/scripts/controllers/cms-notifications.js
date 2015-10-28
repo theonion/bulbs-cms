@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('CmsNotificationsCtrl', function ($q, $window, $scope, routes, CmsNotificationsApi, CurrentUser, _, moment) {
+  .controller('CmsNotificationsCtrl', function ($q, $window, $scope, CMS_NAMESPACE, CmsNotificationsApi, CurrentUser, _, moment) {
 
     // set title
-    $window.document.title = routes.CMS_NAMESPACE + ' | Notifications';
+    $window.document.title = CMS_NAMESPACE + ' | Notifications';
 
     // get user info
     CurrentUser.$retrieveData().then(function (user) {

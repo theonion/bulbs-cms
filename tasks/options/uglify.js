@@ -15,11 +15,11 @@ module.exports = {
   },
   dist: {
     files: [{
-      dest: config.paths.dist + '/scripts/templates.js',
-      src: ['.tmp/concat/scripts/templates.js']
+      dest: config.paths.dist('scripts/templates.js'),
+      src: config.paths.tmp('concat/scripts/templates.js')
     }, {
-      dest: config.paths.dist + '/scripts/scripts.min.js',
-      src: [config.paths.dist + '/scripts/scripts.js']
+      dest: config.paths.dist('scripts/scripts.min.js'),
+      src: config.paths.dist('scripts/scripts.js')
     }]
   }
 };

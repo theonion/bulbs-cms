@@ -2,14 +2,15 @@
 
 angular.module('filterWidget.directive', [
   'bulbsCmsApp.settings',
+  'contentServices.factory',
   'contentServices.listService'
 ])
-  .directive('filterWidget', function (_, $http, $location, $timeout, $,
-      ContentListService, routes) {
+  .directive('filterWidget', function (_, $location, $timeout, $, ContentListService,
+      ContentFactory, COMPONENTS_URL) {
     return {
       restrict: 'E',
       scope: {},
-      templateUrl: routes.COMPONENTS_URL + 'filter-widget/filter-widget.html',
+      templateUrl: COMPONENTS_URL + 'filter-widget/filter-widget.html',
       link: function (scope, element, attrs) {
         var $element = $(element);
         var $input = $element.find('input');
@@ -38,13 +39,18 @@ angular.module('filterWidget.directive', [
             return;
           }
 
-          $http({
-            url: '/cms/api/v1/things/?type=tag&type=feature_type&type=author',
-            method: 'GET',
-            params: {'q': search}
-          }).success(function (data) {
-            scope.autocompleteArray = data;
-          });
+          ContentFactory.all('things')
+            .getList({
+              type: [
+                'tag',
+                'feature_type',
+                'author'
+              ],
+              q: search
+            })
+            .then(function (data) {
+              scope.autocompleteArray = data;
+            });
         }
 
         $input.on('keyup', function (e) {
@@ -187,21 +193,21 @@ angular.module('filterWidget.directive', [
           //    directly to a filtered search page via URL)
           scope.queryToLabelMappings = scope.queryToLabelMappings || {};
 
-          if (query in scope.queryToLabelMappings) { return; }
+          if (query in scope.queryToLabelMappings) {
+            return;
+          }
 
-          $http({
-            url: '/cms/api/v1/things/?type=' + type,
-            method: 'GET',
-            params: {'q': query}
-          }).success(function (data) {
-            for (var i in data) {
-              scope.queryToLabelMappings[data[i].value] = data[i].name;
-            }
-          });
-
+          ContentFactory.all('things')
+            .getList({
+              type: 'tag',
+              q: query
+            })
+            .then(function (data) {
+              for (var i = 0; i < data.length; i++) {
+                scope.queryToLabelMappings[data[i].value] = data[i].name;
+              }
+            });
         }
-
       }
-
     };
   });

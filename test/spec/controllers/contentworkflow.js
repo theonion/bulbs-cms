@@ -23,7 +23,7 @@ describe('Controller: ContentworkflowCtrl', function () {
       }
     });
   }));
-  
+
   describe('should contain modal opening functions for various modals:', function () {
     it('trashContentModal', function () {
       scope.trashContentModal();
@@ -33,20 +33,12 @@ describe('Controller: ContentworkflowCtrl', function () {
       scope.pubTimeModal();
       expect(modalService.open).toHaveBeenCalled();
     });
-    it('sendToEditorModal', function () {
-      scope.sendToEditorModal();
-      expect(modalService.open).toHaveBeenCalled();
-    });
     it('changelogModal', function () {
       scope.changelogModal();
       expect(modalService.open).toHaveBeenCalled();
     });
     it('thumbnailModal', function () {
       scope.thumbnailModal();
-      expect(modalService.open).toHaveBeenCalled();
-    });
-    it('sponsoredContentModal', function () {
-      scope.sponsoredContentModal();
       expect(modalService.open).toHaveBeenCalled();
     });
     it('sponsorModal', function () {

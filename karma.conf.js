@@ -32,17 +32,18 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'app/cms-image.js',
       'app/bower_components/lodash/lodash.js',
       'app/bower_components/jquery/dist/jquery.js',
       'app/bower_components/jcrop/js/jquery.Jcrop.js',
       'app/bower_components/bootstrap/dist/js/bootstrap.js',
       'app/bower_components/firebase/firebase-debug.js',
+      'app/bower_components/firebase-token-generator/build/firebase-token-generator.js',
       'app/bower_components/angular/angular.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
       'app/bower_components/angular-resource/angular-resource.js',
       'app/bower_components/angular-cookie/angular-cookie.js',
       'app/bower_components/angular-cookies/angular-cookies.js',
+      'app/bower_components/angular-local-storage/dist/angular-local-storage.js',
       'app/bower_components/angular-route/angular-route.js',
       'app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'app/bower_components/angular-uuid4/angular-uuid4.js',
@@ -62,8 +63,9 @@ module.exports = function(config) {
       'app/bower_components/angular-restmod/dist/plugins/nested-dirty.js',
       'app/bower_components/videohub-client-js/dist/videohub-client.js',
       'app/bower_components/restmod-style-drf-paged/restmod-style-drf-paged.js',
-
+      'app/bower_components/token-auth-frontend/dist/token-auth.js',
       'app/bower_components/videohub-client-js/src/videohub-client/videohub-api-mocks.js',
+
       'app/mocks/api.js',
       'app/mocks/api-mock-data.js',
       'app/mocks/api/api-campaign.js',
@@ -109,8 +111,7 @@ module.exports = function(config) {
     preprocessors: {
       'app/components/**/*.html': 'ng-html2js',
       'app/shared/**/*.html': 'ng-html2js',
-      'app/views/**/*.html': 'ng-html2js',
-      'app/scripts/**/*.js': 'coverage'
+      'app/views/**/*.html': 'ng-html2js'
     },
 
     // set up reporters
@@ -122,7 +123,7 @@ module.exports = function(config) {
 
       // setting this option will create only a single module that contains templates
       // from all the files, so you can load them all with module('foo')
-      moduleName: 'jsTemplates'
+      moduleName: 'cms.templates'
     },
 
     // set up lcov coverage reporter

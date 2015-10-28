@@ -1,0 +1,35 @@
+<nav-bar
+    view="toolbar"
+    article="article">
+</nav-bar>
+
+<div class="container">
+  <div id="info-row">
+    <div id="alert-area">
+      <div
+          class="alert alert-danger errors-panel"
+          ng-show="errors">
+        <dl
+            ng-repeat="(field, errorList) in errors"
+            class="dl-horizontal small">
+          <dt>{{field}}</dt>
+          <dd ng-repeat="error in errorList">{{error}}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="edit-page row">
+    <div
+        id="content-wrapper"
+        class="container">
+      <content-edit-template-chooser
+          ng-if="article"
+          article="article">
+      </content-edit-template-chooser>
+    </div>
+    <div class="status-bar">
+      <span class="wordcount"></span>
+    </div>
+  </div>
+</div>

@@ -3,15 +3,22 @@
 angular.module('roles.edit', [
   'roles.edit.directive'
 ])
-  .config(function ($routeProvider, routes) {
-    $routeProvider
-    .when('/cms/app/roles/edit/:id/', {
-      controller: function ($routeParams, $scope, $window) {
-        $window.document.title = routes.CMS_NAMESPACE + ' | Edit Role';
+  .config([
+    '$routeProvider',
+    function ($routeProvider) {
+      $routeProvider
+        .when('/cms/app/roles/edit/:id/', {
+          controller: [
+            '$routeParams', '$scope', '$window', 'CMS_NAMESPACE',
+            function ($routeParams, $scope, $window, CMS_NAMESPACE) {
 
-        $scope.routeId = $routeParams.id;
-      },
-      template: '<roles-edit model-id="routeId"></roles-edit>',
-      reloadOnSearch: false
-    });
-  });
+              $window.document.title = CMS_NAMESPACE + ' | Edit Role';
+
+              $scope.routeId = $routeParams.id;
+            }
+          ],
+          template: '<roles-edit model-id="routeId"></roles-edit>',
+          reloadOnSearch: false
+        });
+    }
+  ]);

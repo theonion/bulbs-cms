@@ -12,7 +12,7 @@
             <a class="btn-default btn" ng-click="setDateToday()">Today</a>
             <a class="btn-default btn" ng-click="setDateTomorrow()">Tomorrow</a>
             <a class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-              <i class="glyphicon glyphicon-calendar"></i>
+              <i class="fa fa-calendar"></i>
             </a>
             <ul class="dropdown-menu pull-right calendar-dropdown" role="menu" aria-labelledby="dLabel">
               <datetimepicker
@@ -41,11 +41,11 @@
 </div>
 <div class="modal-footer">
   <button class="btn btn-success" ng-disabled="!dateValid" ng-click="chooseDatetime()">
-    <i class="glyphicon glyphicon-ok"></i>
+    <i class="fa fa-check"></i>
     Done
   </button>
   <button class="btn btn-danger" ng-click="$dismiss();">
-    <i class="glyphicon glyphicon-remove"></i>
+    <i class="fa fa-times"></i>
     Cancel
   </button>
 </div>

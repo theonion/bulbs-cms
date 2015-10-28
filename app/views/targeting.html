@@ -13,13 +13,13 @@
           <input name="value" type="text" placeholder="Value" class="form-control" ng-model="targetingArray[$index][1]"></td>
         <td>
           <button class="btn btn-danger pull-right" type="submit" ng-click="removeTargetingRow($index);">
-          <i class="glyphicon glyphicon-remove"></i></button></td>
+          <i class="fa fa-times"></i></button></td>
       </tr>
     </table>
   </div>
   <div class="panel-footer text-right">
     <button class="btn btn-primary add-targeting-button" type="submit" ng-click="addTargetingRow($index);">
-      <i class="glyphicon glyphicon-plus"></i> Add Row</button>
+      <i class="fa fa-plus"></i> Add Row</button>
     <save-button-old class="add-targeting-button" get-promise="save()" color-styling="btn-success">
     </save-button-old>
   </div>

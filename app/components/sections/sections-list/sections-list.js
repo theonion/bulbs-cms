@@ -6,19 +6,19 @@ angular.module('sections.list', [
   'listPage',
   'sections.settings'
 ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($routeProvider, COMPONENTS_URL) {
 
     $routeProvider
       .when('/cms/app/section/', {
         controller: function ($scope, $window, EXTERNAL_URL, SECTIONS_LIST_REL_PATH,
-            Section) {
+            Section, CMS_NAMESPACE) {
 
           // set title
-          $window.document.title = routes.CMS_NAMESPACE + ' | Section';
+          $window.document.title = CMS_NAMESPACE + ' | Section';
 
           $scope.modelFactory = Section;
           $scope.LIST_URL = EXTERNAL_URL + SECTIONS_LIST_REL_PATH;
         },
-        templateUrl: routes.COMPONENTS_URL + 'sections/sections-list/sections-list-page.html'
+        templateUrl: COMPONENTS_URL + 'sections/sections-list/sections-list-page.html'
       });
   });

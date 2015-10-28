@@ -3,13 +3,13 @@
 describe('ImageCropModalCtrl', function () {
 
   var $httpBackend, $rootScope, $controller,
-  modalInstance, BettyCropper, BettyImage, routes, $modal;
+  modalInstance, BettyCropper, BettyImage, PARTIALS_URL, $modal;
 
   beforeEach(function () {
     module('bulbsCmsApp');
     module('BettyCropper');
     module('BettyCropper.mockApi');
-    module('jsTemplates');
+    module('cms.templates');
 
     inject(function ($injector) {
       $httpBackend = $injector.get('$httpBackend');
@@ -18,10 +18,10 @@ describe('ImageCropModalCtrl', function () {
       $controller = $injector.get('$controller');
       BettyCropper = $injector.get('BettyCropper');
       BettyImage = $injector.get('BettyImage');
-      routes = $injector.get('routes');
+      PARTIALS_URL = $injector.get('PARTIALS_URL');
 
       modalInstance = $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'image-crop-modal.html'
+        templateUrl: PARTIALS_URL + 'image-crop-modal.html'
       });
 
     });
@@ -30,7 +30,7 @@ describe('ImageCropModalCtrl', function () {
   it('should initialize properly', function() {
     var $scope = $rootScope.$new();
 
-    var ImageCropModalCtrl = $controller(
+    $controller(
       'ImageCropModalCtrl',
       {
         $scope: $scope,
@@ -43,8 +43,9 @@ describe('ImageCropModalCtrl', function () {
         ratios: null
       }
     );
+
     $httpBackend.flush();
-    $scope.$digest();
+
     angular.element('.crop-image-container img').trigger('load');  // The jcrop api can only get set up when the image loads.
 
     expect($scope.ratios).toEqual(['1x1', '16x9']);
@@ -65,7 +66,7 @@ describe('ImageCropModalCtrl', function () {
   it('should be able to select ratios', function () {
     var $scope = $rootScope.$new();
 
-    var ImageCropModalCtrl = $controller(
+    $controller(
       'ImageCropModalCtrl',
       {
         $scope: $scope,
@@ -78,17 +79,11 @@ describe('ImageCropModalCtrl', function () {
         ratios: ['1x1']
       }
     );
+
     $httpBackend.flush();
-    $scope.$digest();
 
     expect($scope.ratios).toEqual(['1x1']);
   });
-
-    // it('should have a proper syle for 1x1', function () {
-    //   // console.log(ImageCropModalCtrl);
-    //   var styles = ImageCropModalCtrl.$scope.computeThumbStyle(scope.image, {height: 170, width: 170}, scope.image.selections['1x1']);
-    //   console.log(styles);
-    // });
 
   afterEach(function () {
     $httpBackend.verifyNoOutstandingExpectation();

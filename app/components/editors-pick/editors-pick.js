@@ -3,12 +3,12 @@
 angular.module('EditorsPick', [
   'customSearch'
 ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($routeProvider, COMPONENTS_URL, CMS_NAMESPACE) {
     $routeProvider
       .when('/cms/app/sod/', {
         controller: function ($scope, $window) {
           // set title
-          $window.document.title = routes.CMS_NAMESPACE + ' | SoD';
+          $window.document.title = CMS_NAMESPACE + ' | SoD';
 
           $scope.$watch('queryData', function () { console.log(arguments); });
 
@@ -46,7 +46,7 @@ angular.module('EditorsPick', [
           };
 
         },
-        templateUrl: routes.COMPONENTS_URL + 'editors-pick/editors-pick.html',
+        templateUrl: COMPONENTS_URL + 'editors-pick/editors-pick.html',
         reloadOnSearch: false
       });
   });

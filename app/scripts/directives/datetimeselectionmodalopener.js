@@ -5,7 +5,7 @@
  *  functionality is dependent on all dates being moment objects.
  */
 angular.module('bulbsCmsApp')
-  .directive('datetimeSelectionModalOpener', function ($modal, routes) {
+  .directive('datetimeSelectionModalOpener', function ($modal, PARTIALS_URL) {
     return {
       restrict: 'A',
       scope: {
@@ -19,7 +19,7 @@ angular.module('bulbsCmsApp')
         element.on('click', function () {
           modalInstance = $modal
             .open({
-              templateUrl: routes.PARTIALS_URL + 'modals/datetime-selection-modal.html',
+              templateUrl: PARTIALS_URL + 'modals/datetime-selection-modal.html',
               controller: 'DatetimeSelectionModalCtrl',
               scope: scope
             });

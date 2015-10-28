@@ -7,7 +7,7 @@ angular.module('customSearch.directive', [
   'customSearch.simpleContentSearch',
   'customSearch.group'
 ])
-  .directive('customSearch', function (routes) {
+  .directive('customSearch', function (COMPONENTS_URL) {
     return {
       controller: function (_, $scope, CustomSearchService) {
 
@@ -49,8 +49,9 @@ angular.module('customSearch.directive', [
       require: 'ngModel',
       restrict: 'E',
       scope: {
-        onUpdate: '&'
+        onUpdate: '&',
+        queryParams: '&'
       },
-      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search.html'
+      templateUrl: COMPONENTS_URL + 'custom-search/custom-search.html'
     };
   });

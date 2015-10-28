@@ -2,16 +2,10 @@
 
 angular.module('bulbs.api')
   .factory('ContributionRoleService', function (Restangular) {
-    return Restangular.withConfig(function (RestangularConfigurer) {
-      RestangularConfigurer.setBaseUrl('/cms/api/v1/contributions/');
-      RestangularConfigurer.setRequestSuffix('/');
-    }).service('role');
+    return Restangular.service('contributions/role');
   })
   .factory('ContentReportingService', function (Restangular) {
-    return Restangular.withConfig(function (RestangularConfigurer) {
-      RestangularConfigurer.setBaseUrl('/cms/api/v1/contributions/');
-      RestangularConfigurer.setRequestSuffix('/');
-    }).service('contentreporting');
+    return Restangular.service('contributions/contentreporting');
   })
   .factory('FreelancePayReportingService', function(Restangular, moment) {
     return Restangular.withConfig(function (RestangularConfigurer) {
@@ -36,8 +30,5 @@ angular.module('bulbs.api')
       return obj;
     });
 
-    return Restangular.withConfig(function (RestangularConfigurer) {
-      RestangularConfigurer.setBaseUrl('/cms/api/v1/contributions/');
-      RestangularConfigurer.setRequestSuffix('/');
-    }).service('reporting');
+    return Restangular.service('contributions/reporting');
   });

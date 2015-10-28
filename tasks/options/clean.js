@@ -10,11 +10,11 @@ module.exports = {
     files: [{
       dot: true,
       src: [
-        '.tmp',
-        config.paths.dist + '/*',
-        '!' + config.paths.dist + '/.git*'
+        config.paths.tmp(),
+        config.paths.dist('*'),
+        '!' + config.paths.dist('.git*')
       ]
     }]
   },
-  server: '.tmp'
+  server: config.paths.tmp()
 };

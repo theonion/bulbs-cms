@@ -406,6 +406,11 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         body: 'This article has a really long title.',
         client_pixel: null,
         sponsor_name: null
+      }, {
+        id: 12,
+        polymorphic_ctype: 'broken_polymorphic_ctype',
+        title: 'Broken polymorphic_ctype',
+        slug: 'broken-polymorphic_ctype'
       }]
     },
     'things.list': [

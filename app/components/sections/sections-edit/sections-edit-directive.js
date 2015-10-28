@@ -11,9 +11,9 @@ angular.module('sections.edit.directive', [
   'sections.settings',
   'topBar'
 ])
-  .directive('sectionsEdit', function (routes) {
+  .directive('sectionsEdit', function (COMPONENTS_URL) {
     return {
-      controller: function (_, $location, $q, $scope, EXTERNAL_URL,
+      controller: function (_, $location, $q, $scope, $window, EXTERNAL_URL,
           SECTIONS_LIST_REL_PATH, Section) {
 
         $scope.LIST_URL = EXTERNAL_URL + SECTIONS_LIST_REL_PATH;
@@ -37,10 +37,14 @@ angular.module('sections.edit.directive', [
           }
         };
 
-        $scope.$on('$destroy', function() {
-          // ensure even is cleaned up when we leave
+        $scope.$on('$destroy', function () {
+          // ensure event is cleaned up when we leave
           delete window.onbeforeunload;
         });
+
+        $scope.preview = function () {
+          $window.open('//' + $scope.LIST_URL + $scope.model.slug);
+        };
 
         $scope.saveModel = function () {
           var promise;
@@ -68,6 +72,6 @@ angular.module('sections.edit.directive', [
       scope: {
         getModelId: '&modelId'
       },
-      templateUrl: routes.COMPONENTS_URL + 'sections/sections-edit/sections-edit.html'
+      templateUrl: COMPONENTS_URL + 'sections/sections-edit/sections-edit.html'
     };
   });

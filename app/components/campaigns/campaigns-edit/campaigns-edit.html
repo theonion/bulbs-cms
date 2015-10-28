@@ -37,12 +37,12 @@
                   datetime-selection-modal-opener
                   ng-model="model.startDate"
                   modal-title="Campaign Start Date">
-                <i class="glyphicon glyphicon-calendar"></i>
+                <i class="fa fa-calendar"></i>
               </button>
               <button
                   class="btn btn-danger"
                   ng-click="model.startDate = null;">
-                <i class="glyphicon glyphicon-remove"></i>
+                <i class="fa fa-times"></i>
               </button>
             </span>
           </div>
@@ -73,10 +73,10 @@
                   datetime-selection-modal-opener
                   ng-model="model.endDate"
                   modal-title="Campaign End Date">
-                <i class="glyphicon glyphicon-calendar"></i>
+                <i class="fa fa-calendar"></i>
               </button>
               <button class="btn btn-danger" ng-click="model.endDate = null;">
-                <i class="glyphicon glyphicon-remove"></i>
+                <i class="fa fa-times"></i>
               </button>
             </span>
           </div>
@@ -120,11 +120,11 @@
       <div class="row col-md-12" ng-repeat="pixel in model.pixels">
         <campaigns-edit-sponsor-pixel model="pixel" class="pixel"></campaigns-edit-sponsor-pixel>
         <button class="btn btn-danger" ng-click="deletePixel(pixel)">
-          <i class="glyphicon glyphicon-remove"></i>
+          <i class="fa fa-times"></i>
         </button>
       </div>
       <div class="row col-md-12">
-        <button ng-click="addPixel()" class="add-pixel"><i class="glyphicon glyphicon-plus-sign"></i> Add Another Pixel</button>
+        <button ng-click="addPixel()" class="add-pixel"><i class="fa fa-plus-circle"></i> Add Another Pixel</button>
       </div>
     </div>
   </div>

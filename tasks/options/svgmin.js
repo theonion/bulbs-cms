@@ -9,9 +9,9 @@ module.exports = {
   dist: {
     files: [{
       expand: true,
-      cwd: config.paths.app + '/images',
+      cwd: config.paths.app('images'),
       src: '{,*/}*.svg',
-      dest: config.paths.dist + '/images'
+      dest: config.paths.dist('images')
     }]
   }
 };

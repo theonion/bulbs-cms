@@ -3,15 +3,21 @@
 angular.module('lineItems.edit', [
   'lineItems.edit.directive'
 ])
-  .config(function ($routeProvider, routes) {
-    $routeProvider
-    .when('/cms/app/line-items/edit/:id/', {
-      controller: function ($routeParams, $scope, $window) {
-        $window.document.title = routes.CMS_NAMESPACE + ' | Edit Line Item';
+  .config([
+    '$routeProvider',
+    function ($routeProvider) {
+      $routeProvider
+        .when('/cms/app/line-items/edit/:id/', {
+          controller: [
+            '$routeParams', '$scope', '$window', 'CMS_NAMESPACE',
+            function ($routeParams, $scope, $window, CMS_NAMESPACE) {
+              $window.document.title = CMS_NAMESPACE + ' | Edit Line Item';
 
-        $scope.routeId = $routeParams.id;
-      },
-      template: '<line-items-edit id="routeId"></line-items-edit>',
-      reloadOnSearch: false
-    });
-  });
+              $scope.routeId = $routeParams.id;
+            }
+          ],
+          template: '<line-items-edit id="routeId"></line-items-edit>',
+          reloadOnSearch: false
+        });
+    }
+  ]);

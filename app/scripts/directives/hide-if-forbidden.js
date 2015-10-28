@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('hideIfForbidden', function ($http) {
+  .directive('hideIfForbidden', function ($http, CmsConfig) {
     function hideElement(element) {
       element.addClass('hidden');
     }
@@ -11,7 +11,7 @@ angular.module('bulbsCmsApp')
       link: function postLink(scope, element, attrs) {
         $http({
           method: 'OPTIONS',
-          url: attrs.optionsUrl,
+          url: CmsConfig.buildBackendApiUrl(attrs.optionsUrl),
           noPermissionIntercept: true
         }).success(function (data, status) {
           //I guess 403s aren't errors? I dont know.

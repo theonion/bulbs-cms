@@ -15,9 +15,9 @@ module.exports = {
     },
     files: [{
       expand: true,
-      cwd: config.paths.dist,
+      cwd: config.paths.dist(),
       src: ['*.html', 'views/{,*/}*.html'],
-      dest: config.paths.dist
+      dest: config.paths.dist()
     }]
   }
 };

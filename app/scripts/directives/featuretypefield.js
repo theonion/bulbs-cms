@@ -1,9 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('featuretypeField', function (routes, IfExistsElse, ContentFactory, Raven, $) {
+  .directive('featuretypeField', function (PARTIALS_URL, IfExistsElse, ContentFactory,
+      Raven, $, CmsConfig) {
     return {
-      templateUrl: routes.PARTIALS_URL + 'textlike-autocomplete-field.html',
+      templateUrl: PARTIALS_URL + 'textlike-autocomplete-field.html',
       restrict: 'E',
       scope: {
         article: '=',
@@ -14,7 +15,7 @@ angular.module('bulbsCmsApp')
         scope.name = 'feature_type';
         scope.label = 'Feature Type';
         scope.placeholder = 'Feature Type';
-        scope.resourceUrl = '/cms/api/v1/things/?type=feature_type&q=';
+        scope.resourceUrl = CmsConfig.buildBackendApiUrl('things/?type=feature_type&q=');
 
         scope.$watch('article.feature_type', function () {
           scope.model = scope.article.feature_type;
@@ -31,10 +32,20 @@ angular.module('bulbsCmsApp')
               type: 'feature_type',
               q: fVal
             }),
-            {name: fVal},
-            function (ft) { scope.article.feature_type = ft.name; $('#feature-type-container').removeClass('newtag'); },
-            function (value) { scope.article.feature_type = value.name; $('#feature-type-container').addClass('newtag'); },
-            function (data, status) { Raven.captureMessage('Error Adding Feature Type', {extra: data}); }
+            {
+              name: fVal
+            },
+            function (ft) {
+              scope.article.feature_type = ft.name;
+              $('#feature-type-container').removeClass('newtag');
+            },
+            function (value) {
+              scope.article.feature_type = value.name;
+              $('#feature-type-container').addClass('newtag');
+            },
+            function (data, status) {
+              Raven.captureMessage('Error Adding Feature Type', {extra: data});
+            }
           );
         };
 

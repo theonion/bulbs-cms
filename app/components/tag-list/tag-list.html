@@ -1,0 +1,8 @@
+<ul>
+  <li
+      ng-repeat="item in items"
+      ng-click="remove(item)">
+    <span>{{ itemDisplayFormatter({item: item}) }}</span>
+    <i class='fa fa-times'></i>
+  </li>
+</ul>

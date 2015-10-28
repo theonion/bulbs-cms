@@ -1,11 +1,11 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('cmsNotifyContainer', function (routes) {
+  .directive('cmsNotifyContainer', function (PARTIALS_URL) {
     return {
       restrict: 'E',
       scope: {},
-      templateUrl: routes.PARTIALS_URL + 'cms-notify-container.html',
+      templateUrl: PARTIALS_URL + 'cms-notify-container.html',
       controller: 'CmsNotifyContainerCtrl'
     };
   });

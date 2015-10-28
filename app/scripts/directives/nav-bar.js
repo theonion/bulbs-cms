@@ -1,21 +1,30 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('navBar', function (routes, navbar_options, CurrentUser) {
-    return {
-      restrict: 'E',
-      scope: false,
-      templateUrl: function (tElement, tAttrs) {
-        // load navbar view template
-        if (navbar_options[tAttrs.view]) {
-          return routes.DIRECTIVE_PARTIALS_URL + navbar_options[tAttrs.view] + '.html';
-        } else {
-          return routes.PARTIALS_URL + tAttrs.view + '.html';
+  .directive('navBar', [
+    'CmsConfig', 'PARTIALS_URL', 'CurrentUser',
+    function (CmsConfig, PARTIALS_URL, CurrentUser) {
+      var defaultView = PARTIALS_URL + 'nav.html';
+
+      return {
+        controller: 'ContentworkflowCtrl',
+        restrict: 'E',
+        scope: false,
+        templateUrl: function (tElement, tAttrs) {
+          var template = defaultView;
+          if ('view' in tAttrs) {
+            try {
+              template = CmsConfig.getToolbarTemplateUrl(tAttrs.view);
+            } catch (e) {
+              console.error(e);
+            }
+          }
+          return template;
+        },
+        link: function (scope) {
+          scope.NAV_LOGO = CmsConfig.getLogoUrl();
+          scope.current_user = CurrentUser;
         }
-      },
-      link: function (scope) {
-        scope.NAV_LOGO = routes.NAV_LOGO;
-        scope.current_user = CurrentUser;
-      }
-    };
-  });
+      };
+    }
+  ]);

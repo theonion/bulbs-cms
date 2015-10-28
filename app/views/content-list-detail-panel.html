@@ -8,11 +8,70 @@
   <div class="pull-right col-sm-9 col-xs-12">
     <div class="pull-right col-xs-5 col-med-7 col-lg-3">
       <h6>Actions</h6>
-      <div class="form-group" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/"><a class="form-control btn btn-success" href="/cms/app/edit/{{article.id}}">Edit article&nbsp;&nbsp;<i class="fa fa-pencil"></i></a></div>
-      <div class="form-group"><a class="form-control btn btn-primary" ng-show="article.id > -1" target="_blank" href="/r/{{article.id}}">Preview&nbsp;&nbsp;<i class="fa fa-share"></i></a></div>
-      <div class="form-group" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/publish/"><a class="form-control btn btn-primary" ng-show="article.id > -1" ng-controller="ContentworkflowCtrl" ng-click="pubTimeModal(article);">Edit publish time&nbsp;&nbsp;<i class="fa fa-calendar"></i></a></div>
-      <div class="form-group" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/publish/"><save-button-old class="form-control" color-styling="btn-warning" ng-show="article.published" ng-controller="UnpublishCtrl" get-promise="unpublish()" on-save="unpublishCbk(promise)" confirm-click-with="Are you sure you want to unpublish this article?" config="unpubButton"></save-button-old></div>
-      <div class="form-group" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/trash/"><button ng-controller="ContentworkflowCtrl" class="form-control btn btn-danger" role="button" ng-hide="article.published" ng-click="trashContentModal(article.id);">Delete&nbsp;&nbsp;<i class="fa fa-trash"></i></button></div></div>
+      <div
+          class="form-group"
+          hide-if-forbidden
+          options-url="{{'content/' + article.id + '/'}}">
+        <a
+            class="form-control btn btn-success"
+            href="/cms/app/edit/{{article.id}}">
+          <span>Edit article&nbsp;&nbsp;</span>
+          <i class="fa fa-pencil"></i>
+        </a>
+      </div>
+      <div class="form-group">
+        <a
+            class="form-control btn btn-primary"
+            ng-show="article.id > -1"
+            target="_blank"
+            backend-href="/r/{{ article.id }}">
+          <span>Preview&nbsp;&nbsp;</span>
+          <i class="fa fa-share"></i>
+        </a>
+      </div>
+      <div
+          class="form-group"
+          hide-if-forbidden
+          options-url="{{'content/' + article.id + '/publish/'}}">
+        <a
+            class="form-control btn btn-primary"
+            ng-show="article.id > -1"
+            ng-controller="ContentworkflowCtrl"
+            ng-click="pubTimeModal(article);">
+          <span>Edit publish time&nbsp;&nbsp;</span>
+          <i class="fa fa-calendar"></i>
+        </a>
+      </div>
+      <div
+          class="form-group"
+          hide-if-forbidden
+          options-url="{{'content/' + article.id + '/publish/'}}">
+        <save-button-old
+            class="form-control"
+            color-styling="btn-warning"
+            ng-show="article.published"
+            ng-controller="UnpublishCtrl"
+            get-promise="unpublish()"
+            on-save="unpublishCbk(promise)"
+            confirm-click-with="Are you sure you want to unpublish this article?"
+            config="unpubButton">
+        </save-button-old>
+      </div>
+      <div
+          class="form-group"
+          hide-if-forbidden
+          options-url="{{'content/' + article.id + '/trash/'}}">
+        <button
+            ng-controller="ContentworkflowCtrl"
+            class="form-control btn btn-danger"
+            role="button"
+            ng-hide="article.published"
+            ng-click="trashContentModal(article.id);">
+          <span>Delete&nbsp;&nbsp;</span>
+          <i class="fa fa-trash-o"></i>
+        </button>
+      </div>
+    </div>
 
     <dl class="pull-left col-xs-7 col-med-4 col-lg-9">
       <dt>Status</dt>

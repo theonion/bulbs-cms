@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('bulbsAutocomplete', function ($http, $location, $compile, $timeout, $, Login, Raven) {
+  .directive('bulbsAutocomplete', function ($http, $location, $compile, $timeout,
+      $, Raven, CmsConfig) {
 
     var autocomplete_dropdown_template =
       '<div class="autocomplete dropdown" ng-show="autocomplete_list">' +

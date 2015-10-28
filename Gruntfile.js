@@ -30,33 +30,15 @@ module.exports = function (grunt) {
     // run task list
     grunt.task.run([
       'clean:server',
+      'ngtemplates:tmp',
       'wiredep',
       'concurrent:server',
       'injector:less_components',
-      'less',
-      'autoprefixer',
-      'injector:local_dependencies',
-      'karma:ci',
-      'jshint:all',
-      'connect:livereload',
-      'watch:livereload'
-    ]);
-  });
-
-  grunt.registerTask('serve-no-test', function (target) {
-
-    if (target === 'dist') {
-      // use built files in dist instead of raw files
-      return grunt.task.run(['build', 'connect:dist:keepalive']);
-    }
-
-    // run task list
-    grunt.task.run([
-      'clean:server',
-      'wiredep',
-      'concurrent:server',
-      'injector:less_components',
-      'less',
+      'less:project_styles',
+      'copy:static_tmp',
+      'copy:font_awesome_fonts_tmp',
+      'copy:font_awesome_less_tmp_styles',
+      'less:font_awesome_styles',
       'autoprefixer',
       'injector:local_dependencies',
       'jshint:all',
@@ -87,9 +69,11 @@ module.exports = function (grunt) {
     'shell:bower_install',
     'shell:bower_update',
     'wiredep',
-    'ngtemplates',
+    'ngtemplates:dist',
     'injector:less_components',
-    'less',
+    'less:project_styles',
+    'copy:font_awesome_less_tmp_styles',
+    'less:font_awesome_styles',
     'injector:local_dependencies',
     'useminPrepare',
     'concurrent:dist',
@@ -98,9 +82,7 @@ module.exports = function (grunt) {
     'ngmin',
     'copy:dist',
     'copy:jcropGif',
-    'copy:bootstrapFonts',
-    'copy:fontawesome',
-    'copy:fontawesomeCSS',
+    'copy:font_awesome_fonts_dist',
     'copy:zeroclipboard',
     'cdnify',
     'cssmin',

@@ -10,8 +10,8 @@ module.exports = {
     files: [{
       expand: true,
       dot: true,
-      cwd: config.paths.app,
-      dest: config.paths.dist,
+      cwd: config.paths.app(),
+      dest: config.paths.dist(),
       src: [
         '*.{ico,png,txt}',
         '.htaccess',
@@ -22,44 +22,62 @@ module.exports = {
     }, {
       expand: true,
       cwd: '.tmp/images',
-      dest: config.paths.dist + '/images',
+      dest: config.paths.dist('images'),
       src: ['generated/*']
     }]
   },
+  static_tmp: {
+    expand: true,
+    cwd: config.paths.app('mocks'),
+    dest: config.paths.tmp('static'),
+    src: 'inline-objects.json'
+  },
   styles: {
     expand: true,
-    cwd: config.paths.app,
-    dest: '.tmp/styles/',
+    cwd: config.paths.app(),
+    dest: config.paths.tmp('styles/'),
     src: '{,*/}*.css'
   },
   jcropGif: {
     expand: true,
-    cwd: config.paths.app + '/bower_components/jcrop/css',
-    dest: config.paths.dist + '/styles/',
+    cwd: config.paths.app('bower_components/jcrop/css'),
+    dest: config.paths.dist('styles/'),
     src: 'Jcrop.gif'
   },
   bootstrapFonts: {
     expand: true,
-    cwd: config.paths.app + '/bower_components/bootstrap/dist/fonts',
-    dest: config.paths.dist + '/fonts/',
+    cwd: config.paths.app('bower_components/bootstrap/dist/fonts'),
+    dest: config.paths.dist('fonts/'),
     src: ['glyphicons-halflings-regular.*', 'glyphicons-halflings-regular.woff2']
   },
-  fontawesome: {
+  font_awesome_fonts_tmp: {
     expand: true,
-    cwd: config.paths.app + '/bower_components/font-awesome/fonts',
-    dest: config.paths.dist + '/fonts/',
+    cwd: config.paths.app('bower_components/font-awesome/fonts'),
+    dest: config.paths.tmp('static/'),
     src: ['fontawesome-webfont.*']
   },
-  fontawesomeCSS: {  // This is a hack for now. FontAwesome REALLY doesn't like getting minified, I guess.
+  font_awesome_fonts_dist: {
     expand: true,
-    cwd: config.paths.app + '/bower_components/font-awesome/css',
-    dest: config.paths.dist + '/styles/',
-    src: ['font-awesome.min.css']
+    cwd: config.paths.app('bower_components/font-awesome/fonts'),
+    dest: config.paths.dist('fonts/'),
+    src: ['fontawesome-webfont.*']
+  },
+  // font awesome with our custom overrides
+  font_awesome_less_tmp_styles: {
+    expand: true,
+    flatten: true,
+    cwd: config.paths.app(),
+    dest: config.paths.tmp('font-awesome-less/'),
+    src: [
+      'styles/font-awesome/variables.less',
+      'bower_components/font-awesome/less/*.less',
+      '!bower_components/font-awesome/less/variables.less'
+    ]
   },
   zeroclipboard: {
     expand: true,
-    cwd: config.paths.app + '/bower_components/zeroclipboard/dist',
-    dest: config.paths.dist + '/swf/',
+    cwd: config.paths.app('bower_components/zeroclipboard/dist'),
+    dest: config.paths.dist('swf/'),
     src: ['ZeroClipboard.swf']
   }
 };

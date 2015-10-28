@@ -1,0 +1,21 @@
+<div>
+  <div class="col-sm-12">
+    <label for="ac-{{ uuid }}">Authors</label>
+  </div>
+  <div class="col-sm-4 form-group">
+    <autocomplete-basic
+        class="form-control"
+        item-display-formatter="item.displayName()"
+        on-select="addAuthor(selection.value)"
+        input-id="ac-{{ uuid }}"
+        input-placeholder="Search authors..."
+        search-function="searchAuthors">
+    </autocomplete-basic>
+  </div>
+  <div class="col-sm-8">
+    <tag-list
+        items="article.authors"
+        item-display-formatter="item | userDisplay">
+    </tag-list>
+  </div>
+</div>

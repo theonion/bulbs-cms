@@ -1,13 +1,12 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ContributionsCtrl', function (
-    $scope, $routeParams, $http, $window,
-    $location, $timeout, $compile, $q, $modal,
-    _, routes, ContributionRoleService, ContentService)
+  .controller('ContributionsCtrl', function ($scope, $routeParams, $http, $window,
+    $location, $timeout, $compile, $q, $modal, _, ContributionRoleService, ContentService,
+    CmsConfig)
   {
 
-    $scope.NAV_LOGO = routes.NAV_LOGO;
+    $scope.NAV_LOGO = CmsConfig.getLogoUrl();
     $scope.contentId = parseInt($routeParams.id, 10);
     $scope.paymentType = '';
     $scope.contributions = [];
@@ -84,14 +83,14 @@ angular.module('bulbsCmsApp')
 
     function save() {
       // I know, I'm not supposed to do DOM manipulation in controllers. TOO BAD.
-      angular.element('#save-btn').html('<i class="glyphicon glyphicon-refresh fa-spin"></i> Saving');
+      angular.element('#save-btn').html('<i class="fa fa-refresh fa-spin"></i> Saving');
       $scope.contributions.save($scope.contributions).then(function (contributions) {
         angular.element('#save-btn').addClass('btn-success').removeClass('btn-danger');
-        angular.element('#save-btn').html('<i class="glyphicon glyphicon-floppy-disk"></i> Save</button>');
+        angular.element('#save-btn').html('<i class="fa fa-floppy-o"></i> Save</button>');
         $scope.clean = true;
       }, function(res) {
         angular.element('#save-btn').addClass('btn-danger').removeClass('btn-success');
-        angular.element('#save-btn').html('<i class="glyphicon glyphicon-remove"></i> Error</button>');
+        angular.element('#save-btn').html('<i class="fa fa-times"></i> Error</button>');
       });
     }
 

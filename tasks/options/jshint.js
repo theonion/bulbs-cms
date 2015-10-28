@@ -12,9 +12,9 @@ module.exports = {
   },
   all: [
     'Gruntfile.js',
-    config.paths.app + '/components/**/*.js',
-    config.paths.app + '/shared/**/*.js',
-    config.paths.app + '/scripts/{,*/}*.js'
+    config.paths.app('components/**/*.js'),
+    config.paths.app('shared/**/*.js'),
+    config.paths.app('scripts/{,*/}*.js')
   ],
   test: {
     options: {

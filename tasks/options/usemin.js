@@ -6,9 +6,9 @@
 var config = require('../config');
 
 module.exports = {
-  html: [config.paths.dist + '/{,*/}*.html'],
-  css: [config.paths.dist + '{,*/}*.css'],
+  html: config.paths.dist('{,*/}*.html'),
+  css: config.paths.dist('{,*/}*.css'),
   options: {
-    assetsDirs: [config.paths.dist]
+    assetsDirs: [config.paths.dist()]
   }
 };

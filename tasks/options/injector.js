@@ -12,11 +12,11 @@ module.exports = {
   },
   less_components: {
     files: [{
-      dest: config.paths.app + '/styles/_components.less',
-      src: [config.paths.app + '/components/**/*.less']
+      dest: config.paths.app('styles/_components.less'),
+      src: config.paths.app('components/**/*.less')
     }, {
-      dest: config.paths.app + '/styles/_shared.less',
-      src: [config.paths.app + '/shared/**/*.less'],
+      dest: config.paths.app('styles/_shared.less'),
+      src: config.paths.app('shared/**/*.less'),
     }],
     options: {
       endtag: '// endinjector:less_components',
@@ -32,16 +32,16 @@ module.exports = {
   },
   local_dependencies: {
     files: [{
-      dest: config.paths.app + '/index.html', 
+      dest: config.paths.app('index.html'),
       src: [
-        '.tmp/styles/*.css',
-        config.paths.app + '/components/**/*.js',
-        config.paths.app + '/shared/**/*.js',
-        config.paths.app + '/scripts/directives/*.js',
-        config.paths.app + '/scripts/directives/autocomplete/*.js',
-        config.paths.app + '/scripts/controllers/*.js',
-        config.paths.app + '/scripts/services/*.js',
-        config.paths.app + '/scripts/filters/*.js',
+        config.paths.tmp('styles/*.css'),
+        config.paths.app('components/**/*.js'),
+        config.paths.app('shared/**/*.js'),
+        config.paths.app('scripts/directives/*.js'),
+        config.paths.app('scripts/directives/autocomplete/*.js'),
+        config.paths.app('scripts/controllers/*.js'),
+        config.paths.app('scripts/services/*.js'),
+        config.paths.app('scripts/filters/*.js'),
         '!**/*.tests.js'
       ],
     }],

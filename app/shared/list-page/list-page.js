@@ -6,7 +6,7 @@ angular.module('listPage', [
   'copyButton',
   'lodash'
 ])
-  .directive('listPage', function (routes) {
+  .directive('listPage', function (SHARED_URL) {
     return {
       controller: function (_, $scope, $location, $parse) {
         $scope.name = $scope.modelFactory.identity();
@@ -128,6 +128,6 @@ angular.module('listPage', [
         searchParameter: '@',
         toolCopyContent: '@'
       },
-      templateUrl: routes.SHARED_URL + 'list-page/list-page.html'
+      templateUrl: SHARED_URL + 'list-page/list-page.html'
     };
   });

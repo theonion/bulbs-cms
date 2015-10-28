@@ -50,13 +50,13 @@
       ng-repeat="value in controllerService.groupsConditionsValuesList(groupIndex, conditionIndex)">
     <span>{{ value.name }}</span>
     <button ng-click="controllerService.groupsConditionsValuesRemove(groupIndex, conditionIndex, $index); onUpdate()">
-      <i class="glyphicon glyphicon-remove"></i>
+      <i class="fa fa-times"></i>
     </button>
   </div>
 
   <button
       class="condition-remove btn btn-xs btn-danger"
       ng-click="remove()">
-    <i class="glyphicon glyphicon-remove"></i>
+    <i class="fa fa-times"></i>
   </button>
 </div>
