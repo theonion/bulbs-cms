@@ -14,6 +14,9 @@ angular.module('apiServices.customSearch.factory', [
       CustomSearchSettings) {
 
     var CustomSearch = restmod.model(CustomSearchSettings.searchEndpoint).mix({
+      $config: {
+        jsonRootSingle: 'results'
+      },
       $hooks: {
         'before-save': function (_req) {
           _req.url += '/?page=' + _req.data.page;
