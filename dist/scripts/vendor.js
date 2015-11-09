@@ -107450,15 +107450,15 @@ angular.module('ui.sortable', [])
 
 /**
  * Angular inflection library
- * @version v0.2.0 - 2014-08-22
+ * @version v0.2.3 - 2015-11-03
  * @link https://github.com/platanus/angular-inflector
  * @author Ignacio Baixas <ignacio@platan.us>
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
-!function(a){"use strict";a.module("platanus.inflector",[]).provider("inflector",[function(){function a(a,b,c){if(-1===c.indexOf(a.toLowerCase()))for(var d,e=0;d=b[e++];)if(a.match(d[0]))return a.replace(d[0],d[1]);return a}var b="en",c={en:{uncountable:["music","art","love","happiness","advice","furniture","luggage","sugar","butter","water","electricity","gas","power","currency","equipment","information","rice","money","species","series","fish","sheep","moose","deer","news"],plural:[[new RegExp("(m)an$","gi"),"$1en"],[new RegExp("(pe)rson$","gi"),"$1ople"],[new RegExp("(child)$","gi"),"$1ren"],[new RegExp("^(ox)$","gi"),"$1en"],[new RegExp("(ax|test)is$","gi"),"$1es"],[new RegExp("(octop|vir)us$","gi"),"$1i"],[new RegExp("(alias|status)$","gi"),"$1es"],[new RegExp("(bu)s$","gi"),"$1ses"],[new RegExp("(buffal|tomat|potat)o$","gi"),"$1oes"],[new RegExp("([ti])um$","gi"),"$1a"],[new RegExp("sis$","gi"),"ses"],[new RegExp("(?:([^f])fe|([lr])f)$","gi"),"$1$2ves"],[new RegExp("(hive)$","gi"),"$1s"],[new RegExp("([^aeiouy]|qu)y$","gi"),"$1ies"],[new RegExp("(x|ch|ss|sh)$","gi"),"$1es"],[new RegExp("(matr|vert|ind)ix|ex$","gi"),"$1ices"],[new RegExp("([m|l])ouse$","gi"),"$1ice"],[new RegExp("(quiz)$","gi"),"$1zes"],[new RegExp("s$","gi"),"s"],[new RegExp("$","gi"),"s"]],singular:[[new RegExp("(m)en$","gi"),"$1an"],[new RegExp("(pe)ople$","gi"),"$1rson"],[new RegExp("(child)ren$","gi"),"$1"],[new RegExp("([ti])a$","gi"),"$1um"],[new RegExp("((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$","gi"),"$1$2sis"],[new RegExp("(hive)s$","gi"),"$1"],[new RegExp("(tive)s$","gi"),"$1"],[new RegExp("(curve)s$","gi"),"$1"],[new RegExp("([lr])ves$","gi"),"$1f"],[new RegExp("([^fo])ves$","gi"),"$1fe"],[new RegExp("([^aeiouy]|qu)ies$","gi"),"$1y"],[new RegExp("(s)eries$","gi"),"$1eries"],[new RegExp("(m)ovies$","gi"),"$1ovie"],[new RegExp("(x|ch|ss|sh)es$","gi"),"$1"],[new RegExp("([m|l])ice$","gi"),"$1ouse"],[new RegExp("(bus)es$","gi"),"$1"],[new RegExp("(o)es$","gi"),"$1"],[new RegExp("(shoe)s$","gi"),"$1"],[new RegExp("(cris|ax|test)es$","gi"),"$1is"],[new RegExp("(octop|vir)i$","gi"),"$1us"],[new RegExp("(alias|status)es$","gi"),"$1"],[new RegExp("^(ox)en","gi"),"$1"],[new RegExp("(vert|ind)ices$","gi"),"$1ex"],[new RegExp("(matr)ices$","gi"),"$1ix"],[new RegExp("(quiz)zes$","gi"),"$1"],[new RegExp("s$","gi"),""]]}};return{registerLocale:function(a,b){c[a]=b},setLocale:function(a){b=a},$get:["$log",function(d){function e(a){a=a||b;var e=c[a];return e||d.warn("Invalid inflector locale "+a),e}return{camelize:function(a,b){return"string"!=typeof a?a:a.replace(/(?:^[-_\s]*|[-_\s]+)([A-Z\d])/gi,function(a,c,d){return b||0!==d?c.toUpperCase():c})},parameterize:function(a,b){return"string"!=typeof a?a:a.replace(/(?:[A-Z]+|[0-9]+)/g,function(a,c){return 0===c?a:(b||"-")+a}).toLowerCase()},dasherize:function(a,b){return a.replace(/[-_\s]+/g,b||"-")},singularize:function(b,c){var d=e(c);return d?a(b,d.singular,d.uncountable):b},pluralize:function(b,c){var d=e(c);return d?a(b,d.plural,d.uncountable):b}}}]}}])}(angular);
+!function(a){"use strict";a.module("platanus.inflector",[]).provider("inflector",[function(){function a(a,b,c){if(-1===c.indexOf(a.toLowerCase()))for(var d,e=0;b.length>e;)if(d=b[e++],a.match(d[0]))return a.replace(d[0],d[1]);return a}var b="en",c={en:{uncountable:["music","art","love","happiness","advice","furniture","luggage","sugar","butter","water","electricity","gas","power","currency","equipment","information","rice","money","species","series","fish","sheep","moose","deer","news"],plural:[[new RegExp("(m)an$","gi"),"$1en"],[new RegExp("(pe)rson$","gi"),"$1ople"],[new RegExp("(child)$","gi"),"$1ren"],[new RegExp("^(ox)$","gi"),"$1en"],[new RegExp("(ax|test)is$","gi"),"$1es"],[new RegExp("(octop|vir)us$","gi"),"$1i"],[new RegExp("(alias|status)$","gi"),"$1es"],[new RegExp("(bu)s$","gi"),"$1ses"],[new RegExp("(buffal|tomat|potat)o$","gi"),"$1oes"],[new RegExp("([ti])um$","gi"),"$1a"],[new RegExp("sis$","gi"),"ses"],[new RegExp("(?:([^f])fe|([lr])f)$","gi"),"$1$2ves"],[new RegExp("(hive)$","gi"),"$1s"],[new RegExp("([^aeiouy]|qu)y$","gi"),"$1ies"],[new RegExp("(x|ch|ss|sh)$","gi"),"$1es"],[new RegExp("(matr|vert|ind)ix|ex$","gi"),"$1ices"],[new RegExp("([m|l])ouse$","gi"),"$1ice"],[new RegExp("(quiz)$","gi"),"$1zes"],[new RegExp("s$","gi"),"s"],[new RegExp("$","gi"),"s"]],singular:[[new RegExp("(m)en$","gi"),"$1an"],[new RegExp("(pe)ople$","gi"),"$1rson"],[new RegExp("(child)ren$","gi"),"$1"],[new RegExp("([ti])a$","gi"),"$1um"],[new RegExp("((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$","gi"),"$1$2sis"],[new RegExp("(hive)s$","gi"),"$1"],[new RegExp("(tive)s$","gi"),"$1"],[new RegExp("(curve)s$","gi"),"$1"],[new RegExp("([lr])ves$","gi"),"$1f"],[new RegExp("([^fo])ves$","gi"),"$1fe"],[new RegExp("([^aeiouy]|qu)ies$","gi"),"$1y"],[new RegExp("(s)eries$","gi"),"$1eries"],[new RegExp("(m)ovies$","gi"),"$1ovie"],[new RegExp("(x|ch|ss|sh)es$","gi"),"$1"],[new RegExp("([m|l])ice$","gi"),"$1ouse"],[new RegExp("(bus)es$","gi"),"$1"],[new RegExp("(o)es$","gi"),"$1"],[new RegExp("(shoe)s$","gi"),"$1"],[new RegExp("(cris|ax|test)es$","gi"),"$1is"],[new RegExp("(octop|vir)i$","gi"),"$1us"],[new RegExp("(alias|status)es$","gi"),"$1"],[new RegExp("^(ox)en","gi"),"$1"],[new RegExp("(vert|ind)ices$","gi"),"$1ex"],[new RegExp("(matr)ices$","gi"),"$1ix"],[new RegExp("(quiz)zes$","gi"),"$1"],[new RegExp("s$","gi"),""]]}};return{registerLocale:function(a,b){c[a]=b},setLocale:function(a){b=a},$get:["$log",function(d){function e(a){a=a||b;var e=c[a];return e||d.warn("Invalid inflector locale "+a),e}return{camelize:function(a,b){return"string"!=typeof a?a:a.replace(/(?:^[-_\s]*|[-_\s]+)([A-Z\d])/gi,function(a,c,d){return b||0!==d?c.toUpperCase():c})},parameterize:function(a,b){return"string"!=typeof a?a:a.replace(/(?:[A-Z]+|[0-9]+)/g,function(a,c){return 0===c?a:(b||"-")+a}).toLowerCase()},dasherize:function(a,b){return a.replace(/[-_\s]+/g,b||"-")},singularize:function(b,c){var d=e(c);return d?a(b,d.singular,d.uncountable):b},pluralize:function(b,c){var d=e(c);return d?a(b,d.plural,d.uncountable):b}}}]}}])}(angular);
 /**
  * API Bound Models for AngularJS
- * @version v1.1.9 - 2015-05-07
+ * @version v1.1.11 - 2015-10-26
  * @link https://github.com/angular-platanus/restmod
  * @author Ignacio Baixas <ignacio@platan.us>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -107831,7 +107831,7 @@ RMModule.provider('restmod', [function() {
 
           if(arguments.length > 1) {
             model.mix(arraySlice.call(arguments, 1));
-            $log.warn('Passing mixins and difinitions in the model method will be deprecated in restmod 1.2, use restmod.model().mix() instead.');
+            $log.warn('Passing mixins and definitions in the model method will be deprecated in restmod 1.2, use restmod.model().mix() instead.');
           }
 
           return model;
@@ -108863,6 +108863,17 @@ RMModule.factory('RMRecordApi', ['RMUtils', function(Utils) {
     /**
      * @memberof RecordApi#
      *
+     * @description Checks whether a record is new or not
+     *
+     * @return {boolean} True if record is new.
+     */
+    $isNew: function() {
+      return this.$pk === undefined || this.$pk === null;
+    },
+
+    /**
+     * @memberof RecordApi#
+     *
      * @description Called the resource's scope $urlFor method to build the url for the record using the proper scope.
      *
      * By default the resource partial url is just its `$pk` property. This can be overriden to provide other routing approaches.
@@ -108870,7 +108881,7 @@ RMModule.factory('RMRecordApi', ['RMUtils', function(Utils) {
      * @return {string} The resource partial url
      */
     $buildUrl: function(_scope) {
-      return (this.$pk === undefined || this.$pk === null) ? null : Utils.joinUrl(_scope.$url(), this.$pk + '');
+      return this.$isNew() ? null : Utils.joinUrl(_scope.$url(), this.$pk + '');
     },
 
     /**
@@ -108923,9 +108934,12 @@ RMModule.factory('RMRecordApi', ['RMUtils', function(Utils) {
      * @return {RecordApi} this
      */
     $decode: function(_raw, _mask) {
+
+      Utils.assert(_raw && typeof _raw == 'object', 'Record $decode expected an object');
+
       // IDEA: let user override serializer
       this.$type.decode(this, _raw, _mask || Utils.READ_MASK);
-      if(this.$pk === undefined || this.$pk === null) this.$pk = this.$type.inferKey(_raw); // TODO: warn if key changes
+      if(this.$isNew()) this.$pk = this.$type.inferKey(_raw); // TODO: warn if key changes
       this.$dispatch('after-feed', [_raw]);
       return this;
     },
@@ -109058,8 +109072,9 @@ RMModule.factory('RMRecordApi', ['RMUtils', function(Utils) {
             .$dispatch('before-update', [request, !!_patch])
             .$dispatch('before-save', [request])
             .$send(request, function(_response) {
+              if(_response.data) this.$unwrap(_response.data);
+
               this
-                .$unwrap(_response.data)
                 .$dispatch('after-update', [_response, !!_patch])
                 .$dispatch('after-save', [_response]);
             }, function(_response) {
@@ -109077,7 +109092,7 @@ RMModule.factory('RMRecordApi', ['RMUtils', function(Utils) {
             .$dispatch('before-save', [request])
             .$dispatch('before-create', [request])
             .$send(request, function(_response) {
-              this.$unwrap(_response.data);
+              if(_response.data) this.$unwrap(_response.data);
 
               // reveal item (if not yet positioned)
               if(this.$scope.$isCollection && this.$position === undefined && !this.$preventReveal) {
@@ -109478,15 +109493,15 @@ RMModule.factory('RMBuilder', ['$injector', 'inflector', '$log', 'RMUtils', func
    */
   function Builder(_baseDsl) {
 
-    var mappings = {
-      init: ['attrDefault'],
-      mask: ['attrMask'],
-      ignore: ['attrMask'],
-      map: ['attrMap', 'force'],
-      decode: ['attrDecoder', 'param', 'chain'],
-      encode: ['attrEncoder', 'param', 'chain'],
-      'volatile': ['attrVolatile']
-    };
+    var mappings = [
+      { fun: 'attrDefault', sign: ['init'] },
+      { fun: 'attrMask', sign: ['ignore'] },
+      { fun: 'attrMask', sign: ['mask'] },
+      { fun: 'attrMap', sign: ['map', 'force'] },
+      { fun: 'attrDecoder', sign: ['decode', 'param', 'chain'] },
+      { fun: 'attrEncoder', sign: ['encode', 'param', 'chain'] },
+      { fun: 'attrVolatile', sign: ['volatile'] }
+    ];
 
     // DSL core functions.
 
@@ -109571,10 +109586,7 @@ RMModule.factory('RMBuilder', ['$injector', 'inflector', '$log', 'RMUtils', func
       extend: function(_name, _fun, _mapping) {
         if(typeof _name === 'string') {
           this[_name] = Utils.override(this[name], _fun);
-          if(_mapping) {
-            mappings[_mapping[0]] = _mapping;
-            _mapping[0] = _name;
-          }
+          if(_mapping) mappings.push({ fun: _name, sign: _mapping });
         } else Utils.extendOverriden(this, _name);
         return this;
       },
@@ -109600,18 +109612,15 @@ RMModule.factory('RMBuilder', ['$injector', 'inflector', '$log', 'RMUtils', func
        * @return {BuilderApi} self
        */
       attribute: function(_name, _description) {
-        var key, map, args, i;
-        for(key in _description) {
-          if(_description.hasOwnProperty(key)) {
-            map = mappings[key];
-            if(map) {
-              args = [_name, _description[key]];
-              for(i = 1; i < map.length; i++) {
-                args.push(_description[map[i]]);
-              }
-              args.push(_description);
-              this[map[0]].apply(this, args);
+        var i = 0, map;
+        while((map = mappings[i++])) {
+          if(_description.hasOwnProperty(map.sign[0])) {
+            var args = [_name];
+            for(var j = 0; j < map.sign.length; j++) {
+              args.push(_description[map.sign[j]]);
             }
+            args.push(_description);
+            this[map.fun].apply(this, args);
           }
         }
         return this;
@@ -109894,7 +109903,7 @@ RMModule.factory('RMBuilderRelations', ['$injector', 'inflector', '$log', 'RMUti
       if(_source || _url) this.attrMap(_attr, _source || _url);
 
       this.attrDecoder(_attr, function(_raw) {
-            this[_attr].$reset().$decode(_raw);
+            this[_attr].$reset().$decode(_raw || []);
           })
           .attrMask(_attr, Utils.WRITE_MASK)
           .attrMeta(_attr, { relation: 'has_many' });
@@ -109955,7 +109964,7 @@ RMModule.factory('RMBuilderRelations', ['$injector', 'inflector', '$log', 'RMUti
       if(_source || _url) this.attrMap(_attr, _source || _url);
 
       this.attrDecoder(_attr, function(_raw) {
-            this[_attr].$decode(_raw);
+            this[_attr].$decode(_raw || {}); // TODO: null _raw should clear the object properties
           })
           .attrMask(_attr, Utils.WRITE_MASK)
           .attrMeta(_attr, { relation: 'has_one' });
@@ -110542,7 +110551,8 @@ RMModule.factory('RMModelFactory', ['$injector', '$log', 'inflector', 'RMUtils',
         for(i = 0; (tmp = computes[i]); i++) {
           Object.defineProperty(self, tmp[0], {
             enumerable: true,
-            get: tmp[1]
+            get: tmp[1],
+            set: function() {}
           });
         }
       }
@@ -110957,6 +110967,8 @@ RMModule.factory('RMPackerCache', [function() {
 RMModule.factory('RMSerializer', ['$injector', 'inflector', '$filter', 'RMUtils', function($injector, inflector, $filter, Utils) {
 
   function extract(_from, _path) {
+    if(_from === null && _path.length > 1) return undefined;
+
     var node;
     for(var i = 0; _from && (node = _path[i]); i++) {
       _from = _from[node];
@@ -110984,9 +110996,10 @@ RMModule.factory('RMSerializer', ['$injector', 'inflector', '$filter', 'RMUtils'
         mappings = {},
         vol = {};
 
-    function isMasked(_name, _mask) {
+    function isMasked(_name, _mask, _ctx) {
       if(typeof _mask === 'function') return _mask(_name);
       var mask = masks[_name];
+      if(typeof mask === 'function') mask = mask.call(_ctx); // dynamic mask
       return (mask && (mask === true || mask.indexOf(_mask) !== -1));
     }
 
@@ -110999,7 +111012,7 @@ RMModule.factory('RMSerializer', ['$injector', 'inflector', '$filter', 'RMUtils'
       if(maps) {
         for(i = 0, l = maps.length; i < l; i++) {
           fullName = prefix + maps[i].path;
-          if(isMasked(fullName, _mask)) continue;
+          if(isMasked(fullName, _mask, _ctx)) continue;
 
           if(maps[i].map) {
             value = extract(_from, maps[i].map);
@@ -111035,7 +111048,7 @@ RMModule.factory('RMSerializer', ['$injector', 'inflector', '$filter', 'RMUtils'
 
           fullName = prefix + decodedName;
           // prevent masked or already mapped properties to be set
-          if(mapped[fullName] || isMasked(fullName, _mask)) continue;
+          if(mapped[fullName] || isMasked(fullName, _mask, _ctx)) continue;
 
           value = decodeProp(_from[key], fullName, _mask, _ctx);
           if(value !== undefined) _to[decodedName] = value; // ignore value if filter returns undefined
@@ -111047,7 +111060,7 @@ RMModule.factory('RMSerializer', ['$injector', 'inflector', '$filter', 'RMUtils'
       var filter = decoders[_name], result = _value;
 
       if(filter) {
-        result = filter.call(_ctx, _value);
+        result = filter.call(_ctx, _value, _mask);
       } else if(typeof _value === 'object') {
         // IDEA: make extended decoding/encoding optional, could be a little taxing for some apps
         if(isArray(_value)) {
@@ -111073,7 +111086,7 @@ RMModule.factory('RMSerializer', ['$injector', 'inflector', '$filter', 'RMUtils'
         if(_from.hasOwnProperty(key) && key[0] !== '$') {
           fullName = prefix + key;
           // prevent masked or already mapped properties to be copied
-          if(mapped[fullName] || isMasked(fullName, _mask)) continue;
+          if(mapped[fullName] || isMasked(fullName, _mask, _ctx)) continue;
 
           value = encodeProp(_from[key], fullName, _mask, _ctx);
           if(value !== undefined) {
@@ -111090,7 +111103,7 @@ RMModule.factory('RMSerializer', ['$injector', 'inflector', '$filter', 'RMUtils'
       if(maps) {
         for(var i = 0, l = maps.length; i < l; i++) {
           fullName = prefix + maps[i].path;
-          if(isMasked(fullName, _mask)) continue;
+          if(isMasked(fullName, _mask, _ctx)) continue;
 
           value = _from[maps[i].path];
           if(!maps[i].forced && value === undefined) continue;
@@ -111111,7 +111124,7 @@ RMModule.factory('RMSerializer', ['$injector', 'inflector', '$filter', 'RMUtils'
       var filter = encoders[_name], result = _value;
 
       if(filter) {
-        result = filter.call(_ctx, _value);
+        result = filter.call(_ctx, _value, _mask);
       } else if(_value !== null && typeof _value === 'object' && typeof _value.toJSON !== 'function') {
         // IDEA: make deep decoding/encoding optional, could be a little taxing for some apps
         if(isArray(_value)) {
@@ -111373,7 +111386,7 @@ RMModule.factory('DefaultPacker', ['restmod', 'inflector', 'RMPackerCache', func
   return restmod.mixin(function() {
     this.define('Model.unpack', function(_resource, _raw) {
       var name = null,
-          links = this.getProperty('jsonLinks', 'linked'),
+          links = this.getProperty('jsonLinks', 'included'),
           meta = this.getProperty('jsonMeta', 'meta');
 
       if(_resource.$isCollection) {
@@ -111670,7 +111683,7 @@ RMModule.factory('RMUtils', ['$log', function($log) {
 })(angular);
 /**
  * API Bound Models for AngularJS
- * @version v1.1.9 - 2015-05-07
+ * @version v1.1.11 - 2015-10-26
  * @link https://github.com/angular-platanus/restmod
  * @author Ignacio Baixas <ignacio@platan.us>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -112140,7 +112153,7 @@ angular.module('restmod.styles.drfPaged', [
 
       $hooks: {
         'before-request': function (_req) {
-          if (!_req.url.match(/\/\?/)) {
+          if (!_req.url.match(/\/$/)) {
             _req.url += '/';
           }
         },
