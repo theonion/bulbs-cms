@@ -35,7 +35,7 @@
     "angular-ui-sortable": "~0.13.3",
     "angular-restmod": "~1.1.8",
     "videohub-client-js": "theonion/videohub-client-js#0.1.8",
-    "restmod-style-drf-paged": "~0.0.2",
+    "restmod-style-drf-paged": "~0.0.6",
     "ng-clip": "~0.2.6"
   },
   "ignore": [
