@@ -112153,8 +112153,12 @@ angular.module('restmod.styles.drfPaged', [
 
       $hooks: {
         'before-request': function (_req) {
-          if (!_req.url.match(/\/$/)) {
-            _req.url += '/';
+          var urlParts = _req.url.split('?');
+          var path = urlParts[0];
+          var query = urlParts.length > 1 ? urlParts[1] : '';
+
+          if (!path.match(/\/$/)) {
+            _req.url = path + '/' + query;
           }
         },
         'before-fetch-many': function (_req) {
