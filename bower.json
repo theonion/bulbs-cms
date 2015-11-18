@@ -34,8 +34,8 @@
     "angular-uuid4": "~0.3.0",
     "angular-ui-sortable": "~0.13.3",
     "angular-restmod": "~1.1.8",
-    "videohub-client-js": "theonion/videohub-client-js#0.1.10",
-    "restmod-style-drf-paged": "~0.0.6",
+    "videohub-client-js": "theonion/videohub-client-js#0.2.0",
+    "restmod-style-drf-paged": "~0.1.0",
     "ng-clip": "~0.2.6"
   },
   "ignore": [
@@ -56,6 +56,6 @@
     "dist/styles/main.css"
   ],
   "resolutions": {
-    "lodash": "~3.1.0"
+    "lodash": "~3.6.0"
   }
 }
