@@ -113021,11 +113021,11 @@ angular.module('VideohubClient.api', [
       $extend: {
         Model: {
           $postSearch: function (params) {
-            // HACK : because endpoint is a POST
+            // HACK : because endpoint is a POST: need to use $create
             return VideoSearch.$create(params).$asPromise()
               .then(function (model) {
                 // return video model array
-                return model.$response.data.results;
+                return model.results;
               });
           }
         }
@@ -113034,6 +113034,8 @@ angular.module('VideohubClient.api', [
 
     var VideoSearch = restmod.model(searchEndpoint).mix(videohubMix, {
       $config: {
+        // HACK : because endpoint is a POST: need to trick packer into seeing
+        //  single root as results
         jsonRootSingle: 'results'
       },
       $hooks: {
