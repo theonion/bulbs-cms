@@ -107,6 +107,9 @@
           </tbody>
       </table>
     </div>
+    <div class="row">
+      <pagination max-size="10" total-items="contentData.totalItems" ng-model="pageNumber" items-per-page="20" ng-change="goToPage(page);" boundary-links="true"></pagination>
+    </div>
   </div>
 
 </div>
