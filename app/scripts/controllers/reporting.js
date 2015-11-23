@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ReportingCtrl', function ($scope, $window, $, $location, $filter, $interpolate, Login, routes, moment, ContributionReportingService, ContentReportingService, FreelancePayReportingService) {
+  .controller('ReportingCtrl', function ($http, $scope, $window, $, $location, $filter, $interpolate, Login, routes, moment, ContributionReportingService, ContentReportingService, FreelancePayReportingService) {
     $window.document.title = routes.CMS_NAMESPACE + ' | Reporting'; // set title
 
     $scope.userFilter = '';
@@ -84,7 +84,11 @@ angular.module('bulbsCmsApp')
     $scope.items = [];
     $scope.headings = [];
     $scope.orderOptions = [];
+    $scope.pageTotal = null;
     $scope.moreFilters = [];
+
+    $scope.pageNumber = 1;
+    $scope.nextPage = null;
 
     $scope.startOpen = false;
     $scope.endOpen = false;
@@ -156,30 +160,36 @@ angular.module('bulbsCmsApp')
     function loadReport(report, start, end, order) {
       $scope.items = [];
       var reportParams = {};
+      $scope.apiURL = report.downloadURL;
       $scope.downloadURL = report.downloadURL + '?format=csv';
       if (end) {
         var endParam = $filter('date')(end, 'yyyy-MM-dd');
         reportParams['end'] = endParam;
+        $scope.apiURL += ('&end=' + endParam);
         $scope.downloadURL += ('&end=' + endParam);
       }
 
       if (start) {
         var startParam = $filter('date')(start, 'yyyy-MM-dd');
         reportParams['start'] = startParam;
+        $scope.apiURL += ('&start=' + startParam);
         $scope.downloadURL += ('&start=' + startParam);
       }
 
       if (order) {
+        $scope.apiURL += ('&ordering=' + order.key);
         $scope.downloadURL += ('&ordering=' + order.key);
         reportParams['ordering'] = order.key;
       }
 
       if ($scope.publishedFilter) {
+        $scope.apiURL += ('&published=' + $scope.publishedFilter);
         $scope.downloadURL += ('&published=' + $scope.publishedFilter);
         reportParams['published'] = $scope.publishedFilter;
       }
 
       if ($scope.userFilter) {
+        $scope.apiURL += ('&staff=' + $scope.userFilter);
         $scope.downloadURL += ('&staff=' + $scope.userFilter);
         reportParams['staff'] = $scope.userFilter;
       }
@@ -187,18 +197,24 @@ angular.module('bulbsCmsApp')
       if ($scope.moreFilters) {
         for (var key in $scope.moreFilters) {
           if ($scope.moreFilters[key].type === 'authors') {
+            $scope.apiURL += ('&' + 'contributors=' + $scope.moreFilters[key].query);
             $scope.downloadURL += ('&' + 'contributors=' + $scope.moreFilters[key].query);
             reportParams['contributors'] = $scope.moreFilters[key].query;
           } else {
+            $scope.apiURL += ('&' + $scope.moreFilters[key].type + '=' + $scope.moreFilters[key].query);
             $scope.downloadURL += ('&' + $scope.moreFilters[key].type + '=' + $scope.moreFilters[key].query);
             reportParams[$scope.moreFilters[key].type] = $scope.moreFilters[key].query;
           }
         }
       }
 
-      report.service.getList(reportParams).then(function (data) {
+      $http({
+        method: 'GET',
+        url: $scope.apiURL
+      }).then(function (data) {
         $scope.items = [];
-        data.forEach(function (lineItem) {
+        $scope.pageTotal = data.data[0].count;
+        data.data[0].results.forEach(function (lineItem) {
           var item = [];
           report.headings.forEach(function (heading) {
             var exp = $interpolate('{{item.' + heading.expression + '}}');

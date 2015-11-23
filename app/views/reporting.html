@@ -1,5 +1,4 @@
 <nav-bar view="reportbar"></nav-bar>
-<h1>Please Kill Me</h1>
 <div class="wrapper container-fluid">
   <div class="container col-xs-offset-2 col-xs-8">
     <div class="row well">
@@ -14,7 +13,7 @@
                 ng-repeat="filter in publishedFilters"
                 ng-click="setPublishedFilter(filter.value)"
               >
-                {{ filter.name }} damn it
+                {{ filter.name }}
               </button>
             </div>
           </div>
@@ -107,9 +106,9 @@
               </tr>
           </tbody>
       </table>
-    </div>
-    <div class="row">
-      <pagination max-size="10" total-items="contentData.totalItems" ng-model="pageNumber" items-per-page="20" ng-change="goToPage(page);" boundary-links="true"></pagination>
+      <div class="row">
+        <pagination max-size="10" total-items="pageTotal" ng-model="pageNumber" items-per-page="20" ng-change="goToPage(page);" boundary-links="true"></pagination>
+      </div>
     </div>
   </div>
 

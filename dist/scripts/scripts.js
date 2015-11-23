@@ -8407,6 +8407,7 @@ angular.module('bulbsCmsApp')
     $scope.headings = [];
     $scope.orderOptions = [];
     $scope.moreFilters = [];
+    $scope.isPiss = false;
 
     $scope.startOpen = false;
     $scope.endOpen = false;
