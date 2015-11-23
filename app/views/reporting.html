@@ -39,7 +39,7 @@
       <div class="row" style="padding-top:20px">
         <div class="col-md-4">
             <p class="input-group">
-              <input placeholder="{{ startInitial }}" type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="start" is-open="startOpen" close-text="Close" />
+              <input placeholder="{{ startInitial }}" type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="reportParams.start" is-open="startOpen" close-text="Close" />
               <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="openStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
               </span>
@@ -107,7 +107,7 @@
           </tbody>
       </table>
       <div class="row">
-        <pagination max-size="10" total-items="pageTotal" ng-model="pageNumber" items-per-page="20" ng-change="goToPage(page);" boundary-links="true"></pagination>
+        <pagination max-size="10" total-items="pageTotal" ng-model="reportParams.pageNumber" items-per-page="20" ng-change="goToPage(page);" boundary-links="true"></pagination>
       </div>
     </div>
   </div>

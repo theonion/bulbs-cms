@@ -344,7 +344,7 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
   ]);
 
   // ContributionReporting Service
-  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/reporting/?')).respond([
+  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/reporting/?')).respond(
     {
       count: 1092,
       next: 'http://avclub.local/cms/api/v1/contributions/reporting/?ordering=user&page=2&start=2015-11-02',
@@ -427,7 +427,7 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
         notes:null
       }
     ]}
-  ]);
+  );
 
   // ContentCompliance Service
   $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/contentreporting/?')).respond([

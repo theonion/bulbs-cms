@@ -84,17 +84,21 @@ angular.module('bulbsCmsApp')
     $scope.items = [];
     $scope.headings = [];
     $scope.orderOptions = [];
-    $scope.pageTotal = null;
-    $scope.moreFilters = [];
-
-    $scope.pageNumber = 1;
-    $scope.nextPage = null;
-
-    $scope.startOpen = false;
-    $scope.endOpen = false;
 
     $scope.startInitial = moment().startOf('month').format('YYYY-MM-DD');
     $scope.endInitial = moment().endOf('month').format('YYYY-MM-DD');
+
+    $scope.reportParams = {
+      pageNumber: 1,
+      start: $scope.startInitial,
+      end: $scope.endInitial,
+    };
+
+    $scope.pageTotal = null;
+    $scope.moreFilters = [];
+
+    $scope.startOpen = false;
+    $scope.endOpen = false;
 
     $scope.setReport = function ($reportingService) {
       $scope.report = $reportingService;
@@ -102,15 +106,15 @@ angular.module('bulbsCmsApp')
 
     $scope.setUserFilter = function (value) {
       $scope.userFilter = value;
-      loadReport($scope.report, $scope.start, $scope.end, $scope.orderBy);
+      loadReport($scope.report, $scope.reportParams.start, $scope.reportParams.end, $scope.orderBy);
     };
 
     $scope.setPublishedFilter = function (value) {
       $scope.publishedFilter = value;
       if (value === 'published') {
-        $scope.end = moment().format('YYYY-MM-DD');
+        $scope.reportParams.end = moment().format('YYYY-MM-DD');
       }
-      loadReport($scope.report, $scope.start, $scope.end, $scope.orderBy);
+      loadReport($scope.report, $scope.reportParams.start, $scope.reportParams.end, $scope.orderBy);
     };
 
     $scope.openStart = function ($event) {
@@ -126,7 +130,7 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.orderingChange = function () {
-      loadReport($scope.report, $scope.start, $scope.end, $scope.orderBy);
+      loadReport($scope.report, $scope.reportParams.start, $scope.reportParams.end, $scope.orderBy);
     };
 
     $scope.$watch('report', function (report) {
@@ -144,7 +148,7 @@ angular.module('bulbsCmsApp')
         $scope.headings.push(heading.title);
       });
 
-      loadReport(report, $scope.start, $scope.end, $scope.orderBy);
+      loadReport(report, $scope.reportParams.start, $scope.reportParams.end, $scope.orderBy);
     });
 
     $scope.$watchCollection('[start, end]', function (params) {
@@ -157,21 +161,29 @@ angular.module('bulbsCmsApp')
       loadReport($scope.report, start, end, $scope.orderBy);
     });
 
-    function loadReport(report, start, end, order) {
+    function loadReport(report, start, end, order, apiUrl) {
       $scope.items = [];
-      var reportParams = {};
-      $scope.apiURL = report.downloadURL;
+
+      if (typeof(apiUrl) === 'undefined') {
+        $scope.apiURL = report.downloadURL;
+      } else {
+        $scope.apiURL = apiUrl;
+      }
+
+      $scope.apiURL += ('?page=' + $scope.reportParams.pageNumber);
+
+
       $scope.downloadURL = report.downloadURL + '?format=csv';
       if (end) {
         var endParam = $filter('date')(end, 'yyyy-MM-dd');
-        reportParams['end'] = endParam;
+        $scope.reportParams.end = endParam;
         $scope.apiURL += ('&end=' + endParam);
         $scope.downloadURL += ('&end=' + endParam);
       }
 
       if (start) {
         var startParam = $filter('date')(start, 'yyyy-MM-dd');
-        reportParams['start'] = startParam;
+        $scope.reportParams.start = startParam;
         $scope.apiURL += ('&start=' + startParam);
         $scope.downloadURL += ('&start=' + startParam);
       }
@@ -179,19 +191,19 @@ angular.module('bulbsCmsApp')
       if (order) {
         $scope.apiURL += ('&ordering=' + order.key);
         $scope.downloadURL += ('&ordering=' + order.key);
-        reportParams['ordering'] = order.key;
+        $scope.reportParams.ordering = order.key;
       }
 
       if ($scope.publishedFilter) {
         $scope.apiURL += ('&published=' + $scope.publishedFilter);
         $scope.downloadURL += ('&published=' + $scope.publishedFilter);
-        reportParams['published'] = $scope.publishedFilter;
+        $scope.reportParams.published = $scope.publishedFilter;
       }
 
       if ($scope.userFilter) {
         $scope.apiURL += ('&staff=' + $scope.userFilter);
         $scope.downloadURL += ('&staff=' + $scope.userFilter);
-        reportParams['staff'] = $scope.userFilter;
+        $scope.reportParams.staff = $scope.userFilter;
       }
 
       if ($scope.moreFilters) {
@@ -199,11 +211,11 @@ angular.module('bulbsCmsApp')
           if ($scope.moreFilters[key].type === 'authors') {
             $scope.apiURL += ('&' + 'contributors=' + $scope.moreFilters[key].query);
             $scope.downloadURL += ('&' + 'contributors=' + $scope.moreFilters[key].query);
-            reportParams['contributors'] = $scope.moreFilters[key].query;
+            $scope.reportParams.contributors = $scope.moreFilters[key].query;
           } else {
             $scope.apiURL += ('&' + $scope.moreFilters[key].type + '=' + $scope.moreFilters[key].query);
             $scope.downloadURL += ('&' + $scope.moreFilters[key].type + '=' + $scope.moreFilters[key].query);
-            reportParams[$scope.moreFilters[key].type] = $scope.moreFilters[key].query;
+            $scope.reportParams[$scope.moreFilters[key].type] = $scope.moreFilters[key].query;
           }
         }
       }
@@ -213,8 +225,8 @@ angular.module('bulbsCmsApp')
         url: $scope.apiURL
       }).then(function (data) {
         $scope.items = [];
-        $scope.pageTotal = data.data[0].count;
-        data.data[0].results.forEach(function (lineItem) {
+        $scope.pageTotal = data.data.count;
+        data.data.results.forEach(function (lineItem) {
           var item = [];
           report.headings.forEach(function (heading) {
             var exp = $interpolate('{{item.' + heading.expression + '}}');
@@ -225,5 +237,9 @@ angular.module('bulbsCmsApp')
         });
       });
     }
+
+    $scope.goToPage = function () {
+      loadReport($scope.report, $scope.reportParams.start, $scope.reportParams.end);
+    };
 
   });
