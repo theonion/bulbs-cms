@@ -8423,6 +8423,7 @@ angular.module('bulbsCmsApp')
     $scope.endOpen = false;
 
     $scope.setReport = function ($reportingService) {
+      $scope.reportParams.pageNumber = 1;
       $scope.report = $reportingService;
     };
 
@@ -8453,6 +8454,13 @@ angular.module('bulbsCmsApp')
 
     $scope.orderingChange = function () {
       loadReport($scope.report, $scope.reportParams.start, $scope.reportParams.end, $scope.orderBy);
+    };
+
+    $scope.downloadIsValid = function () {
+      if ($scope.report !== 'undefined') {
+        return true;
+      }
+      return false;
     };
 
     $scope.$watch('report', function (report) {
