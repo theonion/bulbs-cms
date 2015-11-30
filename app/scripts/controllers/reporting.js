@@ -93,6 +93,7 @@ angular.module('bulbsCmsApp')
       start: $scope.startInitial,
       end: $scope.endInitial,
     };
+    $scope.reportDisabled = true;
 
     $scope.pageTotal = null;
     $scope.moreFilters = [];
@@ -101,6 +102,9 @@ angular.module('bulbsCmsApp')
     $scope.endOpen = false;
 
     $scope.setReport = function ($reportingService) {
+      if ($scope.reportDisabled === true) {
+        $scope.reportDisabled = false;
+      }
       $scope.reportParams.pageNumber = 1;
       $scope.report = $reportingService;
     };
@@ -159,7 +163,7 @@ angular.module('bulbsCmsApp')
       loadReport(report, $scope.reportParams.start, $scope.reportParams.end, $scope.orderBy);
     });
 
-    $scope.$watchCollection('[start, end]', function (params) {
+    $scope.$watchCollection('[reportParams.start, reportParams.end]', function (params) {
       if (!$scope.report) {
         return;
       }
@@ -198,8 +202,8 @@ angular.module('bulbsCmsApp')
 
       if (order) {
         $scope.apiURL += ('&ordering=' + order.key);
-        $scope.downloadURL += ('&ordering=' + order.key);
-        $scope.reportParams.ordering = order.key;
+        // $scope.downloadURL += ('&ordering=' + order.key);
+        // $scope.reportParams.ordering = order.key;
       }
 
       if ($scope.publishedFilter) {
