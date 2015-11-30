@@ -39,7 +39,7 @@ angular.module('bulbsCmsApp')
           {'title': 'Content ID', 'expression': 'content.id'},
           {'title': 'Headline', 'expression': 'content.title'},
           {'title': 'FeatureType', 'expression': 'content.feature_type'},
-          {'title': 'Contributor', 'expression': 'user.full_name'},
+          {'title': 'Contributor', 'expression': 'user.payroll_name'},
           {'title': 'Role', 'expression': 'role'},
           {'title': 'Pay', 'expression': 'pay'},
           {'title': 'Date', 'expression': 'content.published | date: \'MM/dd/yyyy\''}
