@@ -38363,7 +38363,7 @@ function za(a){for(var c=[],b=0,d=0;d<a.length;d++){var e=a.charCodeAt(d);55296<
 function ya(a){if("object"!==typeof a)return m;if(a===i)return h;for(var c in a)if(Object.prototype.hasOwnProperty.call(a,c))return m;return h};})();
 
 /*!
- * Bootstrap v3.3.5 (http://getbootstrap.com)
+ * Bootstrap v3.3.6 (http://getbootstrap.com)
  * Copyright 2011-2015 Twitter, Inc.
  * Licensed under the MIT license
  */
@@ -38375,13 +38375,13 @@ if (typeof jQuery === 'undefined') {
 +function ($) {
   'use strict';
   var version = $.fn.jquery.split(' ')[0].split('.')
-  if ((version[0] < 2 && version[1] < 9) || (version[0] == 1 && version[1] == 9 && version[2] < 1)) {
-    throw new Error('Bootstrap\'s JavaScript requires jQuery version 1.9.1 or higher')
+  if ((version[0] < 2 && version[1] < 9) || (version[0] == 1 && version[1] == 9 && version[2] < 1) || (version[0] > 2)) {
+    throw new Error('Bootstrap\'s JavaScript requires jQuery version 1.9.1 or higher, but lower than version 3')
   }
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: transition.js v3.3.5
+ * Bootstrap: transition.js v3.3.6
  * http://getbootstrap.com/javascript/#transitions
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -38441,7 +38441,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: alert.js v3.3.5
+ * Bootstrap: alert.js v3.3.6
  * http://getbootstrap.com/javascript/#alerts
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -38460,7 +38460,7 @@ if (typeof jQuery === 'undefined') {
     $(el).on('click', dismiss, this.close)
   }
 
-  Alert.VERSION = '3.3.5'
+  Alert.VERSION = '3.3.6'
 
   Alert.TRANSITION_DURATION = 150
 
@@ -38536,7 +38536,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: button.js v3.3.5
+ * Bootstrap: button.js v3.3.6
  * http://getbootstrap.com/javascript/#buttons
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -38556,7 +38556,7 @@ if (typeof jQuery === 'undefined') {
     this.isLoading = false
   }
 
-  Button.VERSION  = '3.3.5'
+  Button.VERSION  = '3.3.6'
 
   Button.DEFAULTS = {
     loadingText: 'loading...'
@@ -38657,7 +38657,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: carousel.js v3.3.5
+ * Bootstrap: carousel.js v3.3.6
  * http://getbootstrap.com/javascript/#carousel
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -38688,7 +38688,7 @@ if (typeof jQuery === 'undefined') {
       .on('mouseleave.bs.carousel', $.proxy(this.cycle, this))
   }
 
-  Carousel.VERSION  = '3.3.5'
+  Carousel.VERSION  = '3.3.6'
 
   Carousel.TRANSITION_DURATION = 600
 
@@ -38895,7 +38895,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: collapse.js v3.3.5
+ * Bootstrap: collapse.js v3.3.6
  * http://getbootstrap.com/javascript/#collapse
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -38925,7 +38925,7 @@ if (typeof jQuery === 'undefined') {
     if (this.options.toggle) this.toggle()
   }
 
-  Collapse.VERSION  = '3.3.5'
+  Collapse.VERSION  = '3.3.6'
 
   Collapse.TRANSITION_DURATION = 350
 
@@ -39107,7 +39107,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: dropdown.js v3.3.5
+ * Bootstrap: dropdown.js v3.3.6
  * http://getbootstrap.com/javascript/#dropdowns
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -39127,7 +39127,7 @@ if (typeof jQuery === 'undefined') {
     $(element).on('click.bs.dropdown', this.toggle)
   }
 
-  Dropdown.VERSION = '3.3.5'
+  Dropdown.VERSION = '3.3.6'
 
   function getParent($this) {
     var selector = $this.attr('data-target')
@@ -39159,7 +39159,7 @@ if (typeof jQuery === 'undefined') {
       if (e.isDefaultPrevented()) return
 
       $this.attr('aria-expanded', 'false')
-      $parent.removeClass('open').trigger('hidden.bs.dropdown', relatedTarget)
+      $parent.removeClass('open').trigger($.Event('hidden.bs.dropdown', relatedTarget))
     })
   }
 
@@ -39193,7 +39193,7 @@ if (typeof jQuery === 'undefined') {
 
       $parent
         .toggleClass('open')
-        .trigger('shown.bs.dropdown', relatedTarget)
+        .trigger($.Event('shown.bs.dropdown', relatedTarget))
     }
 
     return false
@@ -39273,7 +39273,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: modal.js v3.3.5
+ * Bootstrap: modal.js v3.3.6
  * http://getbootstrap.com/javascript/#modals
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -39307,7 +39307,7 @@ if (typeof jQuery === 'undefined') {
     }
   }
 
-  Modal.VERSION  = '3.3.5'
+  Modal.VERSION  = '3.3.6'
 
   Modal.TRANSITION_DURATION = 300
   Modal.BACKDROP_TRANSITION_DURATION = 150
@@ -39611,7 +39611,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: tooltip.js v3.3.5
+ * Bootstrap: tooltip.js v3.3.6
  * http://getbootstrap.com/javascript/#tooltip
  * Inspired by the original jQuery.tipsy by Jason Frame
  * ========================================================================
@@ -39638,7 +39638,7 @@ if (typeof jQuery === 'undefined') {
     this.init('tooltip', element, options)
   }
 
-  Tooltip.VERSION  = '3.3.5'
+  Tooltip.VERSION  = '3.3.6'
 
   Tooltip.TRANSITION_DURATION = 150
 
@@ -40126,7 +40126,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: popover.js v3.3.5
+ * Bootstrap: popover.js v3.3.6
  * http://getbootstrap.com/javascript/#popovers
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -40146,7 +40146,7 @@ if (typeof jQuery === 'undefined') {
 
   if (!$.fn.tooltip) throw new Error('Popover requires tooltip.js')
 
-  Popover.VERSION  = '3.3.5'
+  Popover.VERSION  = '3.3.6'
 
   Popover.DEFAULTS = $.extend({}, $.fn.tooltip.Constructor.DEFAULTS, {
     placement: 'right',
@@ -40235,7 +40235,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: scrollspy.js v3.3.5
+ * Bootstrap: scrollspy.js v3.3.6
  * http://getbootstrap.com/javascript/#scrollspy
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -40264,7 +40264,7 @@ if (typeof jQuery === 'undefined') {
     this.process()
   }
 
-  ScrollSpy.VERSION  = '3.3.5'
+  ScrollSpy.VERSION  = '3.3.6'
 
   ScrollSpy.DEFAULTS = {
     offset: 10
@@ -40408,7 +40408,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: tab.js v3.3.5
+ * Bootstrap: tab.js v3.3.6
  * http://getbootstrap.com/javascript/#tabs
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -40428,7 +40428,7 @@ if (typeof jQuery === 'undefined') {
     // jscs:enable requireDollarBeforejQueryAssignment
   }
 
-  Tab.VERSION = '3.3.5'
+  Tab.VERSION = '3.3.6'
 
   Tab.TRANSITION_DURATION = 150
 
@@ -40564,7 +40564,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: affix.js v3.3.5
+ * Bootstrap: affix.js v3.3.6
  * http://getbootstrap.com/javascript/#affix
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -40593,7 +40593,7 @@ if (typeof jQuery === 'undefined') {
     this.checkPosition()
   }
 
-  Affix.VERSION  = '3.3.5'
+  Affix.VERSION  = '3.3.6'
 
   Affix.RESET    = 'affix affix-top affix-bottom'
 
@@ -112832,105 +112832,17 @@ angular.module('restmod').factory('NestedDirtyModel', ['restmod', function(restm
         });
   });
 }]);})(angular);
-'use strict';
-
-angular.module('restmod.styles.drfPaged', [
-  'restmod'
-])
-  .factory('DjangoDRFPagedApi', function (restmod, inflector) {
-    var singleRoot = 'root';
-    var manyRoot = 'results';
-
-    return restmod.mixin('DefaultPacker', {
-      $config: {
-        style: 'DjangoDRFPagedApi',
-        primaryKey: 'id',
-        jsonMeta: '.',
-        jsonLinks: '.',
-        jsonRootMany: manyRoot,
-        jsonRootSingle: singleRoot
-      },
-
-      $extend: {
-        Collection: {
-          $page: 1,
-          $totalCount: 0
-        },
-
-        // convert backend snake_case to frontend camelCase
-        Model: {
-          decodeName: inflector.camelize,
-          encodeName: function(_v) { return inflector.parameterize(_v, '_'); },
-          encodeUrlName: inflector.parameterize
-        }
-      },
-
-      $hooks: {
-        /**
-         * Ensure all request paths end with a slash.
-         */
-        'before-request': function (_req) {
-          var urlParts = _req.url.split('?');
-          var path = urlParts[0];
-          var query = urlParts.length > 1 ? urlParts[1] : '';
-
-          if (!path.match(/\/$/)) {
-            _req.url = path + '/' + query;
-          }
-        },
-        /**
-         * Add a paging parameter before fetching a collection.
-         */
-        'before-fetch-many': function (_req) {
-          if (_.isUndefined(_req.params)) {
-            _req.params = {};
-          }
-          _req.params.page = this.$page || 1;
-        },
-        /**
-         * Ensure that the data is located under the right key for restmod's
-         *  DefaultPacker.
-         */
-        'after-request': function (_req) {
-          if (!_.isUndefined(_req.data)) {
-            if (_.isArray(_req.data)) {
-              // raw data is an array, pack it under manyRoot
-              var reqData = _req.data;
-              _req.data = {};
-              _req.data[manyRoot] = reqData;
-            } else if (
-                _.isUndefined(_req.data[manyRoot]) &&
-                _.isUndefined(_req.data[singleRoot])) {
-              // raw data wasn't pre-packed on the backend with a manyRoot key,
-              //  raw data is a singular object, pack it under singleRoot
-              var reqData = _req.data;
-              _req.data = {};
-              _req.data[singleRoot] = reqData;
-            }
-          }
-        },
-        /**
-         * Add a total count property after fetching a collection.
-         */
-        'after-fetch-many': function (_req) {
-          this.$totalCount = _req.data.count;
-        }
-      }
-    });
-  });
-
 // Source: src/videohub-client/videohub-api.js
 angular.module('VideohubClient.api', [
   'restmod',
-  'restmod.styles.drfPaged',
   'VideohubClient.settings'
 ])
   .factory('Video', function (restmod, VIDEOHUB_API_BASE_URL, VIDEOHUB_SECRET_TOKEN) {
 
     var videosEndpoint = 'videos';
-    var searchEndpoint = videosEndpoint + '/search';
+    var searchEndpoint = videosEndpoint + '/search/';
 
-    var videohubMix = restmod.mixin('DjangoDRFPagedApi', {
+    var videohubMix = {
       $config: {
         urlPrefix: VIDEOHUB_API_BASE_URL
       },
@@ -112943,7 +112855,7 @@ angular.module('VideohubClient.api', [
           });
         }
       }
-    });
+    };
 
     /**
      * A quicker fix than changing videohub api, ensures that search endpoint and
@@ -113021,11 +112933,10 @@ angular.module('VideohubClient.api', [
       $extend: {
         Model: {
           $postSearch: function (params) {
-            // HACK : because endpoint is a POST: need to use $create
             return VideoSearch.$create(params).$asPromise()
-              .then(function (model) {
+              .then(function (data) {
                 // return video model array
-                return model.results;
+                return data.results;
               });
           }
         }
@@ -113033,11 +112944,6 @@ angular.module('VideohubClient.api', [
     });
 
     var VideoSearch = restmod.model(searchEndpoint).mix(videohubMix, {
-      $config: {
-        // HACK : because endpoint is a POST: need to trick packer into seeing
-        //  single root as results
-        jsonRootSingle: 'results'
-      },
       $hooks: {
         'after-create': function (_req) {
           this.results = _.map(_req.data.results, function (video) {
@@ -113190,6 +113096,80 @@ $templateCache.put('src/videohub-client/videohub-suggest/videohub-picker-directi
   );
 
 }]);
+
+'use strict';
+
+angular.module('restmod.styles.drfPaged', [
+  'restmod'
+])
+  .factory('DjangoDRFPagedApi', function (restmod, inflector) {
+    var singleRoot = 'root';
+    var manyRoot = 'results';
+
+    return restmod.mixin('DefaultPacker', {
+      $config: {
+        style: 'DjangoDRFPagedApi',
+        primaryKey: 'id',
+        jsonMeta: '.',
+        jsonLinks: '.',
+        jsonRootMany: manyRoot,
+        jsonRootSingle: singleRoot
+      },
+
+      $extend: {
+        Collection: {
+          $page: 1,
+          $totalCount: 0
+        },
+
+        // special snakecase to camelcase renaming
+        Model: {
+          decodeName: inflector.camelize,
+          encodeName: function(_v) { return inflector.parameterize(_v, '_'); },
+          encodeUrlName: inflector.parameterize
+        }
+      },
+
+      $hooks: {
+        'before-request': function (_req) {
+          var urlParts = _req.url.split('?');
+          var path = urlParts[0];
+          var query = urlParts.length > 1 ? urlParts[1] : '';
+
+          if (!path.match(/\/$/)) {
+            _req.url = path + '/' + query;
+          }
+        },
+        'before-fetch-many': function (_req) {
+          // add paging parameter here based on collection's $page property
+          if (_.isUndefined(_req.params)) {
+            _req.params = {};
+          }
+          _req.params.page = this.$page || 1;
+        },
+        'after-request': function (_req) {
+          // check that response has data we need
+          if (!_.isUndefined(_req.data) && _.isUndefined(_req.data[manyRoot])) {
+            // a dirty hack so we don't have to copy/modify the DefaultPacker:
+            // this is not a collection, make it so the single root is accessible by the packer
+            var newData = {};
+            // check the type of data coming back to properly repack it
+            if (_.isArray(_req.data)) {
+              // dealing with an array, use many root
+              newData[manyRoot] = _req.data;
+            } else {
+              // dealing with a single record, use single root
+              newData[singleRoot] = _req.data;
+            }
+            _req.data = newData;
+          }
+        },
+        'after-fetch-many': function (_req) {
+          this.$totalCount = _req.data.count;
+        }
+      }
+    });
+  });
 
 /*!
  * ZeroClipboard
