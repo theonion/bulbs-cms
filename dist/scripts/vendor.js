@@ -112832,17 +112832,105 @@ angular.module('restmod').factory('NestedDirtyModel', ['restmod', function(restm
         });
   });
 }]);})(angular);
+'use strict';
+
+angular.module('restmod.styles.drfPaged', [
+  'restmod'
+])
+  .factory('DjangoDRFPagedApi', function (restmod, inflector) {
+    var singleRoot = 'root';
+    var manyRoot = 'results';
+
+    return restmod.mixin('DefaultPacker', {
+      $config: {
+        style: 'DjangoDRFPagedApi',
+        primaryKey: 'id',
+        jsonMeta: '.',
+        jsonLinks: '.',
+        jsonRootMany: manyRoot,
+        jsonRootSingle: singleRoot
+      },
+
+      $extend: {
+        Collection: {
+          $page: 1,
+          $totalCount: 0
+        },
+
+        // convert backend snake_case to frontend camelCase
+        Model: {
+          decodeName: inflector.camelize,
+          encodeName: function(_v) { return inflector.parameterize(_v, '_'); },
+          encodeUrlName: inflector.parameterize
+        }
+      },
+
+      $hooks: {
+        /**
+         * Ensure all request paths end with a slash.
+         */
+        'before-request': function (_req) {
+          var urlParts = _req.url.split('?');
+          var path = urlParts[0];
+          var query = urlParts.length > 1 ? urlParts[1] : '';
+
+          if (!path.match(/\/$/)) {
+            _req.url = path + '/' + query;
+          }
+        },
+        /**
+         * Add a paging parameter before fetching a collection.
+         */
+        'before-fetch-many': function (_req) {
+          if (_.isUndefined(_req.params)) {
+            _req.params = {};
+          }
+          _req.params.page = this.$page || 1;
+        },
+        /**
+         * Ensure that the data is located under the right key for restmod's
+         *  DefaultPacker.
+         */
+        'after-request': function (_req) {
+          if (!_.isUndefined(_req.data)) {
+            if (_.isArray(_req.data)) {
+              // raw data is an array, pack it under manyRoot
+              var reqData = _req.data;
+              _req.data = {};
+              _req.data[manyRoot] = reqData;
+            } else if (
+                _.isUndefined(_req.data[manyRoot]) &&
+                _.isUndefined(_req.data[singleRoot])) {
+              // raw data wasn't pre-packed on the backend with a manyRoot key,
+              //  raw data is a singular object, pack it under singleRoot
+              var reqData = _req.data;
+              _req.data = {};
+              _req.data[singleRoot] = reqData;
+            }
+          }
+        },
+        /**
+         * Add a total count property after fetching a collection.
+         */
+        'after-fetch-many': function (_req) {
+          this.$totalCount = _req.data.count;
+        }
+      }
+    });
+  });
+
 // Source: src/videohub-client/videohub-api.js
 angular.module('VideohubClient.api', [
   'restmod',
+  'restmod.styles.drfPaged',
   'VideohubClient.settings'
 ])
   .factory('Video', function (restmod, VIDEOHUB_API_BASE_URL, VIDEOHUB_SECRET_TOKEN) {
 
     var videosEndpoint = 'videos';
-    var searchEndpoint = videosEndpoint + '/search/';
+    var searchEndpoint = videosEndpoint + '/search';
 
-    var videohubMix = {
+    var videohubMix = restmod.mixin('DjangoDRFPagedApi', {
       $config: {
         urlPrefix: VIDEOHUB_API_BASE_URL
       },
@@ -112855,7 +112943,7 @@ angular.module('VideohubClient.api', [
           });
         }
       }
-    };
+    });
 
     /**
      * A quicker fix than changing videohub api, ensures that search endpoint and
@@ -112933,10 +113021,11 @@ angular.module('VideohubClient.api', [
       $extend: {
         Model: {
           $postSearch: function (params) {
+            // HACK : because endpoint is a POST: need to use $create
             return VideoSearch.$create(params).$asPromise()
-              .then(function (data) {
+              .then(function (model) {
                 // return video model array
-                return data.results;
+                return model.results;
               });
           }
         }
@@ -112944,6 +113033,11 @@ angular.module('VideohubClient.api', [
     });
 
     var VideoSearch = restmod.model(searchEndpoint).mix(videohubMix, {
+      $config: {
+        // HACK : because endpoint is a POST: need to trick packer into seeing
+        //  single root as results
+        jsonRootSingle: 'results'
+      },
       $hooks: {
         'after-create': function (_req) {
           this.results = _.map(_req.data.results, function (video) {
@@ -113096,80 +113190,6 @@ $templateCache.put('src/videohub-client/videohub-suggest/videohub-picker-directi
   );
 
 }]);
-
-'use strict';
-
-angular.module('restmod.styles.drfPaged', [
-  'restmod'
-])
-  .factory('DjangoDRFPagedApi', function (restmod, inflector) {
-    var singleRoot = 'root';
-    var manyRoot = 'results';
-
-    return restmod.mixin('DefaultPacker', {
-      $config: {
-        style: 'DjangoDRFPagedApi',
-        primaryKey: 'id',
-        jsonMeta: '.',
-        jsonLinks: '.',
-        jsonRootMany: manyRoot,
-        jsonRootSingle: singleRoot
-      },
-
-      $extend: {
-        Collection: {
-          $page: 1,
-          $totalCount: 0
-        },
-
-        // special snakecase to camelcase renaming
-        Model: {
-          decodeName: inflector.camelize,
-          encodeName: function(_v) { return inflector.parameterize(_v, '_'); },
-          encodeUrlName: inflector.parameterize
-        }
-      },
-
-      $hooks: {
-        'before-request': function (_req) {
-          var urlParts = _req.url.split('?');
-          var path = urlParts[0];
-          var query = urlParts.length > 1 ? urlParts[1] : '';
-
-          if (!path.match(/\/$/)) {
-            _req.url = path + '/' + query;
-          }
-        },
-        'before-fetch-many': function (_req) {
-          // add paging parameter here based on collection's $page property
-          if (_.isUndefined(_req.params)) {
-            _req.params = {};
-          }
-          _req.params.page = this.$page || 1;
-        },
-        'after-request': function (_req) {
-          // check that response has data we need
-          if (!_.isUndefined(_req.data) && _.isUndefined(_req.data[manyRoot])) {
-            // a dirty hack so we don't have to copy/modify the DefaultPacker:
-            // this is not a collection, make it so the single root is accessible by the packer
-            var newData = {};
-            // check the type of data coming back to properly repack it
-            if (_.isArray(_req.data)) {
-              // dealing with an array, use many root
-              newData[manyRoot] = _req.data;
-            } else {
-              // dealing with a single record, use single root
-              newData[singleRoot] = _req.data;
-            }
-            _req.data = newData;
-          }
-        },
-        'after-fetch-many': function (_req) {
-          this.$totalCount = _req.data.count;
-        }
-      }
-    });
-  });
 
 /*!
  * ZeroClipboard
