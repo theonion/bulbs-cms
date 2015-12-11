@@ -344,65 +344,90 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
   ]);
 
   // ContributionReporting Service
-  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/reporting/?')).respond([
+  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/reporting/?')).respond(
     {
-      id: 1,
-      role: 'Author',
-      notes: '',
-      rate: '$' + 100,
-      content: {
-        id: 1,
-        title: 'Just an Article',
-        url: '/articles/just-an-article-1',
-        content_type: 'Article',
-        feature_type: 'ICYMI',
-        published: '2011-04-03T16:20:00Z'
-      },
-      user: {
-        id: 1,
-        username: 'csinchok',
-        full_name: 'Chris Sinchok',
+      count: 1092,
+      next: 'http://avclub.local/cms/api/v1/contributions/reporting/?ordering=user&page=2&start=2015-11-02',
+      previous: null,
+      results: [
+      {
+        id:1870,
+        content:{
+          id: 228596,
+          title:'In its first episode, <i>The Man In The High Castle</i> builds a world but not its characters',
+          url: '/tvclub/its-first-episode-man-high-castle-builds-world-not-228596',
+          content_type: 'TVEpisodeReview_ElasticSearchResult',
+          feature_type: 'TV Club',
+          published: '2015-11-20T12:00:00-06:00'
+        },
+        user: {
+          username:'GwenIhnat',
+          id: 154186,
+          full_name: 'Gwen Ihnat'
+        },
+        pay: 80,
+        role: 'FeatureType',
+        rate: 80,
+        notes:null
+      },{
+        id: 1882,
+        content: {
+          id: 228596,
+          title:'In its first episode, <i>The Man In The High Castle</i> builds a world but not its characters',
+          url:'/tvclub/its-first-episode-man-high-castle-builds-world-not-228596',
+          content_type:'TVEpisodeReview_ElasticSearchResult',
+          feature_type: 'TV Club',
+          published: '2015-11-20T12:00:00-06:00'},
+          user:{
+            username: 'A.A.Dowd',
+            id:148035,
+            full_name:'A.A. Dowd'
+          },
+          pay:80,
+          role: 'FeatureType',
+          rate: 80,
+          notes: null
+      },{
+        id: 1887,
+        content: {
+          id:228596,
+          title: 'In its first episode, <i>The Man In The High Castle</i> builds a world but not its characters',
+          url: '/tvclub/its-first-episode-man-high-castle-builds-world-not-228596',
+          content_type: 'TVEpisodeReview_ElasticSearchResult',
+          feature_type: 'TV Club',
+          published: '2015-11-20T12:00:00-06:00'
+        },
+        user: {
+          username:'rockmarooned',
+          id:70523,
+          full_name:'Jesse Hassenger'
+        },
+        pay: 80,
+        role:'FeatureType',
+        rate: 80,
+        notes:null
+      },{
+        id: 1921,
+        content: {
+          id: 228596,
+          title: 'In its first episode, <i>The Man In The High Castle</i> builds a world but not its characters',
+          url: '/tvclub/its-first-episode-man-high-castle-builds-world-not-228596',
+          content_type: 'TVEpisodeReview_ElasticSearchResult',
+          feature_type: 'TV Club',
+          published: '2015-11-20T12:00:00-06:00'
+        },
+        user: {
+          username: 'Carrie Raisler',
+          id:77153,
+          full_name: 'Carrie Raisler'
+        },
+        pay: 100,
+        role:'FeatureType',
+        rate: 80,
+        notes:null
       }
-    },
-    {
-      id: 2,
-      role: 'Editor',
-      notes: 'Did a real solid job editing this',
-      rate: '$' + 160,
-      content: {
-        id: 1,
-        title: 'Just an Article',
-        url: '/articles/just-an-article-1',
-        content_type: 'Article',
-        feature_type: 'ICYMI',
-        published: '2011-04-03T16:20:00Z'
-      },
-      user: {
-        id: 2,
-        username: 'awentz',
-        full_name: 'Adam Wentz',
-      }
-    },
-    {
-      id: 3,
-      role: 'Lookie-Loo',
-      notes: 'Just kinda sat around',
-      rate: '$' + 70,
-      content: {
-        id: 1,
-        title: 'Just an Article',
-        url: '/articles/just-an-article-1',
-        content_type: 'Article',
-        feature_type: 'ICYMI',
-        published: '2011-04-03T16:20:00Z'
-      },
-      user: {
-        id: 1,
-        username: 'sbloomfield',
-        full_name: 'Sean Bloomfield',
-      }
-    },
-  ]);
+    ]}
+  );
 
   // ContentCompliance Service
   $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/contentreporting/?')).respond([

@@ -39,7 +39,7 @@
       <div class="row" style="padding-top:20px">
         <div class="col-md-4">
             <p class="input-group">
-              <input placeholder="{{ startInitial }}" type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="start" is-open="startOpen" close-text="Close" />
+              <input placeholder="{{ startInitial }}" type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="reportParams.start" is-open="startOpen" close-text="Close" />
               <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="openStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
               </span>
@@ -47,14 +47,14 @@
         </div>
         <div class="col-md-4">
             <p class="input-group">
-              <input placeholder="{{ endInitial }}" type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="end" is-open="endOpen" close-text="Close" />
+              <input placeholder="{{ endInitial }}" type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="reportParams.end" is-open="endOpen" close-text="Close" />
               <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="openEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
               </span>
             </p>
         </div>
         <div class="col-md-2">
-            <a href="{{ downloadURL }}" target="_blank" class="btn btn-primary">Apply</a>
+            <a href="{{ downloadURL }}" ng-disabled="reportDisabled" target="_blank" class="btn btn-primary">Apply</a>
         </div>
       </div>
 
@@ -65,7 +65,7 @@
           </div>
 
           <div class="col-md-2">
-              <a href="{{ downloadURL }}" target="_blank" class="btn btn-primary">Save Search</a>
+              <a href="{{ downloadURL }}" ng-disabled="reportDisabled" target="_blank" class="btn btn-primary">Save Search</a>
           </div>
         </div>
       </div>
@@ -75,7 +75,7 @@
     <div class="row well">
       <div class="row">
         <div class="col-md-2">
-            <a href="{{ downloadURL }}" target="_blank" class="btn btn-primary">Export Data</a>
+            <a href="{{ downloadURL }}" ng-disabled="reportDisabled" target="_blank" class="btn btn-primary">Export Data</a>
         </div>
         <div class="col-md-5">
           <div class="input-group">
@@ -106,6 +106,9 @@
               </tr>
           </tbody>
       </table>
+      <div class="row">
+        <pagination max-size="10" total-items="pageTotal" ng-model="reportParams.pageNumber" items-per-page="20" ng-change="goToPage(page);" boundary-links="true"></pagination>
+      </div>
     </div>
   </div>
 
