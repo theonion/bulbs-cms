@@ -9,7 +9,6 @@ angular.module('apiServices.specialCoverage.factory', [
   .factory('SpecialCoverage', function (_, $parse, restmod, Video) {
     var ACTIVE_STATES = {
       INACTIVE: 'Inactive',
-      ACTIVE: 'Active',
       PROMOTED: 'Pin to HP'
     };
 
