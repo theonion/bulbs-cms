@@ -22,6 +22,8 @@ angular.module('bulbsCmsApp.mockApi.specialCoverage', [
       name: 'Joe Biden',
       slug: 'joe-biden',
       description: 'Joe Biden things.',
+      start_date: '2016-01-13T22:51:27.814000Z',
+      end_date: '2016-01-14T22:51:27.814000Z',
       query: {
         groups: [{
           conditions: [{
@@ -46,6 +48,8 @@ angular.module('bulbsCmsApp.mockApi.specialCoverage', [
       name: 'Fun',
       slug: 'fun',
       description: 'Things your favorite company thinks are fun.',
+      start_date: '2016-01-13T22:51:27.814000Z',
+      end_date: '2016-01-13T22:51:27.814000Z',
       query: {},
       videos: [],
       active: false,
@@ -56,6 +60,8 @@ angular.module('bulbsCmsApp.mockApi.specialCoverage', [
       name: 'Luxury Stuff',
       slug: 'luxury-stuff',
       description: 'Luxury, by the rich, for the rich.',
+      start_date: '2016-01-13T22:51:27.814000Z',
+      end_date: '2016-01-13T22:51:27.814000Z',
       query: {},
       videos: [],
       active: false,
@@ -66,6 +72,8 @@ angular.module('bulbsCmsApp.mockApi.specialCoverage', [
       name: 'Videos Videos Videos',
       slug: 'something-video-video',
       description: 'Lots of videos to watch.',
+      start_date: '2016-01-13T22:51:27.814000Z',
+      end_date: '2016-01-13T22:51:27.814000Z',
       query: {},
       videos: [1, 2, 3],
       active: false,
@@ -76,6 +84,8 @@ angular.module('bulbsCmsApp.mockApi.specialCoverage', [
       name: 'No Slug',
       description: 'No slug on this special coverage.',
       query: {},
+      start_date: '2016-01-13T22:51:27.814000Z',
+      end_date: '2016-01-13T22:51:27.814000Z',
       active: false,
       promoted: false
     }];

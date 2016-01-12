@@ -4,6 +4,7 @@ angular.module('apiServices.specialCoverage.factory', [
   'apiServices',
   'apiServices.campaign.factory',
   'apiServices.mixins.fieldDisplay',
+  'filters.moment',
   'VideohubClient.api'
 ])
   .factory('SpecialCoverage', function (_, $parse, restmod, Video) {
@@ -30,6 +31,14 @@ angular.module('apiServices.specialCoverage.factory', [
           value: 'record.campaign.campaignLabel || "--"',
           sorts: 'campaign__campaign_label'
         }, {
+          title: 'Start Date',
+          value: 'record.startDate.format("MM/DD/YY") || "--"',
+          sorts: 'start_date'
+        }, {
+          title: 'End Date',
+          value: 'record.endDate.format("MM/DD/YY") || "--"',
+          sorts: 'end_date'
+        }, {
           title: 'Status',
           value: 'record.$activeState()',
           sorts: function (direction) {
@@ -42,6 +51,22 @@ angular.module('apiServices.specialCoverage.factory', [
             return sorting;
           }
         }]
+      },
+
+      // fields from frontend to backend
+      end_date: {
+        encode: 'moment_to_date_string',
+      },
+      start_date: {
+        encode: 'moment_to_date_string',
+      },
+
+      // fields from backend to frontend
+      endDate: {
+        decode: 'date_string_to_moment',
+      },
+      startDate: {
+        decode: 'date_string_to_moment'
       },
 
       campaign: {

@@ -4,6 +4,7 @@ angular.module('specialCoverage.list', [
   'apiServices.specialCoverage.factory',
   'bulbsCmsApp.settings',
   'listPage',
+  'moment',
   'specialCoverage.settings'
 ])
   .config(function ($routeProvider, routes) {
