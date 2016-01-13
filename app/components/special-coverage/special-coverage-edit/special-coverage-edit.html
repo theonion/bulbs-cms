@@ -37,25 +37,71 @@
       </div>
     </div>
     <div class="row">
-      <div class="form-group col-md-3">
-        <label for="specialCoverageActiveState">
-          Active
-          <i
-              class="glyphicon glyphicon-info-sign text-info"
-              tooltip="'Active' lists will rotate through all site promotion areas. To always display on the homepage select 'Pin To HP'. Note: there are only three homepage slots so please limit the number of pinned lists."
-              tooltip-trigger="mouseenter"
-              tooltip-placement="top">
-          </i>
-        </label>
-        <select
-            id="specialCoverageActiveState"
+      <div class="form-group col-md-6">
+        <label for="specialCoverageStartDate">Start Date</label>
+        <div class="input-group">
+          <input
+            id="specialCoverageStartDate"
+            type="text"
+            value="{{ model.startDate.format('MM/DD/YY h:mm:ss a') }}"
             class="form-control"
-            ng-model="model.$activeState"
-            ng-model-options="{getterSetter: true}">
-          <option value="{{ ACTIVE_STATES.ACTIVE }}">{{ ACTIVE_STATES.ACTIVE }}</option>
-          <option value="{{ ACTIVE_STATES.PROMOTED }}">{{ ACTIVE_STATES.PROMOTED }}</option>
-          <option value="{{ ACTIVE_STATES.INACTIVE }}">{{ ACTIVE_STATES.INACTIVE }}</option>
-        </select>
+            readonly>
+          <span class="input-group-btn">
+            <button
+              class="btn btn-info"
+              datetime-selection-modal-opener
+              ng-model="model.startDate"
+              modal-title="Special Coverage Start Date">
+              <i class="glyphicon glyphicon-calendar"></i>
+            </button>
+          </span>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="specialCoverageEndDate">End Date</label>
+        <div class="input-group">
+          <input
+            id="specialCoverageEndDate"
+            type="text"
+            value="{{ model.endDate.format('MM/DD/YY h:mm:ss a') }}"
+            class="form-control"
+            readonly>
+          <span class="input-group-btn">
+            <button
+              class="btn btn-info"
+              datetime-selection-modal-opener
+              ng-model="model.endDate"
+              modal-title="Special Coverage End Date">
+              <i class="glyphicon glyphicon-calendar"></i>
+            </button>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="top15 form-group col-md-4">
+        <button
+            id="specialCoveragePinToHomepage"
+            class="btn"
+            ng-click="model.promoted = !model.promoted"
+            ng-class="{
+              'btn-info': model.promoted,
+              'btn-default': !model.promoted
+            }">
+            <span
+              class="fa"
+              ng-class="{
+                'fa-check-square-o': model.promoted,
+                'fa-square-o': !model.promoted
+              }"></span>
+            <span>Pin to Homepage</span>
+        </button>
+        <i
+          class="glyphicon glyphicon-info-sign text-info"
+          tooltip="To always display on the homepage select 'Pin To Homepage'. Note: there are only three homepage slots so please limit the number of pinned lists."
+          tooltip-trigger="mouseenter"
+          tooltip-placement="top">
+        </i>
       </div>
       <div class="form-group col-md-5">
         <label for="specialCoverageCampaign">Sponsor Campaign</label>
