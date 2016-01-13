@@ -4184,6 +4184,7 @@ angular.module('specialCoverage.list', [
   'apiServices.specialCoverage.factory',
   'bulbsCmsApp.settings',
   'listPage',
+  'moment',
   'specialCoverage.settings'
 ])
   .config(function ($routeProvider, routes) {
@@ -4889,12 +4890,12 @@ angular.module('apiServices.specialCoverage.factory', [
   'apiServices',
   'apiServices.campaign.factory',
   'apiServices.mixins.fieldDisplay',
+  'filters.moment',
   'VideohubClient.api'
 ])
   .factory('SpecialCoverage', function (_, $parse, restmod, Video) {
     var ACTIVE_STATES = {
       INACTIVE: 'Inactive',
-      ACTIVE: 'Active',
       PROMOTED: 'Pin to HP'
     };
 
@@ -4916,18 +4917,30 @@ angular.module('apiServices.specialCoverage.factory', [
           value: 'record.campaign.campaignLabel || "--"',
           sorts: 'campaign__campaign_label'
         }, {
-          title: 'Status',
-          value: 'record.$activeState()',
-          sorts: function (direction) {
-            var sorting;
-            if (direction === 'asc') {
-              sorting = 'promoted,active';
-            } else {
-              sorting = '-promoted,-active';
-            }
-            return sorting;
-          }
+          title: 'Start Date',
+          value: 'record.startDate.format("MM/DD/YY") || "--"',
+          sorts: 'start_date'
+        }, {
+          title: 'End Date',
+          value: 'record.endDate.format("MM/DD/YY") || "--"',
+          sorts: 'end_date'
         }]
+      },
+
+      // fields from frontend to backend
+      end_date: {
+        encode: 'moment_to_date_string',
+      },
+      start_date: {
+        encode: 'moment_to_date_string',
+      },
+
+      // fields from backend to frontend
+      endDate: {
+        decode: 'date_string_to_moment',
+      },
+      startDate: {
+        decode: 'date_string_to_moment'
       },
 
       campaign: {
