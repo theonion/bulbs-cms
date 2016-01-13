@@ -346,11 +346,14 @@ nav.navbar {
 }
 
 .bug-report-modal {
+    bottom: 10px;
+    max-height: 100%;
+    overflow: scroll;
     position: fixed;
-    right: 30px;
-    top: 35%;
-    height: 300px;
+    right: 10px;
+    top: 45px;
     width: 300px;
+    z-index: 100;
     .modal-header { padding: 12px; }
     .modal-body { padding: 10px; }
     .modal-footer {
@@ -360,6 +363,10 @@ nav.navbar {
     textarea {
         font-size: 12px;
     }
+}
+
+.top15 {
+  margin-top: 15px;
 }
 
 .bootstrap-green { color:#47a447; }
