@@ -38,18 +38,6 @@ angular.module('apiServices.specialCoverage.factory', [
           title: 'End Date',
           value: 'record.endDate.format("MM/DD/YY") || "--"',
           sorts: 'end_date'
-        }, {
-          title: 'Status',
-          value: 'record.$activeState()',
-          sorts: function (direction) {
-            var sorting;
-            if (direction === 'asc') {
-              sorting = 'promoted,active';
-            } else {
-              sorting = '-promoted,-active';
-            }
-            return sorting;
-          }
         }]
       },
 
