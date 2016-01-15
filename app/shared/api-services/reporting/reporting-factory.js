@@ -2,13 +2,14 @@
 
 angular.module('apiServices.reporting.factory', [
   'apiServices',
-  'apiServices.mixins.fieldDisplay'
+  'apiServices.mixins.fieldDisplay',
+  'apiServices.featureTypeRate.factory'
 ])
   .factory('Role', function (_, restmod) {
-    // var contributionsEndpoint = 'contributions';
     var roleEndpoint = 'contributions/role';
-
-    return restmod.model(roleEndpoint).mix('FieldDisplay', 'NestedDirtyModel', {
+    return restmod.model(roleEndpoint, {
+      feature_type_rates: { hasMany: 'FeatureTypeRate'}
+    }).mix('FieldDisplay', 'NestedDirtyModel', {
       $config: {
         name: 'Role',
         plural: 'Roles',
@@ -24,10 +25,5 @@ angular.module('apiServices.reporting.factory', [
           }
         ]
       },
-      rates: {
-        init: {
-          featureType: []
-        }
-      }
     });
   });

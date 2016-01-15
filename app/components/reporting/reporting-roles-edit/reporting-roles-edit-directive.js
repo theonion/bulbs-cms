@@ -27,7 +27,7 @@ angular.module('roles.edit.directive', [
   ])
   .directive('rolesEdit', function (routes) {
     return {
-      controller: function (_, $location, $q, $routeParams, $scope, Role, PAYMENT_TYPES) {
+      controller: function (_, $location, $q, $routeParams, $scope, Role, FeatureTypeRate, PAYMENT_TYPES) {
 
         $scope.page = 'contributions';
         $scope.PAYMENT_TYPES = PAYMENT_TYPES;
@@ -37,6 +37,7 @@ angular.module('roles.edit.directive', [
           $scope.isNew = true;
         } else {
           $scope.model = Role.$find($routeParams.id);
+          $scope.model.feature_type_rates.$fetch({ page: 1 });
         }
 
         window.onbeforeunload = function (e) {
@@ -56,6 +57,10 @@ angular.module('roles.edit.directive', [
           }
 
           return false;
+        };
+
+        $scope.getFeatureTypeRate = function () {
+          return FeatureTypeRate.get();
         };
 
         $scope.saveModel = function () {
