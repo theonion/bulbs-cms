@@ -36,8 +36,9 @@ angular.module('roles.edit.directive', [
           $scope.model = Role.$build();
           $scope.isNew = true;
         } else {
-          $scope.model = Role.$find($routeParams.id);
-          $scope.model.feature_type_rates.$fetch({ page: 1 });
+          $scope.model = Role.$find($routeParams.id).$then(function () {
+            var req = $scope.model.feature_type_rates.$fetch();
+          });
         }
 
         window.onbeforeunload = function (e) {
@@ -63,9 +64,27 @@ angular.module('roles.edit.directive', [
           return FeatureTypeRate.get();
         };
 
+        $scope.getDirtyRates = function () {
+          var dirty = [];
+          for (var i = 0; i<$scope.model.feature_type_rates.length; i++) {
+            if (!_.isEmpty($scope.model.feature_type_rates[i].$dirty())) {
+              dirty.push($scope.model.feature_type_rates[i]);
+            }
+          }
+          return dirty;
+        };
+
+        $scope.saveDirtyRates = function () {
+          var dirtyRates = $scope.getDirtyRates();
+          for (var i=0; i<dirtyRates.length; i++) {
+            dirtyRates[i].$save();
+          }
+        };
+
         $scope.saveModel = function () {
           var promise;
 
+          $scope.saveDirtyRates();
           if ($scope.model) {
             promise = $scope.model.$save().$asPromise().then(function (data) {
               $location.path('/cms/app/roles/edit/' + data.id + '/');

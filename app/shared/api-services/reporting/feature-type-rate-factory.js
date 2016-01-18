@@ -6,7 +6,5 @@ angular.module('apiServices.featureTypeRate.factory', [
   'apiServices.mixins.fieldDisplay'
 ])
   .factory('FeatureTypeRate', function (_, restmod) {
-    return restmod.model('/feature_type_rates', {
-      role: 'Role'
-    });
+    return restmod.model('feature_type_rates', {}).mix('NestedDirtyModel');
   });

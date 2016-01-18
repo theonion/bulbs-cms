@@ -1,7 +1,7 @@
 <top-bar
   logo-href="/cms/app/roles"
   save-function="saveModel"
-  save-disable-when="model.$dirty().length === 0 && !isNew">
+  save-disable-when="model.$dirty().length === 0 && !isNew && getDirtyRates().length === 0">
 </top-bar>
 
 <div id="roles-edit">
@@ -77,7 +77,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="rate in model.rates.featureType">
+                  <tr ng-repeat="rate in model.feature_type_rates">
                     <td class="col-md-5">
                       {{ rate.featureType }}
                     </td>

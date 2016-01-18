@@ -190,8 +190,55 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
     }
   ]);
 
+  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/role/3/feature_type_rates/?')).respond(function (method, url, data, headers) {
+      if (url.indexOf('page=2') > -1) {
+        return [200, {
+          count: 20,
+          results: [{
+            id: 4,
+            feature_type: 'garbage',
+            rate: 20
+          }, {
+            id: 5,
+            feature_type: 'speed',
+            rate: 21
+          }, {
+            id: 6,
+            feature_type: 'monster',
+            rate: 22
+          }, {
+            id: 7,
+            feature_type: 'argument',
+            rate: 23
+          }]
+        }];
+      } else {
+        return [200, {
+          count: 20,
+          next: 'page=2',
+          results: [{
+            id: 1,
+            feature_type: 'surf',
+            rate: 20
+          }, {
+            id: 2,
+            feature_type: 'hang',
+            rate: 21
+          }, {
+            id: 3,
+            feature_type: 'ball',
+            rate: 22
+          }, {
+            id: 4,
+            feature_type: 'argument',
+            rate: 23
+          }]
+        }];
+    }
+  });
+
   // ContributionRole Service
-  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/role/?')).respond([
+  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/role/?$')).respond([
     {
       id: 1,
       name: 'Author',
@@ -212,24 +259,6 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
     }
   ]);
 
-  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/role/3/feature_type_rates?')).respond(function() {
-      return [200, {
-      count: 20,
-      results: [{
-        id: 1,
-        feature_type: 'surf',
-        rate: 20
-      }, {
-        id: 2,
-        feature_type: 'hang',
-        rate: 21
-      }, {
-        id: 3,
-        feature_type: 'ball',
-        rate: 22
-      }]
-    }];
-  });
 
   $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/rate-overrides/?')).respond([
     {
