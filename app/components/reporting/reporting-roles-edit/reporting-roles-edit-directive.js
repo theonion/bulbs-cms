@@ -36,7 +36,11 @@ angular.module('roles.edit.directive', [
           $scope.model = Role.$build();
           $scope.isNew = true;
         } else {
-          $scope.model = Role.$find($routeParams.id);
+          $scope.model = Role.$find($routeParams.id).$then(function () {
+            $scope.model.feature_type_rates.$fetch();
+            $scope.model.flat_rates.$fetch();
+            $scope.model.hourly_rates.$fetch();
+          });
         }
 
         window.onbeforeunload = function (e) {
@@ -58,9 +62,40 @@ angular.module('roles.edit.directive', [
           return false;
         };
 
+        $scope.getDirtyRates = function () {
+          var dirty = [];
+          // // Validate if flat_rate is dirty
+          if ($scope.model.hasOwnProperty('flat_rate') && !_.isEmpty($scope.model.flat_rate.$dirty())) {
+            dirty.push($scope.model.flat_rate);
+          }
+
+          // Validate if hourly_rate is dirty
+          if ($scope.model.hasOwnProperty('hourly_rate') && !_.isEmpty($scope.model.hourly_rate.$dirty())) {
+              dirty.push($scope.model.hourly_rate);
+          }
+
+          // Validate if feature_type_rates are dirty
+          $scope.model.feature_type_rates.forEach(function (rate) {
+            if (!_.isEmpty(rate.$dirty())) {
+              dirty.push(rate);
+            }
+          });
+
+          return dirty;
+        };
+
+        $scope.saveDirtyRates = function () {
+          var dirtyRates = $scope.getDirtyRates();
+
+          dirtyRates.forEach(function (rate) {
+            rate.$save();
+          });
+        };
+
         $scope.saveModel = function () {
           var promise;
 
+          $scope.saveDirtyRates();
           if ($scope.model) {
             promise = $scope.model.$save().$asPromise().then(function (data) {
               $location.path('/cms/app/roles/edit/' + data.id + '/');
