@@ -237,6 +237,13 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
     }
   });
 
+  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/role/3/hourly_rates/?')).respond(function (method, url, data, headers) {
+      return [200, {
+        count: 0,
+        results: []
+      }];
+  });
+
   // ContributionRole Service
   $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/role/?$')).respond([
     {

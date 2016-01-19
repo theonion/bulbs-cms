@@ -37,7 +37,9 @@ angular.module('roles.edit.directive', [
           $scope.isNew = true;
         } else {
           $scope.model = Role.$find($routeParams.id).$then(function () {
-            var req = $scope.model.feature_type_rates.$fetch();
+            $scope.model.feature_type_rates.$fetch();
+            $scope.model.flat_rates.$fetch();
+            $scope.model.hourly_rates.$fetch();
           });
         }
 
@@ -66,6 +68,19 @@ angular.module('roles.edit.directive', [
 
         $scope.getDirtyRates = function () {
           var dirty = [];
+          // // Validate if flat_rate is dirty
+          if ($scope.model.hasOwnProperty('flat_rate') && !_.isEmpty($scope.model.flat_rate.$dirty())) {
+            dirty.push($scope.model.flat_rate);
+          }
+
+          // Validate if hourly_rate is dirty
+          if ($scope.model.hasOwnProperty('hourly_rate')) {
+            if (!_.isEmpty($scope.model.hourly_rate.$dirty())) {
+              dirty.push($scope.model.hourly_rate);
+            }
+          }
+
+          // Validate if feature_type_rates are dirty
           for (var i = 0; i<$scope.model.feature_type_rates.length; i++) {
             if (!_.isEmpty($scope.model.feature_type_rates[i].$dirty())) {
               dirty.push($scope.model.feature_type_rates[i]);
