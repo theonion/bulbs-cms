@@ -70,10 +70,8 @@ angular.module('roles.edit.directive', [
           }
 
           // Validate if hourly_rate is dirty
-          if ($scope.model.hasOwnProperty('hourly_rate')) {
-            if (!_.isEmpty($scope.model.hourly_rate.$dirty())) {
+          if ($scope.model.hasOwnProperty('hourly_rate') && !_.isEmpty($scope.model.hourly_rate.$dirty())) {
               dirty.push($scope.model.hourly_rate);
-            }
           }
 
           // Validate if feature_type_rates are dirty
