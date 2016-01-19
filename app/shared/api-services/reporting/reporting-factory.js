@@ -43,7 +43,7 @@ angular.module('apiServices.reporting.factory', [
           'after-fetch-many': function() {
             var next = this.$metadata.next;
             if (!_.isUndefined(next) && next !== null) {
-              this.$owner.feature_type_rates.$page += 1;
+              this.$owner.feature_type_rates.$page++;
               this.$owner.feature_type_rates.$fetch();
             }
           }
