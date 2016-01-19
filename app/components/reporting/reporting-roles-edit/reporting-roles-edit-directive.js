@@ -77,19 +77,21 @@ angular.module('roles.edit.directive', [
           }
 
           // Validate if feature_type_rates are dirty
-          for (var i = 0; i<$scope.model.feature_type_rates.length; i++) {
-            if (!_.isEmpty($scope.model.feature_type_rates[i].$dirty())) {
-              dirty.push($scope.model.feature_type_rates[i]);
+          $scope.model.feature_type_rates.forEach(function (rate) {
+            if (!_.isEmpty(rate.$dirty())) {
+              dirty.push(rate);
             }
-          }
+          });
+
           return dirty;
         };
 
         $scope.saveDirtyRates = function () {
           var dirtyRates = $scope.getDirtyRates();
-          for (var i=0; i<dirtyRates.length; i++) {
-            dirtyRates[i].$save();
-          }
+
+          dirtyRates.forEach(function (rate) {
+            rate.$save();
+          });
         };
 
         $scope.saveModel = function () {
