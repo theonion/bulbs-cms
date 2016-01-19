@@ -27,7 +27,7 @@ angular.module('roles.edit.directive', [
   ])
   .directive('rolesEdit', function (routes) {
     return {
-      controller: function (_, $location, $q, $routeParams, $scope, Role, FeatureTypeRate, PAYMENT_TYPES) {
+      controller: function (_, $location, $q, $routeParams, $scope, Role, PAYMENT_TYPES) {
 
         $scope.page = 'contributions';
         $scope.PAYMENT_TYPES = PAYMENT_TYPES;
@@ -60,10 +60,6 @@ angular.module('roles.edit.directive', [
           }
 
           return false;
-        };
-
-        $scope.getFeatureTypeRate = function () {
-          return FeatureTypeRate.get();
         };
 
         $scope.getDirtyRates = function () {
