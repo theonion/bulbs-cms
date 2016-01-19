@@ -190,78 +190,82 @@ angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
     }
   ]);
 
+  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/role/3/feature_type_rates/?')).respond(function (method, url, data, headers) {
+      if (url.indexOf('page=2') > -1) {
+        return [200, {
+          count: 20,
+          results: [{
+            id: 4,
+            feature_type: 'garbage',
+            rate: 20
+          }, {
+            id: 5,
+            feature_type: 'speed',
+            rate: 21
+          }, {
+            id: 6,
+            feature_type: 'monster',
+            rate: 22
+          }, {
+            id: 7,
+            feature_type: 'argument',
+            rate: 23
+          }]
+        }];
+      } else {
+        return [200, {
+          count: 20,
+          next: 'page=2',
+          results: [{
+            id: 1,
+            feature_type: 'surf',
+            rate: 20
+          }, {
+            id: 2,
+            feature_type: 'hang',
+            rate: 21
+          }, {
+            id: 3,
+            feature_type: 'ball',
+            rate: 22
+          }, {
+            id: 4,
+            feature_type: 'argument',
+            rate: 23
+          }]
+        }];
+    }
+  });
+
+  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/role/3/hourly_rates/?')).respond(function (method, url, data, headers) {
+      return [200, {
+        count: 0,
+        results: []
+      }];
+  });
+
   // ContributionRole Service
-  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/role/?')).respond([
+  $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/role/?$')).respond([
     {
       id: 1,
       name: 'Author',
       description: 'eh',
-      payment_type: 'Manual',
-      rates: {
-          'flat_rate': {
-            updated_on: '2015-07-13T20:14:48.573940Z',
-            rate: 100
-          },
-          'hourly': {
-            updated_on: '2015-07-14T20:14:48.573940Z',
-            rate: 60
-          },
-          feature_type: [
-            {
-              feature_type: '100 Episodes',
-              updated_on: '2015-08-14T20:14:48.473940Z',
-              rate: 100
-            }, {
-              feature_type: '11 Question',
-              rate: 11
-            }, {
-              feature_type: '13 Days of Christmas',
-              updated_on: '2015-08-14T20:14:48.473940Z',
-              rate: 13
-            }, {
-              feature_type: '15 Minutes or Less',
-              updated_on: '2015-08-14T20:14:48.473940Z',
-              rate: 15
-            }, {
-              feature_type: '24 Hours Of',
-              updated_on: '2015-08-14T20:14:48.473940Z',
-              rate: 5
-          }]
-        }
+      payment_type: 'Manual'
     },
     {
       id: 2,
       name: 'Editor',
       description: 'eh',
       payment_type: 'Flat Rate',
-        rates: {
-          'flat_rate': {
-              name: 'Flat Rate',
-              rate: 200
-          },
-          'hourly': {name: 'Hourly', rate: 400}
-        }
     },
     {
       id: 3,
       name: 'Programmer',
       description: 'meh',
       payment_type: 'Manual',
-      rates: {
-          'flat_rate': {
-            id: 3,
-            name: 'Flat Rate',
-            updated_on: '2015-07-15T20:14:48.573940Z',
-            rate: 50
-          },
-          'Hourly': {
-            id: 4,
-            name: 'Hourly',
-            updated_on: '2015-07-16T20:14:48.573940Z'
-          }
-        }
     }
   ]);
+
 
   $httpBackend.when('GET', new RegExp('^/cms/api/v1/contributions/rate-overrides/?')).respond([
     {
