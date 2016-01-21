@@ -17,8 +17,8 @@ angular.module('apiServices.poll.factory', [
           sorts: 'title'
         }, {
           title: 'Creator',
-          value: 'record.creator',
-          sorts: 'creator'
+          value: 'record.authors.join(", ")',
+          sorts: 'author'
         }, {
           title: 'Publish Date',
           value: 'record.publishDate.format("MM/DD/YY") || "--"',
