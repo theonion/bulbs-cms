@@ -7,7 +7,7 @@ angular.module('apiServices.specialCoverage.factory', [
   'filters.moment',
   'VideohubClient.api'
 ])
-  .factory('SpecialCoverage', function (_, $parse, restmod, Video) {
+  .factory('SpecialCoverage', function (_, $http, $parse, restmod, Video) {
     var ACTIVE_STATES = {
       INACTIVE: 'Inactive',
       PROMOTED: 'Pin to HP'
@@ -83,11 +83,16 @@ angular.module('apiServices.specialCoverage.factory', [
         'after-fetch': function () {
           // auto fetch all video records when first fetching
           this.$loadVideosData();
+          this.$loadTunicCampaign();
         },
         'after-save': function () {
           // auto fetch all video records when saving/updating
           this.$loadVideosData();
-        }
+        },
+        // TODO
+        //'before-save': function () {
+        //  this.$ripOutTunicCampaign();
+        //}
       },
 
       $extend: {
@@ -99,6 +104,21 @@ angular.module('apiServices.specialCoverage.factory', [
             _.each(this.videos, function (video) {
               video.$fetch();
             });
+          },
+          /**
+           * Load campaign data from Tunic endpoint
+           */
+          $loadTunicCampaign: function () {
+            if (_.isNumber(this.tunicCampaignId)) {
+              var _this = this;
+              $http.get('http://tunic.local/api/v1/campaign/' + this.tunicCampaignId + '/', {
+                headers: {
+                  'Authorization': 'Token 246bce7a5ddaed1fd497ed9b53d0a2281e3928f5'
+                }
+              }).then(function (result) {
+                _this.tunicCampaign = result.data;
+              });
+            }
           },
           /**
            * Add a video by id.

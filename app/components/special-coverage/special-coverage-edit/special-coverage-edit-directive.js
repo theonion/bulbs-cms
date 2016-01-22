@@ -14,7 +14,7 @@ angular.module('specialCoverage.edit.directive', [
 ])
   .directive('specialCoverageEdit', function (routes) {
     return {
-      controller: function (_, $location, $q, $scope, $http, EXTERNAL_URL,
+      controller: function (_, $location, $q, $scope, Campaign, EXTERNAL_URL,
           SPECIAL_COVERAGE_LIST_REL_PATH, SpecialCoverage) {
 
         $scope.ACTIVE_STATES = SpecialCoverage.ACTIVE_STATES;
@@ -66,47 +66,14 @@ angular.module('specialCoverage.edit.directive', [
           return promise;
         };
 
-        // Maps ID to Object for formatting (since only tunic_campaign_id stored on SpecialCoverage object)
-        $scope.tunicCampaignIdMapping = {};
-        $scope.campaignListRetrieved = function (response) {
-          var tunicCampaignIds = [];
-          response.data.results.forEach(function (result) {
-            $scope.tunicCampaignIdMapping[result.id] = result;
-            tunicCampaignIds.push(result.id);
-          });
-          return tunicCampaignIds;
-        };
-
-        $scope.campaignRetrieved = function (result) {
-          $scope.tunicCampaignIdMapping[result.data.id] = result.data;
-        }
-
-        $scope.getCampaign = function (tunicCampaignId) {
-          return $http.get('http://tunic.local/api/v1/campaign/' + tunicCampaignId + '/', {
-            headers: {
-              'Authorization': 'Token 246bce7a5ddaed1fd497ed9b53d0a2281e3928f5'
-            }
-          }).then($scope.campaignRetrieved);
-        };
-
         $scope.tunicCampaignFormatter = function (tunicCampaignId) {
-            if ( ! (tunicCampaignId in $scope.tunicCampaignIdMapping)) {
-              $scope.getCampaign(tunicCampaignId);
+            if ($scope.model.tunicCampaign) {
+              return $scope.model.tunicCampaign.name + ' - ' + $scope.model.tunicCampaign.number;
             }
-            var obj = $scope.tunicCampaignIdMapping[tunicCampaignId];
-            return obj.name + ' - ' + obj.number;
         };
 
         $scope.searchCampaigns = function (searchTerm) {
-          return $http.get('http://tunic.local/api/v1/campaign/', {
-            params: {
-              search: searchTerm
-              // TODO: Ordering?
-            },
-            headers: {
-              'Authorization': 'Token 246bce7a5ddaed1fd497ed9b53d0a2281e3928f5'
-            }
-          }).then($scope.campaignListRetrieved);
+          return Campaign.simpleSearch(searchTerm);
         };
       },
       restrict: 'E',
