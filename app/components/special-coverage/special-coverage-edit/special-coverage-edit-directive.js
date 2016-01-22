@@ -14,7 +14,7 @@ angular.module('specialCoverage.edit.directive', [
 ])
   .directive('specialCoverageEdit', function (routes) {
     return {
-      controller: function (_, $location, $q, $scope, $http, Campaign, EXTERNAL_URL,
+      controller: function (_, $location, $q, $scope, $http, EXTERNAL_URL,
           SPECIAL_COVERAGE_LIST_REL_PATH, SpecialCoverage) {
 
         $scope.ACTIVE_STATES = SpecialCoverage.ACTIVE_STATES;
