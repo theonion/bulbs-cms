@@ -68,25 +68,25 @@ angular.module('specialCoverage.edit.directive', [
 
         // Maps ID to Object for formatting (since only tunic_campaign_id stored on SpecialCoverage object)
         $scope.tunicCampaignIdMapping = {};
-        $scope.campaignsRetrieved = function (response) {
-          response.data.results.forEach(function (result) {
-            $scope.tunicCampaignIdMapping[result.id] = result;
-          });
+        $scope.campaignListRetrieved = function (response) {
           var tunicCampaignIds = [];
           response.data.results.forEach(function (result) {
+            $scope.tunicCampaignIdMapping[result.id] = result;
             tunicCampaignIds.push(result.id);
           });
           return tunicCampaignIds;
         };
+
+        $scope.campaignRetrieved = function (result) {
+          $scope.tunicCampaignIdMapping[result.data.id] = result.data;
+        }
 
         $scope.getCampaign = function (tunicCampaignId) {
           return $http.get('http://tunic.local/api/v1/campaign/' + tunicCampaignId + '/', {
             headers: {
               'Authorization': 'Token 246bce7a5ddaed1fd497ed9b53d0a2281e3928f5'
             }
-          }).then(function (result) {
-            $scope.tunicCampaignIdMapping[result.data.id] = result.data;
-          });
+          }).then($scope.campaignRetrieved);
         };
 
         $scope.tunicCampaignFormatter = function (tunicCampaignId) {
@@ -106,7 +106,7 @@ angular.module('specialCoverage.edit.directive', [
             headers: {
               'Authorization': 'Token 246bce7a5ddaed1fd497ed9b53d0a2281e3928f5'
             }
-          }).then($scope.campaignsRetrieved);
+          }).then($scope.campaignListRetrieved);
         };
       },
       restrict: 'E',
