@@ -5,6 +5,7 @@ angular.module('specialCoverage.edit.directive', [
   'autocompleteBasic',
   'bulbsCmsApp.settings',
   'apiServices.campaign.factory',
+  'copyButton',
   'customSearch',
   'lodash',
   'specialCoverage.settings',
