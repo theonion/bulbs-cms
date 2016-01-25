@@ -1,7 +1,7 @@
 <top-bar
   logo-href="/cms/app/roles"
   save-function="saveModel"
-  save-disable-when="model.$dirty().length === 0 && !isNew">
+  save-disable-when="model.$dirty().length === 0 && !isNew && getDirtyRates().length === 0">
 </top-bar>
 
 <div id="roles-edit">
@@ -44,8 +44,7 @@
                 <input
                   type="text"
                   class="form-control"
-                  value="{{model.rates.flatRate.rate}}"
-                  ng-model="model.rates.flatRate.rate">
+                  ng-model="model.flat_rate.rate">
               </div>
             </div>
 
@@ -60,7 +59,7 @@
                 <input
                   type="text"
                   class="form-control"
-                  ng-model="model.rates.hourly.rate">
+                  ng-model="model.hourly_rate.rate">
                 <span class="input-group-btn">
                   <button class="btn btn-info">
                     /hr
@@ -77,7 +76,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="rate in model.rates.featureType">
+                  <tr ng-repeat="rate in model.feature_type_rates">
                     <td class="col-md-5">
                       {{ rate.featureType }}
                     </td>
