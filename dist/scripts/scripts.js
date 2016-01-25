@@ -3844,7 +3844,6 @@ angular.module('roles.edit.directive', [
 
         $scope.saveDirtyRates = function () {
           var dirtyRates = $scope.getDirtyRates();
-
           dirtyRates.forEach(function (rate) {
             rate.$save();
           });
@@ -3852,7 +3851,6 @@ angular.module('roles.edit.directive', [
 
         $scope.saveModel = function () {
           var promise;
-
           $scope.saveDirtyRates();
           if ($scope.model) {
             promise = $scope.model.$save().$asPromise().then(function (data) {
@@ -3863,7 +3861,6 @@ angular.module('roles.edit.directive', [
             deferred.reject();
             promise = deferred.promise;
           }
-
           return promise;
         };
       },
@@ -4099,7 +4096,7 @@ angular.module('specialCoverage.edit.directive', [
 ])
   .directive('specialCoverageEdit', function (routes) {
     return {
-      controller: function (_, $location, $q, $scope, Campaign, EXTERNAL_URL,
+      controller: function (_, $location, $q, $scope, $modal, Campaign, EXTERNAL_URL,
           SPECIAL_COVERAGE_LIST_REL_PATH, SpecialCoverage) {
 
         $scope.ACTIVE_STATES = SpecialCoverage.ACTIVE_STATES;
@@ -4149,6 +4146,14 @@ angular.module('specialCoverage.edit.directive', [
           }
 
           return promise;
+        };
+
+        $scope.previewLinkModal = function () {
+          return $modal.open({
+            templateUrl: routes.PARTIALS_URL + 'modals/preview-link-modal.html',
+            scope: $scope,
+            resolve: {}
+          });
         };
 
         $scope.searchCampaigns = function (searchTerm) {
@@ -5267,6 +5272,7 @@ angular.module('copyButton', [])
       scope: {
         buttonClassesDefault: '@',
         buttonClassesSuccess: '@',
+        buttonText: '@',
         content: '@'
       },
       templateUrl: routes.SHARED_URL + 'copy-button/copy-button.html'

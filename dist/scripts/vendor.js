@@ -1,4 +1,3 @@
-// rehash me
 /*!
  * jQuery JavaScript Library v2.1.4
  * http://jquery.com/
@@ -38221,7 +38220,7 @@ angular.module('ipCookie', ['ng']).
 factory('ipCookie', ['$document',
   function ($document) {
     'use strict';
-
+      
     function tryDecodeURIComponent(value) {
         try {
             return decodeURIComponent(value);
@@ -38257,7 +38256,7 @@ factory('ipCookie', ['$document',
             // Trying to delete a cookie; set a date far in the past
             if (expiresFor === -1) {
               options.expires = new Date('Thu, 01 Jan 1970 00:00:00 GMT');
-              // A new
+              // A new 
             } else if (options.expirationUnit !== undefined) {
               if (options.expirationUnit === 'hours') {
                 options.expires.setHours(options.expires.getHours() + expiresFor);
@@ -53846,7 +53845,7 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
               // Set the initial positioning.
               tooltip.css({ top: 0, left: 0, display: 'block' });
 
-              // Now we add it to the DOM because need some info about it. But it's not
+              // Now we add it to the DOM because need some info about it. But it's not 
               // visible yet anyway.
               if ( appendToBody ) {
                   $document.find( 'body' ).append( tooltip );
@@ -53874,7 +53873,7 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
               $timeout.cancel( popupTimeout );
               popupTimeout = null;
 
-              // And now we remove it from the DOM. However, if we have animation, we
+              // And now we remove it from the DOM. However, if we have animation, we 
               // need to wait for it to expire beforehand.
               // FIXME: this is a placeholder for a port of the transitions library.
               if ( scope.tt_animation ) {
@@ -54891,7 +54890,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
       //we need to propagate user's query so we can higlight matches
       scope.query = undefined;
 
-      //Declare the timeout promise var outside the function scope so that stacked calls can be cancelled later
+      //Declare the timeout promise var outside the function scope so that stacked calls can be cancelled later 
       var timeoutPromise;
 
       var scheduleSearchWithTimeout = function(inputValue) {
@@ -71820,7 +71819,7 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
 
 /**
  * jquery.Jcrop.js v0.9.12
- * jQuery Image Cropping Plugin - released under MIT License
+ * jQuery Image Cropping Plugin - released under MIT License 
  * Author: Kelly Hallman <khallman@gmail.com>
  * http://github.com/tapmodo/Jcrop
  * Copyright (c) 2008-2013 Tapmodo Interactive LLC {{{
@@ -71991,7 +71990,7 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
         if ((ord === 'move') && !options.allowMove) {
           return false;
         }
-
+        
         // Fix position of crop area when dragged the very first time.
         // Necessary when crop image is in a hidden element when page is loaded.
         docOffset = getPos($img);
@@ -72124,12 +72123,12 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
         $origimg.width($origimg[0].width);
         $origimg.height($origimg[0].height);
       } else {
-        // Obtain dimensions from temporary image in case the original is not loaded yet (e.g. IE 7.0).
+        // Obtain dimensions from temporary image in case the original is not loaded yet (e.g. IE 7.0). 
         var tempImage = new Image();
         tempImage.src = $origimg[0].src;
         $origimg.width(tempImage.width);
         $origimg.height(tempImage.height);
-      }
+      } 
 
       var $img = $origimg.clone().removeAttr('id').css(img_css).show();
 
@@ -72147,8 +72146,8 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
 
     var boundx = $img.width(),
         boundy = $img.height(),
-
-
+        
+        
         $div = $('<div />').width(boundx).height(boundy).addClass(cssClass('holder')).css({
         position: 'relative',
         backgroundColor: options.bgColor
@@ -72160,24 +72159,24 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
 
     var $img2 = $('<div />'),
 
-        $img_holder = $('<div />')
+        $img_holder = $('<div />') 
         .width('100%').height('100%').css({
           zIndex: 310,
           position: 'absolute',
           overflow: 'hidden'
         }),
 
-        $hdl_holder = $('<div />')
-        .width('100%').height('100%').css('zIndex', 320),
+        $hdl_holder = $('<div />') 
+        .width('100%').height('100%').css('zIndex', 320), 
 
-        $sel = $('<div />')
+        $sel = $('<div />') 
         .css({
           position: 'absolute',
           zIndex: 600
         }).dblclick(function(){
           var c = Coords.getFixed();
           options.onDblClick.call(api,c);
-        }).insertBefore($img).append($img_holder, $hdl_holder);
+        }).insertBefore($img).append($img_holder, $hdl_holder); 
 
     if (img_mode) {
 
@@ -72213,7 +72212,7 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
     // }}}
     // }}}
     // Internal Modules {{{
-    // Touch Module {{{
+    // Touch Module {{{ 
     var Touch = (function () {
       // Touch support detection function adapted (under MIT License)
       // from code by Jeffrey Sambells - http://github.com/iamamused/
@@ -72350,8 +72349,8 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
         // This function could use some optimization I think...
         var aspect = options.aspectRatio,
             min_x = options.minSize[0] / xscale,
-
-
+            
+            
             //min_y = options.minSize[1]/yscale,
             max_x = options.maxSize[0] / xscale,
             max_y = options.maxSize[1] / yscale,
@@ -72867,7 +72866,7 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
       {
         seehandles = false;
         $hdl_holder.hide();
-      }
+      } 
       //}}}
       function animMode(v) //{{{
       {
@@ -72878,13 +72877,13 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
           animating = false;
           enableHandles();
         }
-      }
+      } 
       //}}}
       function done() //{{{
       {
         animMode(false);
         refresh();
-      }
+      } 
       //}}}
       // Insert draggable elements {{{
       // Insert border divs for outline
@@ -72940,7 +72939,7 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
         done: done
       };
     }());
-
+    
     //}}}
     // Tracker Module {{{
     var Tracker = (function () {
@@ -72963,7 +72962,7 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
           $(document)
             .bind('mousemove.jcrop',trackMove)
             .bind('mouseup.jcrop',trackUp);
-      }
+      } 
       //}}}
       function toBack() //{{{
       {
@@ -72971,13 +72970,13 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
           zIndex: 290
         });
         $(document).unbind('.jcrop');
-      }
+      } 
       //}}}
       function trackMove(e) //{{{
       {
         onMove(mouseAbs(e));
         return false;
-      }
+      } 
       //}}}
       function trackUp(e) //{{{
       {
@@ -76210,7 +76209,7 @@ define('lodash-amd/modern/arrays/flatten',['../internals/baseFlatten', '../colle
 
 define('plugins/core/commands/indent',[],function () {
 
-
+  
 
   return function () {
     return function (scribe) {
@@ -76244,7 +76243,7 @@ define('plugins/core/commands/insert-list',[],function () {
    * unapplied, ensure that we enter a P element.
    */
 
-
+  
 
   return function () {
     return function (scribe) {
@@ -76371,7 +76370,7 @@ define('plugins/core/commands/insert-list',[],function () {
 
 define('plugins/core/commands/outdent',[],function () {
 
-
+  
 
   return function () {
     return function (scribe) {
@@ -76401,7 +76400,7 @@ define('plugins/core/commands/outdent',[],function () {
 
 define('plugins/core/commands/redo',[],function () {
 
-
+  
 
   return function () {
     return function (scribe) {
@@ -76434,7 +76433,7 @@ define('plugins/core/commands/redo',[],function () {
 
 define('plugins/core/commands/subscript',[],function () {
 
-
+  
 
   return function () {
     return function (scribe) {
@@ -76448,7 +76447,7 @@ define('plugins/core/commands/subscript',[],function () {
 
 define('plugins/core/commands/superscript',[],function () {
 
-
+  
 
   return function () {
     return function (scribe) {
@@ -76462,7 +76461,7 @@ define('plugins/core/commands/superscript',[],function () {
 
 define('plugins/core/commands/undo',[],function () {
 
-
+  
 
   return function () {
     return function (scribe) {
@@ -76512,7 +76511,7 @@ define('plugins/core/commands',[
   undo
 ) {
 
-
+  
 
   return {
     indent: indent,
@@ -76738,7 +76737,7 @@ define('lodash-amd/modern/collections/toArray',['../objects/isString', '../inter
 
 define('scribe-common/src/element',['lodash-amd/modern/collections/contains'], function (contains) {
 
-
+  
 
   // TODO: not exhaustive?
   var blockElementNames = ['P', 'LI', 'DIV', 'BLOCKQUOTE', 'UL', 'OL', 'H1',
@@ -76768,7 +76767,7 @@ define('scribe-common/src/element',['lodash-amd/modern/collections/contains'], f
 
 define('scribe-common/src/node',[], function () {
 
-
+  
 
   function isEmptyTextNode(node) {
     return (node.nodeType === Node.TEXT_NODE && node.textContent === '');
@@ -76855,7 +76854,7 @@ define('plugins/core/events',[
   observeDomChanges
 ) {
 
-
+  
 
   return function () {
     return function (scribe) {
@@ -77138,7 +77137,7 @@ define('plugins/core/formatters/html/replace-nbsp-chars',[],function () {
    * Chrome:
    */
 
-
+  
 
   return function () {
     return function (scribe) {
@@ -77264,7 +77263,7 @@ define('plugins/core/formatters/html/enforce-p-elements',[
    * that we do not end up in a pristine state.
    */
 
-
+  
 
   /**
    * Wrap consecutive inline elements and text nodes in a P element.
@@ -77368,7 +77367,7 @@ define('plugins/core/formatters/html/ensure-selectable-containers',[
    * CSS(?), as per: http://jsbin.com/gulob/2/edit?html,css,js,output)
    */
 
-
+  
 
   // http://www.w3.org/TR/html-markup/syntax.html#syntax-elements
   var html5VoidElements = ['AREA', 'BASE', 'BR', 'COL', 'COMMAND', 'EMBED', 'HR', 'IMG', 'INPUT', 'KEYGEN', 'LINK', 'META', 'PARAM', 'SOURCE', 'TRACK', 'WBR'];
@@ -77524,7 +77523,7 @@ define('plugins/core/formatters/plain-text/escape-html-characters',[
   escape
 ) {
 
-
+  
 
   return function () {
     return function (scribe) {
@@ -77536,7 +77535,7 @@ define('plugins/core/formatters/plain-text/escape-html-characters',[
 
 define('plugins/core/inline-elements-mode',[],function () {
 
-
+  
 
   // TODO: abstract
   function hasContent(rootNode) {
@@ -77656,7 +77655,7 @@ define('plugins/core/patches/commands/indent',[],function () {
    * adding a redundant `style` attribute to the created BLOCKQUOTE.
    */
 
-
+  
 
   var INVISIBLE_CHAR = '\uFEFF';
 
@@ -77718,7 +77717,7 @@ define('plugins/core/patches/commands/indent',[],function () {
 
 define('plugins/core/patches/commands/insert-html',['scribe-common/src/element'], function (element) {
 
-
+  
 
   return function () {
     return function (scribe) {
@@ -77781,7 +77780,7 @@ define('plugins/core/patches/commands/insert-html',['scribe-common/src/element']
 define('plugins/core/patches/commands/insert-list',['scribe-common/src/element',
         'scribe-common/src/node'], function (element, nodeHelpers) {
 
-
+  
 
   return function () {
     return function (scribe) {
@@ -77900,7 +77899,7 @@ define('plugins/core/patches/commands/outdent',[],function () {
    * Prevent Chrome from removing formatting of BLOCKQUOTE contents.
    */
 
-
+  
 
   return function () {
     return function (scribe) {
@@ -77988,7 +77987,7 @@ define('plugins/core/patches/commands/outdent',[],function () {
 
 define('plugins/core/patches/commands/create-link',[],function () {
 
-
+  
 
   return function () {
     return function (scribe) {
@@ -78027,7 +78026,7 @@ define('plugins/core/patches/commands/create-link',[],function () {
 
 define('plugins/core/patches/events',['scribe-common/src/element'], function (element) {
 
-
+  
 
   return function () {
     return function (scribe) {
@@ -78134,7 +78133,7 @@ define('plugins/core/patches',[
    * applying/unapplying commands — that is the job of the core commands.
    */
 
-
+  
 
   return {
     commands: {
@@ -78156,7 +78155,7 @@ define('plugins/core/set-root-p-element',[],function () {
    * a P.
    */
 
-
+  
 
   return function () {
     return function (scribe) {
@@ -78177,7 +78176,7 @@ define('plugins/core/set-root-p-element',[],function () {
 
 define('api/command-patch',[],function () {
 
-
+  
 
   return function (scribe) {
     function CommandPatch(commandName) {
@@ -78209,7 +78208,7 @@ define('api/command-patch',[],function () {
 
 define('api/command',[],function () {
 
-
+  
 
   return function (scribe) {
     function Command(commandName) {
@@ -78250,7 +78249,7 @@ define('api/command',[],function () {
 
 define('api/node',[],function () {
 
-
+  
 
   function Node(node) {
     this.node = node;
@@ -78297,7 +78296,7 @@ define('api/node',[],function () {
 
 define('api/selection',[],function () {
 
-
+  
 
   return function (scribe) {
     function Selection() {
@@ -78504,7 +78503,7 @@ define('api/selection',[],function () {
 
 define('api/simple-command',[],function () {
 
-
+  
 
   return function (api, scribe) {
     function SimpleCommand(commandName, nodeName) {
@@ -78542,7 +78541,7 @@ define('api',[
   buildSimpleCommand
 ) {
 
-
+  
 
   return function Api(scribe) {
     this.CommandPatch = buildCommandPatch(scribe);
@@ -78625,7 +78624,7 @@ define('lodash-amd/modern/objects/assign',['../internals/baseCreateCallback', '.
 
 define('transaction-manager',['lodash-amd/modern/objects/assign'], function (assign) {
 
-
+  
 
   return function (scribe) {
     function TransactionManager() {
@@ -78665,7 +78664,7 @@ define('transaction-manager',['lodash-amd/modern/objects/assign'], function (ass
 
 define('undo-manager',[],function () {
 
-
+  
 
   return function (scribe) {
 
@@ -78769,7 +78768,7 @@ define('lodash-amd/modern/arrays/pull',[], function() {
 
 define('event-emitter',['lodash-amd/modern/arrays/pull'], function (pull) {
 
-
+  
 
   // TODO: once
   // TODO: unit test
@@ -78841,7 +78840,7 @@ define('scribe',[
   EventEmitter
 ) {
 
-
+  
 
   function Scribe(el, options) {
     EventEmitter.call(this);
@@ -79108,7 +79107,7 @@ define('scribe-plugin-blockquote-command',[],function () {
    * Adds a command for using BLOCKQUOTEs.
    */
 
-
+  
 
   return function () {
     return function (scribe) {
@@ -79162,7 +79161,7 @@ define('scribe-plugin-blockquote-command',[],function () {
 //# sourceMappingURL=scribe-plugin-blockquote-command.js.map;
 define('scribe-plugin-curly-quotes',[],function () {
 
-
+  
 
   return function () {
 
@@ -79328,7 +79327,7 @@ define('scribe-plugin-curly-quotes',[],function () {
 //# sourceMappingURL=scribe-plugin-curly-quotes.js.map;
 define('scribe-plugin-formatter-plain-text-convert-new-lines-to-html',[],function () {
 
-
+  
 
   return function () {
     return function (scribe) {
@@ -79347,7 +79346,7 @@ define('scribe-plugin-heading-command',[],function () {
    * This plugin adds a command for headings.
    */
 
-
+  
 
   return function (level) {
     return function (scribe) {
@@ -79404,7 +79403,7 @@ define('scribe-plugin-intelligent-unlink-command',[],function () {
    * selection is collapsed, remove the containing A.
    */
 
-
+  
 
   return function () {
     return function (scribe) {
@@ -80836,7 +80835,7 @@ define('scribe-plugin-keyboard-shortcuts',[
   findKey
 ) {
 
-
+  
 
   return function (commandsToKeyboardShortcutsMap) {
     return function (scribe) {
@@ -80880,7 +80879,7 @@ define('scribe-plugin-link-ui',[],function () {
           placeHolder = '#replaceme';
       var $results = $('.search-results', $linkTools);
 
-      // this provides a way to externally udpate the results element.
+      // this provides a way to externally udpate the results element. 
       var searchHandler = config.searchHandler || function(term, resultsElement) { };
 
       linkPromptCommand.nodeName = 'A';
@@ -80889,9 +80888,9 @@ define('scribe-plugin-link-ui',[],function () {
         var cmd = this,
           selection = new scribe.api.Selection();
         if (!selection.range.collapsed) {
-          scribe._skipFormatters = true; // This is a little fucked...
-          scribe.api.SimpleCommand.prototype.execute.call(cmd, placeHolder);
-          showInput($('a[href*=' + placeHolder + ']'));
+          scribe._skipFormatters = true; // This is a little fucked... 
+          scribe.api.SimpleCommand.prototype.execute.call(cmd, placeHolder);  
+          showInput($('a[href*=' + placeHolder + ']')); 
         }
       };
 
@@ -81011,8 +81010,8 @@ define('scribe-plugin-link-ui',[],function () {
   };
 });
 /*
-
-  This is lifted from
+  
+  This is lifted from 
 
 */
 
@@ -81064,7 +81063,7 @@ define('scribe-plugin-link-ui',[],function () {
       }
 
 
-      // Do not sanitize blocks that match
+      // Do not sanitize blocks that match 
       if (this.config.skipSanitization(node)) {
         return;
       }
@@ -82825,7 +82824,7 @@ define('scribe-plugin-sanitizer',[
    * scribe, adhering to a whitelist of allowed tags and attributes.
    */
 
-
+  
 
   return function (config) {
     // We extend the config to let through Scribe position markers,
@@ -83884,7 +83883,7 @@ define('lodash-amd/modern/collections/contains',['../internals/baseIndexOf', '..
 
 define('scribe-common/src/element',['lodash-amd/modern/collections/contains'], function (contains) {
 
-
+  
 
   // TODO: not exhaustive?
   var blockElementNames = ['P', 'LI', 'DIV', 'BLOCKQUOTE', 'UL', 'OL', 'H1',
@@ -83914,7 +83913,7 @@ define('scribe-common/src/element',['lodash-amd/modern/collections/contains'], f
 
 define('scribe-plugin-smart-lists',['scribe-common/src/element'], function (element) {
 
-
+  
 
   return function () {
 
@@ -84042,7 +84041,7 @@ define('scribe-plugin-smart-lists',['scribe-common/src/element'], function (elem
 //# sourceMappingURL=scribe-plugin-smart-lists.js.map;
 define('scribe-plugin-toolbar',[],function () {
 
-
+  
 
   return function (toolbarNode) {
     return function (scribe) {
@@ -84515,13 +84514,13 @@ define('scribe-plugin-youtube',[],function () {
           if (youtube_id) {
             callback(
               {
-                "youtube_id": youtube_id,
+                "youtube_id": youtube_id, 
                 "caption": ""
               }
             );
           }
         }
-
+        
         function edit(block, callback) {
           var url = prompt("Youtube URL:", $(block).attr("data-youtube-id") || "");
           var youtube_id  = parseYoutube(url);
@@ -84529,7 +84528,7 @@ define('scribe-plugin-youtube',[],function () {
             callback(
               block,
               {
-                "youtube_id": youtube_id,
+                "youtube_id": youtube_id, 
                 "caption": $(".caption", block).html()
               }
             );
@@ -84616,7 +84615,7 @@ define('scribe-plugin-embed',[],function () {
       function getSize() {
         var value = 'original';
         if ($sizeInput.length > 0) {
-          $sizeInput.val().split("-")[0];
+          $sizeInput.val().split("-")[0]; 
         }
         return value;
       }
@@ -84624,7 +84623,7 @@ define('scribe-plugin-embed',[],function () {
       function getCrop() {
         var value = 'original';
         if ($sizeInput.length > 0) {
-          $sizeInput.val().split("-")[1];
+          $sizeInput.val().split("-")[1]; 
         }
         return value;
       }
@@ -84726,7 +84725,7 @@ define('scribe-plugin-onion-video',[],function () {
 
 
       function insert(callback) {
-
+        
         //TODO: Show some kind of use status while waiting for the initial response.
 
         return config.insertDialog().then(
@@ -84812,7 +84811,7 @@ define('link-formatter',[
 
   // http://www.w3.org/TR/html-markup/syntax.html#syntax-elements
 
-
+  
   return function (config) {
     return function (scribe) {
 
@@ -84842,7 +84841,7 @@ define('link-formatter',[
             url.substr(0, 7) !== "http://" &&
             url.substr(0, 8) !== "https://" &&
             url.substr(0, 7) !== "mailto:" &&
-            url.substr(0, 1) !== "/"
+            url.substr(0, 1) !== "/" 
             ) {
             // check for email, but default to http
             if (url.indexOf("@") != -1) {
@@ -84951,7 +84950,7 @@ define('paste-from-word',['scribe-common/src/element'], function (scribeElement)
 
       function traverse(parentNode) {
         var node = parentNode.firstElementChild;
-
+        
         while (node) {
           var nextNode = node.nextElementSibling;
 
@@ -84991,7 +84990,7 @@ define('paste-from-word',['scribe-common/src/element'], function (scribeElement)
         // Remove comments, scripts (e.g., msoShowComment), XML tag, VML content,
         // MS Office namespaced tags, and a few other tags
         html = html.replace(/<(!|script[^>]*>.*?<\/script(?=[>\s])|\/?(\?xml(:\w+)?|img|meta|link|style|\w:\w+)(?=[\s\/>]))[^>]*>/gi, '');
-
+        
         // Now let's use this thing as a doc.
         var bin = document.createElement('div');
         bin.innerHTML = html;
@@ -85014,7 +85013,7 @@ define('paste-sanitize',['scribe-common/src/element'], function (scribeElement) 
 
       function traverse(parentNode) {
         var node = parentNode.firstElementChild;
-
+        
         while (node) {
           var nextNode = node.nextElementSibling;
 
@@ -115312,7 +115311,7 @@ $templateCache.put('src/videohub-client/videohub-suggest/videohub-picker-directi
  * @see {@link https://github.com/zeroclipboard/zeroclipboard/issues/511}
  * @see {@link http://zeroclipboard.org/test-iframes.html}
  *
- * @returns `true` (is sandboxed), `false` (is not sandboxed), or `null` (uncertain)
+ * @returns `true` (is sandboxed), `false` (is not sandboxed), or `null` (uncertain) 
  * @private
  */
   var _detectSandbox = function(doNotReassessFlashSupport) {
