@@ -86,7 +86,6 @@ angular.module('roles.edit.directive', [
 
         $scope.saveDirtyRates = function () {
           var dirtyRates = $scope.getDirtyRates();
-
           dirtyRates.forEach(function (rate) {
             rate.$save();
           });
@@ -94,7 +93,6 @@ angular.module('roles.edit.directive', [
 
         $scope.saveModel = function () {
           var promise;
-
           $scope.saveDirtyRates();
           if ($scope.model) {
             promise = $scope.model.$save().$asPromise().then(function (data) {
@@ -105,7 +103,6 @@ angular.module('roles.edit.directive', [
             deferred.reject();
             promise = deferred.promise;
           }
-
           return promise;
         };
       },

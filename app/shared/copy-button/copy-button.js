@@ -17,6 +17,7 @@ angular.module('copyButton', [])
       scope: {
         buttonClassesDefault: '@',
         buttonClassesSuccess: '@',
+        buttonText: '@',
         content: '@'
       },
       templateUrl: routes.SHARED_URL + 'copy-button/copy-button.html'

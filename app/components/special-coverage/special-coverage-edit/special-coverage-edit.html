@@ -17,7 +17,7 @@
         <label for="specialCoverageName">Name</label>
         <input id="specialCoverageName" type="text" ng-model="model.name" class="form-control" required>
       </div>
-      <div class="col-md-7">
+      <div class="col-md-6">
         <label for="specialCoverageSlug">List URL</label>
         <div class="input-group">
           <span class="input-group-addon">{{ LIST_URL }}</span>
@@ -27,6 +27,14 @@
               content="{{ LIST_URL + model.slug }}">
           </copy-button>
         </div>
+      </div>
+      <div class="clearfix col-md-3 top25">
+        <button
+            class="btn btn-primary pull-left"
+            ng-click="previewLinkModal()">
+          <i class="glyphicon glyphicon-plus"></i>
+            Preview Link
+        </button>
       </div>
     </div>
     <div class="row">
