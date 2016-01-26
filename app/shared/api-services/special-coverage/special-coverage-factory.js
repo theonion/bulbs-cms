@@ -4,10 +4,11 @@ angular.module('apiServices.specialCoverage.factory', [
   'apiServices',
   'apiServices.campaign.factory',
   'apiServices.mixins.fieldDisplay',
+  'cms.tunic.config',
   'filters.moment',
   'VideohubClient.api'
 ])
-  .factory('SpecialCoverage', function (_, $http, $parse, restmod, Video) {
+  .factory('SpecialCoverage', function (_, $http, $parse, $q, restmod, TunicConfig, Video) {
     var ACTIVE_STATES = {
       INACTIVE: 'Inactive',
       PROMOTED: 'Pin to HP'
@@ -83,7 +84,6 @@ angular.module('apiServices.specialCoverage.factory', [
         'after-fetch': function () {
           // auto fetch all video records when first fetching
           this.$loadVideosData();
-          this.$loadTunicCampaign();
         },
         'after-save': function () {
           // auto fetch all video records when saving/updating
@@ -110,15 +110,22 @@ angular.module('apiServices.specialCoverage.factory', [
            */
           $loadTunicCampaign: function () {
             if (_.isNumber(this.tunicCampaignId)) {
-              var _this = this;
-              $http.get('http://tunic.local/api/v1/campaign/' + this.tunicCampaignId + '/', {
-                headers: {
-                  'Authorization': 'Token 246bce7a5ddaed1fd497ed9b53d0a2281e3928f5'
-                }
-              }).then(function (result) {
-                _this.tunicCampaign = result.data;
+              return $http.get(TunicConfig.buildBackendApiUrl('campaign/' + this.tunicCampaignId + '/')).then(function (result) {
+                return result.data;
               });
             }
+            return $q.reject();
+          },
+          /**
+           * Load campaign search results from Tunic endpoint
+           */
+          $searchCampaigns: function (params) {
+
+            return $http.get(TunicConfig.buildBackendApiUrl('campaign/'), {
+              params: params,
+            }).then(function (response) {
+              return response.data.results;
+            });
           },
           /**
            * Add a video by id.

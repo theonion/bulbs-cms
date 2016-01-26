@@ -107,7 +107,6 @@
         <label for="specialCoverageCampaign">Sponsor Campaign</label>
         <autocomplete-basic
             class="form-control"
-            ng-if="typeof(model.tunicCampaignId) !== 'number' || typeof(model.tunicCampaign.id) === 'number'"
             ng-model="model.tunicCampaignId"
             item-display-formatter="tunicCampaignFormatter(item)"
             on-select="$parent.needsSave = true"
