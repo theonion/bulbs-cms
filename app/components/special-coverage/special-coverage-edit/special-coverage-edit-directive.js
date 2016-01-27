@@ -80,6 +80,7 @@ angular.module('specialCoverage.edit.directive', [
             scope: $scope,
             resolve: {}
           });
+        };
 
         $scope.tunicCampaignFormatter = function (campaignId) {
           if (campaignId in $scope.tunicCampaignIdMapping) {

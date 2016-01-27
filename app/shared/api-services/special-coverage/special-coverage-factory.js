@@ -89,10 +89,6 @@ angular.module('apiServices.specialCoverage.factory', [
           // auto fetch all video records when saving/updating
           this.$loadVideosData();
         },
-        // TODO
-        //'before-save': function () {
-        //  this.$ripOutTunicCampaign();
-        //}
       },
 
       $extend: {
