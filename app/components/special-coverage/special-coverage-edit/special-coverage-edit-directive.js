@@ -85,7 +85,7 @@ angular.module('specialCoverage.edit.directive', [
         $scope.tunicCampaignFormatter = function (campaignId) {
           if (campaignId in $scope.tunicCampaignIdMapping) {
             var campaign = $scope.tunicCampaignIdMapping[campaignId];
-            return campaign.name + " - " + campaign.number;
+            return campaign.name + ' - ' + campaign.number;
           }
         };
 
@@ -95,7 +95,7 @@ angular.module('specialCoverage.edit.directive', [
               $scope.tunicCampaignIdMapping[campaign.id] = campaign;
             });
             // Formatter expects list of IDs
-            return campaigns.map(function (campaign) { return campaign.id });
+            return campaigns.map(function (campaign) { return campaign.id; });
           });
         };
       },
