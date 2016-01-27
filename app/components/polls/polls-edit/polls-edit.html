@@ -1,24 +1,23 @@
 <top-bar
-  logo-href="/cms/app/polls/"
-  save-function="saveModel"
-  save-disable-when="model.$dirty().length === 0 && !isNew">
+logo-href="/cms/app/polls/"
+save-function="saveModel"
+save-disable-when="model.$dirty().length === 0 && !isNew">
 </top-bar>
 
-<div class='poll-title'>
-  <div class='row col-md-8'>
-    <div class="form-group col-md-6">
-      <label for="pollTitle">Poll Name</label>
-      <input
-      id="pollTitle"
-      type="text"
-      ng-model="model.title"
-      class="form-control">
-    </div>
+<div class='row poll-name'>
+  <div class='col-md-4'></div>
+  <div class="form-group col-md-4">
+    <label for="pollTitle">Poll Name</label>
+    <input id="pollTitle"
+    type="text"
+    ng-model="model.title"
+    class="form-control">
   </div>
 </div>
 
-<div class='row col-md-8'>
-  <div class="form-group col-md-6">
+<div class='row poll-end-date'>
+  <div class='col-md-4'></div>
+  <div class="form-group col-md-4">
     <label for="pollEndDate">Poll End Date</label>
     <div class="input-group">
       <input
@@ -37,7 +36,7 @@
         </button>
         <button
           class="btn btn-danger"
-          ng-click="model.startDate = null;">
+          ng-click="model.endDate = null;">
           <i class="glyphicon glyphicon-remove"></i>
         </button>
       </span>
@@ -45,33 +44,54 @@
   </div>
 </div>
 
-<div class='poll-question'>
-  <div class='row col-md-8'>
-    <div class="form-group col-md-6">
-      <label for="pollQuestionText">Poll Question</label>
-      <textarea
+<div class='row poll-question'>
+  <div class='col-md-4'></div>
+  <div class="form-group col-md-4">
+    <label for="pollQuestionText">Question</label>
+    <textarea
       id="pollQuestionText"
       ng-model="model.questionText"
       class="form-control">
     </textarea>
-    </div>
   </div>
 </div>
 
-<div class='answers'>
-  <div class='row col-md-8'>
-    <label class='row' for="pollAnswers">Responses</label>
-    <div class="form-group col-md-6">
-      <fieldset data-ng-repeat="answer in model.answers">
-      <div class='answer-text'>Response Text</div>
-      <textarea
-        ng-model="answer.answerText"
-        class="form-control">
-      </textarea>
-      <button class='remove' ng-click="removeAnswer(answer.id)">-</button>
-    </fieldset>
-      <button class='addfields' ng-click="addAnswer()">+</button>
+<center>
+  <hr class='polls-edit'>
+</center>
 
+<div class='row'>
+  <div class='col-md-4'></div>
+    <div class='col-md-4'>
+      <h4 for="pollAnswers">Responses</h4>
+    </div>
+  <div>
+    <fieldset
+      class='row col-md-12 response-text-field'
+      data-ng-repeat="answer in model.answers">
+      <div class='col-md-4'></div>
+      <div class='col-md-8'>
+        <label for='answerText'>Response Text</label>
+        <div class="response-text form-inline">
+          <textarea
+            class="form-control"
+            ng-model='answer.answerText'
+            ng-click='removeAnswer(answer.id)'>
+          </textarea>
+          <button
+            class="btn btn-link btn-lg"
+            ng-click="removeAnswer(answer.id)">
+            <i class="glyphicon glyphicon-minus-sign"></i>
+          </button>
+        </div>
+      </fieldset>
     </div>
   </div>
+</div>
+<div class="row">
+  <div class='col-md-4'></div>
+  <button class='add-answer btn btn-link btn-lg'
+    ng-click="addAnswer()">
+    <i class="glyphicon glyphicon-plus-sign"></i>
+  </button>
 </div>
