@@ -6,15 +6,16 @@ module.exports = function(config) {
 
   // sauce labs custom launchers (https://saucelabs.com/platforms)
   var customLaunchers = {
+    // Only supporting Chrome
     'SL_Chrome': {
       base: 'SauceLabs',
       browserName: 'chrome',
       version: '38'
     },
-    'SL_Firefox': {
-      base: 'SauceLabs',
-      browserName: 'firefox'
-    },
+    //'SL_Firefox': {
+    //  base: 'SauceLabs',
+    //  browserName: 'firefox'
+    //},
     // 'SL_Safari': {
     //   base: 'SauceLabs',
     //   browserName: 'safari',
