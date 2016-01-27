@@ -65,7 +65,8 @@ angular.module('cms.tunic.config', [
            */
           shouldBeIntercepted: function (url) {
             console.log(typeof url);
-            return url.startsWith(backendRoot + apiPath);
+            return false;
+            //return url.startsWith(backendRoot + apiPath);
           }
         };
       };
