@@ -61,6 +61,26 @@ angular.module('polls.edit.directive', [
           return promise;
         };
 
+        // adding and removing response text logic
+
+        $scope.idIncrementer = 0;
+
+        $scope.model.answers = [
+          {id: $scope.idIncrementer++},
+          {id: $scope.idIncrementer++},
+          {id: $scope.idIncrementer++}
+         ]
+
+        $scope.addAnswer = function () {
+          $scope.model.answers.push({'id': $scope.idIncrementer++});
+        };
+
+        $scope.removeAnswer = function (answerId) {
+          _.remove($scope.model.answers, function (a) {
+            return a.id === answerId;
+          });
+        };
+
       },
       restrict: 'E',
       scope: { getModelId: '&modelId' },

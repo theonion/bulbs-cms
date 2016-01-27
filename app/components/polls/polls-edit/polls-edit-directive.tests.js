@@ -33,9 +33,36 @@ describe('Directive: pollsEdit', function () {
   });
 
   it('has appropriate poll fields', function () {
-    expect(element.html()).toContain('Poll Name');
-    expect(element.html()).toContain('Poll End Date');
-    expect(element.html()).toContain('Poll Question');
-    expect(element.html()).toContain('Response Text');
+    expect(element.html()).toContain('<div class="poll-title">');
+    expect(element.html()).toContain('<label for="pollEndDate">');
+    expect(element.html()).toContain('<div class="poll-question">');
+    expect(element.html()).toContain('<div class="answers">');
+  });
+
+  it('scope initializes with 3 empty answer objects', function () {
+    var response = [jasmine.any(Object), jasmine.any(Object), jasmine.any(Object)];
+    expect(scope.model.answers).toEqual(response);
+  });
+
+  it('adds answer text fields', function () {
+    // sanity check
+    var answerTextAreaCount = element.find('.answer-text').length;
+    expect(answerTextAreaCount).toEqual(3);
+
+    scope.addAnswer();
+    scope.$apply();
+    answerTextAreaCount = element.find('.answer-text').length;
+    expect(answerTextAreaCount).toEqual(4);
+  });
+
+  it('removes answer text fields', function () {
+    // sanity check
+    var answerTextAreaCount = element.find('.answer-text').length;
+    expect(answerTextAreaCount).toEqual(3);
+
+    scope.removeAnswer(0);
+    scope.$apply();
+    answerTextAreaCount = element.find('.answer-text').length;
+    expect(answerTextAreaCount).toEqual(2);
   });
 });

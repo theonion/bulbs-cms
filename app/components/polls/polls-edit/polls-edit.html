@@ -1,0 +1,77 @@
+<top-bar
+  logo-href="/cms/app/polls/"
+  save-function="saveModel"
+  save-disable-when="model.$dirty().length === 0 && !isNew">
+</top-bar>
+
+<div class='poll-title'>
+  <div class='row col-md-8'>
+    <div class="form-group col-md-6">
+      <label for="pollTitle">Poll Name</label>
+      <input
+      id="pollTitle"
+      type="text"
+      ng-model="model.title"
+      class="form-control">
+    </div>
+  </div>
+</div>
+
+<div class='row col-md-8'>
+  <div class="form-group col-md-6">
+    <label for="pollEndDate">Poll End Date</label>
+    <div class="input-group">
+      <input
+      id="pollEndDate"
+      type="text"
+      value="{{ model.closeDate.format('MM/DD/YY h:mm:ss a') }}"
+      class="form-control"
+      readonly>
+      <span class="input-group-btn">
+        <button
+          class="btn btn-info"
+          datetime-selection-modal-opener
+          ng-model="model.closeDate"
+          modal-title="Poll End Date">
+          <i class="glyphicon glyphicon-calendar"></i>
+        </button>
+        <button
+          class="btn btn-danger"
+          ng-click="model.startDate = null;">
+          <i class="glyphicon glyphicon-remove"></i>
+        </button>
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class='poll-question'>
+  <div class='row col-md-8'>
+    <div class="form-group col-md-6">
+      <label for="pollQuestionText">Poll Question</label>
+      <textarea
+      id="pollQuestionText"
+      ng-model="model.questionText"
+      class="form-control">
+    </textarea>
+    </div>
+  </div>
+</div>
+
+<div class='answers'>
+  <div class='row col-md-8'>
+    <label class='row' for="pollAnswers">Responses</label>
+    <div class="form-group col-md-6">
+      <fieldset data-ng-repeat="answer in model.answers">
+      <div class='answer-text'>Response Text</div>
+      <textarea
+        ng-model="answer.answerText"
+        class="form-control">
+      </textarea>
+      <button class='remove' ng-click="removeAnswer(answer.id)">-</button>
+    </fieldset>
+      <button class='addfields' ng-click="addAnswer()">+</button>
+
+    </div>
+  </div>
+</div>
