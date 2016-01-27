@@ -64,6 +64,7 @@ angular.module('cms.tunic.config', [
            * @returns {boolean} true if url should be intercepted, false otherwise.
            */
           shouldBeIntercepted: function (url) {
+            console.log(typeof url);
             return url.startsWith(backendRoot + apiPath);
           }
         };
