@@ -4,12 +4,8 @@ describe('Directive: specialCoverageEdit', function () {
 
   var
     $q,
-    //deferred,
-    $httpBackend,
     $directiveScope,
-    $rootScope,
-    templateTypes,
-    EXTERNAL_URL;
+    $rootScope;
 
   beforeEach(function () {
     module('bulbsCmsApp');
@@ -17,10 +13,8 @@ describe('Directive: specialCoverageEdit', function () {
     module('jsTemplates');
 
     angular.module('specialCoverage.edit').constant('EXTERNAL_URL', 'onion.local');
-    //angular.module('specialCoverage.edit.directive').constant('EXTERNAL_URL', 'onion.local');
 
-    inject(function ($, _$q_, $compile, _$httpBackend_, _$rootScope_) {
-      $httpBackend = _$httpBackend_;
+    inject(function ($, _$q_, $compile, _$rootScope_) {
       $q = _$q_;
       $rootScope = _$rootScope_;
 
