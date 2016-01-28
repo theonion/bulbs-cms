@@ -136,13 +136,15 @@ module.exports = function(config) {
     config.sauceLabs = {
       build: buildLabel,
       startConnect: false,
-      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER
+      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
     };
 
     config.customLaunchers = customLaunchers;
     config.browsers = Object.keys(customLaunchers);
     config.singleRun = true;
     config.reporters.push('saucelabs');
+    // Default 10000 times out often on public Sauce servers
+    config.browserNoActivityTimeout = 30000;
 
   } else {
     // this is local, just use Chrome
