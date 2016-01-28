@@ -28,58 +28,41 @@ angular.module('polls.edit.directive', [
           $scope.model = Poll.$find($routeParams.id);
         }
 
-        window.onbeforeunload = function (e) {
-          if (!_.isEmpty($scope.model.$dirty()) ||
-                $scope.isNew ||
-                $scope.needsSave) {
-            // unsaved changes, show confirmation alert
+        var removeUnsavedChangesGuard = $window.addEventListener('onbeforeunload',  function (e) {
+          if(!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
             return 'You have unsaved changes.';
           }
-        };
-
-        $scope.$on('$destroy', function() {
-          // ensure even is cleaned up when we leave
-          delete window.onbeforeunload;
         });
 
-        // set up save state function
-        $scope.saveModel = function () {
-          var promise;
+      $scope.$on('$destroy', removeUnsavedChangesGuard);
 
-          if ($scope.model) {
-            // have model, use save promise as deferred
-            promise = $scope.model.$save().$asPromise().then(function (data) {
-              $location.path('/cms/app/polls/edit/' + data.id + '/');
-            });
-          } else {
-            // no model, this is an error, defer and reject
-            var deferred = $q.defer();
-            deferred.reject();
-            promise = deferred.promise;
-          }
-
-          return promise;
-        };
-
-        // adding and removing response text logic
-
-        $scope.idIncrementer = 0;
-
-        $scope.model.answers = [
-          {id: $scope.idIncrementer++},
-          {id: $scope.idIncrementer++},
-          {id: $scope.idIncrementer++}
-         ]
-
-        $scope.addAnswer = function () {
-          $scope.model.answers.push({'id': $scope.idIncrementer++});
-        };
-
-        $scope.removeAnswer = function (answerId) {
-          _.remove($scope.model.answers, function (a) {
-            return a.id === answerId;
+      $scope.saveModel = function () {
+        if ($scope.model) {
+          return $scope.model.$save().$asPromise().then(function (data) {
+            $location.path('/cms/app/polls/edit/' + data.id + '/');
           });
-        };
+        }
+        return $q.reject();
+      };
+
+      // adding and removing response text logic
+      $scope.idIncrementer = 0;
+
+      $scope.model.answers = [
+        {id: $scope.idIncrementer++},
+        {id: $scope.idIncrementer++},
+        {id: $scope.idIncrementer++}
+      ];
+
+      $scope.addAnswer = function () {
+        $scope.model.answers.push({id: $scope.idIncrementer++});
+      };
+
+      $scope.removeAnswer = function (answerId) {
+        _.remove($scope.model.answers, function (a) {
+          return a.id === answerId;
+        });
+      };
 
       },
       restrict: 'E',
