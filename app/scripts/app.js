@@ -35,7 +35,7 @@ angular.module('bulbsCmsApp', [
   'OnionEditor',
   // shared
   'contentServices',
-  //'cms.tunic',
+  'cms.tunic',
   // components
   'bettyEditable',
   'bugReporter',
