@@ -88,7 +88,7 @@ angular.module('apiServices.specialCoverage.factory', [
         'after-save': function () {
           // auto fetch all video records when saving/updating
           this.$loadVideosData();
-        },
+        }
       },
 
       $extend: {
