@@ -1,0 +1,95 @@
+<top-bar
+    logo-href="/cms/app/polls/"
+    save-function="saveModel"
+    save-disable-when="model.$dirty().length === 0 && !isNew">
+</top-bar>
+
+<div class="row poll-name">
+  <div class="col-md-4"></div>
+  <div class="form-group col-md-4">
+    <label for="pollTitle">Poll Name</label>
+    <input id="pollTitle"
+    type="text"
+    ng-model="model.title"
+    class="form-control">
+  </div>
+</div>
+
+<div class="row poll-end-date">
+  <div class="col-md-4"></div>
+  <div class="form-group col-md-4">
+    <label for="pollEndDate">Poll End Date</label>
+    <div class="input-group">
+      <input
+      id="pollEndDate"
+      type="text"
+      value="{{ model.closeDate.format('MM/DD/YY h:mm:ss a') }}"
+      class="form-control"
+      readonly>
+      <span class="input-group-btn">
+        <button
+          class="btn btn-info"
+          datetime-selection-modal-opener
+          ng-model="model.closeDate"
+          modal-title="Poll End Date">
+          <i class="fa fa-calendar"></i>
+        </button>
+        <button
+          class="btn btn-danger"
+          ng-click="model.endDate = null;">
+          <i class="fa fa-times"></i>
+        </button>
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="row poll-question">
+  <div class="col-md-4"></div>
+  <div class="form-group col-md-4">
+    <label for="pollQuestionText">Question</label>
+    <textarea
+      id="pollQuestionText"
+      ng-model="model.questionText"
+      class="form-control">
+    </textarea>
+  </div>
+</div>
+
+<center>
+  <hr class="polls-edit">
+</center>
+
+<div class="row">
+  <div class="col-md-4"></div>
+    <div class="col-md-4">
+      <h4 for="pollAnswers">Responses</h4>
+    </div>
+  <div>
+    <fieldset
+      class="row col-md-12 response-text-field"
+      data-ng-repeat="answer in model.answers">
+      <div class="col-md-4"></div>
+      <div class="col-md-8">
+        <label for="answerText">Response Text</label>
+        <div class="answer-text form-inline">
+          <textarea
+            class="form-control"
+            ng-model="answer.answerText"
+            ng-click="removeAnswer(answer.id)">
+          </textarea>
+          <a
+            ng-click="removeAnswer(answer.id)">
+            <i class="fa fa-minus-circle"></i>
+          </a>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4"></div>
+  <a class="add-answer" ng-click="addAnswer()">
+    <i class="fa fa-plus-circle"></i>
+  </a>
+</div>
