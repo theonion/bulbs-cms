@@ -136,7 +136,7 @@ module.exports = function(config) {
     config.sauceLabs = {
       build: buildLabel,
       startConnect: false,
-      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
+      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER
     };
 
     config.customLaunchers = customLaunchers;
