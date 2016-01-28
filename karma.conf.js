@@ -12,16 +12,6 @@ module.exports = function(config) {
       browserName: 'chrome',
       version: '47'
     },
-    //'SL_Firefox': {
-    //  base: 'SauceLabs',
-    //  browserName: 'firefox'
-    //},
-    // 'SL_Safari': {
-    //   base: 'SauceLabs',
-    //   browserName: 'safari',
-    //   platform: 'OS X 10.9',
-    //   version: '7'
-    // }
   };
 
   config.set({
