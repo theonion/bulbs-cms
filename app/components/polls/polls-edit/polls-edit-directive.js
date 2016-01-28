@@ -28,13 +28,17 @@ angular.module('polls.edit.directive', [
           $scope.model = Poll.$find($routeParams.id);
         }
 
-        var removeUnsavedChangesGuard = $window.addEventListener('onbeforeunload',  function (e) {
+        window.onbeforeunload = function (e) {
           if(!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
+            // show confirmation alert
             return 'You have unsaved changes.';
           }
-        });
+        };
 
-      $scope.$on('$destroy', removeUnsavedChangesGuard);
+        $scope.$on('$destroy', function () {
+          // remove alert when we go
+          delete window.onbeforeunload;
+        });
 
       $scope.saveModel = function () {
         if ($scope.model) {
