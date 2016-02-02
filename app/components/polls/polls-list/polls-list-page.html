@@ -1,0 +1,30 @@
+<nav-bar view="nav"></nav-bar>
+
+<polls-list>
+  <div class="container col-xs-offset-1 col-xs-10">
+
+    <list-page
+        cms-page="polls"
+        filter-buttons="[{
+          title: 'Draft',
+          params: {
+            active: false
+          }
+        }, {
+          title: 'Active',
+          active: true,
+          params: {
+            active: true
+          }
+        }, {
+          title: 'Closed',
+          params: {
+            active: false
+          }
+        }]"
+        search-parameter="search"
+        model-factory="modelFactory"
+        tool-copy-content="'{{ LIST_URL }}' + record.slug ">
+    </list-page>
+  </div>
+</polls-list>
