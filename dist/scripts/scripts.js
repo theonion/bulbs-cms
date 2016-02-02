@@ -255,12 +255,14 @@ angular.module('bulbsCmsApp', [
   'OnionEditor',
   // shared
   'contentServices',
+  'cms.tunic',
   // components
   'bettyEditable',
   'bugReporter',
   'campaigns',
   'filterWidget',
   'filterListWidget',
+  'polls',
   'promotedContent',
   'statusFilter',
   'templateTypeField',
@@ -324,6 +326,7 @@ angular.module('bulbsCmsApp', [
   $httpProvider.interceptors.push('BugReportInterceptor');
   $httpProvider.interceptors.push('PermissionsInterceptor');
   $httpProvider.interceptors.push('BadRequestInterceptor');
+  $httpProvider.interceptors.push('TunicInterceptor');
 })
 .run(function ($rootScope, $http, $cookies) {
   // set the CSRF token here
@@ -2440,6 +2443,130 @@ angular.module('saveButton.directive', [
 
 'use strict';
 
+angular.module('polls.edit.directive', [
+  'apiServices.poll.factory',
+  'BettyCropper',
+  'lodash',
+  'saveButton.directive',
+  'topBar'
+]).constant('RESPONSE_TYPES', [
+  {
+    name: 'Text Only',
+    value: 'Text'
+  },
+  {
+    name: 'Image + Text',
+    value: 'Image'
+  }
+])
+  .directive('pollsEdit', function (routes) {
+    return {
+      templateUrl: routes.COMPONENTS_URL + 'polls/polls-edit/polls-edit.html',
+      controller: function (_, $location, $q, $routeParams, $scope, $window, Poll) {
+        // populate model for use
+        if ($routeParams.id === 'new') {
+          $scope.model = Poll.$build();
+          $scope.isNew = true;
+        } else {
+          $scope.model = Poll.$find($routeParams.id);
+        }
+
+        window.onbeforeunload = function (e) {
+          if(!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
+            // show confirmation alert
+            return 'You have unsaved changes.';
+          }
+        };
+
+        $scope.$on('$destroy', function () {
+          // remove alert when we go
+          delete window.onbeforeunload;
+        });
+
+      $scope.saveModel = function () {
+        if ($scope.model) {
+          return $scope.model.$save().$asPromise().then(function (data) {
+            $location.path('/cms/app/polls/edit/' + data.id + '/');
+          });
+        }
+        return $q.reject();
+      };
+
+      // adding and removing response text logic
+      $scope.idIncrementer = 0;
+
+      $scope.model.answers = [
+        {id: $scope.idIncrementer++},
+        {id: $scope.idIncrementer++},
+        {id: $scope.idIncrementer++}
+      ];
+
+      $scope.addAnswer = function () {
+        $scope.model.answers.push({id: $scope.idIncrementer++});
+      };
+
+      $scope.removeAnswer = function (answerId) {
+        _.remove($scope.model.answers, function (a) {
+          return a.id === answerId;
+        });
+      };
+
+      },
+      restrict: 'E',
+      scope: { getModelId: '&modelId' },
+    };
+  });
+
+'use strict';
+
+angular.module('polls.edit', [
+  'polls.edit.directive'
+])
+  .config(function ($routeProvider, routes) {
+    $routeProvider
+    .when('/cms/app/polls/edit/:id/', {
+      controller: function ($routeParams, $scope, $window) {
+
+        // set title
+        $window.document.title = routes.CMS_NAMESPACE + ' | Edit Poll';
+
+        $scope.routeId = $routeParams.id;
+      },
+      template: '<polls-edit model-id="routeId"></polls-edit>',
+      reloadOnSearch: false
+    });
+  });
+
+'use strict';
+
+angular.module('polls.list', [
+  'apiServices.poll.factory',
+  'bulbsCmsApp.settings',
+  'listPage',
+  'moment'
+])
+  .config(function ($routeProvider, routes) {
+    $routeProvider
+      .when('/cms/app/polls/', {
+        controller: function ($scope, $window, Poll) {
+          // set title
+          $window.document.title = routes.CMS_NAMESPACE + ' | Poll';
+
+          $scope.modelFactory = Poll;
+        },
+        templateUrl: routes.COMPONENTS_URL + 'polls/polls-list/polls-list-page.html'
+      });
+  });
+
+'use strict';
+
+angular.module('polls', [
+  'polls.list',
+  'polls.edit'
+]);
+
+'use strict';
+
 angular.module('promotedContentArticle.directive', [
   'bulbsCmsApp.settings'
 ])
@@ -4087,6 +4214,7 @@ angular.module('specialCoverage.edit.directive', [
   'autocompleteBasic',
   'bulbsCmsApp.settings',
   'apiServices.campaign.factory',
+  'copyButton',
   'customSearch',
   'lodash',
   'specialCoverage.settings',
@@ -4104,6 +4232,8 @@ angular.module('specialCoverage.edit.directive', [
 
         $scope.needsSave = false;
 
+        $scope.tunicCampaignIdMapping = {};
+
         var modelId = $scope.getModelId();
         if (modelId === 'new') {
           // this is a new special coverage, build it
@@ -4111,8 +4241,13 @@ angular.module('specialCoverage.edit.directive', [
           $scope.isNew = true;
         } else {
           // this is an existing special coverage, find it
-          $scope.model = SpecialCoverage.$find($scope.getModelId());
+          $scope.model = SpecialCoverage.$find($scope.getModelId()).$then(function () {
+            $scope.model.$loadTunicCampaign().then(function (campaign) {
+              $scope.tunicCampaignIdMapping[campaign.id] = campaign;
+            });
+          });
         }
+
 
         window.onbeforeunload = function (e) {
           if (!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
@@ -4156,8 +4291,21 @@ angular.module('specialCoverage.edit.directive', [
           });
         };
 
+        $scope.tunicCampaignFormatter = function (campaignId) {
+          if (campaignId in $scope.tunicCampaignIdMapping) {
+            var campaign = $scope.tunicCampaignIdMapping[campaignId];
+            return campaign.name + ' - ' + campaign.number;
+          }
+        };
+
         $scope.searchCampaigns = function (searchTerm) {
-          return Campaign.simpleSearch(searchTerm);
+          return $scope.model.$searchCampaigns({search: searchTerm}).then(function (campaigns) {
+            campaigns.forEach(function (campaign) {
+              $scope.tunicCampaignIdMapping[campaign.id] = campaign;
+            });
+            // Formatter expects list of IDs
+            return campaigns.map(function (campaign) { return campaign.id; });
+          });
         };
       },
       restrict: 'E',
@@ -4731,6 +4879,68 @@ angular.module('apiServices.featureType.factory', [
   );
 'use strict';
 
+angular.module('apiServices.poll.factory', [
+  'apiServices',
+  'apiServices.mixins.fieldDisplay',
+  'filters.moment'
+])
+  .factory('Poll', function (restmod) {
+    return restmod.model('poll').mix('FieldDisplay', 'NestedDirtyModel', {
+      $config: {
+        name: 'Poll',
+        plural: 'Polls',
+        primaryKey: 'id',
+        fieldDisplays: [{
+          title: 'Poll Name',
+          value: 'record.title',
+          sorts: 'title'
+        }, {
+          title: 'Creator',
+          value: 'record.authors.join(", ")',
+          sorts: 'author'
+        }, {
+          title: 'Publish Date',
+          value: 'record.publishDate.format("MM/DD/YY") || "--"',
+          sorts: 'publish_date'
+        }, {
+          title: 'Close Date',
+          value: 'record.closeDate.format("MM/DD/YY") || "--"',
+          sorts: 'close_date'
+        }]
+      },
+
+      pixels: {
+        init: [{}],
+      },
+
+      // fields from frontend to backend
+      close_date: {
+        encode: 'moment_to_date_string',
+      },
+      publish_date: {
+        encode: 'moment_to_date_string',
+      },
+
+      // fields from backend to frontend
+      closeDate: {
+        decode: 'date_string_to_moment',
+      },
+      publishDate: {
+        decode: 'date_string_to_moment'
+      },
+
+      $extend: {
+        Model: {
+          simpleSearch: function (searchTerm) {
+            return this.$search({search: searchTerm, ordering: 'title'}).$asPromise();
+          }
+        }
+      }
+    });
+  });
+
+'use strict';
+
 angular.module('apiServices.lineItem.factory', [
   'apiServices',
   'apiServices.mixins.fieldDisplay'
@@ -4965,10 +5175,11 @@ angular.module('apiServices.specialCoverage.factory', [
   'apiServices',
   'apiServices.campaign.factory',
   'apiServices.mixins.fieldDisplay',
+  'cms.tunic.config',
   'filters.moment',
   'VideohubClient.api'
 ])
-  .factory('SpecialCoverage', function (_, $parse, restmod, Video) {
+  .factory('SpecialCoverage', function (_, $http, $parse, $q, restmod, TunicConfig, Video) {
     var ACTIVE_STATES = {
       INACTIVE: 'Inactive',
       PROMOTED: 'Pin to HP'
@@ -5059,6 +5270,28 @@ angular.module('apiServices.specialCoverage.factory', [
           $loadVideosData: function () {
             _.each(this.videos, function (video) {
               video.$fetch();
+            });
+          },
+          /**
+           * Load campaign data from Tunic endpoint
+           */
+          $loadTunicCampaign: function () {
+            if (_.isNumber(this.tunicCampaignId)) {
+              return $http.get(TunicConfig.buildBackendApiUrl('campaign/' + this.tunicCampaignId + '/')).then(function (result) {
+                return result.data;
+              });
+            }
+            return $q.reject();
+          },
+          /**
+           * Load campaign search results from Tunic endpoint
+           */
+          $searchCampaigns: function (params) {
+
+            return $http.get(TunicConfig.buildBackendApiUrl('campaign/'), {
+              params: params,
+            }).then(function (response) {
+              return response.data.results;
             });
           },
           /**
@@ -5471,6 +5704,107 @@ angular.module('slugify', [])
         .replace(/-+$/, '');            // Trim - from end of text
     };
   });
+
+'use strict';
+
+angular.module('cms.tunic.config', [
+  'lodash'
+])
+  .provider('TunicConfig', [
+    '_',
+    function TunicConfigProvider (_) {
+      // relative api path, rel to backendRoot
+      var apiPath = '';
+      // root for all backend requests
+      var backendRoot = '';
+      // Tunic API request token
+      var requestToken = '';
+
+      var error = function (message) {
+        return new Error('Configuration Error (TunicConfig) ' + message);
+      };
+
+      this.setApiPath = function (value) {
+        if (_.isString(value)) {
+          apiPath = value;
+        } else {
+          throw error('apiPath must be a string!');
+        }
+        return this;
+      };
+
+      this.setBackendRoot = function (value) {
+        if (_.isString(value)) {
+          backendRoot = value;
+        } else {
+          throw error('backendRoot must be a string!');
+        }
+        return this;
+      };
+
+      this.setRequestToken = function (value) {
+        if (_.isString(value)) {
+          requestToken = value;
+        } else {
+          throw error('requestToken must be a string!');
+        }
+        return this;
+      };
+
+      this.$get = function () {
+        return {
+          getRequestToken: _.constant(requestToken),
+          /**
+           * Create an absolute api url.
+           *
+           * @param {string} relUrl - relative url to get the absolute api url for.
+           * @returns absolute api url.
+           */
+          buildBackendApiUrl: function (relUrl) {
+            return backendRoot + apiPath + (relUrl || '');
+          },
+
+          /**
+           * Check if a given url should be intercepted by this library's interceptor.
+           *
+           * @param {string} url - Url to test against matchers.
+           * @returns {boolean} true if url should be intercepted, false otherwise.
+           */
+          shouldBeIntercepted: function (url) {
+            return url.startsWith(backendRoot + apiPath);
+          }
+        };
+      };
+    }
+  ]);
+
+'use strict';
+
+angular.module('cms.tunic.interceptor', [
+  'cms.tunic.config'
+])
+  .service('TunicInterceptor', [
+    'TunicConfig',
+    function (TunicConfig) {
+
+      this.request = function (config) {
+        if (TunicConfig.shouldBeIntercepted(config.url)) {
+            config.headers = config.headers || {};
+            config.headers.Authorization = 'Token ' + TunicConfig.getRequestToken();
+        }
+        return config;
+      };
+
+      return this;
+    }
+  ]);
+
+'use strict';
+
+angular.module('cms.tunic', [
+  'cms.tunic.config',
+  'cms.tunic.interceptor'
+]);
 
 'use strict';
 
