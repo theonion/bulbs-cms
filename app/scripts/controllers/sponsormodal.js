@@ -1,20 +1,64 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('SponsormodalCtrl', function ($scope, ContentFactory, article, Campaign) {
+  .controller('SponsormodalCtrl', function ($scope, ContentFactory, article, Campaign,
+                                            // NOTE: temp depdendencies will be moved along with searchCampaigns/loadCampaigns
+                                            $http, TunicConfig) {
     $scope.article = article;
 
-    if ($scope.article.campaign) {
-      $scope.campaign = Campaign.$find($scope.article.campaign);
-    } else {
-      $scope.campaign = null;
-    }
+    $scope.tunicCampaignIdMapping = {};
 
-    $scope.updateArticle = function (selection) {
-      $scope.article.campaign = selection.value.id;
+    // --------------------------- TODO: MOVE ME SOMEWHERE ELSE---------------------------------------
+    var $loadTunicCampaign = function (tunicCampaignId) {
+      if (_.isNumber(tunicCampaignId)) {
+        return $http.get(TunicConfig.buildBackendApiUrl('campaign/' + tunicCampaignId + '/')).then(function (result) {
+          return result.data;
+        });
+      }
+      return $q.reject();
     };
 
     $scope.searchCampaigns = function (searchTerm) {
-      return Campaign.simpleSearch(searchTerm);
+      // TODO: Move into model
+      return $searchCampaigns({search: searchTerm}).then(function (campaigns) {
+        campaigns.forEach(function (campaign) {
+          $scope.tunicCampaignIdMapping[campaign.id] = campaign;
+        });
+        // Formatter expects list of IDs
+        return campaigns.map(function (campaign) { return campaign.id; });
+      });
+    };
+    // --------------------------- END TODO ---------------------------------------
+
+    if ($scope.article.tunic_campaign_id) {
+      $loadTunicCampaign($scope.article.tunic_campaign_id).then(function (campaign) {
+        $scope.tunicCampaignId = campaign.id;
+        $scope.tunicCampaignIdMapping[campaign.id] = campaign;
+      });
+    } else {
+      $scope.tunicCampaignId = null;
+    }
+
+    $scope.updateArticle = function (selection) {
+      if (selection === null) {
+        $scope.article.tunic_campaign_id = null;
+      } else {
+        $scope.article.tunic_campaign_id = selection.value;
+      }
+    };
+
+    var $searchCampaigns = function (params) {
+      return $http.get(TunicConfig.buildBackendApiUrl('campaign/'), {
+        params: params,
+      }).then(function (response) {
+        return response.data.results;
+      });
+    }
+
+    $scope.tunicCampaignFormatter = function (campaignId) {
+      if (campaignId in $scope.tunicCampaignIdMapping) {
+        var campaign = $scope.tunicCampaignIdMapping[campaignId];
+        return campaign.name + ' - ' + campaign.number;
+      }
     };
   });
