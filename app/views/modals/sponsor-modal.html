@@ -7,9 +7,8 @@
         <label for="specialCoverageCampaign">Sponsor Campaign</label>
         <autocomplete-basic
             class="form-control"
-            ng-if="!model.campaign || model.campaign.$resolved"
-            ng-model="campaign"
-            item-display-formatter="item.sponsorName + ' - ' + item.campaignLabel"
+            ng-model="tunicCampaignId"
+            item-display-formatter="tunicCampaignFormatter(item)"
             on-select="updateArticle(selection)"
             input-id="specialCoverageCampaign"
             input-placeholder="e.g. 0-1337 Honda"
