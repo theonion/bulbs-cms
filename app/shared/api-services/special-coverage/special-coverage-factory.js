@@ -4,11 +4,10 @@ angular.module('apiServices.specialCoverage.factory', [
   'apiServices',
   'apiServices.campaign.factory',
   'apiServices.mixins.fieldDisplay',
-  'cms.tunic.config',
   'filters.moment',
   'VideohubClient.api'
 ])
-  .factory('SpecialCoverage', function (_, $http, $parse, $q, restmod, TunicConfig, Video) {
+  .factory('SpecialCoverage', function (_, $parse, restmod, Video) {
     var ACTIVE_STATES = {
       INACTIVE: 'Inactive',
       PROMOTED: 'Pin to HP'
@@ -99,28 +98,6 @@ angular.module('apiServices.specialCoverage.factory', [
           $loadVideosData: function () {
             _.each(this.videos, function (video) {
               video.$fetch();
-            });
-          },
-          /**
-           * Load campaign data from Tunic endpoint
-           */
-          $loadTunicCampaign: function () {
-            if (_.isNumber(this.tunicCampaignId)) {
-              return $http.get(TunicConfig.buildBackendApiUrl('campaign/' + this.tunicCampaignId + '/')).then(function (result) {
-                return result.data;
-              });
-            }
-            return $q.reject();
-          },
-          /**
-           * Load campaign search results from Tunic endpoint
-           */
-          $searchCampaigns: function (params) {
-
-            return $http.get(TunicConfig.buildBackendApiUrl('campaign/'), {
-              params: params,
-            }).then(function (response) {
-              return response.data.results;
             });
           },
           /**
