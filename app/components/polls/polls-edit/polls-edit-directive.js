@@ -19,11 +19,10 @@ angular.module('polls.edit.directive', [
   .directive('pollsEdit', function (routes) {
     return {
       templateUrl: routes.COMPONENTS_URL + 'polls/polls-edit/polls-edit.html',
-      controller: function (_, $http, $location, $q, $routeParams, $scope, Poll) {
+      controller: function (_, $http, $location, $q, $routeParams, $scope, $window, Poll) {
         // populate model for use
         if ($routeParams.id === 'new') {
           $scope.model = Poll.$build();
-          $scope.poll = Poll.$build();
           $scope.isNew = true;
         } else {
           $scope.model = Poll.$find($routeParams.id);
@@ -42,17 +41,21 @@ angular.module('polls.edit.directive', [
           delete window.onbeforeunload;
         });
 
+      // TODO: DELETE THIS BEFORE COMMIT
+      $window.scope = $scope;
+
       $scope.saveModel = function () {
         if ($scope.model) {
           // delete answers
           var answerUrl = '/cms/api/v1/answer/';
           _.forEach($scope.deletedAnswers, function(deletedAnswer) {
             $http.delete(answerUrl + deletedAnswer.id);
+            $scope.deletedAnswers.shift();
           });
 
           _.forEach($scope.model.answers, function(answer) {
           // update existing answers
-          if(!$scope.isNew) {
+          if(!$scope.isNew && !answer.notOnSodahead) {
             var oldAnswer = _.filter($scope.poll.answers, {id: answer.id})[0];
             if(answer.answerText !== oldAnswer.answerText) {
               $http.put(answerUrl + answer.id, { answer_text: answer.answerText});
