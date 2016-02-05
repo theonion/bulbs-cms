@@ -19,16 +19,20 @@ angular.module('polls.edit.directive', [
 .directive('pollsEdit', function (routes) {
   return {
     templateUrl: routes.COMPONENTS_URL + 'polls/polls-edit/polls-edit.html',
-    controller: function (_, $http, $location, $q, $routeParams, $scope, Poll) {
+    controller: function (_, $http, $location, $q, $routeParams, $scope, $window, Poll) {
       // populate model for use
       if ($routeParams.id === 'new') {
-        $scope.model = Poll.$build();
+        $scope.model = new Poll();
         $scope.isNew = true;
       } else {
-        $scope.model = Poll.$find($routeParams.id);
-        $scope.poll = Poll.$find($routeParams.id);
+        $scope.model = Poll.get({id: $routeParams.id});
+        $scope.model.$promise.then(function (response) {
+          $scope.model = response;
+          $scope.answers = response.answers;
+        });
       }
 
+      $window.scope = $scope;
       window.onbeforeunload = function (e) {
         if(!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
           // show confirmation alert
