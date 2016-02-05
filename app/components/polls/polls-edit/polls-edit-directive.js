@@ -44,30 +44,18 @@ angular.module('polls.edit.directive', [
       // TODO: DELETE THIS BEFORE COMMIT
       $window.scope = $scope;
 
+      var answerUrl = '/cms/api/v1/answer/';
+
       $scope.saveModel = function () {
         if ($scope.model) {
-          // delete answers
-          var answerUrl = '/cms/api/v1/answer/';
-          _.forEach($scope.deletedAnswers, function(deletedAnswer) {
-            $http.delete(answerUrl + deletedAnswer.id);
-            $scope.deletedAnswers.shift();
-          });
+          $scope.deleteSodaheadAnswers();
 
           _.forEach($scope.model.answers, function(answer) {
-          // update existing answers
-          if(!$scope.isNew && !answer.notOnSodahead) {
-            var oldAnswer = _.filter($scope.poll.answers, {id: answer.id})[0];
-            if(answer.answerText !== oldAnswer.answerText) {
-              $http.put(answerUrl + answer.id, { answer_text: answer.answerText});
+            if(!$scope.isNew && !answer.notOnSodahead) {
+              $scope.putSodaheadAnswer(answer);
             }
-          }
-
-          // post new answers
-          if(!$scope.isNew && answer.notOnSodahead) {
-              $http.post(answerUrl, {
-                poll: $scope.model.$pk,
-                answer_text: answer.answerText
-              });
+            if(!$scope.isNew && answer.notOnSodahead) {
+              $scope.postSodaheadAnswer(answer, $scope.model.$pk);
             }
           });
 
@@ -76,10 +64,7 @@ angular.module('polls.edit.directive', [
           return $scope.model.$save().$asPromise().then(function (data) {
             if($scope.isNew) {
               _.forEach($scope.answers, function (answer) {
-                $http.post(answerUrl, {
-                  poll: data.id,
-                  answer_text: answer.answerText
-                });
+                $scope.postSodaheadAnswer(answer, data.id);
               });
             }
             $location.path('/cms/app/polls/edit/' + data.id + '/');
@@ -87,6 +72,28 @@ angular.module('polls.edit.directive', [
 
         }
         return $q.reject();
+      };
+
+      $scope.postSodaheadAnswer = function (answer, pollId) {
+        $http.post(answerUrl, {
+          poll: pollId,
+          answer_text: answer.answerText
+        });
+      };
+
+      $scope.putSodaheadAnswer = function (answer) {
+        var oldAnswer = _.filter($scope.poll.answers, {id: answer.id})[0];
+        if(answer.answerText !== oldAnswer.answerText) {
+          $http.put(answerUrl + answer.id, { answer_text: answer.answerText});
+        }
+      };
+
+      $scope.deleteSodaheadAnswers = function () {
+        _.forEach($scope.deletedAnswers, function(deletedAnswer) {
+          $http.delete(answerUrl + deletedAnswer.id);
+        });
+        // clear out deleted answers
+        $scope.deletedAnswers = [];
       };
 
       $scope.deletedAnswers = [];
