@@ -16,33 +16,30 @@ angular.module('polls.edit.directive', [
     value: 'Image'
   }
 ])
-  .directive('pollsEdit', function (routes) {
-    return {
-      templateUrl: routes.COMPONENTS_URL + 'polls/polls-edit/polls-edit.html',
-      controller: function (_, $http, $location, $q, $routeParams, $scope, $window, Poll) {
-        // populate model for use
-        if ($routeParams.id === 'new') {
-          $scope.model = Poll.$build();
-          $scope.isNew = true;
-        } else {
-          $scope.model = Poll.$find($routeParams.id);
-          $scope.poll = Poll.$find($routeParams.id);
+.directive('pollsEdit', function (routes) {
+  return {
+    templateUrl: routes.COMPONENTS_URL + 'polls/polls-edit/polls-edit.html',
+    controller: function (_, $http, $location, $q, $routeParams, $scope, Poll) {
+      // populate model for use
+      if ($routeParams.id === 'new') {
+        $scope.model = Poll.$build();
+        $scope.isNew = true;
+      } else {
+        $scope.model = Poll.$find($routeParams.id);
+        $scope.poll = Poll.$find($routeParams.id);
+      }
+
+      window.onbeforeunload = function (e) {
+        if(!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
+          // show confirmation alert
+          return 'You have unsaved changes.';
         }
+      };
 
-        window.onbeforeunload = function (e) {
-          if(!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
-            // show confirmation alert
-            return 'You have unsaved changes.';
-          }
-        };
-
-        $scope.$on('$destroy', function () {
-          // remove alert when we go
-          delete window.onbeforeunload;
-        });
-
-      // TODO: DELETE THIS BEFORE COMMIT
-      $window.scope = $scope;
+      $scope.$on('$destroy', function () {
+        // remove alert when we go
+        delete window.onbeforeunload;
+      });
 
       var answerUrl = '/cms/api/v1/answer/';
 
@@ -59,25 +56,33 @@ angular.module('polls.edit.directive', [
             }
           });
 
-          // save poll
           $scope.answers = $scope.model.answers;
           return $scope.model.$save().$asPromise().then(function (data) {
             if($scope.isNew) {
-              _.forEach($scope.answers, function (answer) {
-                $scope.postSodaheadAnswer(answer, data.id);
+              var answerPromises = _.map($scope.answers, function (answer) {
+                return $scope.postSodaheadAnswer(answer, data.id);
               });
+              $q.all(answerPromises).then(function () {
+                $location.path('/cms/app/polls/edit/' + data.id + '/');
+              });
+            } else {
+              $location.path('/cms/app/polls/edit/' + data.id + '/');
             }
-            $location.path('/cms/app/polls/edit/' + data.id + '/');
           });
-
         }
         return $q.reject();
       };
 
       $scope.postSodaheadAnswer = function (answer, pollId) {
-        $http.post(answerUrl, {
+        return $http.post(answerUrl, {
           poll: pollId,
           answer_text: answer.answerText
+        }).then(function(response) {
+          if(response.status === 201) {
+            return response.data;
+          } else {
+            return $q.reject();
+          }
         });
       };
 
@@ -116,9 +121,8 @@ angular.module('polls.edit.directive', [
         if(deletedAnswer[0].notOnSodahead) { return; }
         $scope.deletedAnswers.push(deletedAnswer[0]);
       };
-
-      },
-      restrict: 'E',
-      scope: { getModelId: '&modelId' },
-    };
-  });
+    },
+    restrict: 'E',
+    scope: { getModelId: '&modelId' },
+  };
+});
