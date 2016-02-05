@@ -25,17 +25,13 @@ angular.module('apiServices.poll.factory', [
           sorts: 'publish_date'
         }, {
           title: 'Close Date',
-          value: 'record.closeDate.format("MM/DD/YY") || "--"',
-          sorts: 'close_date'
+          value: 'record.endDate.format("MM/DD/YY") || "--"',
+          sorts: 'end_date'
         }]
       },
 
-      pixels: {
-        init: [{}],
-      },
-
       // fields from frontend to backend
-      close_date: {
+      end_date: {
         encode: 'moment_to_date_string',
       },
       publish_date: {
@@ -43,7 +39,7 @@ angular.module('apiServices.poll.factory', [
       },
 
       // fields from backend to frontend
-      closeDate: {
+      endDate: {
         decode: 'date_string_to_moment',
       },
       publishDate: {

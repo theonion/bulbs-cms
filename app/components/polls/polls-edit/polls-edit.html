@@ -23,14 +23,14 @@
       <input
       id="pollEndDate"
       type="text"
-      value="{{ model.closeDate.format('MM/DD/YY h:mm:ss a') }}"
+      value="{{ model.endDate.format('MM/DD/YY h:mm:ss a') }}"
       class="form-control"
       readonly>
       <span class="input-group-btn">
         <button
           class="btn btn-info"
           datetime-selection-modal-opener
-          ng-model="model.closeDate"
+          ng-model="model.endDate"
           modal-title="Poll End Date">
           <i class="fa fa-calendar"></i>
         </button>
@@ -75,8 +75,7 @@
         <div class="answer-text form-inline">
           <textarea
             class="form-control"
-            ng-model="answer.answerText"
-            ng-click="removeAnswer(answer.id)">
+            ng-model="answer.answerText">
           </textarea>
           <a
             ng-click="removeAnswer(answer.id)">
