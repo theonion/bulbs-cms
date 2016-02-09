@@ -2,6 +2,7 @@
 
 angular.module('polls.edit.directive', [
   'apiServices.poll.factory',
+  'apiServices.answer.factory',
   'BettyCropper',
   'lodash',
   'saveButton.directive',
@@ -19,18 +20,16 @@ angular.module('polls.edit.directive', [
 .directive('pollsEdit', function (routes) {
   return {
     templateUrl: routes.COMPONENTS_URL + 'polls/polls-edit/polls-edit.html',
-    controller: function (_, $http, $location, $q, $routeParams, $scope, $window, Poll) {
+    controller: function (_, $http, $location, $q, $routeParams, $scope, $window, Answer, Poll) {
       // populate model for use
       if ($routeParams.id === 'new') {
         $scope.model = new Poll();
         $scope.isNew = true;
       } else {
-        $http({
-          method: 'GET',
-          url: '/cms/api/v1/poll/' + $routeParams.id + '/'
-          }).then(function successCallback(response) {
-            $scope.model = response.data;
-            $scope.answers = response.data.answers;
+        Poll.get({pollId: $routeParams.id})
+          .$promise.then(function successCallback(response) {
+            $scope.model = response;
+            $scope.answers = response.answers;
           });
       }
 
@@ -49,7 +48,9 @@ angular.module('polls.edit.directive', [
 
       $scope.saveModel = function () {
         if ($scope.model) {
-          // $scope.deleteSodaheadAnswers();
+          Answer.deleteSodaheadAnswers($scope.deletedAnswers);
+          // reset deleted answers
+          $scope.deletedAnswers = [];
           //
           // _.forEach($scope.model.answers, function(answer) {
           //   if(!$scope.isNew && !answer.notOnSodahead) {
@@ -60,7 +61,7 @@ angular.module('polls.edit.directive', [
           //   }
           // });
 
-          return $scope.model.$save().$asPromise().then(function (data) {
+          return $scope.model.$save().then(function (data) {
             // if($scope.isNew) {
             //   var answerPromises = _.map($scope.answers, function (answer) {
             //     return $scope.postSodaheadAnswer(answer, data.id);
@@ -76,34 +77,6 @@ angular.module('polls.edit.directive', [
         return $q.reject();
       };
 
-      $scope.postSodaheadAnswer = function (answer, pollId) {
-        return $http.post(answerUrl, {
-          poll: pollId,
-          answer_text: answer.answerText
-        }).then(function(response) {
-          if(response.status === 201) {
-            return response.data;
-          } else {
-            return $q.reject();
-          }
-        });
-      };
-
-      $scope.putSodaheadAnswer = function (answer) {
-        var oldAnswer = _.filter($scope.poll.answers, {id: answer.id})[0];
-        if(answer.answerText !== oldAnswer.answerText) {
-          $http.put(answerUrl + answer.id, { answer_text: answer.answerText});
-        }
-      };
-
-      $scope.deleteSodaheadAnswers = function () {
-        _.forEach($scope.deletedAnswers, function(deletedAnswer) {
-          $http.delete(answerUrl + deletedAnswer.id);
-        });
-        // clear out deleted answers
-        $scope.deletedAnswers = [];
-      };
-
       $scope.deletedAnswers = [];
 
       $scope.addAnswer = function () {
@@ -116,6 +89,7 @@ angular.module('polls.edit.directive', [
         $scope.model.answers = [];
         _.times(3, $scope.addAnswer);
       }
+
 
       $scope.removeAnswer = function (answerId) {
         var deletedAnswer = _.remove($scope.answers, function (a) {
