@@ -4,9 +4,9 @@ angular.module('apiServices.answer.factory', [
   'apiServices',
   'lodash'
 ])
-.factory('Answer', ['$http', '$q', function ($http, $q) {
+.factory('Answer', ['$http', '$q', '_', function ($http, $q, _) {
 
-  var answerUrl = '/cms/api/v1/answer/'
+  var answerUrl = '/cms/api/v1/answer/';
 
   function deleteAnswers(deletedAnswers) {
     var deletePromise = _.map(deletedAnswers, function(deletedAnswer) {
@@ -19,7 +19,7 @@ angular.module('apiServices.answer.factory', [
         return $q.reject('Delete unsucessful');
       }
     });
-  };
+  }
 
   function putAnswer(oldAnswers, newAnswer) {
     var oldAnswer = _.filter(oldAnswers, {id: newAnswer.id})[0];
@@ -34,7 +34,7 @@ angular.module('apiServices.answer.factory', [
         }
       });
     }
-  };
+  }
 
   function postAnswer(answer, pollId) {
     return $http.post(answerUrl, {
@@ -47,21 +47,21 @@ angular.module('apiServices.answer.factory', [
         return $q.reject(answer.answer_text + ' post unsuccessful');
       }
     });
-  };
+  }
 
-  function updatePollAnswers(model) {
+  function updatePollAnswers(scope) {
     deleteAnswers(scope.deletedAnswers);
-    _.forEach(model.answers, function(answer) {
+    _.forEach(scope.model.answers, function(answer) {
       if(answer.notOnSodahead) {
-        postAnswer(answer, model.id);
+        postAnswer(answer, scope.model.id);
       } else {
-        putAnswer(model.answers, answer);
+        putAnswer(scope.answers, answer);
       }
     });
-  };
+  }
 
   return {
     postAnswer: postAnswer,
     updatePollAnswers: updatePollAnswers
-  }
+  };
 }]);

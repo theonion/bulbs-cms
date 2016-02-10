@@ -20,7 +20,7 @@ angular.module('polls.edit.directive', [
 .directive('pollsEdit', function (routes) {
   return {
     templateUrl: routes.COMPONENTS_URL + 'polls/polls-edit/polls-edit.html',
-    controller: function (_, $http, $location, $q, $routeParams, $scope, $window, Answer, Poll) {
+    controller: function (_, $http, $location, $q, $routeParams, $scope, Answer, Poll) {
       // populate model for use
       if ($routeParams.id === 'new') {
         $scope.model = {};
@@ -33,7 +33,6 @@ angular.module('polls.edit.directive', [
         });
       }
 
-      $window.scope = $scope;
       window.onbeforeunload = function (e) {
         if(!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
           // show confirmation alert
