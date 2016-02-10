@@ -28,8 +28,8 @@ angular.module('polls.edit.directive', [
       } else {
         Poll.getPoll($routeParams.id)
         .then(function successCallback(response) {
-          $scope.model = response.data;
-          $scope.answers = response.data.answers;
+          $scope.model = response;
+          $scope.answers = response.answers;
         });
       }
 
@@ -50,7 +50,7 @@ angular.module('polls.edit.directive', [
         if ($scope.model) {
 
           if(!$scope.isNew) {
-            Answer.updatePollAnswers($scope.model);
+            Answer.updatePollAnswers($scope);
             // reset deleted answers
             $scope.deletedAnswers = [];
             return Poll.updatePoll($scope.model).then(function (data) {
