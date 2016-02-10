@@ -23,14 +23,14 @@ angular.module('polls.edit.directive', [
     controller: function (_, $http, $location, $q, $routeParams, $scope, $window, Answer, Poll) {
       // populate model for use
       if ($routeParams.id === 'new') {
-        $scope.model = new Poll();
+        $scope.model = {};
         $scope.isNew = true;
       } else {
-        Poll.get({pollId: $routeParams.id})
-          .$promise.then(function successCallback(response) {
-            $scope.model = response;
-            $scope.answers = response.answers;
-          });
+        Poll.getPoll($routeParams.id)
+        .then(function successCallback(response) {
+          $scope.model = response.data;
+          $scope.answers = response.data.answers;
+        });
       }
 
       $window.scope = $scope;
@@ -48,45 +48,41 @@ angular.module('polls.edit.directive', [
 
       $scope.saveModel = function () {
         if ($scope.model) {
-          Answer.deleteSodaheadAnswers($scope.deletedAnswers);
-          // reset deleted answers
-          $scope.deletedAnswers = [];
-          //
-          // _.forEach($scope.model.answers, function(answer) {
-          //   if(!$scope.isNew && !answer.notOnSodahead) {
-          //     $scope.putSodaheadAnswer(answer);
-          //   }
-          //   if(!$scope.isNew && answer.notOnSodahead) {
-          //     $scope.postSodaheadAnswer(answer, $scope.model.$pk);
-          //   }
-          // });
 
-          return $scope.model.$save().then(function (data) {
-            // if($scope.isNew) {
-            //   var answerPromises = _.map($scope.answers, function (answer) {
-            //     return $scope.postSodaheadAnswer(answer, data.id);
-            //   });
-            //   $q.all(answerPromises).then(function () {
-            //     $location.path('/cms/app/polls/edit/' + data.id + '/');
-            //   });
-            // } else {
+          if(!$scope.isNew) {
+            Answer.updatePollAnswers($scope.model);
+            // reset deleted answers
+            $scope.deletedAnswers = [];
+            return Poll.updatePoll($scope.model).then(function (data) {
               $location.path('/cms/app/polls/edit/' + data.id + '/');
-            // }
-          });
+            });
+
+          } else {
+            return Poll.postPoll($scope.model).then(function (data) {
+              var answerPromise = _.map($scope.answers, function (answer) {
+                return Answer.postAnswer(answer, data.id);
+              });
+
+              return $q.all(answerPromise).then(function () {
+                $location.path('/cms/app/polls/edit/' + data.id + '/');
+              });
+            });
+          }
+        } else {
+          return $q.reject('Save failed');
         }
-        return $q.reject();
       };
 
       $scope.deletedAnswers = [];
+      var newId = ($scope.answers) ? $scope.answers.length : 0;
 
       $scope.addAnswer = function () {
-        var newId = ($scope.answers) ? $scope.answers.length + 1 : 1;
-        $scope.model.answers.push({id: newId, notOnSodahead: true});
+        $scope.answers.push({id: newId++, notOnSodahead: true});
       };
 
       // create 3 blank answer objects if this is a new poll
       if($scope.isNew) {
-        $scope.model.answers = [];
+        $scope.answers = [];
         _.times(3, $scope.addAnswer);
       }
 
