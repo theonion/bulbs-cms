@@ -52,9 +52,7 @@ angular.module('polls.edit.directive', [
             Answer.updatePollAnswers($scope);
             // reset deleted answers
             $scope.deletedAnswers = [];
-            return Poll.updatePoll($scope.model).then(function (data) {
-              $location.path('/cms/app/polls/edit/' + data.id + '/');
-            });
+            return Poll.updatePoll($scope.model);
 
           } else {
             return Poll.postPoll($scope.model).then(function (data) {
