@@ -23,20 +23,20 @@
       <input
       id="pollEndDate"
       type="text"
-      value="{{ model.endDate.format('MM/DD/YY h:mm:ss a') }}"
+      value="{{ model.end_date.format('MM/DD/YY h:mm:ss a') }}"
       class="form-control"
       readonly>
       <span class="input-group-btn">
         <button
           class="btn btn-info"
           datetime-selection-modal-opener
-          ng-model="model.endDate"
+          ng-model="model.end_date"
           modal-title="Poll End Date">
           <i class="fa fa-calendar"></i>
         </button>
         <button
           class="btn btn-danger"
-          ng-click="model.endDate = null;">
+          ng-click="model.end_date = null;">
           <i class="fa fa-times"></i>
         </button>
       </span>
@@ -50,7 +50,7 @@
     <label for="pollQuestionText">Question</label>
     <textarea
       id="pollQuestionText"
-      ng-model="model.questionText"
+      ng-model="model.question_text"
       class="form-control">
     </textarea>
   </div>
@@ -68,14 +68,14 @@
   <div>
     <fieldset
       class="row col-md-12 response-text-field"
-      data-ng-repeat="answer in model.answers">
+      data-ng-repeat="answer in answers">
       <div class="col-md-4"></div>
       <div class="col-md-8">
         <label for="answerText">Response Text</label>
         <div class="answer-text form-inline">
           <textarea
             class="form-control"
-            ng-model="answer.answerText">
+            ng-model="answer.answer_text">
           </textarea>
           <a
             ng-click="removeAnswer(answer.id)">
