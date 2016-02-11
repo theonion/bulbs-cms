@@ -4,7 +4,6 @@ describe('Answer Factory', function () {
   var $httpBackend,
       answer,
       answerFactory,
-      deletedAnswers,
       scope,
       pollId;
 

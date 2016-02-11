@@ -44,7 +44,6 @@ angular.module('apiServices.answer.factory', [
       if(response.status === 201) {
         return response.data;
       } else {
-        debugger;
         return $q.reject(answer.answer_text + ' post unsuccessful');
       }
     });
