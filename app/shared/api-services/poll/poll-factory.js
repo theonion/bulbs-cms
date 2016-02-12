@@ -25,6 +25,17 @@ angular.module('apiServices.poll.factory', [
     });
   }
 
+  function getPolls() {
+    return $http.get(pollUrl)
+    .then(function (response) {
+      if(response.status === 200) {
+        return response.data;
+      } else {
+        return $q.reject('Unable to retrieve polls');
+      }
+    });
+  }
+
   function postPoll(data) {
     filter = $filter('moment_to_date_string');
 
@@ -81,6 +92,7 @@ angular.module('apiServices.poll.factory', [
 
   return {
     getPoll: getPoll,
+    getPolls: getPolls,
     postPoll: postPoll,
     updatePoll: updatePoll,
     deletePoll: deletePoll

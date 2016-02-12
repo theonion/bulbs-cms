@@ -23,6 +23,14 @@ describe('Answer Factory', function () {
     });
   });
 
+  describe('getPolls()', function () {
+    it('makes a get request', function () {
+      pollFactory.getPolls();
+      $httpBackend.expectGET('/cms/api/v1/poll/').respond(200);
+      $httpBackend.flush();
+    });
+  });
+
   describe('postPoll()', function () {
     it('makes a post request', function () {
       data = {
