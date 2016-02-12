@@ -12,7 +12,7 @@ angular.module('apiServices.poll.factory', [
       filter,
       pollUrl = '/cms/api/v1/poll/',
       name = 'Poll',
-      namePlural = 'Polls'
+      namePlural = 'Polls',
       fields = [{
           title: 'Poll Name',
           sorts: 'title'

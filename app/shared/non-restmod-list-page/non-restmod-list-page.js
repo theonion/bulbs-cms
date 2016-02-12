@@ -26,14 +26,6 @@ angular.module('bulbsCmsApp.nonRestmodListPage', [
 
         $scope.$retrieve = _.debounce(function (addParams) {
           $scope.loadingResults = true;
-          var allParams = _.merge(
-            {},
-            $scope.orderingFilter,
-            $scope.toggledFilters,
-            $scope.searchFilter,
-            {page: $scope.pageNumber},
-            addParams
-          );
           return $scope.getItems()
             .then(function (items) {
               $scope.items = items;
