@@ -3,13 +3,29 @@
 angular.module('apiServices.poll.factory', [
   'apiServices',
   'apiServices.mixins.fieldDisplay',
+  'bulbsCmsApp.nonRestmodListPage',
   'filters.moment'
 ])
 .factory('Poll', ['$filter', '$http', '$q', function ($filter, $http, $q) {
 
   var pollInfo,
       filter,
-      pollUrl = '/cms/api/v1/poll/';
+      pollUrl = '/cms/api/v1/poll/',
+      name = 'Poll',
+      namePlural = 'Polls'
+      fields = [{
+          title: 'Poll Name',
+          sorts: 'title'
+        }, {
+          title: 'Creator',
+          sorts: 'authors.join(", ")'
+        }, {
+          title: 'Publish Date',
+          sorts: 'publish_date'
+        }, {
+          title: 'Close Date',
+          sorts: 'end_date'
+      }];
 
   function getPoll(pollId) {
     filter = $filter('date_string_to_moment');
@@ -93,6 +109,9 @@ angular.module('apiServices.poll.factory', [
   return {
     getPoll: getPoll,
     getPolls: getPolls,
+    fields: fields,
+    name: name,
+    namePlural: namePlural,
     postPoll: postPoll,
     updatePoll: updatePoll,
     deletePoll: deletePoll
