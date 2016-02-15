@@ -16,12 +16,8 @@ angular.module('apiServices.poll.factory', [
 
     return $http.get(pollUrl + pollId)
     .then(function (response) {
-      if(response.status === 200) {
-        response.data.end_date = filter(response.data.end_date);
-        return response.data;
-      } else {
-        return $q.reject('Unable to retrieve poll');
-      }
+      response.data.end_date = filter(response.data.end_date);
+      return response.data;
     });
   }
 
@@ -38,11 +34,7 @@ angular.module('apiServices.poll.factory', [
     }
 
     return $http.post(pollUrl, pollInfo).then(function(response) {
-      if(response.status === 201) {
         return response.data;
-      } else {
-        return $q.reject(data.title + ' creation unsuccessful');
-      }
     });
   }
 
@@ -60,22 +52,14 @@ angular.module('apiServices.poll.factory', [
 
     return $http.put(pollUrl + data.id, pollInfo)
     .then(function(response) {
-      if(response.status === 200) {
-        return response.data;
-      } else {
-        return $q.reject(data.title + ' update unsuccessful');
-      }
+      return response.data;
     });
   }
 
   function deletePoll(pollId) {
     return $http.delete(pollUrl + pollId)
     .then(function(response) {
-      if(response.status === 201) {
-        return response;
-      } else {
-        return $q.reject('Poll deletion unsucessful');
-      }
+      return response;
     });
   }
 
