@@ -41,6 +41,7 @@ angular.module('apiServices.poll.factory', [
   function updatePoll(data) {
     filter = $filter('moment_to_date_string');
 
+
     pollInfo = {
       title: data.title,
       question_text: data.question_text
