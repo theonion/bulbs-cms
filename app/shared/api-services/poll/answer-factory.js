@@ -13,11 +13,7 @@ angular.module('apiServices.answer.factory', [
       return $http.delete(answerUrl + deletedAnswer.id);
     });
     $q.all(deletePromise).then(function(response) {
-      if(response.status === 201) {
-        return response;
-      } else {
-        return $q.reject('Delete unsucessful');
-      }
+      return response;
     });
   }
 
@@ -27,11 +23,7 @@ angular.module('apiServices.answer.factory', [
       return $http.put(answerUrl + newAnswer.id, {
         answer_text: newAnswer.answer_text
       }).then(function(response) {
-        if(response.status === 200) {
-          return response.data;
-        } else {
-          return $q.reject(newAnswer.answer_text + ' update unsuccessful');
-        }
+        return response.data;
       });
     }
   }
@@ -41,11 +33,7 @@ angular.module('apiServices.answer.factory', [
       poll: pollId,
       answer_text: answer.answer_text
     }).then(function(response) {
-      if(response.status === 201) {
-        return response.data;
-      } else {
-        return $q.reject(answer.answer_text + ' post unsuccessful');
-      }
+      return response.data;
     });
   }
 
