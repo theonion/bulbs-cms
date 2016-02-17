@@ -92,6 +92,21 @@ describe('Answer Factory', function () {
       $httpBackend.expectPOST(pollUrl).respond(200, mockPayload);
       expect(response).toEqual(mockPayload);
     });
+
+    it('throws error if title and question_text are not present', function() {
+      var pollPost = function () {
+        Poll.postPoll('crappy payload');
+      };
+      expect(pollPost).toThrow('Poll Error: title and question text required');
+    });
+
+    it('throws error unless end_date is a moment object', function() {
+      data = { title: 'Poll', question_text: 'question', end_date: 'not a moment object'};
+      var pollPost = function () {
+        Poll.postPoll(data);
+      };
+      expect(pollPost).toThrow('Poll Error: end_date must be a moment object');
+    });
   });
 
   describe('updatePoll()', function () {
@@ -120,13 +135,28 @@ describe('Answer Factory', function () {
         $httpBackend.flush();
         expect(response).toEqual(mockPayload);
     });
+
+    it('throws error if title and question_text are not present', function() {
+      var pollUpdate = function () {
+        Poll.updatePoll('crappy payload');
+      };
+      expect(pollUpdate).toThrow('Poll Error: title and question text required');
+    });
+
+    it('throws error unless end_date is a moment object', function() {
+      data = { title: 'Poll', question_text: 'question', end_date: 'not a moment object'};
+      var pollUpdate = function () {
+        Poll.updatePoll(data);
+      };
+      expect(pollUpdate).toThrow('Poll Error: end_date must be a moment object');
+    });
   });
 
   describe('deletePoll()', function () {
     it('makes a delete request', function () {
       pollId = 89;
       Poll.deletePoll(pollId);
-      $httpBackend.expectDELETE(pollUrl + pollId).respond(201);
+      $httpBackend.expectDELETE(pollUrl + pollId + '/').respond(201);
       $httpBackend.flush();
     });
   });

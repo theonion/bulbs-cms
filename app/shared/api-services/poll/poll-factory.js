@@ -11,6 +11,10 @@ angular.module('apiServices.poll.factory', [
       filter,
       pollUrl = '/cms/api/v1/poll/';
 
+  var error = function(message) {
+    return new Error('Poll Error: ' + message);
+  };
+
   function getPoll(pollId) {
     filter = $filter('date_string_to_moment');
 
@@ -22,32 +26,35 @@ angular.module('apiServices.poll.factory', [
   }
 
   function postPoll(data) {
-    filter = $filter('moment_to_date_string');
-
-    pollInfo = {
-      title: data.title,
-      question_text: data.question_text
-    };
-
-    if(data.end_date) {
-      pollInfo.end_date = filter(data.end_date);
+    if(!data.title && !data.question_text) {
+      throw error('title and question text required');
     }
 
+    if(data.end_date) {
+      if(typeof data.end_date !== "object") {
+        throw error('end_date must be a moment object')
+      }
+      filter = $filter('moment_to_date_string');
+      pollInfo.end_date = filter(data.end_date);
+    }
+    pollInfo = { title: data.title, question_text: data.question_text};
     return $http.post(pollUrl, pollInfo).then(function(response) {
         return response.data;
     });
   }
 
   function updatePoll(data) {
-    filter = $filter('moment_to_date_string');
+    if(!data.title && !data.question_text) {
+      throw error('title and question text required');
+    }
 
-
-    pollInfo = {
-      title: data.title,
-      question_text: data.question_text
-    };
+    pollInfo = { title: data.title, question_text: data.question_text};
 
     if(data.end_date) {
+      if(typeof data.end_date !== "object") {
+        throw error('end_date must be a moment object')
+      }
+      filter = $filter('moment_to_date_string');
       pollInfo.end_date = filter(data.end_date);
     }
 
@@ -58,7 +65,7 @@ angular.module('apiServices.poll.factory', [
   }
 
   function deletePoll(pollId) {
-    return $http.delete(pollUrl + pollId)
+    return $http.delete(pollUrl + pollId + '/')
     .then(function(response) {
       return response;
     });
