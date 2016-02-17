@@ -31,8 +31,8 @@ angular.module('apiServices.poll.factory', [
     }
 
     if(data.end_date) {
-      if(typeof data.end_date !== "object") {
-        throw error('end_date must be a moment object')
+      if(typeof data.end_date !== 'object') {
+        throw error('end_date must be a moment object');
       }
       filter = $filter('moment_to_date_string');
       pollInfo.end_date = filter(data.end_date);
@@ -51,8 +51,8 @@ angular.module('apiServices.poll.factory', [
     pollInfo = { title: data.title, question_text: data.question_text};
 
     if(data.end_date) {
-      if(typeof data.end_date !== "object") {
-        throw error('end_date must be a moment object')
+      if(typeof data.end_date !== 'object') {
+        throw error('end_date must be a moment object');
       }
       filter = $filter('moment_to_date_string');
       pollInfo.end_date = filter(data.end_date);

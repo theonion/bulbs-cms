@@ -7,6 +7,9 @@ angular.module('apiServices.answer.factory', [
 .factory('Answer', ['$http', '$q', '_', function ($http, $q, _) {
 
   var answerUrl = '/cms/api/v1/answer/';
+  var error = function(message) {
+    return new Error('Poll Error: ' + message);
+  };
 
   function deleteAnswers(deletedAnswers) {
     var deletePromise = _.map(deletedAnswers, function(deletedAnswer) {
@@ -29,6 +32,9 @@ angular.module('apiServices.answer.factory', [
   }
 
   function postAnswer(answer, pollId) {
+    if(typeof pollId !== 'number' || !answer.answer_text) {
+      throw error('poll id and answer_text fields required');
+    }
     return $http.post(answerUrl, {
       poll: pollId,
       answer_text: answer.answer_text

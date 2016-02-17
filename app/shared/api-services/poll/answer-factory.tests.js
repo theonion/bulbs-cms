@@ -42,6 +42,20 @@ describe('Answer Factory', function () {
       $httpBackend.flush();
       expect(response).toEqual(mockPayload);
     });
+
+    it('throws error if poll id is not a number', function() {
+      var answerPost = function() {
+        Answer.postAnswer({answer_text: 'bad data'}, 'this is a string');
+      };
+      expect(answerPost).toThrow('Poll Error: poll id and answer_text fields required');
+    });
+
+    it('throws error if answer_text is nil', function() {
+      var answerPost = function() {
+        Answer.postAnswer('bad data', 1235);
+      };
+      expect(answerPost).toThrow('Poll Error: poll id and answer_text fields required');
+    });
   });
 
   describe('updatePollAnswers()', function () {
