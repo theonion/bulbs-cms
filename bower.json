@@ -23,7 +23,7 @@
     "jcrop": "0.9.12",
     "urlify": "theonion/urlify",
     "angular-bootstrap-datetimepicker": "~0.2.2",
-    "onion-editor": "https://github.com/theonion/editor.git#~0.2.44",
+    "onion-editor": "https://github.com/theonion/editor.git#format-for-export",
     "raven-js": "1.1.11",
     "restangular": "~1.4.0",
     "Keypress": "~2.0.2",

@@ -4801,39 +4801,6 @@ angular.module('apiServices.featureType.factory', [
   );
 'use strict';
 
-angular.module('apiServices.answer.factory', [
-  'apiServices',
-  'apiServices.mixins.fieldDisplay'
-])
-  .factory('Answer', function (restmod) {
-    return restmod.model('answer').mix('FieldDisplay', 'NestedDirtyModel', {
-      $config: {
-        name: 'Answer',
-        plural: 'Answers',
-        primaryKey: 'id',
-        fieldDisplays: [{
-          title: 'Answer Text',
-          value: 'record.answerText',
-          sorts: 'answer_text'
-        }, {
-          title: 'Poll ID',
-          value: 'record.pollId',
-          sorts: 'poll_id'
-        }]
-      },
-
-      $extend: {
-        Model: {
-          simpleSearch: function (searchTerm) {
-            return this.$search({search: searchTerm, ordering: 'answer_text'}).$asPromise();
-          }
-        }
-      }
-    });
-  });
-
-'use strict';
-
 angular.module('apiServices.poll.factory', [
   'apiServices',
   'apiServices.mixins.fieldDisplay',

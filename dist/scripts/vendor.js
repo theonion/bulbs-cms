@@ -85372,6 +85372,38 @@ define('enforce-p-elements',[
 
 });
 
+define('filter-for-export',['scribe-common/src/element'], function (scribeElement) {
+  'user strict';
+
+  return function () {
+    return function (scribe) {
+      function traverse (parentNode) {
+        var node = parentNode.firstElementChild;
+
+        while (node) {
+          if (node.filterForExport) {
+            node.filterForExport();
+          }
+
+          if (node.children.length > 0) {
+            traverse(node);
+          }
+
+          node = node.nextElementSibling;
+        }
+      }
+
+      scribe.registerHTMLFormatter('export', function (html) {
+        var bin = document.createElement('div');
+        bin.innerHTML = html;
+        traverse(bin);
+        return bin.innerHTML;
+      });
+    };
+  };
+
+});
+
 define('onion-editor',[
   'scribe',
   'scribe-plugin-blockquote-command',
@@ -85403,7 +85435,8 @@ define('onion-editor',[
   'scribe-plugin-anchor',
   // scribe core
   'our-ensure-selectable-containers',
-  'enforce-p-elements'
+  'enforce-p-elements',
+  'filter-for-export',
 ], function (
   Scribe,
   scribePluginBlockquoteCommand,
@@ -85435,7 +85468,8 @@ define('onion-editor',[
   scribePluginAnchor,
   // scribe core
   ourEnsureSelectableContainers,
-  enforcePElements
+  enforcePElements,
+  filterForExport
 ) {
 
   'use strict';
@@ -85676,6 +85710,9 @@ define('onion-editor',[
         );
       }, 3000);
     }
+
+    // Per-Element Export Filtering
+    scribe.use(filterForExport());
 
 
     /* This is necessary for a few dumb reasons. Scribe's transaction manager doesn't work when there
