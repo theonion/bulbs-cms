@@ -3,28 +3,25 @@
 <polls-list>
   <div class="container col-xs-offset-1 col-xs-10">
 
-    <list-page
+    <non-restmod-list-page
         cms-page="polls"
+        destroy-item="modelFactory.deletePoll(item.id)"
+        get-items="modelFactory.getPolls()"
         filter-buttons="[{
           title: 'Draft',
-          params: {
-            active: false
-          }
+          params: {}
         }, {
           title: 'Active',
-          active: true,
-          params: {
-            active: true
-          }
+          params: {}
         }, {
           title: 'Closed',
-          params: {
-            active: false
-          }
+          params: {}
         }]"
+        model-fields="modelFactory.fields"
+        model-name="modelFactory.name"
+        model-name-plural="modelFactory.namePlural"
         search-parameter="search"
-        model-factory="modelFactory"
         tool-copy-content="'{{ LIST_URL }}' + record.slug ">
-    </list-page>
+    </non-restmod-list-page>
   </div>
 </polls-list>

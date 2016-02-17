@@ -3,7 +3,7 @@
 angular.module('polls.list', [
   'apiServices.poll.factory',
   'bulbsCmsApp.settings',
-  'listPage',
+  'bulbsCmsApp.nonRestmodListPage',
   'moment'
 ])
   .config(function ($routeProvider, routes) {
@@ -14,6 +14,7 @@ angular.module('polls.list', [
           $window.document.title = routes.CMS_NAMESPACE + ' | Poll';
 
           $scope.modelFactory = Poll;
+
         },
         templateUrl: routes.COMPONENTS_URL + 'polls/polls-list/polls-list-page.html'
       });
