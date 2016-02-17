@@ -2411,6 +2411,7 @@ angular.module('saveButton.directive', [
 
 angular.module('polls.edit.directive', [
   'apiServices.poll.factory',
+  'apiServices.answer.factory',
   'BettyCropper',
   'lodash',
   'saveButton.directive',
@@ -2425,105 +2426,85 @@ angular.module('polls.edit.directive', [
     value: 'Image'
   }
 ])
-  .directive('pollsEdit', function (routes) {
-    return {
-      templateUrl: routes.COMPONENTS_URL + 'polls/polls-edit/polls-edit.html',
-      controller: function (_, $http, $location, $q, $routeParams, $scope, $window, Poll) {
-        // populate model for use
-        if ($routeParams.id === 'new') {
-          $scope.model = Poll.$build();
-          $scope.isNew = true;
-        } else {
-          $scope.model = Poll.$find($routeParams.id);
-          $scope.poll = Poll.$find($routeParams.id);
-        }
-
-        window.onbeforeunload = function (e) {
-          if(!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
-            // show confirmation alert
-            return 'You have unsaved changes.';
-          }
-        };
-
-        $scope.$on('$destroy', function () {
-          // remove alert when we go
-          delete window.onbeforeunload;
+.directive('pollsEdit', function (routes) {
+  return {
+    templateUrl: routes.COMPONENTS_URL + 'polls/polls-edit/polls-edit.html',
+    controller: function (_, $http, $location, $q, $routeParams, $scope, Answer, Poll) {
+      // populate model for use
+      if ($routeParams.id === 'new') {
+        $scope.model = {};
+        $scope.isNew = true;
+      } else {
+        Poll.getPoll($routeParams.id)
+        .then(function successCallback(response) {
+          $scope.model = response;
+          $scope.answers = response.answers;
         });
+      }
 
-      // TODO: DELETE THIS BEFORE COMMIT
-      $window.scope = $scope;
+      window.onbeforeunload = function (e) {
+        if(!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
+          // show confirmation alert
+          return 'You have unsaved changes.';
+        }
+      };
+
+      $scope.$on('$destroy', function () {
+        // remove alert when we go
+        delete window.onbeforeunload;
+      });
 
       $scope.saveModel = function () {
         if ($scope.model) {
-          // delete answers
-          var answerUrl = '/cms/api/v1/answer/';
-          _.forEach($scope.deletedAnswers, function(deletedAnswer) {
-            $http.delete(answerUrl + deletedAnswer.id);
-            $scope.deletedAnswers.shift();
-          });
 
-          _.forEach($scope.model.answers, function(answer) {
-          // update existing answers
-          if(!$scope.isNew && !answer.notOnSodahead) {
-            var oldAnswer = _.filter($scope.poll.answers, {id: answer.id})[0];
-            if(answer.answerText !== oldAnswer.answerText) {
-              $http.put(answerUrl + answer.id, { answer_text: answer.answerText});
-            }
+          if(!$scope.isNew) {
+            Answer.updatePollAnswers($scope);
+            // reset deleted answers
+            $scope.deletedAnswers = [];
+            return Poll.updatePoll($scope.model);
+
+          } else {
+            return Poll.postPoll($scope.model).then(function (data) {
+              var answerPromise = _.map($scope.answers, function (answer) {
+                return Answer.postAnswer(answer, data.id);
+              });
+
+              return $q.all(answerPromise).then(function () {
+                $location.path('/cms/app/polls/edit/' + data.id + '/');
+              });
+            });
           }
-
-          // post new answers
-          if(!$scope.isNew && answer.notOnSodahead) {
-              $http.post(answerUrl, {
-                poll: $scope.model.$pk,
-                answer_text: answer.answerText
-              });
-            }
-          });
-
-          // save poll
-          $scope.answers = $scope.model.answers;
-          return $scope.model.$save().$asPromise().then(function (data) {
-            if($scope.isNew) {
-              _.forEach($scope.answers, function (answer) {
-                $http.post(answerUrl, {
-                  poll: data.id,
-                  answer_text: answer.answerText
-                });
-              });
-            }
-            $location.path('/cms/app/polls/edit/' + data.id + '/');
-          });
-
+        } else {
+          return $q.reject('Save failed');
         }
-        return $q.reject();
       };
 
       $scope.deletedAnswers = [];
+      var newId = ($scope.answers) ? $scope.answers.length : 0;
 
       $scope.addAnswer = function () {
-        var newId = ($scope.model.answers) ? $scope.model.answers.length + 1 : 1;
-        $scope.model.answers.push({id: newId, notOnSodahead: true});
+        $scope.answers.push({id: newId++, notOnSodahead: true});
       };
 
       // create 3 blank answer objects if this is a new poll
       if($scope.isNew) {
-        $scope.model.answers = [];
+        $scope.answers = [];
         _.times(3, $scope.addAnswer);
       }
 
+
       $scope.removeAnswer = function (answerId) {
-        var deletedAnswer = _.remove($scope.model.answers, function (a) {
+        var deletedAnswer = _.remove($scope.answers, function (a) {
           return a.id === answerId;
         });
         if(deletedAnswer[0].notOnSodahead) { return; }
         $scope.deletedAnswers.push(deletedAnswer[0]);
       };
-
-      },
-      restrict: 'E',
-      scope: { getModelId: '&modelId' },
-    };
-  });
+    },
+    restrict: 'E',
+    scope: { getModelId: '&modelId' },
+  };
+});
 
 'use strict';
 
@@ -2550,7 +2531,7 @@ angular.module('polls.edit', [
 angular.module('polls.list', [
   'apiServices.poll.factory',
   'bulbsCmsApp.settings',
-  'listPage',
+  'bulbsCmsApp.nonRestmodListPage',
   'moment'
 ])
   .config(function ($routeProvider, routes) {
@@ -2561,6 +2542,7 @@ angular.module('polls.list', [
           $window.document.title = routes.CMS_NAMESPACE + ' | Poll';
 
           $scope.modelFactory = Poll;
+
         },
         templateUrl: routes.COMPONENTS_URL + 'polls/polls-list/polls-list-page.html'
       });
@@ -4803,61 +4785,191 @@ angular.module('apiServices.featureType.factory', [
   );
 'use strict';
 
+angular.module('apiServices.answer.factory', [
+  'apiServices',
+  'lodash'
+])
+.factory('Answer', ['$http', '$q', '_', function ($http, $q, _) {
+
+  var answerUrl = '/cms/api/v1/answer/';
+
+  function deleteAnswers(deletedAnswers) {
+    var deletePromise = _.map(deletedAnswers, function(deletedAnswer) {
+      return $http.delete(answerUrl + deletedAnswer.id);
+    });
+    $q.all(deletePromise).then(function(response) {
+      if(response.status === 201) {
+        return response;
+      } else {
+        return $q.reject('Delete unsucessful');
+      }
+    });
+  }
+
+  function putAnswer(oldAnswers, newAnswer) {
+    var oldAnswer = _.filter(oldAnswers, {id: newAnswer.id})[0];
+    if(newAnswer.answer_text !== oldAnswer.answer_text) {
+      return $http.put(answerUrl + newAnswer.id, {
+        answer_text: newAnswer.answer_text
+      }).then(function(response) {
+        if(response.status === 200) {
+          return response.data;
+        } else {
+          return $q.reject(newAnswer.answer_text + ' update unsuccessful');
+        }
+      });
+    }
+  }
+
+  function postAnswer(answer, pollId) {
+    return $http.post(answerUrl, {
+      poll: pollId,
+      answer_text: answer.answer_text
+    }).then(function(response) {
+      if(response.status === 201) {
+        return response.data;
+      } else {
+        return $q.reject(answer.answer_text + ' post unsuccessful');
+      }
+    });
+  }
+
+  function updatePollAnswers(scope) {
+    deleteAnswers(scope.deletedAnswers);
+    _.forEach(scope.model.answers, function(answer) {
+      if(answer.notOnSodahead) {
+        postAnswer(answer, scope.model.id);
+      } else {
+        putAnswer(scope.answers, answer);
+      }
+    });
+  }
+
+  return {
+    postAnswer: postAnswer,
+    updatePollAnswers: updatePollAnswers
+  };
+}]);
+
+'use strict';
+
 angular.module('apiServices.poll.factory', [
   'apiServices',
   'apiServices.mixins.fieldDisplay',
+  'bulbsCmsApp.nonRestmodListPage',
   'filters.moment'
 ])
-  .factory('Poll', function (restmod) {
-    return restmod.model('poll').mix('FieldDisplay', 'NestedDirtyModel', {
-      $config: {
-        name: 'Poll',
-        plural: 'Polls',
-        primaryKey: 'id',
-        fieldDisplays: [{
+.factory('Poll', ['$filter', '$http', '$q', function ($filter, $http, $q) {
+
+  var pollInfo,
+      filter,
+      pollUrl = '/cms/api/v1/poll/',
+      name = 'Poll',
+      namePlural = 'Polls',
+      fields = [{
           title: 'Poll Name',
-          value: 'record.title',
           sorts: 'title'
         }, {
           title: 'Creator',
-          value: 'record.authors.join(", ")',
-          sorts: 'author'
+          sorts: 'authors.join(", ")'
         }, {
           title: 'Publish Date',
-          value: 'record.publishDate.format("MM/DD/YY") || "--"',
           sorts: 'publish_date'
         }, {
           title: 'Close Date',
-          value: 'record.endDate.format("MM/DD/YY") || "--"',
           sorts: 'end_date'
-        }]
-      },
+      }];
 
-      // fields from frontend to backend
-      end_date: {
-        encode: 'moment_to_date_string',
-      },
-      publish_date: {
-        encode: 'moment_to_date_string',
-      },
+  function getPoll(pollId) {
+    filter = $filter('date_string_to_moment');
 
-      // fields from backend to frontend
-      endDate: {
-        decode: 'date_string_to_moment',
-      },
-      publishDate: {
-        decode: 'date_string_to_moment'
-      },
-
-      $extend: {
-        Model: {
-          simpleSearch: function (searchTerm) {
-            return this.$search({search: searchTerm, ordering: 'title'}).$asPromise();
-          }
-        }
+    return $http.get(pollUrl + pollId)
+    .then(function (response) {
+      if(response.status === 200) {
+        response.data.end_date = filter(response.data.end_date);
+        return response.data;
+      } else {
+        return $q.reject('Unable to retrieve poll');
       }
     });
-  });
+  }
+
+  function getPolls() {
+    return $http.get(pollUrl)
+    .then(function (response) {
+      if(response.status === 200) {
+        return response.data;
+      } else {
+        return $q.reject('Unable to retrieve polls');
+      }
+    });
+  }
+
+  function postPoll(data) {
+    filter = $filter('moment_to_date_string');
+
+    pollInfo = {
+      title: data.title,
+      question_text: data.question_text
+    };
+
+    if(data.end_date) {
+      pollInfo.end_date = filter(data.end_date);
+    }
+
+    return $http.post(pollUrl, pollInfo).then(function(response) {
+      if(response.status === 201) {
+        return response.data;
+      } else {
+        return $q.reject(data.title + ' creation unsuccessful');
+      }
+    });
+  }
+
+  function updatePoll(data) {
+    filter = $filter('moment_to_date_string');
+
+    pollInfo = {
+      title: data.title,
+      question_text: data.question_text
+    };
+
+    if(data.end_date) {
+      pollInfo.end_date = filter(data.end_date);
+    }
+
+    return $http.put(pollUrl + data.id, pollInfo)
+    .then(function(response) {
+      if(response.status === 200) {
+        return response.data;
+      } else {
+        return $q.reject(data.title + ' update unsuccessful');
+      }
+    });
+  }
+
+  function deletePoll(pollId) {
+    return $http.delete(pollUrl + pollId)
+    .then(function(response) {
+      if(response.status === 201) {
+        return response;
+      } else {
+        return $q.reject('Poll deletion unsucessful');
+      }
+    });
+  }
+
+  return {
+    getPoll: getPoll,
+    getPolls: getPolls,
+    fields: fields,
+    name: name,
+    namePlural: namePlural,
+    postPoll: postPoll,
+    updatePoll: updatePoll,
+    deletePoll: deletePoll
+  };
+}]);
 
 'use strict';
 
@@ -5517,6 +5629,135 @@ angular.module('listPage', [
         toolCopyContent: '@'
       },
       templateUrl: routes.SHARED_URL + 'list-page/list-page.html'
+    };
+  });
+
+'use strict';
+
+angular.module('bulbsCmsApp.nonRestmodListPage', [
+  'bulbsCmsApp.settings',
+  'confirmationModal',
+  'copyButton',
+  'lodash'
+])
+  .directive('nonRestmodListPage', function (routes) {
+    return {
+      controller: function (_, $scope, $location, $parse) {
+
+        // different types of filters that get combined to make seach query params
+        $scope.orderingFilter = {};
+        $scope.searchFilter = {};
+        $scope.toggledFilters = {};
+        $scope.pageNumber = 1;
+
+        $scope.copyContentInContext = function (record) {
+          var value = '';
+          if ($scope.toolCopyContent) {
+             value = $parse($scope.toolCopyContent)({record: record});
+          }
+          return value;
+        };
+
+        $scope.$retrieve = _.debounce(function (addParams) {
+          $scope.loadingResults = true;
+          return $scope.getItems()
+            .then(function (items) {
+              $scope.items = items;
+              $scope.loadingResults = false;
+            });
+        }, 250);
+
+        // search functionality
+        $scope.$search = function (query) {
+          $scope.searchFilter = {};
+
+          if (query) {
+            $scope.searchFilter[$scope.searchParameter] = query;
+          }
+
+          // go to page 1, new results may not have more than 1 page
+          $scope.pageNumber = 1;
+
+          $scope.$retrieve();
+        };
+
+        // toggled filters, only one set of these can be applied at a time
+        $scope.filterButtonsParsed = $scope.filterButtons();
+        $scope.$toggleFilters = function (params) {
+          $scope.toggledFilters = params;
+
+          // go to page 1, new results may not have more than 1 page
+          $scope.pageNumber = 1;
+
+          $scope.$retrieve();
+        };
+
+        // sorting functionality, only one field can be sorted at a time
+        $scope.sortingField = null;
+        $scope.sortDirection = 'asc';
+        $scope.$sort = function (fieldName) {
+          var direction;
+          if (fieldName === $scope.sortingField) {
+            // clicked on same field, make direction opposite of what it is now
+            direction = $scope.sortDirection === 'desc' ? '' : '-';
+          } else {
+            // clicked on a different field, start with the opposite of default
+            direction = '-';
+          }
+
+          // do ordering request
+          $scope.orderingFilter = {ordering: direction + fieldName};
+          $scope.$retrieve()
+            .$then(function () {
+              $scope.sortingField = fieldName;
+              $scope.sortDirection = direction === '-' ? 'desc' : 'asc';
+            });
+        };
+
+        $scope.$add = function () {
+          $location.path('/cms/app/' + $scope.cmsPage + '/edit/new/');
+        };
+
+        $scope.$remove = function (item) {
+          $scope.destroyItem({item: item});
+        };
+
+        $scope.goToEditPage = function (item) {
+          $location.path('/cms/app/' + $scope.cmsPage + '/edit/' + item.id + '/');
+        };
+
+        // set the active filter, either the first button with active === true,
+        //   or empty string for all
+        $scope.activeFilterButton =
+          _.chain($scope.filterButtonsParsed)
+            .findWhere({active: true})
+            .tap(function (button) {
+              // cheat here and set the params for the first retrieve
+              if (button) {
+                $scope.toggledFilters = button.params;
+              }
+            })
+            .result('title')
+            .value() ||
+            '';
+
+        // do initial retrieval
+        $scope.$retrieve();
+      },
+      restrict: 'E',
+      scope: {
+        cmsPage: '@',         // name of page in route
+        destroyItem: '&',     // returns promise, deletes given item
+        getItems: '&',        // function returns promise, recieves search params
+        filterButtons: '&',   // settings for filter buttons
+                              // { title:'human readable', active:true, params:queryParams object }
+        modelFields: '&',     // list of objects { sorts: x, title: y}
+        modelName: '&',       // list page title
+        modelNamePlural: '&', // list page title pluralized
+        searchParameter: '@', // key for text search param
+        toolCopyContent: '@'
+      },
+      templateUrl: routes.SHARED_URL + 'non-restmod-list-page/non-restmod-list-page.html'
     };
   });
 
