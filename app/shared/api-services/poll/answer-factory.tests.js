@@ -1,13 +1,13 @@
 'use strict';
 
 describe('Answer Factory', function () {
-  var $httpBackend,
-      Answer,
-      answer,
-      mockPayload,
-      response,
-      scope,
-      pollId;
+  var $httpBackend;
+  var Answer;
+  var answer;
+  var mockPayload;
+  var response;
+  var scope;
+  var pollId;
 
   beforeEach(module('apiServices.answer.factory'));
 

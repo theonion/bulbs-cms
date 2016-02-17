@@ -1,15 +1,15 @@
 'use strict';
 
 describe('Answer Factory', function () {
-  var $httpBackend,
-      $q,
-      data,
-      mockPayload,
-      moment,
-      Poll,
-      pollId,
-      pollUrl,
-      response;
+  var $httpBackend;
+  var $q;
+  var data;
+  var mockPayload;
+  var moment;
+  var Poll;
+  var pollId;
+  var pollUrl;
+  var response;
 
   beforeEach(module('apiServices.poll.factory'));
 
@@ -126,14 +126,14 @@ describe('Answer Factory', function () {
         id: 12,
         title: 'This is a poll',
         question_text: 'this is a question',
-        end_date: moment('2022-12-25', 'YYYY-MM-DD')
+        end_date: moment()
       };
       Poll.updatePoll(data).then(function (res) {
         response = res;
-        });
-        $httpBackend.expectPUT(pollUrl + data.id).respond(200, mockPayload);
-        $httpBackend.flush();
-        expect(response).toEqual(mockPayload);
+      });
+      $httpBackend.expectPUT(pollUrl + data.id).respond(200, mockPayload);
+      $httpBackend.flush();
+      expect(response).toEqual(mockPayload);
     });
 
     it('throws error if title and question_text are not present', function() {

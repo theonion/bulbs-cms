@@ -32,7 +32,7 @@ angular.module('apiServices.answer.factory', [
   }
 
   function postAnswer(answer, pollId) {
-    if(typeof pollId !== 'number' || !answer.answer_text) {
+    if(!_.isNumber(pollId) || _.isUndefined(answer.answer_text)) {
       throw error('poll id and answer_text fields required');
     }
     return $http.post(answerUrl, {

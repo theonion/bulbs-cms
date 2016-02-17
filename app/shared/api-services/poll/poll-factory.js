@@ -3,13 +3,14 @@
 angular.module('apiServices.poll.factory', [
   'apiServices',
   'apiServices.mixins.fieldDisplay',
-  'filters.moment'
+  'filters.moment',
+  'lodash'
 ])
-.factory('Poll', ['$filter', '$http', '$q', function ($filter, $http, $q) {
+.factory('Poll', ['$filter', '$http', '$q', '_', 'moment', function ($filter, $http, $q, _, moment) {
 
-  var pollInfo,
-      filter,
-      pollUrl = '/cms/api/v1/poll/';
+  var filter;
+  var pollInfo;
+  var pollUrl = '/cms/api/v1/poll/';
 
   var error = function(message) {
     return new Error('Poll Error: ' + message);
@@ -26,12 +27,12 @@ angular.module('apiServices.poll.factory', [
   }
 
   function postPoll(data) {
-    if(!data.title && !data.question_text) {
+    if(_.isUndefined(data.title) && _.isUndefined(data.question_text)) {
       throw error('title and question text required');
     }
 
     if(data.end_date) {
-      if(typeof data.end_date !== 'object') {
+      if(!moment.isMoment(data.end_date)) {
         throw error('end_date must be a moment object');
       }
       filter = $filter('moment_to_date_string');
@@ -44,14 +45,14 @@ angular.module('apiServices.poll.factory', [
   }
 
   function updatePoll(data) {
-    if(!data.title && !data.question_text) {
+    if(_.isUndefined(data.title) && _.isUndefined(data.question_text)) {
       throw error('title and question text required');
     }
 
     pollInfo = { title: data.title, question_text: data.question_text};
 
     if(data.end_date) {
-      if(typeof data.end_date !== 'object') {
+      if(!moment.isMoment(data.end_date)) {
         throw error('end_date must be a moment object');
       }
       filter = $filter('moment_to_date_string');
