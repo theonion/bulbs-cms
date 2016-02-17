@@ -255,6 +255,7 @@ angular.module('bulbsCmsApp', [
   'OnionEditor',
   // shared
   'contentServices',
+  'cms.tunic',
   // components
   'bettyEditable',
   'bugReporter',
@@ -325,6 +326,7 @@ angular.module('bulbsCmsApp', [
   $httpProvider.interceptors.push('BugReportInterceptor');
   $httpProvider.interceptors.push('PermissionsInterceptor');
   $httpProvider.interceptors.push('BadRequestInterceptor');
+  $httpProvider.interceptors.push('TunicInterceptor');
 })
 .run(function ($rootScope, $http, $cookies) {
   // set the CSRF token here
@@ -5517,6 +5519,107 @@ angular.module('listPage', [
       templateUrl: routes.SHARED_URL + 'list-page/list-page.html'
     };
   });
+
+'use strict';
+
+angular.module('cms.tunic.config', [
+  'lodash'
+])
+  .provider('TunicConfig', [
+    '_',
+    function TunicConfigProvider (_) {
+      // relative api path, rel to backendRoot
+      var apiPath = '';
+      // root for all backend requests
+      var backendRoot = '';
+      // Tunic API request token
+      var requestToken = '';
+
+      var error = function (message) {
+        return new Error('Configuration Error (TunicConfig) ' + message);
+      };
+
+      this.setApiPath = function (value) {
+        if (_.isString(value)) {
+          apiPath = value;
+        } else {
+          throw error('apiPath must be a string!');
+        }
+        return this;
+      };
+
+      this.setBackendRoot = function (value) {
+        if (_.isString(value)) {
+          backendRoot = value;
+        } else {
+          throw error('backendRoot must be a string!');
+        }
+        return this;
+      };
+
+      this.setRequestToken = function (value) {
+        if (_.isString(value)) {
+          requestToken = value;
+        } else {
+          throw error('requestToken must be a string!');
+        }
+        return this;
+      };
+
+      this.$get = function () {
+        return {
+          getRequestToken: _.constant(requestToken),
+          /**
+           * Create an absolute api url.
+           *
+           * @param {string} relUrl - relative url to get the absolute api url for.
+           * @returns absolute api url.
+           */
+          buildBackendApiUrl: function (relUrl) {
+            return backendRoot + apiPath + (relUrl || '');
+          },
+
+          /**
+           * Check if a given url should be intercepted by this library's interceptor.
+           *
+           * @param {string} url - Url to test against matchers.
+           * @returns {boolean} true if url should be intercepted, false otherwise.
+           */
+          shouldBeIntercepted: function (url) {
+            return url.startsWith(backendRoot + apiPath);
+          }
+        };
+      };
+    }
+  ]);
+
+'use strict';
+
+angular.module('cms.tunic.interceptor', [
+  'cms.tunic.config'
+])
+  .service('TunicInterceptor', [
+    'TunicConfig',
+    function (TunicConfig) {
+
+      this.request = function (config) {
+        if (TunicConfig.shouldBeIntercepted(config.url)) {
+            config.headers = config.headers || {};
+            config.headers.Authorization = 'Token ' + TunicConfig.getRequestToken();
+        }
+        return config;
+      };
+
+      return this;
+    }
+  ]);
+
+'use strict';
+
+angular.module('cms.tunic', [
+  'cms.tunic.config',
+  'cms.tunic.interceptor'
+]);
 
 'use strict';
 
