@@ -6,21 +6,11 @@ module.exports = function(config) {
 
   // sauce labs custom launchers (https://saucelabs.com/platforms)
   var customLaunchers = {
+    // Only supporting Chrome
     'SL_Chrome': {
       base: 'SauceLabs',
       browserName: 'chrome',
-      version: '38'
     },
-    'SL_Firefox': {
-      base: 'SauceLabs',
-      browserName: 'firefox'
-    },
-    // 'SL_Safari': {
-    //   base: 'SauceLabs',
-    //   browserName: 'safari',
-    //   platform: 'OS X 10.9',
-    //   version: '7'
-    // }
   };
 
   config.set({
@@ -153,6 +143,8 @@ module.exports = function(config) {
     config.browsers = Object.keys(customLaunchers);
     config.singleRun = true;
     config.reporters.push('saucelabs');
+    // Default 10000 times out often on public Sauce servers
+    config.browserNoActivityTimeout = 30000;
 
   } else {
     // this is local, just use Chrome
