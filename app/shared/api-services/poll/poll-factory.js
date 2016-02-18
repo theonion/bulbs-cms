@@ -4,7 +4,7 @@ angular.module('apiServices.poll.factory', [
   'apiServices',
   'apiServices.mixins.fieldDisplay',
   'bulbsCmsApp.nonRestmodListPage',
-  'filters.moment'
+  'filters.moment',
   'lodash'
 ])
 .factory('Poll', ['$filter', '$http', '$q', '_', 'moment', function ($filter, $http, $q, _, moment) {
@@ -35,7 +35,7 @@ angular.module('apiServices.poll.factory', [
   function getPoll(pollId) {
     filter = $filter('date_string_to_moment');
 
-    return $http.get(pollUrl + pollId)
+    return $http.get(pollUrl + pollId + '/')
     .then(function (response) {
       response.data.end_date = filter(response.data.end_date);
       return response.data;
@@ -86,7 +86,7 @@ angular.module('apiServices.poll.factory', [
       pollInfo.end_date = filter(data.end_date);
     }
 
-    return $http.put(pollUrl + data.id, pollInfo)
+    return $http.put(pollUrl + data.id + '/', pollInfo)
     .then(function(response) {
       return response.data;
     });
