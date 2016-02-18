@@ -7,17 +7,16 @@ angular.module('apiServices.answer.factory', [
 .factory('Answer', ['$http', '$q', '_', function ($http, $q, _) {
 
   var answerUrl = '/cms/api/v1/answer/';
+  var error = function(message) {
+    return new Error('Poll Error: ' + message);
+  };
 
   function deleteAnswers(deletedAnswers) {
     var deletePromise = _.map(deletedAnswers, function(deletedAnswer) {
       return $http.delete(answerUrl + deletedAnswer.id);
     });
     $q.all(deletePromise).then(function(response) {
-      if(response.status === 201) {
-        return response;
-      } else {
-        return $q.reject('Delete unsucessful');
-      }
+      return response;
     });
   }
 
@@ -27,25 +26,20 @@ angular.module('apiServices.answer.factory', [
       return $http.put(answerUrl + newAnswer.id, {
         answer_text: newAnswer.answer_text
       }).then(function(response) {
-        if(response.status === 200) {
-          return response.data;
-        } else {
-          return $q.reject(newAnswer.answer_text + ' update unsuccessful');
-        }
+        return response.data;
       });
     }
   }
 
   function postAnswer(answer, pollId) {
+    if(!_.isNumber(pollId) || _.isUndefined(answer.answer_text)) {
+      throw error('poll id and answer_text fields required');
+    }
     return $http.post(answerUrl, {
       poll: pollId,
       answer_text: answer.answer_text
     }).then(function(response) {
-      if(response.status === 201) {
-        return response.data;
-      } else {
-        return $q.reject(answer.answer_text + ' post unsuccessful');
-      }
+      return response.data;
     });
   }
 

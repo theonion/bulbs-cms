@@ -3,79 +3,72 @@
 angular.module('apiServices.poll.factory', [
   'apiServices',
   'apiServices.mixins.fieldDisplay',
-  'filters.moment'
+  'filters.moment',
+  'lodash'
 ])
-.factory('Poll', ['$filter', '$http', '$q', function ($filter, $http, $q) {
+.factory('Poll', ['$filter', '$http', '$q', '_', 'moment', function ($filter, $http, $q, _, moment) {
 
-  var pollInfo,
-      filter,
-      pollUrl = '/cms/api/v1/poll/';
+  var filter;
+  var pollInfo;
+  var pollUrl = '/cms/api/v1/poll/';
+
+  var error = function(message) {
+    return new Error('Poll Error: ' + message);
+  };
 
   function getPoll(pollId) {
     filter = $filter('date_string_to_moment');
 
     return $http.get(pollUrl + pollId)
     .then(function (response) {
-      if(response.status === 200) {
-        response.data.end_date = filter(response.data.end_date);
-        return response.data;
-      } else {
-        return $q.reject('Unable to retrieve poll');
-      }
+      response.data.end_date = filter(response.data.end_date);
+      return response.data;
     });
   }
 
   function postPoll(data) {
-    filter = $filter('moment_to_date_string');
-
-    pollInfo = {
-      title: data.title,
-      question_text: data.question_text
-    };
-
-    if(data.end_date) {
-      pollInfo.end_date = filter(data.end_date);
+    if(_.isUndefined(data.title) && _.isUndefined(data.question_text)) {
+      throw error('title and question text required');
     }
 
-    return $http.post(pollUrl, pollInfo).then(function(response) {
-      if(response.status === 201) {
-        return response.data;
-      } else {
-        return $q.reject(data.title + ' creation unsuccessful');
+    if(data.end_date) {
+      if(!moment.isMoment(data.end_date)) {
+        throw error('end_date must be a moment object');
       }
+      filter = $filter('moment_to_date_string');
+      pollInfo.end_date = filter(data.end_date);
+    }
+    pollInfo = { title: data.title, question_text: data.question_text};
+    return $http.post(pollUrl, pollInfo).then(function(response) {
+        return response.data;
     });
   }
 
   function updatePoll(data) {
-    filter = $filter('moment_to_date_string');
+    if(_.isUndefined(data.title) && _.isUndefined(data.question_text)) {
+      throw error('title and question text required');
+    }
 
-    pollInfo = {
-      title: data.title,
-      question_text: data.question_text
-    };
+    pollInfo = { title: data.title, question_text: data.question_text};
 
     if(data.end_date) {
+      if(!moment.isMoment(data.end_date)) {
+        throw error('end_date must be a moment object');
+      }
+      filter = $filter('moment_to_date_string');
       pollInfo.end_date = filter(data.end_date);
     }
 
     return $http.put(pollUrl + data.id, pollInfo)
     .then(function(response) {
-      if(response.status === 200) {
-        return response.data;
-      } else {
-        return $q.reject(data.title + ' update unsuccessful');
-      }
+      return response.data;
     });
   }
 
   function deletePoll(pollId) {
-    return $http.delete(pollUrl + pollId)
+    return $http.delete(pollUrl + pollId + '/')
     .then(function(response) {
-      if(response.status === 201) {
-        return response;
-      } else {
-        return $q.reject('Poll deletion unsucessful');
-      }
+      return response;
     });
   }
 
