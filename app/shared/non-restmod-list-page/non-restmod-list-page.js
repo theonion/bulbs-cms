@@ -8,7 +8,9 @@ angular.module('bulbsCmsApp.nonRestmodListPage', [
 ])
   .directive('nonRestmodListPage', function (routes) {
     return {
-      controller: function (_, $scope, $location, $parse) {
+      controller: function (_, $scope, $location, $parse, $window) {
+
+        $window.scope = $scope;
 
         // different types of filters that get combined to make seach query params
         $scope.orderingFilter = {};
@@ -74,7 +76,7 @@ angular.module('bulbsCmsApp.nonRestmodListPage', [
           // do ordering request
           $scope.orderingFilter = {ordering: direction + fieldName};
           $scope.$retrieve()
-            .$then(function () {
+            .then(function () {
               $scope.sortingField = fieldName;
               $scope.sortDirection = direction === '-' ? 'desc' : 'asc';
             });
@@ -84,8 +86,11 @@ angular.module('bulbsCmsApp.nonRestmodListPage', [
           $location.path('/cms/app/' + $scope.cmsPage + '/edit/new/');
         };
 
-        $scope.$remove = function (item) {
-          $scope.destroyItem({item: item});
+        $scope.$remove = function (removedItem) {
+          $scope.destroyItem({item: removedItem});
+          _.remove($scope.items, function(item) {
+            return item === removedItem;
+          });
         };
 
         $scope.goToEditPage = function (item) {
