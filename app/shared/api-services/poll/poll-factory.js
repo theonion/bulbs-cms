@@ -17,9 +17,6 @@ angular.module('apiServices.poll.factory', [
           title: 'Poll Name',
           sorts: 'title'
         }, {
-          title: 'Creator',
-          sorts: 'authors.join(", ")'
-        }, {
           title: 'Publish Date',
           sorts: 'publish_date'
         }, {
@@ -42,14 +39,15 @@ angular.module('apiServices.poll.factory', [
     });
   }
 
-  function getPolls() {
+  function getPolls(params) {
+    if(!_.isEmpty(params)) {
+      pollUrl = pollUrl + '?ordering=' + params;
+    }
     return $http.get(pollUrl)
     .then(function (response) {
-      if(response.status === 200) {
-        return response.data;
-      } else {
-        return $q.reject('Unable to retrieve polls');
-      }
+      // reset pollUrl
+      pollUrl = '/cms/api/v1/poll/';
+      return response.data;
     });
   }
 
