@@ -66,9 +66,9 @@
           <i
               class="fa"
               ng-class="{
-                'fa-sort': field.sorts && sortingField !== field.title,
-                'fa-sort-asc': field.sorts && sortDirection === 'asc'  && sortingField === field.title,
-                'fa-sort-desc': field.sorts && sortDirection ==='desc' && sortingField === field.title
+                'fa-sort': field.sorts && sortingField !== field.sorts,
+                'fa-sort-asc': field.sorts && sortDirection === 'asc'  && sortingField === field.sorts,
+                'fa-sort-desc': field.sorts && sortDirection ==='desc' && sortingField === field.sorts
               }">
           </i>
         </td>
