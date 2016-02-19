@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Answer Factory', function () {
+describe('Poll Factory', function () {
   var $httpBackend;
   var $q;
   var data;
@@ -36,13 +36,13 @@ describe('Answer Factory', function () {
     it('makes a get request', function () {
       pollId = 27;
       Poll.getPoll(pollId);
-      $httpBackend.expectGET(pollUrl + pollId).respond(200, mockPayload);
+      $httpBackend.expectGET(pollUrl + pollId + '/').respond(200, mockPayload);
       $httpBackend.flush();
     });
 
     it('converts end_date from string to moment object', function () {
       pollId = 27;
-      $httpBackend.expectGET(pollUrl + pollId).respond(200, mockPayload);
+      $httpBackend.expectGET(pollUrl + pollId + '/').respond(200, mockPayload);
       Poll.getPoll(pollId).then(function(res) {
         response = res;
       });
@@ -52,7 +52,7 @@ describe('Answer Factory', function () {
 
     it('returns the mock payload', function () {
       pollId = 223;
-      $httpBackend.expectGET(pollUrl + pollId).respond(200, mockPayload);
+      $httpBackend.expectGET(pollUrl + pollId + '/').respond(200, mockPayload);
       Poll.getPoll(pollId).then(function(res) {
         response = res;
       });
@@ -63,7 +63,7 @@ describe('Answer Factory', function () {
 
   describe('getPolls()', function () {
     it('makes a get request', function () {
-      pollFactory.getPolls();
+      Poll.getPolls();
       $httpBackend.expectGET('/cms/api/v1/poll/').respond(200);
       $httpBackend.flush();
     });
@@ -125,7 +125,7 @@ describe('Answer Factory', function () {
         question_text: 'this is a question',
       };
       Poll.updatePoll(data);
-      $httpBackend.expectPUT(pollUrl + data.id).respond(201);
+      $httpBackend.expectPUT(pollUrl + data.id + '/').respond(201);
       $httpBackend.flush();
     });
 
@@ -139,7 +139,7 @@ describe('Answer Factory', function () {
       Poll.updatePoll(data).then(function (res) {
         response = res;
       });
-      $httpBackend.expectPUT(pollUrl + data.id).respond(200, mockPayload);
+      $httpBackend.expectPUT(pollUrl + data.id + '/').respond(200, mockPayload);
       $httpBackend.flush();
       expect(response).toEqual(mockPayload);
     });
