@@ -2445,6 +2445,7 @@ angular.module('saveButton.directive', [
 
 angular.module('polls.edit.directive', [
   'apiServices.poll.factory',
+  'apiServices.answer.factory',
   'BettyCropper',
   'lodash',
   'saveButton.directive',
@@ -2459,63 +2460,85 @@ angular.module('polls.edit.directive', [
     value: 'Image'
   }
 ])
-  .directive('pollsEdit', function (routes) {
-    return {
-      templateUrl: routes.COMPONENTS_URL + 'polls/polls-edit/polls-edit.html',
-      controller: function (_, $location, $q, $routeParams, $scope, $window, Poll) {
-        // populate model for use
-        if ($routeParams.id === 'new') {
-          $scope.model = Poll.$build();
-          $scope.isNew = true;
-        } else {
-          $scope.model = Poll.$find($routeParams.id);
-        }
-
-        window.onbeforeunload = function (e) {
-          if(!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
-            // show confirmation alert
-            return 'You have unsaved changes.';
-          }
-        };
-
-        $scope.$on('$destroy', function () {
-          // remove alert when we go
-          delete window.onbeforeunload;
+.directive('pollsEdit', function (routes) {
+  return {
+    templateUrl: routes.COMPONENTS_URL + 'polls/polls-edit/polls-edit.html',
+    controller: function (_, $http, $location, $q, $routeParams, $scope, Answer, Poll) {
+      // populate model for use
+      if ($routeParams.id === 'new') {
+        $scope.model = {};
+        $scope.isNew = true;
+      } else {
+        Poll.getPoll($routeParams.id)
+        .then(function successCallback(response) {
+          $scope.model = response;
+          $scope.answers = response.answers;
         });
+      }
+
+      window.onbeforeunload = function (e) {
+        if(!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
+          // show confirmation alert
+          return 'You have unsaved changes.';
+        }
+      };
+
+      $scope.$on('$destroy', function () {
+        // remove alert when we go
+        delete window.onbeforeunload;
+      });
 
       $scope.saveModel = function () {
         if ($scope.model) {
-          return $scope.model.$save().$asPromise().then(function (data) {
-            $location.path('/cms/app/polls/edit/' + data.id + '/');
-          });
+
+          if(!$scope.isNew) {
+            Answer.updatePollAnswers($scope);
+            // reset deleted answers
+            $scope.deletedAnswers = [];
+            return Poll.updatePoll($scope.model);
+
+          } else {
+            return Poll.postPoll($scope.model).then(function (data) {
+              var answerPromise = _.map($scope.answers, function (answer) {
+                return Answer.postAnswer(answer, data.id);
+              });
+
+              return $q.all(answerPromise).then(function () {
+                $location.path('/cms/app/polls/edit/' + data.id + '/');
+              });
+            });
+          }
+        } else {
+          return $q.reject('Save failed');
         }
-        return $q.reject();
       };
 
-      // adding and removing response text logic
-      $scope.idIncrementer = 0;
-
-      $scope.model.answers = [
-        {id: $scope.idIncrementer++},
-        {id: $scope.idIncrementer++},
-        {id: $scope.idIncrementer++}
-      ];
+      $scope.deletedAnswers = [];
+      var newId = ($scope.answers) ? $scope.answers.length : 0;
 
       $scope.addAnswer = function () {
-        $scope.model.answers.push({id: $scope.idIncrementer++});
+        $scope.answers.push({id: newId++, notOnSodahead: true});
       };
+
+      // create 3 blank answer objects if this is a new poll
+      if($scope.isNew) {
+        $scope.answers = [];
+        _.times(3, $scope.addAnswer);
+      }
+
 
       $scope.removeAnswer = function (answerId) {
-        _.remove($scope.model.answers, function (a) {
+        var deletedAnswer = _.remove($scope.answers, function (a) {
           return a.id === answerId;
         });
+        if(deletedAnswer[0].notOnSodahead) { return; }
+        $scope.deletedAnswers.push(deletedAnswer[0]);
       };
-
-      },
-      restrict: 'E',
-      scope: { getModelId: '&modelId' },
-    };
-  });
+    },
+    restrict: 'E',
+    scope: { getModelId: '&modelId' },
+  };
+});
 
 'use strict';
 
@@ -4859,65 +4882,147 @@ angular.module('apiServices.featureType.factory', [
   );
 'use strict';
 
+angular.module('apiServices.answer.factory', [
+  'apiServices',
+  'lodash'
+])
+.factory('Answer', ['$http', '$q', '_', function ($http, $q, _) {
+
+  var answerUrl = '/cms/api/v1/answer/';
+  var error = function(message) {
+    return new Error('Poll Error: ' + message);
+  };
+
+  function deleteAnswers(deletedAnswers) {
+    var deletePromise = _.map(deletedAnswers, function(deletedAnswer) {
+      return $http.delete(answerUrl + deletedAnswer.id);
+    });
+    $q.all(deletePromise).then(function(response) {
+      return response;
+    });
+  }
+
+  function putAnswer(oldAnswers, newAnswer) {
+    var oldAnswer = _.filter(oldAnswers, {id: newAnswer.id})[0];
+    if(newAnswer.answer_text !== oldAnswer.answer_text) {
+      return $http.put(answerUrl + newAnswer.id, {
+        answer_text: newAnswer.answer_text
+      }).then(function(response) {
+        return response.data;
+      });
+    }
+  }
+
+  function postAnswer(answer, pollId) {
+    if(!_.isNumber(pollId) || _.isUndefined(answer.answer_text)) {
+      throw error('poll id and answer_text fields required');
+    }
+    return $http.post(answerUrl, {
+      poll: pollId,
+      answer_text: answer.answer_text
+    }).then(function(response) {
+      return response.data;
+    });
+  }
+
+  function updatePollAnswers(scope) {
+    deleteAnswers(scope.deletedAnswers);
+    _.forEach(scope.model.answers, function(answer) {
+      if(answer.notOnSodahead) {
+        postAnswer(answer, scope.model.id);
+      } else {
+        putAnswer(scope.answers, answer);
+      }
+    });
+  }
+
+  return {
+    postAnswer: postAnswer,
+    updatePollAnswers: updatePollAnswers
+  };
+}]);
+
+'use strict';
+
 angular.module('apiServices.poll.factory', [
   'apiServices',
   'apiServices.mixins.fieldDisplay',
-  'filters.moment'
+  'filters.moment',
+  'lodash'
 ])
-  .factory('Poll', function (restmod) {
-    return restmod.model('poll').mix('FieldDisplay', 'NestedDirtyModel', {
-      $config: {
-        name: 'Poll',
-        plural: 'Polls',
-        primaryKey: 'id',
-        fieldDisplays: [{
-          title: 'Poll Name',
-          value: 'record.title',
-          sorts: 'title'
-        }, {
-          title: 'Creator',
-          value: 'record.authors.join(", ")',
-          sorts: 'author'
-        }, {
-          title: 'Publish Date',
-          value: 'record.publishDate.format("MM/DD/YY") || "--"',
-          sorts: 'publish_date'
-        }, {
-          title: 'Close Date',
-          value: 'record.closeDate.format("MM/DD/YY") || "--"',
-          sorts: 'close_date'
-        }]
-      },
+.factory('Poll', ['$filter', '$http', '$q', '_', 'moment', function ($filter, $http, $q, _, moment) {
 
-      pixels: {
-        init: [{}],
-      },
+  var filter;
+  var pollInfo;
+  var pollUrl = '/cms/api/v1/poll/';
 
-      // fields from frontend to backend
-      close_date: {
-        encode: 'moment_to_date_string',
-      },
-      publish_date: {
-        encode: 'moment_to_date_string',
-      },
+  var error = function(message) {
+    return new Error('Poll Error: ' + message);
+  };
 
-      // fields from backend to frontend
-      closeDate: {
-        decode: 'date_string_to_moment',
-      },
-      publishDate: {
-        decode: 'date_string_to_moment'
-      },
+  function getPoll(pollId) {
+    filter = $filter('date_string_to_moment');
 
-      $extend: {
-        Model: {
-          simpleSearch: function (searchTerm) {
-            return this.$search({search: searchTerm, ordering: 'title'}).$asPromise();
-          }
-        }
-      }
+    return $http.get(pollUrl + pollId)
+    .then(function (response) {
+      response.data.end_date = filter(response.data.end_date);
+      return response.data;
     });
-  });
+  }
+
+  function postPoll(data) {
+    if(_.isUndefined(data.title) && _.isUndefined(data.question_text)) {
+      throw error('title and question text required');
+    }
+
+    if(data.end_date) {
+      if(!moment.isMoment(data.end_date)) {
+        throw error('end_date must be a moment object');
+      }
+      filter = $filter('moment_to_date_string');
+      pollInfo.end_date = filter(data.end_date);
+    }
+    pollInfo = { title: data.title, question_text: data.question_text};
+    return $http.post(pollUrl, pollInfo).then(function(response) {
+        return response.data;
+    });
+  }
+
+  function updatePoll(data) {
+    if(_.isUndefined(data.title) && _.isUndefined(data.question_text)) {
+      throw error('title and question text required');
+    }
+
+    pollInfo = { title: data.title, question_text: data.question_text};
+
+    if(data.end_date) {
+      if(!moment.isMoment(data.end_date)) {
+        throw error('end_date must be a moment object');
+      }
+      filter = $filter('moment_to_date_string');
+      pollInfo.end_date = filter(data.end_date);
+    }
+
+    return $http.put(pollUrl + data.id, pollInfo)
+    .then(function(response) {
+      return response.data;
+    });
+  }
+
+  function deletePoll(pollId) {
+    return $http.delete(pollUrl + pollId + '/')
+    .then(function(response) {
+      return response;
+    });
+  }
+
+  return {
+    getPoll: getPoll,
+    postPoll: postPoll,
+    updatePoll: updatePoll,
+    deletePoll: deletePoll
+  };
+}]);
 
 'use strict';
 
@@ -8070,9 +8175,11 @@ angular.module('bulbsCmsApp')
 
     // keep track of if article is dirty or not
     $scope.articleIsDirty = false;
-    $scope.$watch('article', function () {
-      $scope.articleIsDirty = !angular.equals($scope.article, $scope.last_saved_article);
-    }, true);
+    $scope.$watch(function () {
+      return !angular.equals($scope.article, $scope.last_saved_article);
+    }, function (isDirty) {
+      $scope.articleIsDirty = isDirty;
+    });
 
     $scope.$watch('articleIsDirty', function () {
       if ($scope.articleIsDirty) {

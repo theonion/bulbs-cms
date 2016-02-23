@@ -55417,7 +55417,7 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
 }]);
 
 //! moment.js
-//! version : 2.11.1
+//! version : 2.11.2
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
@@ -57234,7 +57234,7 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
     }
 
     // ASP.NET json date format regex
-    var aspNetRegex = /(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)\.?(\d{3})?)?/;
+    var aspNetRegex = /^(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)\.?(\d{3})?\d*)?$/;
 
     // from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
     // somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
@@ -58989,7 +58989,7 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
     // Side effect imports
 
 
-    utils_hooks__hooks.version = '2.11.1';
+    utils_hooks__hooks.version = '2.11.2';
 
     setHookCallback(local__createLocal);
 
@@ -85372,6 +85372,38 @@ define('enforce-p-elements',[
 
 });
 
+define('filter-for-export',['scribe-common/src/element'], function (scribeElement) {
+  'user strict';
+
+  return function () {
+    return function (scribe) {
+      function traverse (parentNode) {
+        var node = parentNode.firstElementChild;
+
+        while (node) {
+          if (node.filterForExport) {
+            node.filterForExport();
+          }
+
+          if (node.children.length > 0) {
+            traverse(node);
+          }
+
+          node = node.nextElementSibling;
+        }
+      }
+
+      scribe.registerHTMLFormatter('export', function (html) {
+        var bin = document.createElement('div');
+        bin.innerHTML = html;
+        traverse(bin);
+        return bin.innerHTML;
+      });
+    };
+  };
+
+});
+
 define('onion-editor',[
   'scribe',
   'scribe-plugin-blockquote-command',
@@ -85403,7 +85435,8 @@ define('onion-editor',[
   'scribe-plugin-anchor',
   // scribe core
   'our-ensure-selectable-containers',
-  'enforce-p-elements'
+  'enforce-p-elements',
+  'filter-for-export',
 ], function (
   Scribe,
   scribePluginBlockquoteCommand,
