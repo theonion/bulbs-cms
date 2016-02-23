@@ -255,9 +255,11 @@ angular.module('bulbsCmsApp')
 
     // keep track of if article is dirty or not
     $scope.articleIsDirty = false;
-    $scope.$watch('article', function () {
-      $scope.articleIsDirty = !angular.equals($scope.article, $scope.last_saved_article);
-    }, true);
+    $scope.$watch(function () {
+      return !angular.equals($scope.article, $scope.last_saved_article);
+    }, function (isDirty) {
+      $scope.articleIsDirty = isDirty;
+    });
 
     $scope.$watch('articleIsDirty', function () {
       if ($scope.articleIsDirty) {
