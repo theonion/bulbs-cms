@@ -9,4 +9,4 @@ app/keys.js
 coverage
 .idea/
 .DS_Store
-dist
+dist/
