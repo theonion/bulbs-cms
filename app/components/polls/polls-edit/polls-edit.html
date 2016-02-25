@@ -15,6 +15,29 @@
   </div>
 </div>
 
+<div
+    class="row poll-embed-code">
+  <div class="col-md-4"></div>
+  <div class="col-md-4">
+    <label>Poll Embed Code</label>
+    <div class="input-group">
+      <input
+        readonly
+        value="{{ embedCode() }}"
+        class="form-control">
+
+      <span class="input-group-btn">
+        <copy-button
+            class="btn btn-info"
+            content="{{ embedCode() }}"
+            button-classes-default="btn btn-xs btn-info"
+            button-classes-success="btn btn-xs btn-success">
+        </copy-button>
+      </span>
+    </div>
+  </div>
+</div>
+
 <div class="row poll-startdate">
   <div class="col-md-4"></div>
   <div class="form-group col-md-4">

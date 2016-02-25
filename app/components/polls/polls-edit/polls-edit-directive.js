@@ -27,10 +27,10 @@ angular.module('polls.edit.directive', [
         $scope.isNew = true;
       } else {
         Poll.getPoll($routeParams.id)
-        .then(function successCallback(response) {
-          $scope.model = response;
-          $scope.answers = response.answers;
-        });
+          .then(function successCallback(response) {
+            $scope.model = response;
+            $scope.answers = response.answers;
+          });
       }
 
       window.onbeforeunload = function (e) {
@@ -44,6 +44,10 @@ angular.module('polls.edit.directive', [
         // remove alert when we go
         delete window.onbeforeunload;
       });
+
+      $scope.embedCode = function () {
+        return '<bulbs-poll src="/poll/' + $scope.model.id + '.json"></bulbs-poll>';
+      };
 
       $scope.saveModel = function () {
         if ($scope.model) {
