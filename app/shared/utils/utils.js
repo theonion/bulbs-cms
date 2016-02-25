@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('utils', [])
-  .service('Utils', function () {
+  .service('Utils', ['_', function (_) {
     var Utils = this;
 
     Utils.slugify = function (text) {
@@ -39,5 +39,19 @@ angular.module('utils', [])
       return list.splice(index, 1).length > 0;
     };
 
+    /**
+    * Transform an object into url params.
+    * ONLY knows what to do with a flat params object.
+    * Similar to jQuery.param
+    * @param {Object} params - Object of params to serialize.
+    * @returns {String} query - a url querystring (is prefixed with '?')
+    */
+    Utils.param = function (params ) {
+      var query = _.any(params) ? '?' : '';
+      return query + _.map(params, function (value, key) {
+        return key + '+' + value;
+      }).join('&');
+    };
+
     return Utils;
-  });
+  }]);

@@ -9,13 +9,19 @@
         get-items="modelFactory.getPolls(params)"
         filter-buttons="[{
           title: 'Draft',
-          params: {}
+          params: {
+            status: 'draft'
+          }
         }, {
           title: 'Active',
-          params: {}
+          params: {
+            status: 'active'
+          }
         }, {
           title: 'Closed',
-          params: {}
+          params: {
+            status: 'closed'
+          }
         }]"
         model-fields="modelFactory.fields"
         model-name="modelFactory.name"
