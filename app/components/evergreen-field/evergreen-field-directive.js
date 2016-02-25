@@ -9,14 +9,9 @@ angular.module('evergreenField.directive', [
     'routes',
     function (routes) {
       return {
-        controller: [
-          '_', '$scope', 'ContentFactory',
-          function (_, $scope, ContentFactory) {
-          }
-        ],
         restrict: 'E',
         scope: {
-          content: '='
+          article: '='
         },
         templateUrl: routes.COMPONENTS_URL + 'evergreen-field/evergreen-field.html'
       };
