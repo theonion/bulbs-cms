@@ -5,12 +5,15 @@ angular.module('evergreenField.directive', [
   'lodash',
   'saveButton.directive',
 ])
-  .directive('evergreenField',
-    // TODO: akos -- this breaks when using new-style array, "routes" is undefined
+  .directive('evergreenField', [
+    'routes',
     function (routes) {
       return {
-        controller: function (_, $scope, ContentFactory) {
-        },
+        controller: [
+          '_', '$scope', 'ContentFactory',
+          function (_, $scope, ContentFactory) {
+          }
+        ],
         restrict: 'E',
         scope: {
           content: '='
@@ -18,4 +21,4 @@ angular.module('evergreenField.directive', [
         templateUrl: routes.COMPONENTS_URL + 'evergreen-field/evergreen-field.html'
       };
     }
-  );
+  ]);
