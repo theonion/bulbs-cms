@@ -78,7 +78,7 @@
     <tbody>
       <tr ng-repeat="item in items">
         <td ng-repeat="field in modelFields()">
-          {{ item[field.sorts] }}
+          {{ field.content ? field.content(item) : item[field.sorts] }}
         </td>
         <td>
           <button

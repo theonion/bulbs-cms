@@ -49,7 +49,7 @@ angular.module('utils', [])
     Utils.param = function (params ) {
       var query = _.any(params) ? '?' : '';
       return query + _.map(params, function (value, key) {
-        return key + '+' + value;
+        return key + '=' + value;
       }).join('&');
     };
 

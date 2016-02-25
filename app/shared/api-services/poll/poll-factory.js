@@ -17,13 +17,19 @@ angular.module('apiServices.poll.factory', [
 
   var fields = [{
       title: 'Poll Name',
-      sorts: 'title'
+      sorts: 'title',
     }, {
       title: 'Publish Date',
-      sorts: 'publish_date'
+      sorts: 'publish_date',
+      content: function (poll) {
+        return poll.published ? poll.published.format('MM/DD/YY h:mma') : '—';
+      },
     }, {
       title: 'Close Date',
-      sorts: 'end_date'
+      sorts: 'end_date',
+      content: function (poll) {
+        return poll.end_date ? poll.end_date.format('MM/DD/YY h:mma') : '—';
+      },
   }];
   var name = 'Poll';
   var namePlural = 'Polls';
@@ -78,6 +84,9 @@ angular.module('apiServices.poll.factory', [
     var url = pollUrl + Utils.param(params);
     return $http.get(url)
       .then(function (response) {
+        response.data.results = _.map(response.data.results, function (poll) {
+          return parsePayload(poll);
+        });
         return response.data;
       });
   }
