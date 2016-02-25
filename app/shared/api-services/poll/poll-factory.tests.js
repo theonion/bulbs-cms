@@ -12,6 +12,7 @@ describe('Poll Factory', function () {
   var response;
 
   beforeEach(module('apiServices.poll.factory'));
+  beforeEach(module('utils'));
 
   beforeEach(inject(function(_$httpBackend_, _$q_, _moment_, _Poll_) {
     $httpBackend = _$httpBackend_;
