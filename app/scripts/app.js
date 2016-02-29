@@ -40,6 +40,7 @@ angular.module('bulbsCmsApp', [
   'bettyEditable',
   'bugReporter',
   'campaigns',
+  'evergreenField',
   'filterWidget',
   'filterListWidget',
   'polls',
