@@ -46,7 +46,7 @@
       <input
         id="pollStartDate"
         type="text"
-        value="{{ model.published.format('MM/DD/YY h:mma') }}"
+        value="{{ model.published | tzDate: 'M/d/yy h:mma'}}"
         class="form-control"
         readonly>
       <span class="input-group-btn">
@@ -75,7 +75,7 @@
       <input
       id="pollEndDate"
       type="text"
-      value="{{ model.end_date.format('MM/DD/YY h:mma') }}"
+      value="{{ model.end_date | tzDate: 'M/d/yy h:mma' }}"
       class="form-control"
       readonly>
       <span class="input-group-btn">
