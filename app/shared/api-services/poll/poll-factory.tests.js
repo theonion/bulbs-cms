@@ -65,7 +65,12 @@ describe('Poll Factory', function () {
   describe('getPolls()', function () {
     it('makes a get request', function () {
       Poll.getPolls();
-      $httpBackend.expectGET('/cms/api/v1/poll/').respond(200);
+      $httpBackend.expectGET('/cms/api/v1/poll/').respond(
+        200,
+        {
+          results: [],
+        }
+      );
       $httpBackend.flush();
     });
   });
