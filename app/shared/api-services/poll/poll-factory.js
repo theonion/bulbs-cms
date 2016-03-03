@@ -43,9 +43,9 @@ angular.module('apiServices.poll.factory', [
     return data;
   }
 
-  function cleanPayload (payload) {
+  function cleanPayload (originalPayload) {
     var momentToDateString = $filter('moment_to_date_string');
-    payload = _.clone(payload);
+    var payload = _.clone(originalPayload);
 
     if(_.isUndefined(payload.title) && _.isUndefined(payload.question_text)) {
       throw error('title and question text required');
@@ -84,7 +84,7 @@ angular.module('apiServices.poll.factory', [
     var url = pollUrl + Utils.param(params);
     return $http.get(url)
       .then(function (response) {
-        response.data.results = _.map(response.data.results, function (poll) {
+        response.data.results = response.data.results.map(function (poll) {
           return parsePayload(poll);
         });
         return response.data;

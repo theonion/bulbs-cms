@@ -131,7 +131,7 @@ angular.module('bulbsCmsApp.nonRestmodListPage', [
         modelName: '&',       // list page title
         modelNamePlural: '&', // list page title pluralized
         searchParameter: '@', // key for text search param
-        toolCopyContent: '@'
+        toolCopyContent: '@', // content to copy with copy buttons, where `record` is the record being copied, leave empty to hide copy button
       },
       templateUrl: routes.SHARED_URL + 'non-restmod-list-page/non-restmod-list-page.html'
     };

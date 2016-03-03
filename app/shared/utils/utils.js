@@ -47,10 +47,16 @@ angular.module('utils', [])
     * @returns {String} query - a url querystring (is prefixed with '?')
     */
     Utils.param = function (params ) {
-      var query = _.any(params) ? '?' : '';
-      return query + _.map(params, function (value, key) {
-        return key + '=' + value;
-      }).join('&');
+      var keys = Object.keys(params);
+      var query = '';
+      if (keys.length > 0) {
+        query += '?';
+        query += keys.map(function (key) {
+          return key + '=' + params[key];
+        })
+        .join('&');
+      }
+      return query;
     };
 
     return Utils;
