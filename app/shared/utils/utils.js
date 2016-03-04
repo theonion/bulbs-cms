@@ -46,7 +46,8 @@ angular.module('utils', [])
     * @param {Object} params - Object of params to serialize.
     * @returns {String} query - a url querystring (is prefixed with '?')
     */
-    Utils.param = function (params ) {
+    Utils.param = function (params) {
+      params || (params = {});
       var keys = Object.keys(params);
       var query = '';
       if (keys.length > 0) {
