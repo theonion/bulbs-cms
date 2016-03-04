@@ -46,7 +46,7 @@ angular.module('polls.edit.directive', [
       });
 
       $scope.embedCode = function () {
-        return '<bulbs-poll src="/poll/' + $scope.model.id + '.json"></bulbs-poll>';
+        return '<bulbs-poll src="/poll/' + $scope.model.id + '/merged.json"></bulbs-poll>';
       };
 
       $scope.saveModel = function () {
