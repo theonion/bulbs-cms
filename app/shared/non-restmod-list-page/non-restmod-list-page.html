@@ -1,0 +1,126 @@
+<h2>{{ modelNamePlural() }}</h2>
+
+<div class="list-page-tools">
+  <button
+      class="add-item btn btn-primary"
+      ng-click="$add()">
+    <i class="fa fa-plus"></i>
+    Add {{ modelName() }}
+  </button>
+
+  <div class="filter-tools">
+    <div
+        class="filter-buttons btn-group"
+        ng-if="filterButtonsParsed.length > 0">
+      <button
+          class="btn btn-default"
+          ng-class="{'active': activeFilterButton === ''}"
+          ng-click="$toggleFilters({}); activeFilterButton = ''">
+        All
+      </button>
+      <button
+          class="btn btn-default"
+          ng-repeat="button in filterButtonsParsed"
+          ng-class="{'active': $parent.activeFilterButton === button.title}"
+          ng-click="$toggleFilters(button.params); $parent.activeFilterButton = button.title">
+        {{ button.title }}
+      </button>
+    </div>
+
+    <div
+        class="search-bar"
+        ng-if="searchParameter">
+      <label class="form-control">
+        <i
+            ng-class="{
+              'fa-spinner fa-spin': loadingResults,
+              'fa-search': !loadingResults
+            }"
+            class="fa">
+        </i>
+        <input
+            type="text"
+            placeholder="Filter List..."
+            ng-model="filterValue"
+            ng-change="$search(filterValue)">
+        <i
+            class="cursor-pointer fa fa-times"
+            ng-click="filterValue = ''">
+        </i>
+      </label>
+    </div>
+  </div>
+</div>
+
+<div
+    class="table-responsive"
+    ng-if="items.length > 0">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <td
+            ng-repeat="field in modelFields() track by field.title"
+            ng-class="{'td-sorts': field.sorts}"
+            ng-click="$sort(field.sorts)">
+          {{ field.title }}
+          <i
+              class="fa"
+              ng-class="{
+                'fa-sort': field.sorts && sortingField !== field.sorts,
+                'fa-sort-asc': field.sorts && sortDirection === 'asc'  && sortingField === field.sorts,
+                'fa-sort-desc': field.sorts && sortDirection ==='desc' && sortingField === field.sorts
+              }">
+          </i>
+        </td>
+        <td></td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="item in items">
+        <td ng-repeat="field in modelFields()">
+          {{ field.content ? field.content(item) : item[field.sorts] }}
+        </td>
+        <td>
+          <button
+              class="btn btn-xs btn-info"
+              ng-click="goToEditPage(item)">
+            <i class="fa fa-pencil"></i>
+          </button>
+          <copy-button
+              ng-if="toolCopyContent"
+              content="{{ copyContentInContext(item) }}"
+              button-classes-default="btn btn-xs btn-info"
+              button-classes-success="btn btn-xs btn-success">
+          </copy-button>
+          <button
+              class="btn btn-xs btn-danger"
+              confirmation-modal-opener
+              modal-body="Are you sure you want to delete this {{ modelName() }}?"
+              modal-title="Delete {{ name }}"
+              modal-ok-text="Delete"
+              modal-on-ok="$remove(item)">
+            <i class="fa fa-times"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <pagination
+      boundary-links="true"
+      ng-change="$retrieve()"
+      ng-model="pageNumber"
+      max-size="10"
+      total-items="items.$totalCount"
+      previous-text="&lsaquo;"
+      next-text="&rsaquo;"
+      first-text="&laquo;"
+      last-text="&raquo;">
+  </pagination>
+</div>
+
+<div
+    class="text-primary items-messages"
+    ng-if="items.length === 0">
+  No {{ namePlural }}, click "Add {{ name }}" below to add the first {{ name }}!
+</div>
