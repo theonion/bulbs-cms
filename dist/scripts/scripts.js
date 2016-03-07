@@ -2497,10 +2497,10 @@ angular.module('polls.edit.directive', [
         $scope.isNew = true;
       } else {
         Poll.getPoll($routeParams.id)
-        .then(function successCallback(response) {
-          $scope.model = response;
-          $scope.answers = response.answers;
-        });
+          .then(function successCallback(response) {
+            $scope.model = response;
+            $scope.answers = response.answers;
+          });
       }
 
       window.onbeforeunload = function (e) {
@@ -2514,6 +2514,10 @@ angular.module('polls.edit.directive', [
         // remove alert when we go
         delete window.onbeforeunload;
       });
+
+      $scope.embedCode = function () {
+        return '<bulbs-poll src="/poll/' + $scope.model.id + '/merged.json"></bulbs-poll>';
+      };
 
       $scope.saveModel = function () {
         if ($scope.model) {
@@ -2592,7 +2596,7 @@ angular.module('polls.edit', [
 angular.module('polls.list', [
   'apiServices.poll.factory',
   'bulbsCmsApp.settings',
-  'listPage',
+  'bulbsCmsApp.nonRestmodListPage',
   'moment'
 ])
   .config(function ($routeProvider, routes) {
@@ -2603,6 +2607,7 @@ angular.module('polls.list', [
           $window.document.title = routes.CMS_NAMESPACE + ' | Poll';
 
           $scope.modelFactory = Poll;
+
         },
         templateUrl: routes.COMPONENTS_URL + 'polls/polls-list/polls-list-page.html'
       });
@@ -4974,77 +4979,125 @@ angular.module('apiServices.answer.factory', [
 angular.module('apiServices.poll.factory', [
   'apiServices',
   'apiServices.mixins.fieldDisplay',
+  'bulbsCmsApp.nonRestmodListPage',
   'filters.moment',
   'lodash'
 ])
-.factory('Poll', ['$filter', '$http', '$q', '_', 'moment', function ($filter, $http, $q, _, moment) {
-
-  var filter;
-  var pollInfo;
-  var pollUrl = '/cms/api/v1/poll/';
+.factory('Poll',
+  ['$filter', '$http', '$q', '_', 'moment', 'Utils',
+  function ($filter, $http, $q, _, moment, Utils) {
 
   var error = function(message) {
     return new Error('Poll Error: ' + message);
   };
 
-  function getPoll(pollId) {
-    filter = $filter('date_string_to_moment');
+  var fields = [{
+      title: 'Poll Name',
+      sorts: 'title',
+    }, {
+      title: 'Publish Date',
+      sorts: 'publish_date',
+      content: function (poll) {
+        return poll.published ? poll.published.format('MM/DD/YY h:mma') : '—';
+      },
+    }, {
+      title: 'Close Date',
+      sorts: 'end_date',
+      content: function (poll) {
+        return poll.end_date ? poll.end_date.format('MM/DD/YY h:mma') : '—';
+      },
+  }];
+  var name = 'Poll';
+  var namePlural = 'Polls';
+  var pollUrl = '/cms/api/v1/poll/';
 
-    return $http.get(pollUrl + pollId)
-    .then(function (response) {
-      response.data.end_date = filter(response.data.end_date);
-      return response.data;
-    });
+  function parsePayload (payload) {
+    var data = _.clone(payload);
+    var filter = $filter('date_string_to_moment');
+    data.end_date = filter(data.end_date);
+    data.published = filter(data.published);
+    return data;
+  }
+
+  function cleanPayload (originalPayload) {
+    var momentToDateString = $filter('moment_to_date_string');
+    var payload = _.clone(originalPayload);
+
+    if(_.isUndefined(payload.title) && _.isUndefined(payload.question_text)) {
+      throw error('title and question text required');
+    }
+
+    if(payload.end_date) {
+      if(!moment.isMoment(payload.end_date)) {
+        throw error('end_date must be a moment object');
+      }
+      payload.end_date = momentToDateString(payload.end_date);
+    }
+
+    if (payload.published) {
+      if(!moment.isMoment(payload.published)) {
+        throw error('published must be a moment object');
+      }
+      payload.published = momentToDateString(payload.published);
+    }
+
+    return _.pick(payload, [
+      'title',
+      'question_text',
+      'published',
+      'end_date'
+    ]);
+  }
+
+  function getPoll(pollId) {
+    return $http.get(pollUrl + pollId + '/')
+      .then(function (response) {
+        return parsePayload(response.data);
+      });
+  }
+
+  function getPolls(params) {
+    var url = pollUrl + Utils.param(params);
+    return $http.get(url)
+      .then(function (response) {
+        response.data.results = response.data.results.map(function (poll) {
+          return parsePayload(poll);
+        });
+        return response.data;
+      });
   }
 
   function postPoll(data) {
-    if(_.isUndefined(data.title) && _.isUndefined(data.question_text)) {
-      throw error('title and question text required');
-    }
+    var payload = cleanPayload(data);
 
-    if(data.end_date) {
-      if(!moment.isMoment(data.end_date)) {
-        throw error('end_date must be a moment object');
-      }
-      filter = $filter('moment_to_date_string');
-      pollInfo.end_date = filter(data.end_date);
-    }
-    pollInfo = { title: data.title, question_text: data.question_text};
-    return $http.post(pollUrl, pollInfo).then(function(response) {
+    return $http.post(pollUrl, payload)
+      .then(function(response) {
         return response.data;
-    });
+      });
   }
 
   function updatePoll(data) {
-    if(_.isUndefined(data.title) && _.isUndefined(data.question_text)) {
-      throw error('title and question text required');
-    }
+    var payload = cleanPayload(data);
 
-    pollInfo = { title: data.title, question_text: data.question_text};
-
-    if(data.end_date) {
-      if(!moment.isMoment(data.end_date)) {
-        throw error('end_date must be a moment object');
-      }
-      filter = $filter('moment_to_date_string');
-      pollInfo.end_date = filter(data.end_date);
-    }
-
-    return $http.put(pollUrl + data.id, pollInfo)
-    .then(function(response) {
-      return response.data;
-    });
+    return $http.put(pollUrl + data.id + '/', payload)
+      .then(function(response) {
+        return response.data;
+      });
   }
 
   function deletePoll(pollId) {
     return $http.delete(pollUrl + pollId + '/')
-    .then(function(response) {
-      return response;
-    });
+      .then(function(response) {
+        return response;
+      });
   }
 
   return {
     getPoll: getPoll,
+    getPolls: getPolls,
+    fields: fields,
+    name: name,
+    namePlural: namePlural,
     postPoll: postPoll,
     updatePoll: updatePoll,
     deletePoll: deletePoll
@@ -5780,6 +5833,145 @@ angular.module('momentFormatterFilter', ['moment'])
 
 'use strict';
 
+angular.module('bulbsCmsApp.nonRestmodListPage', [
+  'bulbsCmsApp.settings',
+  'confirmationModal',
+  'copyButton',
+  'lodash'
+])
+  .directive('nonRestmodListPage', function (routes) {
+    return {
+      controller: function (_, $scope, $location, $parse) {
+
+        // different types of filters that get combined to make seach query params
+        $scope.orderingFilter = {};
+        $scope.searchFilter = {};
+        $scope.toggledFilters = {};
+        $scope.pageNumber = 1;
+
+        $scope.copyContentInContext = function (record) {
+          var value = '';
+          if ($scope.toolCopyContent) {
+             value = $parse($scope.toolCopyContent)({record: record});
+          }
+          return value;
+        };
+
+        $scope.$retrieve = _.debounce(function (addParams) {
+          $scope.loadingResults = true;
+          var allParams = _.merge(
+            {},
+            $scope.orderingFilter,
+            $scope.toggledFilters,
+            $scope.searchFilter,
+            addParams
+          );
+          return $scope.getItems({params: allParams})
+            .then(function (response) {
+              $scope.items = response.results;
+              $scope.loadingResults = false;
+            });
+        }, 250);
+
+        // search functionality
+        $scope.$search = function (query) {
+          $scope.searchFilter = {};
+
+          if (query) {
+            $scope.searchFilter[$scope.searchParameter] = query;
+          }
+
+          // go to page 1, new results may not have more than 1 page
+          $scope.pageNumber = 1;
+
+          $scope.$retrieve();
+        };
+
+        // toggled filters, only one set of these can be applied at a time
+        $scope.filterButtonsParsed = $scope.filterButtons();
+        $scope.$toggleFilters = function (params) {
+          $scope.toggledFilters = params;
+
+          // go to page 1, new results may not have more than 1 page
+          $scope.pageNumber = 1;
+
+          $scope.$retrieve();
+        };
+
+        // sorting functionality, only one field can be sorted at a time
+        $scope.sortingField = null;
+        $scope.sortDirection = 'asc';
+        $scope.$sort = function (fieldName) {
+          var direction;
+          if (fieldName === $scope.sortingField) {
+            // clicked on same field, make direction opposite of what it is now
+            direction = $scope.sortDirection === 'desc' ? '' : '-';
+          } else {
+            // clicked on a different field, start with the opposite of default
+            direction = '-';
+          }
+
+          // do ordering request
+          $scope.orderingFilter = {ordering: direction + fieldName};
+          $scope.$retrieve($scope.orderingFilter.ordering)
+            .then(function () {
+              $scope.sortingField = fieldName;
+              $scope.sortDirection = direction === '-' ? 'desc' : 'asc';
+            });
+        };
+
+        $scope.$add = function () {
+          $location.path('/cms/app/' + $scope.cmsPage + '/edit/new/');
+        };
+
+        $scope.$remove = function (removedItem) {
+          $scope.destroyItem({item: removedItem});
+          _.remove($scope.items, function(item) {
+            return item === removedItem;
+          });
+        };
+
+        $scope.goToEditPage = function (item) {
+          $location.path('/cms/app/' + $scope.cmsPage + '/edit/' + item.id + '/');
+        };
+
+        // set the active filter, either the first button with active === true,
+        //   or empty string for all
+        $scope.activeFilterButton =
+          _.chain($scope.filterButtonsParsed)
+            .findWhere({active: true})
+            .tap(function (button) {
+              // cheat here and set the params for the first retrieve
+              if (button) {
+                $scope.toggledFilters = button.params;
+              }
+            })
+            .result('title')
+            .value() ||
+            '';
+
+        // do initial retrieval
+        $scope.$retrieve();
+      },
+      restrict: 'E',
+      scope: {
+        cmsPage: '@',         // name of page in route
+        destroyItem: '&',     // returns promise, deletes given item
+        getItems: '&',        // function returns promise, recieves search params
+        filterButtons: '&',   // settings for filter buttons
+                              // { title:'human readable', active:true, params:queryParams object }
+        modelFields: '&',     // list of objects { sorts: x, title: y}
+        modelName: '&',       // list page title
+        modelNamePlural: '&', // list page title pluralized
+        searchParameter: '@', // key for text search param
+        toolCopyContent: '@', // content to copy with copy buttons, where `record` is the record being copied, leave empty to hide copy button
+      },
+      templateUrl: routes.SHARED_URL + 'non-restmod-list-page/non-restmod-list-page.html'
+    };
+  });
+
+'use strict';
+
 angular.module('slugify', [])
   .filter('slugify', function () {
 
@@ -5899,7 +6091,7 @@ angular.module('cms.tunic', [
 'use strict';
 
 angular.module('utils', [])
-  .service('Utils', function () {
+  .service('Utils', ['_', function (_) {
     var Utils = this;
 
     Utils.slugify = function (text) {
@@ -5937,8 +6129,31 @@ angular.module('utils', [])
       return list.splice(index, 1).length > 0;
     };
 
+    /**
+    * Transform an object into url params.
+    * ONLY knows what to do with a flat params object.
+    * Similar to jQuery.param
+    * @param {Object} params - Object of params to serialize.
+    * @returns {String} query - a url querystring (is prefixed with '?')
+    */
+    Utils.param = function (params) {
+      if (!params) {
+        params = {};
+      }
+      var keys = Object.keys(params);
+      var query = '';
+      if (keys.length > 0) {
+        query += '?';
+        query += keys.map(function (key) {
+          return key + '=' + params[key];
+        })
+        .join('&');
+      }
+      return query;
+    };
+
     return Utils;
-  });
+  }]);
 
 'use strict';
 
