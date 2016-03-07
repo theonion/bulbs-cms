@@ -47,7 +47,9 @@ angular.module('utils', [])
     * @returns {String} query - a url querystring (is prefixed with '?')
     */
     Utils.param = function (params) {
-      params || (params = {});
+      if (!params) {
+        params = {};
+      }
       var keys = Object.keys(params);
       var query = '';
       if (keys.length > 0) {
