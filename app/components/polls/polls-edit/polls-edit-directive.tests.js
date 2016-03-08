@@ -9,19 +9,21 @@ describe('Directive: pollsEdit', function () {
       answer,
       element,
       html,
-      scope;
+      scope,
+      moment;
 
   html = '<polls-edit></polls-edit>';
 
   beforeEach(module('bulbsCmsApp'));
   beforeEach(module('jsTemplates'));
 
-  beforeEach(inject(function(_$compile_, _$httpBackend_, _$routeParams_, _$rootScope_, _$timeout_) {
+  beforeEach(inject(function(_$compile_, _$httpBackend_, _$routeParams_, _$rootScope_, _$timeout_, _moment_) {
     $compile = _$compile_;
     $httpBackend = _$httpBackend_;
     $routeParams = _$routeParams_;
     $rootScope = _$rootScope_;
     $timeout = _$timeout_;
+    moment = moment;
 
     $routeParams.id = 'new';
 
