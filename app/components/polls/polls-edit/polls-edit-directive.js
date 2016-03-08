@@ -50,6 +50,9 @@ angular.module('polls.edit.directive', [
       };
 
       $scope.validatePublication = function () {
+        // The datetime-selection-modal-opener interacts with scope
+        // in such a way that modal-on-close="validatePublication()"
+        // fires before the scope model data has changed.
         $timeout(function () {
           var published = $scope.model.published;
           var endDate = $scope.model.end_date;
