@@ -10,20 +10,20 @@ describe('Directive: pollsEdit', function () {
       element,
       html,
       scope,
-      moment;
+      momentjs;
 
   html = '<polls-edit></polls-edit>';
 
   beforeEach(module('bulbsCmsApp'));
   beforeEach(module('jsTemplates'));
 
-  beforeEach(inject(function(_$compile_, _$httpBackend_, _$routeParams_, _$rootScope_, _$timeout_, _moment_) {
+  beforeEach(inject(function(_$compile_, _$httpBackend_, _$routeParams_, _$rootScope_, _$timeout_, moment) {
     $compile = _$compile_;
     $httpBackend = _$httpBackend_;
     $routeParams = _$routeParams_;
     $rootScope = _$rootScope_;
     $timeout = _$timeout_;
-    moment = moment;
+    momentjs = moment;
 
     $routeParams.id = 'new';
 
@@ -148,7 +148,7 @@ describe('Directive: pollsEdit', function () {
     });
 
     it('polls with an end date require a published date', function () {
-      scope.model.end_date = moment();
+      scope.model.end_date = momentjs();
       scope.validatePublication();
       $timeout.flush();
       expect(
@@ -164,16 +164,16 @@ describe('Directive: pollsEdit', function () {
     });
 
     it('requires end date to be after start date', function () {
-      scope.model.published = moment().add(1, 'day');
-      scope.model.end_date = moment();
-      scope.validatePublication();
+      scope.model.published = momentjs().add(1, 'day');
+      scope.model.end_date = momentjs();
+      scope.validatePublication()
       $timeout.flush();
       expect(
         element.find('label[for=pollEndDate] .error-message.ng-hide').length
       ).toBe(0);
 
-      scope.model.published = moment();
-      scope.model.end_date = moment().add(1, 'day');
+      scope.model.published = momentjs();
+      scope.model.end_date = momentjs().add(1, 'day');
       scope.validatePublication();
       $timeout.flush();
       expect(
