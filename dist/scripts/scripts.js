@@ -2490,7 +2490,7 @@ angular.module('polls.edit.directive', [
 .directive('pollsEdit', function (routes) {
   return {
     templateUrl: routes.COMPONENTS_URL + 'polls/polls-edit/polls-edit.html',
-    controller: function (_, $http, $location, $q, $routeParams, $scope, Answer, Poll) {
+    controller: function (_, $http, $location, $q, $routeParams, $scope, $timeout, Answer, Poll) {
       // populate model for use
       if ($routeParams.id === 'new') {
         $scope.model = {};
@@ -2517,6 +2517,27 @@ angular.module('polls.edit.directive', [
 
       $scope.embedCode = function () {
         return '<bulbs-poll src="/poll/' + $scope.model.id + '/merged.json"></bulbs-poll>';
+      };
+
+      $scope.validatePublication = function () {
+        // The datetime-selection-modal-opener interacts with scope
+        // in such a way that modal-on-close="validatePublication()"
+        // fires before the scope model data has changed.
+        $timeout(function () {
+          var published = $scope.model.published;
+          var endDate = $scope.model.end_date;
+          var publishedField = $scope.pollForm.published;
+          var endDateField = $scope.pollForm.endDate;
+
+          publishedField.$setValidity(
+            'requiredWithEndDate',
+            !(endDate && !published)
+          );
+          endDateField.$setValidity(
+            'comesAfterPublished',
+            endDate && published && published.isBefore(endDate)
+          );
+        });
       };
 
       $scope.saveModel = function () {
