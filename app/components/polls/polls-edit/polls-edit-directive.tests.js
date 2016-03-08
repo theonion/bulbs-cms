@@ -146,7 +146,7 @@ describe('Directive: pollsEdit', function () {
     });
 
     it('polls with an end date require a published date', function () {
-      scope.model.end_date = moment.now();
+      scope.model.end_date = moment();
       scope.validatePublication();
       $timeout.flush();
       expect(
@@ -169,8 +169,6 @@ describe('Directive: pollsEdit', function () {
       expect(
         element.find('label[for=pollEndDate] .error-message.ng-hide').length
       ).toBe(0);
-
-      scope.model.end_date = moment.now();
 
       scope.model.published = moment();
       scope.model.end_date = moment().add(1, 'day');
