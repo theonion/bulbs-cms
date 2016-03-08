@@ -29,7 +29,7 @@ angular.module('polls.edit.directive', [
         Poll.getPoll($routeParams.id)
           .then(function successCallback(response) {
             $scope.model = response;
-            $scope.answers = response.answers;
+            $scope.answers = _.cloneDeep(response.answers);
           });
       }
 
