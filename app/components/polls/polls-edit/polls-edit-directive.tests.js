@@ -166,7 +166,7 @@ describe('Directive: pollsEdit', function () {
     it('requires end date to be after start date', function () {
       scope.model.published = momentjs().add(1, 'day');
       scope.model.end_date = momentjs();
-      scope.validatePublication()
+      scope.validatePublication();
       $timeout.flush();
       expect(
         element.find('label[for=pollEndDate] .error-message.ng-hide').length
