@@ -5,21 +5,25 @@ describe('Directive: pollsEdit', function () {
       $httpBackend,
       $routeParams,
       $rootScope,
+      $timeout,
       answer,
       element,
       html,
-      scope;
+      scope,
+      momentjs;
 
   html = '<polls-edit></polls-edit>';
 
   beforeEach(module('bulbsCmsApp'));
   beforeEach(module('jsTemplates'));
 
-  beforeEach(inject(function(_$compile_, _$httpBackend_, _$routeParams_, _$rootScope_) {
+  beforeEach(inject(function(_$compile_, _$httpBackend_, _$routeParams_, _$rootScope_, _$timeout_, moment) {
     $compile = _$compile_;
     $httpBackend = _$httpBackend_;
     $routeParams = _$routeParams_;
     $rootScope = _$rootScope_;
+    $timeout = _$timeout_;
+    momentjs = moment;
 
     $routeParams.id = 'new';
 
@@ -95,6 +99,116 @@ describe('Directive: pollsEdit', function () {
       answer = scope.answers[0];
       scope.removeAnswer(answer.id);
       expect(scope.deletedAnswers.length).toEqual(0);
+    });
+  });
+
+  describe('validations', function () {
+    // These validation tests follow this format:
+
+    it('shows validation message when title is valid', function () {
+      var input = element.find('input[name=title]');
+      input.val('').trigger('input');
+
+      expect(
+        element.find('label[for=pollTitle] .error-message.ng-hide').length
+      ).toBe(0);
+    });
+
+    it('hides validation message when title is invalid', function () {
+      var input = element.find('input[name=title]');
+      input.val('anything').trigger('input');
+
+      expect(
+        element.find('label[for=pollTitle] .error-message.ng-hide').length
+      ).toBe(1);
+    });
+
+    it('shows validation message when question text is valid', function () {
+      var input = element.find('textarea[name=question_text]');
+      input.val('').trigger('input');
+
+      expect(
+        element.find('label[for=pollQuestionText] .error-message.ng-hide').length
+      ).toBe(0);
+    });
+
+    it('hides validation message when question text is invalid', function () {
+      var input = element.find('textarea[name=question_text]');
+      input.val('anything').trigger('input');
+
+      expect(
+        element.find('label[for=pollQuestionText] .error-message.ng-hide').length
+      ).toBe(1);
+    });
+
+    it('shows validation message when answer text is invalid', function () {
+      var input = element.find('textarea[name=answer_text]:first');
+      input.val('').trigger('input');
+
+      expect(
+        element.find('label[for=answerText]:first .error-message.ng-hide').length
+      ).toBe(0);
+    });
+
+    it('hides validation message when answer text is invalid', function () {
+      var input = element.find('textarea[name=answer_text]:first');
+      input.val('anything').trigger('input');
+
+      expect(
+        element.find('label[for=answerText]:first .error-message.ng-hide').length
+      ).toBe(1);
+    });
+
+    it('shows validation message when there is an end date but no published date', function () {
+      scope.model.end_date = momentjs();
+      scope.validatePublication();
+      $timeout.flush();
+
+      expect(
+        element.find('label[for=pollStartDate] .error-message.ng-hide').length
+      ).toBe(0);
+    });
+
+    it('hides validation message when there is no end date', function () {
+      scope.model.end_date = undefined;
+      scope.validatePublication();
+      $timeout.flush();
+
+      expect(
+        element.find('label[for=pollStartDate] .error-message.ng-hide').length
+      ).toBe(1);
+    });
+
+    it('hides validation message when there is only a published date', function () {
+      scope.model.published = momentjs();
+      scope.validatePublication();
+      $timeout.flush();
+
+      expect(
+        element.find('label[for=pollStartDate] .error-message.ng-hide').length
+      ).toBe(1);
+    });
+
+    it('shows validation message when end date is before published date', function () {
+      scope.model.published = momentjs().add(1, 'day');
+      scope.model.end_date = momentjs();
+      scope.validatePublication();
+      $timeout.flush();
+
+      expect(
+        element.find('label[for=pollEndDate] .error-message.ng-hide').length
+      ).toBe(0);
+    });
+
+    it('hides validation message when end date is after published date', function () {
+      scope.model.published = momentjs();
+      scope.model.end_date = momentjs().add(1, 'day');
+      scope.validatePublication();
+      $timeout.flush();
+
+      expect(
+        element.find('label[for=pollEndDate] .error-message.ng-hide').length
+      ).toBe(1);
     });
   });
 });
