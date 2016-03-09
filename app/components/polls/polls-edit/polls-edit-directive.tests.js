@@ -102,9 +102,7 @@ describe('Directive: pollsEdit', function () {
     });
   });
 
-  describe('validations', function () {
-    // These validation tests follow this format:
-
+  describe('validation messages', function () {
     it('shows validation message when title is valid', function () {
       var input = element.find('input[name=title]');
       input.val('').trigger('input');

@@ -54,18 +54,26 @@ angular.module('polls.edit.directive', [
         // in such a way that modal-on-close="validatePublication()"
         // fires before the scope model data has changed.
         $timeout(function () {
+          var pollForm = $scope.pollForm;
           var published = $scope.model.published;
           var endDate = $scope.model.end_date;
-          var publishedField = $scope.pollForm.published;
-          var endDateField = $scope.pollForm.endDate;
+          var publishedField = pollForm.published;
+          var endDateField = pollForm.endDate;
 
-          publishedField.$setValidity(
+          pollForm.$setValidity(
             'requiredWithEndDate',
-            !(endDate && !published)
+            !(endDate && !published),
+            publishedField
           );
-          endDateField.$setValidity(
+
+          var comesAfterPublishedValid = true;
+          if (endDate && published) {
+            comesAfterPublishedValid = published.isBefore(endDate);
+          }
+          pollForm.$setValidity(
             'comesAfterPublished',
-            endDate && published && published.isBefore(endDate)
+            comesAfterPublishedValid,
+            endDateField
           );
         });
       };
