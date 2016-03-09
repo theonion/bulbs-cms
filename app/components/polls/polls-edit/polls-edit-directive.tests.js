@@ -37,11 +37,17 @@ describe('Directive: pollsEdit', function () {
     expect(scope.isNew).toBe(true);
   });
 
-  it('has appropriate poll fields', function () {
-    expect(element.html()).toContain('Poll Name');
-    expect(element.html()).toContain('Poll End Date');
+  it('has appropriate new poll fields', function () {
     expect(element.html()).toContain('Question');
     expect(element.html()).toContain('Responses');
+  });
+
+  it('has appropriate edit poll fields', function () {
+    scope.$apply(function () {
+      scope.model.id = '1';
+    });
+    expect(element.html()).toContain('Poll Name');
+    expect(element.html()).toContain('Poll End Date');
   });
 
   it('scope initializes with 3 empty answer objects', function () {
@@ -103,6 +109,14 @@ describe('Directive: pollsEdit', function () {
   });
 
   describe('validation messages', function () {
+    beforeEach(function () {
+      // forces directive into 'edit' mode
+      // helps us test ALL validations
+      scope.$apply(function () {
+        scope.model.id = 1;
+      });
+    });
+
     it('shows validation message when title is valid', function () {
       var input = element.find('input[name=title]');
       input.val('').trigger('input');

@@ -60,20 +60,18 @@ angular.module('polls.edit.directive', [
           var publishedField = pollForm.published;
           var endDateField = pollForm.endDate;
 
-          pollForm.$setValidity(
+          publishedField.$setValidity(
             'requiredWithEndDate',
-            !(endDate && !published),
-            publishedField
+            !(endDate && !published)
           );
 
           var comesAfterPublishedValid = true;
           if (endDate && published) {
             comesAfterPublishedValid = published.isBefore(endDate);
           }
-          pollForm.$setValidity(
+          endDateField.$setValidity(
             'comesAfterPublished',
-            comesAfterPublishedValid,
-            endDateField
+            comesAfterPublishedValid
           );
         });
       };
