@@ -63,9 +63,14 @@ angular.module('polls.edit.directive', [
             'requiredWithEndDate',
             !(endDate && !published)
           );
+
+          var comesAfterPublishedValid = true;
+          if (endDate && published) {
+            comesAfterPublishedValid = published.isBefore(endDate);
+          }
           endDateField.$setValidity(
             'comesAfterPublished',
-            endDate && published && published.isBefore(endDate)
+            comesAfterPublishedValid
           );
         });
       };

@@ -48,7 +48,9 @@
       </div>
     </div>
 
-    <div class="row poll-startdate">
+    <div
+        ng-if="model.id"
+        class="row poll-startdate">
       <div class="form-group col-lg-push-3 col-lg-6">
         <label for="pollStartDate">
           Poll Start Date
@@ -86,7 +88,9 @@
       </div>
     </div>
 
-    <div class="row poll-end-date">
+    <div
+        ng-if="model.id"
+        class="row poll-end-date">
       <div class="form-group col-lg-push-3 col-lg-6">
         <label for="pollEndDate">
           Poll End Date
