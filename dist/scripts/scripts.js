@@ -2499,7 +2499,7 @@ angular.module('polls.edit.directive', [
         Poll.getPoll($routeParams.id)
           .then(function successCallback(response) {
             $scope.model = response;
-            $scope.answers = response.answers;
+            $scope.answers = _.cloneDeep(response.answers);
           });
       }
 
@@ -2533,9 +2533,14 @@ angular.module('polls.edit.directive', [
             'requiredWithEndDate',
             !(endDate && !published)
           );
+
+          var comesAfterPublishedValid = true;
+          if (endDate && published) {
+            comesAfterPublishedValid = published.isBefore(endDate);
+          }
           endDateField.$setValidity(
             'comesAfterPublished',
-            endDate && published && published.isBefore(endDate)
+            comesAfterPublishedValid
           );
         });
       };
@@ -4980,11 +4985,11 @@ angular.module('apiServices.answer.factory', [
 
   function updatePollAnswers(scope) {
     deleteAnswers(scope.deletedAnswers);
-    _.forEach(scope.model.answers, function(answer) {
+    _.forEach(scope.answers, function(answer) {
       if(answer.notOnSodahead) {
         postAnswer(answer, scope.model.id);
       } else {
-        putAnswer(scope.answers, answer);
+        putAnswer(scope.model.answers, answer);
       }
     });
   }
