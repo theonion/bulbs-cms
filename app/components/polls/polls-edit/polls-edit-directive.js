@@ -29,7 +29,7 @@ angular.module('polls.edit.directive', [
         Poll.getPoll($routeParams.id)
           .then(function successCallback(response) {
             $scope.model = response;
-            $scope.answers = response.answers;
+            $scope.answers = _.cloneDeep(response.answers);
           });
       }
 
@@ -63,9 +63,14 @@ angular.module('polls.edit.directive', [
             'requiredWithEndDate',
             !(endDate && !published)
           );
+
+          var comesAfterPublishedValid = true;
+          if (endDate && published) {
+            comesAfterPublishedValid = published.isBefore(endDate);
+          }
           endDateField.$setValidity(
             'comesAfterPublished',
-            endDate && published && published.isBefore(endDate)
+            comesAfterPublishedValid
           );
         });
       };

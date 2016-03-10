@@ -77,8 +77,8 @@ describe('Answer Factory', function () {
         deletedAnswers:  [],
         model: {
           id: 777,
-          answers: [{id: 2, notOnSodahead: true, answer_text: 'foobar'}]
-        }
+        },
+        answers: [{id: 2, notOnSodahead: true, answer_text: 'foobar'}]
       };
       Answer.updatePollAnswers(scope);
       $httpBackend.expectPOST('/cms/api/v1/answer/').respond(201);
