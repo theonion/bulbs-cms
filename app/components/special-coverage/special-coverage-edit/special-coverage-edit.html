@@ -115,9 +115,8 @@
         <label for="specialCoverageCampaign">Sponsor Campaign</label>
         <autocomplete-basic
             class="form-control"
-            ng-if="!model.campaign || model.campaign.$resolved"
-            ng-model="model.campaign"
-            item-display-formatter="item.sponsorName + ' - ' + item.campaignLabel"
+            ng-model="model.tunicCampaignId"
+            item-display-formatter="tunicCampaignFormatter(item)"
             on-select="$parent.needsSave = true"
             input-id="specialCoverageCampaign"
             input-placeholder="e.g. 0-1337 Honda"
