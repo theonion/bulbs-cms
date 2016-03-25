@@ -62,6 +62,8 @@
     "node": ">=0.8.0"
   },
   "scripts": {
-    "test": "grunt travis"
+    "test": "grunt travis",
+    "start": "grunt serve",
+    "build": "grunt build"
   }
 }
