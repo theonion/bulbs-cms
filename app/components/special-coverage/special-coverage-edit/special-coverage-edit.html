@@ -112,16 +112,11 @@
         </i>
       </div>
       <div class="form-group col-md-5">
-        <label for="specialCoverageCampaign">Sponsor Campaign</label>
-        <autocomplete-basic
-            class="form-control"
+        <campaign-autocomplete
             ng-model="model.tunicCampaignId"
-            item-display-formatter="tunicCampaignFormatter(item)"
-            on-select="$parent.needsSave = true"
-            input-id="specialCoverageCampaign"
-            input-placeholder="e.g. 0-1337 Honda"
-            search-function="searchCampaigns">
-        </autocomplete-basic>
+            campaign-autocomplete-label="Sponsor Campaign"
+            campaign-autocomplete-on-select="$parent.needsSave = true">
+        </campaign-autocomplete>
       </div>
       <div class="form-group col-md-12">
         <label>Add Image</label><span> 3x1 Image, 900px wide</span>

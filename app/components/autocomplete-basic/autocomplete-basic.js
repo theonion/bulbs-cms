@@ -25,11 +25,19 @@ angular.module('autocompleteBasic', [
             .then(function (data) {
               return _.map(data, function (item) {
                 return {
-                  name: $scope.itemDisplayFormatter({item: item}),
-                  value: item
+                  name: $scope.itemDisplayFormatter({ item: item }),
+                  value: $scope.itemValueFormatter({ item: item })
                 };
               });
             });
+        };
+
+        $scope.itemValueFormatter = $scope.itemValueFormatter || function (context) {
+          return context.item;
+        };
+
+        $scope.itemDisplayFormatter = $scope.itemDisplayFormatter || function (context) {
+          return context.item;
         };
 
         $scope.updateAutocomplete = _.debounce(function () {
@@ -64,8 +72,8 @@ angular.module('autocompleteBasic', [
             // esc, close dropdown
             $scope.clearAutocomplete();
           } else if ($event.keyCode === 40 && _.isEmpty($scope.autocompleteItems)) {
-              // down key and no items in autocomplete, redo search
-              $scope.updateAutocomplete();
+            // down key and no items in autocomplete, redo search
+            $scope.updateAutocomplete();
           } else {
             $scope.$broadcast(BULBS_AUTOCOMPLETE_EVENT_KEYPRESS, $event);
           }
@@ -108,7 +116,8 @@ angular.module('autocompleteBasic', [
         hideSearchIcon: '&',        // true to hide search icon inside autocomplete
         inputId: '@',               // id to give input, useful if input has a label
         inputPlaceholder: '@',      // placeholder for input
-        itemDisplayFormatter: '&',  // formatter to use for autocomplete results
+        itemDisplayFormatter: '&',  // formatter to transform the display name of result
+        itemValueFormatter: '&',    // formatter to transform the value of the result
         onSelect: '&',              // selection callback, recieves selection as argument
         searchFunction: '='         // function to use for searching autocomplete results
       },
