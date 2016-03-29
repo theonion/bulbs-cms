@@ -11,13 +11,13 @@ angular.module('autocompleteBasic', [
 ])
   .value('AUTOCOMPLETE_BASIC_DEBOUNCE', 200)
   .directive('autocompleteBasic', [
-    'routes',
-    function (routes) {
+    '_', 'routes',
+    function (_, routes) {
       return {
         controller: [
-          '_', '$scope', 'BULBS_AUTOCOMPLETE_EVENT_KEYPRESS',
+          '$scope', 'BULBS_AUTOCOMPLETE_EVENT_KEYPRESS',
             'AUTOCOMPLETE_BASIC_DEBOUNCE',
-          function (_, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS,
+          function ($scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS,
               AUTOCOMPLETE_BASIC_DEBOUNCE) {
 
             $scope.writables = {
