@@ -36,8 +36,9 @@ angular.module('campaignAutocomplete', [
         },
         restrict: 'E',
         templateUrl: routes.COMPONENTS_URL + 'campaign-autocomplete/campaign-autocomplete.html',
-        require: 'ngModel',
+        // require: 'ngModel',
         scope: {
+          model: '=',
           label: '@campaignAutocompleteLabel', // The label for the autocomplete imput
           onSelect: '&campaignAutocompleteOnSelect' // selection handler for auto completions
         }

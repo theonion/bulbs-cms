@@ -17,7 +17,6 @@ angular.module('autocompleteBasic', [
           searchTerm: ''
         };
 
-        $scope.currentSelection = null;
         $scope.autocompleteItems = [];
 
         var $getItems = function () {
@@ -25,19 +24,11 @@ angular.module('autocompleteBasic', [
             .then(function (data) {
               return _.map(data, function (item) {
                 return {
-                  name: $scope.itemDisplayFormatter({ item: item }),
-                  value: $scope.itemValueFormatter({ item: item })
+                  name: $scope.displayFormatter({ item: item }),
+                  value: item
                 };
               });
             });
-        };
-
-        $scope.itemValueFormatter = $scope.itemValueFormatter || function (context) {
-          return context.item;
-        };
-
-        $scope.itemDisplayFormatter = $scope.itemDisplayFormatter || function (context) {
-          return context.item;
         };
 
         $scope.updateAutocomplete = _.debounce(function () {
@@ -63,8 +54,8 @@ angular.module('autocompleteBasic', [
         $scope.clearSelectionOverlay = function () {
           $scope.clearAutocomplete();
           $scope.showSelectionOverlay = false;
-          $scope.updateNgModel(null);
-          $scope.onSelect({selection: null});
+          $scope.updateNgModel();
+          $scope.onSelect({});
         };
 
         $scope.handleKeypress = function ($event) {
@@ -90,23 +81,33 @@ angular.module('autocompleteBasic', [
         };
       },
       link: function (scope, iElement, iAttrs, ngModelCtrl) {
+        scope.valueFormatter = scope.itemValueFormatter || function (context) {
+          return context.item;
+        };
+
+        scope.displayFormatter = scope.itemDisplayFormatter || function (context) {
+          return context.item;
+        };
+
         if (ngModelCtrl) {
+
           ngModelCtrl.$formatters.push(function (modelValue) {
-            scope.currentSelection = modelValue;
-            return modelValue;
+            if (!_.isUndefined(modelValue)) {
+              return scope.displayFormatter({ item: modelValue });
+            }
           });
 
-          ngModelCtrl.$parsers.push(function (viewValue) {
-            scope.currentSelection = viewValue;
-            return viewValue;
-          });
+          ngModelCtrl.$render = function () {
+            scope.selectedValue = ngModelCtrl.$viewValue;
+          };
 
           scope.updateNgModel = function (selection) {
-            var newViewValue = null;
-            if (selection) {
-              newViewValue = selection.value;
+            var newViewValue;
+            if (!_.isUndefined(selection)) {
+              newViewValue = scope.valueFormatter({ item: selection.value });
             }
-            ngModelCtrl.$setViewValue(newViewValue);
+            ngModelCtrl.$setViewValue(angular.copy(newViewValue));
+            scope.selectedValue = ngModelCtrl.$viewValue;
           };
         }
       },
