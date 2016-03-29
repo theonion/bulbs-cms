@@ -4,7 +4,7 @@
  * Autocomplete directive that should cover most autocomplete situations.
  */
 angular.module('autocompleteBasic', [
-  '_',
+  'lodash',
   'BulbsAutocomplete',
   'BulbsAutocomplete.suggest',
   'bulbsCmsApp.settings'
@@ -31,7 +31,7 @@ angular.module('autocompleteBasic', [
                 .then(function (data) {
                   return _.map(data, function (item) {
                     return {
-                      name: $scope.displayFormatter({ item: item }),
+                      name: $scope.displayFormatter(item),
                       value: item
                     };
                   });
@@ -101,10 +101,6 @@ angular.module('autocompleteBasic', [
             return (scope.itemDisplayFormatter || defaultFormatter)({ item: modelValue });
           };
 
-          if (scope.initialValue) {
-            scope.selectedValue = scope.displayFormatter(modelValue);
-          }
-
           if (ngModelCtrl) {
 
             ngModelCtrl.$formatters.push(function (modelValue) {
@@ -119,7 +115,12 @@ angular.module('autocompleteBasic', [
               return scope.valueFormatter(viewValue);
             });
 
+            var unbindInitialValue = scope.$watch('initialValue', function () {
+              scope.selectedValue = scope.initialValue;
+            });
+
             scope.updateNgModel = function (selection) {
+              unbindInitialValue();
               var newValue = _.isUndefined(selection) ? null : angular.copy(selection.value);
               ngModelCtrl.$setViewValue(angular.copy(newValue));
               scope.selectedValue = scope.displayFormatter(newValue);
@@ -132,7 +133,7 @@ angular.module('autocompleteBasic', [
           hideSearchIcon: '&',        // true to hide search icon inside autocomplete
           inputId: '@',               // id to give input, useful if input has a label
           inputPlaceholder: '@',      // placeholder for input
-          initialValue: '&',          // initial representation of selected value
+          initialValue: '=',          // initial representation of selected value
           itemDisplayFormatter: '&',  // formatter to transform the display name of result
           itemValueFormatter: '&',    // formatter to transform the value of the result
           onSelect: '&',              // selection callback, recieves selection as argument

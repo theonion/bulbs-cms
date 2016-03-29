@@ -1,23 +1,27 @@
 'use strict';
 
 angular.module('campaignAutocomplete', [
+  'lodash',
   'autocompleteBasic',
   'cms.tunic.config',
   'uuid4'
 ])
   .directive('campaignAutocomplete', [
-    'routes', 'uuid4',
-    function (routes, uuid4) {
+    '$http', 'routes', 'TunicConfig', 'uuid4',
+    function ($http, routes, TunicConfig, uuid4) {
       return {
         controller: [
-          '$http', '$scope', 'TunicConfig',
-          function ($http, $scope, TunicConfig) {
+          '_', '$scope',
+          function (_, $scope) {
+
             $scope.itemDisplayFormatter = function (campaign) {
-              return campaign.name + ' - ' + campaign.number;
+              if (_.isObject(campaign)) {
+                return campaign.name + ' - ' + campaign.id;
+              }
             };
 
             $scope.itemValueFormatter = function (campaign) {
-              return campaign.number;
+              return _.isObject(campaign) ? campaign.id : null;
             };
 
             $scope.searchCampaigns = function (searchTerm) {
@@ -31,15 +35,33 @@ angular.module('campaignAutocomplete', [
             };
           }
         ],
-        link: function (scope) {
+        link: function (scope, iElement, iAttrs, ngModelCtrl) {
           scope.uuid = uuid4.generate();
+
+          if (ngModelCtrl) {
+
+            scope.ngModel = ngModelCtrl;
+
+            ngModelCtrl.$render = function () {
+              if (_.isNumber(ngModelCtrl.$modelValue) && !scope.initialValue) {
+                $http
+                  .get(TunicConfig.buildBackendApiUrl('campaign/' + ngModelCtrl.$modelValue + '/'))
+                  .then(function (result) {
+                    scope.initialValue = scope.itemDisplayFormatter(result.data);
+                  });
+              }
+            };
+
+            scope.onSelect = function (selection) {
+              ngModelCtrl.$commitViewValue();
+            };
+          }
         },
         restrict: 'E',
         templateUrl: routes.COMPONENTS_URL + 'campaign-autocomplete/campaign-autocomplete.html',
-        // require: 'ngModel',
+        require: 'ngModel',
         scope: {
-          model: '=',
-          label: '@campaignAutocompleteLabel', // The label for the autocomplete imput
+          label: '@campaignAutocompleteLabel',      // label for the autocomplete imput
           onSelect: '&campaignAutocompleteOnSelect' // selection handler for auto completions
         }
       };
