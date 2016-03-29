@@ -92,22 +92,21 @@ angular.module('autocompleteBasic', [
         if (ngModelCtrl) {
 
           ngModelCtrl.$formatters.push(function (modelValue) {
-            if (!_.isUndefined(modelValue)) {
-              return scope.displayFormatter({ item: modelValue });
-            }
+            return scope.displayFormatter({ item: modelValue });
           });
 
           ngModelCtrl.$render = function () {
             scope.selectedValue = ngModelCtrl.$viewValue;
           };
 
+          ngModelCtrl.$parsers.push(function (viewValue) {
+            return scope.valueFormatter({ item: viewValue });
+          });
+
           scope.updateNgModel = function (selection) {
-            var newViewValue;
-            if (!_.isUndefined(selection)) {
-              newViewValue = scope.valueFormatter({ item: selection.value });
-            }
-            ngModelCtrl.$setViewValue(angular.copy(newViewValue));
-            scope.selectedValue = ngModelCtrl.$viewValue;
+            var newValue = _.isUndefined(selection) ? null : angular.copy(selection.value);
+            ngModelCtrl.$setViewValue(angular.copy(newValue));
+            scope.selectedValue = scope.displayFormatter({ item: newValue });
           };
         }
       },
