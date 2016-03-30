@@ -7,11 +7,11 @@ angular.module('campaignAutocomplete', [
   'uuid4'
 ])
   .directive('campaignAutocomplete', [
-    '$http', 'routes', 'TunicConfig', 'uuid4',
-    function ($http, routes, TunicConfig, uuid4) {
+    '$http', 'routes', 'TunicConfig', 'uuid4', '_',
+    function ($http, routes, TunicConfig, uuid4, _) {
       return {
         controller: [
-          '_', '$scope',
+          '$scope',
           function (_, $scope) {
 
             $scope.itemDisplayFormatter = function (campaign) {
