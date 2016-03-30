@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('specialCoverage.edit.directive', [
-  'apiServices.specialCoverage.factory',
-  'autocompleteBasic',
-  'bulbsCmsApp.settings',
   'apiServices.campaign.factory',
+  'apiServices.specialCoverage.factory',
+  'bulbsCmsApp.settings',
+  'campaignAutocomplete',
   'copyButton',
   'customSearch',
   'lodash',
