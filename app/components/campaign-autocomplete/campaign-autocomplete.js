@@ -12,7 +12,7 @@ angular.module('campaignAutocomplete', [
       return {
         controller: [
           '$scope',
-          function (_, $scope) {
+          function ($scope) {
 
             $scope.itemDisplayFormatter = function (campaign) {
               if (_.isObject(campaign)) {
