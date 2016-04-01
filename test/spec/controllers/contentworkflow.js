@@ -45,10 +45,6 @@ describe('Controller: ContentworkflowCtrl', function () {
       scope.thumbnailModal();
       expect(modalService.open).toHaveBeenCalled();
     });
-    it('sponsorModal', function () {
-      scope.sponsorModal();
-      expect(modalService.open).toHaveBeenCalled();
-    });
     it('versionBrowserModal', function () {
       scope.versionBrowserModal();
       expect(modalService.open).toHaveBeenCalled();
