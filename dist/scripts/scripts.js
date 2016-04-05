@@ -8750,28 +8750,6 @@ angular.module('bulbsCmsApp')
       });
     };
 
-    //deprecated
-    $scope.sponsoredContentModal = function (article) {
-      return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'modals/sponsored-content-modal.html',
-        scope: $scope,
-        resolve: {
-          article: function () { return article; }
-        }
-      });
-    };
-
-    $scope.sponsorModal = function (article) {
-      return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'modals/sponsor-modal.html',
-        scope: $scope,
-        controller: 'SponsormodalCtrl',
-        resolve: {
-          article: function () { return article; }
-        }
-      });
-    };
-
     $scope.versionBrowserModal = function (article) {
       VersionBrowserModalOpener.open($scope, article);
     };
@@ -9653,27 +9631,6 @@ angular.module('bulbsCmsApp')
       loadReport($scope.report, $scope.reportParams.start, $scope.reportParams.end);
     };
 
-  });
-
-'use strict';
-
-angular.module('bulbsCmsApp')
-  .controller('SponsormodalCtrl', function ($scope, ContentFactory, article, Campaign) {
-    $scope.article = article;
-
-    if ($scope.article.campaign) {
-      $scope.campaign = Campaign.$find($scope.article.campaign);
-    } else {
-      $scope.campaign = null;
-    }
-
-    $scope.updateArticle = function (selection) {
-      $scope.article.campaign = selection.value.id;
-    };
-
-    $scope.searchCampaigns = function (searchTerm) {
-      return Campaign.simpleSearch(searchTerm);
-    };
   });
 
 'use strict';
