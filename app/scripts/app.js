@@ -49,7 +49,8 @@ angular.module('bulbsCmsApp', [
   'templateTypeField',
   'specialCoverage',
   'sections',
-  'reports'
+  'reports',
+  'instantArticleField'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);

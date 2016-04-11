@@ -1,0 +1,48 @@
+.instant-article-field {
+  @facebook-blue: #3B5998;
+  @gray: #EBEBEB;
+
+  .desc {
+    font-family: gandhi_serifbold, "Georgia", Times New Roman, serif;
+    font-size: 11px;
+  }
+
+  .toggle {
+    background-color: white;
+    border-radius: 5px;
+    list-style-type: none;
+    padding: 8px 10px;
+    width: 200px;
+
+    .item-toggle {
+      float: left;
+
+      .selector {
+        width: 25px;
+        height: 25px;
+        background-color: @gray;
+        border-radius: 25px;
+        cursor: pointer;
+        display: inline-block;
+
+        .instant {
+          display: block;
+          text-align: center;
+          line-height: 25px;
+          color: @gray;
+        }
+
+        &.selected {
+          background-color: @facebook-blue;
+          color: white;
+        }
+      }
+
+      .label {
+        background-color: #fff;
+        color: black;
+        text-transform: uppercase;
+      }
+    }
+  }
+}
