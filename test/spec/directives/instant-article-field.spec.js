@@ -11,7 +11,7 @@ describe('InstantArticleField directive', function() {
       feature_type: 'News in Brief'
     };
 
-    InstantArticleConfig.setSupportedFeatureTypes(['News in Brief']);
+    spyOn(InstantArticleConfig, 'getSupportedFeatureTypes').andReturn(['News in Brief']);
 
     element = $compile('<instant-article-field content="content"></instant-article-field>')(scope);
     scope.$digest();
@@ -32,10 +32,25 @@ describe('InstantArticleField directive', function() {
     });
   });
 
-  describe('#initInstantArticleEnabled', function() {
-    it('sets instantArticleEnabled to true if feature type supported', function() {
-      directiveScope.initInstantArticleEnabled();
-      expect(directiveScope.instantArticleEnabled).toBe(true);
+  it('sets the instant article enabled to true if feature type supported', function() {
+    expect(directiveScope.instantArticleEnabled).toBe(true);
+  });
+
+  describe('not allowed feature type', function() {
+    beforeEach(angular.mock.inject(function($rootScope, $compile, $httpBackend, $templateCache, InstantArticleConfig) {
+      scope = $rootScope.$new();
+      scope.content = {
+        instant_article: false,
+        feature_type: 'TV Club'
+      };
+
+      element = $compile('<instant-article-field content="content"></instant-article-field>')(scope);
+      scope.$digest();
+      directiveScope = element.isolateScope();
+    }));
+
+    it('sets instant article enabled to false if feature type not supported', function() {
+      expect(directiveScope.instantArticleEnabled).toBe(false);
     });
   });
 });

@@ -1,19 +1,22 @@
 'use strict';
 
-angular.module('cms.instant_article.config', []).factory('InstantArticleConfig', [function () {
+angular.module('cms.instant_article.config', []).provider('InstantArticleConfig', [function InstantArticleConfigProvider () {
   var supportedFeatureTypes = [];
 
-  var factory = {};
-
-  factory.setSupportedFeatureTypes = function(featureTypes) {
+  this.setSupportedFeatureTypes = function(featureTypes) {
     supportedFeatureTypes = featureTypes;
 
     return this;
   };
 
-  factory.getSupportedFeatureTypes = function() {
-    return supportedFeatureTypes;
+  this.$get = function() {
+    return {
+      // Returns the support feature type names for Instant Articles
+      // @param N/A
+      // @returns Array of Strings, e.g. ['News in Brief']
+      getSupportedFeatureTypes: function() {
+        return supportedFeatureTypes;
+      }
+    }
   };
-
-  return factory;
 }]);

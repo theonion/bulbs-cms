@@ -9,8 +9,6 @@ angular.module('instantArticleField', ['bulbsCmsApp.settings', 'cms.instant_arti
         content: '='
       },
       link: function(scope, element, attrs) {
-        scope.instantArticleEnabled = false;
-
         scope.setActive = function() {
           scope.content.instant_article = true;
         };
@@ -19,11 +17,7 @@ angular.module('instantArticleField', ['bulbsCmsApp.settings', 'cms.instant_arti
           scope.content.instant_article = false;
         };
 
-        scope.initInstantArticleEnabled = function() {
-          scope.instantArticleEnabled = _.includes(InstantArticleConfig.getSupportedFeatureTypes(), scope.content.feature_type);
-        };
-
-        scope.initInstantArticleEnabled();
+        scope.instantArticleEnabled = _.includes(InstantArticleConfig.getSupportedFeatureTypes(), scope.content.feature_type);
       }
     };
   }]);
