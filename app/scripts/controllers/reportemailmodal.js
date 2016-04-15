@@ -2,7 +2,7 @@
 
 angular.module('bulbsCmsApp')
   .controller('ReportemailmodalCtrl', function ($scope, $http, moment) {
-    var reportEmailURL = '/cms/api/v1/contributor-email';
+    var reportEmailURL = '/cms/api/v1/contributor-email/';
     var now = moment().tz('America/Chicago');
 
     $scope.monthOptions = moment.monthsShort();
@@ -21,13 +21,10 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.sendEmail = function () {
-      $http({
-        url: reportEmailURL,
-        method: 'POST',
-        data: {
+      var data = {
           deadline: $scope.reportDeadline,
           start: getReportStart()
-        }
-      });
+      };
+      $http.post(reportEmailURL, data);
     };
   });
