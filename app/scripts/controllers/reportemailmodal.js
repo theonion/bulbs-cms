@@ -8,6 +8,7 @@ angular.module('bulbsCmsApp')
     $scope.monthOptions = moment.monthsShort();
     $scope.reportDeadline = now.add(1, 'days');
     $scope.reportMonth = $scope.monthOptions[now.month() - 1];
+    $scope.reportYear = now.year();
 
     $scope.openReportDeadline = function($event) {
       $event.preventDefault();
@@ -15,10 +16,18 @@ angular.module('bulbsCmsApp')
       $scope.startReportDeadline = true;
     };
 
+    var getReportStart = function() {
+      return moment().month($scope.reportMonth).year($scope.reportYear).startOf('month');
+    };
+
     $scope.sendEmail = function () {
       $http({
+        url: reportEmailURL,
         method: 'POST',
-        URL: reportEmailURL
+        data: {
+          deadline: $scope.reportDeadline,
+          start: getReportStart()
+        }
       });
     };
   });

@@ -12,9 +12,14 @@
         ng-model="reportMonth"
         ng-options="month for month in monthOptions">
       </select>
+      <label>Report Year:</label>
+      <input
+        type="text"
+        value="{{ reportYear }}"
+        class="form-control">
     </div>
 
-    <div class="col-sm-5 col-xs-3">
+    <div class="col-sm-5 col-xs-6">
       <label>Response Deadline:</label>
       <div class="input-group">
         <input
