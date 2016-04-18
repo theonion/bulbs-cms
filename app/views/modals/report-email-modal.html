@@ -1,0 +1,48 @@
+<div class="modal-header">
+  <button type="button" class="close" ng-click="$dismiss();" aria-hidden="true">&times;</button>
+  <h4 class="modal-title">Send Contributor Email Report</h4>
+</div><!--/modal-header-->
+<div class="modal-body">
+
+  <div class="row">
+    <div class="col-sm-5 col-xs-3">
+      <label>Report Month:</label>
+      <select
+        class="form-control form-group"
+        ng-model="reportMonth"
+        ng-options="month for month in monthOptions">
+      </select>
+      <label>Report Year:</label>
+      <input
+        type="text"
+        value="{{ reportYear }}"
+        class="form-control">
+    </div>
+
+    <div class="col-sm-5 col-xs-6">
+      <label>Response Deadline:</label>
+      <div class="input-group">
+        <input
+          type="text"
+          value="{{ reportDeadline.format('MM/DD/YY h:mm:ss a') }}"
+          class="form-control"
+          readonly>
+        <span class="input-group-btn">
+          <button
+            class="btn btn-info"
+            datetime-selection-modal-opener
+            ng-model="reportDeadline"
+            modal-title="Response Deadline">
+            <i class="glyphicon glyphicon-calendar"></i>
+          </button>
+        </span>
+      </div>
+    </div>
+  </div>
+
+
+</div><!--/modal-body-->
+<div class="modal-footer">
+    <button class="btn btn-link" aria-hidden="true" ng-click="$dismiss();">Cancel</button>
+    <a target="_blank" class="btn btn-primary" ng-click="sendEmail()">Send</a>
+</div><!--/modal-footer-->

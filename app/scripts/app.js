@@ -35,12 +35,15 @@ angular.module('bulbsCmsApp', [
   'OnionEditor',
   // shared
   'contentServices',
+  'cms.tunic',
   // components
   'bettyEditable',
   'bugReporter',
   'campaigns',
+  'evergreenField',
   'filterWidget',
   'filterListWidget',
+  'polls',
   'promotedContent',
   'statusFilter',
   'templateTypeField',
@@ -104,6 +107,7 @@ angular.module('bulbsCmsApp', [
   $httpProvider.interceptors.push('BugReportInterceptor');
   $httpProvider.interceptors.push('PermissionsInterceptor');
   $httpProvider.interceptors.push('BadRequestInterceptor');
+  $httpProvider.interceptors.push('TunicInterceptor');
 })
 .run(function ($rootScope, $http, $cookies) {
   // set the CSRF token here
