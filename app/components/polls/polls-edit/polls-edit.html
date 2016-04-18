@@ -1,0 +1,199 @@
+<ng-form name="pollForm">
+  <top-bar
+      logo-href="/cms/app/polls/"
+      save-function="saveModel"
+      save-disable-when="(model.$dirty().length === 0 && !isNew) || !pollForm.$valid">
+  </top-bar>
+
+  <div class="container">
+    <div class="row poll-name">
+      <div class="form-group col-lg-push-3 col-lg-6">
+        <label for="pollTitle">
+          Poll Name
+          <span
+              class="error-message"
+              ng-show="pollForm.title.$error.required">
+            can not be blank.
+          </span>
+        </label>
+        <input
+          id="pollTitle"
+          type="text"
+          name="title"
+          ng-model="model.title"
+          required
+          class="form-control">
+      </div>
+    </div>
+    <div
+        ng-if="model.id"
+        class="row poll-embed-code">
+      <div class="col-lg-push-3 col-lg-6">
+        <label>Poll Embed Code</label>
+        <div class="input-group">
+          <input
+            readonly
+            value="{{ embedCode() }}"
+            class="form-control">
+
+          <span class="input-group-btn">
+            <copy-button
+                class="btn btn-info"
+                content="{{ embedCode() }}"
+                button-classes-default="btn btn-xs btn-info"
+                button-classes-success="btn btn-xs btn-success">
+            </copy-button>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div
+        ng-if="model.id"
+        class="row poll-startdate">
+      <div class="form-group col-lg-push-3 col-lg-6">
+        <label for="pollStartDate">
+          Poll Start Date
+          <span
+              class="error-message"
+              ng-show="pollForm.published.$error.requiredWithEndDate">
+            can not be blank when End Date is set.
+          </span>
+        </label>
+        <div class="input-group">
+          <input
+            class="form-control"
+            id="pollStartDate"
+            name="published"
+            ng-model="model.published"
+            type="text"
+            value="{{ model.published | tzDate: 'M/d/yy h:mma'}}"
+            readonly>
+          <span class="input-group-btn">
+            <button
+              class="btn btn-info"
+              datetime-selection-modal-opener
+              modal-on-close="validatePublication()"
+              ng-model="model.published"
+              modal-title="Poll Start Date">
+              <i class="fa fa-calendar"></i>
+            </button>
+            <button
+              class="btn btn-danger"
+              ng-click="model.published = null; validatePublication();">
+              <i class="fa fa-times"></i>
+            </button>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div
+        ng-if="model.id"
+        class="row poll-end-date">
+      <div class="form-group col-lg-push-3 col-lg-6">
+        <label for="pollEndDate">
+          Poll End Date
+          <span
+              class="error-message"
+              ng-show="pollForm.endDate.$error.comesAfterPublished">
+            must be after Start Date
+          </span>
+        </label>
+        <div class="input-group">
+          <input
+            class="form-control"
+            id="pollEndDate"
+            name="endDate"
+            ng-model="model.end_date"
+            type="text"
+            value="{{ model.end_date | tzDate: 'M/d/yy h:mma' }}"
+            readonly>
+          <span class="input-group-btn">
+            <button
+              class="btn btn-info"
+              datetime-selection-modal-opener
+              modal-on-close="validatePublication()"
+              ng-model="model.end_date"
+              modal-title="Poll End Date">
+              <i class="fa fa-calendar"></i>
+            </button>
+            <button
+              class="btn btn-danger"
+              ng-click="model.end_date = null; validatePublication()">
+              <i class="fa fa-times"></i>
+            </button>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row poll-question">
+      <div class="form-group col-lg-push-3 col-lg-6">
+        <label for="pollQuestionText">
+          Question Text
+          <span
+              class="error-message"
+              ng-show="pollForm.question_text.$error.required">
+            can not be blank.
+          </span>
+        </label>
+        <textarea
+          id="pollQuestionText"
+          name="question_text"
+          ng-model="model.question_text"
+          class="form-control"
+          required>
+        </textarea>
+      </div>
+    </div>
+
+    <center>
+      <hr class="polls-edit">
+    </center>
+
+    <div class="row">
+      <div class="col-lg-push-3 col-lg-6">
+        <h4 for="pollAnswers">Responses</h4>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-push-3 col-lg-6">
+        <fieldset
+          class="response-text-field"
+          data-ng-repeat="answer in answers">
+            <ng-form name="answerForm{{ $index }}">
+            <div>
+              <label for="answerText">
+                Response Text
+                <span
+                    class="error-message"
+                    ng-show="answerForm{{ $index }}.answer_text.$error.required">
+                  can not be blank.
+                </span>
+              </label>
+              <div class="answer-text form-inline">
+                <textarea
+                  name="answer_text"
+                  class="form-control"
+                  ng-model="answer.answer_text"
+                  required>
+                </textarea>
+                <a
+                  ng-click="removeAnswer(answer.id)">
+                  <i class="fa fa-minus-circle"></i>
+                </a>
+              </div>
+            <ng-form>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <a class="add-answer col-lg-push-3 col-lg-6" ng-click="addAnswer()">
+        <i class="fa fa-plus-circle"></i>
+        Add Response
+      </a>
+    </div>
+  </div>
+</ng-form>

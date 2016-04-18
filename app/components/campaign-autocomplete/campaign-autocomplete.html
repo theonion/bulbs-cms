@@ -1,0 +1,12 @@
+<label for="{{ uuid }}">{{ label }}</label>
+<autocomplete-basic
+    class="form-control"
+    ng-model="ngModel.$viewValue"
+    item-display-formatter="itemDisplayFormatter(item)"
+    item-value-formatter="itemValueFormatter(item)"
+    initial-value="initialValue"
+    on-select="onSelect(selection)"
+    input-id="{{ uuid }}"
+    input-placeholder="e.g. 0-1337 Honda"
+  search-function="searchCampaigns">
+</autocomplete-basic>
