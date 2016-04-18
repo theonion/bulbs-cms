@@ -74,10 +74,7 @@
 
     <div class="row well">
       <div class="row">
-        <div class="col-md-2">
-            <a href="{{ downloadURL }}" ng-disabled="reportDisabled" target="_blank" class="btn btn-primary">Export Data</a>
-        </div>
-        <div class="col-md-5">
+        <div class="col-md-6">
           <div class="input-group">
             <div
               class="btn-group">
@@ -90,6 +87,12 @@
               </button>
             </div>
           </div>
+        </div>
+        <div class="col-md-2">
+            <a href="{{ downloadURL }}" ng-disabled="reportDisabled" target="_blank" class="btn btn-primary">Export Data</a>
+        </div>
+        <div class="col-md-2">
+          <a target="_blank" class="btn btn-primary" ng-controller="ReportingCtrl" ng-click="reportEmailModal()">Email Report</a>
         </div>
       </div>
 
