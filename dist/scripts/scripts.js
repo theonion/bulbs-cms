@@ -255,12 +255,15 @@ angular.module('bulbsCmsApp', [
   'OnionEditor',
   // shared
   'contentServices',
+  'cms.tunic',
   // components
   'bettyEditable',
   'bugReporter',
   'campaigns',
+  'evergreenField',
   'filterWidget',
   'filterListWidget',
+  'polls',
   'promotedContent',
   'statusFilter',
   'templateTypeField',
@@ -324,6 +327,7 @@ angular.module('bulbsCmsApp', [
   $httpProvider.interceptors.push('BugReportInterceptor');
   $httpProvider.interceptors.push('PermissionsInterceptor');
   $httpProvider.interceptors.push('BadRequestInterceptor');
+  $httpProvider.interceptors.push('TunicInterceptor');
 })
 .run(function ($rootScope, $http, $cookies) {
   // set the CSRF token here
@@ -740,117 +744,145 @@ angular.module('bulbs.api')
  * Autocomplete directive that should cover most autocomplete situations.
  */
 angular.module('autocompleteBasic', [
+  'lodash',
   'BulbsAutocomplete',
   'BulbsAutocomplete.suggest',
   'bulbsCmsApp.settings'
 ])
   .value('AUTOCOMPLETE_BASIC_DEBOUNCE', 200)
-  .directive('autocompleteBasic', function (routes) {
-    return {
-      controller: function (_, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS, AUTOCOMPLETE_BASIC_DEBOUNCE) {
+  .directive('autocompleteBasic', [
+    '_', 'routes',
+    function (_, routes) {
+      return {
+        controller: [
+          '$scope', 'BULBS_AUTOCOMPLETE_EVENT_KEYPRESS',
+            'AUTOCOMPLETE_BASIC_DEBOUNCE',
+          function ($scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS,
+              AUTOCOMPLETE_BASIC_DEBOUNCE) {
 
-        $scope.writables = {
-          searchTerm: ''
-        };
+            $scope.writables = {
+              searchTerm: ''
+            };
 
-        $scope.currentSelection = null;
-        $scope.autocompleteItems = [];
+            $scope.autocompleteItems = [];
 
-        var $getItems = function () {
-          return $scope.searchFunction($scope.writables.searchTerm)
-            .then(function (data) {
-              return _.map(data, function (item) {
-                return {
-                  name: $scope.itemDisplayFormatter({item: item}),
-                  value: item
-                };
-              });
-            });
-        };
+            var $getItems = function () {
+              return $scope.searchFunction($scope.writables.searchTerm)
+                .then(function (data) {
+                  return _.map(data, function (item) {
+                    return {
+                      name: $scope.displayFormatter(item),
+                      value: item
+                    };
+                  });
+                });
+            };
 
-        $scope.updateAutocomplete = _.debounce(function () {
-          if ($scope.writables.searchTerm) {
-            $getItems().then(function (results) {
-              $scope.autocompleteItems = results;
-            });
+            $scope.updateAutocomplete = _.debounce(function () {
+              if ($scope.writables.searchTerm) {
+                $getItems().then(function (results) {
+                  $scope.autocompleteItems = results;
+                });
+              }
+            }, AUTOCOMPLETE_BASIC_DEBOUNCE);
+
+            $scope.delayClearAutocomplete = function () {
+              _.delay(function () {
+                $scope.clearAutocomplete();
+                $scope.$digest();
+              }, 200);
+            };
+
+            $scope.clearAutocomplete = function () {
+              $scope.writables.searchTerm = '';
+              $scope.autocompleteItems = [];
+            };
+
+            $scope.clearSelectionOverlay = function () {
+              $scope.clearAutocomplete();
+              $scope.showSelectionOverlay = false;
+              $scope.updateNgModel();
+              $scope.onSelect({});
+            };
+
+            $scope.handleKeypress = function ($event) {
+              if ($event.keyCode === 27) {
+                // esc, close dropdown
+                $scope.clearAutocomplete();
+              } else if ($event.keyCode === 40 && _.isEmpty($scope.autocompleteItems)) {
+                // down key and no items in autocomplete, redo search
+                $scope.updateAutocomplete();
+              } else {
+                $scope.$broadcast(BULBS_AUTOCOMPLETE_EVENT_KEYPRESS, $event);
+              }
+            };
+
+            $scope.handleSelect = function (selection) {
+              if (selection && $scope.updateNgModel) {
+                $scope.updateNgModel(selection);
+                $scope.showSelectionOverlay = true;
+              }
+
+              $scope.clearAutocomplete();
+              $scope.onSelect({selection: selection});
+            };
           }
-        }, AUTOCOMPLETE_BASIC_DEBOUNCE);
-
-        $scope.delayClearAutocomplete = function () {
-          _.delay(function () {
-            $scope.clearAutocomplete();
-            $scope.$digest();
-          }, 200);
-        };
-
-        $scope.clearAutocomplete = function () {
-          $scope.writables.searchTerm = '';
-          $scope.autocompleteItems = [];
-        };
-
-        $scope.clearSelectionOverlay = function () {
-          $scope.clearAutocomplete();
-          $scope.showSelectionOverlay = false;
-          $scope.updateNgModel(null);
-          $scope.onSelect({selection: null});
-        };
-
-        $scope.handleKeypress = function ($event) {
-          if ($event.keyCode === 27) {
-            // esc, close dropdown
-            $scope.clearAutocomplete();
-          } else if ($event.keyCode === 40 && _.isEmpty($scope.autocompleteItems)) {
-              // down key and no items in autocomplete, redo search
-              $scope.updateAutocomplete();
-          } else {
-            $scope.$broadcast(BULBS_AUTOCOMPLETE_EVENT_KEYPRESS, $event);
-          }
-        };
-
-        $scope.handleSelect = function (selection) {
-          if (selection && $scope.updateNgModel) {
-            $scope.updateNgModel(selection);
-            $scope.showSelectionOverlay = true;
-          }
-
-          $scope.clearAutocomplete();
-          $scope.onSelect({selection: selection});
-        };
-      },
-      link: function (scope, iElement, iAttrs, ngModelCtrl) {
-        if (ngModelCtrl) {
-          ngModelCtrl.$formatters.push(function (modelValue) {
-            scope.currentSelection = modelValue;
-            return modelValue;
-          });
-
-          ngModelCtrl.$parsers.push(function (viewValue) {
-            scope.currentSelection = viewValue;
-            return viewValue;
-          });
-
-          scope.updateNgModel = function (selection) {
-            var newViewValue = null;
-            if (selection) {
-              newViewValue = selection.value;
-            }
-            ngModelCtrl.$setViewValue(newViewValue);
+        ],
+        link: function (scope, iElement, iAttrs, ngModelCtrl) {
+          var defaultFormatter = function (context) {
+            return context.item;
           };
-        }
-      },
-      require: '?ngModel',          // optionally provide ng-model to have bind with an actual property
-      restrict: 'E',
-      scope: {
-        hideSearchIcon: '&',        // true to hide search icon inside autocomplete
-        inputId: '@',               // id to give input, useful if input has a label
-        inputPlaceholder: '@',      // placeholder for input
-        itemDisplayFormatter: '&',  // formatter to use for autocomplete results
-        onSelect: '&',              // selection callback, recieves selection as argument
-        searchFunction: '='         // function to use for searching autocomplete results
-      },
-      templateUrl: routes.COMPONENTS_URL + 'autocomplete-basic/autocomplete-basic.html'
-    };
-  });
+
+          scope.valueFormatter = function (viewValue) {
+            return (scope.itemValueFormatter || defaultFormatter)({ item: viewValue });
+          };
+
+          scope.displayFormatter = function (modelValue) {
+            return (scope.itemDisplayFormatter || defaultFormatter)({ item: modelValue });
+          };
+
+          if (ngModelCtrl) {
+
+            ngModelCtrl.$formatters.push(function (modelValue) {
+              return scope.displayFormatter(modelValue);
+            });
+
+            ngModelCtrl.$render = function () {
+              scope.selectedValue = ngModelCtrl.$viewValue;
+            };
+
+            ngModelCtrl.$parsers.push(function (viewValue) {
+              return scope.valueFormatter(viewValue);
+            });
+
+            var unbindInitialValue = scope.$watch('initialValue', function () {
+              scope.selectedValue = scope.initialValue;
+            });
+
+            scope.updateNgModel = function (selection) {
+              unbindInitialValue();
+              var newValue = _.isUndefined(selection) ? null : angular.copy(selection.value);
+              ngModelCtrl.$setViewValue(angular.copy(newValue));
+              scope.selectedValue = scope.displayFormatter(newValue);
+            };
+          }
+        },
+        require: '?ngModel',          // optionally provide ng-model to have bind with an actual property
+        restrict: 'E',
+        scope: {
+          hideSearchIcon: '&',        // true to hide search icon inside autocomplete
+          inputId: '@',               // id to give input, useful if input has a label
+          inputPlaceholder: '@',      // placeholder for input
+          initialValue: '=',          // initial representation of selected value
+          itemDisplayFormatter: '&',  // formatter to transform the display name of result
+          itemValueFormatter: '&',    // formatter to transform the value of the result
+          onSelect: '&',              // selection callback, recieves selection as argument
+          searchFunction: '='         // function to use for searching autocomplete results
+        },
+        templateUrl: routes.COMPONENTS_URL + 'autocomplete-basic/autocomplete-basic.html'
+      };
+    }
+  ]);
 
 'use strict';
 
@@ -1029,6 +1061,76 @@ angular.module('bugReporter', [])
         },
         link: function (scope, element) {
 
+        }
+      };
+    }
+  ]);
+
+'use strict';
+
+angular.module('campaignAutocomplete', [
+  'lodash',
+  'autocompleteBasic',
+  'cms.tunic.config',
+  'uuid4'
+])
+  .directive('campaignAutocomplete', [
+    '$http', 'routes', 'TunicConfig', 'uuid4', '_',
+    function ($http, routes, TunicConfig, uuid4, _) {
+      return {
+        controller: [
+          '$scope',
+          function ($scope) {
+
+            $scope.itemDisplayFormatter = function (campaign) {
+              if (_.isObject(campaign)) {
+                return campaign.name + ' - ' + campaign.id;
+              }
+            };
+
+            $scope.itemValueFormatter = function (campaign) {
+              return _.isObject(campaign) ? campaign.id : null;
+            };
+
+            $scope.searchCampaigns = function (searchTerm) {
+              return $http
+                .get(TunicConfig.buildBackendApiUrl('campaign/'), {
+                  params: { search: searchTerm }
+                })
+                  .then(function (response) {
+                    return response.data.results;
+                  });
+            };
+          }
+        ],
+        link: function (scope, iElement, iAttrs, ngModelCtrl) {
+          scope.uuid = uuid4.generate();
+
+          if (ngModelCtrl) {
+
+            scope.ngModel = ngModelCtrl;
+
+            ngModelCtrl.$render = function () {
+              if (_.isNumber(ngModelCtrl.$modelValue) && !scope.initialValue) {
+                $http
+                  .get(TunicConfig.buildBackendApiUrl('campaign/' + ngModelCtrl.$modelValue + '/'))
+                  .then(function (result) {
+                    scope.initialValue = scope.itemDisplayFormatter(result.data);
+                  });
+              }
+            };
+
+            scope.onSelect = function (selection) {
+              ngModelCtrl.$commitViewValue();
+            };
+          }
+        },
+        restrict: 'E',
+        templateUrl: routes.COMPONENTS_URL + 'campaign-autocomplete/campaign-autocomplete.html',
+        require: 'ngModel',
+        scope: {
+          label: '@campaignAutocompleteLabel',      // label for the autocomplete imput
+          onSelect: '&campaignAutocompleteOnSelect' // selection handler for auto completions
         }
       };
     }
@@ -1936,6 +2038,32 @@ angular.module('EditorsPick', [
 
 'use strict';
 
+angular.module('evergreenField.directive', [
+  'bulbsCmsApp.settings',
+  'lodash',
+  'saveButton.directive',
+])
+  .directive('evergreenField', [
+    'routes',
+    function (routes) {
+      return {
+        restrict: 'E',
+        scope: {
+          article: '='
+        },
+        templateUrl: routes.COMPONENTS_URL + 'evergreen-field/evergreen-field.html'
+      };
+    }
+  ]);
+
+'use strict';
+
+angular.module('evergreenField', [
+  'evergreenField.directive'
+]);
+
+'use strict';
+
 angular.module('filterListWidget.directive', [
   'bulbsCmsApp.settings'
 ])
@@ -2437,6 +2565,184 @@ angular.module('saveButton.directive', [
       templateUrl: routes.COMPONENTS_URL + 'generic-ajax-button/generic-ajax-button.html'
     };
   });
+
+'use strict';
+
+angular.module('polls.edit.directive', [
+  'apiServices.poll.factory',
+  'apiServices.answer.factory',
+  'BettyCropper',
+  'lodash',
+  'saveButton.directive',
+  'topBar'
+]).constant('RESPONSE_TYPES', [
+  {
+    name: 'Text Only',
+    value: 'Text'
+  },
+  {
+    name: 'Image + Text',
+    value: 'Image'
+  }
+])
+.directive('pollsEdit', function (routes) {
+  return {
+    templateUrl: routes.COMPONENTS_URL + 'polls/polls-edit/polls-edit.html',
+    controller: function (_, $http, $location, $q, $routeParams, $scope, $timeout, Answer, Poll) {
+      // populate model for use
+      if ($routeParams.id === 'new') {
+        $scope.model = {};
+        $scope.isNew = true;
+      } else {
+        Poll.getPoll($routeParams.id)
+          .then(function successCallback(response) {
+            $scope.model = response;
+            $scope.answers = _.cloneDeep(response.answers);
+          });
+      }
+
+      window.onbeforeunload = function (e) {
+        if(!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
+          // show confirmation alert
+          return 'You have unsaved changes.';
+        }
+      };
+
+      $scope.$on('$destroy', function () {
+        // remove alert when we go
+        delete window.onbeforeunload;
+      });
+
+      $scope.embedCode = function () {
+        return '<bulbs-poll src="/poll/' + $scope.model.id + '/merged.json"></bulbs-poll>';
+      };
+
+      $scope.validatePublication = function () {
+        // The datetime-selection-modal-opener interacts with scope
+        // in such a way that modal-on-close="validatePublication()"
+        // fires before the scope model data has changed.
+        $timeout(function () {
+          var published = $scope.model.published;
+          var endDate = $scope.model.end_date;
+          var publishedField = $scope.pollForm.published;
+          var endDateField = $scope.pollForm.endDate;
+
+          publishedField.$setValidity(
+            'requiredWithEndDate',
+            !(endDate && !published)
+          );
+
+          var comesAfterPublishedValid = true;
+          if (endDate && published) {
+            comesAfterPublishedValid = published.isBefore(endDate);
+          }
+          endDateField.$setValidity(
+            'comesAfterPublished',
+            comesAfterPublishedValid
+          );
+        });
+      };
+
+      $scope.saveModel = function () {
+        if ($scope.model) {
+
+          if(!$scope.isNew) {
+            Answer.updatePollAnswers($scope);
+            // reset deleted answers
+            $scope.deletedAnswers = [];
+            return Poll.updatePoll($scope.model);
+
+          } else {
+            return Poll.postPoll($scope.model).then(function (data) {
+              var answerPromise = _.map($scope.answers, function (answer) {
+                return Answer.postAnswer(answer, data.id);
+              });
+
+              return $q.all(answerPromise).then(function () {
+                $location.path('/cms/app/polls/edit/' + data.id + '/');
+              });
+            });
+          }
+        } else {
+          return $q.reject('Save failed');
+        }
+      };
+
+      $scope.deletedAnswers = [];
+      var newId = ($scope.answers) ? $scope.answers.length : 0;
+
+      $scope.addAnswer = function () {
+        $scope.answers.push({id: newId++, notOnSodahead: true});
+      };
+
+      // create 3 blank answer objects if this is a new poll
+      if($scope.isNew) {
+        $scope.answers = [];
+        _.times(3, $scope.addAnswer);
+      }
+
+
+      $scope.removeAnswer = function (answerId) {
+        var deletedAnswer = _.remove($scope.answers, function (a) {
+          return a.id === answerId;
+        });
+        if(deletedAnswer[0].notOnSodahead) { return; }
+        $scope.deletedAnswers.push(deletedAnswer[0]);
+      };
+    },
+    restrict: 'E',
+    scope: { getModelId: '&modelId' },
+  };
+});
+
+'use strict';
+
+angular.module('polls.edit', [
+  'polls.edit.directive'
+])
+  .config(function ($routeProvider, routes) {
+    $routeProvider
+    .when('/cms/app/polls/edit/:id/', {
+      controller: function ($routeParams, $scope, $window) {
+
+        // set title
+        $window.document.title = routes.CMS_NAMESPACE + ' | Edit Poll';
+
+        $scope.routeId = $routeParams.id;
+      },
+      template: '<polls-edit model-id="routeId"></polls-edit>',
+      reloadOnSearch: false
+    });
+  });
+
+'use strict';
+
+angular.module('polls.list', [
+  'apiServices.poll.factory',
+  'bulbsCmsApp.settings',
+  'bulbsCmsApp.nonRestmodListPage',
+  'moment'
+])
+  .config(function ($routeProvider, routes) {
+    $routeProvider
+      .when('/cms/app/polls/', {
+        controller: function ($scope, $window, Poll) {
+          // set title
+          $window.document.title = routes.CMS_NAMESPACE + ' | Poll';
+
+          $scope.modelFactory = Poll;
+
+        },
+        templateUrl: routes.COMPONENTS_URL + 'polls/polls-list/polls-list-page.html'
+      });
+  });
+
+'use strict';
+
+angular.module('polls', [
+  'polls.list',
+  'polls.edit'
+]);
 
 'use strict';
 
@@ -4083,10 +4389,11 @@ angular.module('sections', [
 'use strict';
 
 angular.module('specialCoverage.edit.directive', [
-  'apiServices.specialCoverage.factory',
-  'autocompleteBasic',
-  'bulbsCmsApp.settings',
   'apiServices.campaign.factory',
+  'apiServices.specialCoverage.factory',
+  'bulbsCmsApp.settings',
+  'campaignAutocomplete',
+  'copyButton',
   'customSearch',
   'lodash',
   'specialCoverage.settings',
@@ -4104,6 +4411,8 @@ angular.module('specialCoverage.edit.directive', [
 
         $scope.needsSave = false;
 
+        $scope.tunicCampaignIdMapping = {};
+
         var modelId = $scope.getModelId();
         if (modelId === 'new') {
           // this is a new special coverage, build it
@@ -4111,8 +4420,13 @@ angular.module('specialCoverage.edit.directive', [
           $scope.isNew = true;
         } else {
           // this is an existing special coverage, find it
-          $scope.model = SpecialCoverage.$find($scope.getModelId());
+          $scope.model = SpecialCoverage.$find($scope.getModelId()).$then(function () {
+            $scope.model.$loadTunicCampaign().then(function (campaign) {
+              $scope.tunicCampaignIdMapping[campaign.id] = campaign;
+            });
+          });
         }
+
 
         window.onbeforeunload = function (e) {
           if (!_.isEmpty($scope.model.$dirty()) || $scope.isNew || $scope.needsSave) {
@@ -4156,8 +4470,21 @@ angular.module('specialCoverage.edit.directive', [
           });
         };
 
+        $scope.tunicCampaignFormatter = function (campaignId) {
+          if (campaignId in $scope.tunicCampaignIdMapping) {
+            var campaign = $scope.tunicCampaignIdMapping[campaignId];
+            return campaign.name + ' - ' + campaign.number;
+          }
+        };
+
         $scope.searchCampaigns = function (searchTerm) {
-          return Campaign.simpleSearch(searchTerm);
+          return $scope.model.$searchCampaigns({search: searchTerm}).then(function (campaigns) {
+            campaigns.forEach(function (campaign) {
+              $scope.tunicCampaignIdMapping[campaign.id] = campaign;
+            });
+            // Formatter expects list of IDs
+            return campaigns.map(function (campaign) { return campaign.id; });
+          });
         };
       },
       restrict: 'E',
@@ -4731,6 +5058,198 @@ angular.module('apiServices.featureType.factory', [
   );
 'use strict';
 
+angular.module('apiServices.answer.factory', [
+  'apiServices',
+  'lodash'
+])
+.factory('Answer', ['$http', '$q', '_', function ($http, $q, _) {
+
+  var answerUrl = '/cms/api/v1/answer/';
+  var error = function(message) {
+    return new Error('Poll Error: ' + message);
+  };
+
+  function deleteAnswers(deletedAnswers) {
+    var deletePromise = _.map(deletedAnswers, function(deletedAnswer) {
+      return $http.delete(answerUrl + deletedAnswer.id);
+    });
+    $q.all(deletePromise).then(function(response) {
+      return response;
+    });
+  }
+
+  function putAnswer(oldAnswers, newAnswer) {
+    var oldAnswer = _.filter(oldAnswers, {id: newAnswer.id})[0];
+    if(newAnswer.answer_text !== oldAnswer.answer_text) {
+      return $http.put(answerUrl + newAnswer.id, {
+        answer_text: newAnswer.answer_text
+      }).then(function(response) {
+        return response.data;
+      });
+    }
+  }
+
+  function postAnswer(answer, pollId) {
+    if(!_.isNumber(pollId) || _.isUndefined(answer.answer_text)) {
+      throw error('poll id and answer_text fields required');
+    }
+    return $http.post(answerUrl, {
+      poll: pollId,
+      answer_text: answer.answer_text
+    }).then(function(response) {
+      return response.data;
+    });
+  }
+
+  function updatePollAnswers(scope) {
+    deleteAnswers(scope.deletedAnswers);
+    _.forEach(scope.answers, function(answer) {
+      if(answer.notOnSodahead) {
+        postAnswer(answer, scope.model.id);
+      } else {
+        putAnswer(scope.model.answers, answer);
+      }
+    });
+  }
+
+  return {
+    postAnswer: postAnswer,
+    updatePollAnswers: updatePollAnswers
+  };
+}]);
+
+'use strict';
+
+angular.module('apiServices.poll.factory', [
+  'apiServices',
+  'apiServices.mixins.fieldDisplay',
+  'bulbsCmsApp.nonRestmodListPage',
+  'filters.moment',
+  'lodash'
+])
+.factory('Poll',
+  ['$filter', '$http', '$q', '_', 'moment', 'Utils',
+  function ($filter, $http, $q, _, moment, Utils) {
+
+  var error = function(message) {
+    return new Error('Poll Error: ' + message);
+  };
+
+  var fields = [{
+      title: 'Poll Name',
+      sorts: 'title',
+    }, {
+      title: 'Publish Date',
+      sorts: 'publish_date',
+      content: function (poll) {
+        return poll.published ? poll.published.format('MM/DD/YY h:mma') : '—';
+      },
+    }, {
+      title: 'Close Date',
+      sorts: 'end_date',
+      content: function (poll) {
+        return poll.end_date ? poll.end_date.format('MM/DD/YY h:mma') : '—';
+      },
+  }];
+  var name = 'Poll';
+  var namePlural = 'Polls';
+  var pollUrl = '/cms/api/v1/poll/';
+
+  function parsePayload (payload) {
+    var data = _.clone(payload);
+    var filter = $filter('date_string_to_moment');
+    data.end_date = filter(data.end_date);
+    data.published = filter(data.published);
+    return data;
+  }
+
+  function cleanPayload (originalPayload) {
+    var momentToDateString = $filter('moment_to_date_string');
+    var payload = _.clone(originalPayload);
+
+    if(_.isUndefined(payload.title) && _.isUndefined(payload.question_text)) {
+      throw error('title and question text required');
+    }
+
+    if(payload.end_date) {
+      if(!moment.isMoment(payload.end_date)) {
+        throw error('end_date must be a moment object');
+      }
+      payload.end_date = momentToDateString(payload.end_date);
+    }
+
+    if (payload.published) {
+      if(!moment.isMoment(payload.published)) {
+        throw error('published must be a moment object');
+      }
+      payload.published = momentToDateString(payload.published);
+    }
+
+    return _.pick(payload, [
+      'title',
+      'question_text',
+      'published',
+      'end_date'
+    ]);
+  }
+
+  function getPoll(pollId) {
+    return $http.get(pollUrl + pollId + '/')
+      .then(function (response) {
+        return parsePayload(response.data);
+      });
+  }
+
+  function getPolls(params) {
+    var url = pollUrl + Utils.param(params);
+    return $http.get(url)
+      .then(function (response) {
+        response.data.results = response.data.results.map(function (poll) {
+          return parsePayload(poll);
+        });
+        return response.data;
+      });
+  }
+
+  function postPoll(data) {
+    var payload = cleanPayload(data);
+
+    return $http.post(pollUrl, payload)
+      .then(function(response) {
+        return response.data;
+      });
+  }
+
+  function updatePoll(data) {
+    var payload = cleanPayload(data);
+
+    return $http.put(pollUrl + data.id + '/', payload)
+      .then(function(response) {
+        return response.data;
+      });
+  }
+
+  function deletePoll(pollId) {
+    return $http.delete(pollUrl + pollId + '/')
+      .then(function(response) {
+        return response;
+      });
+  }
+
+  return {
+    getPoll: getPoll,
+    getPolls: getPolls,
+    fields: fields,
+    name: name,
+    namePlural: namePlural,
+    postPoll: postPoll,
+    updatePoll: updatePoll,
+    deletePoll: deletePoll
+  };
+}]);
+
+'use strict';
+
 angular.module('apiServices.lineItem.factory', [
   'apiServices',
   'apiServices.mixins.fieldDisplay'
@@ -4965,10 +5484,11 @@ angular.module('apiServices.specialCoverage.factory', [
   'apiServices',
   'apiServices.campaign.factory',
   'apiServices.mixins.fieldDisplay',
+  'cms.tunic.config',
   'filters.moment',
   'VideohubClient.api'
 ])
-  .factory('SpecialCoverage', function (_, $parse, restmod, Video) {
+  .factory('SpecialCoverage', function (_, $http, $parse, $q, restmod, TunicConfig, Video) {
     var ACTIVE_STATES = {
       INACTIVE: 'Inactive',
       PROMOTED: 'Pin to HP'
@@ -5059,6 +5579,28 @@ angular.module('apiServices.specialCoverage.factory', [
           $loadVideosData: function () {
             _.each(this.videos, function (video) {
               video.$fetch();
+            });
+          },
+          /**
+           * Load campaign data from Tunic endpoint
+           */
+          $loadTunicCampaign: function () {
+            if (_.isNumber(this.tunicCampaignId)) {
+              return $http.get(TunicConfig.buildBackendApiUrl('campaign/' + this.tunicCampaignId + '/')).then(function (result) {
+                return result.data;
+              });
+            }
+            return $q.reject();
+          },
+          /**
+           * Load campaign search results from Tunic endpoint
+           */
+          $searchCampaigns: function (params) {
+
+            return $http.get(TunicConfig.buildBackendApiUrl('campaign/'), {
+              params: params,
+            }).then(function (response) {
+              return response.data.results;
             });
           },
           /**
@@ -5458,6 +6000,145 @@ angular.module('momentFormatterFilter', ['moment'])
 
 'use strict';
 
+angular.module('bulbsCmsApp.nonRestmodListPage', [
+  'bulbsCmsApp.settings',
+  'confirmationModal',
+  'copyButton',
+  'lodash'
+])
+  .directive('nonRestmodListPage', function (routes) {
+    return {
+      controller: function (_, $scope, $location, $parse) {
+
+        // different types of filters that get combined to make seach query params
+        $scope.orderingFilter = {};
+        $scope.searchFilter = {};
+        $scope.toggledFilters = {};
+        $scope.pageNumber = 1;
+
+        $scope.copyContentInContext = function (record) {
+          var value = '';
+          if ($scope.toolCopyContent) {
+             value = $parse($scope.toolCopyContent)({record: record});
+          }
+          return value;
+        };
+
+        $scope.$retrieve = _.debounce(function (addParams) {
+          $scope.loadingResults = true;
+          var allParams = _.merge(
+            {},
+            $scope.orderingFilter,
+            $scope.toggledFilters,
+            $scope.searchFilter,
+            addParams
+          );
+          return $scope.getItems({params: allParams})
+            .then(function (response) {
+              $scope.items = response.results;
+              $scope.loadingResults = false;
+            });
+        }, 250);
+
+        // search functionality
+        $scope.$search = function (query) {
+          $scope.searchFilter = {};
+
+          if (query) {
+            $scope.searchFilter[$scope.searchParameter] = query;
+          }
+
+          // go to page 1, new results may not have more than 1 page
+          $scope.pageNumber = 1;
+
+          $scope.$retrieve();
+        };
+
+        // toggled filters, only one set of these can be applied at a time
+        $scope.filterButtonsParsed = $scope.filterButtons();
+        $scope.$toggleFilters = function (params) {
+          $scope.toggledFilters = params;
+
+          // go to page 1, new results may not have more than 1 page
+          $scope.pageNumber = 1;
+
+          $scope.$retrieve();
+        };
+
+        // sorting functionality, only one field can be sorted at a time
+        $scope.sortingField = null;
+        $scope.sortDirection = 'asc';
+        $scope.$sort = function (fieldName) {
+          var direction;
+          if (fieldName === $scope.sortingField) {
+            // clicked on same field, make direction opposite of what it is now
+            direction = $scope.sortDirection === 'desc' ? '' : '-';
+          } else {
+            // clicked on a different field, start with the opposite of default
+            direction = '-';
+          }
+
+          // do ordering request
+          $scope.orderingFilter = {ordering: direction + fieldName};
+          $scope.$retrieve($scope.orderingFilter.ordering)
+            .then(function () {
+              $scope.sortingField = fieldName;
+              $scope.sortDirection = direction === '-' ? 'desc' : 'asc';
+            });
+        };
+
+        $scope.$add = function () {
+          $location.path('/cms/app/' + $scope.cmsPage + '/edit/new/');
+        };
+
+        $scope.$remove = function (removedItem) {
+          $scope.destroyItem({item: removedItem});
+          _.remove($scope.items, function(item) {
+            return item === removedItem;
+          });
+        };
+
+        $scope.goToEditPage = function (item) {
+          $location.path('/cms/app/' + $scope.cmsPage + '/edit/' + item.id + '/');
+        };
+
+        // set the active filter, either the first button with active === true,
+        //   or empty string for all
+        $scope.activeFilterButton =
+          _.chain($scope.filterButtonsParsed)
+            .findWhere({active: true})
+            .tap(function (button) {
+              // cheat here and set the params for the first retrieve
+              if (button) {
+                $scope.toggledFilters = button.params;
+              }
+            })
+            .result('title')
+            .value() ||
+            '';
+
+        // do initial retrieval
+        $scope.$retrieve();
+      },
+      restrict: 'E',
+      scope: {
+        cmsPage: '@',         // name of page in route
+        destroyItem: '&',     // returns promise, deletes given item
+        getItems: '&',        // function returns promise, recieves search params
+        filterButtons: '&',   // settings for filter buttons
+                              // { title:'human readable', active:true, params:queryParams object }
+        modelFields: '&',     // list of objects { sorts: x, title: y}
+        modelName: '&',       // list page title
+        modelNamePlural: '&', // list page title pluralized
+        searchParameter: '@', // key for text search param
+        toolCopyContent: '@', // content to copy with copy buttons, where `record` is the record being copied, leave empty to hide copy button
+      },
+      templateUrl: routes.SHARED_URL + 'non-restmod-list-page/non-restmod-list-page.html'
+    };
+  });
+
+'use strict';
+
 angular.module('slugify', [])
   .filter('slugify', function () {
 
@@ -5474,8 +6155,110 @@ angular.module('slugify', [])
 
 'use strict';
 
+angular.module('cms.tunic.config', [
+  'lodash'
+])
+  .provider('TunicConfig', [
+    '_',
+    function TunicConfigProvider (_) {
+      // relative api path, rel to backendRoot
+      var apiPath = '';
+      // root for all backend requests
+      var backendRoot = '';
+      // Tunic API request token
+      var requestToken = '';
+
+      var error = function (message) {
+        return new Error('Configuration Error (TunicConfig) ' + message);
+      };
+
+      this.setApiPath = function (value) {
+        if (_.isString(value)) {
+          apiPath = value;
+        } else {
+          throw error('apiPath must be a string!');
+        }
+        return this;
+      };
+
+      this.setBackendRoot = function (value) {
+        if (_.isString(value)) {
+          backendRoot = value;
+        } else {
+          throw error('backendRoot must be a string!');
+        }
+        return this;
+      };
+
+      this.setRequestToken = function (value) {
+        if (_.isString(value)) {
+          requestToken = value;
+        } else {
+          throw error('requestToken must be a string!');
+        }
+        return this;
+      };
+
+      this.$get = function () {
+        return {
+          getRequestToken: _.constant(requestToken),
+          /**
+           * Create an absolute api url.
+           *
+           * @param {string} relUrl - relative url to get the absolute api url for.
+           * @returns absolute api url.
+           */
+          buildBackendApiUrl: function (relUrl) {
+            return backendRoot + apiPath + (relUrl || '');
+          },
+
+          /**
+           * Check if a given url should be intercepted by this library's interceptor.
+           *
+           * @param {string} url - Url to test against matchers.
+           * @returns {boolean} true if url should be intercepted, false otherwise.
+           */
+          shouldBeIntercepted: function (url) {
+            var urlTest = backendRoot + apiPath;
+            return urlTest !== '' && url.startsWith(urlTest);
+          }
+        };
+      };
+    }
+  ]);
+
+'use strict';
+
+angular.module('cms.tunic.interceptor', [
+  'cms.tunic.config'
+])
+  .service('TunicInterceptor', [
+    'TunicConfig',
+    function (TunicConfig) {
+
+      this.request = function (config) {
+        if (TunicConfig.shouldBeIntercepted(config.url)) {
+            config.headers = config.headers || {};
+            config.headers.Authorization = 'Token ' + TunicConfig.getRequestToken();
+        }
+        return config;
+      };
+
+      return this;
+    }
+  ]);
+
+'use strict';
+
+angular.module('cms.tunic', [
+  'cms.tunic.config',
+  'cms.tunic.interceptor'
+]);
+
+'use strict';
+
 angular.module('utils', [])
-  .service('Utils', function () {
+  .service('Utils', ['_', function (_) {
     var Utils = this;
 
     Utils.slugify = function (text) {
@@ -5513,8 +6296,31 @@ angular.module('utils', [])
       return list.splice(index, 1).length > 0;
     };
 
+    /**
+    * Transform an object into url params.
+    * ONLY knows what to do with a flat params object.
+    * Similar to jQuery.param
+    * @param {Object} params - Object of params to serialize.
+    * @returns {String} query - a url querystring (is prefixed with '?')
+    */
+    Utils.param = function (params) {
+      if (!params) {
+        params = {};
+      }
+      var keys = Object.keys(params);
+      var query = '';
+      if (keys.length > 0) {
+        query += '?';
+        query += keys.map(function (key) {
+          return key + '=' + params[key];
+        })
+        .join('&');
+      }
+      return query;
+    };
+
     return Utils;
-  });
+  }]);
 
 'use strict';
 
@@ -7779,9 +8585,11 @@ angular.module('bulbsCmsApp')
 
     // keep track of if article is dirty or not
     $scope.articleIsDirty = false;
-    $scope.$watch('article', function () {
-      $scope.articleIsDirty = !angular.equals($scope.article, $scope.last_saved_article);
-    }, true);
+    $scope.$watch(function () {
+      return !angular.equals($scope.article, $scope.last_saved_article);
+    }, function (isDirty) {
+      $scope.articleIsDirty = isDirty;
+    });
 
     $scope.$watch('articleIsDirty', function () {
       if ($scope.articleIsDirty) {
@@ -7936,28 +8744,6 @@ angular.module('bulbsCmsApp')
         templateUrl: routes.PARTIALS_URL + 'modals/thumbnail-modal.html',
         controller: 'ThumbnailModalCtrl',
         scope: $scope,
-        resolve: {
-          article: function () { return article; }
-        }
-      });
-    };
-
-    //deprecated
-    $scope.sponsoredContentModal = function (article) {
-      return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'modals/sponsored-content-modal.html',
-        scope: $scope,
-        resolve: {
-          article: function () { return article; }
-        }
-      });
-    };
-
-    $scope.sponsorModal = function (article) {
-      return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'modals/sponsor-modal.html',
-        scope: $scope,
-        controller: 'SponsormodalCtrl',
         resolve: {
           article: function () { return article; }
         }
@@ -8592,7 +9378,37 @@ angular.module('bulbsCmsApp')
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ReportingCtrl', function ($http, $scope, $window, $, $location, $filter, $interpolate, Login, routes, moment, ContributionReportingService, ContentReportingService, FreelancePayReportingService) {
+  .controller('ReportemailmodalCtrl', function ($scope, $http, moment) {
+    var reportEmailURL = '/cms/api/v1/contributor-email/';
+    var now = moment().tz('America/Chicago');
+
+    $scope.monthOptions = moment.monthsShort();
+    $scope.reportDeadline = now.add(1, 'days');
+    $scope.reportMonth = $scope.monthOptions[now.month() - 1];
+    $scope.reportYear = now.year();
+
+    $scope.openReportDeadline = function($event) {
+      $event.preventDefault();
+      $event.stopPropagation();
+      $scope.startReportDeadline = true;
+    };
+
+    var getReportStart = function() {
+      return moment().month($scope.reportMonth).year($scope.reportYear).startOf('month');
+    };
+
+    $scope.sendEmail = function () {
+      var data = {
+          deadline: $scope.reportDeadline,
+          start: getReportStart()
+      };
+      $http.post(reportEmailURL, data);
+    };
+  });
+'use strict';
+
+angular.module('bulbsCmsApp')
+  .controller('ReportingCtrl', function ($http, $scope, $modal, $window, $, $location, $filter, $interpolate, Login, routes, moment, ContributionReportingService, ContentReportingService, FreelancePayReportingService) {
     $window.document.title = routes.CMS_NAMESPACE + ' | Reporting'; // set title
 
     $scope.userFilter = '';
@@ -8841,31 +9657,17 @@ angular.module('bulbsCmsApp')
       });
     }
 
+    $scope.reportEmailModal = function () {
+      return $modal.open({
+        templateUrl: routes.PARTIALS_URL + 'modals/report-email-modal.html',
+        controller: 'ReportemailmodalCtrl',
+      });
+    };
+
     $scope.goToPage = function () {
       loadReport($scope.report, $scope.reportParams.start, $scope.reportParams.end);
     };
 
-  });
-
-'use strict';
-
-angular.module('bulbsCmsApp')
-  .controller('SponsormodalCtrl', function ($scope, ContentFactory, article, Campaign) {
-    $scope.article = article;
-
-    if ($scope.article.campaign) {
-      $scope.campaign = Campaign.$find($scope.article.campaign);
-    } else {
-      $scope.campaign = null;
-    }
-
-    $scope.updateArticle = function (selection) {
-      $scope.article.campaign = selection.value.id;
-    };
-
-    $scope.searchCampaigns = function (searchTerm) {
-      return Campaign.simpleSearch(searchTerm);
-    };
   });
 
 'use strict';
