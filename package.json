@@ -64,6 +64,9 @@
   "scripts": {
     "test": "grunt travis",
     "start": "grunt serve",
-    "build": "grunt build"
+    "build": "grunt build",
+    "karma": "grunt karma",
+    "setup": "npm install; bower install",
+    "publish": "grunt publish"
   }
 }
