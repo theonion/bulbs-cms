@@ -71,7 +71,7 @@ describe('Service: PromotedContentService', function () {
   });
 
   it('should prevent multiple pzone refresh requests', function () {
-    spyOn(PromotedContentService, '$refreshOperations').andCallThrough();
+    spyOn(PromotedContentService, '$refreshOperations').and.callThrough();
 
     PromotedContentService.$refreshSelectedPZone();
     PromotedContentService.$refreshSelectedPZone();
@@ -105,7 +105,7 @@ describe('Service: PromotedContentService', function () {
       index: 1
     };
 
-    spyOn(PromotedContentService, 'makeOperationsStale').andCallThrough();
+    spyOn(PromotedContentService, 'makeOperationsStale').and.callThrough();
 
     // add this operation to service data manually
     data.unsavedOperations.push(operation);
@@ -152,7 +152,7 @@ describe('Service: PromotedContentService', function () {
         index: 2
       }];
 
-    spyOn(PromotedContentService, 'makeOperationsStale').andCallThrough();
+    spyOn(PromotedContentService, 'makeOperationsStale').and.callThrough();
 
     // add the operations to service data manually
     data.unsavedOperations = operations;
@@ -184,7 +184,7 @@ describe('Service: PromotedContentService', function () {
     // set preview time to immediate
     data.previewTime = null;
 
-    spyOn(PromotedContentService, 'makeOperationsStale').andCallThrough();
+    spyOn(PromotedContentService, 'makeOperationsStale').and.callThrough();
 
     var saveResp;
     PromotedContentService.$saveSelectedPZone().
@@ -378,7 +378,7 @@ describe('Service: PromotedContentService', function () {
   it('should be able to select a pzone', function () {
     var pzone = data.pzones[0];
 
-    spyOn(PromotedContentService, 'makeOperationsStale').andCallThrough();
+    spyOn(PromotedContentService, 'makeOperationsStale').and.callThrough();
 
     PromotedContentService.$selectPZone(pzone.name);
 
@@ -408,7 +408,7 @@ describe('Service: PromotedContentService', function () {
   });
 
   it('should be able to set the preview time', function () {
-    spyOn(PromotedContentService, '$refreshSelectedPZone').andReturn({then: function (a) { a(); }});
+    spyOn(PromotedContentService, '$refreshSelectedPZone').and.returnValue({then: function (a) { a(); }});
     spyOn(PromotedContentService, 'clearUnsavedOperations');
 
     var time = moment();

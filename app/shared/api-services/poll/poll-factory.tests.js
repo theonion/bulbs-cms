@@ -111,7 +111,7 @@ describe('Poll Factory', function () {
       var pollPost = function () {
         Poll.postPoll('crappy payload');
       };
-      expect(pollPost).toThrow('Poll Error: title and question text required');
+      expect(pollPost).toThrowError('Poll Error: title and question text required');
     });
 
     it('throws error unless end_date is a moment object', function() {
@@ -119,7 +119,7 @@ describe('Poll Factory', function () {
       var pollPost = function () {
         Poll.postPoll(data);
       };
-      expect(pollPost).toThrow('Poll Error: end_date must be a moment object');
+      expect(pollPost).toThrowError('Poll Error: end_date must be a moment object');
     });
   });
 
@@ -154,7 +154,7 @@ describe('Poll Factory', function () {
       var pollUpdate = function () {
         Poll.updatePoll('crappy payload');
       };
-      expect(pollUpdate).toThrow('Poll Error: title and question text required');
+      expect(pollUpdate).toThrowError('Poll Error: title and question text required');
     });
 
     it('throws error unless end_date is a moment object', function() {
@@ -162,7 +162,7 @@ describe('Poll Factory', function () {
       var pollUpdate = function () {
         Poll.updatePoll(data);
       };
-      expect(pollUpdate).toThrow('Poll Error: end_date must be a moment object');
+      expect(pollUpdate).toThrowError('Poll Error: end_date must be a moment object');
     });
   });
 

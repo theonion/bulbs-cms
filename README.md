@@ -1,7 +1,7 @@
 bulbs-cms [![Build Status](https://travis-ci.org/theonion/bulbs-cms.svg?branch=master)](https://travis-ci.org/theonion/bulbs-cms) [![Coverage Status](https://coveralls.io/repos/theonion/bulbs-cms/badge.svg?branch=master&service=github)](https://coveralls.io/github/theonion/bulbs-cms?branch=master)
 =========
 
-`grunt build` to compile
+`npm build` to compile
 
 Development
 -----------
@@ -10,13 +10,11 @@ Install [node.js](http://nodejs.org/download/)
 
 Install dependencies:
 
-    npm install
-    npm install -g bower
-    bower install
+`npm run setup` will run npm install and bower install
 
-`grunt serve` to run the dev server
+`npm start` to run the dev server
 
-`grunt karma` will unit test your code as you make changes
+`npm run karma` will unit test your code as you make changes
 
 Deploying
 ---------
@@ -26,7 +24,7 @@ Deploying
 3. grunt publish
 4. update bower versions on your site's bower.json
 
-In order to use `grunt publish`, you'll have to get a [GitHub access token](https://help.github.com/articles/creating-an-access-token-for-command-line-use), and do:
+In order to use `npm run publish`, you'll have to get a [GitHub access token](https://help.github.com/articles/creating-an-access-token-for-command-line-use), and do:
 
 ```
 $ export GITHUB_USERNAME=your-username-here

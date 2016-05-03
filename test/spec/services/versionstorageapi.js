@@ -18,7 +18,7 @@ describe('Service: VersionStorageApi', function () {
       $createVersion: function () {},
       $versions: function () {}
     };
-    spyOn(liveArticleMock, '$createVersion').andCallFake(function (articleData) {
+    spyOn(liveArticleMock, '$createVersion').and.callFake(function (articleData) {
       var createDeferred = $q.defer(),
           createPromise = createDeferred.promise,
           // fyi: angularfire is using push() which creates new items in chronological order. So we don't have to do any
@@ -36,7 +36,7 @@ describe('Service: VersionStorageApi', function () {
 
       return createPromise;
     });
-    spyOn(liveArticleMock, '$versions').andCallFake(function () {
+    spyOn(liveArticleMock, '$versions').and.callFake(function () {
       return {
         length: liveArticleMock.versions.length,
         $loaded: function (cb) {
@@ -55,7 +55,7 @@ describe('Service: VersionStorageApi', function () {
         $create: function () {},
         $versions: function () {}
       };
-      spyOn(localStorageBackupMock, '$create').andCallFake(function (articleData) {
+      spyOn(localStorageBackupMock, '$create').and.callFake(function (articleData) {
         var versionData = null,
             createDefer = $q.defer(),
             createPromise = createDefer.promise;
@@ -71,7 +71,7 @@ describe('Service: VersionStorageApi', function () {
 
         return createPromise;
       });
-      spyOn(localStorageBackupMock, '$versions').andCallFake(function () {
+      spyOn(localStorageBackupMock, '$versions').and.callFake(function () {
         var versionsDefer = $q.defer(),
             versionsPromise = versionsDefer.promise;
         versionsDefer.resolve(localStorageBackupMock.versionsBack);

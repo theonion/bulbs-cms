@@ -17,7 +17,7 @@ describe('Controller: ContentworkflowCtrl', function () {
       $scope: scope,
       $modal: modalService
     });
-    spyOn(modalService, 'open').andReturn({
+    spyOn(modalService, 'open').and.returnValue({
       result: {
         then: function () {}
       }

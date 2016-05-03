@@ -53,7 +53,7 @@ describe('Directive: specialCoverageEdit', function () {
 
       beforeEach(function() {
 
-        spyOn($directiveScope.model, '$searchCampaigns').andReturn($q.when([
+        spyOn($directiveScope.model, '$searchCampaigns').and.returnValue($q.when([
           {
             name: 'one',
             id: 1,
