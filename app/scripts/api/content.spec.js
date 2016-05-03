@@ -47,7 +47,7 @@ describe('ContentService', function () {
 
     ContentService.one(6).all('contributions').post([data]).then(function (contributions) {
       expect(contributions.length).toBe(1);
-      expect(contributions[0]).toEqual(data);
+      expect(contributions[0]).to.equal(data);
     });
     $httpBackend.flush();
   });
@@ -70,7 +70,7 @@ describe('ContentService', function () {
 
     ContentService.one(6).all('contributions').save([data]).then(function (contributions) {
       expect(contributions.length).toBe(1);
-      expect(contributions[0].id).toEqual(data.id);
+      expect(contributions[0].id).to.equal(data.id);
     });
     $httpBackend.flush();
   });

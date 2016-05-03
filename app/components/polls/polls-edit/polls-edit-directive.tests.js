@@ -33,7 +33,7 @@ describe('Directive: pollsEdit', function () {
   }));
 
   it('creates a new poll object on the scope', function () {
-    expect(scope.model).toEqual(jasmine.any(Object));
+    expect(scope.model).to.equal(jasmine.any(Object));
     expect(scope.isNew).toBe(true);
   });
 
@@ -52,18 +52,18 @@ describe('Directive: pollsEdit', function () {
 
   it('scope initializes with 3 empty answer objects', function () {
     var response = [jasmine.any(Object), jasmine.any(Object), jasmine.any(Object)];
-    expect(scope.answers).toEqual(response);
+    expect(scope.answers).to.equal(response);
   });
 
   describe('scope.addAnswer()', function () {
     it('adds answer text fields', function () {
       // sanity check
       var answerTextAreaCount = element.find('.answer-text').length;
-      expect(answerTextAreaCount).toEqual(3);
+      expect(answerTextAreaCount).to.equal(3);
       scope.addAnswer();
       scope.$apply();
       answerTextAreaCount = element.find('.answer-text').length;
-      expect(answerTextAreaCount).toEqual(4);
+      expect(answerTextAreaCount).to.equal(4);
     });
 
     it('creates field notOnSodahead for answer', function () {
@@ -71,7 +71,7 @@ describe('Directive: pollsEdit', function () {
       scope.answers = [];
       scope.addAnswer();
       // sanity check
-      expect(scope.answers.length).toEqual(1);
+      expect(scope.answers.length).to.equal(1);
       expect(scope.answers[0].notOnSodahead).toBe(true);
     });
   });
@@ -80,31 +80,31 @@ describe('Directive: pollsEdit', function () {
     it('removes answer text fields', function () {
       // sanity check
       var answerTextAreaCount = element.find('.answer-text').length;
-      expect(answerTextAreaCount).toEqual(3);
+      expect(answerTextAreaCount).to.equal(3);
 
       scope.removeAnswer(1);
       scope.$apply();
       answerTextAreaCount = element.find('.answer-text').length;
-      expect(answerTextAreaCount).toEqual(2);
+      expect(answerTextAreaCount).to.equal(2);
     });
 
     it('adds answers not on sodahead to scope.deletedAnswers', function () {
       // sanity check
-      expect(scope.deletedAnswers.length).toEqual(0);
+      expect(scope.deletedAnswers.length).to.equal(0);
       // mock out answer on sodahead
       scope.answers[0].notOnSodahead = false;
       answer = scope.answers[0];
       scope.removeAnswer(answer.id);
-      expect(scope.deletedAnswers[0]).toEqual(answer);
+      expect(scope.deletedAnswers[0]).to.equal(answer);
     });
 
     it('does not add answers not on sodahead to scope.deletedAnswers', function () {
       // sanity check
-      expect(scope.deletedAnswers.length).toEqual(0);
+      expect(scope.deletedAnswers.length).to.equal(0);
       // mock out answer on sodahead
       answer = scope.answers[0];
       scope.removeAnswer(answer.id);
-      expect(scope.deletedAnswers.length).toEqual(0);
+      expect(scope.deletedAnswers.length).to.equal(0);
     });
   });
 

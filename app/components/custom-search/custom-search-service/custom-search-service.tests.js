@@ -49,7 +49,7 @@ describe('Service: CustomSearchService', function () {
       expect(groups.length).toBe(1);
       expect(groups[0]).toBe(data);
       expect(newGroup.$result_count).toBe(0);
-      expect(newGroup).toEqual(data);
+      expect(newGroup).to.equal(data);
     });
 
     it('should be able to remove a group', function () {
@@ -62,7 +62,7 @@ describe('Service: CustomSearchService', function () {
 
       var dataGroups = customSearchService._data.groups;
       expect(dataGroups.length).toBe(1);
-      expect(dataGroups[0]).not.toEqual(objToRemove);
+      expect(dataGroups[0]).not.to.equal(objToRemove);
       expect(removed).toBe(true);
     });
 
@@ -137,7 +137,7 @@ describe('Service: CustomSearchService', function () {
 
         customSearchService.groupsTimePeriodSet(groupIndex);
 
-        expect(customSearchService.groupsTimePeriodGet(groupIndex)).toEqual(CUSTOM_SEARCH_TIME_PERIODS[0].value);
+        expect(customSearchService.groupsTimePeriodGet(groupIndex)).to.equal(CUSTOM_SEARCH_TIME_PERIODS[0].value);
       });
 
       it('should allow the removal of the time period condition from a group', function () {
@@ -146,7 +146,7 @@ describe('Service: CustomSearchService', function () {
         customSearchService.groupsTimePeriodSet(groupIndex);
         customSearchService.groupsTimePeriodRemove(groupIndex);
 
-        expect(customSearchService.groupsTimePeriodGet(groupIndex)).toEqual(null);
+        expect(customSearchService.groupsTimePeriodGet(groupIndex)).to.equal(null);
       });
 
       describe('value functionality', function () {
@@ -162,7 +162,7 @@ describe('Service: CustomSearchService', function () {
 
           customSearchService.groupsConditionsValuesAdd(groupIndex, conditionIndex, value);
 
-          expect(customSearchService.groupsConditionsValuesList(groupIndex, conditionIndex)[0]).toEqual(value);
+          expect(customSearchService.groupsConditionsValuesList(groupIndex, conditionIndex)[0]).to.equal(value);
         });
 
         it('should not allow the same value to be added twice', function () {
@@ -173,7 +173,7 @@ describe('Service: CustomSearchService', function () {
 
           var values = customSearchService.groupsConditionsValuesList(groupIndex, conditionIndex);
           expect(values.length).toBe(1);
-          expect(values[0]).toEqual(value);
+          expect(values[0]).to.equal(value);
         });
 
         it('should be able to remove values', function () {
@@ -186,8 +186,8 @@ describe('Service: CustomSearchService', function () {
 
           var values = customSearchService.groupsConditionsValuesList(groupIndex, conditionIndex);
           expect(values.length).toBe(2);
-          expect(values[0]).toEqual(value1);
-          expect(values[1]).toEqual(value2);
+          expect(values[0]).to.equal(value1);
+          expect(values[1]).to.equal(value2);
         });
 
         it('should provide a way to clear all values', function () {

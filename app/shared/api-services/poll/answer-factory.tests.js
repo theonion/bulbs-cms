@@ -40,7 +40,7 @@ describe('Answer Factory', function () {
       });
       $httpBackend.expectPOST('/cms/api/v1/answer/').respond(201, mockPayload);
       $httpBackend.flush();
-      expect(response).toEqual(mockPayload);
+      expect(response).to.equal(mockPayload);
     });
 
     it('throws error if poll id is not a number', function() {

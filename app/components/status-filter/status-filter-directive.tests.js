@@ -53,15 +53,15 @@ describe('Directive: statusFilter', function () {
   describe('filterByStatus', function () {
     it('should clear search when getting a null option', function () {
       $scope.filterByStatus({label: 'All', key: null, value: null});
-      expect($location.search()).toEqual({});
+      expect($location.search()).to.equal({});
     });
 
     it('should add key and value to search', function () {
       $scope.filterByStatus({key: 'yeah', value: 'baby'});
-      expect($location.search()).toEqual({yeah: 'baby'});
+      expect($location.search()).to.equal({yeah: 'baby'});
 
       $scope.filterByStatus({key: 'function', value: function(){ return 'value'; }});
-      expect($location.search()).toEqual({function: 'value'});
+      expect($location.search()).to.equal({function: 'value'});
     });
   });
 

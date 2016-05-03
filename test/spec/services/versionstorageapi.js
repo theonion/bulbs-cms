@@ -115,7 +115,7 @@ describe('Service: VersionStorageApi', function () {
       $rootScope.$apply();
 
       expect(liveArticleMock.$createVersion).toHaveBeenCalled();
-      expect(versionData.content).toEqual(article);
+      expect(versionData.content).to.equal(article);
 
     });
 
@@ -219,7 +219,7 @@ describe('Service: VersionStorageApi', function () {
       $rootScope.$apply();
 
       expect(localStorageBackupMock.$create).toHaveBeenCalled();
-      expect(versionData.content).toEqual(article);
+      expect(versionData.content).to.equal(article);
 
     });
 

@@ -96,15 +96,15 @@ describe('Controller: VersionBrowserModalCtrl', function () {
   }));
 
   it('should have a scope property called versions, which contains each version sorted by timestamp', function () {
-    expect(scope.versions[0]).toEqual(versions[1]);
-    expect(scope.versions[1]).toEqual(versions[2]);
-    expect(scope.versions[2]).toEqual(versions[0]);
-    expect(scope.versions[3]).toEqual(versions[3]);
+    expect(scope.versions[0]).to.equal(versions[1]);
+    expect(scope.versions[1]).to.equal(versions[2]);
+    expect(scope.versions[2]).to.equal(versions[0]);
+    expect(scope.versions[3]).to.equal(versions[3]);
   });
 
   it('should have a scope property called selectedVersion that is the latest version', function () {
     // note: version list is initially out of order, so the selected version should actually be the second one
-    expect(scope.selectedVersion).toEqual(versions[1]);
+    expect(scope.selectedVersion).to.equal(versions[1]);
   });
 
   it('should have a function to select a version by timestamp', function () {
@@ -113,9 +113,9 @@ describe('Controller: VersionBrowserModalCtrl', function () {
     // select the 3rd preview which will actually be the top item in the unsorted versions list
     scope.setPreview(versions[1]);
 
-    expect(scope.selectedVersion).toEqual(versions[1]);
+    expect(scope.selectedVersion).to.equal(versions[1]);
   });
-  
+
   it('should have a function to restore the selected version that will modify the article in scope', function () {
     scope.article = {
       title: 'I Have Not Been Saved',

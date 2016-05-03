@@ -28,7 +28,7 @@ describe('Directive: specialCoverageEdit', function () {
   describe('campaignId field', function () {
 
     it('default campaign mapping is empty', function () {
-      expect($directiveScope.tunicCampaignIdMapping).toEqual({});
+      expect($directiveScope.tunicCampaignIdMapping).to.equal({});
     });
 
     describe('tunicCampaignFormatter', function () {
@@ -40,7 +40,7 @@ describe('Directive: specialCoverageEdit', function () {
             number: 123
           }
         };
-        expect($directiveScope.tunicCampaignFormatter(123)).toEqual('Mike Burger - 123');
+        expect($directiveScope.tunicCampaignFormatter(123)).to.equal('Mike Burger - 123');
       });
 
       it('should return undefined if campaign not cached', function () {
@@ -77,8 +77,8 @@ describe('Directive: specialCoverageEdit', function () {
         $rootScope.$apply();
 
         expect($directiveScope.model.$searchCampaigns).toHaveBeenCalledWith({search: 'one'});
-        expect(searchResults).toEqual([1, 2]);
-        expect($directiveScope.tunicCampaignIdMapping).toEqual({
+        expect(searchResults).to.equal([1, 2]);
+        expect($directiveScope.tunicCampaignIdMapping).to.equal({
           1: {
             name: 'one',
             id: 1,

@@ -69,6 +69,6 @@ describe('Factory: CustomSearch', function () {
       .respond(content);
     $httpBackend.flush();
 
-    expect(respContent).toEqual(content);
+    expect(respContent).to.equal(content);
   });
 });

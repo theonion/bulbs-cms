@@ -48,7 +48,7 @@ describe('Poll Factory', function () {
         response = res;
       });
       $httpBackend.flush();
-      expect(response.end_date).toEqual(jasmine.any(Object));
+      expect(response.end_date).to.equal(jasmine.any(Object));
     });
 
     it('returns the mock payload', function () {
@@ -58,7 +58,7 @@ describe('Poll Factory', function () {
         response = res;
       });
       $httpBackend.flush();
-      expect(response.id).toEqual(mockPayload.id);
+      expect(response.id).to.equal(mockPayload.id);
     });
   });
 
@@ -96,7 +96,7 @@ describe('Poll Factory', function () {
       });
       $httpBackend.expectPOST(pollUrl).respond(200, mockPayload);
       $httpBackend.flush();
-      expect(response.end_date).toEqual(jasmine.any(String));
+      expect(response.end_date).to.equal(jasmine.any(String));
     });
 
     it('returns the mockpayload', function() {
@@ -104,7 +104,7 @@ describe('Poll Factory', function () {
         response = res;
       });
       $httpBackend.expectPOST(pollUrl).respond(200, mockPayload);
-      expect(response).toEqual(mockPayload);
+      expect(response).to.equal(mockPayload);
     });
 
     it('throws error if title and question_text are not present', function() {
@@ -147,7 +147,7 @@ describe('Poll Factory', function () {
       });
       $httpBackend.expectPUT(pollUrl + data.id + '/').respond(200, mockPayload);
       $httpBackend.flush();
-      expect(response).toEqual(mockPayload);
+      expect(response).to.equal(mockPayload);
     });
 
     it('throws error if title and question_text are not present', function() {
