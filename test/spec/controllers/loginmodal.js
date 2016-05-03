@@ -21,7 +21,7 @@ describe('Controller: LoginmodalCtrl', function () {
         val: function () { return 'bloop'; }
       }
     };
-    
+
     var modalUrl = routes.PARTIALS_URL + 'modals/login-modal.html';
     modal = $modal.open({
       templateUrl: modalUrl
@@ -30,7 +30,7 @@ describe('Controller: LoginmodalCtrl', function () {
     modal.dismiss = function () { return true; }
     modalService = $modal
     modalService.open = function () { return true; }
-    
+
     LoginmodalCtrl = $controller('LoginmodalCtrl', {
       $scope: scope,
       $: mockJquery,
@@ -41,7 +41,7 @@ describe('Controller: LoginmodalCtrl', function () {
   }));
 
   it('should have a function login that calls Login.login with username/password', function (){
-    spyOn(loginService, 'login').andReturn({then: function(){}});
+    spyOn(loginService, 'login').and.returnValue({then: function(){}});
     scope.login();
     expect(loginService.login).toHaveBeenCalledWith('bloop', 'bloop');
   });

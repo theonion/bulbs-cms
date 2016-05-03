@@ -105,7 +105,7 @@ module.exports = function(config) {
     },
 
     // set up reporters
-    reporters: ['progress', 'coverage'],
+    reporters: ['progress', 'coverage', 'kjhtml'],
 
     ngHtml2JsPreprocessor: {
       // strip this from the file path

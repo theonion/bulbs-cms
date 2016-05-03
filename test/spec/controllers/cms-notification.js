@@ -29,9 +29,9 @@ describe('Controller: CmsNotificationCtrl', function () {
       CmsNotificationsApi: CmsNotificationsApi
     });
 
-    spyOn($scope.notification, 'put').andCallThrough();
-    spyOn($scope.notification, 'remove').andCallThrough();
-    spyOn($scope.notifications, 'post').andCallThrough();
+    spyOn($scope.notification, 'put').and.callThrough();
+    spyOn($scope.notification, 'remove').and.callThrough();
+    spyOn($scope.notifications, 'post').and.callThrough();
 
     $scope.notificationDirty = false;
 
@@ -71,8 +71,8 @@ describe('Controller: CmsNotificationCtrl', function () {
         return deletePromise;
       };
 
-      spyOn($scope.$parent, '$saveNotification').andCallThrough();
-      spyOn($scope.$parent, '$deleteNotification').andCallThrough();
+      spyOn($scope.$parent, '$saveNotification').and.callThrough();
+      spyOn($scope.$parent, '$deleteNotification').and.callThrough();
 
     }));
 

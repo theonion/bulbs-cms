@@ -23,7 +23,7 @@ describe('Controller: ContentlistCtrl', function () {
       ContentListService = _ContentListService_;
 
       // setup content list controller
-      spyOn(_ContentListService_, '$updateContent').andCallFake(function () {
+      spyOn(_ContentListService_, '$updateContent').and.callFake(function () {
         return {
           then: function (func) {
             func({

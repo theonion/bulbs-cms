@@ -135,7 +135,7 @@ describe('Service: LocalStorageBackup', function () {
   it('should log an error and prune old entries when local storage is full', function () {
 
     // shut off logging for this one so we don't see the error message in testing logs
-    spyOn(console, 'log').andCallFake(function () {});
+    spyOn(console, 'log').and.callFake(function () {});
 
     // local storage mock can hold a max of 4 entries, 5th entry will trigger an error and then a read
     // add two new entries, according to the rules of the mock local storage, both of these will have a timestamp of 5

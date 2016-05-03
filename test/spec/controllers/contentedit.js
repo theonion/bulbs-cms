@@ -41,7 +41,7 @@ describe('Controller: ContenteditCtrl', function () {
 
   describe('on instantiation', function () {
     it('should retrieve the current article from the API', function () {
-      spyOn(contentApi, 'one').andCallThrough();
+      spyOn(contentApi, 'one').and.callThrough();
       ContenteditCtrl = controller('ContenteditCtrl', {
         $scope: scope,
         $routeParams: routeParams,
@@ -113,7 +113,7 @@ describe('Controller: ContenteditCtrl', function () {
         httpBackend.expect('GET', '/cms/api/v1/content/1/').respond(mockArticle);
         httpBackend.expect('PUT', '/cms/api/v1/content/1/').respond(mockArticle);
 
-        spyOn(scope, 'postValidationSaveArticle').andCallThrough();
+        spyOn(scope, 'postValidationSaveArticle').and.callThrough();
 
         scope.saveArticle();
         httpBackend.flush();

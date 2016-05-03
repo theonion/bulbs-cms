@@ -19,6 +19,8 @@ describe('Service: CustomSearchService', function () {
     module('bulbsCmsApp');
     module('bulbsCmsApp.mockApi');
     module('customSearch.service');
+    // clock mock for debounce
+    jasmine.clock().install();
 
     inject(function (___, _$httpBackend_, _$rootScope_, _moment_, _CUSTOM_SEARCH_TIME_PERIODS_,
         CustomSearchService) {
@@ -32,6 +34,10 @@ describe('Service: CustomSearchService', function () {
 
       customSearchService = new CustomSearchService(data);
     });
+  });
+
+  afterEach(function() {
+    jasmine.clock().uninstall();
   });
 
   describe('group functionality', function () {
@@ -208,18 +214,14 @@ describe('Service: CustomSearchService', function () {
 
       data.includedIds = [1,2,3];
 
-      spyOn(customSearchService, '_$getContent').andCallThrough();
-
-      // clock mock for debounce
-      jasmine.Clock.useMock();
+      spyOn(customSearchService, '_$getContent').and.callThrough();
 
       customSearchService.$retrieveContent();
 
       // force tick to fire debounce
-      jasmine.Clock.tick(1);
+      jasmine.clock().tick(1);
 
       $httpBackend.expectPOST(/\/cms\/api\/v1\/custom-search-content\/(\?page=\d+)?$/).respond(responseData);
-      $httpBackend.flush();
 
       expect(customSearchService._$getContent).toHaveBeenCalledWith(_.assign(addProps, data));
       expect(customSearchService.content.something).toBe(responseData.something);

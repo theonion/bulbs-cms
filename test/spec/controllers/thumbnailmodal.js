@@ -17,7 +17,7 @@ describe('Controller: ThumbnailModalCtrl', function () {
 
       // set up a mock betty cropper so we don't actually have to do requests
       var mockBettyCropper = BettyCropper;
-      spyOn(mockBettyCropper, 'upload').andReturn({
+      spyOn(mockBettyCropper, 'upload').and.returnValue({
         then: function (successCallback) {
           successCallback({
             id: 1
