@@ -55,12 +55,15 @@
     "karma-safari-launcher": "^0.1.1",
     "karma-sauce-launcher": "~0.2.10",
     "karma-script-launcher": "^0.2.0",
+    "karma-sinon": "^1.0.4",
     "load-grunt-config": "^0.17.1",
     "load-grunt-tasks": "~0.2.0",
     "mocha": "^2.4.5",
     "protractor": "^0.22.0",
     "requirejs": "~2.1.11",
     "shelljs": "~0.1.2",
+    "sinon": "^1.17.4",
+    "sinon-chai": "^2.8.0",
     "time-grunt": "~0.2.1"
   },
   "engines": {

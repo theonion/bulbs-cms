@@ -21,7 +21,7 @@ describe('Directive: filterWidget', function () {
         _ContentListService_) {
 
       ContentListService = _ContentListService_;
-      spyOn(ContentListService, '$updateContent');
+      sinon.stub(ContentListService, '$updateContent');
 
       $httpBackend = _$httpBackend_;
 
@@ -36,8 +36,8 @@ describe('Directive: filterWidget', function () {
   it('should be able to add filters to $location', function () {
     $scope.addFilter('tag', 'tag-1');
 
-    expect(ContentListService.$updateContent).toHaveBeenCalled();
-    expect($location.search().tag).toContain('tag-1');
+    expect(ContentListService.$updateContent.called).to.equal(true);
+    expect($location.search().tag).to.contain('tag-1');
   });
 
   it('should not allow multiples of a filter value', function () {
@@ -45,9 +45,9 @@ describe('Directive: filterWidget', function () {
     $scope.addFilter('tag', 'tag-1');
     $scope.addFilter('tag', 'tag-1');
 
-    expect(ContentListService.$updateContent).toHaveBeenCalled();
-    expect($location.search().tag.length).toBe(1);
-    expect($location.search().tag).toContain('tag-1');
+    expect(ContentListService.$updateContent.called).to.equal(true);
+    expect($location.search().tag.length).to.equal(1);
+    expect($location.search().tag).to.contain('tag-1');
   });
 
 });

@@ -31,13 +31,13 @@ describe('ContentListService', function () {
 
   it('Should make the data object available through getData()', function () {
     var data = ContentListService.getData();
-    expect(data).not.toBeUndefined();
+    expect(data).not.to.be.undefined;
   });
 
   it('Should use $location.search() to initially populate filters', function () {
     var data = ContentListService.getData();
-    expect(data.filters.hello).toBe(123);
-    expect(data.filters.bye).toBe('abc');
+    expect(data.filters.hello).to.equal(123);
+    expect(data.filters.bye).to.equal('abc');
   });
 
   it('Should update data.filters on updateFilters()', function () {
@@ -48,8 +48,8 @@ describe('ContentListService', function () {
     // check that everything has been updated
     var data = ContentListService.getData();
     expect(data).not.to.equal(filtersBefore);
-    expect(data.filters.page).toBe(newFilters.page);
-    expect(data.filters.something).toBe(newFilters.something);
+    expect(data.filters.page).to.equal(newFilters.page);
+    expect(data.filters.something).to.equal(newFilters.something);
   });
 
   it('Should overwrite filters when updateFilters with merge=false is called', function () {
@@ -76,17 +76,17 @@ describe('ContentListService', function () {
     update.then(function (data) {
       expect(data.content[0].title).to.equal(response.results[0].title);
       expect(data.content[1].title).to.equal(response.results[1].title);
-      expect(data.totalItems).toBe(2);
+      expect(data.totalItems).to.equal(2);
     });
     $rootScope.$apply();
 
     // expect that the data object has updated
     var data = ContentListService.getData();
-    expect(data.filters.abc).toBe(123);
-    expect(data.filters.something).toBe('something');
+    expect(data.filters.abc).to.equal(123);
+    expect(data.filters.something).to.equal('something');
     expect(data.content[0].title).to.equal(response.results[0].title);
     expect(data.content[1].title).to.equal(response.results[1].title);
-    expect(data.totalItems).toBe(2);
+    expect(data.totalItems).to.equal(2);
 
   });
 

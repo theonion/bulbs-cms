@@ -51,7 +51,7 @@ describe('Controller: CmsNotificationsCtrl', function () {
 
     it('should initialize with notifications from backend', function () {
 
-      expect($scope.notifications[0].title).toBe('We\'ve Made An Update!');
+      expect($scope.notifications[0].title).to.equal('We\'ve Made An Update!');
 
     });
 
@@ -64,11 +64,11 @@ describe('Controller: CmsNotificationsCtrl', function () {
       var newLength = $scope.notifications.length,
           newNotification = $scope.notifications[0];
 
-      expect(newLength).toBe(prevLength + 1);
+      expect(newLength).to.equal(prevLength + 1);
 
       // we only care about ensuring that there's no post / notify end date for new posts
-      expect(newNotification.post_date).toBe(null);
-      expect(newNotification.notify_end_date).toBe(null);
+      expect(newNotification.post_date).to.equal(null);
+      expect(newNotification.notify_end_date).to.equal(null);
 
     });
 
@@ -93,10 +93,10 @@ describe('Controller: CmsNotificationsCtrl', function () {
       $httpBackend.flush();
       $scope.$apply();
 
-      expect(notificationSaved.getRestangularUrl).toBeDefined();
-      expect(notificationSaved.title).toBe(notificationToSave.title);
-      expect(notificationSaved.post_date.valueOf()).toBe(newPostDate.valueOf());
-      expect(notificationSaved.notify_end_date.valueOf()).toBe(newNotifyEndDate.valueOf());
+      expect(notificationSaved.getRestangularUrl).not.to.be.undefined;
+      expect(notificationSaved.title).to.equal(notificationToSave.title);
+      expect(notificationSaved.post_date.valueOf()).to.equal(newPostDate.valueOf());
+      expect(notificationSaved.notify_end_date.valueOf()).to.equal(newNotifyEndDate.valueOf());
 
       notificationSaved.title = 'Updated Title';
       notificationSaved.id = 0;
@@ -111,7 +111,7 @@ describe('Controller: CmsNotificationsCtrl', function () {
       $httpBackend.flush();
       $scope.$apply();
 
-      expect(notificationUpdated.title).toBe(notificationSaved.title);
+      expect(notificationUpdated.title).to.equal(notificationSaved.title);
 
     });
 
@@ -130,8 +130,8 @@ describe('Controller: CmsNotificationsCtrl', function () {
       $httpBackend.flush();
       $scope.$apply();
 
-      expect(deleted).toBe(true);
-      expect($scope.notifications.length).toBe(oldLength - 1);
+      expect(deleted).to.equal(true);
+      expect($scope.notifications.length).to.equal(oldLength - 1);
 
     });
 
@@ -182,8 +182,8 @@ describe('Controller: CmsNotificationsCtrl', function () {
 
     it('should not show notifications that aren\'t editable if their post date is in the future', function () {
 
-      expect($scope.notifications.length).toBe(1);
-      expect($scope.notifications[0].id).toBe(0);
+      expect($scope.notifications.length).to.equal(1);
+      expect($scope.notifications[0].id).to.equal(0);
 
     });
 

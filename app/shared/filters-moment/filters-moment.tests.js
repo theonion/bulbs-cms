@@ -26,12 +26,12 @@ describe('Filter: moment', function () {
 
     it('should translate iso date strings into moments', function () {
       var date = moment().format();
-      expect(filter(date).isSame(moment(date))).toBe(true);
+      expect(filter(date).isSame(moment(date))).to.equal(true);
     });
 
     it('should convert invalid/blank iso date strings into null', function () {
-      expect(filter('')).toBeNull();
-      expect(filter('invalid date')).toBeNull();
+      expect(filter('')).to.be.null;
+      expect(filter('invalid date')).to.be.null;
     });
   });
 
@@ -43,12 +43,12 @@ describe('Filter: moment', function () {
     });
 
     it('should translate invalid moments to empty strings', function () {
-      expect(filter(moment(''))).toBe('');
+      expect(filter(moment(''))).to.equal('');
     });
 
     it('should translate moments to iso date strings', function () {
       var date = moment();
-      expect(filter(date)).toBe(date.format());
+      expect(filter(date)).to.equal(date.format());
     });
   });
 });

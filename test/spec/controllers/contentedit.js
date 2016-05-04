@@ -35,19 +35,19 @@ describe('Controller: ContenteditCtrl', function () {
       }
     };
 
-    spyOn(VersionStorageApiMock, '$create');
+    sinon.stub(VersionStorageApiMock, '$create');
 
   }));
 
   describe('on instantiation', function () {
     it('should retrieve the current article from the API', function () {
-      spyOn(contentApi, 'one').and.callThrough();
+      sinon.spy(contentApi, 'one');
       ContenteditCtrl = controller('ContenteditCtrl', {
         $scope: scope,
         $routeParams: routeParams,
         ContentApi: contentApi
       });
-      expect(contentApi.one).toHaveBeenCalledWith('content', 1);
+      expect(contentApi.one.calledWith('content', 1)).to.equal(true);
     });
   });
 
@@ -70,40 +70,40 @@ describe('Controller: ContenteditCtrl', function () {
     });
 
     it('should have string CONTENT_PARTIALS_URL in scope', function () {
-      expect(typeof scope.CONTENT_PARTIALS_URL).toBe('string');
+      expect(typeof scope.CONTENT_PARTIALS_URL).to.equal('string');
     });
 
     it('should have string MEDIA_ITEM_PARTIALS_URL in scope', function () {
-      expect(typeof scope.MEDIA_ITEM_PARTIALS_URL).toBe('string');
+      expect(typeof scope.MEDIA_ITEM_PARTIALS_URL).to.equal('string');
     });
 
     it('should have string CACHEBUSTER in scope', function () {
-      expect(typeof scope.CACHEBUSTER).toBe('string');
+      expect(typeof scope.CACHEBUSTER).to.equal('string');
     });
 
     it('should have a saveArticle function in scope', function () {
-      expect(scope.saveArticle).toBeDefined();
+      expect(scope.saveArticle).not.to.be.undefined;
     });
 
     it('should set articleIsDirty to true when article is dirty', function () {
       scope.article.title = 'some random title that isn not the same as the original';
       scope.$digest();
-      expect(scope.articleIsDirty).toBe(true);
+      expect(scope.articleIsDirty).to.equal(true);
     });
 
     describe('function: saveArticleIfDirty', function () {
       it('should call saveArticle if article is dirty', function () {
         scope.articleIsDirty = true;
-        spyOn(scope, 'saveArticle');
+        sinon.stub(scope, 'saveArticle');
         scope.saveArticleIfDirty();
-        expect(scope.saveArticle).toHaveBeenCalled();
+        expect(scope.saveArticle.called).to.equal(true);
       });
 
       it('should not call saveArticle if article is not dirty', function () {
         scope.articleIsDirty = false;
-        spyOn(scope, 'saveArticle');
+        sinon.stub(scope, 'saveArticle');
         scope.saveArticleIfDirty();
-        expect(scope.saveArticle).not.toHaveBeenCalled();
+        expect(scope.saveArticle.called).to.equal(false);
       });
     });
 
@@ -113,31 +113,26 @@ describe('Controller: ContenteditCtrl', function () {
         httpBackend.expect('GET', '/cms/api/v1/content/1/').respond(mockArticle);
         httpBackend.expect('PUT', '/cms/api/v1/content/1/').respond(mockArticle);
 
-        spyOn(scope, 'postValidationSaveArticle').and.callThrough();
+        sinon.spy(scope, 'postValidationSaveArticle');
 
         scope.saveArticle();
         httpBackend.flush();
 
-        expect(scope.postValidationSaveArticle).toHaveBeenCalled();
-        expect(VersionStorageApiMock.$create).toHaveBeenCalled();
+        expect(scope.postValidationSaveArticle.called).to.equal(true);
+        expect(VersionStorageApiMock.$create.called).to.equal(true);
       });
 
       it('should open a modal if there is a last modified conflict', function () {
         var newMockArticle = angular.copy(mockArticle);
         newMockArticle.last_modified = '2999-04-08T15:35:15.118Z'; //last_modified FAR in the future
         httpBackend.expect('GET', '/cms/api/v1/content/1/').respond(newMockArticle);
-        spyOn(scope, 'postValidationSaveArticle');
-        spyOn(modalService, 'open');
+        sinon.stub(scope, 'postValidationSaveArticle');
+        sinon.stub(modalService, 'open');
         scope.saveArticle();
         httpBackend.flush();
-        expect(modalService.open).toHaveBeenCalled();
-        expect(scope.postValidationSaveArticle).not.toHaveBeenCalled();
+        expect(modalService.open.called).to.equal(true);
+        expect(scope.postValidationSaveArticle.called).to.equal(false);
       });
-
     });
-
   });
-
-
-
 });

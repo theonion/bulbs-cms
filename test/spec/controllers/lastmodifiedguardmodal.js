@@ -65,28 +65,28 @@ describe('Controller: LastmodifiedguardmodalCtrl', function () {
   });
 
   it('should have property lastSavedBy for user that last saved article', function () {
-    expect(scope.lastSavedBy.id).toBe(lastSavedBy.id);
-    expect(scope.lastSavedBy.username).toBe(lastSavedBy.username);
+    expect(scope.lastSavedBy.id).to.equal(lastSavedBy.id);
+    expect(scope.lastSavedBy.username).to.equal(lastSavedBy.username);
   });
 
   it('should have a function loadFromServer that replaces current article with latest version', function () {
 
-    expect(scope.article.title).toBe('This is Mine');
-    expect(scope.articleIsDirty).toBe(false);
+    expect(scope.article.title).to.equal('This is Mine');
+    expect(scope.articleIsDirty).to.equal(false);
 
     scope.loadFromServer();
 
-    expect(scope.article.title).toBe('This is Theirs');
-    expect(scope.articleIsDirty).toBe(true);
+    expect(scope.article.title).to.equal('This is Theirs');
+    expect(scope.articleIsDirty).to.equal(true);
 
   });
 
   it('should have a function saveAnyway that calls $parent.postValidationSaveArticle', function (){
     scope.$parent = {};
     scope.$parent.postValidationSaveArticle = function(){};
-    spyOn(scope.$parent, 'postValidationSaveArticle');
+    sinon.stub(scope.$parent, 'postValidationSaveArticle');
     scope.saveAnyway();
-    expect(scope.$parent.postValidationSaveArticle).toHaveBeenCalled();
+    expect(scope.$parent.postValidationSaveArticle.called).to.equal(true);
   });
 
 });

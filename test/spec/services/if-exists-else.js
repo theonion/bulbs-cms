@@ -12,7 +12,7 @@ describe('Service: IfExistsElse', function () {
   }));
 
   /*it('should do something', function () {
-    expect(!!IfExistsElse).toBe(true);
+    expect(!!IfExistsElse).to.equal(true);
   });*/
 
 });

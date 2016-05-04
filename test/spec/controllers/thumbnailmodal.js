@@ -17,7 +17,7 @@ describe('Controller: ThumbnailModalCtrl', function () {
 
       // set up a mock betty cropper so we don't actually have to do requests
       var mockBettyCropper = BettyCropper;
-      spyOn(mockBettyCropper, 'upload').and.returnValue({
+      sinon.stub(mockBettyCropper, 'upload').returns({
         then: function (successCallback) {
           successCallback({
             id: 1
@@ -44,7 +44,7 @@ describe('Controller: ThumbnailModalCtrl', function () {
 
     it('should select a custom thumbnail', function () {
       scope.selectCustomThumbnail();
-      expect(scope.article.thumbnail_override.id).toBe(1);
+      expect(scope.article.thumbnail_override.id).to.equal(1);
     });
 
   });

@@ -53,9 +53,9 @@ describe('Directive: templateTypeField', function () {
   it('should populate with template types for given content', function () {
     var $options = $element.find('select > option');
 
-    expect($options.length).toBe(3);
-    expect($options[1].text).toBe(templateTypes[0].name);
-    expect($options[2].text).toBe(templateTypes[1].name);
-    expect($options[2].selected).toBe(true);
+    expect($options.length).to.equal(3);
+    expect($options[1].text).to.equal(templateTypes[0].name);
+    expect($options[2].text).to.equal(templateTypes[1].name);
+    expect($options[2].selected).to.equal(true);
   });
 });

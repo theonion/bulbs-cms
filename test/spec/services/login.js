@@ -12,7 +12,7 @@ describe('Service: Login', function () {
   }));
 
   it('should do something', function () {
-    expect(!!Login).toBe(true);
+    expect(!!Login).to.equal(true);
   });
 
 });

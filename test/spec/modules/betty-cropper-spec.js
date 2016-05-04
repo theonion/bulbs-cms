@@ -17,8 +17,8 @@ describe('Selection Object', function () {
       y0: 0,
       y1: 512
     });
-    expect(square.width()).toBe(512);
-    expect(square.height()).toBe(512);
+    expect(square.width()).to.equal(512);
+    expect(square.height()).to.equal(512);
 
     var landscape = new Selection({
       x0: 0,
@@ -26,8 +26,8 @@ describe('Selection Object', function () {
       y0: 195,
       y1: 316
     });
-    expect(landscape.width()).toBe(512);
-    expect(landscape.height()).toBe(121);
+    expect(landscape.width()).to.equal(512);
+    expect(landscape.height()).to.equal(121);
   });
 
   it('should return properly scaled versions of itself', function () {
@@ -38,8 +38,8 @@ describe('Selection Object', function () {
       y1: 512
     });
     var scaled = square.scaleToFit(1024, 1024);
-    expect(scaled.width()).toBe(1024);
-    expect(scaled.height()).toBe(1024);
+    expect(scaled.width()).to.equal(1024);
+    expect(scaled.height()).to.equal(1024);
 
     var landscape = new Selection({
       x0: 0,
@@ -48,8 +48,8 @@ describe('Selection Object', function () {
       y1: 316
     });
     scaled = landscape.scaleToFit(1024, 1024);
-    expect(scaled.width()).toBe(1024);
-    expect(scaled.height()).toBe(242);
+    expect(scaled.width()).to.equal(1024);
+    expect(scaled.height()).to.equal(242);
 
     var portrait = new Selection({
       x0: 195,
@@ -58,8 +58,8 @@ describe('Selection Object', function () {
       y1: 512
     });
     scaled = portrait.scaleToFit(1024, 1024);
-    expect(scaled.width()).toBe(242);
-    expect(scaled.height()).toBe(1024);
+    expect(scaled.width()).to.equal(242);
+    expect(scaled.height()).to.equal(1024);
   });
 });
 
@@ -88,11 +88,11 @@ describe('Image object', function () {
       'height': 512
     });
 
-    expect(image.url('16x9', 200, 'jpg')).toBe('http://localimages.avclub.com/9/16x9/200.jpg');
+    expect(image.url('16x9', 200, 'jpg')).to.equal('http://localimages.avclub.com/9/16x9/200.jpg');
 
     image.id = 12345;
-    
-    expect(image.url('16x9', 200, 'jpg')).toBe('http://localimages.avclub.com/1234/5/16x9/200.jpg');
+
+    expect(image.url('16x9', 200, 'jpg')).to.equal('http://localimages.avclub.com/1234/5/16x9/200.jpg');
   });
 
   it('should generate proper styles', function () {
@@ -110,10 +110,10 @@ describe('Image object', function () {
     });
     var styles = image.getStyles(400, 900, '16x9');
 
-    expect(styles['background-size']).toBe('439px');
-    expect(styles['background-position']).toBe('-39px -24px');
-    expect(styles['height']).toBe('225px');
-    expect(styles['width']).toBe('400px');
+    expect(styles['background-size']).to.equal('439px');
+    expect(styles['background-position']).to.equal('-39px -24px');
+    expect(styles['height']).to.equal('225px');
+    expect(styles['width']).to.equal('400px');
   });
 
   afterEach(function() {
@@ -124,7 +124,7 @@ describe('Image object', function () {
 });
 
 describe('BettyCropper service', function () {
-  
+
   var BettyImage, $httpBackend, BettyCropper;
   beforeEach(function() {
 
@@ -141,15 +141,15 @@ describe('BettyCropper service', function () {
   it('should be able to get an existing image', function () {
     BettyCropper.get(9).then(function(response){
       var image = response.data;
-      expect(image.id).toBe(9);
+      expect(image.id).to.equal(9);
     });
     $httpBackend.flush();
   });
 
   it('should be able to get an upload a new image', function () {
     BettyCropper.upload().then(function(image){
-      expect(image.id).toBe(12345);
-      expect(image.name).toBe('Lenna.png');
+      expect(image.id).to.equal(12345);
+      expect(image.name).to.equal('Lenna.png');
     });
 
     var file = {

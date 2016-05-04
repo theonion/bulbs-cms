@@ -66,7 +66,7 @@ describe('Controller: VersionBrowserModalCtrl', function () {
     modal.close = function () { return true; };
 
     // allow us to ensure that modal.close was called
-    spyOn(modal, 'close');
+    sinon.stub(modal, 'close');
 
     // mock version storage api
     VersionStorageApiMock = {
@@ -108,7 +108,7 @@ describe('Controller: VersionBrowserModalCtrl', function () {
   });
 
   it('should have a function to select a version by timestamp', function () {
-    expect(scope.setPreview).not.toBeUndefined();
+    expect(scope.setPreview).not.to.be.undefined;
 
     // select the 3rd preview which will actually be the top item in the unsorted versions list
     scope.setPreview(versions[1]);
@@ -126,13 +126,13 @@ describe('Controller: VersionBrowserModalCtrl', function () {
 
     scope.restoreSelected();
 
-    expect(scope.article.title).toBe(versions[0].content.title);
-    expect(scope.article.body).toBe(versions[0].content.body);
-    expect(scope.article.anotherPropertyThatWontBeOverwritten).toBe(123);
+    expect(scope.article.title).to.equal(versions[0].content.title);
+    expect(scope.article.body).to.equal(versions[0].content.body);
+    expect(scope.article.anotherPropertyThatWontBeOverwritten).to.equal(123);
 
-    expect(scope.articleIsDirty).toBe(true);
+    expect(scope.articleIsDirty).to.equal(true);
 
-    expect(modal.close).toHaveBeenCalled();
+    expect(modal.close.called).to.equal(true);
   });
 
 });

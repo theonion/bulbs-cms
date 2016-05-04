@@ -12,20 +12,20 @@ describe('Filter: user', function () {
   }));
 
   it('should return empty string when there is no user', function () {
-    expect(user(null)).toBe('');
+    expect(user(null)).to.equal('');
   });
 
   it('should return first and last name when present', function () {
     expect(user({
       first_name: "First",
       last_name: "Last"
-    })).toBe("First Last");
+    })).to.equal("First Last");
   });
 
   it('should return username when no first and last name', function () {
     expect(user({
       username: "username"
-    })).toBe("username");
+    })).to.equal("username");
   });
 
 });

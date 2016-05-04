@@ -44,6 +44,6 @@ describe('Controller: ChangelogmodalCtrl', function () {
   it('should attach a list of changelog entries to scope', function () {
     httpBackend.expectGET('/cms/api/v1/log/?content=1').respond(mockChangelog);
     httpBackend.flush();
-    expect(scope.changelog.length).toBeGreaterThan(0);
+    expect(scope.changelog.length).to.be.above(0);
   });
 });

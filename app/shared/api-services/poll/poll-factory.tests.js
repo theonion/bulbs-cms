@@ -48,7 +48,7 @@ describe('Poll Factory', function () {
         response = res;
       });
       $httpBackend.flush();
-      expect(response.end_date).to.equal(jasmine.any(Object));
+      expect(response.end_date).to.be.an.instanceof(Object);
     });
 
     it('returns the mock payload', function () {
@@ -96,7 +96,7 @@ describe('Poll Factory', function () {
       });
       $httpBackend.expectPOST(pollUrl).respond(200, mockPayload);
       $httpBackend.flush();
-      expect(response.end_date).to.equal(jasmine.any(String));
+      expect(response.end_date).to.be.a('String');
     });
 
     it('returns the mockpayload', function() {
@@ -104,14 +104,14 @@ describe('Poll Factory', function () {
         response = res;
       });
       $httpBackend.expectPOST(pollUrl).respond(200, mockPayload);
-      expect(response).to.equal(mockPayload);
+      expect(response).to.eql(mockPayload);
     });
 
     it('throws error if title and question_text are not present', function() {
       var pollPost = function () {
         Poll.postPoll('crappy payload');
       };
-      expect(pollPost).toThrowError('Poll Error: title and question text required');
+      expect(pollPost).to.throw('Poll Error: title and question text required');
     });
 
     it('throws error unless end_date is a moment object', function() {
@@ -119,7 +119,7 @@ describe('Poll Factory', function () {
       var pollPost = function () {
         Poll.postPoll(data);
       };
-      expect(pollPost).toThrowError('Poll Error: end_date must be a moment object');
+      expect(pollPost).to.throw('Poll Error: end_date must be a moment object');
     });
   });
 
@@ -147,14 +147,14 @@ describe('Poll Factory', function () {
       });
       $httpBackend.expectPUT(pollUrl + data.id + '/').respond(200, mockPayload);
       $httpBackend.flush();
-      expect(response).to.equal(mockPayload);
+      expect(response).to.eql(mockPayload);
     });
 
     it('throws error if title and question_text are not present', function() {
       var pollUpdate = function () {
         Poll.updatePoll('crappy payload');
       };
-      expect(pollUpdate).toThrowError('Poll Error: title and question text required');
+      expect(pollUpdate).to.throw('Poll Error: title and question text required');
     });
 
     it('throws error unless end_date is a moment object', function() {
@@ -162,7 +162,7 @@ describe('Poll Factory', function () {
       var pollUpdate = function () {
         Poll.updatePoll(data);
       };
-      expect(pollUpdate).toThrowError('Poll Error: end_date must be a moment object');
+      expect(pollUpdate).to.throw('Poll Error: end_date must be a moment object');
     });
   });
 

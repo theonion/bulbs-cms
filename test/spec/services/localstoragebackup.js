@@ -124,7 +124,7 @@ describe('Service: LocalStorageBackup', function () {
 
     // see if it got stored properly in local storage
     expect(mockWindow.localStorage['article.2.5'])
-      .toBe(JSON.stringify({
+      .to.equal(JSON.stringify({
         timestamp: 5,
         user: user,
         content: article
@@ -146,7 +146,7 @@ describe('Service: LocalStorageBackup', function () {
     $rootScope.$apply();
 
     // entries already in local storage have values less than 4, those three are removed and only 2 new ones remain
-    expect(mockWindow.localStorage.itemCount).toBe(2);
+    expect(mockWindow.localStorage.itemCount).to.equal(2);
   });
 
   it('should provide a list of versions in local storage', function () {
@@ -172,11 +172,11 @@ describe('Service: LocalStorageBackup', function () {
     $rootScope.$apply();
 
     // test output versions
-    expect(versions.length).toBe(2);
-    expect(versions[0].content.title).toBe(article.title);
-    expect(versions[0].content.body).toBe(article.body);
-    expect(versions[1].content.title).toBe('This Is A Different Article');
-    expect(versions[1].content.body).toBe('I am NOT article 1.');
+    expect(versions.length).to.equal(2);
+    expect(versions[0].content.title).to.equal(article.title);
+    expect(versions[0].content.body).to.equal(article.body);
+    expect(versions[1].content.title).to.equal('This Is A Different Article');
+    expect(versions[1].content.body).to.equal('I am NOT article 1.');
 
   });
 

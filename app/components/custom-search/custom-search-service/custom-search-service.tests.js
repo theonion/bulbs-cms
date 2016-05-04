@@ -8,7 +8,8 @@ describe('Service: CustomSearchService', function () {
     data,
     moment,
     CUSTOM_SEARCH_TIME_PERIODS,
-    customSearchService;
+    customSearchService,
+    clock;
 
   beforeEach(function () {
     module('customSearch.settings', function ($provide) {
@@ -20,7 +21,7 @@ describe('Service: CustomSearchService', function () {
     module('bulbsCmsApp.mockApi');
     module('customSearch.service');
     // clock mock for debounce
-    jasmine.clock().install();
+    clock = sinon.useFakeTimers();
 
     inject(function (___, _$httpBackend_, _$rootScope_, _moment_, _CUSTOM_SEARCH_TIME_PERIODS_,
         CustomSearchService) {
@@ -37,7 +38,7 @@ describe('Service: CustomSearchService', function () {
   });
 
   afterEach(function() {
-    jasmine.clock().uninstall();
+    clock.restore();
   });
 
   describe('group functionality', function () {
@@ -46,9 +47,9 @@ describe('Service: CustomSearchService', function () {
       var newGroup = customSearchService.groupsAdd(data);
 
       var groups = customSearchService.groupsList();
-      expect(groups.length).toBe(1);
-      expect(groups[0]).toBe(data);
-      expect(newGroup.$result_count).toBe(0);
+      expect(groups.length).to.equal(1);
+      expect(groups[0]).to.equal(data);
+      expect(newGroup.$result_count).to.equal(0);
       expect(newGroup).to.equal(data);
     });
 
@@ -61,9 +62,9 @@ describe('Service: CustomSearchService', function () {
       var removed = customSearchService.groupsRemove(0);
 
       var dataGroups = customSearchService._data.groups;
-      expect(dataGroups.length).toBe(1);
+      expect(dataGroups.length).to.equal(1);
       expect(dataGroups[0]).not.to.equal(objToRemove);
-      expect(removed).toBe(true);
+      expect(removed).to.equal(true);
     });
 
     it('should return false from remove group function if group was not removed successfully', function () {
@@ -71,8 +72,8 @@ describe('Service: CustomSearchService', function () {
 
       var removed = customSearchService.groupsRemove(10);
 
-      expect(removed).toBe(false);
-      expect(customSearchService.groupsList().length).toBe(0);
+      expect(removed).to.equal(false);
+      expect(customSearchService.groupsList().length).to.equal(0);
     });
 
     it('should be able to clear all groups', function () {
@@ -84,7 +85,7 @@ describe('Service: CustomSearchService', function () {
 
       customSearchService.groupsClear();
 
-      expect(customSearchService.groupsList().length).toBe(0);
+      expect(customSearchService.groupsList().length).to.equal(0);
     });
 
     it('should be able to retrieve the content count for a group', function () {
@@ -99,7 +100,7 @@ describe('Service: CustomSearchService', function () {
       $httpBackend.expectPOST('/cms/api/v1/custom-search-content/group_count/').respond(200, {count: count});
       $httpBackend.flush();
 
-      expect(customSearchService.groupsResultCountGet(index)).toBe(count);
+      expect(customSearchService.groupsResultCountGet(index)).to.equal(count);
     });
 
     describe('condition functionality', function () {
@@ -114,8 +115,8 @@ describe('Service: CustomSearchService', function () {
         var newCondition = customSearchService.groupsConditionsAdd(index, data);
 
         var conditions = customSearchService.groupsConditionsList(index);
-        expect(conditions.length).toBe(1);
-        expect(conditions[index]).toBe(newCondition);
+        expect(conditions.length).to.equal(1);
+        expect(conditions[index]).to.equal(newCondition);
       });
 
       it('should be able to remove a condition from a group', function () {
@@ -128,8 +129,8 @@ describe('Service: CustomSearchService', function () {
         var removed = customSearchService.groupsConditionsRemove(index, conditionIndex);
 
         var conditions = customSearchService.groupsConditionsList(index);
-        expect(conditions.length).toBe(0);
-        expect(removed).toBe(true);
+        expect(conditions.length).to.equal(0);
+        expect(removed).to.equal(true);
       });
 
       it('should allow the addition of one time period condition to a group', function () {
@@ -172,7 +173,7 @@ describe('Service: CustomSearchService', function () {
           customSearchService.groupsConditionsValuesAdd(groupIndex, conditionIndex, {name: 'a new value', value: 123, stupidHas: 'abc'});
 
           var values = customSearchService.groupsConditionsValuesList(groupIndex, conditionIndex);
-          expect(values.length).toBe(1);
+          expect(values.length).to.equal(1);
           expect(values[0]).to.equal(value);
         });
 
@@ -185,7 +186,7 @@ describe('Service: CustomSearchService', function () {
           customSearchService.groupsConditionsValuesRemove(groupIndex, conditionIndex, 1);
 
           var values = customSearchService.groupsConditionsValuesList(groupIndex, conditionIndex);
-          expect(values.length).toBe(2);
+          expect(values.length).to.equal(2);
           expect(values[0]).to.equal(value1);
           expect(values[1]).to.equal(value2);
         });
@@ -195,7 +196,7 @@ describe('Service: CustomSearchService', function () {
 
           customSearchService.groupsConditionsValuesClear(groupIndex, conditionIndex);
 
-          expect(customSearchService.groupsConditionsValuesList(groupIndex, conditionIndex).length).toBe(0);
+          expect(customSearchService.groupsConditionsValuesList(groupIndex, conditionIndex).length).to.equal(0);
         });
       });
     });
@@ -214,54 +215,54 @@ describe('Service: CustomSearchService', function () {
 
       data.includedIds = [1,2,3];
 
-      spyOn(customSearchService, '_$getContent').and.callThrough();
+      sinon.spy(customSearchService, '_$getContent');
 
       customSearchService.$retrieveContent();
 
       // force tick to fire debounce
-      jasmine.clock().tick(1);
+      clock.tick(1);
 
       $httpBackend.expectPOST(/\/cms\/api\/v1\/custom-search-content\/(\?page=\d+)?$/).respond(responseData);
 
-      expect(customSearchService._$getContent).toHaveBeenCalledWith(_.assign(addProps, data));
-      expect(customSearchService.content.something).toBe(responseData.something);
+      expect(customSearchService._$getContent.calledWith(_.assign(addProps, data))).to.equal(true);
+      expect(customSearchService.content.something).to.equal(responseData.something);
     });
 
     it('should provide a function to filter content by excluded', function () {
       customSearchService._data.excludedIds = [1,2,3];
       customSearchService._data.includedIds = [5,6,7];
 
-      spyOn(customSearchService, '_$getContent');
+      sinon.stub(customSearchService, '_$getContent');
 
       customSearchService.$filterContentByExcluded();
 
-      expect(customSearchService._$getContent).toHaveBeenCalledWith({
+      expect(customSearchService._$getContent.calledWith({
         includedIds: customSearchService._data.excludedIds,
         page: 1,
         query: ''
-      });
+      })).to.equal(true);
     });
 
     it('should provide a function to filter content by included', function () {
       customSearchService._data.excludedIds = [1,2,3];
       customSearchService._data.includedIds = [5,6,7];
 
-      spyOn(customSearchService, '_$getContent');
+      sinon.stub(customSearchService, '_$getContent');
 
       customSearchService.$filterContentByIncluded();
 
-      expect(customSearchService._$getContent).toHaveBeenCalledWith({
+      expect(customSearchService._$getContent.calledWith({
         includedIds: customSearchService._data.includedIds,
         page: 1,
         query: ''
-      });
+      })).to.equal(true);
     });
 
     describe('included id functions', function () {
       it('should provide a way to manually include content', function () {
         customSearchService.includesAdd(id);
 
-        expect(customSearchService.includesList()).toContain(id);
+        expect(customSearchService.includesList()).to.contain(id);
       });
 
       it('should provide a way to uninclude content', function () {
@@ -269,13 +270,13 @@ describe('Service: CustomSearchService', function () {
 
         customSearchService.includesRemove(id);
 
-        expect(customSearchService.includesList()).not.toContain(id);
+        expect(customSearchService.includesList()).not.to.contain(id);
       });
 
       it('should provide a way to check if content is included', function () {
         customSearchService._data.includedIds.push(id);
 
-        expect(customSearchService.includesHas(id)).toBe(true);
+        expect(customSearchService.includesHas(id)).to.equal(true);
       });
 
       it('should ensure included content is not excluded', function () {
@@ -283,14 +284,14 @@ describe('Service: CustomSearchService', function () {
 
         customSearchService.includesAdd(id);
 
-        expect(customSearchService.excludesList()).not.toContain(id);
+        expect(customSearchService.excludesList()).not.to.contain(id);
       });
 
       it('should not allow the same id to be included more than once', function () {
         customSearchService.includesAdd(id);
         customSearchService.includesAdd(id);
 
-        expect(customSearchService.includesList().length).toBe(1);
+        expect(customSearchService.includesList().length).to.equal(1);
       });
     });
 
@@ -298,7 +299,7 @@ describe('Service: CustomSearchService', function () {
       it('should provide a way to exclude content', function () {
         customSearchService.excludesAdd(id);
 
-        expect(customSearchService.excludesList()).toContain(id);
+        expect(customSearchService.excludesList()).to.contain(id);
       });
 
       it('should provide a way to unexclude content', function () {
@@ -306,13 +307,13 @@ describe('Service: CustomSearchService', function () {
 
         customSearchService.excludesRemove(id);
 
-        expect(customSearchService.excludesList()).not.toContain(id);
+        expect(customSearchService.excludesList()).not.to.contain(id);
       });
 
       it('should provide a way to check if content is excluded', function () {
         customSearchService._data.excludedIds.push(id);
 
-        expect(customSearchService.excludesHas(id)).toBe(true);
+        expect(customSearchService.excludesHas(id)).to.equal(true);
       });
 
       it('should ensure excluded content is not pinned or included', function () {
@@ -321,15 +322,15 @@ describe('Service: CustomSearchService', function () {
 
         customSearchService.excludesAdd(id);
 
-        expect(customSearchService.pinsList()).not.toContain(id);
-        expect(customSearchService.includesList()).not.toContain(id);
+        expect(customSearchService.pinsList()).not.to.contain(id);
+        expect(customSearchService.includesList()).not.to.contain(id);
       });
 
       it('should not allow the same id to be excluded more than once', function () {
         customSearchService.excludesAdd(id);
         customSearchService.excludesAdd(id);
 
-        expect(customSearchService.excludesList().length).toBe(1);
+        expect(customSearchService.excludesList().length).to.equal(1);
       });
     });
 
@@ -337,7 +338,7 @@ describe('Service: CustomSearchService', function () {
       it('should provide a way to pin content by id', function () {
         customSearchService.pinsAdd(id);
 
-        expect(customSearchService.pinsList()).toContain(id);
+        expect(customSearchService.pinsList()).to.contain(id);
       });
 
       it('should provide a way to unpin content', function () {
@@ -345,13 +346,13 @@ describe('Service: CustomSearchService', function () {
 
         customSearchService.pinsRemove(id);
 
-        expect(customSearchService.pinsList()).not.toContain(id);
+        expect(customSearchService.pinsList()).not.to.contain(id);
       });
 
       it('should provide a way to check if content is pinned', function () {
         customSearchService._data.pinnedIds.push(id);
 
-        expect(customSearchService.pinsHas(id)).toBe(true);
+        expect(customSearchService.pinsHas(id)).to.equal(true);
       });
 
       it('should ensure pinned content is not excluded', function () {
@@ -359,14 +360,14 @@ describe('Service: CustomSearchService', function () {
 
         customSearchService.pinsAdd(id);
 
-        expect(customSearchService.excludesList()).not.toContain(id);
+        expect(customSearchService.excludesList()).not.to.contain(id);
       });
 
       it('should not allow the same id to be pinned more than once', function () {
         customSearchService.pinsAdd(id);
         customSearchService.pinsAdd(id);
 
-        expect(customSearchService.pinsList().length).toBe(1);
+        expect(customSearchService.pinsList().length).to.equal(1);
       });
     });
   });

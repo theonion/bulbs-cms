@@ -18,7 +18,7 @@ describe('Service: VersionStorageApi', function () {
       $createVersion: function () {},
       $versions: function () {}
     };
-    spyOn(liveArticleMock, '$createVersion').and.callFake(function (articleData) {
+    sinon.stub(liveArticleMock, '$createVersion', function (articleData) {
       var createDeferred = $q.defer(),
           createPromise = createDeferred.promise,
           // fyi: angularfire is using push() which creates new items in chronological order. So we don't have to do any
@@ -36,7 +36,7 @@ describe('Service: VersionStorageApi', function () {
 
       return createPromise;
     });
-    spyOn(liveArticleMock, '$versions').and.callFake(function () {
+    sinon.stub(liveArticleMock, '$versions', function () {
       return {
         length: liveArticleMock.versions.length,
         $loaded: function (cb) {
@@ -55,7 +55,7 @@ describe('Service: VersionStorageApi', function () {
         $create: function () {},
         $versions: function () {}
       };
-      spyOn(localStorageBackupMock, '$create').and.callFake(function (articleData) {
+      sinon.stub(localStorageBackupMock, '$create', function (articleData) {
         var versionData = null,
             createDefer = $q.defer(),
             createPromise = createDefer.promise;
@@ -71,7 +71,7 @@ describe('Service: VersionStorageApi', function () {
 
         return createPromise;
       });
-      spyOn(localStorageBackupMock, '$versions').and.callFake(function () {
+      sinon.stub(localStorageBackupMock, '$versions', function () {
         var versionsDefer = $q.defer(),
             versionsPromise = versionsDefer.promise;
         versionsDefer.resolve(localStorageBackupMock.versionsBack);
@@ -114,8 +114,8 @@ describe('Service: VersionStorageApi', function () {
       // cause promises to fire
       $rootScope.$apply();
 
-      expect(liveArticleMock.$createVersion).toHaveBeenCalled();
-      expect(versionData.content).to.equal(article);
+      expect(liveArticleMock.$createVersion.called).to.equal(true);
+      expect(versionData.content).to.eql(article);
 
     });
 
@@ -127,8 +127,8 @@ describe('Service: VersionStorageApi', function () {
       // cause promises to fire
       $rootScope.$apply();
 
-      expect(liveArticleMock.$createVersion).toHaveBeenCalled();
-      expect(liveArticleMock.versions.length).toBe(2);
+      expect(liveArticleMock.$createVersion.called).to.equal(true);
+      expect(liveArticleMock.versions.length).to.equal(2);
 
     });
 
@@ -144,9 +144,9 @@ describe('Service: VersionStorageApi', function () {
       // cause promises to fire
       $rootScope.$apply();
 
-      expect(liveArticleMock.$createVersion).toHaveBeenCalled();
-      expect(liveArticleMock.versions.length).toBe(0);
-      expect(creationFailed).toBe(true);
+      expect(liveArticleMock.$createVersion.called).to.equal(true);
+      expect(liveArticleMock.versions.length).to.equal(0);
+      expect(creationFailed).to.equal(true);
 
     });
 
@@ -163,9 +163,9 @@ describe('Service: VersionStorageApi', function () {
       // cause promises to fire
       $rootScope.$apply();
 
-      expect(liveArticleMock.$createVersion).toHaveBeenCalled();
-      expect(liveArticleMock.versions.length).toBe(1);
-      expect(creationFailed).toBe(true);
+      expect(liveArticleMock.$createVersion.called).to.equal(true);
+      expect(liveArticleMock.versions.length).to.equal(1);
+      expect(creationFailed).to.equal(true);
 
     });
 
@@ -183,9 +183,9 @@ describe('Service: VersionStorageApi', function () {
       // cause promises to fire
       $rootScope.$apply();
 
-      expect(liveArticleMock.$versions).toHaveBeenCalled();
-      expect(versions.length).toBe(3);
-      expect(versions[0].content.body).toBe('B3');
+      expect(liveArticleMock.$versions.called).to.equal(true);
+      expect(versions.length).to.equal(3);
+      expect(versions[0].content.body).to.equal('B3');
 
     });
 
@@ -218,9 +218,8 @@ describe('Service: VersionStorageApi', function () {
       // cause promises to fire
       $rootScope.$apply();
 
-      expect(localStorageBackupMock.$create).toHaveBeenCalled();
-      expect(versionData.content).to.equal(article);
-
+      expect(localStorageBackupMock.$create.called).to.equal(true);
+      expect(versionData.content).to.eql(article);
     });
 
     it('a new version should be created when article is dirty and there are already versions', function () {
@@ -231,8 +230,8 @@ describe('Service: VersionStorageApi', function () {
       // cause promises to fire
       $rootScope.$apply();
 
-      expect(localStorageBackupMock.$create).toHaveBeenCalled();
-      expect(localStorageBackupMock.versionsBack.length).toBe(2);
+      expect(localStorageBackupMock.$create.called).to.equal(true);
+      expect(localStorageBackupMock.versionsBack.length).to.equal(2);
 
     });
 
@@ -247,9 +246,9 @@ describe('Service: VersionStorageApi', function () {
       // cause promises to fire
       $rootScope.$apply();
 
-      expect(localStorageBackupMock.$create).toHaveBeenCalled();
-      expect(localStorageBackupMock.versionsBack.length).toBe(0);
-      expect(creationFailed).toBe(true);
+      expect(localStorageBackupMock.$create.called).to.equal(true);
+      expect(localStorageBackupMock.versionsBack.length).to.equal(0);
+      expect(creationFailed).to.equal(true);
 
     });
 
@@ -266,9 +265,9 @@ describe('Service: VersionStorageApi', function () {
       // cause promises to fire
       $rootScope.$apply();
 
-      expect(localStorageBackupMock.$create).toHaveBeenCalled();
-      expect(localStorageBackupMock.versionsBack.length).toBe(1);
-      expect(creationFailed).toBe(true);
+      expect(localStorageBackupMock.$create.called).to.equal(true);
+      expect(localStorageBackupMock.versionsBack.length).to.equal(1);
+      expect(creationFailed).to.equal(true);
 
     });
 
@@ -286,9 +285,9 @@ describe('Service: VersionStorageApi', function () {
       // cause promises to fire
       $rootScope.$apply();
 
-      expect(localStorageBackupMock.$versions).toHaveBeenCalled();
-      expect(versions.length).toBe(3);
-      expect(versions[0].content.body).toBe('B3');
+      expect(localStorageBackupMock.$versions.called).to.equal(true);
+      expect(versions.length).to.equal(3);
+      expect(versions[0].content.body).to.equal('B3');
 
     });
 

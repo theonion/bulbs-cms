@@ -12,7 +12,7 @@ describe('Service: AdApi', function () {
   }));
 
   it('should do something', function () {
-    expect(!!AdApi).toBe(true);
+    expect(!!AdApi).to.equal(true);
   });
 
 });
