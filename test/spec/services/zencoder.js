@@ -12,7 +12,7 @@ describe('Service: Zencoder', function () {
   }));
 
   it('should do something', function () {
-    expect(!!Zencoder).toBe(true);
+    expect(!!Zencoder).to.equal(true);
   });
 
 });

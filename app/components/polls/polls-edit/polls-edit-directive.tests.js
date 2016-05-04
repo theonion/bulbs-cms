@@ -33,37 +33,39 @@ describe('Directive: pollsEdit', function () {
   }));
 
   it('creates a new poll object on the scope', function () {
-    expect(scope.model).toEqual(jasmine.any(Object));
-    expect(scope.isNew).toBe(true);
+    expect(scope.model).to.be.an.instanceof(Object);
+    expect(scope.isNew).to.equal(true);
   });
 
   it('has appropriate new poll fields', function () {
-    expect(element.html()).toContain('Question');
-    expect(element.html()).toContain('Responses');
+    expect(element.html()).to.contain('Question');
+    expect(element.html()).to.contain('Responses');
   });
 
   it('has appropriate edit poll fields', function () {
     scope.$apply(function () {
       scope.model.id = '1';
     });
-    expect(element.html()).toContain('Poll Name');
-    expect(element.html()).toContain('Poll End Date');
+    expect(element.html()).to.contain('Poll Name');
+    expect(element.html()).to.contain('Poll End Date');
   });
 
   it('scope initializes with 3 empty answer objects', function () {
-    var response = [jasmine.any(Object), jasmine.any(Object), jasmine.any(Object)];
-    expect(scope.answers).toEqual(response);
+    expect(scope.answers.length).to.equal(3);
+    scope.answers.forEach(function(answer) {
+      expect(answer).to.be.an.instanceof(Object);
+    });
   });
 
   describe('scope.addAnswer()', function () {
     it('adds answer text fields', function () {
       // sanity check
       var answerTextAreaCount = element.find('.answer-text').length;
-      expect(answerTextAreaCount).toEqual(3);
+      expect(answerTextAreaCount).to.equal(3);
       scope.addAnswer();
       scope.$apply();
       answerTextAreaCount = element.find('.answer-text').length;
-      expect(answerTextAreaCount).toEqual(4);
+      expect(answerTextAreaCount).to.equal(4);
     });
 
     it('creates field notOnSodahead for answer', function () {
@@ -71,8 +73,8 @@ describe('Directive: pollsEdit', function () {
       scope.answers = [];
       scope.addAnswer();
       // sanity check
-      expect(scope.answers.length).toEqual(1);
-      expect(scope.answers[0].notOnSodahead).toBe(true);
+      expect(scope.answers.length).to.equal(1);
+      expect(scope.answers[0].notOnSodahead).to.equal(true);
     });
   });
 
@@ -80,31 +82,31 @@ describe('Directive: pollsEdit', function () {
     it('removes answer text fields', function () {
       // sanity check
       var answerTextAreaCount = element.find('.answer-text').length;
-      expect(answerTextAreaCount).toEqual(3);
+      expect(answerTextAreaCount).to.equal(3);
 
       scope.removeAnswer(1);
       scope.$apply();
       answerTextAreaCount = element.find('.answer-text').length;
-      expect(answerTextAreaCount).toEqual(2);
+      expect(answerTextAreaCount).to.equal(2);
     });
 
     it('adds answers not on sodahead to scope.deletedAnswers', function () {
       // sanity check
-      expect(scope.deletedAnswers.length).toEqual(0);
+      expect(scope.deletedAnswers.length).to.equal(0);
       // mock out answer on sodahead
       scope.answers[0].notOnSodahead = false;
       answer = scope.answers[0];
       scope.removeAnswer(answer.id);
-      expect(scope.deletedAnswers[0]).toEqual(answer);
+      expect(scope.deletedAnswers[0]).to.equal(answer);
     });
 
     it('does not add answers not on sodahead to scope.deletedAnswers', function () {
       // sanity check
-      expect(scope.deletedAnswers.length).toEqual(0);
+      expect(scope.deletedAnswers.length).to.equal(0);
       // mock out answer on sodahead
       answer = scope.answers[0];
       scope.removeAnswer(answer.id);
-      expect(scope.deletedAnswers.length).toEqual(0);
+      expect(scope.deletedAnswers.length).to.equal(0);
     });
   });
 
@@ -123,7 +125,7 @@ describe('Directive: pollsEdit', function () {
 
       expect(
         element.find('label[for=pollTitle] .error-message.ng-hide').length
-      ).toBe(0);
+      ).to.equal(0);
     });
 
     it('hides validation message when title is invalid', function () {
@@ -132,7 +134,7 @@ describe('Directive: pollsEdit', function () {
 
       expect(
         element.find('label[for=pollTitle] .error-message.ng-hide').length
-      ).toBe(1);
+      ).to.equal(1);
     });
 
     it('shows validation message when question text is valid', function () {
@@ -141,7 +143,7 @@ describe('Directive: pollsEdit', function () {
 
       expect(
         element.find('label[for=pollQuestionText] .error-message.ng-hide').length
-      ).toBe(0);
+      ).to.equal(0);
     });
 
     it('hides validation message when question text is invalid', function () {
@@ -150,7 +152,7 @@ describe('Directive: pollsEdit', function () {
 
       expect(
         element.find('label[for=pollQuestionText] .error-message.ng-hide').length
-      ).toBe(1);
+      ).to.equal(1);
     });
 
     it('shows validation message when answer text is invalid', function () {
@@ -159,7 +161,7 @@ describe('Directive: pollsEdit', function () {
 
       expect(
         element.find('label[for=answerText]:first .error-message.ng-hide').length
-      ).toBe(0);
+      ).to.equal(0);
     });
 
     it('hides validation message when answer text is invalid', function () {
@@ -168,7 +170,7 @@ describe('Directive: pollsEdit', function () {
 
       expect(
         element.find('label[for=answerText]:first .error-message.ng-hide').length
-      ).toBe(1);
+      ).to.equal(1);
     });
 
     it('shows validation message when there is an end date but no published date', function () {
@@ -178,7 +180,7 @@ describe('Directive: pollsEdit', function () {
 
       expect(
         element.find('label[for=pollStartDate] .error-message.ng-hide').length
-      ).toBe(0);
+      ).to.equal(0);
     });
 
     it('hides validation message when there is no end date', function () {
@@ -188,7 +190,7 @@ describe('Directive: pollsEdit', function () {
 
       expect(
         element.find('label[for=pollStartDate] .error-message.ng-hide').length
-      ).toBe(1);
+      ).to.equal(1);
     });
 
     it('hides validation message when there is only a published date', function () {
@@ -198,7 +200,7 @@ describe('Directive: pollsEdit', function () {
 
       expect(
         element.find('label[for=pollStartDate] .error-message.ng-hide').length
-      ).toBe(1);
+      ).to.equal(1);
     });
 
     it('shows validation message when end date is before published date', function () {
@@ -209,7 +211,7 @@ describe('Directive: pollsEdit', function () {
 
       expect(
         element.find('label[for=pollEndDate] .error-message.ng-hide').length
-      ).toBe(0);
+      ).to.equal(0);
     });
 
     it('hides validation message when end date is after published date', function () {
@@ -220,7 +222,7 @@ describe('Directive: pollsEdit', function () {
 
       expect(
         element.find('label[for=pollEndDate] .error-message.ng-hide').length
-      ).toBe(1);
+      ).to.equal(1);
     });
   });
 });

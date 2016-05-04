@@ -1,4 +1,5 @@
 'use strict';
+/*jshint -W030 */
 
 describe('Service: PromotedContentService', function () {
 
@@ -56,22 +57,22 @@ describe('Service: PromotedContentService', function () {
     $httpBackend.flush();
 
     // ensure data is in order
-    expect(pzones).toEqual(data.pzones);
+    expect(pzones).to.equal(data.pzones);
   });
 
   it('should have a flag to check if a refresh is pending', function () {
     PromotedContentService.$refreshSelectedPZone();
 
-    expect(PromotedContentService.isPZoneRefreshPending()).toBe(true);
+    expect(PromotedContentService.isPZoneRefreshPending()).to.equal(true);
 
     $httpBackend.expectGET('/cms/api/v1/pzone/1/').respond(mockApiData['pzones.list']['results'][0]);
     $httpBackend.flush();
 
-    expect(PromotedContentService.isPZoneRefreshPending()).toBe(false);
+    expect(PromotedContentService.isPZoneRefreshPending()).to.equal(false);
   });
 
   it('should prevent multiple pzone refresh requests', function () {
-    spyOn(PromotedContentService, '$refreshOperations').and.callThrough();
+    sinon.spy(PromotedContentService, '$refreshOperations');
 
     PromotedContentService.$refreshSelectedPZone();
     PromotedContentService.$refreshSelectedPZone();
@@ -79,20 +80,20 @@ describe('Service: PromotedContentService', function () {
     $httpBackend.expectGET('/cms/api/v1/pzone/1/').respond(mockApiData['pzones.list']['results'][0]);
     $httpBackend.flush();
 
-    expect(PromotedContentService.isPZoneRefreshPending()).toBe(false);
+    expect(PromotedContentService.isPZoneRefreshPending()).to.equal(false);
   });
 
   it('should be able to mark the selected pzone as saved/dirty', function () {
     // should have been set to true by setup
-    expect(data.selectedPZone.saved).toBe(true);
+    expect(data.selectedPZone.saved).to.equal(true);
     // mark it dirty
     PromotedContentService.markDirtySelectedPZone();
     // ensure that it's now marked dirty
-    expect(data.selectedPZone.saved).toBeUndefined();
+    expect(data.selectedPZone.saved).to.be.undefined;
     // mark it saved
     PromotedContentService.markSavedSelectedPZone();
     // ensure that it's now marked saved
-    expect(data.selectedPZone.saved).toBe(true);
+    expect(data.selectedPZone.saved).to.equal(true);
   });
 
   it('should be able to save the selected pzone in the future', function () {
@@ -105,7 +106,7 @@ describe('Service: PromotedContentService', function () {
       index: 1
     };
 
-    spyOn(PromotedContentService, 'makeOperationsStale').and.callThrough();
+    sinon.spy(PromotedContentService, 'makeOperationsStale');
 
     // add this operation to service data manually
     data.unsavedOperations.push(operation);
@@ -126,11 +127,11 @@ describe('Service: PromotedContentService', function () {
     $httpBackend.flush();
 
     // check everything is in order
-    expect(PromotedContentService.makeOperationsStale).toHaveBeenCalled();
-    expect(data.unsavedOperations).toEqual([]);
-    expect(operation.client_id).toBeUndefined();
-    expect(operation.when).toEqual(previewTime.toISOString());
-    expect(saveResp).toEqual(data.selectedPZone);
+    expect(PromotedContentService.makeOperationsStale.called).to.equal(true);
+    expect(data.unsavedOperations).to.eql([]);
+    expect(operation.client_id).to.be.undefined;
+    expect(operation.when).to.equal(previewTime.toISOString());
+    expect(saveResp).to.equal(data.selectedPZone);
   });
 
   it('should be able to save multiple operations in the future', function () {
@@ -152,7 +153,7 @@ describe('Service: PromotedContentService', function () {
         index: 2
       }];
 
-    spyOn(PromotedContentService, 'makeOperationsStale').and.callThrough();
+    sinon.spy(PromotedContentService, 'makeOperationsStale');
 
     // add the operations to service data manually
     data.unsavedOperations = operations;
@@ -173,18 +174,18 @@ describe('Service: PromotedContentService', function () {
     $httpBackend.flush();
 
     // check everything is in order
-    expect(PromotedContentService.makeOperationsStale).toHaveBeenCalled();
-    expect(data.unsavedOperations).toEqual([]);
-    expect(operations[0].client_id).toBeUndefined();
-    expect(operations[0].when).toEqual(previewTime.toISOString());
-    expect(saveResp).toEqual(data.selectedPZone);
+    expect(PromotedContentService.makeOperationsStale.called).to.equal(true);
+    expect(data.unsavedOperations).to.eql([]);
+    expect(operations[0].client_id).to.be.undefined;
+    expect(operations[0].when).to.equal(previewTime.toISOString());
+    expect(saveResp).to.equal(data.selectedPZone);
   });
 
   it('should be able to save the selected pzone immediately', function () {
     // set preview time to immediate
     data.previewTime = null;
 
-    spyOn(PromotedContentService, 'makeOperationsStale').and.callThrough();
+    sinon.spy(PromotedContentService, 'makeOperationsStale');
 
     var saveResp;
     PromotedContentService.$saveSelectedPZone().
@@ -199,16 +200,16 @@ describe('Service: PromotedContentService', function () {
     $httpBackend.flush();
 
     // check everything is in order
-    expect(PromotedContentService.makeOperationsStale).toHaveBeenCalled();
-    expect(data.unsavedOperations).toEqual([]);
-    expect(saveResp).toEqual(data.selectedPZone);
-    expect(data.selectedPZone.saved).toBe(true);
+    expect(PromotedContentService.makeOperationsStale.called).to.equal(true);
+    expect(data.unsavedOperations).to.eql([]);
+    expect(saveResp).to.equal(data.selectedPZone);
+    expect(data.selectedPZone.saved).to.equal(true);
   });
 
   it('should be able to update content list', function () {
-    spyOn(ContentListService, '$updateContent');
+    sinon.stub(ContentListService, '$updateContent');
     PromotedContentService.$refreshAllContent();
-    expect(ContentListService.$updateContent).toHaveBeenCalled();
+    expect(ContentListService.$updateContent.called).to.equal(true);
   });
 
   it('should be able to add an operation', function () {
@@ -231,8 +232,8 @@ describe('Service: PromotedContentService', function () {
 
     $rootScope.$digest();
 
-    expect(addedOp.post).toBeDefined();
-    expect(data.unsavedOperations.length).toBe(1);
+    expect(addedOp.post).not.to.be.undefined;
+    expect(data.unsavedOperations.length).to.equal(1);
   });
 
   it('should not be able to add an operation when preview time is in the past', function () {
@@ -250,8 +251,8 @@ describe('Service: PromotedContentService', function () {
     $rootScope.$digest();
 
     // check that data is the correct state
-    expect(error).not.toEqual('');
-    expect(data.unsavedOperations).toEqual([]);
+    expect(error).not.to.equal('');
+    expect(data.unsavedOperations).to.eql([]);
   });
 
   it('should be able to remove existing operations', function () {
@@ -277,8 +278,8 @@ describe('Service: PromotedContentService', function () {
     $httpBackend.flush();
 
     // check that our operation was removed from operations list
-    expect(data.operations.length).toBe(opLength - 1);
-    expect(resolved).toBe(true);
+    expect(data.operations.length).to.equal(opLength - 1);
+    expect(resolved).to.equal(true);
   });
 
   it('should not be able to delete an operation in the past', function () {
@@ -303,8 +304,8 @@ describe('Service: PromotedContentService', function () {
     $rootScope.$digest();
 
     // check that the operation failed
-    expect(data.operations.length).toBe(opLength);
-    expect(error).not.toBeUndefined();
+    expect(data.operations.length).to.equal(opLength);
+    expect(error).not.to.be.undefined;
   });
 
   it('should not delete successfully if operation is not found', function () {
@@ -320,7 +321,7 @@ describe('Service: PromotedContentService', function () {
     $rootScope.$digest();
 
     // check that operation failed
-    expect(data.operations.length).toBe(opLength);
+    expect(data.operations.length).to.equal(opLength);
   });
 
   it('should be able to clear unsaved operations', function () {
@@ -329,8 +330,8 @@ describe('Service: PromotedContentService', function () {
 
     PromotedContentService.clearUnsavedOperations();
 
-    expect(data.unsavedOperations).toEqual([]);
-    expect(data.selectedPZone.saved).toBe(true);
+    expect(data.unsavedOperations).to.eql([]);
+    expect(data.selectedPZone.saved).to.equal(true);
   });
 
   it('should be able to refresh the operations list', function () {
@@ -344,12 +345,12 @@ describe('Service: PromotedContentService', function () {
     $httpBackend.expectGET('/cms/api/v1/pzone/1/operations/').respond(mockApiData['pzones.operations']);
     $httpBackend.flush();
 
-    expect(PromotedContentService.isPZoneOperationsStale()).toEqual(false);
-    expect(operations.length > 0).toBe(true);
-    expect(operations).toEqual(data.operations);
+    expect(PromotedContentService.isPZoneOperationsStale()).to.equal(false);
+    expect(operations.length > 0).to.equal(true);
+    expect(operations).to.equal(data.operations);
     _.each(data.operations, function (operation) {
-      expect(operation.cleanType).toBeDefined();
-      expect(moment.isMoment(operation.whenAsMoment)).toBe(true);
+      expect(operation.cleanType).not.to.be.defined;
+      expect(moment.isMoment(operation.whenAsMoment)).to.equal(true);
     });
   });
 
@@ -371,14 +372,14 @@ describe('Service: PromotedContentService', function () {
       });
     $httpBackend.flush();
 
-    expect(hasFrom).toEqual(true);
-    expect(hasTo).toEqual(true);
+    expect(hasFrom).to.equal(true);
+    expect(hasTo).to.equal(true);
   });
 
   it('should be able to select a pzone', function () {
     var pzone = data.pzones[0];
 
-    spyOn(PromotedContentService, 'makeOperationsStale').and.callThrough();
+    sinon.spy(PromotedContentService, 'makeOperationsStale');
 
     PromotedContentService.$selectPZone(pzone.name);
 
@@ -386,9 +387,9 @@ describe('Service: PromotedContentService', function () {
     $httpBackend.expectGET('/cms/api/v1/pzone/' + pzone.id + '/').respond(pzone);
     $httpBackend.flush();
 
-    expect(PromotedContentService.makeOperationsStale).toHaveBeenCalled();
-    expect(data.unsavedOperations).toEqual([]);
-    expect(data.selectedPZone.id).toBe(pzone.id);
+    expect(PromotedContentService.makeOperationsStale.called).to.equal(true);
+    expect(data.unsavedOperations).to.eql([]);
+    expect(data.selectedPZone.id).to.equal(pzone.id);
   });
 
   it('should be able to remove content from a pzone', function () {
@@ -401,15 +402,15 @@ describe('Service: PromotedContentService', function () {
 
     $rootScope.$digest();
 
-    expect(data.selectedPZone.content.length === 0).toBe(true);
-    expect(data.selectedPZone.saved).toBeUndefined();
-    expect(data.unsavedOperations[0].cleanType).toBe(PromotedContentService.readableOperationTypes.DELETE);
-    expect(data.unsavedOperations[0].content).toBe(id);
+    expect(data.selectedPZone.content.length === 0).to.equal(true);
+    expect(data.selectedPZone.saved).to.be.undefined;
+    expect(data.unsavedOperations[0].cleanType).to.equal(PromotedContentService.readableOperationTypes.DELETE);
+    expect(data.unsavedOperations[0].content).to.equal(id);
   });
 
   it('should be able to set the preview time', function () {
-    spyOn(PromotedContentService, '$refreshSelectedPZone').and.returnValue({then: function (a) { a(); }});
-    spyOn(PromotedContentService, 'clearUnsavedOperations');
+    sinon.stub(PromotedContentService, '$refreshSelectedPZone').returns({then: function (a) { a(); }});
+    sinon.stub(PromotedContentService, 'clearUnsavedOperations');
 
     var time = moment();
 
@@ -417,20 +418,20 @@ describe('Service: PromotedContentService', function () {
 
     $rootScope.$digest();
 
-    expect(data.previewTime).toEqual(time);
-    expect(PromotedContentService.$refreshSelectedPZone).toHaveBeenCalled();
-    expect(PromotedContentService.clearUnsavedOperations).toHaveBeenCalled();
+    expect(data.previewTime).to.equal(time);
+    expect(PromotedContentService.$refreshSelectedPZone.called).to.equal(true);
+    expect(PromotedContentService.clearUnsavedOperations.called).to.equal(true);
   });
 
   it('should be able to set the preview time to immediate', function () {
     PromotedContentService.setPreviewTimeToImmediate();
 
-    expect(data.previewTime).toBe(null);
+    expect(data.previewTime).to.equal(null);
   });
 
   it('should be able to check if the preview time is in the past', function () {
     data.previewTime = moment().subtract(1, 'hours');
-    expect(PromotedContentService.isPreviewTimePast()).toBe(true);
+    expect(PromotedContentService.isPreviewTimePast()).to.equal(true);
   });
 
   describe('moving content', function () {
@@ -445,10 +446,10 @@ describe('Service: PromotedContentService', function () {
 
       var moved = PromotedContentService.moveContentUp(1);
 
-      expect(moved).toBe(true);
-      expect(data.selectedPZone.content[0]).toEqual(old_1);
-      expect(data.selectedPZone.content[1]).toEqual(old_0);
-      expect(data.selectedPZone.saved).toBeUndefined();
+      expect(moved).to.equal(true);
+      expect(data.selectedPZone.content[0]).to.equal(old_1);
+      expect(data.selectedPZone.content[1]).to.equal(old_0);
+      expect(data.selectedPZone.saved).to.be.undefined;
     });
 
     it('should be able to move content down', function () {
@@ -457,20 +458,20 @@ describe('Service: PromotedContentService', function () {
 
       var moved = PromotedContentService.moveContentDn(0);
 
-      expect(moved).toBe(true);
-      expect(data.selectedPZone.content[0]).toEqual(old_1);
-      expect(data.selectedPZone.content[1]).toEqual(old_0);
-      expect(data.selectedPZone.saved).toBeUndefined();
+      expect(moved).to.equal(true);
+      expect(data.selectedPZone.content[0]).to.equal(old_1);
+      expect(data.selectedPZone.content[1]).to.equal(old_0);
+      expect(data.selectedPZone.saved).to.be.undefined;
     });
 
     it('should not be able to move top content up', function () {
       var moved = PromotedContentService.moveContentUp(0);
-      expect(moved).toBe(false);
+      expect(moved).to.equal(false);
     });
 
     it('should not be able to move bottom content down', function () {
       var moved = PromotedContentService.moveContentDn(data.selectedPZone.content.length - 1);
-      expect(moved).toBe(false);
+      expect(moved).to.equal(false);
     });
 
   });
@@ -485,15 +486,15 @@ describe('Service: PromotedContentService', function () {
     it('should be able to begin an insert operation', function () {
       PromotedContentService.beginContentInsert(content);
 
-      expect(data.actionContent).toEqual(content);
-      expect(data.action).toEqual(PromotedContentService.readableOperationTypes.INSERT);
+      expect(data.actionContent).to.equal(content);
+      expect(data.action).to.equal(PromotedContentService.readableOperationTypes.INSERT);
     });
 
     it('should be able to begin a replace operation', function () {
       PromotedContentService.beginContentReplace(content);
 
-      expect(data.actionContent).toEqual(content);
-      expect(data.action).toEqual(PromotedContentService.readableOperationTypes.REPLACE);
+      expect(data.actionContent).to.equal(content);
+      expect(data.action).to.equal(PromotedContentService.readableOperationTypes.REPLACE);
     });
 
     it('should allow an article to be inserted', function () {
@@ -508,14 +509,14 @@ describe('Service: PromotedContentService', function () {
 
       $rootScope.$digest();
 
-      expect(data.selectedPZone.content[index].id).toEqual(content.id);
-      expect(data.unsavedOperations[0].cleanType).toBe(PromotedContentService.readableOperationTypes.INSERT);
-      expect(data.unsavedOperations[0].content).toBe(content.id);
-      expect(data.unsavedOperations[0].index).toBe(index);
-      expect(data.actionContent).toBeNull();
-      expect(data.action).toBeNull();
-      expect(data.selectedPZone.content.length).toBe(oldContentLength + 1);
-      expect(data.selectedPZone.saved).toBeUndefined();
+      expect(data.selectedPZone.content[index].id).to.equal(content.id);
+      expect(data.unsavedOperations[0].cleanType).to.equal(PromotedContentService.readableOperationTypes.INSERT);
+      expect(data.unsavedOperations[0].content).to.equal(content.id);
+      expect(data.unsavedOperations[0].index).to.equal(index);
+      expect(data.actionContent).to.be.null;
+      expect(data.action).to.be.null;
+      expect(data.selectedPZone.content.length).to.equal(oldContentLength + 1);
+      expect(data.selectedPZone.saved).to.be.undefined;
     });
 
     it('should allow an article to be replaced', function () {
@@ -530,30 +531,30 @@ describe('Service: PromotedContentService', function () {
 
       $rootScope.$digest();
 
-      expect(data.selectedPZone.content[index].id).toEqual(content.id);
-      expect(data.unsavedOperations[0].cleanType).toBe(PromotedContentService.readableOperationTypes.REPLACE);
-      expect(data.unsavedOperations[0].content).toBe(content.id);
-      expect(data.unsavedOperations[0].index).toBe(index);
-      expect(data.actionContent).toBeNull();
-      expect(data.action).toBeNull();
-      expect(data.selectedPZone.content.length).toBe(oldContentLength);
-      expect(data.selectedPZone.saved).toBeUndefined();
+      expect(data.selectedPZone.content[index].id).to.equal(content.id);
+      expect(data.unsavedOperations[0].cleanType).to.equal(PromotedContentService.readableOperationTypes.REPLACE);
+      expect(data.unsavedOperations[0].content).to.equal(content.id);
+      expect(data.unsavedOperations[0].index).to.equal(index);
+      expect(data.actionContent).to.be.null;
+      expect(data.action).to.be.null;
+      expect(data.selectedPZone.content.length).to.equal(oldContentLength);
+      expect(data.selectedPZone.saved).to.be.undefined;
     });
 
     it('should be able to stop an insert operation', function () {
       PromotedContentService.beginContentInsert(content);
       PromotedContentService.stopContentAction();
 
-      expect(data.actionContent).toBeNull();
-      expect(data.action).toBeNull();
+      expect(data.actionContent).to.be.null;
+      expect(data.action).to.be.null;
     });
 
     it('should be able to stop a replace operation', function () {
       PromotedContentService.beginContentReplace(content);
       PromotedContentService.stopContentAction();
 
-      expect(data.actionContent).toBeNull();
-      expect(data.action).toBeNull();
+      expect(data.actionContent).to.be.null;
+      expect(data.action).to.be.null;
     });
   });
 });

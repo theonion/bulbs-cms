@@ -34,34 +34,34 @@ describe('Directive: statusFilter', function () {
 
   describe('isActive', function () {
     it('should return true for All, false for others when there is no search', function () {
-      expect($scope.isActive({label: 'All', key: null, value: null})).toBe(true);
-      expect($scope.isActive({label: 'Hey', key: 'key', value: 'value'})).toBe(false);
+      expect($scope.isActive({label: 'All', key: null, value: null})).to.equal(true);
+      expect($scope.isActive({label: 'Hey', key: 'key', value: 'value'})).to.equal(false);
     });
 
     it('should return true when option is in $location.search', function () {
       $location.search({key: 'value'});
-      expect($scope.isActive({label: 'Test', key: 'key', value: 'value'})).toBe(true);
+      expect($scope.isActive({label: 'Test', key: 'key', value: 'value'})).to.equal(true);
     });
 
     it('should return true for only one option even if they have the same keys', function () {
       $location.search({key: 'value'});
-      expect($scope.isActive({label: 'Test', key: 'key', value: function(){ return 'value'; }})).toBe(true);
-      expect($scope.isActive({label: 'Test', key: 'key', value: function(){ return 'othervalue'; }})).toBe(false);
+      expect($scope.isActive({label: 'Test', key: 'key', value: function(){ return 'value'; }})).to.equal(true);
+      expect($scope.isActive({label: 'Test', key: 'key', value: function(){ return 'othervalue'; }})).to.equal(false);
     });
   });
 
   describe('filterByStatus', function () {
     it('should clear search when getting a null option', function () {
       $scope.filterByStatus({label: 'All', key: null, value: null});
-      expect($location.search()).toEqual({});
+      expect($location.search()).to.eql({});
     });
 
     it('should add key and value to search', function () {
       $scope.filterByStatus({key: 'yeah', value: 'baby'});
-      expect($location.search()).toEqual({yeah: 'baby'});
+      expect($location.search()).to.eql({yeah: 'baby'});
 
       $scope.filterByStatus({key: 'function', value: function(){ return 'value'; }});
-      expect($location.search()).toEqual({function: 'value'});
+      expect($location.search()).to.eql({function: 'value'});
     });
   });
 

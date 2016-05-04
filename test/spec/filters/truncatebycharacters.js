@@ -13,7 +13,7 @@ describe('Filter: truncateByCharacters', function () {
 
   it('should return the input with no changes when passed no argument', function () {
     var text = 'angularjs';
-    expect(truncateByCharacters(text)).toBe(text);
+    expect(truncateByCharacters(text)).to.equal(text);
   });
 
 });

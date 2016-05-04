@@ -17,7 +17,7 @@ describe('Controller: ContentworkflowCtrl', function () {
       $scope: scope,
       $modal: modalService
     });
-    spyOn(modalService, 'open').and.returnValue({
+    sinon.stub(modalService, 'open').returns({
       result: {
         then: function () {}
       }
@@ -27,44 +27,44 @@ describe('Controller: ContentworkflowCtrl', function () {
   describe('should contain modal opening functions for various modals:', function () {
     it('trashContentModal', function () {
       scope.trashContentModal();
-      expect(modalService.open).toHaveBeenCalled();
+      expect(modalService.open.called).to.equal(true);
     });
     it('pubTimeModal', function () {
       scope.pubTimeModal();
-      expect(modalService.open).toHaveBeenCalled();
+      expect(modalService.open.called).to.equal(true);
     });
     it('sendToEditorModal', function () {
       scope.sendToEditorModal();
-      expect(modalService.open).toHaveBeenCalled();
+      expect(modalService.open.called).to.equal(true);
     });
     it('changelogModal', function () {
       scope.changelogModal();
-      expect(modalService.open).toHaveBeenCalled();
+      expect(modalService.open.called).to.equal(true);
     });
     it('thumbnailModal', function () {
       scope.thumbnailModal();
-      expect(modalService.open).toHaveBeenCalled();
+      expect(modalService.open.called).to.equal(true);
     });
     it('versionBrowserModal', function () {
       scope.versionBrowserModal();
-      expect(modalService.open).toHaveBeenCalled();
+      expect(modalService.open.called).to.equal(true);
     });
     it('descriptionModal', function () {
       scope.descriptionModal();
-      expect(modalService.open).toHaveBeenCalled();
+      expect(modalService.open.called).to.equal(true);
     });
   });
 
   describe('function getStatus is a utility function for determining if an article is unpublished/scheduled/published', function () {
     it('should return "unpublished" if article has no publish time set', function () {
-      expect(scope.getStatus({})).toBe('unpublished');
-      expect(scope.getStatus({published: null})).toBe('unpublished');
+      expect(scope.getStatus({})).to.equal('unpublished');
+      expect(scope.getStatus({published: null})).to.equal('unpublished');
     });
     it('should return "scheduled" if article has publish time in future', function () {
-      expect(scope.getStatus({published: '2999-04-08T15:35:15.118Z'})).toBe('scheduled');
+      expect(scope.getStatus({published: '2999-04-08T15:35:15.118Z'})).to.equal('scheduled');
     });
     it('should return "published" if article has publish time in past', function () {
-      expect(scope.getStatus({published: '1999-04-08T15:35:15.118Z'})).toBe('published');
+      expect(scope.getStatus({published: '1999-04-08T15:35:15.118Z'})).to.equal('published');
     });
   });
 

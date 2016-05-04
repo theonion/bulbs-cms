@@ -41,9 +41,9 @@ describe('Controller: LoginmodalCtrl', function () {
   }));
 
   it('should have a function login that calls Login.login with username/password', function (){
-    spyOn(loginService, 'login').and.returnValue({then: function(){}});
+    sinon.stub(loginService, 'login').returns({then: function(){}});
     scope.login();
-    expect(loginService.login).toHaveBeenCalledWith('bloop', 'bloop');
+    expect(loginService.login.calledWith('bloop', 'bloop')).to.equal(true);
   });
 
 });

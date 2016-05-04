@@ -16,7 +16,7 @@ describe('changelog modal', function () {
 
   it('should display the changelog', function () {
     var ul = element(by.css('div.modal-body ul.list-group'));
-    expect(ul.isDisplayed()).toBeTruthy();
+    expect(ul.isDisplayed()).to.equalTruthy();
   });
 
 });

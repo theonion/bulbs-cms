@@ -35,7 +35,7 @@ describe('Factory: CustomSearch', function () {
       .respond({count: count});
     $httpBackend.flush();
 
-    expect(respCount).toBe(count);
+    expect(respCount).to.equal(count);
   });
 
   it('should be able to retrieve the result count for a single group', function () {
@@ -51,7 +51,7 @@ describe('Factory: CustomSearch', function () {
       .respond({count: count});
     $httpBackend.flush();
 
-    expect(respCount).toBe(count);
+    expect(respCount).to.equal(count);
   });
 
   it('should be able to retrieve the content for a list', function () {
@@ -69,6 +69,6 @@ describe('Factory: CustomSearch', function () {
       .respond(content);
     $httpBackend.flush();
 
-    expect(respContent).toEqual(content);
+    expect(respContent).to.eql(content);
   });
 });

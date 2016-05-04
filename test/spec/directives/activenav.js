@@ -32,11 +32,11 @@ describe('Directive: activeNav', function () {
   }));
 
   it('should add the active class to the current path', function () {
-    expect(element.hasClass('active')).toBe(true);
+    expect(element.hasClass('active')).to.equal(true);
   });
 
   it('should not add the active class to an element that is not for the current path', function () {
-    expect(inactiveElement.hasClass('active')).toBe(false);
+    expect(inactiveElement.hasClass('active')).to.equal(false);
   });
 
 });

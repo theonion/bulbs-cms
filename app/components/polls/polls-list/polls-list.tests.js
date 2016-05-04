@@ -34,11 +34,11 @@ describe('Directive: polls', function () {
   }));
 
   it('should add the active class to current path', function () {
-    expect(element.hasClass('active')).toBe(true);
+    expect(element.hasClass('active')).to.equal(true);
   });
 
   it('html should contain string "polls"', function () {
-    expect(element.html()).toContain('Polls');
+    expect(element.html()).to.contain('Polls');
   });
 });
 

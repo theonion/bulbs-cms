@@ -41,7 +41,7 @@ describe('Directive: genericAjaxButton', function () {
 
       $scope.$digest();
 
-      expect($button.is(' :disabled')).toBe(true);
+      expect($button.is(' :disabled')).to.equal(true);
     });
 
     it('should have a non-disabled state', function () {
@@ -49,7 +49,7 @@ describe('Directive: genericAjaxButton', function () {
 
       $scope.$digest();
 
-      expect($button.is(':disabled')).toBe(false);
+      expect($button.is(':disabled')).to.equal(false);
     });
   });
 
@@ -66,9 +66,9 @@ describe('Directive: genericAjaxButton', function () {
 
       $scope.$digest();
 
-      expect($button.is(':disabled')).toBe(true);
-      expect($directiveScope.state).toBe($directiveScope.STATES.PROGRESS);
-      expect($.trim($button.text())).toBe('In Progress...');
+      expect($button.is(':disabled')).to.equal(true);
+      expect($directiveScope.state).to.equal($directiveScope.STATES.PROGRESS);
+      expect($.trim($button.text())).to.equal('In Progress...');
     });
 
     it('should have a done state', function () {
@@ -84,8 +84,8 @@ describe('Directive: genericAjaxButton', function () {
 
       $scope.$digest();
 
-      expect($directiveScope.state).toBe($directiveScope.STATES.DONE);
-      expect($.trim($button.text())).toBe('Complete');
+      expect($directiveScope.state).to.equal($directiveScope.STATES.DONE);
+      expect($.trim($button.text())).to.equal('Complete');
     });
 
     it('should have an error state', function () {
@@ -101,8 +101,8 @@ describe('Directive: genericAjaxButton', function () {
 
       $scope.$digest();
 
-      expect($directiveScope.state).toBe($directiveScope.STATES.ERROR);
-      expect($.trim($button.text())).toBe('Error');
+      expect($directiveScope.state).to.equal($directiveScope.STATES.ERROR);
+      expect($.trim($button.text())).to.equal('Error');
     });
   });
 });

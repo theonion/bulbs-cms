@@ -25,7 +25,7 @@
     "angular": false,
 
     // testing functions
-    "jasmine": false,
+    "sinon": false,
     "describe": false,
     "afterEach": false,
     "beforeEach": false,

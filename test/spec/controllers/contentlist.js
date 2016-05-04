@@ -23,7 +23,7 @@ describe('Controller: ContentlistCtrl', function () {
       ContentListService = _ContentListService_;
 
       // setup content list controller
-      spyOn(_ContentListService_, '$updateContent').and.callFake(function () {
+      sinon.stub(_ContentListService_, '$updateContent', function () {
         return {
           then: function (func) {
             func({
@@ -38,16 +38,16 @@ describe('Controller: ContentlistCtrl', function () {
         $location: locationService,
         ContentListService: ContentListService
       });
-      expect(ContentListService.$updateContent).toHaveBeenCalled();
+      expect(ContentListService.$updateContent.called).to.equal(true);
     });
   });
 
   it('should attach list of articles to scope', function () {
-    expect($scope.contentData.content.length).toBe(mockArticleList.results.length);
+    expect($scope.contentData.content.length).to.equal(mockArticleList.results.length);
   });
 
   it('should have function to change pages', function () {
-    expect(ContentListService.$updateContent).toHaveBeenCalled();
+    expect(ContentListService.$updateContent.called).to.equal(true);
   });
 
 });

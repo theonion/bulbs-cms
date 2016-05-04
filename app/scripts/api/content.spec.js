@@ -16,15 +16,15 @@ describe('ContentService', function () {
 
   it('should get a content detail', function () {
     ContentService.one(6).get().then(function (content) {
-      expect(content.id).toBe(6);
+      expect(content.id).to.equal(6);
     });
     $httpBackend.flush();
   });
 
   it('should return the contributions for content', function () {
     ContentService.one(6).all('contributions').getList().then(function (contributions) {
-      expect(contributions.length).toBe(3);
-      expect(contributions[0].contributor.getFullName()).toBe('Chris Sinchok');
+      expect(contributions.length).to.equal(3);
+      expect(contributions[0].contributor.getFullName()).to.equal('Chris Sinchok');
     });
     $httpBackend.flush();
   });
@@ -46,8 +46,8 @@ describe('ContentService', function () {
     };
 
     ContentService.one(6).all('contributions').post([data]).then(function (contributions) {
-      expect(contributions.length).toBe(1);
-      expect(contributions[0]).toEqual(data);
+      expect(contributions.length).to.equal(1);
+      expect(contributions[0]).to.eql(data);
     });
     $httpBackend.flush();
   });
@@ -69,8 +69,8 @@ describe('ContentService', function () {
     };
 
     ContentService.one(6).all('contributions').save([data]).then(function (contributions) {
-      expect(contributions.length).toBe(1);
-      expect(contributions[0].id).toEqual(data.id);
+      expect(contributions.length).to.equal(1);
+      expect(contributions[0].id).to.equal(data.id);
     });
     $httpBackend.flush();
   });

@@ -14,17 +14,17 @@ describe('create content directive', function () {
   })
 
   it('createContentButton should be displayed on the page', function () {
-    expect(createContentButton.isDisplayed()).toBeTruthy();
+    expect(createContentButton.isDisplayed()).to.equalTruthy();
   });
 
   it('modal should be invisible on the page', function () {
-    expect(modal.isPresent()).toBeTruthy();
-    expect(modal.isDisplayed()).toBeFalsy();
+    expect(modal.isPresent()).to.equalTruthy();
+    expect(modal.isDisplayed()).to.equalFalsy();
   });
 
   it('createContentButton click should display modal', function () {
     createContentButton.click();
-    expect(modal.isDisplayed()).toBeTruthy();
+    expect(modal.isDisplayed()).to.equalTruthy();
   });
 
   describe('create content modal', function () {
@@ -34,7 +34,7 @@ describe('create content directive', function () {
     });
 
     it('should have a next button', function () {
-      expect(nextButton.isDisplayed()).toBeTruthy();
+      expect(nextButton.isDisplayed()).to.equalTruthy();
     });
 
     describe('next panel', function () {
@@ -44,7 +44,7 @@ describe('create content directive', function () {
       });
 
       it('should have an input field', function () {
-        expect(titleInput.isDisplayed()).toBeTruthy();
+        expect(titleInput.isDisplayed()).to.equalTruthy();
       });
 
       //TODO: test that entering a title and pressing enter makes a new article
