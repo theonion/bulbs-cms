@@ -1,4 +1,5 @@
 'use strict';
+/*jshint -W030 */
 
 describe('Directive: confirmationModalOpener', function () {
   var
