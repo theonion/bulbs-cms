@@ -38,7 +38,7 @@ describe('Controller: ContentlistCtrl', function () {
         $location: locationService,
         ContentListService: ContentListService
       });
-      expect(ContentListService.$updateContent.called).to.equal(true);
+      expect(ContentListService.$updateContent).to.have.been.called;
     });
   });
 
@@ -47,7 +47,7 @@ describe('Controller: ContentlistCtrl', function () {
   });
 
   it('should have function to change pages', function () {
-    expect(ContentListService.$updateContent.called).to.equal(true);
+    expect(ContentListService.$updateContent).to.have.been.called;
   });
 
 });

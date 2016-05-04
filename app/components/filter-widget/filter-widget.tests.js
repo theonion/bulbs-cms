@@ -1,4 +1,5 @@
 'use strict';
+/*jshint -W030 */
 
 describe('Directive: filterWidget', function () {
 
@@ -36,7 +37,7 @@ describe('Directive: filterWidget', function () {
   it('should be able to add filters to $location', function () {
     $scope.addFilter('tag', 'tag-1');
 
-    expect(ContentListService.$updateContent.called).to.equal(true);
+    expect(ContentListService.$updateContent).have.been.called;
     expect($location.search().tag).to.contain('tag-1');
   });
 
@@ -45,7 +46,7 @@ describe('Directive: filterWidget', function () {
     $scope.addFilter('tag', 'tag-1');
     $scope.addFilter('tag', 'tag-1');
 
-    expect(ContentListService.$updateContent.called).to.equal(true);
+    expect(ContentListService.$updateContent).to.have.been.called;
     expect($location.search().tag.length).to.equal(1);
     expect($location.search().tag).to.contain('tag-1');
   });

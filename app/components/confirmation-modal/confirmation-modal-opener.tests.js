@@ -1,4 +1,5 @@
 'use strict';
+/*jshint -W030 */
 
 describe('Directive: confirmationModalOpener', function () {
   var
@@ -42,7 +43,7 @@ describe('Directive: confirmationModalOpener', function () {
     $('.modal-content').find('button[ng-click="cancel()"]').click();
     $scope.$digest();
 
-    expect($scope.cancel.called).to.equal(true);
+    expect($scope.cancel).to.have.been.called;
   });
 
   it('should call confirm callback on confirm', function () {
@@ -61,6 +62,6 @@ describe('Directive: confirmationModalOpener', function () {
     $('.modal-content').find('button[ng-click="confirm()"]').click();
     $scope.$digest();
 
-    expect($scope.confirm.called).to.equal(true);
+    expect($scope.confirm).to.have.been.called;
   });
 });

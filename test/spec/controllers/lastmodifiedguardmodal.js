@@ -86,7 +86,7 @@ describe('Controller: LastmodifiedguardmodalCtrl', function () {
     scope.$parent.postValidationSaveArticle = function(){};
     sinon.stub(scope.$parent, 'postValidationSaveArticle');
     scope.saveAnyway();
-    expect(scope.$parent.postValidationSaveArticle.called).to.equal(true);
+    expect(scope.$parent.postValidationSaveArticle).to.have.been.called;
   });
 
 });

@@ -224,7 +224,7 @@ describe('Service: CustomSearchService', function () {
 
       $httpBackend.expectPOST(/\/cms\/api\/v1\/custom-search-content\/(\?page=\d+)?$/).respond(responseData);
 
-      expect(customSearchService._$getContent.calledWith(_.assign(addProps, data))).to.equal(true);
+      expect(customSearchService._$getContent).to.have.been.calledWith(_.assign(addProps, data));
       expect(customSearchService.content.something).to.equal(responseData.something);
     });
 
@@ -236,11 +236,11 @@ describe('Service: CustomSearchService', function () {
 
       customSearchService.$filterContentByExcluded();
 
-      expect(customSearchService._$getContent.calledWith({
+      expect(customSearchService._$getContent).to.have.been.calledWith({
         includedIds: customSearchService._data.excludedIds,
         page: 1,
         query: ''
-      })).to.equal(true);
+      });
     });
 
     it('should provide a function to filter content by included', function () {
@@ -251,11 +251,11 @@ describe('Service: CustomSearchService', function () {
 
       customSearchService.$filterContentByIncluded();
 
-      expect(customSearchService._$getContent.calledWith({
+      expect(customSearchService._$getContent).to.have.been.calledWith({
         includedIds: customSearchService._data.includedIds,
         page: 1,
         query: ''
-      })).to.equal(true);
+      });
     });
 
     describe('included id functions', function () {

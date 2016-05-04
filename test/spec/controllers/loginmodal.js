@@ -43,7 +43,6 @@ describe('Controller: LoginmodalCtrl', function () {
   it('should have a function login that calls Login.login with username/password', function (){
     sinon.stub(loginService, 'login').returns({then: function(){}});
     scope.login();
-    expect(loginService.login.calledWith('bloop', 'bloop')).to.equal(true);
+    expect(loginService.login).to.have.been.calledWith('bloop', 'bloop');
   });
-
 });

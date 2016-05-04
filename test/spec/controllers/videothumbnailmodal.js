@@ -103,12 +103,12 @@ describe('Controller: VideothumbnailmodalCtrl', function () {
       scope.video = {poster: 'dummy value'};
       sinon.stub(zencoderService, 'setVideo');
       scope.setPoster();
-      expect(zencoderService.setVideo.calledWith({poster: 'dummy value'})).to.equal(true);
+      expect(zencoderService.setVideo).to.have.been.calledWith({poster: 'dummy value'});
     });
     it('reencode should call Zencoder.encode', function () {
       sinon.stub(zencoderService, 'encode');
       scope.reencode();
-      expect(zencoderService.encode.calledWith(1)).to.equal(true);
+      expect(zencoderService.encode).to.have.been.calledWith(1);
     })
   });
 
