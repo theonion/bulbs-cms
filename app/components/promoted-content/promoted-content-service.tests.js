@@ -1,4 +1,5 @@
 'use strict';
+/*jshint -W030 */
 
 describe('Service: PromotedContentService', function () {
 

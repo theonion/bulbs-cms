@@ -54,7 +54,7 @@ describe('Directive: pollsEdit', function () {
     expect(scope.answers.length).to.equal(3);
     scope.answers.forEach(function(answer) {
       expect(answer).to.be.an.instanceof(Object);
-    })
+    });
   });
 
   describe('scope.addAnswer()', function () {
