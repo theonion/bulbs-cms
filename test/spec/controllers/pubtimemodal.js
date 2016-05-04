@@ -86,8 +86,8 @@ describe('Controller: PubtimemodalCtrl', function () {
       scope.article = articleWithNoFeatureType;
       scope.setPubTime();
 
-      expect(modal.dismiss.called).to.equal(true);
-      expect(modalService.open.called).to.equal(true);
+      expect(modal.dismiss).to.have.been.called;
+      expect(modalService.open).to.have.been.called;
     });
 
     it('should make an http request to the publis endpoint', function () {

@@ -81,7 +81,7 @@ describe('Controller: CmsNotificationCtrl', function () {
       $scope.saveNotification();
       $scope.$apply();
 
-      expect($scope.$parent.$saveNotification.called).to.equal(false);
+      expect($scope.$parent.$saveNotification).not.to.have.been.called;
 
     });
 
@@ -92,7 +92,7 @@ describe('Controller: CmsNotificationCtrl', function () {
       $scope.saveNotification();
       $scope.$apply();
 
-      expect($scope.$parent.$saveNotification.called).to.equal(true);
+      expect($scope.$parent.$saveNotification).to.have.been.called;
       expect($scope.notificationDirty).to.equal(false);
 
     });
@@ -101,7 +101,7 @@ describe('Controller: CmsNotificationCtrl', function () {
 
       $scope.deleteNotification();
 
-      expect($scope.$parent.$deleteNotification.called).to.equal(true);
+      expect($scope.$parent.$deleteNotification).to.have.been.called;
 
     });
 
@@ -117,8 +117,8 @@ describe('Controller: CmsNotificationCtrl', function () {
       $scope.deleteNotification();
       $scope.$apply();
 
-      expect($scope.$parent.$saveNotification.called).to.equal(false);
-      expect($scope.$parent.$deleteNotification.called).to.equal(false);
+      expect($scope.$parent.$saveNotification).not.to.have.been.called;
+      expect($scope.$parent.$deleteNotification).not.to.have.been.called;
 
     });
 

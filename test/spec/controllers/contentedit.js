@@ -47,7 +47,7 @@ describe('Controller: ContenteditCtrl', function () {
         $routeParams: routeParams,
         ContentApi: contentApi
       });
-      expect(contentApi.one.calledWith('content', 1)).to.equal(true);
+      expect(contentApi.one).to.have.been.calledWith('content', 1);
     });
   });
 
@@ -96,14 +96,14 @@ describe('Controller: ContenteditCtrl', function () {
         scope.articleIsDirty = true;
         sinon.stub(scope, 'saveArticle');
         scope.saveArticleIfDirty();
-        expect(scope.saveArticle.called).to.equal(true);
+        expect(scope.saveArticle).to.have.been.called;
       });
 
       it('should not call saveArticle if article is not dirty', function () {
         scope.articleIsDirty = false;
         sinon.stub(scope, 'saveArticle');
         scope.saveArticleIfDirty();
-        expect(scope.saveArticle.called).to.equal(false);
+        expect(scope.saveArticle).not.to.have.been.called;
       });
     });
 
@@ -118,8 +118,8 @@ describe('Controller: ContenteditCtrl', function () {
         scope.saveArticle();
         httpBackend.flush();
 
-        expect(scope.postValidationSaveArticle.called).to.equal(true);
-        expect(VersionStorageApiMock.$create.called).to.equal(true);
+        expect(scope.postValidationSaveArticle).to.have.been.called;
+        expect(VersionStorageApiMock.$create).to.have.been.called;
       });
 
       it('should open a modal if there is a last modified conflict', function () {
@@ -130,8 +130,8 @@ describe('Controller: ContenteditCtrl', function () {
         sinon.stub(modalService, 'open');
         scope.saveArticle();
         httpBackend.flush();
-        expect(modalService.open.called).to.equal(true);
-        expect(scope.postValidationSaveArticle.called).to.equal(false);
+        expect(modalService.open).to.have.been.called;
+        expect(scope.postValidationSaveArticle).not.to.have.been.called;
       });
     });
   });

@@ -18,7 +18,7 @@ module.exports = function(config) {
     basePath: '',
 
     // testing framework to use (jasmine/mocha/qunit/...)
-    frameworks: ['mocha', 'chai', 'sinon'],
+    frameworks: ['mocha', 'sinon-chai'],
 
     // list of files / patterns to load in the browser
     files: [
@@ -111,6 +111,9 @@ module.exports = function(config) {
       mocha: {
         reporter: 'html',
         ui: 'bdd',
+      },
+      chai: {
+        includeStack: true
       },
     },
 

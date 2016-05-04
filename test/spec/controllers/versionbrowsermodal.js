@@ -132,7 +132,7 @@ describe('Controller: VersionBrowserModalCtrl', function () {
 
     expect(scope.articleIsDirty).to.equal(true);
 
-    expect(modal.close.called).to.equal(true);
+    expect(modal.close).to.have.been.called;
   });
 
 });

@@ -27,31 +27,31 @@ describe('Controller: ContentworkflowCtrl', function () {
   describe('should contain modal opening functions for various modals:', function () {
     it('trashContentModal', function () {
       scope.trashContentModal();
-      expect(modalService.open.called).to.equal(true);
+      expect(modalService.open).to.have.been.called;
     });
     it('pubTimeModal', function () {
       scope.pubTimeModal();
-      expect(modalService.open.called).to.equal(true);
+      expect(modalService.open).to.have.been.called;
     });
     it('sendToEditorModal', function () {
       scope.sendToEditorModal();
-      expect(modalService.open.called).to.equal(true);
+      expect(modalService.open).to.have.been.called;
     });
     it('changelogModal', function () {
       scope.changelogModal();
-      expect(modalService.open.called).to.equal(true);
+      expect(modalService.open).to.have.been.called;
     });
     it('thumbnailModal', function () {
       scope.thumbnailModal();
-      expect(modalService.open.called).to.equal(true);
+      expect(modalService.open).to.have.been.called;
     });
     it('versionBrowserModal', function () {
       scope.versionBrowserModal();
-      expect(modalService.open.called).to.equal(true);
+      expect(modalService.open).to.have.been.called;
     });
     it('descriptionModal', function () {
       scope.descriptionModal();
-      expect(modalService.open.called).to.equal(true);
+      expect(modalService.open).to.have.been.called;
     });
   });
 

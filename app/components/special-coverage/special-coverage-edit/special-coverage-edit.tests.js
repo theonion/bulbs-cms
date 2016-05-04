@@ -77,7 +77,7 @@ describe('Directive: specialCoverageEdit', function () {
 
         $rootScope.$apply();
 
-        expect($directiveScope.model.$searchCampaigns.calledWith({search: 'one'})).to.equal(true);
+        expect($directiveScope.model.$searchCampaigns).to.have.been.calledWith({search: 'one'});
         expect(searchResults).to.eql([1, 2]);
         expect($directiveScope.tunicCampaignIdMapping).to.eql({
           1: {

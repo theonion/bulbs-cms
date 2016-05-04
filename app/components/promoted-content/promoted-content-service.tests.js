@@ -127,7 +127,7 @@ describe('Service: PromotedContentService', function () {
     $httpBackend.flush();
 
     // check everything is in order
-    expect(PromotedContentService.makeOperationsStale.called).to.equal(true);
+    expect(PromotedContentService.makeOperationsStale).to.have.been.called;
     expect(data.unsavedOperations).to.eql([]);
     expect(operation.client_id).to.be.undefined;
     expect(operation.when).to.equal(previewTime.toISOString());
@@ -174,7 +174,7 @@ describe('Service: PromotedContentService', function () {
     $httpBackend.flush();
 
     // check everything is in order
-    expect(PromotedContentService.makeOperationsStale.called).to.equal(true);
+    expect(PromotedContentService.makeOperationsStale).to.have.been.called;
     expect(data.unsavedOperations).to.eql([]);
     expect(operations[0].client_id).to.be.undefined;
     expect(operations[0].when).to.equal(previewTime.toISOString());
@@ -200,7 +200,7 @@ describe('Service: PromotedContentService', function () {
     $httpBackend.flush();
 
     // check everything is in order
-    expect(PromotedContentService.makeOperationsStale.called).to.equal(true);
+    expect(PromotedContentService.makeOperationsStale).to.have.been.called;
     expect(data.unsavedOperations).to.eql([]);
     expect(saveResp).to.equal(data.selectedPZone);
     expect(data.selectedPZone.saved).to.equal(true);
@@ -209,7 +209,7 @@ describe('Service: PromotedContentService', function () {
   it('should be able to update content list', function () {
     sinon.stub(ContentListService, '$updateContent');
     PromotedContentService.$refreshAllContent();
-    expect(ContentListService.$updateContent.called).to.equal(true);
+    expect(ContentListService.$updateContent).to.have.been.called;
   });
 
   it('should be able to add an operation', function () {
@@ -387,7 +387,7 @@ describe('Service: PromotedContentService', function () {
     $httpBackend.expectGET('/cms/api/v1/pzone/' + pzone.id + '/').respond(pzone);
     $httpBackend.flush();
 
-    expect(PromotedContentService.makeOperationsStale.called).to.equal(true);
+    expect(PromotedContentService.makeOperationsStale).to.have.been.called;
     expect(data.unsavedOperations).to.eql([]);
     expect(data.selectedPZone.id).to.equal(pzone.id);
   });
@@ -419,8 +419,8 @@ describe('Service: PromotedContentService', function () {
     $rootScope.$digest();
 
     expect(data.previewTime).to.equal(time);
-    expect(PromotedContentService.$refreshSelectedPZone.called).to.equal(true);
-    expect(PromotedContentService.clearUnsavedOperations.called).to.equal(true);
+    expect(PromotedContentService.$refreshSelectedPZone).to.have.been.called;
+    expect(PromotedContentService.clearUnsavedOperations).to.have.been.called;
   });
 
   it('should be able to set the preview time to immediate', function () {
