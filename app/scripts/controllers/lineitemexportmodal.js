@@ -2,18 +2,23 @@
 
 angular.module('bulbsCmsApp')
   .controller('LineitemexportmodalCtrl', function ($scope, $http, moment) {
-    var reportEmailURL = '/cms/api/v1/line-items/';
     var now = moment().tz('America/Chicago');
-
     $scope.start = moment([now.year(), now.month()]);
     $scope.end = moment([now.year(), now.month() + 1]);
 
-    $scope.download = function () {
-      var data = {
-        format: 'csv',
-        start: $scope.start,
-        end: $scope.end
-      };
-      $http.post(reportEmailURL, data);
+    $scope.apiUrl = '/cms/api/v1/contributions/line-item-reporting/?format=csv';
+
+    $scope.updateDownloadUrl = function () {
+      var start_string = $scope.start.format('YYYY-MM-DD');
+      var end_string = $scope.end.format('YYYY-MM-DD');
+      return $scope.apiUrl + '&start=' + start_string + '&end=' + end_string;
     };
+
+    $scope.downloadUrl = $scope.updateDownloadUrl();
+
+    $scope.$watchCollection('[start, end]', function () {
+      $scope.downloadUrl = $scope.updateDownloadUrl();
+    });
+
+
   });
