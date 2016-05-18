@@ -1,12 +1,24 @@
 <h2>{{ namePlural }}</h2>
 
 <div class="list-page-tools">
-  <button
-      class="add-item btn btn-primary"
-      ng-click="$add()">
-    <i class="glyphicon glyphicon-plus"></i>
-    Add {{ name }}
-  </button>
+  <div class="utility-tools">
+    <button
+        class="add-item btn btn-primary"
+        ng-click="$add()">
+      <i class="glyphicon glyphicon-plus"></i>
+      Add {{ name }}
+    </button>
+    <button
+        ng-repeat="utility in utilityButtons"
+        class="{{ utility.buttonClasses || 'btn btn-primary' }}"
+        ng-click="utility.click()">
+      <i
+          ng-if="utility.iconClasses"
+          class="{{ utility.iconClasses }}">
+      </i>
+      {{ utility.title }}
+    </button>
+  </div>
 
   <div class="filter-tools">
     <div
