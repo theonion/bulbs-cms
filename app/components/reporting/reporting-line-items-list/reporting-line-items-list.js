@@ -13,7 +13,7 @@ angular.module('lineItems.list', [
 
           $scope.modelFactory = LineItem;
 
-          $scope.lineItemExportModal = function () {
+          $scope.LineItemExportModal = function () {
             return $modal.open({
               templateUrl: routes.PARTIALS_URL + 'modals/line-item-export-modal.html',
               controller: 'LineitemexportmodalCtrl',
@@ -23,10 +23,10 @@ angular.module('lineItems.list', [
           $scope.utilityButtons = [{
             title: 'Export CSV',
             click: function () {
-              $scope.lineItemExportModal();
+              $scope.LineItemExportModal();
             },
             buttonClasses: 'add-item btn btn-primary',
-            iconClasses: 'glyphicon'
+            iconClasses: 'font-awesome'
           }];
         },
 

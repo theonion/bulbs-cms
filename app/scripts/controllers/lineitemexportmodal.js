@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('LineitemexportmodalCtrl', function ($scope, $http, moment) {
-    var now = moment().tz('America/Chicago');
+  .controller('LineitemexportmodalCtrl', function ($scope, $http, moment, TIMEZONE_NAME) {
+    var now = moment().tz(TIMEZONE_NAME);
     $scope.start = moment([now.year(), now.month()]);
     $scope.end = moment([now.year(), now.month() + 1]);
 
