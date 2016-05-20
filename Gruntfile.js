@@ -112,39 +112,4 @@ module.exports = function (grunt) {
     'test',
     'build'
   ]);
-
-  var shell = require('shelljs');
-
-  grunt.registerTask('commitBuild', function () {
-    var stdout = shell.exec('git add dist/scripts/scripts.min.js.*.map dist/scripts/templates.js.*.map;' +
-                            'git commit -am \'new build\'',
-      {silent: true});
-    grunt.log.ok(stdout.output);
-  });
-
-  grunt.registerTask('publish', function (release_args) {
-    var branch = shell.exec(
-      'git symbolic-ref --short HEAD',
-      { silent: true }
-    ).output.trim();
-
-    if (branch === 'release') {
-
-      var release = 'release';
-      if (arguments.length) {
-        release += ':' + release_args;
-      }
-
-      grunt.task.run([
-        'travis',
-        'build',
-        'commitBuild',
-        release
-      ]);
-
-    } else {
-      grunt.fail.fatal('You\'re not on the \"release\" branch!');
-    }
-
-  });
 };

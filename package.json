@@ -63,7 +63,6 @@
     "mocha": "^2.4.5",
     "protractor": "^0.22.0",
     "requirejs": "~2.1.11",
-    "shelljs": "~0.1.2",
     "sinon": "^1.17.4",
     "sinon-chai": "^2.8.0",
     "time-grunt": "~0.2.1"
