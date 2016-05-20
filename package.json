@@ -77,6 +77,7 @@
     "build": "grunt build",
     "karma": "grunt karma",
     "setup": "npm install; bower install",
-    "publish": "grunt publish"
+    "publish": "grunt publish",
+    "lint": "grunt lint"
   }
 }

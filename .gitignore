@@ -9,3 +9,4 @@ coverage
 .DS_Store
 dist/
 .editorconfig
+npm-debug.log
