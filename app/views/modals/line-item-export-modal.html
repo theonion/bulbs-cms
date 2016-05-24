@@ -1,0 +1,53 @@
+<div class="modal-header">
+  <button type="button" class="close" ng-click="$dismiss();" aria-hidden="true">&times;</button>
+  <h4 class="modal-title">Download Line Items</h4>
+</div><!--/modal-header-->
+<div class="modal-body">
+
+  <div class="row">
+    <div class="col-sm-5 col-xs-6">
+      <label>Start</label>
+      <div class="input-group">
+        <input
+          type="text"
+          value="{{ start.format('MM/DD/YY') }}"
+          class="form-control"
+          readonly>
+        <span class="input-group-btn">
+          <button
+            class="btn btn-info"
+            datetime-selection-modal-opener
+            ng-model="start"
+            modal-title="Start Date">
+            <i class="glyphicon glyphicon-calendar"></i>
+          </button>
+        </span>
+      </div>
+    </div>
+    <div class="col-sm-5 col-xs-6">
+      <label>End</label>
+      <div class="input-group">
+        <input
+          type="text"
+          value="{{ end.format('MM/DD/YY') }}"
+          class="form-control"
+          readonly>
+        <span class="input-group-btn">
+          <button
+            class="btn btn-info"
+            datetime-selection-modal-opener
+            ng-model="end"
+            modal-title="End Date">
+            <i class="glyphicon glyphicon-calendar"></i>
+          </button>
+        </span>
+      </div>
+    </div>
+  </div>
+
+
+</div><!--/modal-body-->
+<div class="modal-footer">
+    <button class="btn btn-link" aria-hidden="true" ng-click="$dismiss();">Cancel</button>
+    <a target="_blank" class="btn btn-primary" href="{{ downloadUrl }}">Download</a>
+</div><!--/modal-footer-->
