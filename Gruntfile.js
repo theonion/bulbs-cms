@@ -59,7 +59,6 @@ module.exports = function (grunt) {
       'less',
       'autoprefixer',
       'injector:local_dependencies',
-      'jshint:all',
       'connect:livereload',
       'watch:livereload'
     ]);
