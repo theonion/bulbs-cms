@@ -33,9 +33,11 @@ angular.module('bulbsCmsApp', [
   'ipCookie',
   'bulbs.api',
   'OnionEditor',
+
   // shared
   'contentServices',
   'cms.tunic',
+
   // components
   'bettyEditable',
   'bugReporter',
@@ -49,7 +51,10 @@ angular.module('bulbsCmsApp', [
   'templateTypeField',
   'specialCoverage',
   'sections',
-  'reports'
+  'reports',
+
+  // newest
+  'bulbs.cms.components.createContent'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
