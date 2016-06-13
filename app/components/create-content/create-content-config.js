@@ -3,54 +3,49 @@
 angular.module('bulbs.cms.components.createContent.config', [
   'lodash'
 ])
+  .constant('BULBS_CMS_CREATE_CONTENT_DEFAULT_DIRECTIVE', 'create-content-default')
   .provider('CreateContentConfig', [
-    '_',
-    function CreateContentConfigProvider (_) {
+    '_', 'BULBS_CMS_CREATE_CONTENT_DEFAULT_DIRECTIVE',
+    function CreateContentConfigProvider (_, BULBS_CMS_CREATE_CONTENT_DEFAULT_DIRECTIVE) {
 
       var configError = BulbsCmsConfigError.build('CreateContentConfig');
       var contentTypes = [];
 
-      var createContentType = function (title, contentData) {
-        if (_.isEmpty(title)) {
-          throw configError('all content types must have titles!');
+      this.addContentType = function (contentTypeSpec) {
+        if (!_.isObject(contentTypeSpec)) {
+          throw configError('must provide parameters when adding a content type!');
         }
 
-        if (_.isUndefined(contentData) || _.isUndefined(contentData.feature_type)) {
-          throw configError('provide a feature type for "' + title + '"!');
+        if (!_.isString(contentTypeSpec.title)) {
+          throw configError('all content types must have a title!');
         }
 
-        if (_.some(contentTypes, 'title', title)) {
-          throw configError('"' + title + '" is not unique!');
+        if (!_.isObject(contentTypeSpec.payload)) {
+          throw configError('payload not provided for "' + contentTypeSpec.title + '"!');
         }
 
-        var contentType = {
-          title: title,
-          contentData: contentData
-        };
-
-        contentTypes.push(contentType);
-
-        return contentType;
-      };
-
-      this.addContentType = function (title, contentData) {
-        createContentType(title, contentData);
-
-        return this;
-      };
-
-      this.addContentSubType = function (parentTitle, title, contentData) {
-        if (!_.some(contentTypes, 'title', parentTitle)) {
-          throw configError('parent "' + parentTitle + '" for content sub type "' + title + '" doesn\'t exist!');
+        if (!_.isString(contentTypeSpec.payload.feature_type)) {
+          throw configError('provide a feature type for "' + contentTypeSpec.title + '"!');
         }
 
-        var parent = _.find(contentTypes, { title: parentTitle });
-        if (parent.parentTitle) {
-          throw configError('cannot nest sub type "' + title + '" under parent "' + parentTitle + '" which is already a child!');
+        if (_.some(contentTypes, 'title', contentTypeSpec.title)) {
+          throw configError('"' + contentTypeSpec.title + '" is not unique!');
         }
 
-        var contentType = createContentType(title, contentData);
-        contentType.parentTitle = parentTitle;
+        var spec = _.pick(
+          contentTypeSpec, [
+            'title',
+            'payload',
+            'context',
+            'directive'
+          ]
+        );
+
+        if (!_.isString(spec.directive)) {
+          spec.directive = BULBS_CMS_CREATE_CONTENT_DEFAULT_DIRECTIVE;
+        }
+
+        contentTypes.push(spec);
 
         return this;
       };
@@ -59,22 +54,7 @@ angular.module('bulbs.cms.components.createContent.config', [
 
         return {
           getContentTypes: function () {
-            return contentTypes.filter(function (contentType) {
-              return _.isUndefined(contentType.parentTitle);
-            });
-          },
-          getContentSubTypes: function (contentTypeTitle) {
-            if (_.isUndefined(contentTypeTitle)) {
-              throw configError('parent title not given to subtype search!');
-            }
-
-            if (!_.some(contentTypes, 'title', contentTypeTitle)) {
-              throw configError('parent given to subtype search does not exist!');
-            }
-
-            return contentTypes.filter(function (contentType) {
-              return contentType.parentTitle === contentTypeTitle;
-            });
+            return contentTypes;
           }
         };
       };

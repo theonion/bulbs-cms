@@ -8,7 +8,31 @@
   <h4 class="modal-title">Create Content</h4>
 </div>
 <div class="modal-body">
-  HERE IS WHERE YOUR CONTENT WILL BE CREATED
+  <div class="container-fluid">
+    <section class="col-xs-4">
+      <h5>1. Choose a type</h5>
+      <ul class="nav nav-pills nav-stacked">
+        <li ng-repeat="contentType in config.getContentTypes() track by contentType.title">
+          {{contentType.title}}
+        </li>
+      </ul>
+    </section>
+
+    <section class="col-xs-8">
+      <ul class="nav nav-pills nav-stacked">
+        <div ng-if="currentSelectedParent.groupBy">
+          <li ng-repeat="group in config.getContentSubTypes(...)">
+            <li ng-repeat="contentSubType in group"></li>
+          </li>
+        </div>
+        <div ng-if="!currentSelectedParent.groupBy">
+          <li ng-repeat="contentSubType in config.getContentSubTypes(currentSelectedParent.title) track by contentSubType.title">
+            {{contentSubType.title}}
+          </li>
+        </div>
+      </ul>
+    </section>
+  </div>
 </div>
 <div class="modal-footer">
   <button

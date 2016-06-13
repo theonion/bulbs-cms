@@ -121,4 +121,69 @@ angular.module('bulbsCmsApp', [
   deleteHeaders['X-CSRFToken'] = $cookies.csrftoken;
   $http.defaults.headers.delete = deleteHeaders;
 })
-.constant('TIMEZONE_NAME', 'America/Chicago');
+.constant('TIMEZONE_NAME', 'America/Chicago')
+.config(function(CreateContentConfigProvider) {
+  // TODO remove this
+  // CreateContentConfigProvider
+  //   .addContentType({
+  //     title: 'Article',
+  //     directive: 'create-content-default'
+  //     context: {
+  //       description: 'abce',
+  //       thumbnail: '/static/image.jpg',
+  //       subTypes: [{
+  //         title: 'News in Brief',
+  //         createData: {
+  //           feature_type: 'garbage_featre_type'
+  //         }
+  //       }]
+  //     }
+  //   })
+  //
+  //   .addContentType({
+  //     title: 'Review',
+  //     directive: 'create-content-review'
+  //     context: {
+  //       groups: [{
+  //         title: 'TV',
+  //         subTypes: [{
+  //           title: 'Episode',
+  //           payload: {
+  //             feature_type: 'reviews_review',
+  //             tags: ['tv']
+  //           }
+  //         }]
+  //       }]
+  //     }
+  //   })
+  //
+  //   .addContentType('Article', {
+  //     payload: {
+  //       feature_type: 'foo'
+  //     },
+  //     subtypes: [
+  //       { title: 'News in Brief', payload: { feature_type: 'asdf' } },
+  //       { title: 'News' },
+  //       { title: 'Sports News' },
+  //     ]
+  //   })
+  //   .addContentType('Review', {
+  //     feature_type: 'review',
+  //     subtypes: [
+  //       { title: 'Episode', payload: { tag: 'TV' }, template: 'review' },
+  //       { title: 'Classic Epidsode', tag: 'TV', template: 'review' },
+  //       { title: 'Theatrical', tag: 'Film', template: 'review' },
+  //     ]
+  //   })
+  //   addContentType({
+  //     title: 'Review',
+  //     directive: 'create-content-review',
+  //     context: {
+  //       reviewTypes: [{
+  //         title: TV,
+  //         subTypes: [{
+  //           title: 'Movie Review',
+  //         }]
+  //       }]
+  //   });
+});

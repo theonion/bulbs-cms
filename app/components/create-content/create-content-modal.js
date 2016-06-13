@@ -1,17 +1,21 @@
 'use strict';
 
 angular.module('bulbs.cms.components.createContent.modal', [
-  'ui.bootstrap.modal'
+  'bulbs.cms.components.createContent.config',
+  'ui.bootstrap.modal',
 ])
   .factory('CreateContentModal', [
     '$modal', 'routes',
     function ($modal, routes) {
 
       return function (scope) {
+
         return $modal.open({
           controller: [
-            '$modalInstance', '$scope',
-            function ($modalInstance, $scope) {
+            '$modalInstance', '$scope', 'CreateContentConfig',
+            function ($modalInstance, $scope, CreateContentConfig) {
+              $scope.config = CreateContentConfig;
+              $scope.currentSelectedParent = $scope.config.getContentTypes()[0];
               $scope.confirm = function () {
                 // TODO : fill this in
                 alert('confirmed');
