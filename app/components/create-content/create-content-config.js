@@ -5,8 +5,8 @@ angular.module('bulbs.cms.components.createContent.config', [
 ])
   .constant('BULBS_CMS_CREATE_CONTENT_DEFAULT_DIRECTIVE', 'create-content-default')
   .provider('CreateContentConfig', [
-    '_', 'BULBS_CMS_CREATE_CONTENT_DEFAULT_DIRECTIVE',
-    function CreateContentConfigProvider (_, BULBS_CMS_CREATE_CONTENT_DEFAULT_DIRECTIVE) {
+    '_', '$injector', 'BULBS_CMS_CREATE_CONTENT_DEFAULT_DIRECTIVE',
+    function CreateContentConfigProvider (_, $injector, BULBS_CMS_CREATE_CONTENT_DEFAULT_DIRECTIVE) {
 
       var configError = BulbsCmsConfigError.build('CreateContentConfig');
       var contentTypes = [];
@@ -41,6 +41,10 @@ angular.module('bulbs.cms.components.createContent.config', [
           ]
         );
 
+        if (!_.isString(spec.context)) {
+          spec.context = {};
+        }
+
         if (!_.isString(spec.directive)) {
           spec.directive = BULBS_CMS_CREATE_CONTENT_DEFAULT_DIRECTIVE;
         }
@@ -50,13 +54,24 @@ angular.module('bulbs.cms.components.createContent.config', [
         return this;
       };
 
-      this.$get = function () {
+      this.$get = [
+        '$compile',
+        function ($compile) {
 
         return {
           getContentTypes: function () {
-            return contentTypes;
+            var configuredContentTypes = contentTypes
+              .map(function (contentType) {
+                return {
+                  title: contentType.title,
+                  defaultPayload: contentType.payload,
+                  directive: $compile(contentType.directive)(contentType.context),
+                }
+              });
+
+            return configuredContentTypes;
           }
         };
-      };
+      }]
     }
   ]);

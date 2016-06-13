@@ -18,20 +18,7 @@
       </ul>
     </section>
 
-    <section class="col-xs-8">
-      <ul class="nav nav-pills nav-stacked">
-        <div ng-if="currentSelectedParent.groupBy">
-          <li ng-repeat="group in config.getContentSubTypes(...)">
-            <li ng-repeat="contentSubType in group"></li>
-          </li>
-        </div>
-        <div ng-if="!currentSelectedParent.groupBy">
-          <li ng-repeat="contentSubType in config.getContentSubTypes(currentSelectedParent.title) track by contentSubType.title">
-            {{contentSubType.title}}
-          </li>
-        </div>
-      </ul>
-    </section>
+    <section class="col-xs-8"></section>
   </div>
 </div>
 <div class="modal-footer">

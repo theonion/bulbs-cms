@@ -1,0 +1,6 @@
+<div>{{ context.title }}</div>
+<ul>
+  <li ng-repeat="contentType in context.subContentTypes track by contentType.title">
+    {{ contentType.title }}
+  </li>
+</ul>

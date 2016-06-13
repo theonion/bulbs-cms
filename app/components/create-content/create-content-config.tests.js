@@ -1,5 +1,7 @@
 describe('CreateContentConfig', function () {
 
+  var $compile;
+  var $injector;
   var provider;
   var sandbox;
 
@@ -11,7 +13,10 @@ describe('CreateContentConfig', function () {
       }
     );
 
-    inject();
+    inject(function (_$compile_, _$injector_) {
+      $compile = _$compile_;
+      $injector = _$injector_;
+    });
 
     sandbox = sinon.sandbox.create();
   });
@@ -34,24 +39,12 @@ describe('CreateContentConfig', function () {
 
       provider.addContentType(contentTypeSpec);
 
-      var contentType = provider.$get().getContentTypes()[0];
+      var contentType = $injector.invoke(provider.$get).getContentTypes()[0];
       expect(contentType.title).to.equal(contentTypeSpec.title);
-      expect(contentType.payload).to.eql(contentTypeSpec.payload);
-      expect(contentType.context).to.eql(contentTypeSpec.context);
+      expect(contentType.defaultPayload).to.eql(contentTypeSpec.payload);
     });
 
-    it('should have a default directive', function () {
-
-      provider.addContentType({
-        title: 'Article',
-        payload: { feature_type: 'something' }
-      });
-
-      expect(provider.$get().getContentTypes()[0].directive)
-        .to.equal('create-content-default');
-    });
-
-    it('should use provided directive string if one is provided', function () {
+    it('should use provided directive', function () {
       var directiveName = 'my-garbage-directive';
 
       provider.addContentType({
@@ -60,8 +53,8 @@ describe('CreateContentConfig', function () {
         directive: directiveName
       })
 
-      expect(provider.$get().getContentTypes()[0].directive)
-        .to.equal(directiveName);
+      expect($injector.invoke(provider.$get).getContentTypes()[0].directive)
+        .to.eql($compile(directiveName)({}));
     });
 
     it('should throw an error when not given an argument', function () {
@@ -117,6 +110,17 @@ describe('CreateContentConfig', function () {
       }).to.throw(BulbsCmsConfigError, 'Configuration Error (CreateContentConfig): "' + title + '" is not unique!');
     });
 
+    it('should provide a default directive', function () {
+
+      provider.addContentType({
+        title: 'Article',
+        payload: { feature_type: 'something' }
+      });
+
+      expect($injector.invoke(provider.$get).getContentTypes()[0].directive)
+        .to.eql($compile('create-content-default')({}));
+    });
+
     it('should return the configuration object', function () {
 
       var config = provider.addContentType({
@@ -143,7 +147,7 @@ describe('CreateContentConfig', function () {
         payload: { feature_type: 'abc' }
       });
 
-      var contentTypes = provider.$get().getContentTypes();
+      var contentTypes = $injector.invoke(provider.$get).getContentTypes();
       expect(contentTypes.length).to.equal(2);
       expect(contentTypes[0].title).to.equal(parentTitle1);
       expect(contentTypes[1].title).to.equal(parentTitle2);
