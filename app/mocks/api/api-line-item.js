@@ -20,7 +20,7 @@ angular.module('bulbsCmsApp.mockApi.lineItem', [
       },
       amount: 25,
       note: 'A Note for the ages',
-      payment_date: moment('2015-7-12').format(),
+      payment_date: moment('2015-07-12T00:00:00').format(),
     },
     {
       id:2,
@@ -32,7 +32,7 @@ angular.module('bulbsCmsApp.mockApi.lineItem', [
       },
       amount: 100,
       note: 'Simpson Week 2015 Illustration',
-      payment_date: moment('2015-7-13').format(),
+      payment_date: moment('2015-07-13T00:00:00').format(),
     },
     {
       id:3,
@@ -44,7 +44,7 @@ angular.module('bulbsCmsApp.mockApi.lineItem', [
       },
       amount: 120,
       note: 'Something Else',
-      payment_date: moment('2015-7-15').format(),
+      payment_date: moment('2015-07-15T00:00:00').format(),
     },
     {
       id:4,
@@ -56,7 +56,7 @@ angular.module('bulbsCmsApp.mockApi.lineItem', [
       },
       amount: 25,
       note: 'Something Else',
-      payment_date: moment('2015-7-15').format(),
+      payment_date: moment('2015-07-15T00:00:00').format(),
     },
     {
       id:5,
@@ -68,7 +68,7 @@ angular.module('bulbsCmsApp.mockApi.lineItem', [
       },
       amount: 35,
       note: 'Something Else',
-      payment_date: moment('2015-7-15').format(),
+      payment_date: moment('2015-07-15T00:00:00').format(),
     }];
     $httpBackend.whenGET(reLineItem.list).respond(function (method, url, data) {
       return [200, {
