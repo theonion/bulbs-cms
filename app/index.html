@@ -335,6 +335,7 @@
     <script src="bower_components/angular-mocks/angular-mocks.js"></script>
 
     <script type="text/javascript">
+
       angular.module('bulbs.cms.site.config', [
         'bulbs.cms.config'
       ]).config([
@@ -352,8 +353,6 @@
         //but there probably isn't any reason for them to not be
         //so...
         // ¯\_(ツ)_/¯
-
-        angular.module('bulbs.api').constant('BULBS_API_URL', '/cms/api/v1/');
 
         angular.module('bulbsCmsApp.settings', [
           'ngClipboard',
