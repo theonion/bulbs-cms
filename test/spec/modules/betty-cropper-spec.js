@@ -148,7 +148,7 @@ describe('BettyCropper service', function () {
     $httpBackend.flush();
   });
 
-  it('should be able to get an upload a new image', function () {
+  it('should be able to get and upload a new image', function () {
     BettyCropper.upload().then(function(image){
       expect(image.id).to.equal(12345);
       expect(image.name).to.equal('Lenna.png');

@@ -49,7 +49,7 @@
 
           $http({
             method: 'POST',
-            url: CmsConfig.images.getApiUrl() + '/api/new',
+            url: CmsConfig.images.buildApiUrl('api/new'),
             headers: {
               'X-Betty-Api-Key': CmsConfig.images.getApiKey(),
               'Content-Type': undefined,
@@ -79,7 +79,7 @@
       function get(id) {
         return $http({
           method: 'GET',
-          url: CmsConfig.images.getApiUrl() + '/api/' + id,
+          url: CmsConfig.images.buildApiUrl('api/' + id),
           headers: {
             'X-Betty-Api-Key': CmsConfig.images.getApiKey(),
             'Content-Type': undefined,
@@ -98,7 +98,7 @@
       function detailPatch(id, name, credit, selections) {
         return $http({
           method: 'PATCH',
-          url: CmsConfig.images.getApiUrl() + '/api/' + id,
+          url: CmsConfig.images.buildApiUrl('api/' + id),
           headers: {
             'X-Betty-Api-Key': CmsConfig.images.getApiKey(),
             'Content-Type': undefined,
@@ -122,7 +122,7 @@
       function updateSelection(id, ratio, selections) {
         return $http({
           method: 'POST',
-          url: CmsConfig.images.getApiUrl() + '/api/' + id + '/' + ratio,
+          url: CmsConfig.images.buildApiUrl('api/' + id + '/' + ratio),
           headers: {
             'X-Betty-Api-Key': CmsConfig.images.getApiKey(),
             'Content-Type': undefined,
@@ -192,7 +192,7 @@
 
     BettyImage.prototype.url = function (ratio, width, format) {
       var exp = $interpolate(
-        '{{ base_url }}/{{ id }}/{{ ratio }}/{{ width }}.{{ format }}'
+        '{{ base_url }}{{ id }}/{{ ratio }}/{{ width }}.{{ format }}'
       );
       var idStr = this.id.toString();
       var segmentedId = '';
@@ -203,7 +203,7 @@
         segmentedId += idStr.substr(i, 1);
       }
       return exp({
-        base_url: CmsConfig.images.getApiUrl(),
+        base_url: CmsConfig.images.buildApiUrl(),
         id: segmentedId,
         ratio: ratio,
         width: width,
@@ -223,7 +223,7 @@
       }
       return $http({
         method: 'POST',
-        url: CmsConfig.images.getApiUrl() + '/api/' + this.id + '/' + ratio,
+        url: CmsConfig.images.buildApiUrl('api/' + this.id + '/' + ratio),
         headers: {
           'X-Betty-Api-Key': CmsConfig.images.getApiKey(),
           'Content-Type': undefined,

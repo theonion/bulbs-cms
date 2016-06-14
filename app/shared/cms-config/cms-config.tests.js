@@ -35,11 +35,21 @@ describe('CmsConfig', function () {
       context('api endpoint', function () {
 
         it('should provide a setter and getter', function () {
-          var imageUrl = 'http://my.garbage.url';
+          var imageUrl = 'http://my.garbage.url/';
 
           configs.images.setApiUrl(imageUrl);
 
-          expect(sealedConfigs().images.getApiUrl()).to.equal(imageUrl);
+          expect(sealedConfigs().images.buildApiUrl()).to.equal(imageUrl);
+        });
+
+        it('should provide a getter to build from a relative url', function () {
+          var imageUrl = 'http://my.garbage.url';
+          var somePath = '/some/stupid/path';
+
+          configs.images.setApiUrl(imageUrl);
+
+          expect(sealedConfigs().images.buildApiUrl(somePath))
+            .to.equal(imageUrl + somePath);
         });
 
         it('should throw an error if given value is not a string', function () {

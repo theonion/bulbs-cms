@@ -17,16 +17,16 @@ angular.module('bulbs.cms.config', [
         }
       };
 
-      var imageUrl = '';
+      var imageApiUrl = '';
       var imageApiKey = '';
 
       this.images = {
         setApiUrl: function (value) {
-          imageUrl = check(
+          imageApiUrl = check(
             value, _.isString,
             'image api url must be a string!'
           );
-          window.BC_ADMIN_URL = imageUrl;
+          window.BC_ADMIN_URL = imageApiUrl;
           return this;
         },
         setApiKey: function (value) {
@@ -43,7 +43,9 @@ angular.module('bulbs.cms.config', [
         function () {
           return {
             images: {
-              getApiUrl: _.constant(imageUrl),
+              buildApiUrl: function (relUrl) {
+                return Utils.path.join(imageApiUrl, relUrl || '');
+              },
               getApiKey: _.constant(imageApiKey)
             }
           };
