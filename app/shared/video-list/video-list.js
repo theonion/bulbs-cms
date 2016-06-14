@@ -5,7 +5,7 @@ angular.module('videoList', [
   'jquery',
   'videoList.video.directive',
   'ui.sortable',
-  'utils',
+  'bulbs.cms.utils',
   'VideohubClient.api',
   'VideohubClient.settings'
 ])

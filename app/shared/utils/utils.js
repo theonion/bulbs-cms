@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('utils', [])
+angular.module('bulbs.cms.utils', [])
   .service('Utils', ['_', function (_) {
     var Utils = this;
 
