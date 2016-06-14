@@ -60,7 +60,7 @@ module.exports = function (grunt) {
       'autoprefixer',
       'injector:local_dependencies',
       'connect:livereload',
-      'watch:livereload'
+      'watch:livereloadNoTest'
     ]);
   });
 

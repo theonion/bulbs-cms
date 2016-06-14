@@ -58,20 +58,23 @@ angular.module('bulbs.cms.components.createContent.config', [
         '$compile',
         function ($compile) {
 
-        return {
-          getContentTypes: function () {
-            var configuredContentTypes = contentTypes
-              .map(function (contentType) {
-                return {
-                  title: contentType.title,
-                  defaultPayload: contentType.payload,
-                  directive: $compile(contentType.directive)(contentType.context),
-                }
-              });
+          return {
+            getContentTypes: function ($scope) {
+              return contentTypes
+                .map(function (contentType) {
+                  $scope.context = contentType.context;
 
-            return configuredContentTypes;
-          }
-        };
-      }]
+                  var f = $compile('<' + contentType.directive + '>')($scope);
+
+                  return {
+                    title: contentType.title,
+                    defaultPayload: contentType.payload,
+                    directive: f.html(),
+                  }
+                });
+            }
+          };
+        }
+      ];
     }
   ]);

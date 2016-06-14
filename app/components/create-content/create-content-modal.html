@@ -12,13 +12,17 @@
     <section class="col-xs-4">
       <h5>1. Choose a type</h5>
       <ul class="nav nav-pills nav-stacked">
-        <li ng-repeat="contentType in config.getContentTypes() track by contentType.title">
-          {{contentType.title}}
+        <li ng-repeat="contentType in contentTypes track by contentType.title">
+          {{ contentType.title }}
         </li>
       </ul>
     </section>
 
-    <section class="col-xs-8"></section>
+    <section
+        class="col-xs-8"
+        ng-repeat="contentType in contentTypes track by contentType.title">
+      {{ contentType.getHtml() }}
+    </section>
   </div>
 </div>
 <div class="modal-footer">

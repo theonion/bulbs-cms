@@ -2,6 +2,7 @@
 
 angular.module('bulbs.cms.components.createContent.modal', [
   'bulbs.cms.components.createContent.config',
+  'bulbs.cms.components.createContent.types.default',
   'ui.bootstrap.modal',
 ])
   .factory('CreateContentModal', [
@@ -14,8 +15,9 @@ angular.module('bulbs.cms.components.createContent.modal', [
           controller: [
             '$modalInstance', '$scope', 'CreateContentConfig',
             function ($modalInstance, $scope, CreateContentConfig) {
-              $scope.config = CreateContentConfig;
-              $scope.currentSelectedParent = $scope.config.getContentTypes()[0];
+              $scope.contentTypes = CreateContentConfig.getContentTypes($scope);
+              $scope.currentSelectedParent = $scope.contentTypes[0];
+
               $scope.confirm = function () {
                 // TODO : fill this in
                 alert('confirmed');
