@@ -30,6 +30,35 @@ describe('CmsConfig', function () {
 
   context('settings for', function () {
 
+    context('general cms', function () {
+
+      context('cache buster', function () {
+
+        it('should provide a getter and setter', function () {
+          var buster = 'busted';
+
+          configs.setCacheBuster(buster);
+
+          expect(sealedConfigs().getCacheBuster()).to.equal(buster);
+        });
+
+        it('should throw an error if given value is not a string', function () {
+
+          expect(function () {
+            configs.setCacheBuster(123);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): cache buster must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setCacheBuster('buster')).to.eql(configs);
+        });
+      });
+    });
+
     context('images', function () {
 
       context('api endpoint', function () {

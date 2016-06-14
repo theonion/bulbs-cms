@@ -17,8 +17,18 @@ angular.module('bulbs.cms.config', [
         }
       };
 
+      var cacheBuster = '';
       var imageApiUrl = '';
       var imageApiKey = '';
+
+      this.setCacheBuster = function (value) {
+        cacheBuster = check(
+          value, _.isString,
+          'cache buster must be a string!'
+        );
+
+        return this;
+      };
 
       this.images = {
         setApiUrl: function (value) {
@@ -42,6 +52,7 @@ angular.module('bulbs.cms.config', [
       this.$get = [
         function () {
           return {
+            getCacheBuster: _.constant(cacheBuster),
             images: {
               buildApiUrl: function (relUrl) {
                 return Utils.path.join(imageApiUrl, relUrl || '');

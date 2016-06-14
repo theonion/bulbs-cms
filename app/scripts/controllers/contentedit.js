@@ -4,7 +4,7 @@ angular.module('bulbsCmsApp')
   .controller('ContenteditCtrl', function (
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
-    $, _, moment, keypress, Raven, PNotify,
+    $, _, CmsConfig, moment, keypress, Raven, PNotify,
     IfExistsElse, VersionStorageApi, ContentFactory, FirebaseApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener,
     routes)
   {
@@ -21,7 +21,7 @@ angular.module('bulbsCmsApp')
       with cached version in the past and it was a bludgeon solution
         kill this someday! --SB
     */
-    $scope.CACHEBUSTER = routes.CACHEBUSTER;
+    $scope.CACHEBUSTER = CmsConfig.getCacheBuster();
 
     var getArticleCallback = function (data) {
       $window.article = $scope.article = data; //exposing article on window for debugging

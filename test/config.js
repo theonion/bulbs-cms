@@ -17,8 +17,7 @@ angular.module('bulbs.cms.site.config', [
     PARTIALS_URL: '/views/',
     CONTENT_PARTIALS_URL: '/content_type_views/',
     DIRECTIVE_PARTIALS_URL: '/views/',
-    MEDIA_ITEM_PARTIALS_URL: '/cms/api/partials/media_items/',
-    CACHEBUSTER: '?' + Date.now()
+    MEDIA_ITEM_PARTIALS_URL: '/cms/api/partials/media_items/'
   })
   .constant('LOADING_IMG_SRC', '/images/loading.gif')
   .constant('STATIC_URL', '/static/')
@@ -26,7 +25,6 @@ angular.module('bulbs.cms.site.config', [
   .constant('CONTENT_PARTIALS_URL', '/content_type_views/')
   .constant('DIRECTIVE_PARTIALS_URL', '/views/')
   .constant('MEDIA_ITEM_PARTIALS_URL', '/cms/api/partials/media_items/')
-  .constant('CACHEBUSTER', '?' + Date.now())
   .constant('TIMEZONE_NAME', 'America/Chicago')
   .constant('AUTO_ADD_AUTHOR', false)
   .constant('DEFAULT_IMAGE_WIDTH', 1200)
