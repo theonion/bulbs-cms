@@ -1,12 +1,17 @@
 'use strict';
 (function () {
-  angular.module('BettyCropper', ['restangular', 'jquery'])
+  angular.module('BettyCropper', [
+    'bulbs.cms.site.config',
+
+    'restangular',
+    'jquery'
+  ])
     .value('DEFAULT_IMAGE_WIDTH', 1200)
     .factory('Selection', SelectionFactory)
     .factory('BettyImage', BettyImageFactory)
     .service('BettyCropper', BettyCropperService);
 
-  function BettyCropperService($http, $interpolate, $q, IMAGE_SERVER_URL, BC_API_KEY, BettyImage, $) {
+  function BettyCropperService($http, $interpolate, $q, CmsConfig, BettyImage, $) {
       var fileInputId = '#bulbs-cms-hidden-image-file-input';
       var inputTemplate = '<input id="bulbs-cms-hidden-image-file-input" type="file" accept="image/*" style="position: absolute; left:-99999px;" name="image" />';
 
@@ -44,9 +49,9 @@
 
           $http({
             method: 'POST',
-            url: IMAGE_SERVER_URL + '/api/new',
+            url: CmsConfig.images.getApiUrl() + '/api/new',
             headers: {
-              'X-Betty-Api-Key': BC_API_KEY,
+              'X-Betty-Api-Key': CmsConfig.images.getApiKey(),
               'Content-Type': undefined,
               'X-CSRFToken': undefined
             },
@@ -74,9 +79,9 @@
       function get(id) {
         return $http({
           method: 'GET',
-          url: IMAGE_SERVER_URL + '/api/' + id,
+          url: CmsConfig.images.getApiUrl() + '/api/' + id,
           headers: {
-            'X-Betty-Api-Key': BC_API_KEY,
+            'X-Betty-Api-Key': CmsConfig.images.getApiKey(),
             'Content-Type': undefined,
             'X-CSRFToken': undefined
           },
@@ -93,9 +98,9 @@
       function detailPatch(id, name, credit, selections) {
         return $http({
           method: 'PATCH',
-          url: IMAGE_SERVER_URL + '/api/' + id,
+          url: CmsConfig.images.getApiUrl() + '/api/' + id,
           headers: {
-            'X-Betty-Api-Key': BC_API_KEY,
+            'X-Betty-Api-Key': CmsConfig.images.getApiKey(),
             'Content-Type': undefined,
             'X-CSRFToken': undefined
           },
@@ -117,9 +122,9 @@
       function updateSelection(id, ratio, selections) {
         return $http({
           method: 'POST',
-          url: IMAGE_SERVER_URL + '/api/' + id + '/' + ratio,
+          url: CmsConfig.images.getApiUrl() + '/api/' + id + '/' + ratio,
           headers: {
-            'X-Betty-Api-Key': BC_API_KEY,
+            'X-Betty-Api-Key': CmsConfig.images.getApiKey(),
             'Content-Type': undefined,
             'X-CSRFToken': undefined
           },
@@ -128,7 +133,7 @@
       }
     }
 
-  function BettyImageFactory($interpolate, $http, IMAGE_SERVER_URL, BC_API_KEY, DEFAULT_IMAGE_WIDTH, Selection, $) {
+  function BettyImageFactory($interpolate, $http, CmsConfig, DEFAULT_IMAGE_WIDTH, Selection, $) {
     function BettyImage(data) {
       this.id = data.id;
       this.name = data.name;
@@ -198,7 +203,7 @@
         segmentedId += idStr.substr(i, 1);
       }
       return exp({
-        base_url: IMAGE_SERVER_URL,
+        base_url: CmsConfig.images.getApiUrl(),
         id: segmentedId,
         ratio: ratio,
         width: width,
@@ -218,9 +223,9 @@
       }
       return $http({
         method: 'POST',
-        url: IMAGE_SERVER_URL + '/api/' + this.id + '/' + ratio,
+        url: CmsConfig.images.getApiUrl() + '/api/' + this.id + '/' + ratio,
         headers: {
-          'X-Betty-Api-Key': BC_API_KEY,
+          'X-Betty-Api-Key': CmsConfig.images.getApiKey(),
           'Content-Type': undefined,
           'X-CSRFToken': undefined
         },

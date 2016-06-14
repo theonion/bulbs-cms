@@ -2,13 +2,15 @@
 describe('Selection Object', function () {
 
   // load the controller's module
-  beforeEach(module('BettyCropper'));
-
   var Selection;
 
-  beforeEach(inject(function ($controller, $injector) {
-    Selection = $injector.get('Selection');
-  }));
+  beforeEach(function () {
+    module('BettyCropper');
+
+    inject(function ($controller, $injector) {
+      Selection = $injector.get('Selection');
+    });
+  });
 
   it('should return proper dimensions', function () {
     var square = new Selection({

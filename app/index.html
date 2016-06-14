@@ -47,7 +47,6 @@
 
 
     <script type="text/javascript">
-        var BC_ADMIN_URL = 'http://clickholeimg.local';
         var IMAGE_URL = 'http://clickholeimg.local/{{id}}/{{crop}}/{{width}}.{{format}}';
         var IMAGE_LISTENERS_DISABLED = true;
         var DEFAULT_IMAGE_ID = 0;
@@ -234,7 +233,8 @@
     <script src="shared/api-services/reporting/reporting-factory.js"></script>
     <script src="shared/api-services/section/section-factory.js"></script>
     <script src="shared/api-services/special-coverage/special-coverage-factory.js"></script>
-    <script src="shared/cms-config.js"></script>
+    <script src="shared/cms-config/cms-config-error.js"></script>
+    <script src="shared/cms-config/cms-config.js"></script>
     <script src="shared/content-services/content-factory.js"></script>
     <script src="shared/content-services/content-list-service.js"></script>
     <script src="shared/content-services/content-services.js"></script>
@@ -335,12 +335,23 @@
     <script src="bower_components/angular-mocks/angular-mocks.js"></script>
 
     <script type="text/javascript">
+      angular.module('bulbs.cms.site.config', [
+        'bulbs.cms.config'
+      ]).config([
+        'CmsConfigProvider',
+        function (CmsConfig) {
+          CmsConfig.images
+            .setApiUrl('http://local.images.com/admin')
+            .setApiKey('123abc');
+        }
+      ]);
+
+
+
         //these probably don't need to be constants
         //but there probably isn't any reason for them to not be
         //so...
         // ¯\_(ツ)_/¯
-        angular.module('BettyCropper').constant('IMAGE_SERVER_URL', 'http://clickholeimg.local');
-        angular.module('BettyCropper').constant('BC_API_KEY', 'http://clickholeimg.local');
 
         angular.module('bulbs.api').constant('BULBS_API_URL', '/cms/api/v1/');
 
@@ -348,8 +359,6 @@
           'ngClipboard',
         ])
           .constant('routes', {
-              IMAGE_SERVER_URL: 'http://clickholeimg.local',
-              BC_ADMIN_URL: 'http://clickholeimg.local',
               LOADING_IMG_SRC: '/images/loading.gif',
               SHARED_URL: '/shared/',
               COMPONENTS_URL: '/components/',
@@ -362,8 +371,6 @@
               NAV_LOGO: '/images/onion-logo.png',
               CMS_NAMESPACE: 'Smoove'
           })
-          .constant('IMAGE_SERVER_URL', 'http://clickholeimg.local')
-          .constant('BC_ADMIN_URL', 'http://clickholeimg.local')
           .constant('LOADING_IMG_SRC', '/images/loading.gif')
           .constant('STATIC_URL', '/static/')
           .constant('PARTIALS_URL', '/views/')

@@ -1,10 +1,15 @@
-angular.module('BettyCropper').constant('IMAGE_SERVER_URL', 'http://localimages.avclub.com');
-angular.module('BettyCropper').constant('BC_API_KEY', 'http://localimages.avclub.com');
-
-angular.module('bulbsCmsApp.settings', [])
+angular.module('bulbs.cms.site.config', [
+  'bulbs.cms.config'
+])
+  .config([
+    'CmsConfigProvider',
+    function (CmsConfig) {
+      CmsConfig.images
+        .setApiUrl('http://localimages.avclub.com')
+        .setApiKey('abc123');
+    }
+  ])
   .constant('routes', {
-    IMAGE_SERVER_URL: 'http://localimages.avclub.com',
-    BC_ADMIN_URL: 'http://localimages.avclub.com',
     LOADING_IMG_SRC: '/images/loading.gif',
     SHARED_URL: '/shared/',
     COMPONENTS_URL: '/components/',
@@ -15,8 +20,6 @@ angular.module('bulbsCmsApp.settings', [])
     MEDIA_ITEM_PARTIALS_URL: '/cms/api/partials/media_items/',
     CACHEBUSTER: '?' + Date.now()
   })
-  .constant('IMAGE_SERVER_URL', 'http://localimages.avclub.com')
-  .constant('BC_ADMIN_URL', 'http://localimages.avclub.com')
   .constant('LOADING_IMG_SRC', '/images/loading.gif')
   .constant('STATIC_URL', '/static/')
   .constant('PARTIALS_URL', '/views/')

@@ -13,8 +13,14 @@ angular.module('OnionEditor', []).constant('OnionEditor', window.OnionEditor);
 
 // ****** App Config ****** \\
 
+// NOTE : this is an intermediate and should be removed
+angular.module('bulbsCmsApp.settings', [
+  'bulbs.cms.site.config'
+]);
+
 angular.module('bulbsCmsApp', [
-  'bulbsCmsApp.settings',
+  'bulbs.cms.site.config',
+
   'ngCookies',
   'ngResource',
   'ngRoute',
