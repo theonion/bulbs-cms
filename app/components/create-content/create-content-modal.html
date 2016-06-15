@@ -1,0 +1,55 @@
+<div class="modal-header">
+  <button
+      type="button"
+      class="close"
+      ng-click="cancel()">
+    <i class="fa fa-times"></i>
+  </button>
+  <h4 class="modal-title">Create Content</h4>
+</div>
+<div class="modal-body">
+  <div class="container-fluid">
+    <section class="col-xs-4">
+      <h5>1. Choose a type</h5>
+      <ul class="nav nav-pills nav-stacked">
+        <li ng-repeat="contentType in contentTypes track by contentType.title">
+          {{ contentType.title }}
+        </li>
+      </ul>
+    </section>
+
+    <section
+        class="col-xs-8"
+        ng-repeat="contentType in contentTypes track by contentType.title">
+      {{ contentType.getHtml() }}
+    </section>
+  </div>
+</div>
+<div class="modal-footer">
+  <button
+      class="btn btn-default"
+      ng-show="panel === 2"
+      ng-click="panel = 1"
+      aria-hidden="true">
+    Back
+  </button>
+  <button
+      class="btn btn-default"
+      ng-click="cancel()">
+    Cancel
+  </button>
+  <button
+      class="btn btn-primary"
+      ng-show="panel === 1"
+      ng-click="panel = 2">
+    <span>Next</span>
+    <i class="fa fa-angle-double-right"></i>
+  </button>
+  <button
+      class="btn btn-success"
+      ng-if="panel === 2"
+      ng-disabled="newTitle.length === 0"
+      ng-click="confirm()">
+    Create article
+  </button>
+</div>

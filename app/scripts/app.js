@@ -33,9 +33,11 @@ angular.module('bulbsCmsApp', [
   'ipCookie',
   'bulbs.api',
   'OnionEditor',
+
   // shared
   'contentServices',
   'cms.tunic',
+
   // components
   'bettyEditable',
   'bugReporter',
@@ -49,7 +51,10 @@ angular.module('bulbsCmsApp', [
   'templateTypeField',
   'specialCoverage',
   'sections',
-  'reports'
+  'reports',
+
+  // newest
+  'bulbs.cms.components.createContent'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
   $locationProvider.html5Mode(true);
@@ -116,4 +121,38 @@ angular.module('bulbsCmsApp', [
   deleteHeaders['X-CSRFToken'] = $cookies.csrftoken;
   $http.defaults.headers.delete = deleteHeaders;
 })
-.constant('TIMEZONE_NAME', 'America/Chicago');
+.constant('TIMEZONE_NAME', 'America/Chicago')
+.config(function(CreateContentConfigProvider) {
+  // TODO remove this
+  CreateContentConfigProvider
+    .addContentType({
+      title: 'Article',
+      payload: {feature_type: 'fu'},
+      context: {
+        description: 'abce',
+        thumbnail: '/static/image.jpg',
+        subTypes: [{
+          title: 'News in Brief',
+          createData: {
+            feature_type: 'garbage_featre_type'
+          }
+        }]
+      }
+    })
+    .addContentType({
+      title: 'Review',
+      payload: {feature_type: 'fu'},
+      context: {
+        groups: [{
+          title: 'TV',
+          subTypes: [{
+            title: 'Episode',
+            payload: {
+              feature_type: 'reviews_review',
+              tags: ['tv']
+            }
+          }]
+        }]
+      }
+    });
+});
