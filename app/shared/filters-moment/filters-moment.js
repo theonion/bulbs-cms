@@ -7,7 +7,7 @@ angular.module('filters.moment', [
     return function (dateStr) {
       // Try to parse non-empty strings
       if (dateStr && dateStr.length) {
-        var m = moment(dateStr);
+        var m = moment(new Date(dateStr));
         if (m.isValid()) {
           return m;
         }

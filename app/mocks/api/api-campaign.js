@@ -18,8 +18,8 @@ angular.module('bulbsCmsApp.mockApi.campaign', [
           id: 1
         },
         sponsor_url: 'http://example.com',
-        start_date: moment('2015-7-12').format(),
-        end_date: moment('2015-7-13').format(),
+        start_date: moment('2015-07-12T00:00:00').format(),
+        end_date: moment('2015-07-13T00:00:00').format(),
         campaign_label: 'O-183734',
         impression_goal: 100,
         pixels: [{id: 11,

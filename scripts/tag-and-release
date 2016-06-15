@@ -63,13 +63,15 @@ else
 fi
 
 secho "Linting"
-if [ ! "$(npm lint)" ]; then
+npm run lint
+if [ "$?" = "1" ]; then
   secho "Please fix lint errors before releasing."
   exit 1
 fi
 
 secho "Running tests"
-if [ ! "$(npm test)" ]; then
+npm test
+if [ "$?" = "1" ]; then
   secho "Please fix tests before releasing."
   exit 1
 fi
@@ -92,7 +94,8 @@ secho "Checking out detached HEAD"
 git checkout "$(git rev-parse HEAD)" --quiet
 
 secho "Running build"
-if [ ! "$(npm run build)" ]; then
+npm run build
+if [ "$?" = "1" ]; then
   secho "Please fix build errors before releasing."
   exit 1
 fi
