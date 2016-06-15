@@ -13,13 +13,11 @@ angular.module('bulbs.cms.site.config', [
     }
   ])
   .constant('routes', {
-    LOADING_IMG_SRC: '/images/loading.gif',
     SHARED_URL: '/shared/',
     STATIC_URL: '/static/',
     PARTIALS_URL: '/views/',
     MEDIA_ITEM_PARTIALS_URL: '/cms/api/partials/media_items/'
   })
-  .constant('LOADING_IMG_SRC', '/images/loading.gif')
   .constant('STATIC_URL', '/static/')
   .constant('PARTIALS_URL', '/views/')
   .constant('MEDIA_ITEM_PARTIALS_URL', '/cms/api/partials/media_items/')

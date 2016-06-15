@@ -2,17 +2,15 @@
 
 angular.module('bulbsCmsApp')
   .controller('ContentlistCtrl', function (
-    $scope, $http, $timeout, $location,
-    $window, $q, $, CmsConfig, ContentListService,
-    LOADING_IMG_SRC, routes)
-  {
+    $scope, $http, $timeout, $location, $window, $q, $, CmsConfig,
+      ContentListService, routes) {
+
     $scope.contentData = [];
     ContentListService.$updateContent({page: 1})
       .then(function (data) {
         $scope.contentData = data;
       });
 
-    $scope.LOADING_IMG_SRC = LOADING_IMG_SRC;
     $window.document.title = CmsConfig.getCmsName() + ' | Content';
 
     $scope.pageNumber = $location.search().page || '1';
