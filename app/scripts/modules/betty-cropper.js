@@ -49,9 +49,9 @@
 
           $http({
             method: 'POST',
-            url: CmsConfig.images.buildApiUrl('api/new'),
+            url: CmsConfig.buildImageApiUrl('api/new'),
             headers: {
-              'X-Betty-Api-Key': CmsConfig.images.getApiKey(),
+              'X-Betty-Api-Key': CmsConfig.getImageApiKey(),
               'Content-Type': undefined,
               'X-CSRFToken': undefined
             },
@@ -79,9 +79,9 @@
       function get(id) {
         return $http({
           method: 'GET',
-          url: CmsConfig.images.buildApiUrl('api/' + id),
+          url: CmsConfig.buildImageApiUrl('api/' + id),
           headers: {
-            'X-Betty-Api-Key': CmsConfig.images.getApiKey(),
+            'X-Betty-Api-Key': CmsConfig.getImageApiKey(),
             'Content-Type': undefined,
             'X-CSRFToken': undefined
           },
@@ -98,9 +98,9 @@
       function detailPatch(id, name, credit, selections) {
         return $http({
           method: 'PATCH',
-          url: CmsConfig.images.buildApiUrl('api/' + id),
+          url: CmsConfig.buildImageApiUrl('api/' + id),
           headers: {
-            'X-Betty-Api-Key': CmsConfig.images.getApiKey(),
+            'X-Betty-Api-Key': CmsConfig.getImageApiKey(),
             'Content-Type': undefined,
             'X-CSRFToken': undefined
           },
@@ -122,9 +122,9 @@
       function updateSelection(id, ratio, selections) {
         return $http({
           method: 'POST',
-          url: CmsConfig.images.buildApiUrl('api/' + id + '/' + ratio),
+          url: CmsConfig.buildImageApiUrl('api/' + id + '/' + ratio),
           headers: {
-            'X-Betty-Api-Key': CmsConfig.images.getApiKey(),
+            'X-Betty-Api-Key': CmsConfig.getImageApiKey(),
             'Content-Type': undefined,
             'X-CSRFToken': undefined
           },
@@ -203,7 +203,7 @@
         segmentedId += idStr.substr(i, 1);
       }
       return exp({
-        base_url: CmsConfig.images.buildApiUrl(),
+        base_url: CmsConfig.buildImageApiUrl(),
         id: segmentedId,
         ratio: ratio,
         width: width,
@@ -223,9 +223,9 @@
       }
       return $http({
         method: 'POST',
-        url: CmsConfig.images.buildApiUrl('api/' + this.id + '/' + ratio),
+        url: CmsConfig.buildImageApiUrl('api/' + this.id + '/' + ratio),
         headers: {
-          'X-Betty-Api-Key': CmsConfig.images.getApiKey(),
+          'X-Betty-Api-Key': CmsConfig.getImageApiKey(),
           'Content-Type': undefined,
           'X-CSRFToken': undefined
         },

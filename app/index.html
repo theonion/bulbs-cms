@@ -336,11 +336,9 @@
         function (CmsConfig) {
           CmsConfig
             .setCacheBuster('?' + new Date())
-            .setCmsName('Smoove');
-
-          CmsConfig.images
-            .setApiUrl('http://clickholeimg.local')
-            .setApiKey('123abc');
+            .setCmsName('Smoove')
+            .setImageApiUrl('http://clickholeimg.local')
+            .setImageApiKey('123abc');
         }
       ]);
 

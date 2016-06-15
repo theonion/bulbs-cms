@@ -38,23 +38,22 @@ angular.module('bulbs.cms.config', [
         return this;
       }
 
-      this.images = {
-        setApiUrl: function (value) {
-          imageApiUrl = check(
-            value, _.isString,
-            'image api url must be a string!'
-          );
-          window.BC_ADMIN_URL = imageApiUrl;
-          return this;
-        },
-        setApiKey: function (value) {
-          imageApiKey = check(
-            value, _.isString,
-            'image api key must be a string!'
-          );
-          window.BC_API_KEY = imageApiKey;
-          return this;
-        }
+      this.setImageApiUrl = function (value) {
+        imageApiUrl = check(
+          value, _.isString,
+          'image api url must be a string!'
+        );
+        window.BC_ADMIN_URL = imageApiUrl;
+        return this;
+      };
+
+      this.setImageApiKey = function (value) {
+        imageApiKey = check(
+          value, _.isString,
+          'image api key must be a string!'
+        );
+        window.BC_API_KEY = imageApiKey;
+        return this;
       };
 
       this.$get = [
@@ -62,12 +61,10 @@ angular.module('bulbs.cms.config', [
           return {
             getCacheBuster: _.constant(cacheBuster),
             getCmsName: _.constant(cmsName),
-            images: {
-              buildApiUrl: function (relUrl) {
-                return Utils.path.join(imageApiUrl, relUrl || '');
-              },
-              getApiKey: _.constant(imageApiKey)
-            }
+            buildImageApiUrl: function (relUrl) {
+              return Utils.path.join(imageApiUrl, relUrl || '');
+            },
+            getImageApiKey: _.constant(imageApiKey)
           };
         }
       ];

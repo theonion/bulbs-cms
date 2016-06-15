@@ -4,9 +4,9 @@ angular.module('bulbs.cms.site.config', [
   .config([
     'CmsConfigProvider',
     function (CmsConfig) {
-      CmsConfig.images
-        .setApiUrl('http://localimages.avclub.com')
-        .setApiKey('abc123');
+      CmsConfig
+        .setImageApiUrl('http://localimages.avclub.com')
+        .setImageApiKey('abc123');
     }
   ])
   .constant('routes', {

@@ -92,25 +92,25 @@ describe('CmsConfig', function () {
         it('should provide a setter and getter', function () {
           var imageUrl = 'http://my.garbage.url/';
 
-          configs.images.setApiUrl(imageUrl);
+          configs.setImageApiUrl(imageUrl);
 
-          expect(sealedConfigs().images.buildApiUrl()).to.equal(imageUrl);
+          expect(sealedConfigs().buildImageApiUrl()).to.equal(imageUrl);
         });
 
         it('should provide a getter to build from a relative url', function () {
           var imageUrl = 'http://my.garbage.url';
           var somePath = '/some/stupid/path';
 
-          configs.images.setApiUrl(imageUrl);
+          configs.setImageApiUrl(imageUrl);
 
-          expect(sealedConfigs().images.buildApiUrl(somePath))
+          expect(sealedConfigs().buildImageApiUrl(somePath))
             .to.equal(imageUrl + somePath);
         });
 
         it('should throw an error if given value is not a string', function () {
 
           expect(function () {
-            configs.images.setApiUrl(123);
+            configs.setImageApiUrl(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): image api url must be a string!'
@@ -119,15 +119,15 @@ describe('CmsConfig', function () {
 
         it('should return image config object', function () {
 
-          expect(configs.images.setApiUrl('http://whatever.com'))
-            .to.eql(configs.images);
+          expect(configs.setImageApiUrl('http://whatever.com'))
+            .to.eql(configs);
         });
 
         it('should set window.BC_ADMIN_URL', function () {
           // NOTE : this is to be ticketed and removed
           var imageUrl = 'http://whatever.com';
 
-          configs.images.setApiUrl(imageUrl);
+          configs.setImageApiUrl(imageUrl);
 
           expect(window.BC_ADMIN_URL).to.equal(imageUrl);
         });
@@ -139,15 +139,15 @@ describe('CmsConfig', function () {
 
           var key = '123abc';
 
-          configs.images.setApiKey(key);
+          configs.setImageApiKey(key);
 
-          expect(sealedConfigs().images.getApiKey()).to.equal(key);
+          expect(sealedConfigs().getImageApiKey()).to.equal(key);
         });
 
         it('should throw an error if given value is not a string', function () {
 
           expect(function () {
-            configs.images.setApiKey(123);
+            configs.setImageApiKey(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): image api key must be a string!'
@@ -156,15 +156,15 @@ describe('CmsConfig', function () {
 
         it('should return image config object', function () {
 
-          expect(configs.images.setApiKey('123abc'))
-          .to.eql(configs.images);
+          expect(configs.setImageApiKey('123abc'))
+          .to.eql(configs);
         });
 
         it('should set window.BC_API_KEY', function () {
           // NOTE : this is to be ticketed and removed
           var key = 'abc123';
 
-          configs.images.setApiKey(key);
+          configs.setImageApiKey(key);
 
           expect(window.BC_API_KEY).to.equal(key);
         });
