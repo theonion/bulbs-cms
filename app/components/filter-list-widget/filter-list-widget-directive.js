@@ -1,15 +1,16 @@
 'use strict';
 
 angular.module('filterListWidget.directive', [
+  'bulbs.cms.site.config',
   'bulbsCmsApp.settings'
 ])
-  .directive('filterListWidget', function (_, $http, $location, $timeout, $, routes) {
+  .directive('filterListWidget', function (_, $http, $location, $timeout, $, CmsConfig) {
     return {
       restrict: 'E',
       scope: {
         filters: '='
       },
-      templateUrl: routes.COMPONENTS_URL + 'filter-list-widget/filter-list-widget.html',
+      templateUrl: CmsConfig.buildComponentPath('filter-list-widget/filter-list-widget.html'),
       link: function (scope, element, attrs) {
         var $element = $(element);
         var $input = $element.find('input');

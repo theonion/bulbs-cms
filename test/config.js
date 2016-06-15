@@ -5,6 +5,7 @@ angular.module('bulbs.cms.site.config', [
     'CmsConfigProvider',
     function (CmsConfig) {
       CmsConfig
+        .setComponentPath('/components/')
         .setImageApiUrl('http://localimages.avclub.com')
         .setImageApiKey('abc123');
     }
@@ -12,7 +13,6 @@ angular.module('bulbs.cms.site.config', [
   .constant('routes', {
     LOADING_IMG_SRC: '/images/loading.gif',
     SHARED_URL: '/shared/',
-    COMPONENTS_URL: '/components/',
     STATIC_URL: '/static/',
     PARTIALS_URL: '/views/',
     CONTENT_PARTIALS_URL: '/content_type_views/',

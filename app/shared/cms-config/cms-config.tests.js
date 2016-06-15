@@ -32,6 +32,42 @@ describe('CmsConfig', function () {
 
     context('general cms', function () {
 
+      context('components path', function () {
+
+        it('should provide a setter and getter', function () {
+          var path = '/components/';
+
+          configs.setComponentPath(path);
+
+          expect(sealedConfigs().buildComponentPath()).to.equal(path);
+        });
+
+        it('should provide a getter to build out a path', function () {
+          var path = '/components';
+          var templatePath = '/my/favorite/component.html';
+
+          configs.setComponentPath(path);
+
+          expect(sealedConfigs().buildComponentPath(templatePath))
+            .to.equal(path + templatePath);
+        });
+
+        it('should throw an error if the given value is not a string', function () {
+
+          expect(function () {
+            configs.setComponentPath(123)
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): component path must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setComponentPath('/components/')).to.eql(configs);
+        });
+      });
+
       context('cache buster', function () {
 
         it('should provide a getter and setter', function () {

@@ -18,6 +18,7 @@ angular.module('bulbs.cms.config', [
       };
 
       var cacheBuster = '';
+      var componentPath = '';
       var cmsName = '';
       var imageApiUrl = '';
       var imageApiKey = '';
@@ -26,6 +27,14 @@ angular.module('bulbs.cms.config', [
         cacheBuster = check(
           value, _.isString,
           'cache buster must be a string!'
+        );
+        return this;
+      };
+
+      this.setComponentPath = function (value) {
+        componentPath = check(
+          value, _.isString,
+          'component path must be a string!'
         );
         return this;
       };
@@ -61,10 +70,13 @@ angular.module('bulbs.cms.config', [
           return {
             getCacheBuster: _.constant(cacheBuster),
             getCmsName: _.constant(cmsName),
-            buildImageApiUrl: function (relUrl) {
-              return Utils.path.join(imageApiUrl, relUrl || '');
-            },
-            getImageApiKey: _.constant(imageApiKey)
+            getImageApiKey: _.constant(imageApiKey),
+            buildComponentPath: function () {
+              return Utils.path.join(arguments);
+            }.bind(this, componentPath),
+            buildImageApiUrl: function () {
+              return Utils.path.join(arguments);
+            }.bind(this, imageApiUrl)
           };
         }
       ];

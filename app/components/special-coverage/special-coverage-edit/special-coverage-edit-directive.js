@@ -3,6 +3,7 @@
 angular.module('specialCoverage.edit.directive', [
   'apiServices.campaign.factory',
   'apiServices.specialCoverage.factory',
+  'bulbs.cms.site.config',
   'bulbsCmsApp.settings',
   'campaignAutocomplete',
   'copyButton',
@@ -13,7 +14,7 @@ angular.module('specialCoverage.edit.directive', [
   'ui.bootstrap.tooltip',
   'videoList'
 ])
-  .directive('specialCoverageEdit', function (routes) {
+  .directive('specialCoverageEdit', function (CmsConfig) {
     return {
       controller: function (_, $location, $q, $scope, $modal, Campaign, EXTERNAL_URL,
           SPECIAL_COVERAGE_LIST_REL_PATH, SpecialCoverage) {
@@ -103,6 +104,6 @@ angular.module('specialCoverage.edit.directive', [
       scope: {
         getModelId: '&modelId'
       },
-      templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit.html'
+      templateUrl: CmsConfig.buildComponentPath('special-coverage/special-coverage-edit/special-coverage-edit.html')
     };
   });

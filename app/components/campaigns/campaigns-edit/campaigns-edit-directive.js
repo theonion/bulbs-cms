@@ -3,13 +3,14 @@
 angular.module('campaigns.edit.directive', [
   'apiServices.campaign.factory',
   'BettyCropper',
+  'bulbs.cms.config',
   'bulbsCmsApp.settings',
   'campaigns.edit.sponsorPixel',
   'lodash',
   'saveButton.directive',
   'topBar'
 ])
-  .directive('campaignsEdit', function (routes) {
+  .directive('campaignsEdit', function (CmsConfig) {
     return {
       controller: function (_, $location, $q, $routeParams, $scope, Campaign) {
 
@@ -68,6 +69,6 @@ angular.module('campaigns.edit.directive', [
       scope: {
         getModelId: '&modelId'
       },
-      templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-edit/campaigns-edit.html',
+      templateUrl: CmsConfig.buildComponentPath('campaigns/campaigns-edit/campaigns-edit.html'),
     };
   });

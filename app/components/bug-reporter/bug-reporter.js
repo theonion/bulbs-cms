@@ -1,12 +1,14 @@
 'use strict';
 
-angular.module('bugReporter', [])
+angular.module('bugReporter', [
+  'bulbs.cms.config'
+])
   .directive('bugReporter', [
-    '$http', '$window', 'routes',
-    function ($http, $window, routes) {
+    '$http', '$window', 'CmsConfig',
+    function ($http, $window, CmsConfig) {
       return {
         restrict: 'E',
-        templateUrl: routes.COMPONENTS_URL + 'bug-reporter/bug-reporter-button.html',
+        templateUrl: CmsConfig.buildComponentPath('bug-reporter/bug-reporter-button.html'),
         scope: {},
         controller: function ($scope, $element, $timeout) {
           $scope.report = {};

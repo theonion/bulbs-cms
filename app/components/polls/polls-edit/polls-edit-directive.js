@@ -1,9 +1,10 @@
 'use strict';
 
 angular.module('polls.edit.directive', [
-  'apiServices.poll.factory',
   'apiServices.answer.factory',
+  'apiServices.poll.factory',
   'BettyCropper',
+  'bulbs.cms.site.config',
   'lodash',
   'saveButton.directive',
   'topBar'
@@ -17,9 +18,9 @@ angular.module('polls.edit.directive', [
     value: 'Image'
   }
 ])
-.directive('pollsEdit', function (routes) {
+.directive('pollsEdit', function (CmsConfig) {
   return {
-    templateUrl: routes.COMPONENTS_URL + 'polls/polls-edit/polls-edit.html',
+    templateUrl: CmsConfig.buildComponentPath('polls/polls-edit/polls-edit.html'),
     controller: function (_, $http, $location, $q, $routeParams, $scope, $timeout, Answer, Poll) {
       // populate model for use
       if ($routeParams.id === 'new') {

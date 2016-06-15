@@ -4,15 +4,16 @@
  * Autocomplete directive that should cover most autocomplete situations.
  */
 angular.module('autocompleteBasic', [
-  'lodash',
+  'bulbs.cms.config',
   'BulbsAutocomplete',
   'BulbsAutocomplete.suggest',
-  'bulbsCmsApp.settings'
+  'bulbsCmsApp.settings',
+  'lodash'
 ])
   .value('AUTOCOMPLETE_BASIC_DEBOUNCE', 200)
   .directive('autocompleteBasic', [
-    '_', 'routes',
-    function (_, routes) {
+    '_', 'CmsConfig',
+    function (_, CmsConfig) {
       return {
         controller: [
           '$scope', 'BULBS_AUTOCOMPLETE_EVENT_KEYPRESS',
@@ -139,7 +140,7 @@ angular.module('autocompleteBasic', [
           onSelect: '&',              // selection callback, recieves selection as argument
           searchFunction: '='         // function to use for searching autocomplete results
         },
-        templateUrl: routes.COMPONENTS_URL + 'autocomplete-basic/autocomplete-basic.html'
+        templateUrl: CmsConfig.buildComponentPath('autocomplete-basic/autocomplete-basic.html')
       };
     }
   ]);

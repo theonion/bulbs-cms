@@ -1,13 +1,14 @@
 'use strict';
 
 angular.module('promotedContentList.directive', [
+  'bulbs.cms.site.config',
   'bulbsCmsApp.settings',
   'promotedContent.service',
   'promotedContentArticle',
   'promotedContentSave',
   'ui.sortable'
 ])
-  .directive('promotedContentList', function ($, routes) {
+  .directive('promotedContentList', function ($, CmsConfig) {
     return {
       controller: function ($scope, PromotedContentService) {
 
@@ -67,6 +68,6 @@ angular.module('promotedContentList.directive', [
       },
       restrict: 'E',
       scope: {},
-      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-list/promoted-content-list.html'
+      templateUrl: CmsConfig.buildComponentPath('promoted-content/promoted-content-list/promoted-content-list.html')
     };
   });

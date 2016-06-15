@@ -5,10 +5,11 @@
  *  different displays for disabled/action/progress/complete states.
  */
 angular.module('genericAjaxButton.directive', [
+  'bulbs.cms.site.config',
   'bulbsCmsApp.settings',
   'genericAjaxButton.controller'
 ])
-  .directive('genericAjaxButton', function (routes) {
+  .directive('genericAjaxButton', function (CmsConfig) {
     return {
       controller: 'GenericAjaxButtonController',
       restrict: 'E',
@@ -23,6 +24,6 @@ angular.module('genericAjaxButton.directive', [
         textProgress: '@',
         textComplete: '@'
       },
-      templateUrl: routes.COMPONENTS_URL + 'generic-ajax-button/generic-ajax-button.html'
+      templateUrl: CmsConfig.buildComponentPath('generic-ajax-button/generic-ajax-button.html')
     };
   });

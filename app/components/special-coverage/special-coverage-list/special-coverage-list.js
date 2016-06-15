@@ -8,7 +8,8 @@ angular.module('specialCoverage.list', [
   'moment',
   'specialCoverage.settings'
 ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($injector, $routeProvider, CmsConfigProvider) {
+    var CmsConfig = $injector.invoke(CmsConfigProvider.$get);
 
     $routeProvider
       .when('/cms/app/special-coverage/', {
@@ -18,6 +19,6 @@ angular.module('specialCoverage.list', [
           $scope.modelFactory = SpecialCoverage;
           $scope.LIST_URL = EXTERNAL_URL + SPECIAL_COVERAGE_LIST_REL_PATH;
         },
-        templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-list/special-coverage-list-page.html'
+        templateUrl: CmsConfig.buildComponentPath('special-coverage/special-coverage-list/special-coverage-list-page.html')
       });
   });

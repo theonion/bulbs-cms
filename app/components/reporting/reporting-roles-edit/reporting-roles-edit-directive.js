@@ -2,7 +2,7 @@
 
 angular.module('roles.edit.directive', [
   'apiServices.reporting.factory',
-  'bulbsCmsApp.settings',
+  'bulbs.cms.site.config',
   'lodash',
   'saveButton.directive',
   'topBar'
@@ -25,7 +25,7 @@ angular.module('roles.edit.directive', [
       value: 'Manual'
     }
   ])
-  .directive('rolesEdit', function (routes) {
+  .directive('rolesEdit', function (CmsConfig) {
     return {
       controller: function (_, $location, $q, $routeParams, $scope, Role, PAYMENT_TYPES) {
 
@@ -110,6 +110,6 @@ angular.module('roles.edit.directive', [
       scope: {
         getModelId: '&modelId'
       },
-      templateUrl: routes.COMPONENTS_URL + 'reporting/reporting-roles-edit/reporting-roles-edit.html'
+      templateUrl: CmsConfig.buildComponentPath('reporting/reporting-roles-edit/reporting-roles-edit.html')
     };
   });

@@ -336,6 +336,7 @@
         function (CmsConfig) {
           CmsConfig
             .setCacheBuster('?' + new Date())
+            .setComponentPath('/components/')
             .setCmsName('Smoove')
             .setImageApiUrl('http://clickholeimg.local')
             .setImageApiKey('123abc');
@@ -353,7 +354,6 @@
           .constant('routes', {
               LOADING_IMG_SRC: '/images/loading.gif',
               SHARED_URL: '/shared/',
-              COMPONENTS_URL: '/components/',
               STATIC_URL: '/static/',
               PARTIALS_URL: '/views/',
               CONTENT_PARTIALS_URL: '/content_type_views/',

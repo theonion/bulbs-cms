@@ -2,23 +2,24 @@
 
 angular.module('promotedContent', [
   'bulbs.cms.config',
-  'bulbsCmsApp.settings',
   'promotedContentPzoneSelect',
   'promotedContentList',
   'promotedContentSearch',
   'promotedContentTimePicker',
   'promotedContentOperationsList',
 ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($injector, $routeProvider, CmsConfigProvider) {
+    var CmsConfig = $injector.invoke(CmsConfigProvider.$get);
+
     $routeProvider
       .when('/cms/app/promotion/', {
         controller: [
           '$window', 'CmsConfig',
-          function ($window, CmsConfig) {
+          function ($window) {
             $window.document.title = CmsConfig.getCmsName() + ' | Promotion Tool';
           }
         ],
-        templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content.html',
+        templateUrl: CmsConfig.buildComponentPath('promoted-content/promoted-content.html'),
         reloadOnSearch: false
       });
   });

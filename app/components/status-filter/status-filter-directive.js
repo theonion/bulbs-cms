@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('statusFilter.directive', [
-  'bulbsCmsApp.settings',
+  'bulbs.cms.site.config',
   'contentServices.listService'
 ])
   .provider('StatusFilterOptions', function (moment) {
@@ -25,9 +25,9 @@ angular.module('statusFilter.directive', [
     };
 
   })
-  .directive('statusFilter', function ($location, _, StatusFilterOptions, ContentListService, routes) {
+  .directive('statusFilter', function ($location, _, StatusFilterOptions, ContentListService, CmsConfig) {
     return {
-      templateUrl: routes.COMPONENTS_URL + 'status-filter/status-filter.html',
+      templateUrl: CmsConfig.buildComponentPath('status-filter/status-filter.html'),
       restrict: 'E',
       scope: {},
       controller: 'ContentlistCtrl',

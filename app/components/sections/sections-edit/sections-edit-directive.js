@@ -3,6 +3,7 @@
 angular.module('sections.edit.directive', [
   'apiServices.section.factory',
   'BettyCropper',
+  'bulbs.cms.site.config',
   'bulbsCmsApp.settings',
   'copyButton',
   'customSearch',
@@ -11,7 +12,7 @@ angular.module('sections.edit.directive', [
   'sections.settings',
   'topBar'
 ])
-  .directive('sectionsEdit', function (routes) {
+  .directive('sectionsEdit', function (CmsConfig) {
     return {
       controller: function (_, $location, $q, $scope, EXTERNAL_URL,
           SECTIONS_LIST_REL_PATH, Section) {
@@ -68,6 +69,6 @@ angular.module('sections.edit.directive', [
       scope: {
         getModelId: '&modelId'
       },
-      templateUrl: routes.COMPONENTS_URL + 'sections/sections-edit/sections-edit.html'
+      templateUrl: CmsConfig.buildComponentPath('sections/sections-edit/sections-edit.html')
     };
   });

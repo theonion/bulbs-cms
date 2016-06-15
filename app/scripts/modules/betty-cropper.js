@@ -192,7 +192,7 @@
 
     BettyImage.prototype.url = function (ratio, width, format) {
       var exp = $interpolate(
-        '{{ base_url }}{{ id }}/{{ ratio }}/{{ width }}.{{ format }}'
+        '{{ base_url }}/{{ id }}/{{ ratio }}/{{ width }}.{{ format }}'
       );
       var idStr = this.id.toString();
       var segmentedId = '';

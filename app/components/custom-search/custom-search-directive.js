@@ -1,13 +1,14 @@
 'use strict';
 
 angular.module('customSearch.directive', [
+  'bulbs.cms.site.config',
   'bulbsCmsApp.settings',
   'customSearch.contentItem',
+  'customSearch.group',
   'customSearch.service',
-  'customSearch.simpleContentSearch',
-  'customSearch.group'
+  'customSearch.simpleContentSearch'
 ])
-  .directive('customSearch', function (routes) {
+  .directive('customSearch', function (CmsConfig) {
     return {
       controller: function (_, $scope, CustomSearchService) {
 
@@ -51,6 +52,6 @@ angular.module('customSearch.directive', [
       scope: {
         onUpdate: '&'
       },
-      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search.html'
+      templateUrl: CmsConfig.buildComponentPath('custom-search/custom-search.html')
     };
   });

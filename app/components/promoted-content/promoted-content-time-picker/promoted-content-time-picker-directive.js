@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('promotedContentTimePicker.directive', [
-  'bulbsCmsApp.settings',
+  'bulbs.cms.site.config',
   'promotedContent.service'
 ])
-  .directive('promotedContentTimePicker', function (routes) {
+  .directive('promotedContentTimePicker', function (CmsConfig) {
     return {
       controller: function (moment, $scope, PromotedContentService) {
 
@@ -25,6 +25,6 @@ angular.module('promotedContentTimePicker.directive', [
       },
       restrict: 'E',
       scope: {},
-      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-time-picker/promoted-content-time-picker.html'
+      templateUrl: CmsConfig.buildComponentPath('promoted-content/promoted-content-time-picker/promoted-content-time-picker.html')
     };
   });

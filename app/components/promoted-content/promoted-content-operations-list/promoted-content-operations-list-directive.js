@@ -1,10 +1,11 @@
 'use strict';
 
 angular.module('promotedContentOperationsList.directive', [
+  'bulbs.cms.site.config',
   'bulbsCmsApp.settings',
   'promotedContent.service'
 ])
-  .directive('promotedContentOperationsList', function (_, moment, routes) {
+  .directive('promotedContentOperationsList', function (_, CmsConfig, moment) {
     return {
       controller: function (moment, $scope, PromotedContentService) {
 
@@ -113,6 +114,6 @@ angular.module('promotedContentOperationsList.directive', [
       },
       restrict: 'E',
       scope: {},
-      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-operations-list/promoted-content-operations-list.html'
+      templateUrl: CmsConfig.buildComponentPath('promoted-content/promoted-content-operations-list/promoted-content-operations-list.html')
     };
   });
