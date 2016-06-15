@@ -9,12 +9,23 @@ angular.module('bulbs.cms.config', [
     function (_, Utils) {
 
       var error = BulbsCmsConfigError.build('CmsConfig');
-      var check = function (value, test, errorMsg) {
+      var checkOrError = function (value, test, errorMsg) {
         if (test(value)) {
           return value;
         } else {
           throw new error(errorMsg);
         }
+      };
+      var pathBuilder = function (start, errorMsg) {
+        return function () {
+          return Utils.path.join(checkOrError(
+            arguments,
+            function (args) {
+              return _.every(args, _.isString);
+            },
+            errorMsg
+          ));
+        }.bind(null, start);
       };
 
       var cacheBuster = '';
@@ -24,7 +35,7 @@ angular.module('bulbs.cms.config', [
       var imageApiKey = '';
 
       this.setCacheBuster = function (value) {
-        cacheBuster = check(
+        cacheBuster = checkOrError(
           value, _.isString,
           'cache buster must be a string!'
         );
@@ -32,7 +43,7 @@ angular.module('bulbs.cms.config', [
       };
 
       this.setComponentPath = function (value) {
-        componentPath = check(
+        componentPath = checkOrError(
           value, _.isString,
           'component path must be a string!'
         );
@@ -40,7 +51,7 @@ angular.module('bulbs.cms.config', [
       };
 
       this.setCmsName = function (value) {
-        cmsName = check(
+        cmsName = checkOrError(
           value, _.isString,
           'cms name must be a string!'
         );
@@ -48,7 +59,7 @@ angular.module('bulbs.cms.config', [
       }
 
       this.setImageApiUrl = function (value) {
-        imageApiUrl = check(
+        imageApiUrl = checkOrError(
           value, _.isString,
           'image api url must be a string!'
         );
@@ -57,7 +68,7 @@ angular.module('bulbs.cms.config', [
       };
 
       this.setImageApiKey = function (value) {
-        imageApiKey = check(
+        imageApiKey = checkOrError(
           value, _.isString,
           'image api key must be a string!'
         );
@@ -71,12 +82,14 @@ angular.module('bulbs.cms.config', [
             getCacheBuster: _.constant(cacheBuster),
             getCmsName: _.constant(cmsName),
             getImageApiKey: _.constant(imageApiKey),
-            buildComponentPath: function () {
-              return Utils.path.join(arguments);
-            }.bind(this, componentPath),
-            buildImageApiUrl: function () {
-              return Utils.path.join(arguments);
-            }.bind(this, imageApiUrl)
+            buildComponentPath: pathBuilder(
+              componentPath,
+              'value given to component path build must be a string!'
+            ),
+            buildImageApiUrl: pathBuilder(
+              imageApiUrl,
+              'value given to image api url build must be a string!'
+            )
           };
         }
       ];
