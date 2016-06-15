@@ -2,14 +2,15 @@
 
 angular.module('lineItems.list', [
     'apiServices.lineItem.factory',
+    'bulbs.cms.config',
     'bulbsCmsApp.settings',
     'listPage'
   ])
   .config(function ($routeProvider, routes) {
     $routeProvider
       .when('/cms/app/line-items/', {
-        controller: function($modal, $scope, $window, LineItem) {
-          $window.document.title = routes.CMS_NAMESPACE + ' | Line Items';
+        controller: function($modal, $scope, $window, CmsConfig, LineItem) {
+          $window.document.title = CmsConfig.getCmsName() + ' | Line Items';
 
           $scope.modelFactory = LineItem;
 

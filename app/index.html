@@ -334,6 +334,10 @@
       ]).config([
         'CmsConfigProvider',
         function (CmsConfig) {
+          CmsConfig
+            .setCacheBuster('?' + new Date())
+            .setCmsName('Smoove');
+
           CmsConfig.images
             .setApiUrl('http://clickholeimg.local')
             .setApiKey('123abc');
@@ -357,8 +361,7 @@
               CONTENT_PARTIALS_URL: '/content_type_views/',
               DIRECTIVE_PARTIALS_URL: '/views/',
               MEDIA_ITEM_PARTIALS_URL: '/cms/api/partials/media_items/',
-              NAV_LOGO: '/images/onion-logo.png',
-              CMS_NAMESPACE: 'Smoove'
+              NAV_LOGO: '/images/onion-logo.png'
           })
           .constant('LOADING_IMG_SRC', '/images/loading.gif')
           .constant('STATIC_URL', '/static/')

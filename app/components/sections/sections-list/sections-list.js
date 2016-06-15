@@ -2,6 +2,7 @@
 
 angular.module('sections.list', [
   'apiServices.section.factory',
+  'bulbs.cms.config',
   'bulbsCmsApp.settings',
   'listPage',
   'sections.settings'
@@ -10,12 +11,9 @@ angular.module('sections.list', [
 
     $routeProvider
       .when('/cms/app/section/', {
-        controller: function ($scope, $window, EXTERNAL_URL, SECTIONS_LIST_REL_PATH,
-            Section) {
-
-          // set title
-          $window.document.title = routes.CMS_NAMESPACE + ' | Section';
-
+        controller: function ($scope, $window, CmsConfig, EXTERNAL_URL,
+            SECTIONS_LIST_REL_PATH, Section) {
+          $window.document.title = CmsConfig.getCmsName() + ' | Section';
           $scope.modelFactory = Section;
           $scope.LIST_URL = EXTERNAL_URL + SECTIONS_LIST_REL_PATH;
         },

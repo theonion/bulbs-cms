@@ -2,15 +2,15 @@
 
 angular.module('rateOverrides.list', [
     'apiServices.rateOverride.factory',
+    'bulbs.cms.config',
     'bulbsCmsApp.settings',
     'listPage'
   ])
   .config(function ($routeProvider, routes) {
     $routeProvider
       .when('/cms/app/rate-overrides/', {
-        controller: function($scope, $window, RateOverride) {
-          $window.document.title = routes.CMS_NAMESPACE + ' | Rate Overrides';
-
+        controller: function($scope, $window, CmsConfig, RateOverride) {
+          $window.document.title = CmsConfig.getCmsName() + ' | Rate Overrides';
           $scope.modelFactory = RateOverride;
         },
 

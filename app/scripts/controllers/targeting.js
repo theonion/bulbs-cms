@@ -1,8 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('TargetingCtrl', function ($scope, $http, $window, $q, $location, tar_options, routes) {
-    $window.document.title = routes.CMS_NAMESPACE + ' | Targeting Editor';
+  .controller('TargetingCtrl', function ($scope, $http, $window, $q, $location,
+      CmsConfig, tar_options, routes) {
+
+    $window.document.title = CmsConfig.getCmsName() + ' | Targeting Editor';
 
     var canceller;
     $scope.search = function (url) {

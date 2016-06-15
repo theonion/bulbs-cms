@@ -1,14 +1,15 @@
 'use strict';
 
 angular.module('EditorsPick', [
+  'bulbs.cms.config',
   'customSearch'
 ])
   .config(function ($routeProvider, routes) {
     $routeProvider
       .when('/cms/app/sod/', {
-        controller: function ($scope, $window) {
-          // set title
-          $window.document.title = routes.CMS_NAMESPACE + ' | SoD';
+        controller: function ($scope, $window, CmsConfig) {
+
+          $window.document.title = CmsConfig.getCmsName() + ' | SoD';
 
           $scope.$watch('queryData', function () { console.log(arguments); });
 

@@ -1,6 +1,7 @@
 'use strict';
 
 angular.module('promotedContent', [
+  'bulbs.cms.config',
   'bulbsCmsApp.settings',
   'promotedContentPzoneSelect',
   'promotedContentList',
@@ -12,10 +13,9 @@ angular.module('promotedContent', [
     $routeProvider
       .when('/cms/app/promotion/', {
         controller: [
-          '$window',
-          function ($window) {
-            // set title
-            $window.document.title = routes.CMS_NAMESPACE + ' | Promotion Tool';
+          '$window', 'CmsConfig',
+          function ($window, CmsConfig) {
+            $window.document.title = CmsConfig.getCmsName() + ' | Promotion Tool';
           }
         ],
         templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content.html',

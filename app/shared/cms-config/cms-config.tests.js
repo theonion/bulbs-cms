@@ -57,6 +57,32 @@ describe('CmsConfig', function () {
           expect(configs.setCacheBuster('buster')).to.eql(configs);
         });
       });
+
+      context('cms name', function () {
+
+        it('should provide a getter and setter', function () {
+          var name = 'My CMS';
+
+          configs.setCmsName(name);
+
+          expect(sealedConfigs().getCmsName()).to.equal(name);
+        });
+
+        it('should throw an error if given value is not a string', function () {
+
+          expect(function () {
+            configs.setCmsName(123);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): cms name must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setCmsName('abc')).to.eql(configs);
+        });
+      });
     });
 
     context('images', function () {

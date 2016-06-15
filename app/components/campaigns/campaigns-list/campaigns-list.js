@@ -2,6 +2,7 @@
 
 angular.module('campaigns.list', [
   'apiServices.campaign.factory',
+  'bulbs.cms.config',
   'bulbsCmsApp.settings',
   'listPage',
   'moment'
@@ -9,10 +10,8 @@ angular.module('campaigns.list', [
   .config(function ($routeProvider, routes) {
     $routeProvider
       .when('/cms/app/campaigns/', {
-        controller: function ($scope, $window, Campaign) {
-          // set title
-          $window.document.title = routes.CMS_NAMESPACE + ' | Campaign';
-
+        controller: function ($scope, $window, Campaign, CmsConfig) {
+          $window.document.title = CmsConfig.getCmsName() + ' | Campaign';
           $scope.modelFactory = Campaign;
         },
         templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-list/campaigns-list-page.html'

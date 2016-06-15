@@ -2,6 +2,7 @@
 
 angular.module('specialCoverage.list', [
   'apiServices.specialCoverage.factory',
+  'bulbs.cms.config',
   'bulbsCmsApp.settings',
   'listPage',
   'moment',
@@ -11,12 +12,9 @@ angular.module('specialCoverage.list', [
 
     $routeProvider
       .when('/cms/app/special-coverage/', {
-        controller: function ($scope, $window, EXTERNAL_URL, SPECIAL_COVERAGE_LIST_REL_PATH,
-            SpecialCoverage) {
-
-          // set title
-          $window.document.title = routes.CMS_NAMESPACE + ' | Special Coverage';
-
+        controller: function ($scope, $window, CmsConfig, EXTERNAL_URL,
+            SPECIAL_COVERAGE_LIST_REL_PATH, SpecialCoverage) {
+          $window.document.title = CmsConfig.getCmsName() + ' | Special Coverage';
           $scope.modelFactory = SpecialCoverage;
           $scope.LIST_URL = EXTERNAL_URL + SPECIAL_COVERAGE_LIST_REL_PATH;
         },
