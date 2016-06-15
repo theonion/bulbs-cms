@@ -63,7 +63,7 @@ else
 fi
 
 secho "Linting"
-npm lint
+npm run lint
 if [ "$?" = "1" ]; then
   secho "Please fix lint errors before releasing."
   exit 1
