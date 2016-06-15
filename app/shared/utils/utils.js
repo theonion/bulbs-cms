@@ -7,7 +7,9 @@ angular.module('bulbs.cms.utils', [
     '_',
     function (_) {
 
-      this.slugify = function (text) {
+      var Utils = this;
+
+      Utils.slugify = function (text) {
         // https://gist.github.com/mathewbyrne/1280286
         return text.toString().toLowerCase()
           .replace(/\s+/g, '-')           // Replace spaces with -
@@ -24,7 +26,7 @@ angular.module('bulbs.cms.utils', [
        * @param {Number} indexTo - Index to move content to.
        * @returns {Boolean} true if content moved, false otherwise.
        */
-      this.moveTo = function (list, indexFrom, indexTo) {
+      Utils.moveTo = function (list, indexFrom, indexTo) {
         var ret = false;
 
         if (indexFrom >= 0 && indexFrom < list.length &&
@@ -38,7 +40,7 @@ angular.module('bulbs.cms.utils', [
         return ret;
       };
 
-      this.removeFrom = function (list, index) {
+      Utils.removeFrom = function (list, index) {
         return list.splice(index, 1).length > 0;
       };
 
@@ -49,7 +51,7 @@ angular.module('bulbs.cms.utils', [
       * @param {Object} params - Object of params to serialize.
       * @returns {String} query - a url querystring (is prefixed with '?')
       */
-      this.param = function (params) {
+      Utils.param = function (params) {
         if (!params) {
           params = {};
         }
@@ -65,7 +67,7 @@ angular.module('bulbs.cms.utils', [
         return query;
       };
 
-      this.path = {
+      Utils.path = {
         /**
          * Join path strings.
          *
@@ -75,7 +77,8 @@ angular.module('bulbs.cms.utils', [
         join: function () {
           var sep = '/';
           var replace = new RegExp(sep + '{1,}', 'g');
-          var argsArr = Array.prototype.slice.call(arguments);
+          var argsArr = _.flattenDeep(arguments);
+
           // if there's a protocol, make sure to ignore it when replacing sep
           var protocolPrefix = '';
           if (argsArr.length > 0 && typeof(argsArr[0]) === 'string') {
@@ -89,12 +92,12 @@ angular.module('bulbs.cms.utils', [
         }
       };
 
-      this.$get = [
+      Utils.$get = [
         function () {
-          return this;
+          return Utils;
         }
       ];
 
-      return this;
+      return Utils;
     }
   ]);
