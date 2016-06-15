@@ -9,7 +9,7 @@ angular.module('bulbsCmsApp')
     routes)
   {
     $scope.PARTIALS_URL = routes.PARTIALS_URL;
-    $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
+    $scope.CONTENT_PARTIALS_URL = CmsConfig.buildContentPartialsPath();
     $scope.MEDIA_ITEM_PARTIALS_URL = routes.MEDIA_ITEM_PARTIALS_URL;
     $scope.page = 'edit';
 

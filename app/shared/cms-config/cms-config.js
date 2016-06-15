@@ -30,6 +30,7 @@ angular.module('bulbs.cms.config', [
 
       var cacheBuster = '';
       var componentPath = '';
+      var contentPartialsPath = '';
       var cmsName = '';
       var imageApiUrl = '';
       var imageApiKey = '';
@@ -46,6 +47,14 @@ angular.module('bulbs.cms.config', [
         componentPath = checkOrError(
           value, _.isString,
           'component path must be a string!'
+        );
+        return this;
+      };
+
+      this.setContentPartialsPath = function (value) {
+        contentPartialsPath = checkOrError(
+          value, _.isString,
+          'content partials path must be a string!'
         );
         return this;
       };
@@ -79,17 +88,21 @@ angular.module('bulbs.cms.config', [
       this.$get = [
         function () {
           return {
-            getCacheBuster: _.constant(cacheBuster),
-            getCmsName: _.constant(cmsName),
-            getImageApiKey: _.constant(imageApiKey),
             buildComponentPath: pathBuilder(
               componentPath,
               'value given to component path build must be a string!'
             ),
+            buildContentPartialsPath: pathBuilder(
+              contentPartialsPath,
+              'value given to content partials path build must be a string!'
+            ),
             buildImageApiUrl: pathBuilder(
               imageApiUrl,
               'value given to image api url build must be a string!'
-            )
+            ),
+            getCacheBuster: _.constant(cacheBuster),
+            getCmsName: _.constant(cmsName),
+            getImageApiKey: _.constant(imageApiKey)
           };
         }
       ];

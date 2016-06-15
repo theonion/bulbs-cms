@@ -78,6 +78,52 @@ describe('CmsConfig', function () {
         });
       });
 
+      context('content partials path', function () {
+
+        it('should provide a setter and getter', function () {
+          var path = '/content_types';
+
+          configs.setContentPartialsPath(path);
+
+          expect(sealedConfigs().buildContentPartialsPath()).to.equal(path);
+        });
+
+        it('should provide a getter to build out a path', function () {
+          var path = '/content_types';
+          var templatePath = '/my/content/content_content.html';
+
+          configs.setContentPartialsPath(path);
+
+          expect(sealedConfigs().buildContentPartialsPath(templatePath))
+            .to.equal(path + templatePath);
+        });
+
+        it('should throw an error if value given to getter is not a string', function () {
+
+          expect(function () {
+            sealedConfigs().buildContentPartialsPath(123)
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): value given to content partials path build must be a string!'
+          );
+        });
+
+        it('should throw an error if the given value is not a string', function () {
+
+          expect(function () {
+            configs.setContentPartialsPath(123)
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): content partials path must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setContentPartialsPath('/content_types/')).to.eql(configs);
+        });
+      });
+
       context('cache buster', function () {
 
         it('should provide a getter and setter', function () {
