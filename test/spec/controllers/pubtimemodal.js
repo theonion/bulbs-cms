@@ -48,12 +48,12 @@ describe('Controller: PubtimemodalCtrl', function () {
       if(param){
         return moment(param);
       }else{
-        return moment("Fri Apr 25 2014 14:22:00");
+        return moment('2014-04-25T14:22:00');
       }
     }
     mockmoment.tz = function () {
       if (arguments.length == 1) {
-        return moment.tz('Fri Apr 25 2014 14:22:00', timezoneName);
+        return moment.tz('2014-04-25T14:22:00', timezoneName);
       }
       return moment.tz.apply(this, arguments);
     }
@@ -159,12 +159,12 @@ describe('Controller: PubtimemodalCtrl', function () {
           if(param){
             return moment(param);
           }else{
-            return moment('Fri Apr 25 2014 12:22:10');
+            return moment('2014-04-25T12:22:10');
           }
         }
         mockmoment.tz = function () {
           if (arguments.length == 1) {
-            return moment.tz('Fri Apr 25 2014 12:22:00', otherTz);
+            return moment.tz('2014-04-25T12:22:00', otherTz);
           }
             return moment.tz.apply(this, arguments);
         }
