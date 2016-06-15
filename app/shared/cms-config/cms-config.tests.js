@@ -265,7 +265,7 @@ describe('CmsConfig', function () {
           );
         });
 
-        it('should return image config object', function () {
+        it('should return config object', function () {
 
           expect(configs.setImageApiUrl('http://whatever.com'))
             .to.eql(configs);
@@ -302,7 +302,7 @@ describe('CmsConfig', function () {
           );
         });
 
-        it('should return image config object', function () {
+        it('should return config object', function () {
 
           expect(configs.setImageApiKey('123abc'))
           .to.eql(configs);
@@ -315,6 +315,27 @@ describe('CmsConfig', function () {
           configs.setImageApiKey(key);
 
           expect(window.BC_API_KEY).to.equal(key);
+        });
+      });
+
+      context('nav logo', function () {
+
+        it('should provide a setter and getter', function () {
+
+          // TODO : add test code here
+          throw new Error('Not implemented yet.');
+        });
+
+        it('should throw an error if given value is not a string', function () {
+
+          // TODO : add test code here
+          throw new Error('Not implemented yet.');
+        });
+
+        it('should return config object', function () {
+
+          // TODO : add test code here
+          throw new Error('Not implemented yet.');
         });
       });
     });
