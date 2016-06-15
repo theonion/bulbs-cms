@@ -73,10 +73,6 @@ describe('Controller: ContenteditCtrl', function () {
       expect(typeof scope.CONTENT_PARTIALS_URL).to.equal('string');
     });
 
-    it('should have string MEDIA_ITEM_PARTIALS_URL in scope', function () {
-      expect(typeof scope.MEDIA_ITEM_PARTIALS_URL).to.equal('string');
-    });
-
     it('should have string CACHEBUSTER in scope', function () {
       expect(typeof scope.CACHEBUSTER).to.equal('string');
     });
