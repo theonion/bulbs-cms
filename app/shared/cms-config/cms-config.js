@@ -31,6 +31,7 @@ angular.module('bulbs.cms.config', [
       var cacheBuster = '';
       var componentPath = '';
       var contentPartialsPath = '';
+      var directivePartialsPath = '';
       var cmsName = '';
       var imageApiUrl = '';
       var imageApiKey = '';
@@ -55,6 +56,14 @@ angular.module('bulbs.cms.config', [
         contentPartialsPath = checkOrError(
           value, _.isString,
           'content partials path must be a string!'
+        );
+        return this;
+      };
+
+      this.setDirectivePartialsPath = function (value) {
+        directivePartialsPath = checkOrError(
+          value, _.isString,
+          'directive partials path must be a string!'
         );
         return this;
       };
@@ -95,6 +104,10 @@ angular.module('bulbs.cms.config', [
             buildContentPartialsPath: pathBuilder(
               contentPartialsPath,
               'value given to content partials path build must be a string!'
+            ),
+            buildDirectivePartialsPath: pathBuilder(
+              directivePartialsPath,
+              'value given to directive partials path build must be a string!'
             ),
             buildImageApiUrl: pathBuilder(
               imageApiUrl,

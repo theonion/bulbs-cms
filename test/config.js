@@ -7,6 +7,7 @@ angular.module('bulbs.cms.site.config', [
       CmsConfig
         .setContentPartialsPath('/content_type_views/')
         .setComponentPath('/components/')
+        .setDirectivePartialsPath('/views/')
         .setImageApiUrl('http://localimages.avclub.com')
         .setImageApiKey('abc123');
     }
@@ -16,13 +17,11 @@ angular.module('bulbs.cms.site.config', [
     SHARED_URL: '/shared/',
     STATIC_URL: '/static/',
     PARTIALS_URL: '/views/',
-    DIRECTIVE_PARTIALS_URL: '/views/',
     MEDIA_ITEM_PARTIALS_URL: '/cms/api/partials/media_items/'
   })
   .constant('LOADING_IMG_SRC', '/images/loading.gif')
   .constant('STATIC_URL', '/static/')
   .constant('PARTIALS_URL', '/views/')
-  .constant('DIRECTIVE_PARTIALS_URL', '/views/')
   .constant('MEDIA_ITEM_PARTIALS_URL', '/cms/api/partials/media_items/')
   .constant('TIMEZONE_NAME', 'America/Chicago')
   .constant('AUTO_ADD_AUTHOR', false)
