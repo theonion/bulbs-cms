@@ -14,7 +14,7 @@ angular.module('bulbsCmsApp')
         }
       },
       link: function (scope) {
-        scope.NAV_LOGO = routes.NAV_LOGO;
+        scope.NAV_LOGO = CmsConfig.getNavLogoPath();
         scope.current_user = CurrentUser;
       }
     };

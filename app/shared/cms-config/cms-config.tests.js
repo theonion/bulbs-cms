@@ -321,21 +321,26 @@ describe('CmsConfig', function () {
       context('nav logo', function () {
 
         it('should provide a setter and getter', function () {
+          var path = '/onion-logo.png';
 
-          // TODO : add test code here
-          throw new Error('Not implemented yet.');
+          configs.setNavLogoPath(path);
+
+          expect(sealedConfigs().getNavLogoPath()).to.equal(path);
         });
 
         it('should throw an error if given value is not a string', function () {
 
-          // TODO : add test code here
-          throw new Error('Not implemented yet.');
+          expect(function () {
+            configs.setNavLogoPath(123);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): nav logo path must be a string!'
+          );
         });
 
         it('should return config object', function () {
 
-          // TODO : add test code here
-          throw new Error('Not implemented yet.');
+          expect(configs.setNavLogoPath('/onion-logo.png')).to.equal(configs);
         });
       });
     });

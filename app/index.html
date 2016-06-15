@@ -341,7 +341,8 @@
             .setComponentPath('/components/')
             .setDirectivePartialsPath('/views/')
             .setImageApiUrl('http://clickholeimg.local')
-            .setImageApiKey('123abc');
+            .setImageApiKey('123abc')
+            .setNavLogoPath('/images/onion-logo.png');
         }
       ]);
 
@@ -356,8 +357,7 @@
           .constant('routes', {
               SHARED_URL: '/shared/',
               STATIC_URL: '/static/',
-              PARTIALS_URL: '/views/',
-              NAV_LOGO: '/images/onion-logo.png'
+              PARTIALS_URL: '/views/'
           })
           .constant('STATIC_URL', '/static/')
           .constant('TIMEZONE_NAME', 'America/Chicago')

@@ -35,6 +35,7 @@ angular.module('bulbs.cms.config', [
       var cmsName = '';
       var imageApiUrl = '';
       var imageApiKey = '';
+      var navLogoPath = '';
 
       this.setCacheBuster = function (value) {
         cacheBuster = checkOrError(
@@ -94,6 +95,14 @@ angular.module('bulbs.cms.config', [
         return this;
       };
 
+      this.setNavLogoPath = function (value) {
+        navLogoPath = checkOrError(
+          value, _.isString,
+          'nav logo path must be a string!'
+        );
+        return this;
+      };
+
       this.$get = [
         function () {
           return {
@@ -115,7 +124,8 @@ angular.module('bulbs.cms.config', [
             ),
             getCacheBuster: _.constant(cacheBuster),
             getCmsName: _.constant(cmsName),
-            getImageApiKey: _.constant(imageApiKey)
+            getImageApiKey: _.constant(imageApiKey),
+            getNavLogoPath: _.constant(navLogoPath)
           };
         }
       ];
