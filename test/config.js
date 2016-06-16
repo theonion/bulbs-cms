@@ -14,7 +14,6 @@ angular.module('bulbs.cms.site.config', [
     }
   ])
   .constant('TIMEZONE_NAME', 'America/Chicago')
-  .constant('DEFAULT_IMAGE_WIDTH', 1200)
   .constant('VIDEO_EMBED_URL', 'http://www.avclub.com/video/embed?id=')
   .constant('firebaseApiConfig', {
       FIREBASE_ROOT: 'bulbs-cms-test',

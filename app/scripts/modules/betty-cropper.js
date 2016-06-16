@@ -5,7 +5,6 @@
     'restangular',
     'jquery'
   ])
-    .value('DEFAULT_IMAGE_WIDTH', 1200)
     .factory('Selection', SelectionFactory)
     .factory('BettyImage', BettyImageFactory)
     .service('BettyCropper', BettyCropperService);
@@ -132,7 +131,7 @@
       }
     }
 
-  function BettyImageFactory($interpolate, $http, CmsConfig, DEFAULT_IMAGE_WIDTH, Selection, $) {
+  function BettyImageFactory($interpolate, $http, CmsConfig, Selection, $) {
     function BettyImage(data) {
       this.id = data.id;
       this.name = data.name;
@@ -179,7 +178,7 @@
       var scaledSelection = selection.scaleToFit(width, height);
 
       return {
-        'background-image': 'url(' + this.url('original', DEFAULT_IMAGE_WIDTH, 'jpg') + ')',
+        'background-image': 'url(' + this.url('original', 1200, 'jpg') + ')',
         'background-size': Math.floor(scaledSelection.width() / selection.width()  * this.width) + 'px',
         'background-position': '-' + scaledSelection.x0 + 'px -' + scaledSelection.y0 + 'px',
         'height': scaledSelection.height() + 'px',
