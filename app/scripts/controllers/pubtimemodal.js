@@ -2,7 +2,7 @@
 
 angular.module('bulbsCmsApp')
   .controller('PubtimemodalCtrl', function ($scope, $http, $modal,
-      $modalInstance, $, moment, Login, article, TIMEZONE_NAME, Raven) {
+      $modalInstance, $, CmsConfig, moment, Login, article, Raven) {
 
     $scope.article = article;
 
@@ -38,7 +38,7 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.setDateShortcut = function (shortcut) {
-      var today = moment.tz(TIMEZONE_NAME);
+      var today = moment.tz(CmsConfig.getTimezoneName());
       if (shortcut === 'today') {
         $scope.datePickerValue = moment().year(today.year()).month(today.month()).date(today.date());
       }
@@ -60,7 +60,7 @@ angular.module('bulbsCmsApp')
 
       var newDate = moment($scope.datePickerValue);
       var newTime = moment($scope.timePickerValue);
-      var newDateTime = moment.tz(TIMEZONE_NAME)
+      var newDateTime = moment.tz(CmsConfig.getTimezoneName())
         .year(newDate.year())
         .month(newDate.month())
         .date(newDate.date())
@@ -124,7 +124,7 @@ angular.module('bulbsCmsApp')
     };
 
     if ($scope.article.published) {
-      $scope.pickerValue = moment.tz($scope.article.published, TIMEZONE_NAME);
+      $scope.pickerValue = moment.tz($scope.article.published, CmsConfig.getTimezoneName());
     } else {
       $scope.setTimeShortcut('now');
     }

@@ -15,5 +15,4 @@ angular.module('bulbs.cms.site.config', [
         .setSharedPath('/shared/');
     }
   ])
-  .constant('TIMEZONE_NAME', 'America/Chicago')
   .constant('VIDEO_EMBED_URL', 'http://www.avclub.com/video/embed?id=');

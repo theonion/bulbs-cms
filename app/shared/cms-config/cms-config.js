@@ -49,6 +49,8 @@ angular.module('bulbs.cms.config', [
       var internalUrl = '';
       var navLogoPath = '';
       var sharedPath  = '';
+      // name of timezone for to use for times in the cms
+      var timezoneName = 'America/Chicago';
       // mappings for top bar templates
       var topBarMappings = {};
       // path from internal url that points to an endpoint for unpublished content
@@ -176,6 +178,14 @@ angular.module('bulbs.cms.config', [
         return this;
       };
 
+      this.setTimezoneName = function (name) {
+        timezoneName = checkOrError(
+          name, moment.tz.zone,
+          'given timezone name "' + name + '" is not a valid timezone!'
+        );
+        return this;
+      };
+
       this.setTopBarMapping = function (name, template) {
         var key = checkOrError(
           name, _.isString,
@@ -246,6 +256,7 @@ angular.module('bulbs.cms.config', [
             getFirebaseMaxArticleHistory: _.constant(firebaseMaxArticleHistory),
             getImageApiKey: _.constant(imageApiKey),
             getNavLogoPath: _.constant(navLogoPath),
+            getTimezoneName: _.constant(timezoneName),
             getTopBarMapping: function (name) {
               if (_.has(topBarMappings, name)) {
                 return topBarMappings[name];

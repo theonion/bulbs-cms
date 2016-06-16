@@ -32,9 +32,9 @@ describe('Controller: PubtimemodalCtrl', function () {
   }
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope, $httpBackend, $modal, moment, TIMEZONE_NAME) {
+  beforeEach(inject(function ($controller, $rootScope, $httpBackend, $modal, moment, CmsConfig) {
     httpBackend = $httpBackend;
-    timezoneName = TIMEZONE_NAME;
+    timezoneName = CmsConfig.getTimezoneName();
     var modalUrl = '/views/modals/publish-date-modal.html';
     modal = $modal.open({
       templateUrl: modalUrl

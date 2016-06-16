@@ -345,6 +345,38 @@ describe('CmsConfig', function () {
         });
       });
 
+      context('timezone name', function () {
+
+        it('should provide a setter and getter', function () {
+          var timezone = 'Africa/Abidjan';
+
+          configs.setTimezoneName('Africa/Abidjan');
+
+          expect(sealedConfigs().getTimezoneName()).to.equal(timezone);
+        });
+
+        it('should throw an error if given value is not a valid timezone name', function () {
+          var timezone = 'not a real timezone';
+
+          expect(function () {
+            configs.setTimezoneName(timezone);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): given timezone name "' + timezone + '" is not a valid timezone!'
+          );
+        });
+
+        it('should default to "America/Chicago"', function () {
+
+          expect(sealedConfigs().getTimezoneName()).to.equal('America/Chicago');
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setTimezoneName('Africa/Abidjan')).to.equal(configs);
+        });
+      });
+
       context('top bar mappings', function () {
 
         it('should provide a setter and getter', function () {
