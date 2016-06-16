@@ -33,6 +33,8 @@ angular.module('bulbs.cms.config', [
       var contentPartialsPath = '';
       var directivePartialsPath = '';
       var cmsName = '';
+      // url for external links, those that are accessible to the public
+      var externalUrl = '';
       var imageApiUrl = '';
       var imageApiKey = '';
       // url for internal links, those that are not accessible to the public
@@ -78,7 +80,15 @@ angular.module('bulbs.cms.config', [
           'cms name must be a string!'
         );
         return this;
-      }
+      };
+
+      this.setExternalUrl = function (value) {
+        externalUrl = checkOrError(
+          value, _.isString,
+          'external url must be a string!'
+        );
+        return this;
+      };
 
       this.setImageApiUrl = function (value) {
         imageApiUrl = checkOrError(
@@ -136,6 +146,10 @@ angular.module('bulbs.cms.config', [
             buildDirectivePartialsPath: pathBuilder(
               directivePartialsPath,
               'value given to directive partials path build must be a string!'
+            ),
+            buildExternalUrl: pathBuilder(
+              externalUrl,
+              'value given to external url build must be a string!'
             ),
             buildImageApiUrl: pathBuilder(
               imageApiUrl,

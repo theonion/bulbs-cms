@@ -14,10 +14,9 @@ angular.module('sections.edit.directive', [
 ])
   .directive('sectionsEdit', function (CmsConfig) {
     return {
-      controller: function (_, $location, $q, $scope, EXTERNAL_URL,
-          SECTIONS_LIST_REL_PATH, Section) {
+      controller: function (_, $location, $q, $scope, SECTIONS_LIST_REL_PATH, Section) {
 
-        $scope.LIST_URL = EXTERNAL_URL + SECTIONS_LIST_REL_PATH;
+        $scope.LIST_URL = CmsConfig.buildExternalUrl(SECTIONS_LIST_REL_PATH);
 
         $scope.needsSave = false;
 

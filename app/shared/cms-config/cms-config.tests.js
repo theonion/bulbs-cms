@@ -222,6 +222,52 @@ describe('CmsConfig', function () {
         });
       });
 
+      context('external url', function () {
+
+        it('should provide a setter and getter', function () {
+          var url = 'http://www.mysite.com';
+
+          configs.setExternalUrl(url);
+
+          expect(sealedConfigs().buildExternalUrl()).to.equal(url);
+        });
+
+        it('should provide a getter to build out a path', function () {
+          var url = 'http://www.mysite.com';
+          var path = '/whatever';
+
+          configs.setExternalUrl(url);
+
+          expect(sealedConfigs().buildExternalUrl(path))
+            .to.equal(url + path);
+        });
+
+        it('should throw an error if value given to getter is not a string', function () {
+
+          expect(function () {
+            sealedConfigs().buildExternalUrl(123)
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): value given to external url build must be a string!'
+          );
+        });
+
+        it('should throw an error if the given value is not a string', function () {
+
+          expect(function () {
+            configs.setExternalUrl(123)
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): external url must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setExternalUrl('/directives/path')).to.eql(configs);
+        });
+      });
+
       context('internal url', function () {
 
         it('should provide a setter and getter', function () {
@@ -234,7 +280,7 @@ describe('CmsConfig', function () {
 
         it('should provide a getter to build out a path', function () {
           var url = 'http://admin.mysite.com';
-          var path = '/my/content/directive.html';
+          var path = '/whatever';
 
           configs.setInternalUrl(url);
 

@@ -12,11 +12,10 @@ angular.module('sections.list', [
 
     $routeProvider
       .when('/cms/app/section/', {
-        controller: function ($scope, $window, EXTERNAL_URL,
-            SECTIONS_LIST_REL_PATH, Section) {
+        controller: function ($scope, $window, SECTIONS_LIST_REL_PATH, Section) {
           $window.document.title = CmsConfig.getCmsName() + ' | Section';
           $scope.modelFactory = Section;
-          $scope.LIST_URL = EXTERNAL_URL + SECTIONS_LIST_REL_PATH;
+          $scope.LIST_URL = CmsConfig.buildExternalUrl(SECTIONS_LIST_REL_PATH);
         },
         templateUrl: CmsConfig.buildComponentPath('sections/sections-list/sections-list-page.html')
       });

@@ -16,11 +16,11 @@ angular.module('specialCoverage.edit.directive', [
 ])
   .directive('specialCoverageEdit', function (CmsConfig) {
     return {
-      controller: function (_, $location, $q, $scope, $modal, Campaign, EXTERNAL_URL,
+      controller: function (_, $location, $q, $scope, $modal, Campaign,
           SPECIAL_COVERAGE_LIST_REL_PATH, SpecialCoverage) {
 
         $scope.ACTIVE_STATES = SpecialCoverage.ACTIVE_STATES;
-        $scope.LIST_URL = EXTERNAL_URL + SPECIAL_COVERAGE_LIST_REL_PATH;
+        $scope.LIST_URL = CmsConfig.buildExternalUrl(SPECIAL_COVERAGE_LIST_REL_PATH);
 
         $scope.needsSave = false;
 

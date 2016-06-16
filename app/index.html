@@ -340,8 +340,10 @@
             .setContentPartialsPath('/content_type_views/')
             .setComponentPath('/components/')
             .setDirectivePartialsPath('/views/')
+            .setExternalUrl('onion.local')
             .setImageApiUrl('http://clickholeimg.local')
             .setImageApiKey('123abc')
+            .setInternalUrl('onion.local')
             .setNavLogoPath('/images/onion-logo.png')
             .setSharedPath('/shared/');
         }
@@ -362,7 +364,6 @@
           .constant('VIDEO_THUMBNAIL_URL', 'http://v.theonion.com/avclubmedia/video/{{video}}/frame_{{thumbnail}}.jpg')
           .constant('STATIC_IMAGE_URL', 'http://chimg.onionstatic.com/{{image}}/{{ratio}}/600.jpg')
           .constant('FIREBASE_ROOT', 'bulbs-cms-testing')
-          .constant('EXTERNAL_URL', 'onion.local')
           // ****** CMS Plugins ****** \\
           .constant('tar_options', { endpoint: '/ads/targeting' })
           .constant('navbar_options', {})
