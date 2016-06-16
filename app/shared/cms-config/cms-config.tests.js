@@ -32,6 +32,37 @@ describe('CmsConfig', function () {
 
     context('general cms', function () {
 
+      context('auto add author', function () {
+
+        it('should provide a setter and getter', function () {
+          var autoAddAuthor = true;
+
+          configs.setAutoAddAuthor(autoAddAuthor);
+
+          expect(sealedConfigs().getAutoAddAuthor()).to.be.true;
+        });
+
+        it('should throw an error if given value is not a boolean', function () {
+
+          expect(function () {
+            configs.setAutoAddAuthor('hello');
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): auto add author must be a boolean!'
+          );
+        });
+
+        it('should default to false', function () {
+
+          expect(sealedConfigs().getAutoAddAuthor()).to.be.false;
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setAutoAddAuthor(true)).to.eql(configs);
+        });
+      });
+
       context('components path', function () {
 
         it('should provide a setter and getter', function () {

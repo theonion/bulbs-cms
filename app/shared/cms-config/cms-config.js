@@ -28,6 +28,8 @@ angular.module('bulbs.cms.config', [
         }.bind(null, start);
       };
 
+      // true to automatically add current user to author list when creating content
+      var autoAddAuthor = false;
       var cacheBuster = '';
       var componentPath = '';
       var contentPartialsPath = '';
@@ -43,6 +45,14 @@ angular.module('bulbs.cms.config', [
       var sharedPath  = '';
       // path from internal url that points to an endpoint for unpublished content
       var unpublishedPath = '';
+
+      this.setAutoAddAuthor = function (value) {
+        autoAddAuthor = checkOrError(
+          value, _.isBoolean,
+          'auto add author must be a boolean!'
+        );
+        return this;
+      };
 
       this.setCacheBuster = function (value) {
         cacheBuster = checkOrError(
@@ -177,6 +187,7 @@ angular.module('bulbs.cms.config', [
               Utils.path.join(internalUrl, unpublishedPath),
               'value given to unpublished url build must be a string!'
             ),
+            getAutoAddAuthor: _.constant(autoAddAuthor),
             getCacheBuster: _.constant(cacheBuster),
             getCmsName: _.constant(cmsName),
             getImageApiKey: _.constant(imageApiKey),

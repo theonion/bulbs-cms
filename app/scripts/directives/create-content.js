@@ -2,7 +2,7 @@
 
 angular.module('bulbsCmsApp')
   .directive('createContent', function ($http, $window, $, IfExistsElse, Login,
-      ContentFactory, CmsConfig, AUTO_ADD_AUTHOR, Raven) {
+      ContentFactory, CmsConfig, Raven) {
     return {
       restrict: 'E',
       templateUrl:  CmsConfig.buildDirectivePartialsPath('create-content.html'),
@@ -38,7 +38,7 @@ angular.module('bulbsCmsApp')
             $scope.gotTags = true;
           }
 
-          if (AUTO_ADD_AUTHOR) {
+          if (CmsConfig.getAutoAddAuthor()) {
             ContentFactory.one('me').get().then(function (data) {
               $scope.init.authors = [data];
               $scope.gotUser = true;
