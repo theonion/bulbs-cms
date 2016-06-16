@@ -2,7 +2,7 @@
 
 angular.module('bulbsCmsApp')
   .controller('TargetingCtrl', function ($scope, $http, $window, $q, $location,
-      CmsConfig, tar_options) {
+      CmsConfig) {
 
     $window.document.title = CmsConfig.getCmsName() + ' | Targeting Editor';
 
@@ -19,7 +19,7 @@ angular.module('bulbsCmsApp')
 
       $http({
         method: 'GET',
-        url: tar_options.endpoint,
+        url: '/ads/targeting',
         timeout: canceller.promise,
         params: {url: $scope.url}
       }).success(function (data) {
@@ -43,7 +43,7 @@ angular.module('bulbsCmsApp')
 
       return $http({
         method: 'POST',
-        url: tar_options.endpoint + '?url=' + $scope.url,
+        url: '/ads/targeting?url=' + $scope.url,
         data: data
       }).success(function (data) {
         $scope.targetingArray = [];

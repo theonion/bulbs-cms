@@ -16,8 +16,4 @@ angular.module('bulbs.cms.site.config', [
     }
   ])
   .constant('TIMEZONE_NAME', 'America/Chicago')
-  .constant('VIDEO_EMBED_URL', 'http://www.avclub.com/video/embed?id=')
-  .constant('tar_options', {
-    namespace: 'Woodruff',
-    endpoint: '/ads/targeting'
-  });
+  .constant('VIDEO_EMBED_URL', 'http://www.avclub.com/video/embed?id=');

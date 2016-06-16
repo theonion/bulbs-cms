@@ -366,10 +366,7 @@
           .constant('TIMEZONE_NAME', 'America/Chicago')
           .constant('VIDEO_EMBED_URL', 'http://www.avclub.com/videos/embed?id=')
           .constant('VIDEO_THUMBNAIL_URL', 'http://v.theonion.com/avclubmedia/video/{{video}}/frame_{{thumbnail}}.jpg')
-          // ****** CMS Plugins ****** \\
-          .constant('tar_options', { endpoint: '/ads/targeting' })
           .constant('ZERO_CLIPBOARD_SWF', 'bower_components/zeroclipboard/dist/ZeroClipboard.swf')
-          // finish off with config
           .config(function(ngClipProvider, ZERO_CLIPBOARD_SWF) {
             ngClipProvider.setPath(ZERO_CLIPBOARD_SWF);
           });
