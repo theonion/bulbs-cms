@@ -345,7 +345,7 @@ describe('CmsConfig', function () {
         });
       });
 
-      context('', function () {
+      context('top bar mappings', function () {
 
         it('should provide a setter and getter', function () {
           var name = 'nav';
