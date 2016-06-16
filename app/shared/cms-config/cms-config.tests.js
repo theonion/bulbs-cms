@@ -222,6 +222,52 @@ describe('CmsConfig', function () {
         });
       });
 
+      context('internal url', function () {
+
+        it('should provide a setter and getter', function () {
+          var url = 'http://admin.mysite.com';
+
+          configs.setInternalUrl(url);
+
+          expect(sealedConfigs().buildInternalUrl()).to.equal(url);
+        });
+
+        it('should provide a getter to build out a path', function () {
+          var url = 'http://admin.mysite.com';
+          var path = '/my/content/directive.html';
+
+          configs.setInternalUrl(url);
+
+          expect(sealedConfigs().buildInternalUrl(path))
+            .to.equal(url + path);
+        });
+
+        it('should throw an error if value given to getter is not a string', function () {
+
+          expect(function () {
+            sealedConfigs().buildInternalUrl(123)
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): value given to internal url build must be a string!'
+          );
+        });
+
+        it('should throw an error if the given value is not a string', function () {
+
+          expect(function () {
+            configs.setInternalUrl(123)
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): internal url must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setInternalUrl('/directives/path')).to.eql(configs);
+        });
+      });
+
       context('shared path', function () {
 
         it('should provide a setter and getter', function () {

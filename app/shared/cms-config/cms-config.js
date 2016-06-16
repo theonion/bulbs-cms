@@ -35,6 +35,8 @@ angular.module('bulbs.cms.config', [
       var cmsName = '';
       var imageApiUrl = '';
       var imageApiKey = '';
+      // url for internal links, those that are not accessible to the public
+      var internalUrl = '';
       var navLogoPath = '';
       var sharedPath  = '';
 
@@ -96,6 +98,14 @@ angular.module('bulbs.cms.config', [
         return this;
       };
 
+      this.setInternalUrl = function (value) {
+        internalUrl = checkOrError(
+          value, _.isString,
+          'internal url must be a string!'
+        );
+        return this;
+      };
+
       this.setNavLogoPath = function (value) {
         navLogoPath = checkOrError(
           value, _.isString,
@@ -130,6 +140,10 @@ angular.module('bulbs.cms.config', [
             buildImageApiUrl: pathBuilder(
               imageApiUrl,
               'value given to image api url build must be a string!'
+            ),
+            buildInternalUrl: pathBuilder(
+              internalUrl,
+              'value given to internal url build must be a string!'
             ),
             buildSharedPath: pathBuilder(
               sharedPath,
