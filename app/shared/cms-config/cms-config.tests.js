@@ -532,17 +532,17 @@ describe('CmsConfig', function () {
 
         it('should provide a setter and getter', function () {
           var path = '/videos/embed';
-          var someId = 123456;
+          var someId = '123456'
 
           configs.setVideoPath(path);
 
-          expect(sealedConfigs().buildVideoUrl(someId))
+          expect(sealedConfigs().buildVideoUrl())
             .to.equal(externalUrl + path);
         });
 
         it('should provide a getter to build out a path', function () {
           var path = '/videos/embed/';
-          var someId = 123456;
+          var someId = '123456';
 
           configs.setVideoPath(path);
 
@@ -550,13 +550,13 @@ describe('CmsConfig', function () {
             .to.equal(externalUrl + path + someId);
         });
 
-        it('should throw an error if value given to getter is not a number', function () {
+        it('should throw an error if value given to getter is not a string', function () {
 
           expect(function () {
-            sealedConfigs().buildVideoUrl('not a number')
+            sealedConfigs().buildVideoUrl(123);
           }).to.throw(
             BulbsCmsConfigError,
-            'Configuration Error (CmsConfig): value given to video url build must be a number!'
+            'Configuration Error (CmsConfig): value given to video url build must be a string!'
           );
         });
 

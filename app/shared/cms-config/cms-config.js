@@ -262,7 +262,7 @@ angular.module('bulbs.cms.config', [
             ),
             buildVideoUrl: pathBuilder(
               Utils.path.join(externalUrl, videoPath),
-              'value given to video url build must be a number!'
+              'value given to video url build must be a string!'
             ),
             getAutoAddAuthor: _.constant(autoAddAuthor),
             getCacheBuster: _.constant(cacheBuster),
