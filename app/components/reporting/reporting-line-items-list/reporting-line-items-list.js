@@ -3,10 +3,9 @@
 angular.module('lineItems.list', [
     'apiServices.lineItem.factory',
     'bulbs.cms.site.config',
-    'bulbsCmsApp.settings',
     'listPage'
   ])
-  .config(function ($injector, $routeProvider, CmsConfigProvider, routes) {
+  .config(function ($injector, $routeProvider, CmsConfigProvider) {
     var CmsConfig = $injector.invoke(CmsConfigProvider.$get);
 
     $routeProvider
@@ -18,7 +17,7 @@ angular.module('lineItems.list', [
 
           $scope.LineItemExportModal = function () {
             return $modal.open({
-              templateUrl: routes.PARTIALS_URL + 'modals/line-item-export-modal.html',
+              templateUrl: '/views/modals/line-item-export-modal.html',
               controller: 'LineitemexportmodalCtrl',
             });
           };

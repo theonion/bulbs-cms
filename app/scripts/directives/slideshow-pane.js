@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('slideshowPane', function ($http, $window, $compile, $, routes) {
+  .directive('slideshowPane', function ($http, $window, $compile, $) {
     return {
       restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'slideshow-pane.html',
+      templateUrl: '/views/slideshow-pane.html',
       scope: {
         article: '=',
         image: '=',

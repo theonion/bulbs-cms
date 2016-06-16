@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('staticImage', function (routes, STATIC_IMAGE_URL) {
+  .directive('staticImage', function (STATIC_IMAGE_URL) {
     return {
-      templateUrl: routes.PARTIALS_URL + 'static-image.html',
+      templateUrl: '/views/static-image.html',
       restrict: 'E',
       scope: {
         'image': '='

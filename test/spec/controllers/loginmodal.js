@@ -22,7 +22,7 @@ describe('Controller: LoginmodalCtrl', function () {
       }
     };
 
-    var modalUrl = routes.PARTIALS_URL + 'modals/login-modal.html';
+    var modalUrl = '/views/modals/login-modal.html';
     modal = $modal.open({
       templateUrl: modalUrl
     })

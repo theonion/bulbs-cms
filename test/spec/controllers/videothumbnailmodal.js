@@ -24,7 +24,7 @@ describe('Controller: VideothumbnailmodalCtrl', function () {
       return {then: function () {}}
     }
 
-    var modalUrl = routes.PARTIALS_URL + 'modals/last-modified-guard-modal.html';
+    var modalUrl = '/views/modals/last-modified-guard-modal.html';
     modal = $modal.open({
       templateUrl: modalUrl
     });

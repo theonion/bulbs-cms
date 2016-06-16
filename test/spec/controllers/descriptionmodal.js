@@ -16,7 +16,7 @@ describe('Controller: DescriptionModalCtrl', function () {
         scope = $rootScope.$new();
 
         // mock modal
-        var modalUrl = routes.PARTIALS_URL + 'modals/description-modal.html';
+        var modalUrl = '/views/modals/description-modal.html';
         modal = $modal.open({
             templateUrl: modalUrl
         });

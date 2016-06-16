@@ -3,7 +3,7 @@
 angular.module('bulbsCmsApp')
   .controller('ContentlistCtrl', function (
     $scope, $http, $timeout, $location, $window, $q, $, CmsConfig,
-      ContentListService, routes) {
+      ContentListService) {
 
     $scope.contentData = [];
     ContentListService.$updateContent({page: 1})

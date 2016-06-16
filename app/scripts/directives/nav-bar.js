@@ -1,8 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('navBar', function (CmsConfig, routes, navbar_options,
-      CurrentUser) {
+  .directive('navBar', function (CmsConfig, navbar_options, CurrentUser) {
     return {
       restrict: 'E',
       scope: false,
@@ -10,7 +9,7 @@ angular.module('bulbsCmsApp')
         if (navbar_options[tAttrs.view]) {
           return CmsConfig.buildDirectivePartialsPath(navbar_options[tAttrs.view] + '.html');
         } else {
-          return routes.PARTIALS_URL + tAttrs.view + '.html';
+          return '/views/' + tAttrs.view + '.html';
         }
       },
       link: function (scope) {

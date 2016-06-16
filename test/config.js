@@ -14,11 +14,9 @@ angular.module('bulbs.cms.site.config', [
   ])
   .constant('routes', {
     SHARED_URL: '/shared/',
-    STATIC_URL: '/static/',
-    PARTIALS_URL: '/views/'
+    STATIC_URL: '/static/'
   })
   .constant('STATIC_URL', '/static/')
-  .constant('PARTIALS_URL', '/views/')
   .constant('TIMEZONE_NAME', 'America/Chicago')
   .constant('AUTO_ADD_AUTHOR', false)
   .constant('DEFAULT_IMAGE_WIDTH', 1200)

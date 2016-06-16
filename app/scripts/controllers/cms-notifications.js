@@ -2,7 +2,7 @@
 
 angular.module('bulbsCmsApp')
   .controller('CmsNotificationsCtrl', function ($q, $window, $scope, CmsConfig,
-      routes, CmsNotificationsApi, CurrentUser, _, moment) {
+      CmsNotificationsApi, CurrentUser, _, moment) {
 
     $window.document.title = CmsConfig.getCmsName() + ' | Notifications';
 

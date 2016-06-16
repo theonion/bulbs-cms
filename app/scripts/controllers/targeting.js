@@ -2,7 +2,7 @@
 
 angular.module('bulbsCmsApp')
   .controller('TargetingCtrl', function ($scope, $http, $window, $q, $location,
-      CmsConfig, tar_options, routes) {
+      CmsConfig, tar_options) {
 
     $window.document.title = CmsConfig.getCmsName() + ' | Targeting Editor';
 

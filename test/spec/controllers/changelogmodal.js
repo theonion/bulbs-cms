@@ -22,7 +22,7 @@ describe('Controller: ChangelogmodalCtrl', function () {
 
     mockChangelog = mockApiData['changelog'];
 
-    var modalUrl = routes.PARTIALS_URL + 'modals/changelog-modal.html';
+    var modalUrl = '/views/modals/changelog-modal.html';
     modal = $modal.open({
       templateUrl: modalUrl
     })

@@ -58,7 +58,7 @@ describe('Controller: VersionBrowserModalCtrl', function () {
     scope = rootScope.$new();
 
     // open up version browser modal with mocked out stuff
-    var modalUrl = routes.PARTIALS_URL + 'modals/version-browser-modal.html';
+    var modalUrl = '/views/modals/version-browser-modal.html';
     modal = $modal.open({
       templateUrl: modalUrl
     });

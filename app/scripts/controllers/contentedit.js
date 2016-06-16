@@ -5,10 +5,10 @@ angular.module('bulbsCmsApp')
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
     $, _, CmsConfig, moment, keypress, Raven, PNotify,
-    IfExistsElse, VersionStorageApi, ContentFactory, FirebaseApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener,
-    routes)
+    IfExistsElse, VersionStorageApi, ContentFactory, FirebaseApi,
+    FirebaseArticleFactory, Login, VersionBrowserModalOpener)
   {
-    $scope.PARTIALS_URL = routes.PARTIALS_URL;
+    $scope.PARTIALS_URL = '/views/';
     $scope.CONTENT_PARTIALS_URL = CmsConfig.buildContentPartialsPath();
     $scope.page = 'edit';
 
@@ -183,7 +183,7 @@ angular.module('bulbsCmsApp')
             moment(data.last_modified) > moment($scope.article.last_modified)) {
             $scope.saveArticleDeferred.reject();
             $modal.open({
-              templateUrl: routes.PARTIALS_URL + 'modals/last-modified-guard-modal.html',
+              templateUrl: '/views/modals/last-modified-guard-modal.html',
               controller: 'LastmodifiedguardmodalCtrl',
               scope: $scope,
               resolve: {

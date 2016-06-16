@@ -1,11 +1,11 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('saveButtonOld', function ($q, $timeout, $window, routes) {
+  .directive('saveButtonOld', function ($q, $timeout, $window) {
     return {
       replace: true,
       restrict: 'E',
-      templateUrl: routes.PARTIALS_URL + 'save-button.html',
+      templateUrl: '/views/save-button.html',
       scope: {
         'getPromise': '&',
         'saveCbk': '&onSave',

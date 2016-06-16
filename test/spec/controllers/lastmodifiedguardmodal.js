@@ -20,7 +20,7 @@ describe('Controller: LastmodifiedguardmodalCtrl', function () {
 
     routeService = $route;
 
-    var modalUrl = routes.PARTIALS_URL + 'modals/last-modified-guard-modal.html';
+    var modalUrl = '/views/modals/last-modified-guard-modal.html';
     modal = $modal.open({
       templateUrl: modalUrl
     })

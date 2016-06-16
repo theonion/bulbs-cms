@@ -21,7 +21,7 @@ describe('ImageCropModalCtrl', function () {
       routes = $injector.get('routes');
 
       modalInstance = $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'image-crop-modal.html'
+        templateUrl: '/views/image-crop-modal.html'
       });
 
     });
