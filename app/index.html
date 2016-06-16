@@ -351,7 +351,8 @@
             .setTopBarMapping('nav', '/views/nav.html')
             .setTopBarMapping('reportbar', '/views/reportbar.html')
             .setTopBarMapping('toolbar', '/views/toolbar.html')
-            .setUnpublishedPath('/unpublished/');
+            .setUnpublishedPath('/unpublished/')
+            .setVideoPath('videos/embed?id=');
         }
       ]);
 
@@ -363,7 +364,6 @@
         angular.module('bulbsCmsApp.settings', [
           'ngClipboard',
         ])
-          .constant('VIDEO_EMBED_URL', 'http://www.avclub.com/videos/embed?id=')
           .constant('VIDEO_THUMBNAIL_URL', 'http://v.theonion.com/avclubmedia/video/{{video}}/frame_{{thumbnail}}.jpg')
           .constant('ZERO_CLIPBOARD_SWF', 'bower_components/zeroclipboard/dist/ZeroClipboard.swf')
           .config(function(ngClipProvider, ZERO_CLIPBOARD_SWF) {

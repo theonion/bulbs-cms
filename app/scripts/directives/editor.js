@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('onionEditor', function ($, Zencoder, BettyCropper,
-      openImageCropModal, VIDEO_EMBED_URL, OnionEditor) {
+  .directive('onionEditor', function ($, CmsConfig, Zencoder, BettyCropper,
+      openImageCropModal, OnionEditor) {
     return {
       require: 'ngModel',
       replace: true,
@@ -47,7 +47,7 @@ angular.module('bulbsCmsApp')
             video: {
               insertDialog: Zencoder.onVideoFileUpload,
               editDialog: Zencoder.openVideoThumbnailModal,
-              videoEmbedUrl: VIDEO_EMBED_URL
+              videoEmbedUrl: CmsConfig.buildVideoUrl()
             }
           };
         }

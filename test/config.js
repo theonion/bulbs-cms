@@ -14,5 +14,4 @@ angular.module('bulbs.cms.site.config', [
         .setImageApiKey('abc123')
         .setSharedPath('/shared/');
     }
-  ])
-  .constant('VIDEO_EMBED_URL', 'http://www.avclub.com/video/embed?id=');
+  ]);

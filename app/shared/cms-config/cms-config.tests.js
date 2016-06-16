@@ -522,6 +522,59 @@ describe('CmsConfig', function () {
           expect(configs.setUnpublishedPath('/unpublished/path')).to.eql(configs);
         });
       });
+
+      context('video path', function () {
+        var externalUrl = 'www.my.site';
+
+        beforeEach(function () {
+          configs.setExternalUrl(externalUrl);
+        });
+
+        it('should provide a setter and getter', function () {
+          var path = '/videos/embed';
+          var someId = 123456;
+
+          configs.setVideoPath(path);
+
+          expect(sealedConfigs().buildVideoUrl(someId))
+            .to.equal(externalUrl + path);
+        });
+
+        it('should provide a getter to build out a path', function () {
+          var path = '/videos/embed/';
+          var someId = 123456;
+
+          configs.setVideoPath(path);
+
+          expect(sealedConfigs().buildVideoUrl(someId))
+            .to.equal(externalUrl + path + someId);
+        });
+
+        it('should throw an error if value given to getter is not a number', function () {
+
+          expect(function () {
+            sealedConfigs().buildVideoUrl('not a number')
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): value given to video url build must be a number!'
+          );
+        });
+
+        it('should throw an error if the given value is not a string', function () {
+
+          expect(function () {
+            configs.setVideoPath(123)
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): video path must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setVideoPath('/videos/embed')).to.eql(configs);
+        });
+      });
     });
 
     context('firebase', function () {

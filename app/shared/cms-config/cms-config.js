@@ -55,6 +55,8 @@ angular.module('bulbs.cms.config', [
       var topBarMappings = {};
       // path from internal url that points to an endpoint for unpublished content
       var unpublishedPath = '';
+      // path to video embeds
+      var videoPath = '';
 
       this.setAutoAddAuthor = function (value) {
         autoAddAuthor = checkOrError(
@@ -207,6 +209,14 @@ angular.module('bulbs.cms.config', [
         return this;
       };
 
+      this.setVideoPath = function (value) {
+        videoPath = checkOrError(
+          value, _.isString,
+          'video path must be a string!'
+        );
+        return this;
+      };
+
       this.$get = [
         function () {
           return {
@@ -249,6 +259,10 @@ angular.module('bulbs.cms.config', [
             buildUnpublishedUrl: pathBuilder(
               Utils.path.join(internalUrl, unpublishedPath),
               'value given to unpublished url build must be a string!'
+            ),
+            buildVideoUrl: pathBuilder(
+              Utils.path.join(externalUrl, videoPath),
+              'value given to video url build must be a number!'
             ),
             getAutoAddAuthor: _.constant(autoAddAuthor),
             getCacheBuster: _.constant(cacheBuster),
