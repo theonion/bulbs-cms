@@ -345,6 +345,54 @@ describe('CmsConfig', function () {
         });
       });
 
+      context('', function () {
+
+        it('should provide a setter and getter', function () {
+          var name = 'nav';
+          var template = 'nav.html';
+
+          configs.setTopBarMapping(name, template);
+
+          expect(sealedConfigs().getTopBarMapping(name)).to.equal(template);
+        });
+
+        it('should throw an error if given key is not a string', function () {
+
+          expect(function () {
+            configs.setTopBarMapping(123, 'garbage');
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): top bar mapping name must be a string!'
+          );
+        });
+
+        it('should throw an error if given value is not a string', function () {
+
+          expect(function () {
+            configs.setTopBarMapping('nav', 123);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): top bar mapping template must be a string!'
+          );
+        });
+
+        it('should throw an error from the getter if given name has no mapping', function () {
+          var name = 'no mapping for this thing!';
+
+          expect(function () {
+            sealedConfigs().getTopBarMapping(name);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): no top bar mapping exists for name "' + name + '"!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setTopBarMapping('nav', 'nav.html')).to.equal(configs);
+        });
+      });
+
       context('shared path', function () {
 
         it('should provide a setter and getter', function () {

@@ -348,6 +348,9 @@
             .setInternalUrl('onion.local')
             .setNavLogoPath('/images/onion-logo.png')
             .setSharedPath('/shared/')
+            .setTopBarMapping('nav', '/views/nav.html')
+            .setTopBarMapping('reportbar', '/views/reportbar.html')
+            .setTopBarMapping('toolbar', '/views/toolbar.html')
             .setUnpublishedPath('/unpublished/');
         }
       ]);
@@ -366,7 +369,6 @@
           .constant('STATIC_IMAGE_URL', 'http://chimg.onionstatic.com/{{image}}/{{ratio}}/600.jpg')
           // ****** CMS Plugins ****** \\
           .constant('tar_options', { endpoint: '/ads/targeting' })
-          .constant('navbar_options', {})
           .constant('ZERO_CLIPBOARD_SWF', 'bower_components/zeroclipboard/dist/ZeroClipboard.swf')
           // finish off with config
           .config(function(ngClipProvider, ZERO_CLIPBOARD_SWF) {

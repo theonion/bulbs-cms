@@ -20,5 +20,4 @@ angular.module('bulbs.cms.site.config', [
   .constant('tar_options', {
     namespace: 'Woodruff',
     endpoint: '/ads/targeting'
-  })
-  .constant('navbar_options', {});
+  });

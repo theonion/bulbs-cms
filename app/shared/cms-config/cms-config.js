@@ -49,6 +49,8 @@ angular.module('bulbs.cms.config', [
       var internalUrl = '';
       var navLogoPath = '';
       var sharedPath  = '';
+      // mappings for top bar templates
+      var topBarMappings = {};
       // path from internal url that points to an endpoint for unpublished content
       var unpublishedPath = '';
 
@@ -174,6 +176,19 @@ angular.module('bulbs.cms.config', [
         return this;
       };
 
+      this.setTopBarMapping = function (name, template) {
+        var key = checkOrError(
+          name, _.isString,
+          'top bar mapping name must be a string!'
+        );
+        var value = checkOrError(
+          template, _.isString,
+          'top bar mapping template must be a string!'
+        );
+        topBarMappings[key] = value;
+        return this;
+      };
+
       this.setUnpublishedPath = function (value) {
         unpublishedPath = checkOrError(
           value, _.isString,
@@ -230,7 +245,14 @@ angular.module('bulbs.cms.config', [
             getCmsName: _.constant(cmsName),
             getFirebaseMaxArticleHistory: _.constant(firebaseMaxArticleHistory),
             getImageApiKey: _.constant(imageApiKey),
-            getNavLogoPath: _.constant(navLogoPath)
+            getNavLogoPath: _.constant(navLogoPath),
+            getTopBarMapping: function (name) {
+              if (_.has(topBarMappings, name)) {
+                return topBarMappings[name];
+              }
+
+              throw new error('no top bar mapping exists for name "' + name + '"!');
+            }
           };
         }
       ];
