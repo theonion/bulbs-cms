@@ -8,6 +8,8 @@ angular.module('bulbs.cms.site.config', [
         .setContentPartialsPath('/content_type_views/')
         .setComponentPath('/components/')
         .setDirectivePartialsPath('/views/')
+        .setFirebaseSiteRoot('bulbs-cms-test')
+        .setFirebaseUrl('https://luminous-fire-8340.firebaseio.com/')
         .setImageApiUrl('http://localimages.avclub.com')
         .setImageApiKey('abc123')
         .setSharedPath('/shared/');
@@ -15,10 +17,6 @@ angular.module('bulbs.cms.site.config', [
   ])
   .constant('TIMEZONE_NAME', 'America/Chicago')
   .constant('VIDEO_EMBED_URL', 'http://www.avclub.com/video/embed?id=')
-  .constant('firebaseApiConfig', {
-      FIREBASE_ROOT: 'bulbs-cms-test',
-      FIREBASE_URL: 'https://luminous-fire-8340.firebaseio.com/'
-  })
   .constant('tar_options', {
     namespace: 'Woodruff',
     endpoint: '/ads/targeting'

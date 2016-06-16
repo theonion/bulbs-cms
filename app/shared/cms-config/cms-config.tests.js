@@ -444,6 +444,139 @@ describe('CmsConfig', function () {
       });
     });
 
+    context('firebase', function () {
+
+      context('api endpoint', function () {
+
+        it('should provide a setter and getter', function () {
+          var url = 'http://firebaseio.com';
+
+          configs.setFirebaseUrl(url);
+
+          expect(sealedConfigs().buildFirebaseUrl()).to.equal(url);
+        });
+
+        it('should provide a getter to build out a path', function () {
+          var url = 'http://firebaseio.com';
+          var path = '/whatever';
+
+          configs.setFirebaseUrl(url);
+
+          expect(sealedConfigs().buildFirebaseUrl(path))
+            .to.equal(url + path);
+        });
+
+        it('should throw an error if value given to getter is not a string', function () {
+
+          expect(function () {
+            sealedConfigs().buildFirebaseUrl(123);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): value given to firebase url build must be a string!'
+          );
+        });
+
+        it('should throw an error if the given value is not a string', function () {
+
+          expect(function () {
+            configs.setFirebaseUrl(123)
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): firebase url must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setFirebaseUrl('http://firebaseio.com')).to.eql(configs);
+        });
+      });
+
+      context('max article history', function () {
+
+        it('should provide a setter and getter', function () {
+          var num = 10;
+
+          configs.setFirebaseMaxArticleHistory(num);
+
+          expect(sealedConfigs().getFirebaseMaxArticleHistory()).to.equal(num);
+        });
+
+        it('should default to 25', function () {
+
+          expect(sealedConfigs().getFirebaseMaxArticleHistory()).to.equal(25);
+        });
+
+
+        it('should throw an error if the given value is not a number', function () {
+
+          expect(function () {
+            configs.setFirebaseMaxArticleHistory('hello');
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): firebase max article history must be a number!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setFirebaseMaxArticleHistory(10)).to.eql(configs);
+        });
+      });
+
+      context('site root path', function () {
+        var firebaseUrl = 'http://firebaseio.com';
+
+        beforeEach(function () {
+          configs.setFirebaseUrl(firebaseUrl);
+        });
+
+        it('should provide a setter and getter', function () {
+          var path = '/sites/onion/';
+
+          configs.setFirebaseSiteRoot(path);
+
+          expect(sealedConfigs().buildFirebaseSiteUrl())
+            .to.equal(firebaseUrl + path);
+        });
+
+        it('should provide a getter to build out a path', function () {
+          var path = '/sites/onion/';
+          var someNode = '123';
+
+          configs.setFirebaseSiteRoot(path);
+
+          expect(sealedConfigs().buildFirebaseSiteUrl(someNode))
+            .to.equal(firebaseUrl + path + someNode);
+        });
+
+        it('should throw an error if value given to getter is not a string', function () {
+
+          expect(function () {
+            sealedConfigs().buildFirebaseSiteUrl(123)
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): value given to firebase site url build must be a string!'
+          );
+        });
+
+        it('should throw an error if the given value is not a string', function () {
+
+          expect(function () {
+            configs.setFirebaseSiteRoot(123)
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): firebase site url must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setFirebaseSiteRoot('/sites/onion')).to.eql(configs);
+        });
+      });
+    });
+
     context('images', function () {
 
       context('api endpoint', function () {

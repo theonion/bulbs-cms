@@ -5,11 +5,11 @@
  */
 angular.module('bulbsCmsApp')
   .controller('VersionBrowserModalCtrl', function ($scope, $modalInstance, _, moment, VersionStorageApi,
-                                                   FirebaseApi, FIREBASE_ARTICLE_MAX_VERSIONS) {
+                                                   FirebaseApi, CmsConfig) {
 
     // if we have fire base, show the maximum number of versions allowed
     FirebaseApi.$authorize().then(function () {
-      $scope.maxVersions =  FIREBASE_ARTICLE_MAX_VERSIONS;
+      $scope.maxVersions =  CmsConfig.getFirebaseMaxArticleHistory();
     });
 
     VersionStorageApi.$all()

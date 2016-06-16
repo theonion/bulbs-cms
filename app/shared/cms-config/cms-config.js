@@ -37,6 +37,12 @@ angular.module('bulbs.cms.config', [
       var cmsName = '';
       // url for external links, those that are accessible to the public
       var externalUrl = '';
+      // max number of states to store in an article's history
+      var firebaseMaxArticleHistory = 25;
+      // path to site root in firebase instance
+      var firebaseSiteRoot = '';
+      // url of firebase instance to use
+      var firebaseUrl = '';
       var imageApiUrl = '';
       var imageApiKey = '';
       // url for internal links, those that are not accessible to the public
@@ -98,6 +104,30 @@ angular.module('bulbs.cms.config', [
         externalUrl = checkOrError(
           value, _.isString,
           'external url must be a string!'
+        );
+        return this;
+      };
+
+      this.setFirebaseMaxArticleHistory = function (value) {
+        firebaseMaxArticleHistory = checkOrError(
+          value, _.isNumber,
+          'firebase max article history must be a number!'
+        );
+        return this;
+      };
+
+      this.setFirebaseSiteRoot = function (value) {
+        firebaseSiteRoot = checkOrError(
+          value, _.isString,
+          'firebase site url must be a string!'
+        );
+        return this;
+      };
+
+      this.setFirebaseUrl = function (value) {
+        firebaseUrl = checkOrError(
+          value, _.isString,
+          'firebase url must be a string!'
         );
         return this;
       };
@@ -171,6 +201,14 @@ angular.module('bulbs.cms.config', [
               externalUrl,
               'value given to external url build must be a string!'
             ),
+            buildFirebaseUrl: pathBuilder(
+              firebaseUrl,
+              'value given to firebase url build must be a string!'
+            ),
+            buildFirebaseSiteUrl: pathBuilder(
+              Utils.path.join(firebaseUrl, firebaseSiteRoot),
+              'value given to firebase site url build must be a string!'
+            ),
             buildImageApiUrl: pathBuilder(
               imageApiUrl,
               'value given to image api url build must be a string!'
@@ -190,6 +228,7 @@ angular.module('bulbs.cms.config', [
             getAutoAddAuthor: _.constant(autoAddAuthor),
             getCacheBuster: _.constant(cacheBuster),
             getCmsName: _.constant(cmsName),
+            getFirebaseMaxArticleHistory: _.constant(firebaseMaxArticleHistory),
             getImageApiKey: _.constant(imageApiKey),
             getNavLogoPath: _.constant(navLogoPath)
           };

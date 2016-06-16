@@ -87,8 +87,7 @@ describe('Controller: VersionBrowserModalCtrl', function () {
       $scope: scope,
       $modalInstance: modal,
       VersionStorageApi: VersionStorageApiMock,
-      FirebaseApi: FirebaseApi,
-      FIREBASE_ARTICLE_MAX_VERSIONS: 0
+      FirebaseApi: FirebaseApi
     });
 
     $rootScope.$apply();
