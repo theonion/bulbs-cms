@@ -15,7 +15,7 @@ describe('Controller: LastmodifiedguardmodalCtrl', function () {
     routeService;
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope, $httpBackend, routes, $modal, $route) {
+  beforeEach(inject(function ($controller, $rootScope, $httpBackend, $modal, $route) {
     lastSavedBy = {id: 1, username: 'whatever'};
 
     routeService = $route;

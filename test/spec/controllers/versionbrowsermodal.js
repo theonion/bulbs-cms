@@ -52,7 +52,7 @@ describe('Controller: VersionBrowserModalCtrl', function () {
       ];
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($q, $controller, $rootScope, $modal, routes, FirebaseApi) {
+  beforeEach(inject(function ($q, $controller, $rootScope, $modal, FirebaseApi) {
 
     rootScope = $rootScope;
     scope = rootScope.$new();

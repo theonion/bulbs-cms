@@ -2,7 +2,6 @@
 (function () {
   angular.module('BettyCropper', [
     'bulbs.cms.site.config',
-
     'restangular',
     'jquery'
   ])

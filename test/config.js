@@ -13,10 +13,6 @@ angular.module('bulbs.cms.site.config', [
         .setSharedPath('/shared/');
     }
   ])
-  .constant('routes', {
-    STATIC_URL: '/static/'
-  })
-  .constant('STATIC_URL', '/static/')
   .constant('TIMEZONE_NAME', 'America/Chicago')
   .constant('AUTO_ADD_AUTHOR', false)
   .constant('DEFAULT_IMAGE_WIDTH', 1200)

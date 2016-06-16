@@ -13,7 +13,7 @@ describe('Controller: LoginmodalCtrl', function () {
     modal;
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope, Login, $modal, routes) {
+  beforeEach(inject(function ($controller, $rootScope, Login, $modal) {
     loginService = Login;
     scope = $rootScope.$new();
     mockJquery = function () {

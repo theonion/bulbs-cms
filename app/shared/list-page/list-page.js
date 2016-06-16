@@ -6,7 +6,7 @@ angular.module('listPage', [
   'copyButton',
   'lodash'
 ])
-  .directive('listPage', function () {
+  .directive('listPage', function (CmsConfig) {
     return {
       controller: function (_, $scope, $location, $parse) {
         $scope.name = $scope.modelFactory.identity();

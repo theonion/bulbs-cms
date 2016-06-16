@@ -6,7 +6,7 @@ angular.module('bulbsCmsApp.nonRestmodListPage', [
   'copyButton',
   'lodash'
 ])
-  .directive('nonRestmodListPage', function () {
+  .directive('nonRestmodListPage', function (CmsConfig) {
     return {
       controller: function (_, $scope, $location, $parse) {
 

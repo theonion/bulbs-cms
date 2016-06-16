@@ -95,12 +95,7 @@ angular.module('bulbsCmsApp', [
       redirectTo: '/cms/app/list/'
     });
 
-  //TODO: whitelist staticonion.
   $sceProvider.enabled(false);
-  /*.resourceUrlWhitelist([
-  'self',
-  STATIC_URL + "**"]);*/
-
 })
 .config(function ($provide, $httpProvider) {
   $provide.decorator('$exceptionHandler', function ($delegate) {

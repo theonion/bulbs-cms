@@ -11,7 +11,7 @@ describe('Controller: DescriptionModalCtrl', function () {
         modalService;
 
     // initialize controller and a mock scope
-    beforeEach(inject(function ($controller, $rootScope, $modal, routes) {
+    beforeEach(inject(function ($controller, $rootScope, $modal) {
 
         scope = $rootScope.$new();
 

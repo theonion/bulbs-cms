@@ -16,7 +16,7 @@ describe('Controller: VideothumbnailmodalCtrl', function () {
   var customVideoPosterUrlString = '{{ratio}}_{{image}}';
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope, $modal, routes, Zencoder) {
+  beforeEach(inject(function ($controller, $rootScope, $modal, Zencoder) {
     scope = $rootScope.$new();
     zencoderService = Zencoder;
 

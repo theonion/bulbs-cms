@@ -17,7 +17,7 @@ describe('Controller: ChangelogmodalCtrl', function () {
   var article = {id: 1};
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope, $httpBackend, $modal, routes, mockApiData) {
+  beforeEach(inject(function ($controller, $rootScope, $httpBackend, $modal, mockApiData) {
     httpBackend = $httpBackend;
 
     mockChangelog = mockApiData['changelog'];
