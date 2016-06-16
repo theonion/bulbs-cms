@@ -9,11 +9,11 @@ angular.module('bulbs.cms.site.config', [
         .setComponentPath('/components/')
         .setDirectivePartialsPath('/views/')
         .setImageApiUrl('http://localimages.avclub.com')
-        .setImageApiKey('abc123');
+        .setImageApiKey('abc123')
+        .setSharedPath('/shared/');
     }
   ])
   .constant('routes', {
-    SHARED_URL: '/shared/',
     STATIC_URL: '/static/'
   })
   .constant('STATIC_URL', '/static/')

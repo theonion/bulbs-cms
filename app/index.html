@@ -342,7 +342,8 @@
             .setDirectivePartialsPath('/views/')
             .setImageApiUrl('http://clickholeimg.local')
             .setImageApiKey('123abc')
-            .setNavLogoPath('/images/onion-logo.png');
+            .setNavLogoPath('/images/onion-logo.png')
+            .setSharedPath('/shared/');
         }
       ]);
 
@@ -355,7 +356,6 @@
           'ngClipboard',
         ])
           .constant('routes', {
-              SHARED_URL: '/shared/',
               STATIC_URL: '/static/'
           })
           .constant('STATIC_URL', '/static/')

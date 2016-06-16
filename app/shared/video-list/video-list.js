@@ -2,14 +2,15 @@
 
 angular.module('videoList', [
   'autocompleteBasic',
-  'jquery',
-  'videoList.video.directive',
-  'ui.sortable',
+  'bulbs.cms.site.config',
   'bulbs.cms.utils',
+  'jquery',
+  'ui.sortable',
   'VideohubClient.api',
-  'VideohubClient.settings'
+  'VideohubClient.settings',
+  'videoList.video.directive'
 ])
-  .directive('videoList', function ($, routes) {
+  .directive('videoList', function ($, CmsConfig) {
     return {
       controller: function (_, $scope, Utils, Video, VIDEOHUB_DEFAULT_CHANNEL) {
 
@@ -67,6 +68,6 @@ angular.module('videoList', [
         videos: '=',
         onUpdate: '&'
       },
-      templateUrl: routes.SHARED_URL + 'video-list/video-list.html'
+      templateUrl: CmsConfig.buildSharedPath('video-list/video-list.html')
     };
   });

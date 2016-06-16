@@ -221,6 +221,52 @@ describe('CmsConfig', function () {
           expect(configs.setDirectivePartialsPath('/directives/path')).to.eql(configs);
         });
       });
+
+      context('shared path', function () {
+
+        it('should provide a setter and getter', function () {
+          var path = '/directives/path';
+
+          configs.setSharedPath(path);
+
+          expect(sealedConfigs().buildSharedPath()).to.equal(path);
+        });
+
+        it('should provide a getter to build out a path', function () {
+          var path = '/directives/path';
+          var templatePath = '/my/content/directive.html';
+
+          configs.setSharedPath(path);
+
+          expect(sealedConfigs().buildSharedPath(templatePath))
+            .to.equal(path + templatePath);
+        });
+
+        it('should throw an error if value given to getter is not a string', function () {
+
+          expect(function () {
+            sealedConfigs().buildSharedPath(123)
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): value given to shared path build must be a string!'
+          );
+        });
+
+        it('should throw an error if the given value is not a string', function () {
+
+          expect(function () {
+            configs.setSharedPath(123)
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): shared path must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setSharedPath('/directives/path')).to.eql(configs);
+        });
+      });
     });
 
     context('images', function () {

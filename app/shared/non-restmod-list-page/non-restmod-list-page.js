@@ -1,12 +1,12 @@
 'use strict';
 
 angular.module('bulbsCmsApp.nonRestmodListPage', [
-  'bulbsCmsApp.settings',
+  'bulbs.cms.site.config',
   'confirmationModal',
   'copyButton',
   'lodash'
 ])
-  .directive('nonRestmodListPage', function (routes) {
+  .directive('nonRestmodListPage', function () {
     return {
       controller: function (_, $scope, $location, $parse) {
 
@@ -133,6 +133,6 @@ angular.module('bulbsCmsApp.nonRestmodListPage', [
         searchParameter: '@', // key for text search param
         toolCopyContent: '@', // content to copy with copy buttons, where `record` is the record being copied, leave empty to hide copy button
       },
-      templateUrl: routes.SHARED_URL + 'non-restmod-list-page/non-restmod-list-page.html'
+      templateUrl: CmsConfig.buildSharedPath('non-restmod-list-page/non-restmod-list-page.html')
     };
   });

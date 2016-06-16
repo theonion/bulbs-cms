@@ -36,6 +36,7 @@ angular.module('bulbs.cms.config', [
       var imageApiUrl = '';
       var imageApiKey = '';
       var navLogoPath = '';
+      var sharedPath  = '';
 
       this.setCacheBuster = function (value) {
         cacheBuster = checkOrError(
@@ -103,6 +104,14 @@ angular.module('bulbs.cms.config', [
         return this;
       };
 
+      this.setSharedPath = function (value) {
+        sharedPath = checkOrError(
+          value, _.isString,
+          'shared path must be a string!'
+        );
+        return this;
+      };
+
       this.$get = [
         function () {
           return {
@@ -121,6 +130,10 @@ angular.module('bulbs.cms.config', [
             buildImageApiUrl: pathBuilder(
               imageApiUrl,
               'value given to image api url build must be a string!'
+            ),
+            buildSharedPath: pathBuilder(
+              sharedPath,
+              'value given to shared path build must be a string!'
             ),
             getCacheBuster: _.constant(cacheBuster),
             getCmsName: _.constant(cmsName),
