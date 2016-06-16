@@ -41,6 +41,8 @@ angular.module('bulbs.cms.config', [
       var internalUrl = '';
       var navLogoPath = '';
       var sharedPath  = '';
+      // path from internal url that points to an endpoint for unpublished content
+      var unpublishedPath = '';
 
       this.setCacheBuster = function (value) {
         cacheBuster = checkOrError(
@@ -132,6 +134,14 @@ angular.module('bulbs.cms.config', [
         return this;
       };
 
+      this.setUnpublishedPath = function (value) {
+        unpublishedPath = checkOrError(
+          value, _.isString,
+          'unpublished path must be a string!'
+        );
+        return this;
+      };
+
       this.$get = [
         function () {
           return {
@@ -162,6 +172,10 @@ angular.module('bulbs.cms.config', [
             buildSharedPath: pathBuilder(
               sharedPath,
               'value given to shared path build must be a string!'
+            ),
+            buildUnpublishedUrl: pathBuilder(
+              Utils.path.join(internalUrl, unpublishedPath),
+              'value given to unpublished url build must be a string!'
             ),
             getCacheBuster: _.constant(cacheBuster),
             getCmsName: _.constant(cmsName),

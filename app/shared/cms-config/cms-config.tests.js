@@ -359,6 +359,58 @@ describe('CmsConfig', function () {
           expect(configs.setSharedPath('/directives/path')).to.eql(configs);
         });
       });
+
+      context('unpublished path', function () {
+        var internalUrl = 'admin.my.site';
+
+        beforeEach(function () {
+          configs.setInternalUrl(internalUrl);
+        });
+
+        it('should provide a setter and getter', function () {
+          var path = '/unpublished/path';
+
+          configs.setUnpublishedPath(path);
+
+          expect(sealedConfigs().buildUnpublishedUrl())
+            .to.equal(internalUrl + path);
+        });
+
+        it('should provide a getter to build out a path', function () {
+          var path = '/unpublished/path/';
+          var someId = '123456';
+
+          configs.setUnpublishedPath(path);
+
+          expect(sealedConfigs().buildUnpublishedUrl(someId))
+            .to.equal(internalUrl + path + someId);
+        });
+
+        it('should throw an error if value given to getter is not a string', function () {
+
+          expect(function () {
+            sealedConfigs().buildUnpublishedUrl(123)
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): value given to unpublished url build must be a string!'
+          );
+        });
+
+        it('should throw an error if the given value is not a string', function () {
+
+          expect(function () {
+            configs.setUnpublishedPath(123)
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): unpublished path must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setUnpublishedPath('/unpublished/path')).to.eql(configs);
+        });
+      });
     });
 
     context('images', function () {
