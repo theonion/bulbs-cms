@@ -1,10 +1,11 @@
 angular.module('bulbs.cms.base.config', [
   'bulbs.cms.config',
+  'bulbs.cms.customSearch.config',
   'ngClipboard'
 ])
   .config([
-    'CmsConfigProvider', 'ngClipProvider',
-    function (CmsConfigProvider, ngClipProvider) {
+    'CmsConfigProvider', 'CustomSearchConfigProvider', 'ngClipProvider',
+    function (CmsConfigProvider, CustomSearchConfigProvider, ngClipProvider) {
 
       CmsConfigProvider
         .setCacheBuster('?' + new Date())
@@ -16,6 +17,17 @@ angular.module('bulbs.cms.base.config', [
         .setTopBarMapping('reportbar', '/views/reportbar.html')
         .setTopBarMapping('toolbar', '/views/toolbar.html')
         .setUnpublishedPath('unpublished');
+
+      CustomSearchConfigProvider
+        .addConditionField('Content Type', 'content-type', 'name', 'doctype')
+        .addConditionField('Feature Type', 'feature-type', 'name', 'slug')
+        .addConditionField('Tag', 'tag', 'name', 'slug')
+        .addConditionType('is any of', 'any')
+        .addConditionType('is all of', 'all')
+        .addConditionType('is none of', 'none')
+        .addTimePeriod('Past Day', 'Past day')
+        .addTimePeriod('Past Week', 'Past week')
+        .addTimePeriod('Past Month', 'Past month');
 
       ngClipProvider.setPath('/bower_components/zeroclipboard/dist/ZeroClipboard.swf');
     }

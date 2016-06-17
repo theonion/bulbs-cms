@@ -4,16 +4,15 @@ angular.module('customSearch.group.condition.directive', [
   'bulbs.cms.site.config',
   'BulbsAutocomplete.suggest',
   'BulbsAutocomplete',
-  'contentServices.factory',
-  'customSearch.settings'
+  'contentServices.factory'
 ])
   .directive('customSearchGroupCondition', function (CmsConfig) {
     return {
       controller: function (_, $q, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS,
-          ContentFactory, CUSTOM_SEARCH_CONDITION_FIELDS, CUSTOM_SEARCH_CONDITION_TYPES) {
+          ContentFactory, CustomSearchConfig) {
 
-        $scope.conditionTypes = CUSTOM_SEARCH_CONDITION_TYPES;
-        $scope.fieldTypes = CUSTOM_SEARCH_CONDITION_FIELDS;
+        $scope.conditionTypes = CustomSearchConfig.getConditionTypes();
+        $scope.fieldTypes = CustomSearchConfig.getConditionFields();
 
         $scope.writables = {
           searchTerm: ''

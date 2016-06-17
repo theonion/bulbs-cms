@@ -12,9 +12,8 @@ angular.module('bulbs.cms.config', [
       var checkOrError = function (value, test, errorMsg) {
         if (test(value)) {
           return value;
-        } else {
-          throw new error(errorMsg);
         }
+        throw new error(errorMsg);
       };
       var pathBuilder = function (start, errorMsg) {
         return function () {
@@ -290,7 +289,6 @@ angular.module('bulbs.cms.config', [
               if (_.has(topBarMappings, name)) {
                 return topBarMappings[name];
               }
-
               throw new error('no top bar mapping exists for name "' + name + '"!');
             }
           };
