@@ -6,7 +6,6 @@
  */
 angular.module('genericAjaxButton.directive', [
   'bulbs.cms.site.config',
-  'bulbsCmsApp.settings',
   'genericAjaxButton.controller'
 ])
   .directive('genericAjaxButton', function (CmsConfig) {

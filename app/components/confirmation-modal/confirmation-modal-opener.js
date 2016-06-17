@@ -1,7 +1,6 @@
 'use strict';
 
 angular.module('confirmationModal', [
-  'bulbsCmsApp.settings',
   'confirmationModal.factory'
 ])
   .directive('confirmationModalOpener', function (ConfirmationModal) {

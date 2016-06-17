@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('confirmationModal.factory', [
-  'bulbs.cms.config',
+  'bulbs.cms.site.config',
   'ui.bootstrap.modal'
 ])
   .factory('ConfirmationModal', function ($modal, CmsConfig) {

@@ -2,7 +2,7 @@
 
 angular.module('rateOverrides.list', [
     'apiServices.rateOverride.factory',
-    'bulbs.cms.config',
+    'bulbs.cms.site.config',
     'listPage'
   ])
   .config(function ($injector, $routeProvider, CmsConfigProvider) {

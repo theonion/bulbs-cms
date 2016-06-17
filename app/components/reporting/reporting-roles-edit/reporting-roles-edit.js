@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('roles.edit', [
-  'bulbs.cms.config',
+  'bulbs.cms.site.config',
   'roles.edit.directive'
 ])
   .config(function ($routeProvider) {

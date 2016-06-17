@@ -4,7 +4,6 @@ angular.module('sections.edit.directive', [
   'apiServices.section.factory',
   'BettyCropper',
   'bulbs.cms.site.config',
-  'bulbsCmsApp.settings',
   'copyButton',
   'customSearch',
   'lodash',

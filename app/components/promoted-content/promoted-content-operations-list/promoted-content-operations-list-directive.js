@@ -2,7 +2,6 @@
 
 angular.module('promotedContentOperationsList.directive', [
   'bulbs.cms.site.config',
-  'bulbsCmsApp.settings',
   'promotedContent.service'
 ])
   .directive('promotedContentOperationsList', function (_, CmsConfig, moment) {

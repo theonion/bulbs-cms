@@ -4,10 +4,9 @@
  * Autocomplete directive that should cover most autocomplete situations.
  */
 angular.module('autocompleteBasic', [
-  'bulbs.cms.config',
+  'bulbs.cms.site.config',
   'BulbsAutocomplete',
   'BulbsAutocomplete.suggest',
-  'bulbsCmsApp.settings',
   'lodash'
 ])
   .value('AUTOCOMPLETE_BASIC_DEBOUNCE', 200)

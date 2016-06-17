@@ -3,8 +3,7 @@
 angular.module('campaigns.edit.directive', [
   'apiServices.campaign.factory',
   'BettyCropper',
-  'bulbs.cms.config',
-  'bulbsCmsApp.settings',
+  'bulbs.cms.site.config',
   'campaigns.edit.sponsorPixel',
   'lodash',
   'saveButton.directive',

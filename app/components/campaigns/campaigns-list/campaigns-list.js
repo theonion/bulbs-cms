@@ -3,7 +3,6 @@
 angular.module('campaigns.list', [
   'apiServices.campaign.factory',
   'bulbs.cms.site.config',
-  'bulbsCmsApp.settings',
   'listPage',
   'moment'
 ])

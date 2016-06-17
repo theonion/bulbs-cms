@@ -2,8 +2,7 @@
 
 angular.module('polls.list', [
   'apiServices.poll.factory',
-  'bulbs.cms.config',
-  'bulbsCmsApp.settings',
+  'bulbs.cms.site.config',
   'bulbsCmsApp.nonRestmodListPage',
   'moment'
 ])

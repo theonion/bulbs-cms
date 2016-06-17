@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('lineItems.edit', [
-  'bulbs.cms.config',
+  'bulbs.cms.site.config',
   'lineItems.edit.directive'
 ])
   .config(function ($routeProvider) {

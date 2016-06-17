@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('sections.edit', [
-  'bulbs.cms.config',
+  'bulbs.cms.site.config',
   'sections.edit.directive'
 ])
   .config(function ($routeProvider) {

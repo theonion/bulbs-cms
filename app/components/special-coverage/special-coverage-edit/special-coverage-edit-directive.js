@@ -4,7 +4,6 @@ angular.module('specialCoverage.edit.directive', [
   'apiServices.campaign.factory',
   'apiServices.specialCoverage.factory',
   'bulbs.cms.site.config',
-  'bulbsCmsApp.settings',
   'campaignAutocomplete',
   'copyButton',
   'customSearch',

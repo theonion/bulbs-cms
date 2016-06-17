@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('promotedContent', [
-  'bulbs.cms.config',
+  'bulbs.cms.site.config',
   'promotedContentPzoneSelect',
   'promotedContentList',
   'promotedContentSearch',

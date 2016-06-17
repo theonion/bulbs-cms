@@ -2,8 +2,7 @@
 
 angular.module('bettyEditable', [
   'BettyCropper',
-  'bulbs.cms.config',
-  'bulbsCmsApp.settings'
+  'bulbs.cms.config'
 ])
   .directive('bettyEditable',[
     '$http', 'CmsConfig', 'BettyCropper', 'openImageCropModal',

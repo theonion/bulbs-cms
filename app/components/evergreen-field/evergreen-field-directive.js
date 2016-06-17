@@ -1,8 +1,6 @@
 'use strict';
 
 angular.module('evergreenField.directive', [
-  'bulbs.cms.site.config',
-  'bulbsCmsApp.settings',
   'lodash',
   'saveButton.directive'
 ])

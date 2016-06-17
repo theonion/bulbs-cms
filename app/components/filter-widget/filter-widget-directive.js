@@ -1,7 +1,6 @@
 'use strict';
 
 angular.module('filterWidget.directive', [
-  'bulbsCmsApp.settings',
   'contentServices.listService'
 ])
   .directive('filterWidget', function (_, $http, $location, $timeout, $,

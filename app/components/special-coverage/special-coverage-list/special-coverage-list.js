@@ -2,8 +2,7 @@
 
 angular.module('specialCoverage.list', [
   'apiServices.specialCoverage.factory',
-  'bulbs.cms.config',
-  'bulbsCmsApp.settings',
+  'bulbs.cms.site.config',
   'listPage',
   'moment',
   'specialCoverage.settings'

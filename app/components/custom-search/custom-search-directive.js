@@ -2,7 +2,6 @@
 
 angular.module('customSearch.directive', [
   'bulbs.cms.site.config',
-  'bulbsCmsApp.settings',
   'customSearch.contentItem',
   'customSearch.group',
   'customSearch.service',

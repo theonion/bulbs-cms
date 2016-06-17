@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('polls.edit', [
-  'bulbs.cms.config',
+  'bulbs.cms.site.config',
   'polls.edit.directive'
 ])
   .config(function ($routeProvider) {

@@ -1,8 +1,7 @@
 'use strict';
 
 angular.module('filterListWidget.directive', [
-  'bulbs.cms.site.config',
-  'bulbsCmsApp.settings'
+  'bulbs.cms.site.config'
 ])
   .directive('filterListWidget', function (_, $http, $location, $timeout, $, CmsConfig) {
     return {

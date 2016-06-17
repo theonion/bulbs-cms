@@ -2,7 +2,7 @@
 
 angular.module('roles.list', [
     'apiServices.reporting.factory',
-    'bulbs.cms.config',
+    'bulbs.cms.site.config',
     'listPage'
   ])
   .config(function ($injector, $routeProvider, CmsConfigProvider) {

@@ -9,7 +9,7 @@ describe('CmsConfig', function () {
     sandbox = sinon.sandbox.create();
 
     module(
-      'bulbs.cms.config',
+      'bulbs.cms.site.config',
       function (CmsConfigProvider) {
         configs = CmsConfigProvider;
       }

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('EditorsPick', [
-  'bulbs.cms.config',
+  'bulbs.cms.site.config',
   'customSearch'
 ])
   .config(function ($injector, $routeProvider, CmsConfigProvider) {

@@ -2,7 +2,7 @@
 
 angular.module('campaignAutocomplete', [
   'autocompleteBasic',
-  'bulbs.cms.config',
+  'bulbs.cms.site.config',
   'cms.tunic.config',
   'lodash',
   'uuid4'

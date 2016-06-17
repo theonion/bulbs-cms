@@ -2,8 +2,7 @@
 
 angular.module('sections.list', [
   'apiServices.section.factory',
-  'bulbs.cms.config',
-  'bulbsCmsApp.settings',
+  'bulbs.cms.site.config',
   'listPage',
   'sections.settings'
 ])

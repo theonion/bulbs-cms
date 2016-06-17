@@ -2,8 +2,6 @@
 
 angular.module('promotedContentList.directive', [
   'bulbs.cms.site.config',
-  'bulbsCmsApp.settings',
-  'promotedContent.service',
   'promotedContentArticle',
   'promotedContentSave',
   'ui.sortable'

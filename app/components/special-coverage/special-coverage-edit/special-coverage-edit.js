@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('specialCoverage.edit', [
-  'bulbs.cms.config',
+  'bulbs.cms.site.config',
   'specialCoverage.edit.directive'
 ])
   .config(function ($routeProvider) {

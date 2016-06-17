@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rateOverrides.edit', [
-  'bulbs.cms.config',
+  'bulbs.cms.site.config',
   'rateOverrides.edit.directive'
 ])
   .config(function ($routeProvider) {
