@@ -47,6 +47,7 @@ angular.module('bulbs.cms.config', [
       var imageApiKey = '';
       // url for internal links, those that are not accessible to the public
       var internalUrl = '';
+      // path to cms logo static asset
       var navLogoPath = '';
       var sharedPath  = '';
       // name of timezone for to use for times in the cms

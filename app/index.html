@@ -330,7 +330,8 @@
     <script type="text/javascript">
 
       angular.module('bulbs.cms.site.config', [
-        'bulbs.cms.config'
+        'bulbs.cms.config',
+        'ngClipboard'
       ]).config([
         'CmsConfigProvider',
         function (CmsConfig) {
@@ -354,6 +355,8 @@
             .setUnpublishedPath('/unpublished/')
             .setVideoPath('videos/embed?id=')
             .setVideoThumbnailUrl('http://v.theonion.com/avclubmedia/video/');
+
+          ngClipProvider.setPath('/bower_components/zeroclipboard/dist/ZeroClipboard.swf');
         }
       ]);
 
@@ -363,12 +366,7 @@
         // ¯\_(ツ)_/¯
 
         angular.module('bulbsCmsApp.settings', [
-          'ngClipboard',
-        ])
-          .constant('ZERO_CLIPBOARD_SWF', 'bower_components/zeroclipboard/dist/ZeroClipboard.swf')
-          .config(function(ngClipProvider, ZERO_CLIPBOARD_SWF) {
-            ngClipProvider.setPath(ZERO_CLIPBOARD_SWF);
-          });
+        ]);
 
         angular.module('customSearch.settings')
           .constant('CUSTOM_SEARCH_TIME_PERIODS', [{

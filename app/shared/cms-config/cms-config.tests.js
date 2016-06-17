@@ -758,6 +758,35 @@ describe('CmsConfig', function () {
       });
     });
 
+    context('static assets', function () {
+
+      context('nav logo', function () {
+
+        it('should provide a setter and getter', function () {
+          var path = '/onion-logo.png';
+
+          configs.setNavLogoPath(path);
+
+          expect(sealedConfigs().getNavLogoPath()).to.equal(path);
+        });
+
+        it('should throw an error if given value is not a string', function () {
+
+          expect(function () {
+            configs.setNavLogoPath(123);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): nav logo path must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setNavLogoPath('/onion-logo.png')).to.equal(configs);
+        });
+      });
+    });
+
     context('images', function () {
 
       context('api endpoint', function () {
@@ -850,32 +879,6 @@ describe('CmsConfig', function () {
           configs.setImageApiKey(key);
 
           expect(window.BC_API_KEY).to.equal(key);
-        });
-      });
-
-      context('nav logo', function () {
-
-        it('should provide a setter and getter', function () {
-          var path = '/onion-logo.png';
-
-          configs.setNavLogoPath(path);
-
-          expect(sealedConfigs().getNavLogoPath()).to.equal(path);
-        });
-
-        it('should throw an error if given value is not a string', function () {
-
-          expect(function () {
-            configs.setNavLogoPath(123);
-          }).to.throw(
-            BulbsCmsConfigError,
-            'Configuration Error (CmsConfig): nav logo path must be a string!'
-          );
-        });
-
-        it('should return config object', function () {
-
-          expect(configs.setNavLogoPath('/onion-logo.png')).to.equal(configs);
         });
       });
     });
