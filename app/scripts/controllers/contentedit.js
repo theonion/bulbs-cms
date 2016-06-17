@@ -9,7 +9,7 @@ angular.module('bulbsCmsApp')
     FirebaseArticleFactory, Login, VersionBrowserModalOpener)
   {
     $scope.PARTIALS_URL = '/views/';
-    $scope.CONTENT_PARTIALS_URL = CmsConfig.buildContentPartialsPath();
+    $scope.buildContentPartialsPath = CmsConfig.buildContentPartialsPath;
     $scope.page = 'edit';
 
     /*note on cachebuster:

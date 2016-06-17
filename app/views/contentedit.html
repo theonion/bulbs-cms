@@ -14,7 +14,7 @@
 
     <div class="edit-page row">
         <div id="content-wrapper" class="container">
-            <div ng-if="article.polymorphic_ctype" ng-include="CONTENT_PARTIALS_URL + article.polymorphic_ctype + '.html' + CACHEBUSTER"></div>
+            <div ng-if="article.polymorphic_ctype" ng-include="buildContentPartialsPath(article.polymorphic_ctype + '.html' + CACHEBUSTER)"></div>
             <h4 ng-if="!article.polymorphic_ctype" style="text-align:center;">Error: article has no content type.</h4>
         </div>
         <div class="status-bar">

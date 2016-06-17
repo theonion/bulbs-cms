@@ -1,5 +1,5 @@
 angular.module('bulbs.cms.site.config', [
-  'bulbs.cms.config'
+  'bulbs.cms.base.config'
 ])
   .config([
     'CmsConfigProvider',

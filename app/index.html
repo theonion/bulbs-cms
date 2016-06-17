@@ -226,6 +226,7 @@
     <script src="shared/api-services/reporting/reporting-factory.js"></script>
     <script src="shared/api-services/section/section-factory.js"></script>
     <script src="shared/api-services/special-coverage/special-coverage-factory.js"></script>
+    <script src="shared/cms-config/cms-config-base.js"></script>
     <script src="shared/cms-config/cms-config-error.js"></script>
     <script src="shared/cms-config/cms-config.js"></script>
     <script src="shared/content-services/content-factory.js"></script>
@@ -330,17 +331,12 @@
     <script type="text/javascript">
 
       angular.module('bulbs.cms.site.config', [
-        'bulbs.cms.config',
-        'ngClipboard'
+        'bulbs.cms.base.config',
       ]).config([
         'CmsConfigProvider',
         function (CmsConfig) {
           CmsConfig
-            .setCacheBuster('?' + new Date())
             .setCmsName('Smoove')
-            .setContentPartialsPath('/content_type_views/')
-            .setComponentPath('/components/')
-            .setDirectivePartialsPath('/views/')
             .setExternalUrl('onion.local')
             .setFirebaseSiteRoot('sites/bulbs-cms-testing')
             .setFirebaseUrl('https://luminous-fire-8340.firebaseio.com/')
@@ -348,15 +344,8 @@
             .setImageApiKey('123abc')
             .setInternalUrl('onion.local')
             .setNavLogoPath('/images/onion-logo.png')
-            .setSharedPath('/shared/')
-            .setTopBarMapping('nav', '/views/nav.html')
-            .setTopBarMapping('reportbar', '/views/reportbar.html')
-            .setTopBarMapping('toolbar', '/views/toolbar.html')
-            .setUnpublishedPath('/unpublished/')
             .setVideoPath('videos/embed?id=')
             .setVideoThumbnailUrl('http://v.theonion.com/avclubmedia/video/');
-
-          ngClipProvider.setPath('/bower_components/zeroclipboard/dist/ZeroClipboard.swf');
         }
       ]);
 

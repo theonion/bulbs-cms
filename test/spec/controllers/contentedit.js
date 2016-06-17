@@ -69,10 +69,6 @@ describe('Controller: ContenteditCtrl', function () {
       httpBackend.verifyNoOutstandingRequest ();
     });
 
-    it('should have string CONTENT_PARTIALS_URL in scope', function () {
-      expect(typeof scope.CONTENT_PARTIALS_URL).to.equal('string');
-    });
-
     it('should have string CACHEBUSTER in scope', function () {
       expect(typeof scope.CACHEBUSTER).to.equal('string');
     });
