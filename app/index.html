@@ -352,7 +352,8 @@
             .setTopBarMapping('reportbar', '/views/reportbar.html')
             .setTopBarMapping('toolbar', '/views/toolbar.html')
             .setUnpublishedPath('/unpublished/')
-            .setVideoPath('videos/embed?id=');
+            .setVideoPath('videos/embed?id=')
+            .setVideoThumbnailUrl('http://v.theonion.com/avclubmedia/video/');
         }
       ]);
 
@@ -364,7 +365,6 @@
         angular.module('bulbsCmsApp.settings', [
           'ngClipboard',
         ])
-          .constant('VIDEO_THUMBNAIL_URL', 'http://v.theonion.com/avclubmedia/video/{{video}}/frame_{{thumbnail}}.jpg')
           .constant('ZERO_CLIPBOARD_SWF', 'bower_components/zeroclipboard/dist/ZeroClipboard.swf')
           .config(function(ngClipProvider, ZERO_CLIPBOARD_SWF) {
             ngClipProvider.setPath(ZERO_CLIPBOARD_SWF);

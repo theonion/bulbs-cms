@@ -575,6 +575,54 @@ describe('CmsConfig', function () {
           expect(configs.setVideoPath('/videos/embed')).to.eql(configs);
         });
       });
+
+      context('video thumbnail url', function () {
+
+        it('should provide a getter and setter', function () {
+          var url = 'http://my.garbage.videos/something/the/';
+
+          configs.setVideoThumbnailUrl(url);
+
+          expect(sealedConfigs().buildVideoThumbnailUrl()).to.equal(url);
+        });
+
+        it('should provide a getter to build out a path', function () {
+          var url = 'http://my.garbage.videos/something/the/';
+          var someVideo = 'my-favorite-video/';
+          var someImage = 'frame_whatever.jpg';
+
+          configs.setVideoThumbnailUrl(url);
+
+          expect(sealedConfigs().buildVideoThumbnailUrl(someVideo, someImage))
+            .to.equal(url + someVideo + someImage);
+        });
+
+        it('should throw an error if value given to getter is not a string', function () {
+
+          expect(function () {
+            sealedConfigs().buildVideoThumbnailUrl(123);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): value given to video thumbnail url build must be a string!'
+          );
+        });
+
+        it('should throw an error if the given value is not a string', function () {
+
+          expect(function () {
+            configs.setVideoThumbnailUrl(123)
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): video thumbnail url must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setVideoThumbnailUrl('http://my.garbage.com'))
+            .to.eql(configs);
+        });
+      });
     });
 
     context('firebase', function () {

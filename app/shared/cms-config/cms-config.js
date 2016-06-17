@@ -57,6 +57,8 @@ angular.module('bulbs.cms.config', [
       var unpublishedPath = '';
       // path to video embeds
       var videoPath = '';
+      // thumbnail for inline video uploads
+      var videoThumbnailUrl = '';
 
       this.setAutoAddAuthor = function (value) {
         autoAddAuthor = checkOrError(
@@ -217,6 +219,14 @@ angular.module('bulbs.cms.config', [
         return this;
       };
 
+      this.setVideoThumbnailUrl = function (value) {
+        videoThumbnailUrl = checkOrError(
+          value, _.isString,
+          'video thumbnail url must be a string!'
+        );
+        return this;
+      };
+
       this.$get = [
         function () {
           return {
@@ -263,6 +273,10 @@ angular.module('bulbs.cms.config', [
             buildVideoUrl: pathBuilder(
               Utils.path.join(externalUrl, videoPath),
               'value given to video url build must be a string!'
+            ),
+            buildVideoThumbnailUrl: pathBuilder(
+              videoThumbnailUrl,
+              'value given to video thumbnail url build must be a string!'
             ),
             getAutoAddAuthor: _.constant(autoAddAuthor),
             getCacheBuster: _.constant(cacheBuster),
