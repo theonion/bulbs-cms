@@ -1,0 +1,7 @@
+<div class="editor-items" ng-show="editorItems.data.length">
+  <div class="note" ng-repeat="item in editorItems.data">
+    <h5 class="note-author">{{item.sender.first_name}} {{item.sender.last_name}}<div>{{parseCreated(item.created)}}</div></h5>
+    <h6 class="note-status">{{ parseStatus(item.notes) }}</h6>
+    <div class="note-text">{{ parseNote(item.notes) }}</div>
+  </div>
+</div>
