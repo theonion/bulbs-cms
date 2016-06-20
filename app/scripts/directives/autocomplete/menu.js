@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('autocompleteMenu', function ($timeout, $animate, $compile, routes) {
+  .directive('autocompleteMenu', function ($timeout, $animate, $compile) {
     return {
       restrict: 'E',
       replace: true,
@@ -13,7 +13,7 @@ angular.module('bulbsCmsApp')
         select: '&select',
       },
       link: function ($scope, element, attrs) {
-        
+
         $scope.selectItem = function (index) {
           $scope.select(index);
         }

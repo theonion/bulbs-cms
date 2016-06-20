@@ -2,14 +2,13 @@
 
 angular.module('bulbsCmsApp')
   .value('ARTICLE_TEMPORARY_URL_DAYS_VALID', 7)
-  .value('ARTICLE_TEMPORARY_URL_BASE', 'http://0.0.0.0:9069/unpublished/')
-  .controller('TemporaryUrlModalCtrl', function ($scope, $routeParams, ContentFactory, ARTICLE_TEMPORARY_URL_DAYS_VALID,
-                                                 ARTICLE_TEMPORARY_URL_BASE, _, moment) {
+  .controller('TemporaryUrlModalCtrl', function ($scope, $routeParams,
+      CmsConfig, ContentFactory, ARTICLE_TEMPORARY_URL_DAYS_VALID, _, moment) {
 
     var content = ContentFactory.one('content', $routeParams.id);
 
     $scope.TEMP_LINK_DAYS_VALID = ARTICLE_TEMPORARY_URL_DAYS_VALID;
-    $scope.TEMP_URL_BASE = ARTICLE_TEMPORARY_URL_BASE;
+    $scope.TEMP_URL_BASE = CmsConfig.buildUnpublishedUrl();
 
     $scope.tokens = [];
     content.getList('list_tokens').then(function (tokenList) {

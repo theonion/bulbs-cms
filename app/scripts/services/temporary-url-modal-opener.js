@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .factory('TemporaryUrlModalOpener', function ($modal, routes) {
+  .factory('TemporaryUrlModalOpener', function ($modal) {
 
     var modal = null;
 
@@ -13,7 +13,7 @@ angular.module('bulbsCmsApp')
         }
 
         modal = $modal.open({
-          templateUrl: routes.PARTIALS_URL + 'modals/temporary-url-modal.html',
+          templateUrl: '/views/modals/temporary-url-modal.html',
           controller: 'TemporaryUrlModalCtrl',
           scope: $scope,
           resolve: {

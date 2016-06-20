@@ -4,24 +4,13 @@ angular.module('bulbsCmsApp')
   .controller('ContenteditCtrl', function (
     $scope, $routeParams, $http, $window,
     $location, $timeout, $interval, $compile, $q, $modal,
-    $, _, moment, keypress, Raven, PNotify,
-    IfExistsElse, VersionStorageApi, ContentFactory, FirebaseApi, FirebaseArticleFactory, Login, VersionBrowserModalOpener,
-    routes)
+    $, _, CmsConfig, moment, keypress, Raven, PNotify,
+    IfExistsElse, VersionStorageApi, ContentFactory, FirebaseApi,
+    FirebaseArticleFactory, Login, VersionBrowserModalOpener)
   {
-    $scope.PARTIALS_URL = routes.PARTIALS_URL;
-    $scope.CONTENT_PARTIALS_URL = routes.CONTENT_PARTIALS_URL;
-    $scope.MEDIA_ITEM_PARTIALS_URL = routes.MEDIA_ITEM_PARTIALS_URL;
+    $scope.PARTIALS_URL = '/views/';
+    $scope.buildContentPartialsPath = CmsConfig.buildContentPartialsPath;
     $scope.page = 'edit';
-
-    /*note on cachebuster:
-      contentedit ng-includes templates served by django
-      which are currently treated like templates
-      instead of static assets (which they are)
-      we're cachebuster those URLs because we've run into trouble
-      with cached version in the past and it was a bludgeon solution
-        kill this someday! --SB
-    */
-    $scope.CACHEBUSTER = routes.CACHEBUSTER;
 
     var getArticleCallback = function (data) {
       $window.article = $scope.article = data; //exposing article on window for debugging
@@ -154,7 +143,7 @@ angular.module('bulbsCmsApp')
     getContent();
 
     $scope.$watch('article.title', function () {
-      $window.document.title = routes.CMS_NAMESPACE + ' | Editing ' + ($scope.article && $('<span>' + $scope.article.title + '</span>').text());
+      $window.document.title = CmsConfig.getCmsName() + ' | Editing ' + ($scope.article && $('<span>' + $scope.article.title + '</span>').text());
     });
 
     $scope.saveArticleDeferred = $q.defer();
@@ -184,7 +173,7 @@ angular.module('bulbsCmsApp')
             moment(data.last_modified) > moment($scope.article.last_modified)) {
             $scope.saveArticleDeferred.reject();
             $modal.open({
-              templateUrl: routes.PARTIALS_URL + 'modals/last-modified-guard-modal.html',
+              templateUrl: '/views/modals/last-modified-guard-modal.html',
               controller: 'LastmodifiedguardmodalCtrl',
               scope: $scope,
               resolve: {

@@ -1,15 +1,14 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('articlecontainer', function (routes, LOADING_IMG_SRC) {
+  .directive('articlecontainer', function () {
     return {
       restrict: 'E',
-      templateUrl:  routes.PARTIALS_URL + 'promotion-tool-article-container.html',
+      templateUrl:  '/views/promotion-tool-article-container.html',
       scope: {
         'article': '='
       },
       link: function postLink(scope, element, attrs) {
-        scope.LOADING_IMG_SRC = LOADING_IMG_SRC;
         scope.ratio = attrs.ratio;
       }
     };

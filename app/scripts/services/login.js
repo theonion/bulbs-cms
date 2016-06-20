@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .service('Login', function Login($rootScope, $http, $cookies, $window, $, routes) {
+  .service('Login', function Login($rootScope, $http, $cookies, $window, $) {
 
     $rootScope.$watch(function () {
       return $cookies.csrftoken;

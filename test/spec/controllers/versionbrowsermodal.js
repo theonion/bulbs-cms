@@ -52,13 +52,13 @@ describe('Controller: VersionBrowserModalCtrl', function () {
       ];
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($q, $controller, $rootScope, $modal, routes, FirebaseApi) {
+  beforeEach(inject(function ($q, $controller, $rootScope, $modal, FirebaseApi) {
 
     rootScope = $rootScope;
     scope = rootScope.$new();
 
     // open up version browser modal with mocked out stuff
-    var modalUrl = routes.PARTIALS_URL + 'modals/version-browser-modal.html';
+    var modalUrl = '/views/modals/version-browser-modal.html';
     modal = $modal.open({
       templateUrl: modalUrl
     });
@@ -87,8 +87,7 @@ describe('Controller: VersionBrowserModalCtrl', function () {
       $scope: scope,
       $modalInstance: modal,
       VersionStorageApi: VersionStorageApiMock,
-      FirebaseApi: FirebaseApi,
-      FIREBASE_ARTICLE_MAX_VERSIONS: 0
+      FirebaseApi: FirebaseApi
     });
 
     $rootScope.$apply();

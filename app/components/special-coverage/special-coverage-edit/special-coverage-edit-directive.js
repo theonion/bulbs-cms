@@ -3,7 +3,7 @@
 angular.module('specialCoverage.edit.directive', [
   'apiServices.campaign.factory',
   'apiServices.specialCoverage.factory',
-  'bulbsCmsApp.settings',
+  'bulbs.cms.site.config',
   'campaignAutocomplete',
   'copyButton',
   'customSearch',
@@ -13,13 +13,13 @@ angular.module('specialCoverage.edit.directive', [
   'ui.bootstrap.tooltip',
   'videoList'
 ])
-  .directive('specialCoverageEdit', function (routes) {
+  .directive('specialCoverageEdit', function (CmsConfig) {
     return {
-      controller: function (_, $location, $q, $scope, $modal, Campaign, EXTERNAL_URL,
+      controller: function (_, $location, $q, $scope, $modal, Campaign,
           SPECIAL_COVERAGE_LIST_REL_PATH, SpecialCoverage) {
 
         $scope.ACTIVE_STATES = SpecialCoverage.ACTIVE_STATES;
-        $scope.LIST_URL = EXTERNAL_URL + SPECIAL_COVERAGE_LIST_REL_PATH;
+        $scope.LIST_URL = CmsConfig.buildExternalUrl(SPECIAL_COVERAGE_LIST_REL_PATH);
 
         $scope.needsSave = false;
 
@@ -76,7 +76,7 @@ angular.module('specialCoverage.edit.directive', [
 
         $scope.previewLinkModal = function () {
           return $modal.open({
-            templateUrl: routes.PARTIALS_URL + 'modals/preview-link-modal.html',
+            templateUrl: '/views/modals/preview-link-modal.html',
             scope: $scope,
             resolve: {}
           });
@@ -103,6 +103,6 @@ angular.module('specialCoverage.edit.directive', [
       scope: {
         getModelId: '&modelId'
       },
-      templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-edit/special-coverage-edit.html'
+      templateUrl: CmsConfig.buildComponentPath('special-coverage/special-coverage-edit/special-coverage-edit.html')
     };
   });

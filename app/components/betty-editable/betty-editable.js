@@ -2,14 +2,14 @@
 
 angular.module('bettyEditable', [
   'BettyCropper',
-  'bulbsCmsApp.settings'
+  'bulbs.cms.config'
 ])
   .directive('bettyEditable',[
-    '$http', 'routes', 'BettyCropper', 'openImageCropModal', 'DEFAULT_IMAGE_WIDTH',
-    function ($http, routes, BettyCropper, openImageCropModal, DEFAULT_IMAGE_WIDTH) {
+    '$http', 'CmsConfig', 'BettyCropper', 'openImageCropModal',
+    function ($http, CmsConfig, BettyCropper, openImageCropModal) {
       return {
         restrict: 'E',
-        templateUrl: routes.COMPONENTS_URL + 'betty-editable/betty-editable.html',
+        templateUrl: CmsConfig.buildComponentPath('betty-editable/betty-editable.html'),
         scope: {
           addStyles: '@',
           editable: '=?',

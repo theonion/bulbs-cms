@@ -2,20 +2,22 @@
 
 angular.module('lineItems.list', [
     'apiServices.lineItem.factory',
-    'bulbsCmsApp.settings',
+    'bulbs.cms.site.config',
     'listPage'
   ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($injector, $routeProvider, CmsConfigProvider) {
+    var CmsConfig = $injector.invoke(CmsConfigProvider.$get);
+
     $routeProvider
       .when('/cms/app/line-items/', {
         controller: function($modal, $scope, $window, LineItem) {
-          $window.document.title = routes.CMS_NAMESPACE + ' | Line Items';
+          $window.document.title = CmsConfig.getCmsName() + ' | Line Items';
 
           $scope.modelFactory = LineItem;
 
           $scope.LineItemExportModal = function () {
             return $modal.open({
-              templateUrl: routes.PARTIALS_URL + 'modals/line-item-export-modal.html',
+              templateUrl: '/views/modals/line-item-export-modal.html',
               controller: 'LineitemexportmodalCtrl',
             });
           };
@@ -30,6 +32,6 @@ angular.module('lineItems.list', [
           }];
         },
 
-        templateUrl: routes.COMPONENTS_URL + 'reporting/reporting-line-items-list/reporting-line-items-list.html'
+        templateUrl: CmsConfig.buildComponentPath('reporting/reporting-line-items-list/reporting-line-items-list.html')
       });
   });

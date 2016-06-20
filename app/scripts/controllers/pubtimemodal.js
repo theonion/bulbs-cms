@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('PubtimemodalCtrl', function ($scope, $http, $modal, $modalInstance, $, moment, Login, routes, article, TIMEZONE_NAME, Raven) {
+  .controller('PubtimemodalCtrl', function ($scope, $http, $modal,
+      $modalInstance, $, CmsConfig, moment, Login, article, Raven) {
+
     $scope.article = article;
 
     $scope.pubButton = {
@@ -36,7 +38,7 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.setDateShortcut = function (shortcut) {
-      var today = moment.tz(TIMEZONE_NAME);
+      var today = moment.tz(CmsConfig.getTimezoneName());
       if (shortcut === 'today') {
         $scope.datePickerValue = moment().year(today.year()).month(today.month()).date(today.date());
       }
@@ -51,14 +53,14 @@ angular.module('bulbsCmsApp')
       if (!$scope.article.feature_type) {
         $modalInstance.dismiss();
         $modal.open({
-          templateUrl: routes.PARTIALS_URL + 'modals/pubtime-validation-modal.html'
+          templateUrl: '/views/modals/pubtime-validation-modal.html'
         });
         return;
       }
 
       var newDate = moment($scope.datePickerValue);
       var newTime = moment($scope.timePickerValue);
-      var newDateTime = moment.tz(TIMEZONE_NAME)
+      var newDateTime = moment.tz(CmsConfig.getTimezoneName())
         .year(newDate.year())
         .month(newDate.month())
         .date(newDate.date())
@@ -122,7 +124,7 @@ angular.module('bulbsCmsApp')
     };
 
     if ($scope.article.published) {
-      $scope.pickerValue = moment.tz($scope.article.published, TIMEZONE_NAME);
+      $scope.pickerValue = moment.tz($scope.article.published, CmsConfig.getTimezoneName());
     } else {
       $scope.setTimeShortcut('now');
     }

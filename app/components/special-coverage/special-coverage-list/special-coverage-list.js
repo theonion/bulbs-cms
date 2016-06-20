@@ -2,24 +2,22 @@
 
 angular.module('specialCoverage.list', [
   'apiServices.specialCoverage.factory',
-  'bulbsCmsApp.settings',
+  'bulbs.cms.site.config',
   'listPage',
   'moment',
   'specialCoverage.settings'
 ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($injector, $routeProvider, CmsConfigProvider) {
+    var CmsConfig = $injector.invoke(CmsConfigProvider.$get);
 
     $routeProvider
       .when('/cms/app/special-coverage/', {
-        controller: function ($scope, $window, EXTERNAL_URL, SPECIAL_COVERAGE_LIST_REL_PATH,
-            SpecialCoverage) {
-
-          // set title
-          $window.document.title = routes.CMS_NAMESPACE + ' | Special Coverage';
-
+        controller: function ($scope, $window, CmsConfig,
+            SPECIAL_COVERAGE_LIST_REL_PATH, SpecialCoverage) {
+          $window.document.title = CmsConfig.getCmsName() + ' | Special Coverage';
           $scope.modelFactory = SpecialCoverage;
-          $scope.LIST_URL = EXTERNAL_URL + SPECIAL_COVERAGE_LIST_REL_PATH;
+          $scope.LIST_URL = CmsConfig.buildExternalUrl(SPECIAL_COVERAGE_LIST_REL_PATH);
         },
-        templateUrl: routes.COMPONENTS_URL + 'special-coverage/special-coverage-list/special-coverage-list-page.html'
+        templateUrl: CmsConfig.buildComponentPath('special-coverage/special-coverage-list/special-coverage-list-page.html')
       });
   });

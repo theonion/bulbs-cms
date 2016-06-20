@@ -3,8 +3,10 @@
 /**
  * Renders a topbar template based on a given path relative to "/components/".
  */
-angular.module('topBar.directive', [])
-  .directive('topBar', function (routes) {
+angular.module('topBar.directive', [
+  'bulbs.cms.site.config'
+])
+  .directive('topBar', function (CmsConfig) {
     return {
       restrict: 'E',
       scope: {
@@ -15,9 +17,9 @@ angular.module('topBar.directive', [])
         saveFunction: '=',
         saveDisableWhen: '&'
       },
-      templateUrl: routes.COMPONENTS_URL + 'top-bar/top-bar-base.html',
+      templateUrl: CmsConfig.buildComponentPath('top-bar/top-bar-base.html'),
       link: function (scope) {
-        scope.NAV_LOGO = routes.NAV_LOGO;
+        scope.NAV_LOGO = CmsConfig.getNavLogoPath();
       }
     };
   });

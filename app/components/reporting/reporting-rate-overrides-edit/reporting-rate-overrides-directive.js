@@ -3,12 +3,12 @@
 angular.module('rateOverrides.edit.directive', [
   'apiServices.rateOverride.factory',
   'apiServices.featureType.factory',
-  'bulbsCmsApp.settings',
+  'bulbs.cms.site.config',
   'lodash',
   'saveButton.directive',
   'topBar'
 ])
-  .directive('rateOverridesEdit', function (routes) {
+  .directive('rateOverridesEdit', function (CmsConfig) {
     return {
       controller: function (_, $location, $http, $q, $routeParams, $scope, ContentFactory, FeatureType, RateOverride, Raven) {
         var resourceUrl = '/cms/api/v1/contributions/role/';
@@ -130,6 +130,6 @@ angular.module('rateOverrides.edit.directive', [
       scope: {
         getModelId: '&modelId'
       },
-      templateUrl: routes.COMPONENTS_URL + 'reporting/reporting-rate-overrides-edit/reporting-rate-overrides-edit.html'
+      templateUrl: CmsConfig.buildComponentPath('reporting/reporting-rate-overrides-edit/reporting-rate-overrides-edit.html')
     };
   });

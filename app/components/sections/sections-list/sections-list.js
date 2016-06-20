@@ -2,23 +2,20 @@
 
 angular.module('sections.list', [
   'apiServices.section.factory',
-  'bulbsCmsApp.settings',
+  'bulbs.cms.site.config',
   'listPage',
   'sections.settings'
 ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($injector, $routeProvider, CmsConfigProvider) {
+    var CmsConfig = $injector.invoke(CmsConfigProvider.$get);
 
     $routeProvider
       .when('/cms/app/section/', {
-        controller: function ($scope, $window, EXTERNAL_URL, SECTIONS_LIST_REL_PATH,
-            Section) {
-
-          // set title
-          $window.document.title = routes.CMS_NAMESPACE + ' | Section';
-
+        controller: function ($scope, $window, SECTIONS_LIST_REL_PATH, Section) {
+          $window.document.title = CmsConfig.getCmsName() + ' | Section';
           $scope.modelFactory = Section;
-          $scope.LIST_URL = EXTERNAL_URL + SECTIONS_LIST_REL_PATH;
+          $scope.LIST_URL = CmsConfig.buildExternalUrl(SECTIONS_LIST_REL_PATH);
         },
-        templateUrl: routes.COMPONENTS_URL + 'sections/sections-list/sections-list-page.html'
+        templateUrl: CmsConfig.buildComponentPath('sections/sections-list/sections-list-page.html')
       });
   });

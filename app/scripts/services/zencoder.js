@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .service('Zencoder', function Zencoder($http, $q, $modal, $, routes) {
+  .service('Zencoder', function Zencoder($http, $q, $modal, $) {
     var newVideoUrl = '/video/new';
     var fileInputId = '#bulbs-cms-hidden-video-file-input';
     var inputTemplate = '<input id="bulbs-cms-hidden-video-file-input" type="file" accept="video/*" style="position: absolute; left:-99999px;" name="video" />';
@@ -135,7 +135,7 @@ angular.module('bulbsCmsApp')
 
     this.openVideoThumbnailModal = function (videoId) {
       return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'modals/video-thumbnail-modal.html',
+        templateUrl: '/views/modals/video-thumbnail-modal.html',
         controller: 'VideothumbnailmodalCtrl',
         resolve: {
           videoId: function () { return videoId; }

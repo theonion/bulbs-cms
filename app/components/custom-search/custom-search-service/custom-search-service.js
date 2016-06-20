@@ -1,11 +1,10 @@
 'use strict';
 
 angular.module('customSearch.service', [
-  'customSearch.settings',
+  'bulbs.cms.site.config',
   'apiServices.customSearch.factory'
 ])
-  .factory('CustomSearchService', function (_, CustomSearch, CUSTOM_SEARCH_CONDITION_FIELDS,
-      CUSTOM_SEARCH_CONDITION_TYPES, CUSTOM_SEARCH_REQUEST_CAP_MS, CUSTOM_SEARCH_TIME_PERIODS) {
+  .factory('CustomSearchService', function (_, CustomSearch, CustomSearchConfig) {
 
     var defaultData = {
       groups: [],
@@ -46,7 +45,7 @@ angular.module('customSearch.service', [
         .then(function (data) {
           self.content = data;
         });
-    }, CUSTOM_SEARCH_REQUEST_CAP_MS);
+    }, CustomSearchConfig.getRequestCapMs());
 
     CustomSearchService.prototype.$filterContentByIncluded = function () {
       var contentQuery = {
@@ -126,8 +125,8 @@ angular.module('customSearch.service', [
       }
 
       data = _.defaults(data, {
-        field: CUSTOM_SEARCH_CONDITION_FIELDS[0].endpoint,
-        type: CUSTOM_SEARCH_CONDITION_TYPES[0].value,
+        field: CustomSearchConfig.getConditionFields()[0].endpoint,
+        type: CustomSearchConfig.getConditionTypes()[0].value,
         values: []
       });
 
@@ -148,7 +147,7 @@ angular.module('customSearch.service', [
     };
 
     CustomSearchService.prototype.groupsTimePeriodSet = function (groupIndex) {
-      var value = CUSTOM_SEARCH_TIME_PERIODS[0].value;
+      var value = CustomSearchConfig.getTimePeriods()[0].value;
       this._data.groups[groupIndex].time = value;
       return value;
     };

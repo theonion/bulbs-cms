@@ -2,55 +2,56 @@
 
 describe('Controller: VideothumbnailmodalCtrl', function () {
 
-  // load the controller's module
-  beforeEach(module('bulbsCmsApp'));
-  beforeEach(module('jsTemplates'));
-
   var VideothumbnailmodalCtrl,
     scope,
     modalService,
     modal,
     zencoderService;
 
-  var thumbnailUrlString = 'thumbnails4you.com/{{video}}/thumbnail_{{thumbnail}}';
-  var customVideoPosterUrlString = '{{ratio}}_{{image}}';
+  beforeEach(function () {
+    module('bulbsCmsApp');
+    module('jsTemplates');
+    module(
+      'bulbs.cms.site.config',
+      function (CmsConfigProvider) {
+        CmsConfigProvider.setVideoThumbnailUrl('thumbnails4you.com/');
+      }
+    );
 
-  // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope, $modal, routes, Zencoder) {
-    scope = $rootScope.$new();
-    zencoderService = Zencoder;
+    inject(function ($controller, $rootScope, $modal, Zencoder) {
+      scope = $rootScope.$new();
+      zencoderService = Zencoder;
 
-    zencoderService.getVideo = function () {
-      return {then: function () {}}
-    }
+      zencoderService.getVideo = function () {
+        return {then: function () {}}
+      }
 
-    var modalUrl = routes.PARTIALS_URL + 'modals/last-modified-guard-modal.html';
-    modal = $modal.open({
-      templateUrl: modalUrl
-    });
+      var modalUrl = '/views/modals/last-modified-guard-modal.html';
+      modal = $modal.open({
+        templateUrl: modalUrl
+      });
 
-    modal.dismiss = function () { return true; }
-    modal.close = function () { return true; }
-    modalService = $modal
-    modalService.open = function () { return true; }
+      modal.dismiss = function () { return true; }
+      modal.close = function () { return true; }
+      modalService = $modal
+      modalService.open = function () { return true; }
 
-    VideothumbnailmodalCtrl = $controller('VideothumbnailmodalCtrl', {
-      $scope: scope,
-      $modal: modalService,
-      $modalInstance: modal,
-      Zencoder: zencoderService,
-      VIDEO_THUMBNAIL_URL: thumbnailUrlString,
-      CUSTOM_VIDEO_POSTER_URL: customVideoPosterUrlString,
-      videoId: 1
-    });
-  }));
+      VideothumbnailmodalCtrl = $controller('VideothumbnailmodalCtrl', {
+        $scope: scope,
+        $modal: modalService,
+        $modalInstance: modal,
+        Zencoder: zencoderService,
+        videoId: 1
+      });
+    })
+  });
 
   describe('default thumbnail', function () {
     it('should have a function defaultThumb that sets thumbnail to current default of 4', function () {
       //note: 4 is just a number that we guessed would be high enough to give a good 'preview' thumbnail
       scope.video = {};
       scope.defaultThumb();
-      expect(scope.video.poster).to.equal('thumbnails4you.com/1/thumbnail_0004')
+      expect(scope.video.poster).to.equal('thumbnails4you.com/1/thumbnail_0004.png')
     });
   });
 
@@ -61,7 +62,7 @@ describe('Controller: VideothumbnailmodalCtrl', function () {
       scope.nextThumb();
       scope.$digest();
       expect(scope.currentThumbnail).to.equal(6);
-      expect(scope.video.poster).to.equal('thumbnails4you.com/1/thumbnail_0006')
+      expect(scope.video.poster).to.equal('thumbnails4you.com/1/thumbnail_0006.png')
     });
     it('should have a function nextThumb that goes to zero instead of going above max thumbnail (19)', function () {
       scope.currentThumbnail = 19;
@@ -69,7 +70,7 @@ describe('Controller: VideothumbnailmodalCtrl', function () {
       scope.nextThumb();
       scope.$digest();
       expect(scope.currentThumbnail).to.equal(0);
-      expect(scope.video.poster).to.equal('thumbnails4you.com/1/thumbnail_0000')
+      expect(scope.video.poster).to.equal('thumbnails4you.com/1/thumbnail_0000.png')
     });
 
     it('should have a function prevThumb that decrements thumbnail', function () {
@@ -78,7 +79,7 @@ describe('Controller: VideothumbnailmodalCtrl', function () {
       scope.prevThumb();
       scope.$digest();
       expect(scope.currentThumbnail).to.equal(7);
-      expect(scope.video.poster).to.equal('thumbnails4you.com/1/thumbnail_0007')
+      expect(scope.video.poster).to.equal('thumbnails4you.com/1/thumbnail_0007.png')
     });
 
     it('should have a function prevThumb that goes to max thumbnail (19) instead of below zero', function () {
@@ -87,7 +88,7 @@ describe('Controller: VideothumbnailmodalCtrl', function () {
       scope.prevThumb();
       scope.$digest();
       expect(scope.currentThumbnail).to.equal(19);
-      expect(scope.video.poster).to.equal('thumbnails4you.com/1/thumbnail_0019')
+      expect(scope.video.poster).to.equal('thumbnails4you.com/1/thumbnail_0019.png')
     });
 
   });

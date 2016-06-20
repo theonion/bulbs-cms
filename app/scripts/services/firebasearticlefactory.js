@@ -4,9 +4,8 @@
  * Factory for getting references to articles as they are stored in firebase.
  */
 angular.module('bulbsCmsApp')
-  .value('FIREBASE_ARTICLE_MAX_VERSIONS', 25)
   .factory('FirebaseArticleFactory', function ($q, $firebase, $routeParams, _, moment,
-                                               FirebaseApi, CurrentUser, FIREBASE_ARTICLE_MAX_VERSIONS) {
+                                               FirebaseApi, CurrentUser, CmsConfig) {
 
     /**
      * Create a new article.
@@ -102,7 +101,7 @@ angular.module('bulbsCmsApp')
 
             // if we will have more than the max versions allowed, delete until we're one below the max
             var numVersions = $versions.length;
-            if (numVersions + 1 > FIREBASE_ARTICLE_MAX_VERSIONS) {
+            if (numVersions + 1 > CmsConfig.getFirebaseMaxArticleHistory()) {
               _.chain($versions)
                 // sort oldest to newest
                 .sortBy(function (version) {
@@ -112,7 +111,7 @@ angular.module('bulbsCmsApp')
                 .every(function (version) {
                   $versions.$remove(version);
                   numVersions--;
-                  return numVersions + 1 > FIREBASE_ARTICLE_MAX_VERSIONS;
+                  return numVersions + 1 > CmsConfig.getFirebaseMaxArticleHistory();
                 });
             }
 

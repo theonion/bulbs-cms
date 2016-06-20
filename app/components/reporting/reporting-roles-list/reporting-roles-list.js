@@ -2,18 +2,18 @@
 
 angular.module('roles.list', [
     'apiServices.reporting.factory',
-    'bulbsCmsApp.settings',
+    'bulbs.cms.site.config',
     'listPage'
   ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($injector, $routeProvider, CmsConfigProvider) {
+    var CmsConfig = $injector.invoke(CmsConfigProvider.$get);
+
     $routeProvider
       .when('/cms/app/roles/', {
         controller: function($scope, $window, Role) {
-          $window.document.title = routes.CMS_NAMESPACE + ' | Roles';
-
+          $window.document.title = CmsConfig.getCmsName() + ' | Roles';
           $scope.modelFactory = Role;
         },
-
-        templateUrl: routes.COMPONENTS_URL + 'reporting/reporting-roles-list/reporting-roles-list.html'
+        templateUrl: CmsConfig.buildComponentPath('reporting/reporting-roles-list/reporting-roles-list.html')
       });
   });

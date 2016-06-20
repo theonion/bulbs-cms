@@ -1,24 +1,25 @@
 'use strict';
 
 angular.module('promotedContent', [
-  'bulbsCmsApp.settings',
+  'bulbs.cms.site.config',
   'promotedContentPzoneSelect',
   'promotedContentList',
   'promotedContentSearch',
   'promotedContentTimePicker',
   'promotedContentOperationsList',
 ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($injector, $routeProvider, CmsConfigProvider) {
+    var CmsConfig = $injector.invoke(CmsConfigProvider.$get);
+
     $routeProvider
       .when('/cms/app/promotion/', {
         controller: [
-          '$window',
+          '$window', 'CmsConfig',
           function ($window) {
-            // set title
-            $window.document.title = routes.CMS_NAMESPACE + ' | Promotion Tool';
+            $window.document.title = CmsConfig.getCmsName() + ' | Promotion Tool';
           }
         ],
-        templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content.html',
+        templateUrl: CmsConfig.buildComponentPath('promoted-content/promoted-content.html'),
         reloadOnSearch: false
       });
   });

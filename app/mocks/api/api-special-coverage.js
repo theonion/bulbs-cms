@@ -4,7 +4,7 @@ angular.module('bulbsCmsApp.mockApi.specialCoverage', [
   'bulbsCmsApp.mockApi.campaign',
   'bulbsCmsApp.mockApi.data',
   'lodash',
-  'utils'
+  'bulbs.cms.utils'
 ])
   .run(['_', '$httpBackend', 'mockApiData', 'Utils',
   function (_, $httpBackend, mockApiData, Utils) {

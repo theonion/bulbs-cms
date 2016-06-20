@@ -1,8 +1,12 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('ReportingCtrl', function ($http, $scope, $modal, $window, $, $location, $filter, $interpolate, Login, routes, moment, ContributionReportingService, ContentReportingService, FreelancePayReportingService) {
-    $window.document.title = routes.CMS_NAMESPACE + ' | Reporting'; // set title
+  .controller('ReportingCtrl', function ($http, $scope, $modal, $window, $,
+      $location, $filter, $interpolate, Login, moment, CmsConfig,
+      ContributionReportingService, ContentReportingService,
+      FreelancePayReportingService) {
+
+    $window.document.title = CmsConfig.getCmsName() + ' | Reporting';
 
     $scope.userFilter = '';
     $scope.userFilters = [
@@ -252,7 +256,7 @@ angular.module('bulbsCmsApp')
 
     $scope.reportEmailModal = function () {
       return $modal.open({
-        templateUrl: routes.PARTIALS_URL + 'modals/report-email-modal.html',
+        templateUrl: '/views/modals/report-email-modal.html',
         controller: 'ReportemailmodalCtrl',
       });
     };

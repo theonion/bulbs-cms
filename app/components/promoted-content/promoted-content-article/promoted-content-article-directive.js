@@ -1,14 +1,14 @@
 'use strict';
 
 angular.module('promotedContentArticle.directive', [
-  'bulbsCmsApp.settings'
+  'bulbs.cms.site.config'
 ])
-  .directive('promotedContentArticle', function (routes) {
+  .directive('promotedContentArticle', function (CmsConfig) {
     return {
       restrict: 'E',
       scope: {
         article: '='
       },
-      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-article/promoted-content-article.html'
+      templateUrl: CmsConfig.buildComponentPath('promoted-content/promoted-content-article/promoted-content-article.html')
     };
   });

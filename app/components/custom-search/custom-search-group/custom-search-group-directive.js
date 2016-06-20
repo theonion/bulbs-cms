@@ -1,14 +1,14 @@
 'use strict';
 
 angular.module('customSearch.group.directive', [
-  'customSearch.settings',
+  'bulbs.cms.site.config',
   'uuid4'
 ])
-  .directive('customSearchGroup', function (routes) {
+  .directive('customSearchGroup', function (CmsConfig) {
     return {
-      controller: function ($scope, CUSTOM_SEARCH_TIME_PERIODS, uuid4) {
+      controller: function ($scope, CustomSearchConfig, uuid4) {
         $scope.data = $scope.controllerService.groupsGet($scope.groupIndex);
-        $scope.timePeriods = CUSTOM_SEARCH_TIME_PERIODS;
+        $scope.timePeriods = CustomSearchConfig.getTimePeriods();
         $scope.uuid = uuid4.generate();
 
         $scope.$update = function () {
@@ -26,6 +26,6 @@ angular.module('customSearch.group.directive', [
         remove: '&',
         onUpdate: '&'
       },
-      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search-group/custom-search-group.html'
+      templateUrl: CmsConfig.buildComponentPath('custom-search/custom-search-group/custom-search-group.html')
     };
   });

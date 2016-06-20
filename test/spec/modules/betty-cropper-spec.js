@@ -2,13 +2,15 @@
 describe('Selection Object', function () {
 
   // load the controller's module
-  beforeEach(module('BettyCropper'));
-
   var Selection;
 
-  beforeEach(inject(function ($controller, $injector) {
-    Selection = $injector.get('Selection');
-  }));
+  beforeEach(function () {
+    module('BettyCropper');
+
+    inject(function ($controller, $injector) {
+      Selection = $injector.get('Selection');
+    });
+  });
 
   it('should return proper dimensions', function () {
     var square = new Selection({
@@ -146,7 +148,7 @@ describe('BettyCropper service', function () {
     $httpBackend.flush();
   });
 
-  it('should be able to get an upload a new image', function () {
+  it('should be able to get and upload a new image', function () {
     BettyCropper.upload().then(function(image){
       expect(image.id).to.equal(12345);
       expect(image.name).to.equal('Lenna.png');

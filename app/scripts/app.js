@@ -14,7 +14,8 @@ angular.module('OnionEditor', []).constant('OnionEditor', window.OnionEditor);
 // ****** App Config ****** \\
 
 angular.module('bulbsCmsApp', [
-  'bulbsCmsApp.settings',
+  'bulbs.cms.site.config',
+
   'ngCookies',
   'ngResource',
   'ngRoute',
@@ -52,50 +53,45 @@ angular.module('bulbsCmsApp', [
   'bulbs.cms.editorial',
   'reports'
 ])
-.config(function ($locationProvider, $routeProvider, $sceProvider, routes) {
+.config(function ($locationProvider, $routeProvider, $sceProvider) {
   $locationProvider.html5Mode(true);
 
   $routeProvider
     .when('/cms/app/list/', {
-      templateUrl: routes.PARTIALS_URL + 'contentlist.html',
+      templateUrl: '/views/contentlist.html',
       controller: 'ContentlistCtrl',
       reloadOnSearch: false
     })
     .when('/cms/app/edit/:id/', {
-      templateUrl: routes.PARTIALS_URL + 'contentedit.html',
+      templateUrl: '/views/contentedit.html',
       controller: 'ContenteditCtrl',
       reloadOnSearch: false
     })
     .when('/cms/app/edit/:id/contributions/', {
-      templateUrl: routes.PARTIALS_URL + 'contributions.html',
+      templateUrl: '/views/contributions.html',
       controller: 'ContributionsCtrl'
     })
     .when('/cms/app/targeting/', {
-      templateUrl: routes.PARTIALS_URL + 'targeting-editor.html',
+      templateUrl: '/views/targeting-editor.html',
       controller: 'TargetingCtrl'
     })
     .when('/cms/app/notifications/', {
-      templateUrl: routes.PARTIALS_URL + 'cms-notifications.html',
+      templateUrl: '/views/cms-notifications.html',
       controller: 'CmsNotificationsCtrl'
     })
     .when('/cms/app/reporting/', {
-      templateUrl: routes.PARTIALS_URL + 'reporting.html',
+      templateUrl: '/views/reporting.html',
       controller: 'ReportingCtrl'
     })
     .when('/cms/app/pzones/', {
-      templateUrl: routes.PARTIALS_URL + 'pzones.html',
+      templateUrl: '/views/pzones.html',
       controller: 'PzoneCtrl'
     })
     .otherwise({
       redirectTo: '/cms/app/list/'
     });
 
-  //TODO: whitelist staticonion.
   $sceProvider.enabled(false);
-  /*.resourceUrlWhitelist([
-  'self',
-  STATIC_URL + "**"]);*/
-
 })
 .config(function ($provide, $httpProvider) {
   $provide.decorator('$exceptionHandler', function ($delegate) {
@@ -116,5 +112,4 @@ angular.module('bulbsCmsApp', [
   var deleteHeaders = $http.defaults.headers.delete || {};
   deleteHeaders['X-CSRFToken'] = $cookies.csrftoken;
   $http.defaults.headers.delete = deleteHeaders;
-})
-.constant('TIMEZONE_NAME', 'America/Chicago');
+});

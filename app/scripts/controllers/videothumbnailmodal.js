@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('VideothumbnailmodalCtrl', function ($scope, $http, $modalInstance, Zencoder, videoId, VIDEO_THUMBNAIL_URL, CUSTOM_VIDEO_POSTER_URL) {
+  .controller('VideothumbnailmodalCtrl', function ($scope, $http,
+      $modalInstance, CmsConfig, Zencoder, videoId) {
     var DEFAULT_THUMBNAIL = 4;
     var MAX_THUMBNAIL = 19;
     $scope.uploadedImage = {id: null};
@@ -21,7 +22,7 @@ angular.module('bulbsCmsApp')
 
     $scope.$watch('video.poster', function () {
       if (!$scope.video || !$scope.video.poster) { return; }
-      var defaultUrl = VIDEO_THUMBNAIL_URL.replace('{{video}}', videoId);
+      var defaultUrl = CmsConfig.buildVideoThumbnailUrl('' + videoId, 'thumbnail_{{thumbnail}}.png');
       var thumbnailIndex = defaultUrl.indexOf('{{thumbnail}}');
       if ($scope.video.poster.indexOf(defaultUrl.substr(0, thumbnailIndex)) === 0) {
         $scope.currentThumbnail = Number($scope.video.poster.substr(thumbnailIndex, 4));
@@ -33,7 +34,8 @@ angular.module('bulbsCmsApp')
 
     $scope.$watch('uploadedImage.id', function () {
       if ($scope.uploadedImage.id) {
-        $scope.video.poster = CUSTOM_VIDEO_POSTER_URL.replace('{{ratio}}', '16x9').replace('{{image}}', $scope.uploadedImage.id);
+        $scope.video.poster =
+          CmsConfig.buildImageApiUrl('16x9', '' + $scope.uploadedImage.id, '1200.jpg');
       }
     });
 
@@ -59,7 +61,7 @@ angular.module('bulbsCmsApp')
     };
 
     function compilePosterUrl(thumbnail) {
-      return VIDEO_THUMBNAIL_URL.replace('{{video}}', videoId).replace('{{thumbnail}}', pad4(thumbnail));
+      return CmsConfig.buildVideoThumbnailUrl('' + videoId, 'thumbnail_' + pad4(thumbnail) + '.png');
     }
 
     function pad4(num) {

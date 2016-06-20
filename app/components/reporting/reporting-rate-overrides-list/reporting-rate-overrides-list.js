@@ -2,18 +2,19 @@
 
 angular.module('rateOverrides.list', [
     'apiServices.rateOverride.factory',
-    'bulbsCmsApp.settings',
+    'bulbs.cms.site.config',
     'listPage'
   ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($injector, $routeProvider, CmsConfigProvider) {
+    var CmsConfig = $injector.invoke(CmsConfigProvider.$get);
+
     $routeProvider
       .when('/cms/app/rate-overrides/', {
         controller: function($scope, $window, RateOverride) {
-          $window.document.title = routes.CMS_NAMESPACE + ' | Rate Overrides';
-
+          $window.document.title = CmsConfig.getCmsName() + ' | Rate Overrides';
           $scope.modelFactory = RateOverride;
         },
 
-        templateUrl: routes.COMPONENTS_URL + 'reporting/reporting-rate-overrides-list/reporting-rate-overrides-list.html'
+        templateUrl: CmsConfig.buildComponentPath('reporting/reporting-rate-overrides-list/reporting-rate-overrides-list.html')
       });
   });
