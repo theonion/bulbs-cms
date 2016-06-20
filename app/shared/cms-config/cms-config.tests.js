@@ -1,3 +1,5 @@
+'use strict';
+
 describe('CmsConfig', function () {
 
   var $injector;
@@ -39,7 +41,7 @@ describe('CmsConfig', function () {
 
           configs.setAutoAddAuthor(autoAddAuthor);
 
-          expect(sealedConfigs().getAutoAddAuthor()).to.be.true;
+          expect(sealedConfigs().getAutoAddAuthor()).to.equal(true);
         });
 
         it('should throw an error if given value is not a boolean', function () {
@@ -54,7 +56,7 @@ describe('CmsConfig', function () {
 
         it('should default to false', function () {
 
-          expect(sealedConfigs().getAutoAddAuthor()).to.be.false;
+          expect(sealedConfigs().getAutoAddAuthor()).to.equal(false);
         });
 
         it('should return config object', function () {
@@ -86,7 +88,7 @@ describe('CmsConfig', function () {
         it('should throw an error if value given to getter is not a string', function () {
 
           expect(function () {
-            sealedConfigs().buildComponentPath(123)
+            sealedConfigs().buildComponentPath(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): value given to component path build must be a string!'
@@ -96,7 +98,7 @@ describe('CmsConfig', function () {
         it('should throw an error if the given value is not a string', function () {
 
           expect(function () {
-            configs.setComponentPath(123)
+            configs.setComponentPath(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): component path must be a string!'
@@ -132,7 +134,7 @@ describe('CmsConfig', function () {
         it('should throw an error if value given to getter is not a string', function () {
 
           expect(function () {
-            sealedConfigs().buildContentPartialsPath(123)
+            sealedConfigs().buildContentPartialsPath(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): value given to content partials path build must be a string!'
@@ -142,7 +144,7 @@ describe('CmsConfig', function () {
         it('should throw an error if the given value is not a string', function () {
 
           expect(function () {
-            configs.setContentPartialsPath(123)
+            configs.setContentPartialsPath(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): content partials path must be a string!'
@@ -230,7 +232,7 @@ describe('CmsConfig', function () {
         it('should throw an error if value given to getter is not a string', function () {
 
           expect(function () {
-            sealedConfigs().buildDirectivePartialsPath(123)
+            sealedConfigs().buildDirectivePartialsPath(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): value given to directive partials path build must be a string!'
@@ -240,7 +242,7 @@ describe('CmsConfig', function () {
         it('should throw an error if the given value is not a string', function () {
 
           expect(function () {
-            configs.setDirectivePartialsPath(123)
+            configs.setDirectivePartialsPath(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): directive partials path must be a string!'
@@ -276,7 +278,7 @@ describe('CmsConfig', function () {
         it('should throw an error if value given to getter is not a string', function () {
 
           expect(function () {
-            sealedConfigs().buildExternalUrl(123)
+            sealedConfigs().buildExternalUrl(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): value given to external url build must be a string!'
@@ -286,7 +288,7 @@ describe('CmsConfig', function () {
         it('should throw an error if the given value is not a string', function () {
 
           expect(function () {
-            configs.setExternalUrl(123)
+            configs.setExternalUrl(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): external url must be a string!'
@@ -322,7 +324,7 @@ describe('CmsConfig', function () {
         it('should throw an error if value given to getter is not a string', function () {
 
           expect(function () {
-            sealedConfigs().buildInternalUrl(123)
+            sealedConfigs().buildInternalUrl(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): value given to internal url build must be a string!'
@@ -332,7 +334,7 @@ describe('CmsConfig', function () {
         it('should throw an error if the given value is not a string', function () {
 
           expect(function () {
-            configs.setInternalUrl(123)
+            configs.setInternalUrl(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): internal url must be a string!'
@@ -448,7 +450,7 @@ describe('CmsConfig', function () {
         it('should throw an error if value given to getter is not a string', function () {
 
           expect(function () {
-            sealedConfigs().buildSharedPath(123)
+            sealedConfigs().buildSharedPath(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): value given to shared path build must be a string!'
@@ -458,7 +460,7 @@ describe('CmsConfig', function () {
         it('should throw an error if the given value is not a string', function () {
 
           expect(function () {
-            configs.setSharedPath(123)
+            configs.setSharedPath(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): shared path must be a string!'
@@ -500,7 +502,7 @@ describe('CmsConfig', function () {
         it('should throw an error if value given to getter is not a string', function () {
 
           expect(function () {
-            sealedConfigs().buildUnpublishedUrl(123)
+            sealedConfigs().buildUnpublishedUrl(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): value given to unpublished url build must be a string!'
@@ -510,7 +512,7 @@ describe('CmsConfig', function () {
         it('should throw an error if the given value is not a string', function () {
 
           expect(function () {
-            configs.setUnpublishedPath(123)
+            configs.setUnpublishedPath(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): unpublished path must be a string!'
@@ -532,7 +534,6 @@ describe('CmsConfig', function () {
 
         it('should provide a setter and getter', function () {
           var path = '/videos/embed';
-          var someId = '123456'
 
           configs.setVideoPath(path);
 
@@ -563,7 +564,7 @@ describe('CmsConfig', function () {
         it('should throw an error if the given value is not a string', function () {
 
           expect(function () {
-            configs.setVideoPath(123)
+            configs.setVideoPath(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): video path must be a string!'
@@ -610,7 +611,7 @@ describe('CmsConfig', function () {
         it('should throw an error if the given value is not a string', function () {
 
           expect(function () {
-            configs.setVideoThumbnailUrl(123)
+            configs.setVideoThumbnailUrl(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): video thumbnail url must be a string!'
@@ -660,7 +661,7 @@ describe('CmsConfig', function () {
         it('should throw an error if the given value is not a string', function () {
 
           expect(function () {
-            configs.setFirebaseUrl(123)
+            configs.setFirebaseUrl(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): firebase url must be a string!'
@@ -734,7 +735,7 @@ describe('CmsConfig', function () {
         it('should throw an error if value given to getter is not a string', function () {
 
           expect(function () {
-            sealedConfigs().buildFirebaseSiteUrl(123)
+            sealedConfigs().buildFirebaseSiteUrl(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): value given to firebase site url build must be a string!'
@@ -744,7 +745,7 @@ describe('CmsConfig', function () {
         it('should throw an error if the given value is not a string', function () {
 
           expect(function () {
-            configs.setFirebaseSiteRoot(123)
+            configs.setFirebaseSiteRoot(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): firebase site url must be a string!'
@@ -812,7 +813,7 @@ describe('CmsConfig', function () {
         it('should throw an error if value given to getter is not a string', function () {
 
           expect(function () {
-            sealedConfigs().buildImageApiUrl(123)
+            sealedConfigs().buildImageApiUrl(123);
           }).to.throw(
             BulbsCmsConfigError,
             'Configuration Error (CmsConfig): value given to image api url build must be a string!'

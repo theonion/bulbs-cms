@@ -1,4 +1,6 @@
-var BulbsCmsConfigError = function (name, message) {
+'use strict';
+
+window.BulbsCmsConfigError = function (name, message) {
   if (typeof Error.captureStackTrace === 'function') {
     Error.captureStackTrace(this, this.constructor);
   } else {

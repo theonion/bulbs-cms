@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('bulbs.cms.base.config', [
   'bulbs.cms.config',
   'bulbs.cms.customSearch.config',

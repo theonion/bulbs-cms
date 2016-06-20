@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('bulbs.cms.customSearch.config', [
   'lodash'
 ])
@@ -5,18 +7,18 @@ angular.module('bulbs.cms.customSearch.config', [
     '_',
     function (_) {
 
-      var error = BulbsCmsConfigError.build('CustomSearchConfig');
+      var CustomSearchConfigError = BulbsCmsConfigError.build('CustomSearchConfig');
       var checkOrError = function (value, test, errorMsg) {
         if (test(value)) {
           return value;
         }
-        throw new error(errorMsg);
+        throw new CustomSearchConfigError(errorMsg);
       };
 
       // condition fields to display
       var conditionFieldMappings = [];
       // condition types to display
-      var conditionTypes = []
+      var conditionTypes = [];
       // time periods to display
       var timePeriodMappings = [];
       // maximum number of milliseconds to wait for a request to complete

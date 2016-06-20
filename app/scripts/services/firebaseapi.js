@@ -8,7 +8,7 @@ angular.module('bulbsCmsApp')
     $q, CurrentUser, CmsConfig) {
 
     // get root reference in firebase for this site
-    var rootRef = FirebaseRefFactory.newRef(CmsConfig.buildFirebaseSiteUrl())
+    var rootRef = FirebaseRefFactory.newRef(CmsConfig.buildFirebaseSiteUrl());
 
     // set up a promise for authorization
     var authDefer = $q.defer(),

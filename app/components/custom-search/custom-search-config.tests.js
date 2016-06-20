@@ -1,3 +1,5 @@
+'use strict';
+
 describe('CustomSearchConfig', function () {
 
   var $injector;
