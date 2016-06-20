@@ -49,6 +49,7 @@ angular.module('bulbsCmsApp', [
   'templateTypeField',
   'specialCoverage',
   'sections',
+  'bulbs.cms.editorial',
   'reports'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider, routes) {

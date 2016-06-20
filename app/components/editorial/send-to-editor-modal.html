@@ -1,0 +1,20 @@
+<div class="modal-header">
+  <button type="button" class="close" ng-click="$dismiss();" aria-hidden="true">&times;</button>
+  <h4 class="modal-title">Send to Editor</h4>
+</div>
+<div class="modal-body">
+  <select
+    class="form-control article-statuses"
+    ng-init="articleStatus.s = articleStatuses[0]"
+    ng-model="articleStatus.s"
+    ng-options="status for status in articleStatuses">
+  </select>
+  <section class="form-group note-to-editor">
+      <h5>Note for Editor <small>(Optional)</small></h5>
+      <textarea type="text" style="height: 150px;" class="form-control note-to-editor" ng-model="$parent.noteToEditor"></textarea>
+  </section>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-link" ng-click="$dismiss();">Cancel</button>
+  <save-button-old color-styling="btn-primary" get-promise="sendToEditor(article);" config="buttonConfig"></save-button-old>
+</div>
