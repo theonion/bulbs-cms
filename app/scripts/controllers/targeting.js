@@ -1,8 +1,10 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .controller('TargetingCtrl', function ($scope, $http, $window, $q, $location, tar_options, routes) {
-    $window.document.title = routes.CMS_NAMESPACE + ' | Targeting Editor';
+  .controller('TargetingCtrl', function ($scope, $http, $window, $q, $location,
+      CmsConfig) {
+
+    $window.document.title = CmsConfig.getCmsName() + ' | Targeting Editor';
 
     var canceller;
     $scope.search = function (url) {
@@ -17,7 +19,7 @@ angular.module('bulbsCmsApp')
 
       $http({
         method: 'GET',
-        url: tar_options.endpoint,
+        url: '/ads/targeting',
         timeout: canceller.promise,
         params: {url: $scope.url}
       }).success(function (data) {
@@ -41,7 +43,7 @@ angular.module('bulbsCmsApp')
 
       return $http({
         method: 'POST',
-        url: tar_options.endpoint + '?url=' + $scope.url,
+        url: '/ads/targeting?url=' + $scope.url,
         data: data
       }).success(function (data) {
         $scope.targetingArray = [];

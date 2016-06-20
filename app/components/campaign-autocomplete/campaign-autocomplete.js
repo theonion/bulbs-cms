@@ -1,14 +1,15 @@
 'use strict';
 
 angular.module('campaignAutocomplete', [
-  'lodash',
   'autocompleteBasic',
+  'bulbs.cms.site.config',
   'cms.tunic.config',
+  'lodash',
   'uuid4'
 ])
   .directive('campaignAutocomplete', [
-    '$http', 'routes', 'TunicConfig', 'uuid4', '_',
-    function ($http, routes, TunicConfig, uuid4, _) {
+    '$http', 'CmsConfig', 'TunicConfig', 'uuid4', '_',
+    function ($http, CmsConfig, TunicConfig, uuid4, _) {
       return {
         controller: [
           '$scope',
@@ -58,7 +59,7 @@ angular.module('campaignAutocomplete', [
           }
         },
         restrict: 'E',
-        templateUrl: routes.COMPONENTS_URL + 'campaign-autocomplete/campaign-autocomplete.html',
+        templateUrl: CmsConfig.buildComponentPath('campaign-autocomplete/campaign-autocomplete.html'),
         require: 'ngModel',
         scope: {
           label: '@campaignAutocompleteLabel',      // label for the autocomplete imput

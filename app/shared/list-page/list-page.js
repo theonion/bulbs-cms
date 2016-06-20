@@ -1,12 +1,12 @@
 'use strict';
 
 angular.module('listPage', [
-  'bulbsCmsApp.settings',
+  'bulbs.cms.site.config',
   'confirmationModal',
   'copyButton',
   'lodash'
 ])
-  .directive('listPage', function (routes) {
+  .directive('listPage', function (CmsConfig) {
     return {
       controller: function (_, $scope, $location, $parse) {
         $scope.name = $scope.modelFactory.identity();
@@ -129,6 +129,6 @@ angular.module('listPage', [
         toolCopyContent: '@',
         utilityButtons: '='
       },
-      templateUrl: routes.SHARED_URL + 'list-page/list-page.html'
+      templateUrl: CmsConfig.buildSharedPath('list-page/list-page.html')
     };
   });

@@ -2,12 +2,12 @@
 
 angular.module('lineItems.edit.directive', [
   'apiServices.lineItem.factory',
-  'bulbsCmsApp.settings',
+  'bulbs.cms.site.config',
   'lodash',
   'saveButton.directive',
   'topBar'
 ])
-  .directive('lineItemsEdit', function (routes) {
+  .directive('lineItemsEdit', function (CmsConfig) {
     return {
       controller: function (_, $location, $q, $routeParams, $scope, LineItem) {
         if ($routeParams.id === 'new') {
@@ -47,6 +47,6 @@ angular.module('lineItems.edit.directive', [
       scope: {
         getModelId: '&modelId'
       },
-      templateUrl: routes.COMPONENTS_URL + 'reporting/reporting-line-items-edit/reporting-line-items-edit.html'
+      templateUrl: CmsConfig.buildComponentPath('reporting/reporting-line-items-edit/reporting-line-items-edit.html')
     };
   });

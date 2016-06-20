@@ -4,10 +4,10 @@ angular.module('bulbsCmsApp')
   .controller('ContributionsCtrl', function (
     $scope, $routeParams, $http, $window,
     $location, $timeout, $compile, $q, $modal,
-    _, routes, ContributionRoleService, ContentService)
+    _, CmsConfig, ContributionRoleService, ContentService)
   {
 
-    $scope.NAV_LOGO = routes.NAV_LOGO;
+    $scope.NAV_LOGO = CmsConfig.getNavLogoPath();
     $scope.contentId = parseInt($routeParams.id, 10);
     $scope.paymentType = '';
     $scope.contributions = [];

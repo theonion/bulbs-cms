@@ -1,19 +1,18 @@
 'use strict';
 
 angular.module('evergreenField.directive', [
-  'bulbsCmsApp.settings',
   'lodash',
-  'saveButton.directive',
+  'saveButton.directive'
 ])
   .directive('evergreenField', [
-    'routes',
-    function (routes) {
+    'CmsConfig',
+    function (CmsConfig) {
       return {
         restrict: 'E',
         scope: {
           article: '='
         },
-        templateUrl: routes.COMPONENTS_URL + 'evergreen-field/evergreen-field.html'
+        templateUrl: CmsConfig.buildComponentPath('evergreen-field/evergreen-field.html')
       };
     }
   ]);

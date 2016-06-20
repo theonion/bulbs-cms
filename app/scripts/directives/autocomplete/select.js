@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('autocomplete', function ($timeout, $animate, $compile, routes) {
+  .directive('autocomplete', function ($timeout, $animate, $compile) {
     return {
       restrict: 'E',
       replace: true,
@@ -149,6 +149,6 @@ angular.module('bulbsCmsApp')
           });
         }
       },
-      templateUrl: routes.PARTIALS_URL + 'autocomplete.html'
+      templateUrl: '/views/autocomplete.html'
     };
   });

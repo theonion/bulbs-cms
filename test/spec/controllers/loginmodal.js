@@ -13,7 +13,7 @@ describe('Controller: LoginmodalCtrl', function () {
     modal;
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope, Login, $modal, routes) {
+  beforeEach(inject(function ($controller, $rootScope, Login, $modal) {
     loginService = Login;
     scope = $rootScope.$new();
     mockJquery = function () {
@@ -22,7 +22,7 @@ describe('Controller: LoginmodalCtrl', function () {
       }
     };
 
-    var modalUrl = routes.PARTIALS_URL + 'modals/login-modal.html';
+    var modalUrl = '/views/modals/login-modal.html';
     modal = $modal.open({
       templateUrl: modalUrl
     })

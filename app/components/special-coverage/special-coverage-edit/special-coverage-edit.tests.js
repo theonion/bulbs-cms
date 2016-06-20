@@ -12,8 +12,12 @@ describe('Directive: specialCoverageEdit', function () {
     module('bulbsCmsApp');
     module('bulbsCmsApp.mockApi');
     module('jsTemplates');
-
-    angular.module('specialCoverage.edit').constant('EXTERNAL_URL', 'onion.local');
+    module(
+      'bulbs.cms.site.config',
+      function (CmsConfigProvider) {
+        CmsConfigProvider.setExternalUrl('onion.local');
+      }
+    );
 
     inject(function ($, _$q_, $compile, _$rootScope_) {
       $q = _$q_;

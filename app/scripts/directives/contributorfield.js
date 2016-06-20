@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('contributorField', function (routes, $) {
+  .directive('contributorField', function ($) {
     return {
-      templateUrl: routes.PARTIALS_URL + 'textlike-autocomplete-field.html',
+      templateUrl: '/views/textlike-autocomplete-field.html',
       restrict: 'E',
       replace: true,
       scope: {

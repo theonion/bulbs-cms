@@ -1,7 +1,9 @@
 'use strict';
 
-angular.module('copyButton', [])
-  .directive('copyButton', function (routes) {
+angular.module('copyButton', [
+  'bulbs.cms.site.config'
+])
+  .directive('copyButton', function (CmsConfig) {
     return {
       controller: function ($scope, $timeout) {
 
@@ -20,6 +22,6 @@ angular.module('copyButton', [])
         buttonText: '@',
         content: '@'
       },
-      templateUrl: routes.SHARED_URL + 'copy-button/copy-button.html'
+      templateUrl: CmsConfig.buildSharedPath('copy-button/copy-button.html')
     };
   });

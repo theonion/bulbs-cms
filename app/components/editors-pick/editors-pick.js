@@ -1,14 +1,17 @@
 'use strict';
 
 angular.module('EditorsPick', [
+  'bulbs.cms.site.config',
   'customSearch'
 ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($injector, $routeProvider, CmsConfigProvider) {
+    var CmsConfig = $injector.invoke(CmsConfigProvider.$get);
+
     $routeProvider
       .when('/cms/app/sod/', {
         controller: function ($scope, $window) {
-          // set title
-          $window.document.title = routes.CMS_NAMESPACE + ' | SoD';
+
+          $window.document.title = CmsConfig.getCmsName() + ' | SoD';
 
           $scope.$watch('queryData', function () { console.log(arguments); });
 
@@ -46,7 +49,7 @@ angular.module('EditorsPick', [
           };
 
         },
-        templateUrl: routes.COMPONENTS_URL + 'editors-pick/editors-pick.html',
+        templateUrl: CmsConfig.buildComponentPath('editors-pick/editors-pick.html'),
         reloadOnSearch: false
       });
   });

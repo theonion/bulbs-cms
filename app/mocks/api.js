@@ -449,6 +449,16 @@ angular.module('bulbsCmsApp.mockApi', [
     $httpBackend.when('OPTIONS', '/ads/targeting/').respond('');
 
     // for anything that uses BC_ADMIN_URL
-    $httpBackend.when('GET', /^http:\/\/localimages\.avclub\.com\/avclub.*/).respond('');
+    $httpBackend.when('GET', /^http:\/\/local.images.com\/.*/).respond({
+      id: 0,
+      name: 'some-garbage-image.png',
+      width: 1600,
+      height: 900,
+      selections: {
+        '16x9': { x0: 0, x1: 1600, y0: 0, y1: 900},
+        '3x1': { x0: 0, x1: 1600, y0: 0, y1: 900},
+        '1x1': { x0: 0, x1: 1600, y0: 0, y1: 900}
+      }
+    });
   }
 ]);

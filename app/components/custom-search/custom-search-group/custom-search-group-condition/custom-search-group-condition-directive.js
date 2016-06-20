@@ -1,18 +1,18 @@
 'use strict';
 
 angular.module('customSearch.group.condition.directive', [
-  'contentServices.factory',
-  'customSearch.settings',
+  'bulbs.cms.site.config',
+  'BulbsAutocomplete.suggest',
   'BulbsAutocomplete',
-  'BulbsAutocomplete.suggest'
+  'contentServices.factory'
 ])
-  .directive('customSearchGroupCondition', function (routes) {
+  .directive('customSearchGroupCondition', function (CmsConfig) {
     return {
       controller: function (_, $q, $scope, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS,
-          ContentFactory, CUSTOM_SEARCH_CONDITION_FIELDS, CUSTOM_SEARCH_CONDITION_TYPES) {
+          ContentFactory, CustomSearchConfig) {
 
-        $scope.conditionTypes = CUSTOM_SEARCH_CONDITION_TYPES;
-        $scope.fieldTypes = CUSTOM_SEARCH_CONDITION_FIELDS;
+        $scope.conditionTypes = CustomSearchConfig.getConditionTypes();
+        $scope.fieldTypes = CustomSearchConfig.getConditionFields();
 
         $scope.writables = {
           searchTerm: ''
@@ -76,6 +76,6 @@ angular.module('customSearch.group.condition.directive', [
         onUpdate: '&',
         remove: '&'
       },
-      templateUrl: routes.COMPONENTS_URL + 'custom-search/custom-search-group/custom-search-group-condition/custom-search-group-condition.html'
+      templateUrl: CmsConfig.buildComponentPath('custom-search/custom-search-group/custom-search-group-condition/custom-search-group-condition.html')
     };
   });

@@ -3,7 +3,7 @@
 angular.module('bulbsCmsApp.mockApi.sections', [
   'bulbsCmsApp.mockApi.data',
   'lodash',
-  'utils'
+  'bulbs.cms.utils'
 ])
   .run(['_', '$httpBackend', 'mockApiData', 'Utils',
   function (_, $httpBackend, mockApiData, Utils) {

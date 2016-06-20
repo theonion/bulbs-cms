@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .factory('VersionBrowserModalOpener', function ($modal, routes) {
+  .factory('VersionBrowserModalOpener', function ($modal) {
 
     var modal = null;
 
@@ -13,7 +13,7 @@ angular.module('bulbsCmsApp')
         }
 
         modal = $modal.open({
-          templateUrl: routes.PARTIALS_URL + 'modals/version-browser-modal.html',
+          templateUrl: '/views/modals/version-browser-modal.html',
           controller: 'VersionBrowserModalCtrl',
           scope: $scope,
           size: 'lg',

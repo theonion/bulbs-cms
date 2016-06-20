@@ -2,19 +2,19 @@
 
 angular.module('campaigns.list', [
   'apiServices.campaign.factory',
-  'bulbsCmsApp.settings',
+  'bulbs.cms.site.config',
   'listPage',
   'moment'
 ])
-  .config(function ($routeProvider, routes) {
+  .config(function ($injector, $routeProvider, CmsConfigProvider) {
+    var CmsConfig = $injector.invoke(CmsConfigProvider.$get);
+
     $routeProvider
       .when('/cms/app/campaigns/', {
         controller: function ($scope, $window, Campaign) {
-          // set title
-          $window.document.title = routes.CMS_NAMESPACE + ' | Campaign';
-
+          $window.document.title = CmsConfig.getCmsName() + ' | Campaign';
           $scope.modelFactory = Campaign;
         },
-        templateUrl: routes.COMPONENTS_URL + 'campaigns/campaigns-list/campaigns-list-page.html'
+        templateUrl: CmsConfig.buildComponentPath('campaigns/campaigns-list/campaigns-list-page.html')
       });
   });

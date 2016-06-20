@@ -1,9 +1,10 @@
 'use strict';
 
 angular.module('saveButton.directive', [
+  'bulbs.cms.site.config',
   'genericAjaxButton'
 ])
-  .directive('saveButton', function (routes) {
+  .directive('saveButton', function (CmsConfig) {
     return {
       controller: 'GenericAjaxButtonController',
       link: {
@@ -18,6 +19,6 @@ angular.module('saveButton.directive', [
         disableWhen: '&',
         clickFunction: '=',
       },
-      templateUrl: routes.COMPONENTS_URL + 'generic-ajax-button/generic-ajax-button.html'
+      templateUrl: CmsConfig.buildComponentPath('generic-ajax-button/generic-ajax-button.html')
     };
   });

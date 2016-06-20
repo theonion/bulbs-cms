@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('staticImage', function (routes, STATIC_IMAGE_URL) {
+  .directive('staticImage', function (CmsConfig) {
     return {
-      templateUrl: routes.PARTIALS_URL + 'static-image.html',
+      templateUrl: '/views/static-image.html',
       restrict: 'E',
       scope: {
         'image': '='
@@ -13,7 +13,7 @@ angular.module('bulbsCmsApp')
 
         scope.$watch('image', function () {
           if (scope.image && scope.image.id) {
-            scope.imageUrl = STATIC_IMAGE_URL.replace('{{ratio}}', ratio).replace('{{image}}', scope.image.id);
+            scope.imageUrl = CmsConfig.buildImageApiUrl(ratio, '' + scope.image.id, '1200.jpg');
           } else {
             scope.imageUrl = false;
           }

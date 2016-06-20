@@ -45,14 +45,6 @@
     <!-- don't bundle this -->
     <link rel="stylesheet" href="bower_components/onion-editor/build/inline.css" />
 
-
-    <script type="text/javascript">
-        var BC_ADMIN_URL = 'http://clickholeimg.local';
-        var IMAGE_URL = 'http://clickholeimg.local/{{id}}/{{crop}}/{{width}}.{{format}}';
-        var IMAGE_LISTENERS_DISABLED = true;
-        var DEFAULT_IMAGE_ID = 0;
-    </script>
-
     <script type="text/javascript">
         function jqueryCsrfSetup(){
             return;
@@ -234,6 +226,9 @@
     <script src="shared/api-services/reporting/reporting-factory.js"></script>
     <script src="shared/api-services/section/section-factory.js"></script>
     <script src="shared/api-services/special-coverage/special-coverage-factory.js"></script>
+    <script src="shared/cms-config/cms-config-base.js"></script>
+    <script src="shared/cms-config/cms-config-error.js"></script>
+    <script src="shared/cms-config/cms-config.js"></script>
     <script src="shared/content-services/content-factory.js"></script>
     <script src="shared/content-services/content-list-service.js"></script>
     <script src="shared/content-services/content-services.js"></script>
@@ -334,71 +329,25 @@
     <script src="bower_components/angular-mocks/angular-mocks.js"></script>
 
     <script type="text/javascript">
-        //these probably don't need to be constants
-        //but there probably isn't any reason for them to not be
-        //so...
-        // ¯\_(ツ)_/¯
-        angular.module('BettyCropper').constant('IMAGE_SERVER_URL', 'http://clickholeimg.local');
-        angular.module('BettyCropper').constant('BC_API_KEY', 'http://clickholeimg.local');
 
-        angular.module('bulbs.api').constant('BULBS_API_URL', '/cms/api/v1/');
-
-        angular.module('bulbsCmsApp.settings', [
-          'ngClipboard',
-        ])
-          .constant('routes', {
-              IMAGE_SERVER_URL: 'http://clickholeimg.local',
-              BC_ADMIN_URL: 'http://clickholeimg.local',
-              LOADING_IMG_SRC: '/images/loading.gif',
-              SHARED_URL: '/shared/',
-              COMPONENTS_URL: '/components/',
-              STATIC_URL: '/static/',
-              PARTIALS_URL: '/views/',
-              CONTENT_PARTIALS_URL: '/content_type_views/',
-              DIRECTIVE_PARTIALS_URL: '/views/',
-              MEDIA_ITEM_PARTIALS_URL: '/cms/api/partials/media_items/',
-              CACHEBUSTER: '?' + Date.now(),
-              NAV_LOGO: '/images/onion-logo.png',
-              CMS_NAMESPACE: 'Smoove'
-          })
-          .constant('IMAGE_SERVER_URL', 'http://clickholeimg.local')
-          .constant('BC_ADMIN_URL', 'http://clickholeimg.local')
-          .constant('LOADING_IMG_SRC', '/images/loading.gif')
-          .constant('STATIC_URL', '/static/')
-          .constant('PARTIALS_URL', '/views/')
-          .constant('CONTENT_PARTIALS_URL', '/content_type_views/')
-          .constant('DIRECTIVE_PARTIALS_URL', '/views/')
-          .constant('MEDIA_ITEM_PARTIALS_URL', '/cms/api/partials/media_items/')
-          .constant('CACHEBUSTER', '?' + Date.now())
-          .constant('TIMEZONE_NAME', 'America/Chicago')
-          .constant('AUTO_ADD_AUTHOR', true)
-          .constant('DEFAULT_IMAGE_WIDTH', 1200)
-          .constant('VIDEO_EMBED_URL', 'http://www.avclub.com/videos/embed?id=')
-          .constant('VIDEO_THUMBNAIL_URL', 'http://v.theonion.com/avclubmedia/video/{{video}}/frame_{{thumbnail}}.jpg')
-          .constant('STATIC_IMAGE_URL', 'http://chimg.onionstatic.com/{{image}}/{{ratio}}/600.jpg')
-          .constant('CUSTOM_VIDEO_POSTER_URL', 'http://chimg.onionstatic.com/{{image}}/{{ratio}}/600.jpg')
-          .constant('FIREBASE_ROOT', 'bulbs-cms-testing')
-          .constant('EXTERNAL_URL', 'onion.local')
-          // ****** CMS Plugins ****** \\
-          .constant('tar_options', { endpoint: '/ads/targeting' })
-          .constant('navbar_options', {})
-          .constant('ZERO_CLIPBOARD_SWF', 'bower_components/zeroclipboard/dist/ZeroClipboard.swf')
-          // finish off with config
-          .config(function(ngClipProvider, ZERO_CLIPBOARD_SWF) {
-            ngClipProvider.setPath(ZERO_CLIPBOARD_SWF);
-          });
-
-        angular.module('customSearch.settings')
-          .constant('CUSTOM_SEARCH_TIME_PERIODS', [{
-            name: 'Past Day',
-            value: 'Past day'
-          }, {
-            name: 'Past Week',
-            value: 'Past week'
-          }, {
-            name: 'Past Month',
-            value: 'Past month'
-          }]);
+      angular.module('bulbs.cms.site.config', [
+        'bulbs.cms.base.config',
+      ]).config([
+        'CmsConfigProvider',
+        function (CmsConfig) {
+          CmsConfig
+            .setCmsName('Smoove')
+            .setExternalUrl('onion.local')
+            .setFirebaseSiteRoot('sites/bulbs-cms-testing')
+            .setFirebaseUrl('https://luminous-fire-8340.firebaseio.com/')
+            .setImageApiUrl('http://clickholeimg.local')
+            .setImageApiKey('123abc')
+            .setInternalUrl('onion.local')
+            .setNavLogoPath('/images/onion-logo.png')
+            .setVideoPath('videos/embed?id=')
+            .setVideoThumbnailUrl('http://v.theonion.com/avclubmedia/video/');
+        }
+      ]);
 
         angular.module('VideohubClient.settings')
           .constant('VIDEOHUB_API_BASE_URL', 'http://videohub.local/api/v0')

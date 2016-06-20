@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('promotedContentPzoneSelect.directive', [
-  'bulbsCmsApp.settings',
+  'bulbs.cms.site.config',
   'promotedContent.service'
 ])
-  .directive('promotedContentPzoneSelect', function (routes) {
+  .directive('promotedContentPzoneSelect', function (CmsConfig) {
     return {
       controller: function ($scope, PromotedContentService) {
 
@@ -31,6 +31,6 @@ angular.module('promotedContentPzoneSelect.directive', [
       },
       restrict: 'E',
       scope: {},
-      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-pzone-select/promoted-content-pzone-select.html'
+      templateUrl: CmsConfig.buildComponentPath('promoted-content/promoted-content-pzone-select/promoted-content-pzone-select.html')
     };
   });

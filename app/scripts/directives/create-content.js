@@ -1,10 +1,11 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('createContent', function ($http, $window, $, IfExistsElse, Login, ContentFactory, routes, AUTO_ADD_AUTHOR, Raven) {
+  .directive('createContent', function ($http, $window, $, IfExistsElse, Login,
+      ContentFactory, CmsConfig, Raven) {
     return {
       restrict: 'E',
-      templateUrl:  routes.DIRECTIVE_PARTIALS_URL + 'create-content.html',
+      templateUrl:  CmsConfig.buildDirectivePartialsPath('create-content.html'),
       controller: function ($scope) {
         $scope.gotTags = false;
         $scope.gotUser = false;
@@ -37,7 +38,7 @@ angular.module('bulbsCmsApp')
             $scope.gotTags = true;
           }
 
-          if (AUTO_ADD_AUTHOR) {
+          if (CmsConfig.getAutoAddAuthor()) {
             ContentFactory.one('me').get().then(function (data) {
               $scope.init.authors = [data];
               $scope.gotUser = true;

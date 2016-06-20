@@ -4,13 +4,11 @@
  * Service for authenticating and interacting with the root of this site in firebase.
  */
 angular.module('bulbsCmsApp')
-  .value('FIREBASE_URL', 'https://luminous-fire-8340.firebaseio.com/')
-  .value('FIREBASE_ROOT', 'a-site-is-not-configured')
-  .factory('FirebaseApi', function (FirebaseRefFactory, $firebase, $rootScope, $q, CurrentUser, FIREBASE_URL,
-                                    FIREBASE_ROOT) {
+  .factory('FirebaseApi', function (FirebaseRefFactory, $firebase, $rootScope,
+    $q, CurrentUser, CmsConfig) {
 
     // get root reference in firebase for this site
-    var rootRef = FirebaseRefFactory.newRef(FIREBASE_URL + 'sites/' + FIREBASE_ROOT);
+    var rootRef = FirebaseRefFactory.newRef(CmsConfig.buildFirebaseSiteUrl());
 
     // set up a promise for authorization
     var authDefer = $q.defer(),
@@ -60,7 +58,7 @@ angular.module('bulbsCmsApp')
 
     // emit events when firebase reconnects or disconnects, disconnect event should not be used in place of onDisconnect
     //  function provided by firebase reference objects
-    var connectedRef = FirebaseRefFactory.newRef(FIREBASE_URL + '.info/connected');
+    var connectedRef = FirebaseRefFactory.newRef(CmsConfig.buildFirebaseUrl('.info/connected'));
     connectedRef.on('value', function (connected) {
 
       if (connected.val()) {
@@ -108,4 +106,3 @@ angular.module('bulbsCmsApp')
     };
 
   });
-

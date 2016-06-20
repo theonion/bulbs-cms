@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('roleField', function ($http, routes, $, Raven) {
+  .directive('roleField', function ($http, $, Raven) {
     return {
-      templateUrl: routes.PARTIALS_URL + 'rolefield.html',
+      templateUrl: '/views/rolefield.html',
       restrict: 'E',
       replace: true,
       scope: {

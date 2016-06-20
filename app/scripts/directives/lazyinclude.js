@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('lazyInclude', function (routes, $, $compile, $q, $http, $templateCache, Gettemplate) {
+  .directive('lazyInclude', function ($, $compile, $q, $http, $templateCache,
+      Gettemplate) {
     /*
       this is like ng-include but it doesn't compile/render the included template
       until the child element is visible
@@ -12,7 +13,7 @@ angular.module('bulbsCmsApp')
       restrict: 'A',
       scope: true,
       link: function (scope, element, attrs) {
-        var templateUrl = routes.PARTIALS_URL + attrs.template;
+        var templateUrl = '/views/' + attrs.template;
         var $element = $(element);
 
         scope.$evalAsync(function () {

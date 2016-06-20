@@ -1,13 +1,13 @@
 'use strict';
 
 angular.module('promotedContentSearch.directive', [
-  'bulbsCmsApp.settings',
+  'bulbs.cms.site.config',
   'statusFilter',
   'filterWidget',
   'promotedContent.service',
   'promotedContentArticle'
 ])
-  .directive('promotedContentSearch', function (routes) {
+  .directive('promotedContentSearch', function (CmsConfig) {
     return {
       controller: function (_, moment, $scope, $location, PromotedContentService) {
 
@@ -81,6 +81,6 @@ angular.module('promotedContentSearch.directive', [
       },
       restrict: 'E',
       scope: {},
-      templateUrl: routes.COMPONENTS_URL + 'promoted-content/promoted-content-search/promoted-content-search.html'
+      templateUrl: CmsConfig.buildComponentPath('promoted-content/promoted-content-search/promoted-content-search.html')
     };
   });

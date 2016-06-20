@@ -12,9 +12,8 @@ describe('Service: CustomSearchService', function () {
     clock;
 
   beforeEach(function () {
-    module('customSearch.settings', function ($provide) {
-      // to force debounce time to 0
-      $provide.constant('CUSTOM_SEARCH_REQUEST_CAP_MS', 0);
+    module('bulbs.cms.site.config', function (CustomSearchConfigProvider) {
+      CustomSearchConfigProvider.setRequestCapMs(0);
     });
 
     module('bulbsCmsApp');
@@ -23,12 +22,12 @@ describe('Service: CustomSearchService', function () {
     // clock mock for debounce
     clock = sinon.useFakeTimers();
 
-    inject(function (___, _$httpBackend_, _$rootScope_, _moment_, _CUSTOM_SEARCH_TIME_PERIODS_,
+    inject(function (___, _$httpBackend_, _$rootScope_, _moment_, CustomSearchConfig,
         CustomSearchService) {
       _ = ___;
       $httpBackend = _$httpBackend_;
       $rootScope = _$rootScope_;
-      CUSTOM_SEARCH_TIME_PERIODS = _CUSTOM_SEARCH_TIME_PERIODS_;
+      CUSTOM_SEARCH_TIME_PERIODS = CustomSearchConfig.getTimePeriods();
       moment = _moment_;
 
       data = {};
