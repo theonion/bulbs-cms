@@ -29,7 +29,6 @@ angular.module('bulbs.cms.config', [
 
       // true to automatically add current user to author list when creating content
       var autoAddAuthor = false;
-      var cacheBuster = '';
       var componentPath = '';
       var contentPartialsPath = '';
       var directivePartialsPath = '';
@@ -64,14 +63,6 @@ angular.module('bulbs.cms.config', [
         autoAddAuthor = checkOrError(
           value, _.isBoolean,
           'auto add author must be a boolean!'
-        );
-        return this;
-      };
-
-      this.setCacheBuster = function (value) {
-        cacheBuster = checkOrError(
-          value, _.isString,
-          'cache buster must be a string!'
         );
         return this;
       };
@@ -279,7 +270,6 @@ angular.module('bulbs.cms.config', [
               'value given to video thumbnail url build must be a string!'
             ),
             getAutoAddAuthor: _.constant(autoAddAuthor),
-            getCacheBuster: _.constant(cacheBuster),
             getCmsName: _.constant(cmsName),
             getFirebaseMaxArticleHistory: _.constant(firebaseMaxArticleHistory),
             getImageApiKey: _.constant(imageApiKey),

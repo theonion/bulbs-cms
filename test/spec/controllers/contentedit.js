@@ -69,10 +69,6 @@ describe('Controller: ContenteditCtrl', function () {
       httpBackend.verifyNoOutstandingRequest ();
     });
 
-    it('should have string CACHEBUSTER in scope', function () {
-      expect(typeof scope.CACHEBUSTER).to.equal('string');
-    });
-
     it('should have a saveArticle function in scope', function () {
       expect(scope.saveArticle).not.to.be.undefined;
     });

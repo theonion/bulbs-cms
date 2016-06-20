@@ -10,7 +10,6 @@ angular.module('bulbs.cms.base.config', [
     function (CmsConfigProvider, CustomSearchConfigProvider, ngClipProvider) {
 
       CmsConfigProvider
-        .setCacheBuster('?' + new Date())
         .setContentPartialsPath('/content_type_views')
         .setComponentPath('/components')
         .setDirectivePartialsPath('/views')
