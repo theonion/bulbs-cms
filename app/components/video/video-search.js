@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('bulb.cms.video.videoSearch', [
+angular.module('bulbs.cms.video.videoSearch', [
   'lodash',
   'VideohubClient.api',
   'VideohubClient.settings',
