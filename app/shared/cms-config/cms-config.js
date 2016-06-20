@@ -29,9 +29,14 @@ angular.module('bulbs.cms.config', [
 
       // true to automatically add current user to author list when creating content
       var autoAddAuthor = false;
+      // path to components
       var componentPath = '';
+      // path to edit pages for specific types of content, maps to ctype
       var contentPartialsPath = '';
+      // path to directives from backend
+      // TODO : remove once apps are pulled into here
       var directivePartialsPath = '';
+      // name of CMS to display in title and in interface
       var cmsName = '';
       // url for external links, those that are accessible to the public
       var externalUrl = '';
@@ -41,12 +46,16 @@ angular.module('bulbs.cms.config', [
       var firebaseSiteRoot = '';
       // url of firebase instance to use
       var firebaseUrl = '';
+      // url of image api
       var imageApiUrl = '';
+      // key to access image api
       var imageApiKey = '';
       // url for internal links, those that are not accessible to the public
       var internalUrl = '';
       // path to cms logo static asset
       var navLogoPath = '';
+      // path to shared directory
+      // TODO : remove once app is fully in pods
       var sharedPath  = '';
       // name of timezone for to use for times in the cms
       var timezoneName = 'America/Chicago';
