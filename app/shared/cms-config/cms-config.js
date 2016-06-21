@@ -52,6 +52,8 @@ angular.module('bulbs.cms.config', [
       var imageApiKey = '';
       // url for internal links, those that are not accessible to the public
       var internalUrl = '';
+      // path to inline editor buttons configuration
+      var inlineObjectsPath = '';
       // path to cms logo static asset
       var navLogoPath = '';
       // path to shared directory
@@ -136,6 +138,14 @@ angular.module('bulbs.cms.config', [
         firebaseUrl = checkOrError(
           value, _.isString,
           'firebase url must be a string!'
+        );
+        return this;
+      };
+
+      this.setInlineObjectsPath = function (value) {
+        inlineObjectsPath = checkOrError(
+          value, _.isString,
+          'inline objects path must be a string!'
         );
         return this;
       };
@@ -282,6 +292,7 @@ angular.module('bulbs.cms.config', [
             getCmsName: _.constant(cmsName),
             getFirebaseMaxArticleHistory: _.constant(firebaseMaxArticleHistory),
             getImageApiKey: _.constant(imageApiKey),
+            getInlineObjecsPath: _.constant(inlineObjectsPath),
             getNavLogoPath: _.constant(navLogoPath),
             getTimezoneName: _.constant(timezoneName),
             getTopBarMapping: function (name) {
