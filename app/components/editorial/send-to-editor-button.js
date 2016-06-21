@@ -1,16 +1,17 @@
 'use strict';
 
 angular.module('bulbs.cms.editorial.sendToEditorButton', [
-  'bulbs.cms.editorial.sendToEditorModal'
+  'bulbs.cms.editorial.sendToEditorModal',
+  'bulbs.cms.site.config'
 ])
   .controller('SendToEditorButtonCtrl', [
-    '$scope', '$modal', 'moment', 'routes', 'TIMEZONE_NAME',
-    function ($scope, $modal, moment, routes, TIMEZONE_NAME) {
-      $scope.TIMEZONE_LABEL = moment.tz(TIMEZONE_NAME).format('z');
+    '$scope', '$modal', 'moment', 'CmsConfig',
+    function ($scope, $modal, moment, CmsConfig) {
+      $scope.TIMEZONE_LABEL = moment.tz(CmsConfig.getTimezoneName()).format('z');
 
       $scope.sendToEditorModal = function (article) {
         return $modal.open({
-          templateUrl: routes.COMPONENTS_URL + 'editorial/send-to-editor-modal.html',
+          templateUrl: CmsConfig.buildComponentPath('editorial/send-to-editor-modal.html'),
           controller: 'SendtoeditormodalCtrl',
           scope: $scope,
           resolve: {
