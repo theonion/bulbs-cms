@@ -52,16 +52,8 @@
     </script>
   </head>
   <body ng-app="bulbsCmsAppDev">
-    <!--[if lt IE 7]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
 
-    <!-- Add your site or application content here -->
-    <div ng-view=""></div>
-
-    <div hide-if-forbidden options-url="/returns-a-403/">You can't see this!</div>
-
-    <!--[if lt IE 9]>
+    <!--[if lt  IE 9]>
     <script src="bower_components/es5-shim/es5-shim.js"></script>
     <script src="bower_components/json3/lib/json3.min.js"></script>
     <![endif]-->
@@ -118,6 +110,7 @@
     <script src="cms-image.js"></script>
 
     <script src="scripts/libraries/editor-cms-bridge.js"></script>
+    <script src="scripts/libraries/upload-video.js"></script>
 
     <script src="scripts/app.js"></script>
 
@@ -141,6 +134,7 @@
     <script src="components/campaigns/campaigns.js"></script>
     <script src="components/confirmation-modal/confirmation-modal-opener.js"></script>
     <script src="components/confirmation-modal/confirmation-modal.js"></script>
+    <script src="components/custom-search/custom-search-config.js"></script>
     <script src="components/custom-search/custom-search-content-item/custom-search-content-item-directive.js"></script>
     <script src="components/custom-search/custom-search-content-item/custom-search-content-item.js"></script>
     <script src="components/custom-search/custom-search-directive.js"></script>
@@ -149,10 +143,11 @@
     <script src="components/custom-search/custom-search-group/custom-search-group-directive.js"></script>
     <script src="components/custom-search/custom-search-group/custom-search-group.js"></script>
     <script src="components/custom-search/custom-search-service/custom-search-service.js"></script>
-    <script src="components/custom-search/custom-search-settings.js"></script>
     <script src="components/custom-search/custom-search-simple-content-search/custom-search-simple-content-search-directive.js"></script>
     <script src="components/custom-search/custom-search-simple-content-search/custom-search-simple-content-search.js"></script>
     <script src="components/custom-search/custom-search.js"></script>
+    <script src="components/editorial/editor-item.js"></script>
+    <script src="components/editorial/editor-items.js"></script>
     <script src="components/editorial/editorial.js"></script>
     <script src="components/editorial/send-to-editor-button.js"></script>
     <script src="components/editorial/send-to-editor-modal.js"></script>
@@ -214,6 +209,8 @@
     <script src="components/top-bar/top-bar-directive.js"></script>
     <script src="components/top-bar/top-bar-item-factory.js"></script>
     <script src="components/top-bar/top-bar.js"></script>
+    <script src="components/video/video-search.js"></script>
+    <script src="components/video/video.js"></script>
     <script src="shared/api-services/api-services-mixins/mixin-field-display.js"></script>
     <script src="shared/api-services/api-services.js"></script>
     <script src="shared/api-services/campaign/campaign-factory.js"></script>
@@ -246,7 +243,6 @@
     <script src="shared/video-list/video-list-video/video-list-video-directive.js"></script>
     <script src="shared/video-list/video-list.js"></script>
     <script src="scripts/directives/activenav.js"></script>
-    <script src="scripts/directives/add-image.js"></script>
     <script src="scripts/directives/articlecontainer.js"></script>
     <script src="scripts/directives/authorsfield.js"></script>
     <script src="scripts/directives/bulbs-autocomplete.js"></script>
@@ -362,6 +358,14 @@
           resultsElement.html("<b>Searching for: " + term + "</b><br><a href='/fart/'>Fart</a><br><a href='/butt/'>Butt</a><br><a href='/dumb/'>Dumb</a><br>");
         };
 
+        angular.module('bulbsCmsAppDev', ['bulbsCmsApp.mockApi', 'bulbsCmsApp', 'bulbs.api.mock']);
+
+        // this has something to do with angular routing
+        // forcing it to no be a single-page app
+        $("body").on("click", "a", function(e){
+          if($(this).attr("target") == "_blank") return true;
+          $(this).attr("target", "_self");
+        });
     </script>
 
     <script src="mocks/api-mock-data.js"></script>
@@ -378,24 +382,6 @@
 
     <script src="mocks/newapp.js"></script>
     <script src="scripts/api/mock.js"></script>
-
-    <script>
-        angular.module('bulbsCmsAppDev', ['bulbsCmsApp.mockApi', 'bulbsCmsApp', 'bulbs.api.mock'])
-          .config(function (StatusFilterOptionsProvider) {
-            StatusFilterOptionsProvider.setStatuses([
-              {label: 'Filter 1', key: 'filter1key', value: 'charizard'},
-              {label: 'Filter 2', key: 'filter2key', value: function(){ return moment().unix(); }},
-              {label: 'Filter 3', key: 'filter2key', value: function(){ return "cool"; }},
-              {label: 'All', key: null, value: null}
-            ]);
-          });
-
-        //huhhhhh
-        $("body").on("click", "a", function(e){
-          if($(this).attr("target") == "_blank") return true;
-          $(this).attr("target", "_self");
-        });
-    </script>
     <bug-reporter></bug-reporter>
     <firebase-save-reporter></firebase-save-reporter>
 
