@@ -1,18 +1,19 @@
 'use strict';
 
 angular.module('bulbs.cms.video.videoSearch', [
+  'bulbs.cms.site.config',
   'lodash',
   'VideohubClient.api',
   'VideohubClient.settings',
   'uuid4'
 ])
   .directive('videoSearch', [
-    '_', 'uuid4',
-    function (_, uuid4) {
+    '_', 'CmsConfig', 'uuid4',
+    function (_, CmsConfig, uuid4) {
       return {
         restrict: 'E',
         require: 'ngModel',
-        templateUrl: '/cms/partials/directives/video-search.html',
+        templateUrl: CmsConfig.buildComponentPath('video/video-search.html'),
         scope: {
           label: '@videoSearchLabel',
           onSelect: '&videoSearchLabel'
