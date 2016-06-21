@@ -6,7 +6,7 @@ angular.module('bulbs.cms.editorial.editorItem', [])
       restrict: 'E',
       templateUrl: routes.COMPONENTS_URL + 'editorial/editor-item.html',
       scope: {
-        article: "="
+        article: '='
       },
       link: function (scope, element, attrs) {
 
