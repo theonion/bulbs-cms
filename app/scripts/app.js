@@ -15,6 +15,8 @@ angular.module('OnionEditor', []).constant('OnionEditor', window.OnionEditor);
 
 angular.module('bulbsCmsApp', [
   'bulbs.cms.site.config',
+  'bulbs.cms.editorial',
+  'bulbs.cms.content',
 
   'ngCookies',
   'ngResource',
@@ -34,10 +36,10 @@ angular.module('bulbsCmsApp', [
   'ipCookie',
   'bulbs.api',
   'OnionEditor',
-  // shared
+
   'contentServices',
   'cms.tunic',
-  // components
+
   'bettyEditable',
   'bugReporter',
   'campaigns',
@@ -49,7 +51,6 @@ angular.module('bulbsCmsApp', [
   'templateTypeField',
   'specialCoverage',
   'sections',
-  'bulbs.cms.editorial',
   'reports'
 ])
 .config(function ($locationProvider, $routeProvider, $sceProvider) {
