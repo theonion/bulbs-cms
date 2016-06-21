@@ -53,6 +53,6 @@ angular.module('bulbs.cms.video.videoSearch', [
             };
           }
         }
-      }
+      };
     }
   ]);
