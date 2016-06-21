@@ -46,7 +46,6 @@ angular.module('bulbsCmsApp', [
   'filterListWidget',
   'polls',
   'promotedContent',
-  'statusFilter',
   'templateTypeField',
   'specialCoverage',
   'sections',

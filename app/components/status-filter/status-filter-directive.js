@@ -4,35 +4,21 @@ angular.module('statusFilter.directive', [
   'bulbs.cms.site.config',
   'contentServices.listService'
 ])
-  .provider('StatusFilterOptions', function (moment) {
-    var _statuses = [
-      {label: 'Draft', key: 'status', value: 'draft'},
-      {label: 'Published', key: 'before', value: function () { return moment().format('YYYY-MM-DDTHH:mmZ'); }},
-      {label: 'Scheduled', key: 'after', value: function () { return moment().format('YYYY-MM-DDTHH:mmZ'); }},
-      {label: 'All', key: null, value: null}
-    ];
-
-    this.setStatuses = function (statuses) {
-      _statuses = statuses;
-    };
-
-    this.$get = function () {
-      return {
-        getStatuses: function () {
-          return _statuses;
-        }
-      };
-    };
-
-  })
-  .directive('statusFilter', function ($location, _, StatusFilterOptions, ContentListService, CmsConfig) {
+  .directive('statusFilter', function ($location, _, ContentListService, CmsConfig) {
     return {
       templateUrl: CmsConfig.buildComponentPath('status-filter/status-filter.html'),
       restrict: 'E',
       scope: {},
       controller: 'ContentlistCtrl',
       link: function postLink(scope, element, attrs) {
-        scope.options = StatusFilterOptions.getStatuses();
+        var dateFormat = 'YYYY-MM-DDTHH:mmZ';
+        scope.options = [
+          { label: 'Draft', key: 'status', value: 'Draft'},
+          { label: 'Edit', key: 'status', value: 'Waiting for Editor'},
+          { label: 'Scheduled', key: 'after', value: function () { return moment().format(dateFormat); } },
+          { label: 'Published', key: 'before', value: function () { return moment().format(dateFormat); } },
+          { label: 'All', key: null, value: null }
+        ];
 
         /**
          * Test if a particular option is currently active by comparing it to

@@ -3,7 +3,8 @@
 angular.module('bulbs.cms.base.config', [
   'bulbs.cms.config',
   'bulbs.cms.customSearch.config',
-  'ngClipboard'
+  'ngClipboard',
+  'statusFilter'
 ])
   .config([
     'CmsConfigProvider', 'CustomSearchConfigProvider', 'ngClipProvider',
