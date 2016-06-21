@@ -8,7 +8,7 @@ angular.module('bulbs.cms.content.edit.body', [
     function (CmsConfig) {
       return {
         link: function (scope) {
-          scope.inlineObjectsUrl = CmsConfig.getInlineObjecsPath();
+          scope.inlineObjectsPath = CmsConfig.getInlineObjecsPath();
         },
         restrict: 'E',
         scope: {

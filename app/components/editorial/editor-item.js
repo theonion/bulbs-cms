@@ -1,10 +1,12 @@
 'use strict';
 
-angular.module('bulbs.cms.editorial.editorItem', [])
-  .directive('editorItem', function ($http, EditorItems, moment, routes) {
+angular.module('bulbs.cms.editorial.editorItem', [
+  'bulbs.cms.site.config'
+])
+  .directive('editorItem', function ($http, EditorItems, moment, CmsConfig) {
     return {
       restrict: 'E',
-      templateUrl: routes.COMPONENTS_URL + 'editorial/editor-item.html',
+      templateUrl: CmsConfig.buildComponentPath('editorial/editor-item.html'),
       scope: {
         article: '='
       },
