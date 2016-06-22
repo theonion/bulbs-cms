@@ -1,0 +1,17 @@
+<div class="instant-article-field" ng-if="instantArticleEnabled">
+  <span class="desc">Active Instant Article?</span>
+  <ul class="toggle row">
+    <li class="active item-toggle" ng-click="setActive()">
+      <div class="selector" ng-class="{ 'selected': content.instant_article }">
+        <span class="instant fa fa-bolt"></span>
+      </div>
+      <span class="label">Yes</span>
+    </li>
+    <li class="inactive item-toggle" ng-click="setInactive()">
+      <div class="selector" ng-class="{ 'selected': !content.instant_article }">
+        <span class="instant fa fa-bolt"></span>
+      </div>
+      <span class="label">No</span>
+    </li>
+  </ul>
+</div>
