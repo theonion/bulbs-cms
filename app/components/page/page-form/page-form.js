@@ -11,7 +11,11 @@ angular.module('bulbs.cms.page.form', [
         scope: {
           pageData: '='
         },
-        templateUrl: CmsConfig.buildComponentPath('page', 'page-form.html')
+        templateUrl: CmsConfig.buildComponentPath(
+          'page',
+          'page-form',
+          'page-form.html'
+        )
       };
     }
   ]);
