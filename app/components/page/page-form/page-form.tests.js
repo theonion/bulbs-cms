@@ -24,7 +24,7 @@ describe('Directive: pageForm', function () {
     expect(form.attr('name')).to.equal('pageForm');
   });
 
-  it('should list out page-form-field directives', function () {
+  it('should list out <page-form-field> elements', function () {
     $parentScope.page = {
       info_data: {
         fields: {
