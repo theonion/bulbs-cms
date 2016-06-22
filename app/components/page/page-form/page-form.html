@@ -1,5 +1,7 @@
 <form name="pageForm">
   <page-form-field
-      ng-repeat="field in pageData.fields">
+      ng-repeat="(id, valueData) in pageData.values"
+      schema="pageData.fields[id]"
+      value="valueData">
   </page-form-field>
 </form>
