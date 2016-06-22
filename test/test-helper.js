@@ -8,11 +8,10 @@
    * @returns {function} when executed, will digest the directive and its html
    *    and bind it to a new scope that is a child of given $scope.
    */
-  var directiveBuilder = function ($scope, html) {
+  var directiveBuilder = function ($compile, $scope, html) {
     return function () {
       var $directiveScope = $scope.$new();
-      var element = angular.injector(['ng'])
-        .get('$compile')(html)($directiveScope);
+      var element = $compile(html)($directiveScope);
       $directiveScope.$digest();
       return element.scope();
     };
