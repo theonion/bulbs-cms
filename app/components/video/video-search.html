@@ -1,0 +1,12 @@
+<label for="{{ uuid }}">{{ label }}</label>
+<autocomplete-basic
+  class="form-control"
+  ng-model="ngModel.$viewValue"
+  item-display-formatter="itemDisplayFormatter(item)"
+  item-value-formatter="item"
+  initial-value="initialValue"
+  on-select="onSelect(selection)"
+  input-id="{{ uuid }}"
+  input-placeholder="Search {{ videoChannel }} videos..."
+  search-function="searchVideos">
+</autocomplete-basic>

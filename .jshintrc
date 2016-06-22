@@ -21,6 +21,10 @@
   "unused": "vars",
   "white": true,
   "globals": {
+    // deps that should be removed
+    "$": false,
+    "alert": false,
+
     // app deps
     "angular": false,
 

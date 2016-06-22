@@ -1,0 +1,78 @@
+.video-edit-container{
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  height: 0px;
+
+  .video-edit-overlay{
+    width: 100%;
+    height: 100%;
+    background-color: rgba(100,100,100,0.5);
+    color: white;
+    padding: 15px;
+    display: none;
+    input{ width: 100%; }
+  }
+
+  .edit-button, .clear-button{
+    position: absolute;
+    top: 15px;
+    left: 15px;
+  }
+}
+
+.video-edit-container.editing{
+  height: 100%;
+  .video-edit-overlay{ display: block; }
+  .edit-button{ display: none; }
+}
+
+.video-edit-container.encoding{
+  .reencode-button{ display: none; }
+}
+
+.video-status-container{
+  position: absolute !important;
+  bottom: 0px !important;
+  width: 100% !important;
+  height: auto !important;
+  padding-bottom: 34px !important;
+}
+
+.s3uploadButton {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin-top: -34px; /* This is a little hack. */
+  z-index: 15;
+  position: relative;
+}
+
+.s3uploadProgress {
+  height: 34px !important;
+  z-index: 10;
+  position: absolute;
+  bottom: 0px;
+  margin-bottom: 0px;
+  width: 100%;
+  background-color: #eee;
+}
+
+.s3uploadProgress .progress-bar {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  z-index: 10;
+  position: relative;
+}
+
+.s3uploadProgress .progress-bar span {
+  line-height: 34px;
+  padding-left: 20px;
+  font-size: 1em;
+  font-weight: 500;
+  color: white;
+    text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
