@@ -33,10 +33,7 @@ describe('Directive: pageForm', function () {
           title: {},
           body: {}
         },
-        values: {
-          title: 'hello',
-          body: '<p>Something is amiss</p>'
-        }
+        values: {}
       }
     };
 
