@@ -11,16 +11,21 @@ angular.module('bulbs.cms.page.form.field', [
       };
 
       return {
-        link: function (scope, element) {
+        link: function (scope, element, attrs) {
           var directiveName = FieldMap[scope.schema.type];
-          var el = $compile('<' + directiveName + '></' + directiveName + '>')(scope);
+
+          var html = angular.element('<' + directiveName + '></' + directiveName + '>');
+          html.attr('page-form', scope.pageForm);
+          html.attr('value', scope.value);
+
+          var el = $compile(html)(scope);
           element.append(el);
         },
-        require: '^^pageForm',
         restrict: 'E',
         scope: {
           schema: '=',
-          value: '='
+          value: '=',
+          pageForm: '='
         },
         templateUrl: CmsConfig.buildComponentPath(
           'page',
