@@ -5,26 +5,23 @@ describe('Directive: pageForm', function () {
     module('jsTemplates');
   });
 
-  context('bad usage', function () {
+  it('should error if parent is not a <page-form>', function () {
+    var badDigestedScope;
 
-    it('should error if parent is not a <page-form>', function () {
-      var badDigestedScope;
-
-      inject(function ($compile, $rootScope) {
-        badDigestedScope = window.testHelper.directiveBuilder(
-          $compile,
-          $rootScope,
-          angular.element('<page-form-field></page-form-field>')
-        );
-      });
-
-      expect(function () {
-        badDigestedScope();
-      }).to.throw(
-        Error,
-        /pageForm.*required/
+    inject(function ($compile, $rootScope) {
+      badDigestedScope = window.testHelper.directiveBuilder(
+        $compile,
+        $rootScope,
+        angular.element('<page-form-field></page-form-field>')
       );
     });
+
+    expect(function () {
+      badDigestedScope();
+    }).to.throw(
+      Error,
+      /pageForm.*required/
+    );
   });
 
   context('normal usage', function () {
