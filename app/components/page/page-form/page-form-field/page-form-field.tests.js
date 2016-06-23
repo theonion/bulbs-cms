@@ -31,6 +31,14 @@ describe('Directive: pageForm', function () {
       });
     });
 
+    it('should render a <page-form-field-text> when given a schema with a type of "text"', function () {
+      html.attr('schema', JSON.stringify({ type: 'text' }));
+
+      digestedScope();
+
+      expect(html.find('page-form-field-text').length).to.equal(1);
+    });
+
     it('should render sub components with a pageForm controller giving access to the parent form', function () {
       var form = sinon.stub();
       html.attr('schema', JSON.stringify({ type: 'text' }));
@@ -50,14 +58,6 @@ describe('Directive: pageForm', function () {
       digestedScope();
 
       expect(html.find('page-form-field-text').scope().value).to.equal(value);
-    });
-
-    it('should render a <page-form-field-text> when given a schema with a type of "text"', function () {
-      html.attr('schema', JSON.stringify({ type: 'text' }));
-
-      digestedScope();
-
-      expect(html.find('page-form-field-text').length).to.equal(1);
     });
   });
 });
