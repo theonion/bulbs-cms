@@ -46,6 +46,28 @@ describe('Directive: pageForm', function () {
     expect(html.find('page-form-field').length).to.equal(2);
   });
 
+  it('should pass form into <page-form-field> elments', function () {
+    $parentScope.page = {
+      info_data: {
+        fields: {
+          title: {}
+        },
+        values: {
+          title: 'hello'
+        }
+      }
+    };
+    $parentScope.pageForm = {
+      someGarbage: 'some garbage'
+    };
+
+    html.attr('page-data', 'page.info_data');
+    var directiveScope = digestedScope();
+
+    var formName = html.find('form');
+    expect(directiveScope[formName]).to.eql($parentScope[formName]);
+  });
+
   it('should respond to modifying page data', function () {
     $parentScope.page = {
       info_data: {
