@@ -38,26 +38,5 @@ describe('Directive: pageForm', function () {
 
       expect(html.find('page-form-field-text').length).to.equal(1);
     });
-
-    it('should render sub components with a pageForm controller giving access to the parent form', function () {
-      var form = sinon.stub();
-      html.attr('schema', JSON.stringify({ type: 'text' }));
-      html.attr('page-form', 'pageForm');
-
-      var directiveScope = digestedScope();
-
-      expect(html.find('page-form-field-text').scope()[formName])
-        .to.eql(parentHtml.scope()[formName]);
-    });
-
-    it('should render sub components with their value', function () {
-      var value = 123;
-      html.attr('schema', JSON.stringify({ type: 'text' }));
-      html.attr('value', value);
-
-      digestedScope();
-
-      expect(html.find('page-form-field-text').scope().value).to.equal(value);
-    });
   });
 });
