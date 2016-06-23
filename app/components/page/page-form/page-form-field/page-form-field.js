@@ -16,6 +16,7 @@ angular.module('bulbs.cms.page.form.field', [
 
           var html = angular.element('<' + directiveName + '></' + directiveName + '>');
           html.attr('page-form', scope.pageForm);
+          html.attr('schema', scope.schema);
           html.attr('value', scope.value);
 
           var el = $compile(html)(scope);
@@ -23,16 +24,11 @@ angular.module('bulbs.cms.page.form.field', [
         },
         restrict: 'E',
         scope: {
+          name: '=',
           schema: '=',
           value: '=',
           pageForm: '='
-        },
-        templateUrl: CmsConfig.buildComponentPath(
-          'page',
-          'page-form',
-          'page-form-field',
-          'page-form-field.html'
-        )
+        }
       };
     }
   ]);
