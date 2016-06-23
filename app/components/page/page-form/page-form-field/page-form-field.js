@@ -28,6 +28,6 @@ angular.module('bulbs.cms.page.form.field', [
           'page-form-field',
           'page-form-field.html'
         )
-      }
+      };
     }
   ]);

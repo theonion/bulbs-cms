@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Directive: pageForm', function () {
 
   var $parentScope;
