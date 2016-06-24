@@ -7,7 +7,12 @@ describe('Directive: pageForm', function () {
   var html;
 
   beforeEach(function () {
-    module('bulbs.cms.page.form');
+    module(
+      'bulbs.cms.page.form',
+      function ($compileProvider) {
+        window.testHelper.directiveMock($compileProvider, 'pageFormFieldText');
+      }
+    );
     module('jsTemplates');
 
     inject(function ($compile, $rootScope) {
@@ -18,6 +23,13 @@ describe('Directive: pageForm', function () {
   });
 
   it('should include a named form', function () {
+    $parentScope.page = {
+      info_data: {
+        fields: {},
+        values: {}
+      }
+    };
+    html.attr('page-data', 'page.info_data');
 
     digestedScope();
 
@@ -30,39 +42,61 @@ describe('Directive: pageForm', function () {
     $parentScope.page = {
       info_data: {
         fields: {
-          title: {},
-          body: {}
+          title: {
+            field_type: 'text'
+          },
+          body: {
+            field_type: 'text'
+          }
         },
         values: {}
       }
     };
-
     html.attr('page-data', 'page.info_data');
+
     digestedScope();
 
-    expect(html.find('page-form-field').length).to.equal(2);
+    expect(html.find('page-form-field-text').length).to.equal(2);
   });
 
-  it('should respond to modifying page data', function () {
-    $parentScope.page = {
-      info_data: {
-        fields: {
-          title: {},
-          body: {}
-        },
-        values: {
-          title: 'hello',
-          body: '<p>Something is amiss</p>'
-        }
-      }
-    };
-    html.attr('page-data', 'page.info_data');
-    digestedScope();
+  // it('should respond to modifying page data', function () {
+  //   $parentScope.page = {
+  //     info_data: {
+  //       fields: {
+  //         title: {
+  //           field_type: 'text'
+  //         },
+  //         body: {
+  //           field_type: 'text'
+  //         }
+  //       },
+  //       values: {
+  //         title: 'hello',
+  //         body: '<p>Something is amiss</p>'
+  //       }
+  //     }
+  //   };
+  //   html.attr('page-data', 'page.info_data');
+  //   digestedScope();
+  //
+  //   $parentScope.page.info_data.fields.newField = {};
+  //   $parentScope.page.info_data.values.newField = 'some new thing';
+  //   $parentScope.$digest();
+  //
+  //   console.log(html)
+  //
+  //   expect(html.find('page-form-field-text').length).to.equal(3);
+  // });
 
-    $parentScope.page.info_data.fields.newField = {};
-    $parentScope.page.info_data.values.newField = 'some new thing';
-    $parentScope.$digest();
-
-    expect(html.find('page-form-field').length).to.equal(3);
-  });
+  // it('should error out if given field type does not have a mapping', function () {
+  //
+  //   // TODO : add test code here
+  //   throw new Error('Not implemented yet.');
+  // });
+  //
+  // it('should render a text field when given a field with type text', function () {
+  //
+  //   // TODO : add test code here
+  //   throw new Error('Not implemented yet.');
+  // });
 });
