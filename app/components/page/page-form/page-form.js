@@ -1,22 +1,32 @@
 'use strict';
 
 angular.module('bulbs.cms.page.form', [
-  'bulbs.cms.page.form.field.text'
+  'bulbs.cms.page.form.field.text',
+  'lodash'
 ])
+  .constant('DIRECTIVE_NAMES_MAP', {
+    text: 'page-form-field-text'
+  })
   .directive('pageForm', [
-    '$compile',
-    function ($compile) {
-      var DIRECTIVE_NAMES_MAP = {
-        text: 'page-form-field-text'
-      };
+    '_', '$compile', 'DIRECTIVE_NAMES_MAP',
+    function (_, $compile, DIRECTIVE_NAMES_MAP) {
+
+      var error = BulbsCmsError.build('<page-form>');
 
       return {
         link: function (scope, element) {
           var $form = element.find('form');
 
-          var renderFormElements = function () {
+          scope.$watch('pageData', function () {
+            $form.empty();
+
             Object.keys(scope.pageData.fields).forEach(function (id) {
-              var tagName = DIRECTIVE_NAMES_MAP[scope.pageData.fields[id].field_type];
+              var fieldType = scope.pageData.fields[id].field_type;
+              var tagName = DIRECTIVE_NAMES_MAP[fieldType];
+
+              if (_.isUndefined(tagName)) {
+                throw new error('"' + fieldType + '" is not a valid field type!');
+              }
 
               var html = angular.element('<' + tagName + '></' + tagName + '>');
               html.attr('name', id);
@@ -26,9 +36,7 @@ angular.module('bulbs.cms.page.form', [
               $form.append(html);
               $compile(html)(scope);
             });
-          };
-
-          scope.$watch(scope.pageData, renderFormElements);
+          }, true);
         },
         restrict: 'E',
         scope: {
