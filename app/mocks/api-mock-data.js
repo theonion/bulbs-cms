@@ -406,7 +406,23 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         body: 'This article has a really long title.',
         client_pixel: null,
         sponsor_name: null
+      }, {
+        id: 16,
+        feature_type: 'Dynamically Created CMS',
+        title: 'Some Page Type',
+        slug: 'my-page-type',
+        polymorphic_ctype: 'core_page_type_1',
+        data: {
+          title: 'My Garbage Article',
+          body: '<p>Something something something</p>'
+        }
       }]
+    },
+    'page.schemas': {
+      core_page_type_1: {
+        title: { field_type: 'text' },
+        body: { field_type: 'text' }
+      }
     },
     'things.list': [
       {'url': '/search?tags=so-you-think-you-can-dance', 'param': 'tags', 'type': 'tag', 'name': 'So You Think You Can Dance', 'value': 'so-you-think-you-can-dance'},
