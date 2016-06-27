@@ -13,6 +13,7 @@ describe('Directive: pageForm', function () {
       'bulbs.cms.page.form',
       function ($compileProvider, $injector, $provide) {
         window.testHelper.directiveMock($compileProvider, 'pageFormFieldMock');
+        window.testHelper.directiveMock($compileProvider, 'pageFormFieldText');
 
         var key = 'DIRECTIVE_NAMES_MAP';
         var mapCopy = angular.copy($injector.get(key));
