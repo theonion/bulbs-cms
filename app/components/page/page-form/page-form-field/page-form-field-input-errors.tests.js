@@ -37,6 +37,6 @@ describe('Directive: pageFormFieldInputErrors', function () {
     html.scope()[formName][inputName] = { $error: { required: true } };
     $parentScope.$digest();
 
-    expect(html.html().indexOf(label + ' is required!') > -1).to.be.true;
+    expect(html.html().indexOf(label + ' is required!') > -1).to.equal(true);
   });
 });
