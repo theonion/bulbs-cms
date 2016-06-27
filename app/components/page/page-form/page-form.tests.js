@@ -67,7 +67,7 @@ describe('Directive: pageForm', function () {
     expect(html.find('page-form-field-mock').length).to.equal(2);
   });
 
-  it('should respond to modifying page data', function () {
+  it('should respond to adding a new field to page data', function () {
     $parentScope.page = {
       info_data: {
         fields: {
@@ -94,6 +94,33 @@ describe('Directive: pageForm', function () {
     $parentScope.$digest();
 
     expect(html.find('page-form-field-mock').length).to.equal(3);
+  });
+
+  it('should respond to removing a field from page data', function () {
+    $parentScope.page = {
+      info_data: {
+        fields: {
+          title: {
+            field_type: 'mock'
+          },
+          body: {
+            field_type: 'mock'
+          }
+        },
+        values: {
+          title: 'hello',
+          body: '<p>Something is amiss</p>'
+        }
+      }
+    };
+    html.attr('page-data', 'page.info_data');
+    digestedScope();
+
+    delete $parentScope.page.info_data.fields.body;
+    delete $parentScope.page.info_data.values.body;
+    $parentScope.$digest();
+
+    expect(html.find('page-form-field-mock').length).to.equal(1);
   });
 
   it('should error out if given field type does not have a mapping', function () {

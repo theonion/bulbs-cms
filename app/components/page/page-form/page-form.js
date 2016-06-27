@@ -16,10 +16,9 @@ angular.module('bulbs.cms.page.form', [
       return {
         link: function (scope, element) {
           var $form = element.find('form');
+          var fields = {};
 
           scope.$watch('pageData', function () {
-            $form.empty();
-
             Object.keys(scope.pageData.fields).forEach(function (id) {
               var fieldType = scope.pageData.fields[id].field_type;
               var tagName = DIRECTIVE_NAMES_MAP[fieldType];
@@ -28,13 +27,24 @@ angular.module('bulbs.cms.page.form', [
                 throw new error('"' + fieldType + '" is not a valid field type!');
               }
 
-              var html = angular.element('<' + tagName + '></' + tagName + '>');
-              html.attr('name', id);
-              html.attr('schema', 'pageData.fields.' + id);
-              html.attr('ng-model', 'pageData.values.' + id);
+              if (!_.has(fields, id)) {
+                var html = angular.element('<' + tagName + '></' + tagName + '>');
+                html.attr('name', id);
+                html.attr('schema', 'pageData.fields.' + id);
+                html.attr('ng-model', 'pageData.values.' + id);
 
-              $form.append(html);
-              $compile(html)(scope);
+                $form.append(html);
+                $compile(html)(scope);
+                fields[id] = html;
+              }
+            });
+
+            // remove fields from html that are no longer listed in pageData
+            _.difference(
+              Object.keys(fields),
+              Object.keys(scope.pageData.fields)
+            ).forEach(function (removedFieldName) {
+              fields[removedFieldName].remove();
             });
           }, true);
         },
