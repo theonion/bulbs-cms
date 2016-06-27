@@ -11,7 +11,7 @@ angular.module('bulbs.cms.page.form', [
     '_', '$compile', 'DIRECTIVE_NAMES_MAP',
     function (_, $compile, DIRECTIVE_NAMES_MAP) {
 
-      var error = BulbsCmsError.build('<page-form>');
+      var PageFormError = BulbsCmsError.build('<page-form>');
 
       return {
         link: function (scope, element) {
@@ -24,7 +24,7 @@ angular.module('bulbs.cms.page.form', [
               var tagName = DIRECTIVE_NAMES_MAP[fieldType];
 
               if (_.isUndefined(tagName)) {
-                throw new error('"' + fieldType + '" is not a valid field type!');
+                throw new PageFormError('"' + fieldType + '" is not a valid field type!');
               }
 
               if (!_.has(fields, id)) {
