@@ -6,12 +6,9 @@ angular.module('bulbs.cms.dynamicContent.form', [
   'bulbs.cms.site.config',
   'lodash'
 ])
-  .constant('DIRECTIVE_NAMES_MAP', {
-    text: 'dynamic-content-form-field-text'
-  })
   .directive('dynamicContentForm', [
-    '_', '$compile', 'CmsConfig', 'DIRECTIVE_NAMES_MAP',
-    function (_, $compile, CmsConfig, DIRECTIVE_NAMES_MAP) {
+    '_', '$compile', 'CmsConfig',
+    function (_, $compile, CmsConfig) {
 
       var DynamicContentFormError = BulbsCmsError.build('<dynamic-content>');
       var getTemplate = function (name) {
@@ -49,30 +46,6 @@ angular.module('bulbs.cms.dynamicContent.form', [
           }
         ],
         link: function (scope, element) {
-          var $form = element.find('form');
-          var fields = {};
-
-          scope.$watch('schema', function () {
-            Object.keys(scope.schema).forEach(function (id) {
-              var fieldType = scope.schema[id].field_type;
-              var tagName = DIRECTIVE_NAMES_MAP[fieldType];
-
-              if (_.isUndefined(tagName)) {
-                throw new DynamicContentFormError('"' + fieldType + '" is not a valid field type!');
-              }
-
-              if (!_.has(fields, id)) {
-                var html = angular.element('<' + tagName + '></' + tagName + '>');
-                html.attr('name', id);
-                html.attr('schema', 'schema.' + id);
-                html.attr('ng-model', 'values.' + id);
-
-                $form.append(html);
-                $compile(html)(scope);
-                fields[id] = html;
-              }
-            });
-          }, true);
         },
         restrict: 'E',
         scope: {

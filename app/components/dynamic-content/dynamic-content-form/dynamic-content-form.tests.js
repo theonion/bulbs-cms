@@ -21,11 +21,11 @@ describe('Directive: dynamicContentForm', function () {
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldMock');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldText');
 
-        var key = 'DIRECTIVE_NAMES_MAP';
-        var mapCopy = angular.copy($injector.get(key));
-        mapCopy[mockDirectiveNameKey] = mockDirectiveName;
+        //var key = 'DIRECTIVE_NAMES_MAP';
+        //var mapCopy = angular.copy($injector.get(key));
+        //mapCopy[mockDirectiveNameKey] = mockDirectiveName;
 
-        $provide.constant(key, mapCopy);
+        //$provide.constant(key, mapCopy);
       }
     );
     module('jsTemplates');
@@ -144,23 +144,6 @@ describe('Directive: dynamicContentForm', function () {
   //
   //   expect(html.find('dynamic-content-form-field-mock').length).to.equal(2);
   // });
-
-  it('should error out if given field type does not have a mapping', function () {
-    var fieldType = 'not a real field type';
-    var html = angular.element(
-      '<dynamic-content-form schema-src="{{ schemaSrc }}" values="values"></dynamic-content>'
-    );
-    $parentScope.schemaSrc = schemaSrc;
-    $parentScope.values = {};
-    deferred.resolve({ title: { field_type: fieldType } });
-
-    expect(function () {
-      digest(html);
-    }).to.throw(
-      BulbsCmsError,
-      '<dynamic-content>: "' + fieldType + '" is not a valid field type!'
-    );
-  });
 
 // TODO : once dynamic-content-form-field is implemented
   // it('should render a text field when given a field with type text', function () {
