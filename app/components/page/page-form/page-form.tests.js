@@ -3,12 +3,18 @@
 describe('Directive: pageForm', function () {
 
   var $parentScope;
-  var digestedScope;
+  var digest;
   var html;
   var mockDirectiveNameKey = 'mock';
   var mockDirectiveName = 'page-form-field-mock';
+  var PageApi;
+  var deferred;
+  var sandbox;
+  var schemaSrc = '/some/url/for/schema';
 
   beforeEach(function () {
+    sandbox = sinon.sandbox.create();
+
     module(
       'bulbs.cms.page.form',
       function ($compileProvider, $injector, $provide) {
@@ -24,141 +30,149 @@ describe('Directive: pageForm', function () {
     );
     module('jsTemplates');
 
-    inject(function ($compile, $rootScope) {
+    inject(function ($compile, $q, $rootScope, _PageApi_) {
       $parentScope = $rootScope.$new();
+      $parentScope.schemaSrc = schemaSrc;
       html = angular.element('<page-form></page-form>');
-      digestedScope = window.testHelper.directiveBuilder($compile, $parentScope, html);
+      digest = window.testHelper.directiveBuilderWithDynamicHtml(
+        $compile,
+        $parentScope
+      );
+      PageApi = _PageApi_;
+
+      deferred = $q.defer();
+      sandbox.stub(PageApi, 'retrieveSchema')
+        .withArgs(schemaSrc).returns(deferred.promise);
     });
   });
 
-  it('should include a named form', function () {
-    $parentScope.page = {
-      info_data: {
-        fields: {},
-        values: {}
-      }
-    };
-    html.attr('page-data', 'page.info_data');
+  afterEach(function () {
+    sandbox.restore();
+  });
 
-    digestedScope();
+  it('should call out to retrieve schema at given src', function () {
+    $parentScope.schemaSrc = schemaSrc;
+    $parentScope.values = {};
+
+    digest('<page-form schema-src="{{ schemaSrc }}" values="values"></page-form>');
+
+    expect(PageApi.retrieveSchema.calledOnce).to.equal(true);
+  });
+
+  it('should show an error message if schema retrieval fails', function () {
+    $parentScope.schemaSrc = schemaSrc;
+    $parentScope.values = {};
+    var html = angular.element(
+      '<page-form schema-src="{{ schemaSrc }}" values="values"></page-form>'
+    );
+
+    digest(html);
+    deferred.reject();
+    $parentScope.$digest();
+
+    expect(html.html().indexOf('Unable to retrieve schema') > -1)
+      .to.equal(true);
+  });
+
+  it('should show a loading message before form has loaded', function () {
+    $parentScope.schemaSrc = schemaSrc;
+    $parentScope.values = {};
+    var html = angular.element(
+      '<page-form schema-src="{{ schemaSrc }}" values="values"></page-form>'
+    );
+
+    digest(html);
+
+    expect(html.html().indexOf('Loading page schema...') > -1).to.equal(true);
+  });
+
+  it('should throw an error if not given a schema source', function () {
+    $parentScope.values = {};
+
+    expect(function () {
+      digest('<page-form values="values"></page-form>');
+    }).to.throw(
+      BulbsCmsError,
+      '<page-form>: must be provided a schema url!'
+    );
+  });
+
+  it('should throw an error if not given values', function () {
+    $parentScope.schemaSrc = schemaSrc;
+
+    expect(function () {
+      digest('<page-form schema-src="{{ schemaSrc }}"></page-form>');
+    }).to.throw(
+      BulbsCmsError,
+      '<page-form>: must be provided a value object!'
+    );
+  });
+
+  it('should include a named form', function () {
+    var html = angular.element(
+      '<page-form schema-src="{{ schemaSrc }}" values="values"></page-form>'
+    );
+    $parentScope.schemaSrc = schemaSrc;
+    $parentScope.values = {};
+    deferred.resolve({});
+
+    digest(html);
 
     var form = html.find('form');
     expect(form.length).to.equal(1);
     expect(form.attr('name')).to.equal('pageForm');
   });
 
-  it('should list out <page-form-field> elements', function () {
-    $parentScope.page = {
-      info_data: {
-        fields: {
-          title: {
-            field_type: 'mock'
-          },
-          body: {
-            field_type: 'mock'
-          }
-        },
-        values: {}
-      }
-    };
-    html.attr('page-data', 'page.info_data');
-
-    digestedScope();
-
-    expect(html.find('page-form-field-mock').length).to.equal(2);
-  });
-
-  it('should respond to adding a new field to page data', function () {
-    $parentScope.page = {
-      info_data: {
-        fields: {
-          title: {
-            field_type: 'mock'
-          },
-          body: {
-            field_type: 'mock'
-          }
-        },
-        values: {
-          title: 'hello',
-          body: '<p>Something is amiss</p>'
-        }
-      }
-    };
-    html.attr('page-data', 'page.info_data');
-    digestedScope();
-
-    $parentScope.page.info_data.fields.new_field = {
-      field_type: 'mock'
-    };
-    $parentScope.page.info_data.values.new_field = 'some new thing';
-    $parentScope.$digest();
-
-    expect(html.find('page-form-field-mock').length).to.equal(3);
-  });
-
-  it('should respond to removing a field from page data', function () {
-    $parentScope.page = {
-      info_data: {
-        fields: {
-          title: {
-            field_type: 'mock'
-          },
-          body: {
-            field_type: 'mock'
-          }
-        },
-        values: {
-          title: 'hello',
-          body: '<p>Something is amiss</p>'
-        }
-      }
-    };
-    html.attr('page-data', 'page.info_data');
-    digestedScope();
-
-    delete $parentScope.page.info_data.fields.body;
-    delete $parentScope.page.info_data.values.body;
-    $parentScope.$digest();
-
-    expect(html.find('page-form-field-mock').length).to.equal(1);
-  });
+// TODO : once page-form-field is implemented
+  // it('should list out <page-form-field> elements', function () {
+  //   $parentScope.page = {
+  //     info_data: {
+  //       fields: {
+  //         title: {
+  //           field_type: 'mock'
+  //         },
+  //         body: {
+  //           field_type: 'mock'
+  //         }
+  //       },
+  //       values: {}
+  //     }
+  //   };
+  //   html.attr('page-data', 'page.info_data');
+  //
+  //   digest();
+  //
+  //   expect(html.find('page-form-field-mock').length).to.equal(2);
+  // });
 
   it('should error out if given field type does not have a mapping', function () {
     var fieldType = 'not a real field type';
-    $parentScope.page = {
-      info_data: {
-        fields: {
-          title: {
-            field_type: fieldType
-          }
-        },
-      }
-    };
-    html.attr('page-data', 'page.info_data');
+    var html = angular.element(
+      '<page-form schema-src="{{ schemaSrc }}" values="values"></page-form>'
+    );
+    $parentScope.schemaSrc = schemaSrc;
+    $parentScope.values = {};
+    deferred.resolve({ title: { field_type: fieldType } });
 
     expect(function () {
-      digestedScope();
+      digest(html);
     }).to.throw(
       BulbsCmsError,
       '<page-form>: "' + fieldType + '" is not a valid field type!'
     );
   });
 
-  it('should render a text field when given a field with type text', function () {
-    $parentScope.page = {
-      info_data: {
-        fields: {
-          title: {
-            field_type: 'text'
-          }
-        }
-      }
-    };
-    html.attr('page-data', 'page.info_data');
-
-    digestedScope();
-
-    expect(html.find('page-form-field-text').length).to.equal(1);
-  });
+// TODO : once page-form-field is implemented
+  // it('should render a text field when given a field with type text', function () {
+  //   var html = angular.element(
+  //     '<page-form schema-src="{{ schemaSrc }}" values="values"></page-form>'
+  //   );
+  //   $parentScope.schemaSrc = schemaSrc;
+  //   $parentScope.values = {};
+  //   deferred.resolve({ title: { field_type: 'text' } });
+  //
+  //   digest(html);
+  //
+  //   expect(html.find('page-form-field-text').length).to.equal(1);
+  // });
 });
