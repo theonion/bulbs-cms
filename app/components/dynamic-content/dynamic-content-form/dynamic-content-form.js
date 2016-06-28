@@ -1,45 +1,49 @@
 'use strict';
 
-angular.module('bulbs.cms.page.form', [
-  'bulbs.cms.page.api',
-  'bulbs.cms.page.form.field.text',
+angular.module('bulbs.cms.dynamicContent.form', [
+  'bulbs.cms.dynamicContent.api',
+  'bulbs.cms.dynamicContent.form.field.text',
   'bulbs.cms.site.config',
   'lodash'
 ])
   .constant('DIRECTIVE_NAMES_MAP', {
-    text: 'page-form-field-text'
+    text: 'dynamic-content-form-field-text'
   })
-  .directive('pageForm', [
+  .directive('dynamicContentForm', [
     '_', '$compile', 'CmsConfig', 'DIRECTIVE_NAMES_MAP',
     function (_, $compile, CmsConfig, DIRECTIVE_NAMES_MAP) {
 
-      var PageFormError = BulbsCmsError.build('<page-form>');
+      var DynamicContentFormError = BulbsCmsError.build('<dynamic-content>');
       var getTemplate = function (name) {
-        return CmsConfig.buildComponentPath('page', 'page-form', name);
+        return CmsConfig.buildComponentPath(
+          'dynamic-content',
+          'dynamic-content-form',
+          name
+        );
       };
 
       return {
         controller: [
-          '$scope', 'PageApi',
-          function ($scope, PageApi) {
+          '$scope', 'DynamicContentApi',
+          function ($scope, DynamicContentApi) {
             if (!_.isString($scope.schemaSrc)) {
-              throw new PageFormError('must be provided a schema url!');
+              throw new DynamicContentFormError('must be provided a schema url!');
             }
 
             if (!_.isObject($scope.values)) {
-              throw new PageFormError('must be provided a value object!');
+              throw new DynamicContentFormError('must be provided a value object!');
             }
 
-            $scope.template = getTemplate('page-form-loading.html');
+            $scope.template = getTemplate('dynamic-content-form-loading.html');
             $scope.schema = {};
 
-            PageApi.retrieveSchema($scope.schemaSrc)
+            DynamicContentApi.retrieveSchema($scope.schemaSrc)
               .then(function (schema) {
-                $scope.template = getTemplate('page-form-loaded.html');
+                $scope.template = getTemplate('dynamic-content-form-loaded.html');
                 $scope.schema = schema;
               })
               .catch(function () {
-                $scope.template = getTemplate('page-form-error.html');
+                $scope.template = getTemplate('dynamic-content-form-error.html');
                 $scope.errorMessage = 'Unable to retrieve schema';
               });
           }
@@ -54,7 +58,7 @@ angular.module('bulbs.cms.page.form', [
               var tagName = DIRECTIVE_NAMES_MAP[fieldType];
 
               if (_.isUndefined(tagName)) {
-                throw new PageFormError('"' + fieldType + '" is not a valid field type!');
+                throw new DynamicContentFormError('"' + fieldType + '" is not a valid field type!');
               }
 
               if (!_.has(fields, id)) {

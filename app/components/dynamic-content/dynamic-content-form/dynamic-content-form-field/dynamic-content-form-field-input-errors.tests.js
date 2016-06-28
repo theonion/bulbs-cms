@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Directive: pageFormFieldInputErrors', function () {
+describe('Directive: dynamicContentFormFieldInputErrors', function () {
 
   var $parentScope;
   var digestedScope;
@@ -9,14 +9,14 @@ describe('Directive: pageFormFieldInputErrors', function () {
   var html;
 
   beforeEach(function () {
-    module('bulbs.cms.page.form.input.errors');
+    module('bulbs.cms.dynamicContent.form.input.errors');
     module('jsTemplates');
 
     inject(function ($compile, $rootScope) {
       $parentScope = $rootScope.$new();
       html = angular.element(
         '<form name="' + formName + '">' +
-          '<page-form-field-input-errors></page-form-field-input-errors>' +
+          '<dynamic-content-form-field-input-errors></dynamic-content-form-field-input-errors>' +
         '</form>'
       );
       digestedScope = window.testHelper.directiveBuilder($compile, $parentScope, html);
@@ -29,7 +29,7 @@ describe('Directive: pageFormFieldInputErrors', function () {
       label: label,
       required: true
     };
-    html.find('page-form-field-input-errors')
+    html.find('dynamic-content-form-field-input-errors')
       .attr('name', inputName)
       .attr('schema', 'schema');
     digestedScope();

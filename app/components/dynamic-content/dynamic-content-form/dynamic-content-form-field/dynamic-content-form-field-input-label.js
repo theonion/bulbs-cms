@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('bulbs.cms.page.form.input.label', [])
-  .directive('pageFormFieldInputLabel', [
+angular.module('bulbs.cms.dynamicContent.form.input.label', [])
+  .directive('dynamicContentFormFieldInputLabel', [
     function () {
       return {
         link: function (scope, element, attrs, formCtrl) {

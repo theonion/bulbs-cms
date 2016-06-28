@@ -410,16 +410,16 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         id: 16,
         feature_type: 'Dynamically Created CMS',
         title: 'Some Page Type',
-        slug: 'my-page-type',
-        polymorphic_ctype: 'core_page_type_1',
+        slug: 'my-dynamic-content-type',
+        polymorphic_ctype: 'core_dynamic_content_type_1',
         data: {
           title: 'My Garbage Article',
           body: '<p>Something something something</p>'
         }
       }]
     },
-    'page.schemas': {
-      core_page_type_1: {
+    'dynamicContent.schemas': {
+      core_dynamic_content_type_1: {
         title: { field_type: 'text' },
         body: { field_type: 'text' }
       }

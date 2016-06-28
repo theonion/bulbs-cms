@@ -1,13 +1,13 @@
 'use strict';
 
-describe('Directive: pageForm', function () {
+describe('Directive: dynamicContentForm', function () {
 
   var $parentScope;
   var digest;
   var html;
   var mockDirectiveNameKey = 'mock';
-  var mockDirectiveName = 'page-form-field-mock';
-  var PageApi;
+  var mockDirectiveName = 'dynamic-content-form-field-mock';
+  var DynamicContentApi;
   var deferred;
   var sandbox;
   var schemaSrc = '/some/url/for/schema';
@@ -16,10 +16,10 @@ describe('Directive: pageForm', function () {
     sandbox = sinon.sandbox.create();
 
     module(
-      'bulbs.cms.page.form',
+      'bulbs.cms.dynamicContent.form',
       function ($compileProvider, $injector, $provide) {
-        window.testHelper.directiveMock($compileProvider, 'pageFormFieldMock');
-        window.testHelper.directiveMock($compileProvider, 'pageFormFieldText');
+        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldMock');
+        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldText');
 
         var key = 'DIRECTIVE_NAMES_MAP';
         var mapCopy = angular.copy($injector.get(key));
@@ -30,18 +30,18 @@ describe('Directive: pageForm', function () {
     );
     module('jsTemplates');
 
-    inject(function ($compile, $q, $rootScope, _PageApi_) {
+    inject(function ($compile, $q, $rootScope, _DynamicContentApi_) {
       $parentScope = $rootScope.$new();
       $parentScope.schemaSrc = schemaSrc;
-      html = angular.element('<page-form></page-form>');
+      html = angular.element('<dynamic-content></dynamic-content>');
       digest = window.testHelper.directiveBuilderWithDynamicHtml(
         $compile,
         $parentScope
       );
-      PageApi = _PageApi_;
+      DynamicContentApi = _DynamicContentApi_;
 
       deferred = $q.defer();
-      sandbox.stub(PageApi, 'retrieveSchema')
+      sandbox.stub(DynamicContentApi, 'retrieveSchema')
         .withArgs(schemaSrc).returns(deferred.promise);
     });
   });
@@ -54,16 +54,16 @@ describe('Directive: pageForm', function () {
     $parentScope.schemaSrc = schemaSrc;
     $parentScope.values = {};
 
-    digest('<page-form schema-src="{{ schemaSrc }}" values="values"></page-form>');
+    digest('<dynamic-content-form schema-src="{{ schemaSrc }}" values="values"></dynamic-content>');
 
-    expect(PageApi.retrieveSchema.calledOnce).to.equal(true);
+    expect(DynamicContentApi.retrieveSchema.calledOnce).to.equal(true);
   });
 
   it('should show an error message if schema retrieval fails', function () {
     $parentScope.schemaSrc = schemaSrc;
     $parentScope.values = {};
     var html = angular.element(
-      '<page-form schema-src="{{ schemaSrc }}" values="values"></page-form>'
+      '<dynamic-content-form schema-src="{{ schemaSrc }}" values="values"></dynamic-content>'
     );
 
     digest(html);
@@ -78,22 +78,22 @@ describe('Directive: pageForm', function () {
     $parentScope.schemaSrc = schemaSrc;
     $parentScope.values = {};
     var html = angular.element(
-      '<page-form schema-src="{{ schemaSrc }}" values="values"></page-form>'
+      '<dynamic-content-form schema-src="{{ schemaSrc }}" values="values"></dynamic-content>'
     );
 
     digest(html);
 
-    expect(html.html().indexOf('Loading page schema...') > -1).to.equal(true);
+    expect(html.html().indexOf('Loading dynamic content schema...') > -1).to.equal(true);
   });
 
   it('should throw an error if not given a schema source', function () {
     $parentScope.values = {};
 
     expect(function () {
-      digest('<page-form values="values"></page-form>');
+      digest('<dynamic-content-form values="values"></dynamic-content>');
     }).to.throw(
       BulbsCmsError,
-      '<page-form>: must be provided a schema url!'
+      '<dynamic-content>: must be provided a schema url!'
     );
   });
 
@@ -101,16 +101,16 @@ describe('Directive: pageForm', function () {
     $parentScope.schemaSrc = schemaSrc;
 
     expect(function () {
-      digest('<page-form schema-src="{{ schemaSrc }}"></page-form>');
+      digest('<dynamic-content-form schema-src="{{ schemaSrc }}"></dynamic-content>');
     }).to.throw(
       BulbsCmsError,
-      '<page-form>: must be provided a value object!'
+      '<dynamic-content>: must be provided a value object!'
     );
   });
 
   it('should include a named form', function () {
     var html = angular.element(
-      '<page-form schema-src="{{ schemaSrc }}" values="values"></page-form>'
+      '<dynamic-content-form schema-src="{{ schemaSrc }}" values="values"></dynamic-content>'
     );
     $parentScope.schemaSrc = schemaSrc;
     $parentScope.values = {};
@@ -120,11 +120,11 @@ describe('Directive: pageForm', function () {
 
     var form = html.find('form');
     expect(form.length).to.equal(1);
-    expect(form.attr('name')).to.equal('pageForm');
+    expect(form.attr('name')).to.equal('dynamicContentForm');
   });
 
-// TODO : once page-form-field is implemented
-  // it('should list out <page-form-field> elements', function () {
+// TODO : once dynamic-content-form-field is implemented
+  // it('should list out <dynamic-content-form-field> elements', function () {
   //   $parentScope.page = {
   //     info_data: {
   //       fields: {
@@ -142,13 +142,13 @@ describe('Directive: pageForm', function () {
   //
   //   digest();
   //
-  //   expect(html.find('page-form-field-mock').length).to.equal(2);
+  //   expect(html.find('dynamic-content-form-field-mock').length).to.equal(2);
   // });
 
   it('should error out if given field type does not have a mapping', function () {
     var fieldType = 'not a real field type';
     var html = angular.element(
-      '<page-form schema-src="{{ schemaSrc }}" values="values"></page-form>'
+      '<dynamic-content-form schema-src="{{ schemaSrc }}" values="values"></dynamic-content>'
     );
     $parentScope.schemaSrc = schemaSrc;
     $parentScope.values = {};
@@ -158,14 +158,14 @@ describe('Directive: pageForm', function () {
       digest(html);
     }).to.throw(
       BulbsCmsError,
-      '<page-form>: "' + fieldType + '" is not a valid field type!'
+      '<dynamic-content>: "' + fieldType + '" is not a valid field type!'
     );
   });
 
-// TODO : once page-form-field is implemented
+// TODO : once dynamic-content-form-field is implemented
   // it('should render a text field when given a field with type text', function () {
   //   var html = angular.element(
-  //     '<page-form schema-src="{{ schemaSrc }}" values="values"></page-form>'
+  //     '<dynamic-content-form schema-src="{{ schemaSrc }}" values="values"></dynamic-content>'
   //   );
   //   $parentScope.schemaSrc = schemaSrc;
   //   $parentScope.values = {};
@@ -173,6 +173,6 @@ describe('Directive: pageForm', function () {
   //
   //   digest(html);
   //
-  //   expect(html.find('page-form-field-text').length).to.equal(1);
+  //   expect(html.find('dynamic-content-form-field-text').length).to.equal(1);
   // });
 });

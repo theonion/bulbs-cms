@@ -1,11 +1,11 @@
 'use strict';
 
-angular.module('bulbs.cms.page.form.field.text', [
+angular.module('bulbs.cms.dynamicContent.form.field.text', [
   'bulbs.cms.site.config',
-  'bulbs.cms.page.form.input.label',
-  'bulbs.cms.page.form.input.errors'
+  'bulbs.cms.dynamicContent.form.input.label',
+  'bulbs.cms.dynamicContent.form.input.errors'
 ])
-  .directive('pageFormFieldText', [
+  .directive('dynamicContentFormFieldText', [
     'CmsConfig',
     function (CmsConfig) {
       return {
@@ -20,11 +20,11 @@ angular.module('bulbs.cms.page.form.field.text', [
           schema: '='
         },
         templateUrl: CmsConfig.buildComponentPath(
-          'page',
-          'page-form',
-          'page-form-field',
-          'page-form-field-text',
-          'page-form-field-text.html'
+          'dynamic-content',
+          'dynamic-content-form',
+          'dynamic-content-form-field',
+          'dynamic-content-form-field-text',
+          'dynamic-content-form-field-text.html'
         )
       };
     }

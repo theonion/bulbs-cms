@@ -16,7 +16,7 @@ angular.module('OnionEditor', []).constant('OnionEditor', window.OnionEditor);
 angular.module('bulbsCmsApp', [
   'bulbs.cms.site.config',
 
-  'bulbs.cms.page',
+  'bulbs.cms.dynamicContent',
 
   'ngCookies',
   'ngResource',

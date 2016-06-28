@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('bulbs.cms.page.api', [])
-  .service('PageApi', [
+angular.module('bulbs.cms.dynamicContent.api', [])
+  .service('DynamicContentApi', [
     '$http',
     function ($http) {
       return {

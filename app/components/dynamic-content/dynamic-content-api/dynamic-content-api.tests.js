@@ -1,16 +1,16 @@
 'use strict';
 
-describe('Service: PageApi', function () {
+describe('Service: DynamicContentApi', function () {
 
   var $httpBackend;
-  var PageApi;
+  var DynamicContentApi;
 
   beforeEach(function () {
-    module('bulbs.cms.page.api');
+    module('bulbs.cms.dynamicContent.api');
 
-    inject(function (_$httpBackend_, _PageApi_) {
+    inject(function (_$httpBackend_, _DynamicContentApi_) {
       $httpBackend = _$httpBackend_;
-      PageApi = _PageApi_;
+      DynamicContentApi = _DynamicContentApi_;
     });
   });
 
@@ -25,7 +25,7 @@ describe('Service: PageApi', function () {
     });
 
     var apiSchema;
-    PageApi.retrieveSchema(url)
+    DynamicContentApi.retrieveSchema(url)
       .success(function (response) {
         apiSchema = response;
       });

@@ -54,7 +54,7 @@ angular.module('bulbsCmsApp.mockApi', [
           mockApiData['content.list'].results,
           { id: Number(index) }
         )[0].polymorphic_ctype;
-        var schema = mockApiData['page.schemas'][ctype];
+        var schema = mockApiData['dynamicContent.schemas'][ctype];
 
         return [200, schema];
       }

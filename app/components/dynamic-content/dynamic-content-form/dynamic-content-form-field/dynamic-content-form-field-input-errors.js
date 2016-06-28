@@ -1,9 +1,9 @@
 'use strict';
 
-angular.module('bulbs.cms.page.form.input.errors', [
+angular.module('bulbs.cms.dynamicContent.form.input.errors', [
   'bulbs.cms.site.config'
 ])
-  .directive('pageFormFieldInputErrors', [
+  .directive('dynamicContentFormFieldInputErrors', [
     'CmsConfig',
     function (CmsConfig) {
       return {
@@ -17,10 +17,10 @@ angular.module('bulbs.cms.page.form.input.errors', [
           schema: '='
         },
         templateUrl: CmsConfig.buildComponentPath(
-          'page',
-          'page-form',
-          'page-form-field',
-          'page-form-field-input-errors.html'
+          'dynamic-content',
+          'dynamic-content-form',
+          'dynamic-content-form-field',
+          'dynamic-content-form-field-input-errors.html'
         )
       };
     }
