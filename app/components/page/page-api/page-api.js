@@ -9,7 +9,7 @@ angular.module('bulbs.cms.page.api', [])
           return $http({
             method: 'OPTIONS',
             url: url
-          })
+          });
         }
       };
     }

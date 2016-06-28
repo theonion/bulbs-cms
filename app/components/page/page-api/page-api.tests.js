@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Service: PageApi', function () {
 
   var $httpBackend;
@@ -19,7 +21,7 @@ describe('Service: PageApi', function () {
       body: { field_type: 'text' }
     };
     $httpBackend.expect('OPTIONS', url).respond(function () {
-      return [200, schema]
+      return [200, schema];
     });
 
     var apiSchema;
