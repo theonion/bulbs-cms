@@ -35,7 +35,7 @@ describe('Directive: dynamicContentFormFieldList', function () {
       '</dynamic-content-form-field-list>'
     );
     $parentScope.schema = {
-      title: { field_type: 'mock' }
+      title: { field: 'mock' }
     };
     $parentScope.values = [{
       title: 'one'

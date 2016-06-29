@@ -19,7 +19,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
           scope.$watch('schema', function () {
             if (_.has(scope.schema, 'fields')) {
               Object.keys(scope.schema.fields).forEach(function (id) {
-                var fieldType = scope.schema.fields[id].field_type;
+                var fieldType = scope.schema.fields[id].field;
                 var tagName = DIRECTIVE_NAMES_MAP[fieldType];
 
                 if (_.isUndefined(tagName)) {

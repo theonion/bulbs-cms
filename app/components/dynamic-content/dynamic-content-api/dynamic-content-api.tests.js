@@ -17,8 +17,8 @@ describe('Service: DynamicContentApi', function () {
   it('should provide a way to retrieve the schema for a given piece of content', function () {
     var url = '/some/schema/url';
     var schema = {
-      title: { field_type: 'text' },
-      body: { field_type: 'text' }
+      title: { field: 'text' },
+      body: { field: 'text' }
     };
     $httpBackend.expect('OPTIONS', url).respond(function () {
       return [200, schema];

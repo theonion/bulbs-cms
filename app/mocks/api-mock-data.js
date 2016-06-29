@@ -420,8 +420,8 @@ angular.module('bulbsCmsApp.mockApi.data', [])
     },
     'dynamicContent.schemas': {
       core_dynamic_content_type_1: {
-        title: { field_type: 'text' },
-        body: { field_type: 'text' }
+        title: { field: 'text' },
+        body: { field: 'text' }
       }
     },
     'things.list': [
