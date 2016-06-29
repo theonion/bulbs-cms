@@ -3,9 +3,24 @@
 describe('Directive: DynamicContentFormObject', function () {
   var $parentScope;
   var digest;
+  var mockDirectiveNameKey = 'mock';
+  var mockDirectiveName = 'dynamic-content-form-field-mock';
 
   beforeEach(function () {
-    module('bulbs.cms.dynamicContent.form.object');
+    module(
+      'bulbs.cms.dynamicContent.form.object',
+      function ($compileProvider, $injector, $provide) {
+        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldMock');
+        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldText');
+
+        var key = 'DIRECTIVE_NAMES_MAP';
+        var mapCopy = angular.copy($injector.get(key));
+        mapCopy[mockDirectiveNameKey] = mockDirectiveName;
+
+        $provide.constant(key, mapCopy);
+      }
+    );
+    module('jsTemplates');
 
    inject(function ($compile, $rootScope) {
      $parentScope = $rootScope.$new();
@@ -24,9 +39,7 @@ describe('Directive: DynamicContentFormObject', function () {
       '</dynamic-content-form-object>'
     );
 
-    $parentScope.schema = {
-      fields: {}
-    };
+    $parentScope.schema = {};
     $parentScope.values = {};
 
     digest(html);
@@ -43,21 +56,22 @@ describe('Directive: DynamicContentFormObject', function () {
     );
 
     $parentScope.schema = {
-      fields: {
-        title: {
-          field_type: 'text',
-        }
+      title: {
+        field_type: 'mock'
+      },
+      body: {
+        field_type: 'mock'
       }
     };
     $parentScope.values = {};
 
     digest(html);
 
-    var field = html.find('dynamic-content-form-field-text');
-    expect(field.length).to.eql(1);
-    expect(field.attr('name')).to.eql('title');
-    expect(field.attr('schema')).to.eql('schema.fields.title');
-    expect(field.attr('ng-model')).to.eql('values.title');
+    var fields = html.find('dynamic-content-form-field-mock');
+    expect(fields.length).to.eql(2);
+    expect(fields.attr('name')).to.eql('title');
+    expect(fields.attr('schema')).to.eql('schema.title');
+    expect(fields.attr('ng-model')).to.eql('values.title');
   });
 
   it('should error out if given field type does not have a mapping', function () {
@@ -68,10 +82,8 @@ describe('Directive: DynamicContentFormObject', function () {
     );
 
     $parentScope.schema = {
-      fields: {
-        title: {
-          field_type: fieldType,
-        }
+      title: {
+        field_type: fieldType,
       }
     };
     $parentScope.values = {};
@@ -82,5 +94,18 @@ describe('Directive: DynamicContentFormObject', function () {
       BulbsCmsError,
       '<dynamic-content-form-object>: "' + fieldType + '" is not a valid field type!'
     );
+  });
+
+  it('should render a text field when given a field with type text', function () {
+    var html = angular.element(
+      '<dynamic-content-form-object schema="schema" values="values">' +
+      '</dynamic-content-form-object>'
+    );
+    $parentScope.schema = { title: { field_type: 'text' } };
+    $parentScope.values = {};
+
+    digest(html);
+
+    expect(html.find('dynamic-content-form-field-text').length).to.equal(1);
   });
 });

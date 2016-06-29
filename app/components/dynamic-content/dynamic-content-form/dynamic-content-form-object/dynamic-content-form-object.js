@@ -16,8 +16,8 @@ angular.module('bulbs.cms.dynamicContent.form.object', [
           var $form = element.find('form');
 
           scope.$watch('schema', function () {
-            Object.keys(scope.schema.fields).forEach(function (id) {
-              var fieldType = scope.schema.fields[id].field_type;
+            Object.keys(scope.schema).forEach(function (id) {
+              var fieldType = scope.schema[id].field_type;
               var tagName = DIRECTIVE_NAMES_MAP[fieldType];
 
               if (_.isUndefined(tagName)) {
@@ -27,7 +27,7 @@ angular.module('bulbs.cms.dynamicContent.form.object', [
               var html = angular.element('<' + tagName + '></' + tagName + '>');
 
               html.attr('name', id);
-              html.attr('schema', 'schema.fields.' + id);
+              html.attr('schema', 'schema.' + id);
               html.attr('ng-model', 'values.' + id);
 
               $form.append(html);

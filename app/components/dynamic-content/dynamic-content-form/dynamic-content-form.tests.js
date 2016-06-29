@@ -5,8 +5,6 @@ describe('Directive: dynamicContentForm', function () {
   var $parentScope;
   var digest;
   var html;
-  // var mockDirectiveNameKey = 'mock';
-  // var mockDirectiveName = 'dynamic-content-form-field-mock';
   var DynamicContentApi;
   var deferred;
   var sandbox;
@@ -15,19 +13,7 @@ describe('Directive: dynamicContentForm', function () {
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
 
-    module(
-      'bulbs.cms.dynamicContent.form',
-      function ($compileProvider, $injector, $provide) {
-        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldMock');
-        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldText');
-
-        //var key = 'DIRECTIVE_NAMES_MAP';
-        //var mapCopy = angular.copy($injector.get(key));
-        //mapCopy[mockDirectiveNameKey] = mockDirectiveName;
-
-        //$provide.constant(key, mapCopy);
-      }
-    );
+    module('bulbs.cms.dynamicContent.form');
     module('jsTemplates');
 
     inject(function ($compile, $q, $rootScope, _DynamicContentApi_) {
@@ -122,40 +108,4 @@ describe('Directive: dynamicContentForm', function () {
     expect(form.length).to.equal(1);
     expect(form.attr('name')).to.equal('dynamicContentForm');
   });
-
-// TODO : once dynamic-content-form-field is implemented
-  // it('should list out <dynamic-content-form-field> elements', function () {
-  //   $parentScope.page = {
-  //     info_data: {
-  //       fields: {
-  //         title: {
-  //           field_type: 'mock'
-  //         },
-  //         body: {
-  //           field_type: 'mock'
-  //         }
-  //       },
-  //       values: {}
-  //     }
-  //   };
-  //   html.attr('page-data', 'page.info_data');
-  //
-  //   digest();
-  //
-  //   expect(html.find('dynamic-content-form-field-mock').length).to.equal(2);
-  // });
-
-// TODO : once dynamic-content-form-field is implemented
-  // it('should render a text field when given a field with type text', function () {
-  //   var html = angular.element(
-  //     '<dynamic-content-form schema-src="{{ schemaSrc }}" values="values"></dynamic-content>'
-  //   );
-  //   $parentScope.schemaSrc = schemaSrc;
-  //   $parentScope.values = {};
-  //   deferred.resolve({ title: { field_type: 'text' } });
-  //
-  //   digest(html);
-  //
-  //   expect(html.find('dynamic-content-form-field-text').length).to.equal(1);
-  // });
 });
