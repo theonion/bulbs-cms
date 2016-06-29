@@ -5,8 +5,8 @@ describe('Directive: dynamicContentForm', function () {
   var $parentScope;
   var digest;
   var html;
-  var mockDirectiveNameKey = 'mock';
-  var mockDirectiveName = 'dynamic-content-form-field-mock';
+  // var mockDirectiveNameKey = 'mock';
+  // var mockDirectiveName = 'dynamic-content-form-field-mock';
   var DynamicContentApi;
   var deferred;
   var sandbox;

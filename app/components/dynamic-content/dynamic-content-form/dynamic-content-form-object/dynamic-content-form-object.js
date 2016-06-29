@@ -1,12 +1,14 @@
 'use strict';
 
-angular.module('bulbs.cms.dynamicContent.form.object', [])
+angular.module('bulbs.cms.dynamicContent.form.object', [
+  'lodash'
+])
   .constant('DIRECTIVE_NAMES_MAP', {
     text: 'dynamic-content-form-field-text'
   })
   .directive('dynamicContentFormObject', [
-    '$compile', 'DIRECTIVE_NAMES_MAP',
-    function ($compile, DIRECTIVE_NAMES_MAP) {
+    '_', '$compile', 'DIRECTIVE_NAMES_MAP',
+    function (_, $compile, DIRECTIVE_NAMES_MAP) {
       var DynamicContentFormObjectError = BulbsCmsError.build('<dynamic-content-form-object>');
 
       return {

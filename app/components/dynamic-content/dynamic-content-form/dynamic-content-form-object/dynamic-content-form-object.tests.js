@@ -3,7 +3,6 @@
 describe('Directive: DynamicContentFormObject', function () {
   var $parentScope;
   var digest;
-  var html;
 
   beforeEach(function () {
     module('bulbs.cms.dynamicContent.form.object');
@@ -85,4 +84,3 @@ describe('Directive: DynamicContentFormObject', function () {
     );
   });
 });
-
