@@ -56,11 +56,13 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     );
 
     $parentScope.schema = {
-      title: {
-        field_type: 'mock'
-      },
-      body: {
-        field_type: 'mock'
+      fields: {
+        title: {
+          field_type: 'mock'
+        },
+        body: {
+          field_type: 'mock'
+        }
       }
     };
     $parentScope.values = {};
@@ -81,11 +83,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
       '</dynamic-content-form-field-object>'
     );
 
-    $parentScope.schema = {
-      title: {
-        field_type: fieldType,
-      }
-    };
+    $parentScope.schema = { fields: { title: { field_type: fieldType } } };
     $parentScope.values = {};
 
     expect(function () {
@@ -101,7 +99,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
       '<dynamic-content-form-field-object schema="schema" values="values">' +
       '</dynamic-content-form-field-object>'
     );
-    $parentScope.schema = { title: { field_type: 'text' } };
+    $parentScope.schema = { fields: { title: { field_type: 'text' } } };
     $parentScope.values = {};
 
     digest(html);

@@ -17,23 +17,25 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
           var $form = element.find('ng-form');
 
           scope.$watch('schema', function () {
-            Object.keys(scope.schema).forEach(function (id) {
-              var fieldType = scope.schema[id].field_type;
-              var tagName = DIRECTIVE_NAMES_MAP[fieldType];
+            if (_.has(scope.schema, 'fields')) {
+              Object.keys(scope.schema.fields).forEach(function (id) {
+                var fieldType = scope.schema.fields[id].field_type;
+                var tagName = DIRECTIVE_NAMES_MAP[fieldType];
 
-              if (_.isUndefined(tagName)) {
-                throw new DynamicContentFormFieldObjectError('"' + fieldType + '" is not a valid field type!');
-              }
+                if (_.isUndefined(tagName)) {
+                  throw new DynamicContentFormFieldObjectError('"' + fieldType + '" is not a valid field type!');
+                }
 
-              var html = angular.element('<' + tagName + '></' + tagName + '>');
+                var html = angular.element('<' + tagName + '></' + tagName + '>');
 
-              html.attr('name', id);
-              html.attr('schema', 'schema.' + id);
-              html.attr('ng-model', 'values.' + id);
+                html.attr('name', id);
+                html.attr('schema', 'schema.' + id);
+                html.attr('ng-model', 'values.' + id);
 
-              $form.append(html);
-              $compile(html)(scope);
-            });
+                $form.append(html);
+                $compile(html)(scope);
+              });
+            }
           }, true);
         },
         restrict: 'E',

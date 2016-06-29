@@ -102,7 +102,7 @@ describe('Directive: dynamicContentForm', function () {
     );
     $parentScope.schemaSrc = schemaSrc;
     $parentScope.values = {};
-    deferred.resolve({});
+    deferred.resolve({ fields: { title: { field_type: 'mock' } } });
 
     digest(html);
 

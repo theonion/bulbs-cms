@@ -19,7 +19,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
           '<dynamic-content-form-field-object ' +
               'ng-repeat="itemValues in values" ' +
               'name="uuid" ' +        // TODO : fix this
-              'schema="schema" ' +
+              'schema="schema.fields" ' +
               'values="itemValues">' +
           '</dynamic-content-form-field-object>'
       };
