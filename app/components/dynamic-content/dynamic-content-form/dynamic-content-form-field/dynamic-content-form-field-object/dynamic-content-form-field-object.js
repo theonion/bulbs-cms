@@ -1,19 +1,20 @@
 'use strict';
 
-angular.module('bulbs.cms.dynamicContent.form.object', [
+angular.module('bulbs.cms.dynamicContent.form.field.object', [
+  'bulbs.cms.site.config',
   'lodash'
 ])
   .constant('DIRECTIVE_NAMES_MAP', {
     text: 'dynamic-content-form-field-text'
   })
-  .directive('dynamicContentFormObject', [
+  .directive('dynamicContentFormFieldObject', [
     '_', '$compile', 'DIRECTIVE_NAMES_MAP',
     function (_, $compile, DIRECTIVE_NAMES_MAP) {
-      var DynamicContentFormObjectError = BulbsCmsError.build('<dynamic-content-form-object>');
+      var DynamicContentFormObjectError = BulbsCmsError.build('<dynamic-content-form-field-object>');
 
       return {
         link: function (scope, element, attrs) {
-          var $form = element.find('form');
+          var $form = element.find('ng-form');
 
           scope.$watch('schema', function () {
             Object.keys(scope.schema).forEach(function (id) {
@@ -34,7 +35,6 @@ angular.module('bulbs.cms.dynamicContent.form.object', [
               $compile(html)(scope);
             });
           }, true);
-
         },
         restrict: 'E',
         scope: {
@@ -42,7 +42,7 @@ angular.module('bulbs.cms.dynamicContent.form.object', [
           schema: '=',
           values: '='
         },
-        template: '<form name="{{name}}"></form>'
+        template: '<ng-form name="{{ name }}"></ng-form>'
       };
     }
   ]);

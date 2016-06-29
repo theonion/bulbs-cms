@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Directive: DynamicContentFormObject', function () {
+describe('Directive: dynamicContentFormFieldObject', function () {
   var $parentScope;
   var digest;
   var mockDirectiveNameKey = 'mock';
@@ -8,7 +8,7 @@ describe('Directive: DynamicContentFormObject', function () {
 
   beforeEach(function () {
     module(
-      'bulbs.cms.dynamicContent.form.object',
+      'bulbs.cms.dynamicContent.form.field.object',
       function ($compileProvider, $injector, $provide) {
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldMock');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldText');
@@ -35,8 +35,8 @@ describe('Directive: DynamicContentFormObject', function () {
 
   it('should render a form', function () {
     var html = angular.element(
-      '<dynamic-content-form-object name="name" schema="schema" values="values">' +
-      '</dynamic-content-form-object>'
+      '<dynamic-content-form-field-object name="name" schema="schema" values="values">' +
+      '</dynamic-content-form-field-object>'
     );
 
     $parentScope.schema = {};
@@ -44,15 +44,15 @@ describe('Directive: DynamicContentFormObject', function () {
 
     digest(html);
 
-    var form = html.find('form');
+    var form = html.find('ng-form');
     expect(form.length).to.eql(1);
     expect(form.attr('name')).to.eql('name');
   });
 
   it('should insert dynamic fields that do have a mapping', function () {
     var html = angular.element(
-      '<dynamic-content-form-object schema="schema" values="values">' +
-      '</dynamic-content-form-object>'
+      '<dynamic-content-form-field-object schema="schema" values="values">' +
+      '</dynamic-content-form-field-object>'
     );
 
     $parentScope.schema = {
@@ -77,8 +77,8 @@ describe('Directive: DynamicContentFormObject', function () {
   it('should error out if given field type does not have a mapping', function () {
     var fieldType = 'not a real field type';
     var html = angular.element(
-      '<dynamic-content-form-object schema="schema" values="values">' +
-      '</dynamic-content-form-object>'
+      '<dynamic-content-form-field-object schema="schema" values="values">' +
+      '</dynamic-content-form-field-object>'
     );
 
     $parentScope.schema = {
@@ -92,14 +92,14 @@ describe('Directive: DynamicContentFormObject', function () {
       digest(html);
     }).to.throw(
       BulbsCmsError,
-      '<dynamic-content-form-object>: "' + fieldType + '" is not a valid field type!'
+      '<dynamic-content-form-field-object>: "' + fieldType + '" is not a valid field type!'
     );
   });
 
   it('should render a text field when given a field with type text', function () {
     var html = angular.element(
-      '<dynamic-content-form-object schema="schema" values="values">' +
-      '</dynamic-content-form-object>'
+      '<dynamic-content-form-field-object schema="schema" values="values">' +
+      '</dynamic-content-form-field-object>'
     );
     $parentScope.schema = { title: { field_type: 'text' } };
     $parentScope.values = {};

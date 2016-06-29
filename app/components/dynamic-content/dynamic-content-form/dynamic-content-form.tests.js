@@ -4,7 +4,6 @@ describe('Directive: dynamicContentForm', function () {
 
   var $parentScope;
   var digest;
-  var html;
   var DynamicContentApi;
   var deferred;
   var sandbox;
@@ -13,13 +12,16 @@ describe('Directive: dynamicContentForm', function () {
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
 
-    module('bulbs.cms.dynamicContent.form');
+    module(
+      'bulbs.cms.dynamicContent.form',
+      function ($compileProvider) {
+        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldObject');
+      }
+    );
     module('jsTemplates');
 
     inject(function ($compile, $q, $rootScope, _DynamicContentApi_) {
       $parentScope = $rootScope.$new();
-      $parentScope.schemaSrc = schemaSrc;
-      html = angular.element('<dynamic-content></dynamic-content>');
       digest = window.testHelper.directiveBuilderWithDynamicHtml(
         $compile,
         $parentScope
@@ -94,7 +96,7 @@ describe('Directive: dynamicContentForm', function () {
     );
   });
 
-  it('should include a named form', function () {
+  it('should include a <dynamic-content-form-field-object>', function () {
     var html = angular.element(
       '<dynamic-content-form schema-src="{{ schemaSrc }}" values="values"></dynamic-content>'
     );
@@ -104,8 +106,10 @@ describe('Directive: dynamicContentForm', function () {
 
     digest(html);
 
-    var form = html.find('form');
+    var form = html.find('dynamic-content-form-field-object');
     expect(form.length).to.equal(1);
-    expect(form.attr('name')).to.equal('dynamicContentForm');
+    expect(form.attr('name')).to.equal('pageData');
+    expect(form.attr('schema')).to.equal('schema');
+    expect(form.attr('values')).to.equal('values');
   });
 });
