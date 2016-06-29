@@ -10,7 +10,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
   .directive('dynamicContentFormFieldObject', [
     '_', '$compile', 'DIRECTIVE_NAMES_MAP',
     function (_, $compile, DIRECTIVE_NAMES_MAP) {
-      var DynamicContentFormObjectError = BulbsCmsError.build('<dynamic-content-form-field-object>');
+      var DynamicContentFormFieldObjectError = BulbsCmsError.build('<dynamic-content-form-field-object>');
 
       return {
         link: function (scope, element, attrs) {
@@ -22,7 +22,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
               var tagName = DIRECTIVE_NAMES_MAP[fieldType];
 
               if (_.isUndefined(tagName)) {
-                throw new DynamicContentFormObjectError('"' + fieldType + '" is not a valid field type!');
+                throw new DynamicContentFormFieldObjectError('"' + fieldType + '" is not a valid field type!');
               }
 
               var html = angular.element('<' + tagName + '></' + tagName + '>');
