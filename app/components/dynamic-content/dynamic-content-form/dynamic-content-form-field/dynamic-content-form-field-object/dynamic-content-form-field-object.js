@@ -4,17 +4,13 @@
 angular.module('bulbs.cms.dynamicContent.form.field.object', [
   'bulbs.cms.dynamicContent.form.field.list',
   'bulbs.cms.dynamicContent.form.field.text',
+  'bulbs.cms.dynamicContent.form.types',
   'bulbs.cms.site.config',
   'lodash'
 ])
-  .constant('DIRECTIVE_NAMES_MAP', {
-    array: 'dynamic-content-form-field-list',
-    object: 'dynamic-content-form-field-object',
-    text: 'dynamic-content-form-field-text'
-  })
   .directive('dynamicContentFormFieldObject', [
-    '_', '$compile', 'DIRECTIVE_NAMES_MAP',
-    function (_, $compile, DIRECTIVE_NAMES_MAP) {
+    '_', '$compile', 'FIELD_TYPES_META',
+    function (_, $compile, FIELD_TYPES_META) {
       var DynamicContentFormFieldObjectError = BulbsCmsError.build('<dynamic-content-form-field-object>');
 
       return {
@@ -25,16 +21,21 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
             if (_.has(scope.schema, 'fields')) {
               Object.keys(scope.schema.fields).forEach(function (id) {
                 var fieldSchema = scope.schema.fields[id];
-                var tagName = DIRECTIVE_NAMES_MAP[fieldSchema.type];
+                var fieldMeta = FIELD_TYPES_META[fieldSchema.type];
 
-                if (_.isUndefined(tagName)) {
+                if (_.isUndefined(fieldMeta)) {
                   if (_.has(fieldSchema, 'fields')) {
-                    tagName = DIRECTIVE_NAMES_MAP.object;
+                    fieldMeta = FIELD_TYPES_META.object;
                   } else {
                     throw new DynamicContentFormFieldObjectError('"' + fieldSchema.type + '" is not a valid field type!');
                   }
                 }
 
+                if (_.isUndefined(scope.ngModel[id])) {
+                  throw new DynamicContentFormFieldObjectError('"' + id + '" has no matching value!');
+                }
+
+                var tagName = fieldMeta.tagName;
                 var html = angular.element('<' + tagName + '></' + tagName + '>');
 
                 html.attr('name', id);
