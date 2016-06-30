@@ -422,9 +422,12 @@ angular.module('bulbsCmsApp.mockApi.data', [])
       core_dynamic_content_type_1: {
         fields: {
           title: {
-            field: 'text'
+            label: 'Title',
+            field: 'text',
+            required: true
           },
           body: {
+            label: 'Body',
             field: 'text'
           }
         }

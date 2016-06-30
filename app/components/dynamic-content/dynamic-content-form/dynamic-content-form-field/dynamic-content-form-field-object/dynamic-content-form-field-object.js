@@ -32,7 +32,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
                 var html = angular.element('<' + tagName + '></' + tagName + '>');
 
                 html.attr('name', id);
-                html.attr('schema', 'schema.' + id);
+                html.attr('schema', 'schema.fields.' + id);
                 html.attr('ng-model', 'values.' + id);
 
                 $form.append(html);
