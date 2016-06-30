@@ -12,6 +12,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
       function ($compileProvider, $injector, $provide) {
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldMock');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldText');
+        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldList');
 
         var key = 'DIRECTIVE_NAMES_MAP';
         var mapCopy = angular.copy($injector.get(key));
@@ -35,12 +36,12 @@ describe('Directive: dynamicContentFormFieldObject', function () {
 
   it('should render a form', function () {
     var html = angular.element(
-      '<dynamic-content-form-field-object name="name" schema="schema" values="values">' +
+      '<dynamic-content-form-field-object name="name" schema="schema" ng-model="ngModel">' +
       '</dynamic-content-form-field-object>'
     );
 
     $parentScope.schema = {};
-    $parentScope.values = {};
+    $parentScope.ngModel = {};
 
     digest(html);
 
@@ -51,40 +52,40 @@ describe('Directive: dynamicContentFormFieldObject', function () {
 
   it('should insert dynamic fields that do have a mapping', function () {
     var html = angular.element(
-      '<dynamic-content-form-field-object schema="schema" values="values">' +
+      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
       '</dynamic-content-form-field-object>'
     );
 
     $parentScope.schema = {
       fields: {
         title: {
-          field: 'mock'
+          type: 'mock'
         },
         body: {
-          field: 'mock'
+          type: 'mock'
         }
       }
     };
-    $parentScope.values = {};
+    $parentScope.ngModel = {};
 
     digest(html);
 
     var fields = html.find('dynamic-content-form-field-mock');
     expect(fields.length).to.eql(2);
     expect(fields.attr('name')).to.eql('title');
-    expect(fields.attr('schema')).to.eql('schema.title');
-    expect(fields.attr('ng-model')).to.eql('values.title');
+    expect(fields.attr('schema')).to.eql('schema.fields.title');
+    expect(fields.attr('ng-model')).to.eql('ngModel.title');
   });
 
   it('should error out if given field type does not have a mapping', function () {
     var fieldType = 'not a real field type';
     var html = angular.element(
-      '<dynamic-content-form-field-object schema="schema" values="values">' +
+      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
       '</dynamic-content-form-field-object>'
     );
 
-    $parentScope.schema = { fields: { title: { field: fieldType } } };
-    $parentScope.values = {};
+    $parentScope.schema = { fields: { title: { type: fieldType } } };
+    $parentScope.ngModel = {};
 
     expect(function () {
       digest(html);
@@ -94,13 +95,26 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     );
   });
 
-  it('should render a text field when given a field with type text', function () {
+  it('should render an object when not given a type, but schema has a `fields` property', function () {
     var html = angular.element(
-      '<dynamic-content-form-field-object schema="schema" values="values">' +
+      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
       '</dynamic-content-form-field-object>'
     );
-    $parentScope.schema = { fields: { title: { field: 'text' } } };
-    $parentScope.values = {};
+    $parentScope.schema = { fields: { my_nested_fields: { fields: {} } } };
+    $parentScope.ngModel = {};
+
+    digest(html);
+
+    expect(html.find('dynamic-content-form-field-object').length).to.equal(1);
+  });
+
+  it('should render a text field when given a field with type text', function () {
+    var html = angular.element(
+      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+      '</dynamic-content-form-field-object>'
+    );
+    $parentScope.schema = { fields: { title: { type: 'text' } } };
+    $parentScope.ngModel = {};
 
     digest(html);
 
@@ -108,8 +122,15 @@ describe('Directive: dynamicContentFormFieldObject', function () {
   });
 
   it('should render a list field when given a field with type array', function () {
+    var html = angular.element(
+      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+      '</dynamic-content-form-field-object>'
+    );
+    $parentScope.schema = { fields: { title: { type: 'array' } } };
+    $parentScope.ngModel = {};
 
-    // TODO : add test code here
-    throw new Error('Not implemented yet.');
+    digest(html);
+
+    expect(html.find('dynamic-content-form-field-list').length).to.equal(1);
   });
 });

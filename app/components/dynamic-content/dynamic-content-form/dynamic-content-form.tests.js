@@ -40,18 +40,18 @@ describe('Directive: dynamicContentForm', function () {
 
   it('should call out to retrieve schema at given src', function () {
     $parentScope.schemaSrc = schemaSrc;
-    $parentScope.values = {};
+    $parentScope.ngModel = {};
 
-    digest('<dynamic-content-form schema-src="{{ schemaSrc }}" values="values"></dynamic-content>');
+    digest('<dynamic-content-form schema-src="{{ schemaSrc }}" ng-model="ngModel"></dynamic-content>');
 
     expect(DynamicContentApi.retrieveSchema.calledOnce).to.equal(true);
   });
 
   it('should show an error message if schema retrieval fails', function () {
     $parentScope.schemaSrc = schemaSrc;
-    $parentScope.values = {};
+    $parentScope.ngModel = {};
     var html = angular.element(
-      '<dynamic-content-form schema-src="{{ schemaSrc }}" values="values"></dynamic-content>'
+      '<dynamic-content-form schema-src="{{ schemaSrc }}" ng-model="ngModel"></dynamic-content>'
     );
 
     digest(html);
@@ -64,9 +64,9 @@ describe('Directive: dynamicContentForm', function () {
 
   it('should show a loading message before form has loaded', function () {
     $parentScope.schemaSrc = schemaSrc;
-    $parentScope.values = {};
+    $parentScope.ngModel = {};
     var html = angular.element(
-      '<dynamic-content-form schema-src="{{ schemaSrc }}" values="values"></dynamic-content>'
+      '<dynamic-content-form schema-src="{{ schemaSrc }}" ng-model="ngModel"></dynamic-content>'
     );
 
     digest(html);
@@ -75,33 +75,33 @@ describe('Directive: dynamicContentForm', function () {
   });
 
   it('should throw an error if not given a schema source', function () {
-    $parentScope.values = {};
+    $parentScope.ngModel = {};
 
     expect(function () {
-      digest('<dynamic-content-form values="values"></dynamic-content>');
+      digest('<dynamic-content-form ng-model="ngModel"></dynamic-content>');
     }).to.throw(
       BulbsCmsError,
       '<dynamic-content>: must be provided a schema url!'
     );
   });
 
-  it('should throw an error if not given values', function () {
+  it('should throw an error if not given an ng-model', function () {
     $parentScope.schemaSrc = schemaSrc;
 
     expect(function () {
       digest('<dynamic-content-form schema-src="{{ schemaSrc }}"></dynamic-content>');
     }).to.throw(
       BulbsCmsError,
-      '<dynamic-content>: must be provided a value object!'
+      '<dynamic-content>: must be provided an object for ng-model!'
     );
   });
 
   it('should include a <dynamic-content-form-field-object>', function () {
     var html = angular.element(
-      '<dynamic-content-form schema-src="{{ schemaSrc }}" values="values"></dynamic-content>'
+      '<dynamic-content-form schema-src="{{ schemaSrc }}" ng-model="ngModel"></dynamic-content>'
     );
     $parentScope.schemaSrc = schemaSrc;
-    $parentScope.values = {};
+    $parentScope.ngModel = {};
     deferred.resolve({ fields: { title: { field: 'mock' } } });
 
     digest(html);
@@ -110,6 +110,6 @@ describe('Directive: dynamicContentForm', function () {
     expect(form.length).to.equal(1);
     expect(form.attr('name')).to.equal('pageData');
     expect(form.attr('schema')).to.equal('schema');
-    expect(form.attr('values')).to.equal('values');
+    expect(form.attr('ng-model')).to.equal('ngModel');
   });
 });

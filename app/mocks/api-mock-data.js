@@ -412,9 +412,10 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         title: 'Some Page Type',
         slug: 'my-dynamic-content-type',
         polymorphic_ctype: 'core_dynamic_content_type_1',
-        data: {
+        info_data: {
           title: 'My Garbage Article',
-          body: '<p>Something something something</p>'
+          body: '<p>Something something something</p>',
+          data: { is_numbered: 'hello' }
         }
       }]
     },
@@ -423,12 +424,33 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         fields: {
           title: {
             label: 'Title',
-            field: 'text',
+            type: 'text',
             required: true
           },
           body: {
             label: 'Body',
-            field: 'text'
+            type: 'text'
+          },
+          data: {
+            fields: {
+              is_numbered: {
+                label: 'Is Numbered',
+                type: 'text'
+              },
+              entries: {
+                type: 'array',
+                fields: {
+                  copy: {
+                    label: 'Title',
+                    type: 'text'
+                  },
+                  title: {
+                    label: 'Body',
+                    type: 'text'
+                  }
+                }
+              }
+            }
           }
         }
       }

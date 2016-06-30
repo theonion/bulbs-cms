@@ -7,20 +7,23 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
     function () {
       return {
         link: function (scope, elements, attrs) {
-
+          if (scope.ngModel.length === 0) {
+            scope.ngModel.push({});
+          }
         },
+        require: 'ngModel',
         restrict: 'E',
         scope: {
           name: '@',
           schema: '=',
-          values: '='
+          ngModel: '='
         },
         template:
           '<dynamic-content-form-field-object ' +
-              'ng-repeat="itemValues in values" ' +
+              'ng-repeat="itemValues in ngModel" ' +
               'name="uuid" ' +        // TODO : fix this
               'schema="schema.fields" ' +
-              'values="itemValues">' +
+              'ng-model="itemValues">' +
           '</dynamic-content-form-field-object>'
       };
     }

@@ -7,8 +7,9 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
   'lodash'
 ])
   .constant('DIRECTIVE_NAMES_MAP', {
-    text: 'dynamic-content-form-field-text',
-    array: 'dynamic-content-form-field-list'
+    array: 'dynamic-content-form-field-list',
+    object: 'dynamic-content-form-field-object',
+    text: 'dynamic-content-form-field-text'
   })
   .directive('dynamicContentFormFieldObject', [
     '_', '$compile', 'DIRECTIVE_NAMES_MAP',
@@ -22,18 +23,22 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
           scope.$watch('schema', function () {
             if (_.has(scope.schema, 'fields')) {
               Object.keys(scope.schema.fields).forEach(function (id) {
-                var fieldType = scope.schema.fields[id].field;
-                var tagName = DIRECTIVE_NAMES_MAP[fieldType];
+                var fieldSchema = scope.schema.fields[id];
+                var tagName = DIRECTIVE_NAMES_MAP[fieldSchema.type];
 
                 if (_.isUndefined(tagName)) {
-                  throw new DynamicContentFormFieldObjectError('"' + fieldType + '" is not a valid field type!');
+                  if (_.has(fieldSchema, 'fields')) {
+                    tagName = DIRECTIVE_NAMES_MAP.object;
+                  } else {
+                    throw new DynamicContentFormFieldObjectError('"' + fieldSchema.type + '" is not a valid field type!');
+                  }
                 }
 
                 var html = angular.element('<' + tagName + '></' + tagName + '>');
 
                 html.attr('name', id);
                 html.attr('schema', 'schema.fields.' + id);
-                html.attr('ng-model', 'values.' + id);
+                html.attr('ng-model', 'ngModel.' + id);
 
                 $form.append(html);
                 $compile(html)(scope);
@@ -41,11 +46,12 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
             }
           }, true);
         },
+        require: 'ngModel',
         restrict: 'E',
         scope: {
           name: '@',
           schema: '=',
-          values: '='
+          ngModel: '='
         },
         template: '<ng-form name="{{ name }}"></ng-form>'
       };

@@ -27,8 +27,8 @@ angular.module('bulbs.cms.dynamicContent.form', [
               throw new DynamicContentFormError('must be provided a schema url!');
             }
 
-            if (!_.isObject($scope.values)) {
-              throw new DynamicContentFormError('must be provided a value object!');
+            if (!_.isObject($scope.ngModel)) {
+              throw new DynamicContentFormError('must be provided an object for ng-model!');
             }
 
             $scope.template = template('dynamic-content-form-loading.html');
@@ -45,10 +45,11 @@ angular.module('bulbs.cms.dynamicContent.form', [
               });
           }
         ],
+        require: 'ngModel',
         restrict: 'E',
         scope: {
           schemaSrc: '@',
-          values: '='
+          ngModel: '='
         },
         template: '<ng-include src="template"></ng-include>'
       };

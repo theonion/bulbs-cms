@@ -29,15 +29,15 @@ describe('Directive: dynamicContentFormFieldList', function () {
     });
   });
 
-  it('should repeat given schema for each value instance in given values', function () {
+  it('should repeat given schema for each value instance in given ng-model', function () {
     var html = angular.element(
-      '<dynamic-content-form-field-list name="test" schema="schema" values="values">' +
+      '<dynamic-content-form-field-list name="test" schema="schema" ng-model="ngModel">' +
       '</dynamic-content-form-field-list>'
     );
     $parentScope.schema = {
       title: { field: 'mock' }
     };
-    $parentScope.values = [{
+    $parentScope.ngModel = [{
       title: 'one'
     }, {
       title: 'two'
@@ -46,5 +46,20 @@ describe('Directive: dynamicContentFormFieldList', function () {
     digest(html);
 
     expect(html.find('dynamic-content-form-field-object').length).to.equal(2);
+  });
+
+  it('should list at least one set of fields if there are no values in given ng-model', function () {
+    var html = angular.element(
+      '<dynamic-content-form-field-list name="test" schema="schema" ng-model="ngModel">' +
+      '</dynamic-content-form-field-list>'
+    );
+    $parentScope.schema = {
+      title: { field: 'mock' }
+    };
+    $parentScope.ngModel = [];
+
+    digest(html);
+
+    expect(html.find('dynamic-content-form-field-object').length).to.equal(1);
   });
 });
