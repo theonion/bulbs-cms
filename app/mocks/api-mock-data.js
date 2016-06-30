@@ -415,7 +415,10 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         info_data: {
           title: 'My Garbage Article',
           body: '<p>Something something something</p>',
-          data: { is_numbered: 'hello' }
+          data: {
+            is_numbered: 'hello',
+            entries: []
+          }
         }
       }]
     },

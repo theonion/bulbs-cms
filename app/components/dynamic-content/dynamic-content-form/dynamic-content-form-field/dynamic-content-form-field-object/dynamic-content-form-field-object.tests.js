@@ -77,6 +77,12 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     expect(fields.attr('ng-model')).to.eql('ngModel.title');
   });
 
+  it('should throw and error if no value exists for schema-defined field', function () {
+
+    // TODO : add test code here
+    throw new Error('Not implemented yet.');
+  });
+
   it('should error out if given field type does not have a mapping', function () {
     var fieldType = 'not a real field type';
     var html = angular.element(
