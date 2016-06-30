@@ -106,4 +106,10 @@ describe('Directive: dynamicContentFormFieldObject', function () {
 
     expect(html.find('dynamic-content-form-field-text').length).to.equal(1);
   });
+
+  it('should render a list field when given a field with type array', function () {
+
+    // TODO : add test code here
+    throw new Error('Not implemented yet.');
+  });
 });

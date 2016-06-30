@@ -35,9 +35,9 @@ angular.module('bulbs.cms.dynamicContent.form', [
             $scope.schema = {};
 
             DynamicContentApi.retrieveSchema($scope.schemaSrc)
-              .then(function (schema) {
+              .then(function (response) {
                 $scope.template = template('dynamic-content-form-loaded.html');
-                $scope.schema = schema;
+                $scope.schema = response.data;
               })
               .catch(function () {
                 $scope.template = template('dynamic-content-form-error.html');

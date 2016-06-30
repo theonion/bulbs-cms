@@ -1,11 +1,14 @@
 'use strict';
 
 angular.module('bulbs.cms.dynamicContent.form.field.object', [
+  'bulbs.cms.dynamicContent.form.field.list',
+  'bulbs.cms.dynamicContent.form.field.text',
   'bulbs.cms.site.config',
   'lodash'
 ])
   .constant('DIRECTIVE_NAMES_MAP', {
-    text: 'dynamic-content-form-field-text'
+    text: 'dynamic-content-form-field-text',
+    array: 'dynamic-content-form-field-list'
   })
   .directive('dynamicContentFormFieldObject', [
     '_', '$compile', 'DIRECTIVE_NAMES_MAP',

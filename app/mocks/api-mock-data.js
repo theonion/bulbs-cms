@@ -407,7 +407,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         client_pixel: null,
         sponsor_name: null
       }, {
-        id: 16,
+        id: 12,
         feature_type: 'Dynamically Created CMS',
         title: 'Some Page Type',
         slug: 'my-dynamic-content-type',
@@ -420,8 +420,14 @@ angular.module('bulbsCmsApp.mockApi.data', [])
     },
     'dynamicContent.schemas': {
       core_dynamic_content_type_1: {
-        title: { field: 'text' },
-        body: { field: 'text' }
+        fields: {
+          title: {
+            field: 'text'
+          },
+          body: {
+            field: 'text'
+          }
+        }
       }
     },
     'things.list': [
