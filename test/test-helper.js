@@ -14,7 +14,7 @@
       var $directiveScope = $scope.$new();
       var element = $compile(html)($directiveScope);
       $directiveScope.$digest();
-      return element.scope();
+      return element;
     };
   };
 
@@ -32,7 +32,7 @@
       var $directiveScope = $scope.$new();
       var element = $compile(html)($directiveScope);
       $directiveScope.$digest();
-      return element.scope();
+      return element;
     };
   };
 
