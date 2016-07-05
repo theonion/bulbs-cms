@@ -103,7 +103,12 @@
           </li>
 
           <li class="hidden-xs">
-            <button id="save-article-btn" class="navbar-save btn btn-success btn-sm navbar-btn" ng-class="{'btn-clean': !articleIsDirty}" href="" ng-click="saveArticle();">
+            <button
+                id="save-article-btn"
+                class="navbar-save btn btn-success btn-sm navbar-btn"
+                ng-class="{'btn-clean': !articleIsDirty}"
+                ng-disabled="!contentEditGlobals.canSave"
+                ng-click="saveArticle();">
               <i class="glyphicon glyphicon-floppy-disk"></i>
               <span>Save</span>
             </button>
