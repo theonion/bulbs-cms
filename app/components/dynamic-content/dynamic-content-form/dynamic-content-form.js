@@ -33,6 +33,9 @@ angular.module('bulbs.cms.dynamicContent.form', [
 
             $scope.template = template('dynamic-content-form-loading.html');
             $scope.schema = {};
+            $scope.validityCallback = function (isValid) {
+              $scope.onValidityChange({ isValid: isValid });
+            };
 
             DynamicContentApi.retrieveSchema($scope.schemaSrc)
               .then(function (response) {
@@ -49,7 +52,8 @@ angular.module('bulbs.cms.dynamicContent.form', [
         restrict: 'E',
         scope: {
           schemaSrc: '@',
-          ngModel: '='
+          ngModel: '=',
+          onValidityChange: '&'
         },
         template: '<ng-include src="template"></ng-include>'
       };

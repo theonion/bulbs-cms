@@ -111,4 +111,24 @@ describe('Directive: dynamicContentForm', function () {
     expect(form.attr('schema')).to.equal('schema');
     expect(form.attr('ng-model')).to.equal('ngModel');
   });
+
+  it('should have a hook into changes to form validity', function () {
+    var isValid = true;
+    var html = angular.element(
+      '<dynamic-content-form ' +
+        'schema-src="{{ schemaSrc }}" ' +
+        'ng-model="ngModel" ' +
+        'on-validity-change="formValidCallback(isValid)" ' +
+        '>' +
+      '</dynamic-content>'
+    );
+    $parentScope.formValidCallback = sandbox.stub();
+    $parentScope.schemaSrc = schemaSrc;
+    $parentScope.ngModel = {};
+
+    var element = digest(html);
+    element.isolateScope().validityCallback(isValid);
+
+    expect($parentScope.formValidCallback.withArgs(isValid).calledOnce).to.equal(true);
+  });
 });
