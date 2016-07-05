@@ -428,7 +428,8 @@ angular.module('bulbsCmsApp.mockApi.data', [])
           title: {
             label: 'Title',
             type: 'string',
-            required: true
+            required: true,
+            max_length: 2
           },
           body: {
             label: 'Body',

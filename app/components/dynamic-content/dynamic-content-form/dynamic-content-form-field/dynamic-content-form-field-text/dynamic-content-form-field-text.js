@@ -9,6 +9,9 @@ angular.module('bulbs.cms.dynamicContent.form.field.text', [
     'CmsConfig',
     function (CmsConfig) {
       return {
+        link: function (scope, element, attr, ctrls) {
+          scope.form = ctrls[1][scope.name];
+        },
         require: ['ngModel', '^^form'],
         restrict: 'E',
         scope: {
