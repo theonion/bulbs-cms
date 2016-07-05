@@ -5,7 +5,8 @@
 <input
     name="{{ name }}"
     ng-model="ngModel"
-    type="text">
+    type="text"
+    ng-required="schema.required">
 <dynamic-content-form-field-input-errors
     name="{{ name }}"
     schema="schema">
