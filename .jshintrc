@@ -37,6 +37,7 @@
     "spyOn": false,
 
     // app globals
+    "BulbsCmsError": false,
     "BulbsCmsConfigError": false
   }
 }
