@@ -83,4 +83,42 @@ describe('Directive: dynamicContentFormFieldList', function () {
     expect($scope.ngModel[1].title).to.equal(mockInitialValue);
     expect(html.find('dynamic-content-form-field-object').length).to.equal(2);
   });
+
+  it('should prevent adding a new item if read only', function () {
+    var html = angular.element(
+      '<dynamic-content-form-field-list ' +
+        'name="test" ' +
+        'schema="schema" ' +
+        'ng-model="ngModel"' +
+        'read-only="true"' +
+        '>' +
+      '</dynamic-content-form-field-list>'
+    );
+    $parentScope.schema = { fields: { title: { type: 'mock' } } };
+    $parentScope.ngModel = [{ title: 'one' }];
+
+    var $scope = digest(html).isolateScope();
+    $scope.newItem();
+    $scope.$digest();
+
+    expect(html.find('dynamic-content-form-field-object').length).to.equal(1);
+  });
+
+  it('should not show add button if read only', function () {
+    var html = angular.element(
+      '<dynamic-content-form-field-list ' +
+        'name="test" ' +
+        'schema="schema" ' +
+        'ng-model="ngModel"' +
+        'read-only="true"' +
+        '>' +
+      '</dynamic-content-form-field-list>'
+    );
+    $parentScope.schema = { fields: { title: { type: 'mock' } } };
+    $parentScope.ngModel = [{ title: 'one' }];
+
+    digest(html);
+
+    expect(html.find('button').length).to.equal(0);
+  });
 });

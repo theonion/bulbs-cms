@@ -13,6 +13,10 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
           '$scope',
           function ($scope) {
             $scope.newItem = function () {
+              if ($scope.readOnly) {
+                return;
+              }
+
               var item = {};
 
               Object.keys($scope.schema.fields).forEach(function (key) {
@@ -33,7 +37,8 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
         restrict: 'E',
         scope: {
           schema: '=',
-          ngModel: '='
+          ngModel: '=',
+          readOnly: '='
         },
         templateUrl: CmsConfig.buildComponentPath(
           'dynamic-content',

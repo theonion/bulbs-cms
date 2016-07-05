@@ -6,7 +6,9 @@
       ng-model="itemValues">
   </dynamic-content-form-field-object>
 </div>
-<button ng-click="newItem()">
+<button
+    ng-if="!readOnly"
+    ng-click="newItem()">
   <i class="fa fa-plus"></i>
   <span>New</span>
 </button>
