@@ -51,7 +51,6 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
         require: 'ngModel',
         restrict: 'E',
         scope: {
-          name: '@',
           schema: '=',
           ngModel: '='
         },
