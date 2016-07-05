@@ -14,7 +14,25 @@
       var $directiveScope = $scope.$new();
       var element = $compile(html)($directiveScope);
       $directiveScope.$digest();
-      return element.scope();
+      return element;
+    };
+  };
+
+  /**
+   * Allows tests to control when a directive is built, curried function allows
+   *  customized html to be passed in just before compile time.
+   *
+   * @param {$compile} $compile - contextualized compile to render directive.
+   * @param {Scope} $scope - parent scope of new directive.
+   * @returns {function} when executed, will digest the given html and bind it
+   *    to a new scope that is a child of given $scope.
+   */
+  var directiveBuilderWithDynamicHtml = function ($compile, $scope) {
+    return function (html) {
+      var $directiveScope = $scope.$new();
+      var element = $compile(html)($directiveScope);
+      $directiveScope.$digest();
+      return element;
     };
   };
 
@@ -39,6 +57,7 @@
 
     global.testHelper = {
       directiveBuilder: directiveBuilder,
+      directiveBuilderWithDynamicHtml: directiveBuilderWithDynamicHtml,
       directiveMock: directiveMock
     };
   };
