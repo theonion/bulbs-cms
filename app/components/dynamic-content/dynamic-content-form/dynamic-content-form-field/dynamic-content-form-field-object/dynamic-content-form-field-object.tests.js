@@ -139,7 +139,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
       '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
       '</dynamic-content-form-field-object>'
     );
-    $parentScope.schema = { fields: { title: { type: 'text' } } };
+    $parentScope.schema = { fields: { title: { type: 'string' } } };
     $parentScope.ngModel = { title: '' };
 
     digest(html);

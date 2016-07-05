@@ -427,30 +427,30 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         fields: {
           title: {
             label: 'Title',
-            type: 'text',
+            type: 'string',
             required: true
           },
           body: {
             label: 'Body',
-            type: 'text'
+            type: 'string'
           },
           data: {
             fields: {
               is_numbered: {
                 label: 'Is Numbered',
-                type: 'text'
+                type: 'string'
               },
               entries: {
                 type: 'array',
                 fields: {
                   title: {
                     label: 'Title',
-                    type: 'text',
+                    type: 'string',
                     required: true
                   },
                   body: {
                     label: 'Body',
-                    type: 'text'
+                    type: 'string'
                   }
                 }
               }
