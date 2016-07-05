@@ -1,9 +1,10 @@
-<dynamic-content-form-field-object
-    ng-repeat="itemValues in ngModel"
-    name="uuid"
-    schema="schema"
-    ng-model="itemValues">
-</dynamic-content-form-field-object>
+<ng-form name="form">
+  <dynamic-content-form-field-object
+      ng-repeat="itemValues in ngModel"
+      schema="schema"
+      ng-model="itemValues">
+  </dynamic-content-form-field-object>
+</ng-form>
 <button ng-click="newItem()">
   <i class="fa fa-plus"></i>
   <span>New</span>
