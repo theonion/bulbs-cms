@@ -20,6 +20,7 @@ angular.module('bulbs.cms.dynamicContent.form.input.errors', [
           'dynamic-content',
           'dynamic-content-form',
           'dynamic-content-form-field',
+          'dynamic-content-form-field-input-errors',
           'dynamic-content-form-field-input-errors.html'
         )
       };

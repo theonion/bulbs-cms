@@ -443,11 +443,12 @@ angular.module('bulbsCmsApp.mockApi.data', [])
               entries: {
                 type: 'array',
                 fields: {
-                  copy: {
-                    label: 'Title',
-                    type: 'text'
-                  },
                   title: {
+                    label: 'Title',
+                    type: 'text',
+                    required: true
+                  },
+                  body: {
                     label: 'Body',
                     type: 'text'
                   }
