@@ -9,8 +9,8 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
   'lodash'
 ])
   .directive('dynamicContentFormFieldObject', [
-    '_', '$compile', 'FIELD_TYPES_META',
-    function (_, $compile, FIELD_TYPES_META) {
+    '_', '$compile', 'CmsConfig', 'FIELD_TYPES_META',
+    function (_, $compile, CmsConfig, FIELD_TYPES_META) {
       var DynamicContentFormFieldObjectError = BulbsCmsError.build('<dynamic-content-form-field-object>');
 
       return {
@@ -55,7 +55,13 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
           schema: '=',
           ngModel: '='
         },
-        template: '<ng-form name="{{ name }}"></ng-form>'
+        templateUrl: CmsConfig.buildComponentPath(
+          'dynamic-content',
+          'dynamic-content-form',
+          'dynamic-content-form-field',
+          'dynamic-content-form-field-object',
+          'dynamic-content-form-field-object.html'
+        )
       };
     }
   ]);
