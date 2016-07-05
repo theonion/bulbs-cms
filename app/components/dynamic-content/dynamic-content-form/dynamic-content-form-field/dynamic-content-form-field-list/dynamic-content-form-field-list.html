@@ -1,8 +1,11 @@
-<dynamic-content-form-field-object
-    ng-repeat="itemValues in ngModel"
-    schema="schema"
-    ng-model="itemValues">
-</dynamic-content-form-field-object>
+<div ng-if="schema.label">{{ schema.label }}</div>
+<div ng-repeat="itemValues in ngModel">
+  <div ng-if="schema.child_label">{{ schema.child_label }}</div>
+  <dynamic-content-form-field-object
+      schema="schema"
+      ng-model="itemValues">
+  </dynamic-content-form-field-object>
+</div>
 <button ng-click="newItem()">
   <i class="fa fa-plus"></i>
   <span>New</span>

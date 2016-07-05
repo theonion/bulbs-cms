@@ -442,6 +442,8 @@ angular.module('bulbsCmsApp.mockApi.data', [])
               },
               entries: {
                 type: 'array',
+                label: 'Entries',
+                child_label: 'Entry',
                 fields: {
                   title: {
                     label: 'Title',
