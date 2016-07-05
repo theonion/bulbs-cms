@@ -22,6 +22,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
         $provide.constant(key, mapCopy);
       }
     );
+    module('jsTemplates');
 
    inject(function ($compile, $rootScope) {
      $parentScope = $rootScope.$new();
@@ -46,7 +47,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
 
     var form = html.find('ng-form');
     expect(form.length).to.eql(1);
-    expect(form.attr('name')).to.eql('name');
+    expect(form.attr('name')).to.eql('form');
   });
 
   it('should insert dynamic fields that do have a mapping', function () {

@@ -108,7 +108,6 @@ describe('Directive: dynamicContentForm', function () {
 
     var form = html.find('dynamic-content-form-field-object');
     expect(form.length).to.equal(1);
-    expect(form.attr('name')).to.equal('pageData');
     expect(form.attr('schema')).to.equal('schema');
     expect(form.attr('ng-model')).to.equal('ngModel');
   });
