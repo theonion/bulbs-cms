@@ -17,6 +17,10 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
         link: function (scope, element, attrs) {
           var $form = element.find('ng-form');
 
+          scope.$watch('form.$valid', function (isValid) {
+            scope.onValidityChange({ isValid: isValid });
+          });
+
           scope.$watch('schema', function () {
             if (_.has(scope.schema, 'fields')) {
               Object.keys(scope.schema.fields).forEach(function (id) {
@@ -52,7 +56,8 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
         restrict: 'E',
         scope: {
           schema: '=',
-          ngModel: '='
+          ngModel: '=',
+          onValidityChange: '&'
         },
         templateUrl: CmsConfig.buildComponentPath(
           'dynamic-content',

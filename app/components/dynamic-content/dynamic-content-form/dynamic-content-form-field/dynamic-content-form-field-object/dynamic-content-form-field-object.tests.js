@@ -5,8 +5,11 @@ describe('Directive: dynamicContentFormFieldObject', function () {
   var digest;
   var mockDirectiveNameKey = 'mock';
   var mockDirectiveName = 'dynamic-content-form-field-mock';
+  var sandbox;
 
   beforeEach(function () {
+    sandbox = sinon.sandbox.create();
+
     module(
       'bulbs.cms.dynamicContent.form.field.object',
       function ($compileProvider, $injector, $provide) {
@@ -32,6 +35,10 @@ describe('Directive: dynamicContentFormFieldObject', function () {
        $parentScope
      );
    });
+  });
+
+  afterEach(function () {
+    sandbox.restore();
   });
 
   it('should render a form', function () {
@@ -151,5 +158,30 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     digest(html);
 
     expect(html.find('dynamic-content-form-field-list').length).to.equal(1);
+  });
+
+  it('should have a hook into changes to form validity', function () {
+    var html = angular.element(
+      '<dynamic-content-form-field-object ' +
+        'schema="schema" ' +
+        'ng-model="ngModel" ' +
+        'on-validity-change="formValidCallback(isValid)" ' +
+        '>' +
+      '</dynamic-content-form-field-object>'
+    );
+    $parentScope.schema = { fields: { title: { type: 'mock' } } };
+    $parentScope.ngModel = { title: '' };
+    $parentScope.formValidCallback = sandbox.stub();
+
+    var element = digest(html);
+    var directiveScope = element.isolateScope();
+
+    directiveScope.form.$valid = false;
+    directiveScope.$digest();
+
+    // initial call
+    expect($parentScope.formValidCallback.withArgs(true).callCount).to.equal(1);
+    // after digest call
+    expect($parentScope.formValidCallback.withArgs(false).callCount).to.equal(1);
   });
 });
