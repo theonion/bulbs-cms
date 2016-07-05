@@ -18,8 +18,8 @@ describe('Service: DynamicContentApi', function () {
     var url = '/some/schema/url';
     var schema = {
       fields: {
-        title: { field: 'string' },
-        body: { field: 'string' }
+        title: { field: 'richtext' },
+        body: { field: 'richtext' }
       }
     };
     $httpBackend.expect('OPTIONS', url).respond(function () {

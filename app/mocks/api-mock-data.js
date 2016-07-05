@@ -428,36 +428,36 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         fields: {
           some_read_only_thing: {
             label: 'Some Read Only Thing',
-            type: 'string',
+            type: 'richtext',
             read_only: true
           },
           title: {
             label: 'Title',
-            type: 'string',
+            type: 'richtext',
             required: true,
             max_length: 2
           },
           body: {
             label: 'Body',
-            type: 'string'
+            type: 'richtext'
           },
           data: {
             fields: {
               is_numbered: {
                 label: 'Is Numbered',
-                type: 'string'
+                type: 'richtext'
               },
               entries: {
                 type: 'array',
                 fields: {
                   title: {
                     label: 'Title',
-                    type: 'string',
+                    type: 'richtext',
                     required: true
                   },
                   body: {
                     label: 'Body',
-                    type: 'string'
+                    type: 'richtext'
                   }
                 }
               }
