@@ -83,20 +83,4 @@ describe('Directive: dynamicContentFormFieldList', function () {
     expect($scope.ngModel[1].title).to.equal(mockInitialValue);
     expect(html.find('dynamic-content-form-field-object').length).to.equal(2);
   });
-
-  it('should render a form', function () {
-    var html = angular.element(
-      '<dynamic-content-form-field-list name="name" schema="schema" ng-model="ngModel">' +
-      '</dynamic-content-form-field-list>'
-    );
-    $parentScope.schema = { fields: {} };
-    $parentScope.ngModel = [];
-    mockFieldObject();
-
-    digest(html);
-
-    var form = html.find('ng-form');
-    expect(form.length).to.eql(1);
-    expect(form.attr('name')).to.eql('form');
-  });
 });
