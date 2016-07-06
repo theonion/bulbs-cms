@@ -439,7 +439,8 @@ angular.module('bulbsCmsApp.mockApi.data', [])
           },
           body: {
             label: 'Body',
-            type: 'richtext'
+            type: 'richtext',
+            field_size: 'long'
           },
           data: {
             fields: {
@@ -457,7 +458,8 @@ angular.module('bulbsCmsApp.mockApi.data', [])
                   },
                   body: {
                     label: 'Body',
-                    type: 'richtext'
+                    type: 'richtext',
+                    field_size: 'long'
                   }
                 }
               }
