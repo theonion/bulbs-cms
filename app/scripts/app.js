@@ -17,6 +17,7 @@ angular.module('bulbsCmsApp', [
   'bulbs.cms.site.config',
 
   'bulbs.cms.dynamicContent',
+  'bulbs.cms.editor',
   'bulbs.cms.imageCropModal',
 
   'ngCookies',
@@ -36,7 +37,7 @@ angular.module('bulbsCmsApp', [
   'firebase',
   'ipCookie',
   'bulbs.api',
-  'OnionEditor',
+
   // shared
   'contentServices',
   'cms.tunic',
