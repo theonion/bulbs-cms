@@ -2,12 +2,25 @@
     name="{{ name }}"
     schema="schema">
 </dynamic-content-form-field-input-label>
+
 <input
     name="{{ name }}"
     ng-model="ngModel"
-    type="text"
+    type="hidden"
     ng-required="schema.required"
     ng-readonly="schema.read_only">
+
+<div
+    class="dynamic-content-form-field-text-read-only"
+    ng-if="schema.read_only">
+  {{ ngModel }}
+</div>
+<onion-editor
+    ng-if="!schema.read_only"
+    ng-model="ngModel"
+    ng-attr-role="{{ schema.field_size === 'long' ? 'multiline' : 'singleline' }}">
+</onion-editor>
+
 <dynamic-content-form-field-input-errors
     name="{{ name }}"
     schema="schema">
