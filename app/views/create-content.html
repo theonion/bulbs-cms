@@ -18,7 +18,19 @@
                 <li><a class="create-content" data-toggle="pill"  data-content_type="core_article"  href="#create-longform"  value="Longform feature">Longform feature</a></li>
                 <li><a class="create-content" data-toggle="pill"  data-content_type="reviews_review"  href="#create-review"  value="Review">Review</a></li>
                 <li><a class="create-content" data-toggle="pill"  data-content_type="core_video"  href="#create-video"  value="Video">Video</a></li>
-                <li><a class="create-content" data-toggle="pill"  data-content_type="core_externallink"  href="#create-link"  value="Linked content">Linked content</a></li></ul></section>
+                <li><a class="create-content" data-toggle="pill"  data-content_type="core_externallink"  href="#create-link"  value="Linked content">Linked content</a></li>
+                <li>
+                  <a
+                      href="#create-dynamic-content"
+                      class="create-content"
+                      data-content_type="core_dynamic_content"
+                      data-toggle="pill"
+                      value="Dynamic Content">
+                    Dynamic Content
+                  </a>
+                </li>
+              </ul>
+            </section>
             <div class="tab-content col-xs-8">
               <section id="create-shortform" class="tab-pane fade panel panel-default">
                 <div class="panel-heading"><h6 class="panel-title">Short feature</h6></div>
@@ -88,6 +100,36 @@
                       <div class="panel-heading"><h6 class="panel-title">Linked content</h6></div>
                       <div class="panel-body">
                         <p>This type is for linking to content elsewhere on the web.</p></div>
+                  </section>
+                  <section
+                      id="create-dynamic-content"
+                      class="tab-pane fade panel panel-default">
+                    <div class="panel-heading">
+                      <h6 class="panel-title">Dynamic Content</h6>
+                    </div>
+                    <div class="panel-body">
+                      <p>Dynamic form rendered based on backend data.</p>
+                      <ul class="list-unstyled small">
+                        <li class="col-xs-6">
+                          <a
+                              href="#"
+                              class="create-content go-next"
+                              data-content_type="core_dynamic_content_type_1"
+                              data-init='{"feature_type": "Dynamic Content Type 1"}'>
+                            Dynamic Content Type 1
+                          </a>
+                        </li>
+                        <li class="col-xs-6">
+                          <a
+                              href="#"
+                              class="create-content go-next"
+                              data-content_type="core_dynamic_content_type_2"
+                              data-init='{"feature_type": "Dynamic Content Type 2"}'>
+                            Dynamic Content Type 2
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
                   </section>
               </div>
             </div>

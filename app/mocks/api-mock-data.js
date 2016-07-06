@@ -406,7 +406,58 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         body: 'This article has a really long title.',
         client_pixel: null,
         sponsor_name: null
+      }, {
+        id: 12,
+        feature_type: 'Dynamically Created CMS',
+        title: 'Some Page Type',
+        slug: 'my-dynamic-content-type',
+        polymorphic_ctype: 'core_dynamic_content_type_1',
+        info_data: {
+          title: 'My Garbage Article',
+          body: '<p>Something something something</p>',
+          data: {
+            is_numbered: 'hello',
+            entries: []
+          }
+        }
       }]
+    },
+    'dynamicContent.schemas': {
+      core_dynamic_content_type_1: {
+        fields: {
+          title: {
+            label: 'Title',
+            type: 'text',
+            required: true
+          },
+          body: {
+            label: 'Body',
+            type: 'text'
+          },
+          data: {
+            fields: {
+              is_numbered: {
+                label: 'Is Numbered',
+                type: 'boolean'
+              },
+              entries: {
+                type: 'array',
+                fields: {
+                  title: {
+                    label: 'Title',
+                    type: 'text',
+                    required: true
+                  },
+                  body: {
+                    label: 'Body',
+                    type: 'text'
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
     'things.list': [
       {'url': '/search?tags=so-you-think-you-can-dance', 'param': 'tags', 'type': 'tag', 'name': 'So You Think You Can Dance', 'value': 'so-you-think-you-can-dance'},

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbs.api.mock', []).run(function ($httpBackend) {
-  $httpBackend.when('OPTIONS', /^\/cms\/api\/v1\/.*/).respond('');
+  // $httpBackend.when('OPTIONS', /^\/cms\/api\/v1\/.*/).respond('');
 
   // Authors Service
   $httpBackend.when('GET', /^\/cms\/api\/v1\/author\/?\?.*/).respond([

@@ -2,12 +2,11 @@
 
 angular.module('bulbs.cms.base.config', [
   'bulbs.cms.config',
-  'bulbs.cms.customSearch.config',
-  'ngClipboard'
+  'bulbs.cms.customSearch.config'
 ])
   .config([
-    'CmsConfigProvider', 'CustomSearchConfigProvider', 'ngClipProvider',
-    function (CmsConfigProvider, CustomSearchConfigProvider, ngClipProvider) {
+    'CmsConfigProvider', 'CustomSearchConfigProvider',
+    function (CmsConfigProvider, CustomSearchConfigProvider) {
 
       CmsConfigProvider
         .setContentPartialsPath('/content_type_views')
@@ -29,7 +28,5 @@ angular.module('bulbs.cms.base.config', [
         .addTimePeriod('Past Day', 'Past day')
         .addTimePeriod('Past Week', 'Past week')
         .addTimePeriod('Past Month', 'Past month');
-
-      ngClipProvider.setPath('/bower_components/zeroclipboard/dist/ZeroClipboard.swf');
     }
   ]);
