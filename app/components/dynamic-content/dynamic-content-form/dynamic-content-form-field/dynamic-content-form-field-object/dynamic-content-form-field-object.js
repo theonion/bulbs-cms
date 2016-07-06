@@ -4,6 +4,7 @@
 angular.module('bulbs.cms.dynamicContent.form.field.object', [
   'bulbs.cms.dynamicContent.form.field.list',
   'bulbs.cms.dynamicContent.form.field.text',
+  'bulbs.cms.dynamicContent.form.field.boolean',
   'bulbs.cms.dynamicContent.form.types',
   'bulbs.cms.site.config',
   'lodash'
@@ -45,6 +46,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
                 html.attr('name', id);
                 html.attr('schema', 'schema.fields.' + id);
                 html.attr('ng-model', 'ngModel.' + id);
+                html.attr('class', 'dynamic-content-form-field');
 
                 $form.append(html);
                 $compile(html)(scope);
