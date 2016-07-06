@@ -17,6 +17,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
 
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldList');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldText');
+        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldBoolean');
 
         var key = 'FIELD_TYPES_META';
         var mapCopy = angular.copy($injector.get(key));
@@ -145,6 +146,19 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     digest(html);
 
     expect(html.find('dynamic-content-form-field-text').length).to.equal(1);
+  });
+
+  it('should render a boolean field when given a field with type text', function () {
+    var html = angular.element(
+      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+      '</dynamic-content-form-field-object>'
+    );
+    $parentScope.schema = { fields: { flagForReview: { type: 'boolean' } } };
+    $parentScope.ngModel = { flagForReview: true };
+
+    digest(html);
+
+    expect(html.find('dynamic-content-form-field-boolean').length).to.equal(1);
   });
 
   it('should render a list field when given a field with type array', function () {

@@ -13,5 +13,9 @@ angular.module('bulbs.cms.dynamicContent.form.types', [])
     text: {
       tagName: 'dynamic-content-form-field-text',
       initialValue: ''
-    }
+    },
+    'boolean': {
+      tagName: 'dynamic-content-form-field-boolean',
+      initialValue: false
+    },
   });
