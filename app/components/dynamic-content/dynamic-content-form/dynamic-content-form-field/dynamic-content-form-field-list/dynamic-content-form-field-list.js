@@ -3,11 +3,12 @@
 angular.module('bulbs.cms.dynamicContent.form.field.list', [
   'bulbs.cms.dynamicContent.form.field.object',
   'bulbs.cms.dynamicContent.form.types',
-  'bulbs.cms.site.config'
+  'bulbs.cms.site.config',
+  'bulbs.cms.utils'
 ])
   .directive('dynamicContentFormFieldList', [
-    'CmsConfig', 'FIELD_TYPES_META',
-    function (CmsConfig, FIELD_TYPES_META) {
+    'CmsConfig', 'FIELD_TYPES_META', 'Utils',
+    function (CmsConfig, FIELD_TYPES_META, Utils) {
       return {
         controller: [
           '$scope',
@@ -25,6 +26,14 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
               });
 
               $scope.ngModel.push(item);
+            };
+
+            $scope.moveItem = function (fromIndex, toIndex) {
+              Utils.moveTo($scope.ngModel, fromIndex, toIndex);
+            };
+
+            $scope.removeItem = function (index) {
+              Utils.removeFrom($scope.ngModel, index);
             };
           }
         ],
