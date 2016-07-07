@@ -128,8 +128,6 @@ angular.module('bulbs.cms.editor.wrapper', [
             };
           }
 
-          options.singleLineUseToolbar = true;
-
           scope.editor = new OnionEditor($('.editor', element[0])[0], options);
 
           ngModel.$render = function () {
