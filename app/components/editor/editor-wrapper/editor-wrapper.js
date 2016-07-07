@@ -52,6 +52,16 @@ angular.module('bulbs.cms.editor.wrapper', [
       };
 
       return {
+        controller: [
+          '$scope',
+          function ($scope) {
+            $scope.editor = null;
+
+            this.getEditor = function () {
+              return $scope.editor;
+            };
+          }
+        ],
         require: 'ngModel',
         replace: true,
         restrict: 'E',
@@ -118,25 +128,27 @@ angular.module('bulbs.cms.editor.wrapper', [
             };
           }
 
-          var editor = new OnionEditor($('.editor', element[0])[0], options);
+          options.singleLineUseToolbar = true;
+
+          scope.editor = new OnionEditor($('.editor', element[0])[0], options);
 
           ngModel.$render = function () {
-            editor.setContent(ngModel.$viewValue || defaultValue);
+            scope.editor.setContent(ngModel.$viewValue || defaultValue);
             // register on change here, after the initial load so angular doesn't get mad...
             setTimeout(function () {
-              editor.setChangeHandler(read);
+              scope.editor.setChangeHandler(read);
             });
           };
 
           // Redefine what empty looks like
           ngModel.$isEmpty = function (value) {
-            return ! value || editor.scribe.allowsBlockElements() && value === defaultValue;
+            return ! value || scope.editor.scribe.allowsBlockElements() && value === defaultValue;
           };
 
           // Write data to the model
           function read() {
             safeApply(scope, function () {
-              var html = editor.getContent();
+              var html = scope.editor.getContent();
               if (html === defaultValue) {
                 html = '';
               }
@@ -145,7 +157,7 @@ angular.module('bulbs.cms.editor.wrapper', [
           }
 
           scope.$watch(ngModel, function () {
-            editor.setContent(ngModel.$viewValue || defaultValue);
+            scope.editor.setContent(ngModel.$viewValue || defaultValue);
             if (window.picturefill) {
               window.picturefill(element[0]);
             }
