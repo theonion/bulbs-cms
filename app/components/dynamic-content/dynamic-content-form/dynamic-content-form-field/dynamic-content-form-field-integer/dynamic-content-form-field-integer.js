@@ -22,7 +22,18 @@ angular.module('bulbs.cms.dynamicContent.form.field.integer', [
           'dynamic-content-form-field',
           'dynamic-content-form-field-integer',
           'dynamic-content-form-field-integer.html'
-        )
+        ),
+        link: function (scope, element, attr, ctrls) {
+          var formField = ctrls[1][scope.name];
+          formField.$validators.integer = function (modelValue) {
+            if (!modelValue) {
+              return true;
+            }
+            else {
+              return parseInt(modelValue, 10) === modelValue;
+            }
+          };
+        }
       };
     }
   ]);

@@ -1,1 +1,12 @@
 <div ng-if="form[name].$error.required">{{ schema.label }} is required!</div>
+
+<div ng-if="form[name].$error.integer">{{ schema.label }} must be an integer.</div>
+
+<div ng-if="form[name].$error.min">
+  {{ schema.label }} must be greater than {{ schema.min_value }}.
+</div>
+
+<div ng-if="form[name].$error.max">
+  {{ schema.label }} must be less than {{ schema.max_value }}
+</div>
+
