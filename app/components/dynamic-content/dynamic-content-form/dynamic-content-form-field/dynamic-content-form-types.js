@@ -13,5 +13,9 @@ angular.module('bulbs.cms.dynamicContent.form.types', [])
     text: {
       tagName: 'dynamic-content-form-field-text',
       initialValue: ''
+    },
+    color: {
+      tagName: 'dynamic-content-form-field-color',
+      initialValue: '#000000' // Paint It Black -- Rolling Stones
     }
   });
