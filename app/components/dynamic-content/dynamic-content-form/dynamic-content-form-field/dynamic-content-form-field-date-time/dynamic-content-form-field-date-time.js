@@ -1,9 +1,9 @@
 'use strict';
 
-angular.module('bulbs.cms.dynamicContent.form.field.text', [
+angular.module('bulbs.cms.dynamicContent.form.field.dateTime', [
   'bulbs.cms.site.config'
 ])
-  .directive('dynamicContentFormFieldDate', [
+  .directive('dynamicContentFormFieldDateTime', [
     'CmsConfig',
     function (CmsConfig) {
       return {
@@ -18,8 +18,8 @@ angular.module('bulbs.cms.dynamicContent.form.field.text', [
           'dynamic-content',
           'dynamic-content-form',
           'dynamic-content-form-field',
-          'dynamic-content-form-field-field-date',
-          'dynamic-content-form-field-field-date.html'
+          'dynamic-content-form-field-field-date-time',
+          'dynamic-content-form-field-field-date-time.html'
         )
       };
     }
