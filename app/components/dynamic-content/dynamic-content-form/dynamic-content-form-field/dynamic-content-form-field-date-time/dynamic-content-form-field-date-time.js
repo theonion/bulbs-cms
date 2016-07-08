@@ -1,5 +1,6 @@
 'use strict';
 
+// nothing
 angular.module('bulbs.cms.dynamicContent.form.field.dateTime', [
   'bulbs.cms.site.config'
 ])
