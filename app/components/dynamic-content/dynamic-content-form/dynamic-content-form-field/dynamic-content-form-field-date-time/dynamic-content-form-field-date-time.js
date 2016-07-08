@@ -1,7 +1,9 @@
 'use strict';
 
-// nothing
 angular.module('bulbs.cms.dynamicContent.form.field.dateTime', [
+  'bulbs.cms.dateTimeModal',
+  'bulbs.cms.dynamicContent.form.input.label',
+  'bulbs.cms.dynamicContent.form.input.errors',
   'bulbs.cms.site.config'
 ])
   .directive('dynamicContentFormFieldDateTime', [
@@ -19,8 +21,8 @@ angular.module('bulbs.cms.dynamicContent.form.field.dateTime', [
           'dynamic-content',
           'dynamic-content-form',
           'dynamic-content-form-field',
-          'dynamic-content-form-field-field-date-time',
-          'dynamic-content-form-field-field-date-time.html'
+          'dynamic-content-form-field-date-time',
+          'dynamic-content-form-field-date-time.html'
         )
       };
     }

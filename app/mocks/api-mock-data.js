@@ -415,6 +415,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         info_data: {
           title: 'My Garbage Article',
           body: '<p>Something something something</p>',
+          publish_date: '2016-04-20T00:00:00',
           data: {
             is_numbered: 'hello',
             entries: []
@@ -433,6 +434,10 @@ angular.module('bulbsCmsApp.mockApi.data', [])
           body: {
             label: 'Body',
             type: 'text'
+          },
+          publish_date: {
+            label: 'Publish Date',
+            type: 'datetime'
           },
           data: {
             fields: {
