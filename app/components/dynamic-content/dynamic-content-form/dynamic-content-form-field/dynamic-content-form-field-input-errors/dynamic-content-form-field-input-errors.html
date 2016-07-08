@@ -1,1 +1,3 @@
 <div ng-if="form[name].$error.required">{{ schema.label }} is required!</div>
+
+<div ng-if="form[name].$error.rgbhex">{{ schema.label }} must be formatted as an rgb hex. eg: #000000</div>

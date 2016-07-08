@@ -1,6 +1,6 @@
 'use strict';
 
-describe.only('Directive: dynamicContentFormFieldColor', function () {
+describe('Directive: dynamicContentFormFieldColor', function () {
   var $parentScope;
   var digest;
   var html;
