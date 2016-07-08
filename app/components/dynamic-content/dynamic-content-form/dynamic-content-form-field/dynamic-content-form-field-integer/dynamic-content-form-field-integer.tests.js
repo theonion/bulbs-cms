@@ -66,13 +66,13 @@ describe('Directive: dynamicContentFormFieldInteger', function () {
     it('allows blank values', function () {
       $parentScope.ngModel = null;
       var error = digest(html).scope().testForm.$error;
-      expect(error.integer).to.be.undefined;
+      expect(error.integer).to.eql(undefined);
     });
 
     it('allows integer values', function () {
       $parentScope.ngModel = 5;
       var error = digest(html).scope().testForm.$error;
-      expect(error.integer).to.be.undefined;
+      expect(error.integer).to.eql(undefined);
     });
   });
 
