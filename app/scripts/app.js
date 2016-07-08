@@ -17,6 +17,7 @@ angular.module('bulbsCmsApp', [
   'bulbs.cms.site.config',
 
   'bulbs.cms.dynamicContent',
+  'bulbs.cms.dateTimeModal',
 
   'ngCookies',
   'ngResource',
