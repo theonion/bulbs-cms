@@ -89,7 +89,7 @@ describe('Directive: dynamicContentFormFieldList', function () {
       '<dynamic-content-form-field-list ' +
         'name="test" ' +
         'schema="schema" ' +
-        'ng-model="ngModel"' +
+        'ng-model="ngModel" ' +
         'read-only="true"' +
         '>' +
       '</dynamic-content-form-field-list>'
@@ -109,7 +109,7 @@ describe('Directive: dynamicContentFormFieldList', function () {
       '<dynamic-content-form-field-list ' +
         'name="test" ' +
         'schema="schema" ' +
-        'ng-model="ngModel"' +
+        'ng-model="ngModel" ' +
         'read-only="true"' +
         '>' +
       '</dynamic-content-form-field-list>'
@@ -119,7 +119,11 @@ describe('Directive: dynamicContentFormFieldList', function () {
 
     digest(html);
 
-    expect(html.find('button').length).to.equal(0);
+    var addButton = Array.from(html[0].querySelectorAll('button'))
+      .filter(function (button) {
+        return angular.element(button).attr('ng-click') === 'newItem()';
+      });
+    expect(addButton.length).to.equal(0);
   });
 
   it('should allow ordering of items', function () {
