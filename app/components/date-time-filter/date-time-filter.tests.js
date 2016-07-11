@@ -23,7 +23,7 @@ describe('Filter: dateTimeFormat', function () {
   });
 
   it('should return a date string for given date with given format', function () {
-    var date = moment('2016-04-20T04:20:00');
+    var date = moment('2016-04-20T04:20:00').tz(CmsConfig.getTimezoneName());
     var format = 'MM/DD/YYYY hh:mm';
 
     var value = filter(date, format);
@@ -40,7 +40,7 @@ describe('Filter: dateTimeFormat', function () {
   });
 
   it('should default date time format to configured', function () {
-    var date = moment('2016-04-20T04:20:00');
+    var date = moment('2016-04-20T04:20:00').tz(CmsConfig.getTimezoneName());
     CmsConfig.getDateTimeFormatHumanReadable = sandbox.stub().returns('MM/DD/YYYY hh:mm');
 
     var value = filter(date);
