@@ -17,9 +17,9 @@
     <dl class="pull-left col-xs-7 col-med-4 col-lg-9">
       <dt>Status</dt>
       <dd>
-        <a class="text-success" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'published'" ng-click="pubTimeModal(article);" >{{ article.published|tzDate:"EEE',' M/d/yy' at ' h:mm a" }}</a>
+        <a class="text-success" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'published'" ng-click="pubTimeModal(article);" >{{ article.published | dateTimeFormat:"ddd[, ]M/D/YY[ at ]h:mm a z" }}</a>
         <a class="text-info" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'unpublished'" ng-click="pubTimeModal(article);" >Draft</a>
-        <a class="text-info" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'scheduled'" ng-click="pubTimeModal(article);" ><strong>Scheduled</strong> for {{ article.published|tzDate:"EEE M/d/yy 'at' h:mm a" }}</a></dd>
+        <a class="text-info" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'scheduled'" ng-click="pubTimeModal(article);" ><strong>Scheduled</strong> for {{ article.published | dateTimeFormat:"ddd[, ]M/D/YY[ at ]h:mm a z" }}</a></dd>
 
       <dt ng-show="article.authors">Author<span ng-show="article.authors.length > 1">s</span></dt>
       <dd class="author"><span ng-repeat="author in article.authors">{{ author.first_name }} {{ author.last_name }}<span ng-show="!$last">, </span></span></dd>

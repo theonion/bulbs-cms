@@ -67,7 +67,7 @@
             name="published"
             ng-model="model.published"
             type="text"
-            value="{{ model.published | tzDate: 'M/d/yy h:mma'}}"
+            value="{{ model.published | dateTimeFormat }}"
             readonly>
           <span class="input-group-btn">
             <button
@@ -107,7 +107,7 @@
             name="endDate"
             ng-model="model.end_date"
             type="text"
-            value="{{ model.end_date | tzDate: 'M/d/yy h:mma' }}"
+            value="{{ model.end_date | dateTimeFormat }}"
             readonly>
           <span class="input-group-btn">
             <button
