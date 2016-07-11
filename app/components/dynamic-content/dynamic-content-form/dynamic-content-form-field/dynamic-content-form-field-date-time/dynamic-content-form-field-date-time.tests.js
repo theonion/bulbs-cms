@@ -2,5 +2,4 @@
 
 describe('Directive: dynamicContentFormFieldDate', function () {
 
-
 });

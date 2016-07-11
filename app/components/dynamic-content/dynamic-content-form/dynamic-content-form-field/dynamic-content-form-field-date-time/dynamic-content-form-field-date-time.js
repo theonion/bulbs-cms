@@ -1,6 +1,7 @@
 'use strict';
 
 angular.module('bulbs.cms.dynamicContent.form.field.dateTime', [
+  'bulbs.cms.dateTimeFilter',
   'bulbs.cms.dateTimeModal',
   'bulbs.cms.dynamicContent.form.input.label',
   'bulbs.cms.dynamicContent.form.input.errors',

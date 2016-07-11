@@ -5,7 +5,10 @@
 <div
     datetime-selection-modal-opener
     ng-model="ngModel">
-  <input type="text" ng-model="ngModel">
+  <button class="btn btn-xs btn-info">
+    <i class="fa fa-calendar"></i>
+    <span>{{ ngModel | dateTimeFormat }}</span>
+  </button>
 </div>
 <dynamic-content-form-field-input-errors
     name="{{ name }}"
