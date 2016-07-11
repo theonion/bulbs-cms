@@ -23,6 +23,9 @@ describe('Filter: dateTimeFormat', function () {
   });
 
   it('should return a date string for given date with given format', function () {
+    console.log(moment().tz(CmsConfig.getTimezoneName()).format('z'));
+    console.log(moment().tz(CmsConfig.getTimezoneName()).format('ZZ'));
+
     var date = moment('2016-04-20T04:20:00').tz(CmsConfig.getTimezoneName());
     var format = 'MM/DD/YYYY hh:mm';
 
