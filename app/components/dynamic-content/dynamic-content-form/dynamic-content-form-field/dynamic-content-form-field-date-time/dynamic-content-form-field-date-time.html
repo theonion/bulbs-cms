@@ -5,11 +5,7 @@
 
 <div ng-if="schema.read_only">{{ ngModel | dateTimeFormat }}</div>
 
-<div
-    ng-if="!schema.read_only"
-    datetime-selection-modal-opener
-    ng-model="ngModel"
-    modal-on-close="setDate(newDate)">
+<div ng-if="!schema.read_only">
 
   <input
       type="hidden"
@@ -18,9 +14,22 @@
       ng-required="schema.required"
       ng-readonly="schema.read_only">
 
-  <button class="btn btn-xs btn-info">
+  <button
+      datetime-selection-modal-opener
+      ng-model="ngModel"
+      modal-on-close="setDate(newDate)"
+      class="btn btn-xs btn-info">
     <i class="fa fa-calendar"></i>
-    <span>{{ ngModel | dateTimeFormat }}</span>
+    <span ng-if="ngModel">{{ ngModel | dateTimeFormat }}</span>
+    <span ng-if="!ngModel">click to set date/time</span>
+  </button>
+
+  <button
+      ng-if="ngModel"
+      ng-click="clearDate()"
+      class="btn btn-xs btn-danger">
+    <i class="fa fa-times"></i>
+    <span>clear</span>
   </button>
 
 </div>

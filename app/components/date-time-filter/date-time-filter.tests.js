@@ -24,7 +24,7 @@ describe('Filter: dateTimeFormat', function () {
 
   it('should return a date string for given date with given format', function () {
     var date = moment('2016-04-20T04:20:00');
-    var format = 'MM/DD/YYYY hh:mm'
+    var format = 'MM/DD/YYYY hh:mm';
 
     var value = filter(date, format);
 

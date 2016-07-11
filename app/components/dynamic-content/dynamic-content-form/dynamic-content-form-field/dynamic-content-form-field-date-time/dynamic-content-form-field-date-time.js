@@ -17,8 +17,19 @@ angular.module('bulbs.cms.dynamicContent.form.field.dateTime', [
             $scope.setDate = function (newDate) {
               $scope.ngModel = newDate.format();
             };
+            
+            $scope.clearDate = function () {
+              $scope.ngModel = null;
+            };
           }
         ],
+        link: function (scope, element, attrs, ctrls) {
+          var ngModel = ctrls[0];
+
+          scope.clearDate = function () {
+            ngModel.$setViewValue(null);
+          };
+        },
         require: ['ngModel', '^^form'],
         restrict: 'E',
         scope: {
