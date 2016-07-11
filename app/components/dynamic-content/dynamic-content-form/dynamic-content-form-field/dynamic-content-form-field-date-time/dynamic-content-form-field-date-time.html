@@ -2,14 +2,27 @@
     name="{{ name }}"
     schema="schema">
 </dynamic-content-form-field-input-label>
+
+<div ng-if="schema.read_only">{{ ngModel | dateTimeFormat }}</div>
+
 <div
+    ng-if="!schema.read_only"
     datetime-selection-modal-opener
     ng-model="ngModel">
+
+  <input
+      type="hidden"
+      name="{{ name }}"
+      ng-required="schema.required"
+      ng-readonly="schema.read_only">
+
   <button class="btn btn-xs btn-info">
     <i class="fa fa-calendar"></i>
     <span>{{ ngModel | dateTimeFormat }}</span>
   </button>
+
 </div>
+
 <dynamic-content-form-field-input-errors
     name="{{ name }}"
     schema="schema">
