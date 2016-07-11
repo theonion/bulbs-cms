@@ -16,9 +16,13 @@
 
   <button
       datetime-selection-modal-opener
+      ng-class="{
+        'btn-info': ngModel,
+        'btn-warning': !ngModel
+      }"
       ng-model="ngModel"
       modal-on-close="setDate(newDate)"
-      class="btn btn-xs btn-info">
+      class="btn btn-xs">
     <i class="fa fa-calendar"></i>
     <span ng-if="ngModel">{{ ngModel | dateTimeFormat }}</span>
     <span ng-if="!ngModel">click to set date/time</span>
