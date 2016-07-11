@@ -11,6 +11,14 @@ angular.module('bulbs.cms.dynamicContent.form.field.dateTime', [
     'CmsConfig',
     function (CmsConfig) {
       return {
+        controller: [
+          '$scope',
+          function ($scope) {
+            $scope.setDate = function (newDate) {
+              $scope.ngModel = newDate.format();
+            };
+          }
+        ],
         require: ['ngModel', '^^form'],
         restrict: 'E',
         scope: {

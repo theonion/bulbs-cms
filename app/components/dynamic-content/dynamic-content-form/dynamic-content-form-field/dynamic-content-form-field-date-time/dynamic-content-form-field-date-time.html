@@ -8,11 +8,13 @@
 <div
     ng-if="!schema.read_only"
     datetime-selection-modal-opener
-    ng-model="ngModel">
+    ng-model="ngModel"
+    modal-on-close="setDate(newDate)">
 
   <input
       type="hidden"
       name="{{ name }}"
+      ng-model="ngModel"
       ng-required="schema.required"
       ng-readonly="schema.read_only">
 

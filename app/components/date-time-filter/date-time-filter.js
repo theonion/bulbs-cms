@@ -10,7 +10,7 @@ angular.module('bulbs.cms.dateTimeFilter', [
     function (_, moment, CmsConfig) {
       return function (date, format) {
 
-        if (!_.isString(date)) {
+        if (!_.isString(date) && !moment.isMoment(date)) {
           return '';
         }
 

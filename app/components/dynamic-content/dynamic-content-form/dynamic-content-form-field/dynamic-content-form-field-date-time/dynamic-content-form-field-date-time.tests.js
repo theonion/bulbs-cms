@@ -38,6 +38,18 @@ describe('Directive: dynamicContentFormFieldDate', function () {
       .to.equal('');
   });
 
+  it('should render an empty message when date not set', function () {
+
+    // TODO : add test code here
+    throw new Error('Not implemented yet.');
+  });
+
+  it('should allow date to be cleared', function () {
+
+    // TODO : add test code here
+    throw new Error('Not implemented yet.');
+  });
+
   it('should render static html when given a schema with read_only', function () {
     var html =
       '<form>' +
