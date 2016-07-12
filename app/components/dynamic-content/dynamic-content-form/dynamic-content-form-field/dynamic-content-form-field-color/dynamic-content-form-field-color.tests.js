@@ -98,9 +98,9 @@ describe('Directive: dynamicContentFormFieldColor', function () {
   it('sets ng-readonly if input is readonly', function () {
     $parentScope.schema.read_only = true;
     var colorInput = digest(html).find('input[type="color"]');
-    expect(input.attr('ng-readonly')).to.eql('schema.read_only');
+    expect(colorInput.attr('ng-readonly')).to.eql('schema.read_only');
 
-    var colorInput = digest(html).find('input[type="text"]');
-    expect(input.attr('ng-readonly')).to.eql('schema.read_only');
+    var textInput = digest(html).find('input[type="text"]');
+    expect(textInput.attr('ng-readonly')).to.eql('schema.read_only');
   });
 });
