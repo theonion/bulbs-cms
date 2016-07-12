@@ -20,6 +20,9 @@ angular.module('bulbsCmsApp', [
   'bulbs.cms.editor',
   'bulbs.cms.imageCropModal',
 
+  // TODO : these dependencies need to be reorganized, localized
+  'bulbs.cms.dateTimeModal',
+  'bulbs.cms.dateTimeFilter',
   'ngCookies',
   'ngResource',
   'ngRoute',

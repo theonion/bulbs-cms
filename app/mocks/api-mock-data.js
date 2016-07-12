@@ -416,6 +416,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
           some_read_only_thing: 'This May Not Be Changed',
           title: 'My Garbage Article',
           body: '<p>Something something something</p>',
+          publish_date: null,
           data: {
             is_numbered: 'hello',
             entries: []
@@ -441,6 +442,11 @@ angular.module('bulbsCmsApp.mockApi.data', [])
             label: 'Body',
             type: 'richtext',
             field_size: 'long'
+          },
+          publish_date: {
+            label: 'Publish Date',
+            type: 'datetime',
+            required: true
           },
           data: {
             fields: {

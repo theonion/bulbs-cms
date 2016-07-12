@@ -84,14 +84,14 @@
           <li class="content-status" ng-controller="ContentworkflowCtrl" ng-if="getStatus(article) == 'published'">
             <a href="" class="changeable" ng-click="saveArticle().then(pubTimeModal);">
               <i class="glyphicon glyphicon-calendar"></i>
-              <span>Published: {{article.published|tzDate:"M/d/yy '@' h:mm a" }}</span>
+              <span>Published: {{ article.published | dateTimeFormat:"M/D/YY[ @ ]h:mm a z" }}</span>
             </a>
           </li>
 
           <li class="content-status" ng-controller="ContentworkflowCtrl" ng-if="getStatus(article) == 'scheduled'">
             <a href="" class="changeable" ng-click="saveArticle().then(pubTimeModal);">
               <i class="glyphicon glyphicon-calendar"></i>
-              <span>Scheduled: {{article.published|tzDate:"M/d/yy '@' h:mm a" }}</span>
+              <span>Scheduled: {{ article.published | dateTimeFormat:"M/D/YY[ @ ]h:mm a z" }}</span>
             </a>
           </li>
 
