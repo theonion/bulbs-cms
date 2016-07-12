@@ -84,7 +84,9 @@ module.exports = function(config) {
 
       'app/views/**/*.html',
       'app/components/**/*.html',
-      'app/shared/**/*.html'
+      'app/shared/**/*.html',
+
+      'test/test-helper.js'
     ],
 
     // list of files / patterns to exclude
