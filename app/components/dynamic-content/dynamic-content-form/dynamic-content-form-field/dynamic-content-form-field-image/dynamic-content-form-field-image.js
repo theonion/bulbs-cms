@@ -1,6 +1,7 @@
 'use strict';
 
 angular.module('bulbs.cms.dynamicContent.form.field.image', [
+  'bettyEditable',
   'bulbs.cms.site.config',
   'bulbs.cms.dynamicContent.form.input.errors',
   'bulbs.cms.dynamicContent.form.input.label'
