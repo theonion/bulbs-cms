@@ -18,6 +18,7 @@ angular.module('bulbsCmsApp', [
 
   'bulbs.cms.dynamicContent',
 
+  'bulbs.cms.imageCropModal',
   'ngCookies',
   'ngResource',
   'ngRoute',
