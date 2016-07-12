@@ -3,6 +3,7 @@
 describe('Directive: dynamicContentFormFieldBoolean', function () {
   var $parentScope;
   var digest;
+  var html;
 
   beforeEach(function () {
     module('bulbs.cms.dynamicContent.form.field.boolean');
@@ -10,6 +11,21 @@ describe('Directive: dynamicContentFormFieldBoolean', function () {
 
     inject(function ($compile, $rootScope) {
       $parentScope = $rootScope.$new();
+
+      html = (
+        '<form name="testForm">' +
+          '<dynamic-content-form-field-boolean ' +
+              'name="{{ name }}" ' +
+              'ng-model="ngModel" ' +
+              'schema="schema" ' +
+              '>' +
+          '</dynamic-content-form-field-boolean>' +
+        '</form>'
+      );
+
+      $parentScope.name = 'maybe';
+      $parentScope.ngModel = true;
+      $parentScope.schema = {};
 
       digest = window.testHelper.directiveBuilderWithDynamicHtml(
         $compile,
@@ -19,21 +35,20 @@ describe('Directive: dynamicContentFormFieldBoolean', function () {
   });
 
   it('should render a checkbox input', function () {
-    var html =
-      '<form>' +
-        '<dynamic-content-form-field-boolean ' +
-            'name="{{ name }}" ' +
-            'ng-model="ngModel" ' +
-            'schema="schema" ' +
-            '>' +
-        '</dynamic-content-form-field-boolean>' +
-      '</form>';
-    $parentScope.name = 'title';
-    $parentScope.ngModel = 'some boolean value';
-    $parentScope.schema = {};
+    var input = digest(html).find('input');
+    expect(input.attr('type')).to.equal('checkbox');
+  });
 
-    var element = digest(html);
+  it('requires a value if schema.required is true', function () {
+    $parentScope.schema.required = true;
+    $parentScope.ngModel = undefined;
+    var error = digest(html).scope().testForm.$error;
+    expect(error.required).to.have.length(1);
+  });
 
-    expect(element.find('input').attr('type')).to.equal('checkbox');
+  it('sets ng-readonly if input is readonly', function () {
+    $parentScope.schema.read_only = true;
+    var input = digest(html).find('input');
+    expect(input.attr('ng-readonly')).to.eql('schema.read_only');
   });
 });
