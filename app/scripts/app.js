@@ -18,6 +18,10 @@ angular.module('bulbsCmsApp', [
 
   'bulbs.cms.dynamicContent',
 
+  // TODO : these dependencies need to be reorganized, localized
+  'bulbs.cms.dateTimeModal',
+  'bulbs.cms.dateTimeFilter',
+  'bulbs.cms.editor',
   'bulbs.cms.imageCropModal',
   'ngCookies',
   'ngResource',
@@ -36,7 +40,7 @@ angular.module('bulbsCmsApp', [
   'firebase',
   'ipCookie',
   'bulbs.api',
-  'OnionEditor',
+
   // shared
   'contentServices',
   'cms.tunic',

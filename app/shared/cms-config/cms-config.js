@@ -33,6 +33,8 @@ angular.module('bulbs.cms.config', [
       var componentPath = '';
       // path to edit pages for specific types of content, maps to ctype
       var contentPartialsPath = '';
+      // human readable date time format to use around the CMS
+      var dateTimeFormatHumanReadable = '';
       // path to directives from backend
       // TODO : remove once apps are pulled into here
       var directivePartialsPath = '';
@@ -88,6 +90,14 @@ angular.module('bulbs.cms.config', [
         contentPartialsPath = checkOrError(
           value, _.isString,
           'content partials path must be a string!'
+        );
+        return this;
+      };
+
+      this.setDateTimeFormatHumanReadable = function (value) {
+        dateTimeFormatHumanReadable = checkOrError(
+          value, _.isString,
+          'date time format human readable must be a string!'
         );
         return this;
       };
@@ -280,6 +290,7 @@ angular.module('bulbs.cms.config', [
             ),
             getAutoAddAuthor: _.constant(autoAddAuthor),
             getCmsName: _.constant(cmsName),
+            getDateTimeFormatHumanReadable: _.constant(dateTimeFormatHumanReadable),
             getFirebaseMaxArticleHistory: _.constant(firebaseMaxArticleHistory),
             getImageApiKey: _.constant(imageApiKey),
             getNavLogoPath: _.constant(navLogoPath),

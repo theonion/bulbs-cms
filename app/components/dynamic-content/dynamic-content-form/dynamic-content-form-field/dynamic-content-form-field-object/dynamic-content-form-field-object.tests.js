@@ -17,6 +17,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
 
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldList');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldImage');
+        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldDateTime');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldText');
 
         var key = 'FIELD_TYPES_META';
@@ -140,6 +141,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
       '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
       '</dynamic-content-form-field-object>'
     );
+
     $parentScope.schema = { fields: { my_image: { type: 'image' } } };
     $parentScope.ngModel = { my_image: { id: 1 } };
 
@@ -148,12 +150,26 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     expect(html.find('dynamic-content-form-field-image').length).to.equal(1);
   });
 
+  it('should render a date field when given a field with type date', function () {
+    var html = angular.element(
+      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+      '</dynamic-content-form-field-object>'
+    );
+
+    $parentScope.schema = { fields: { some_date: { type: 'datetime' } } };
+    $parentScope.ngModel = { some_date: '2016-04-20T00:00:00+00:00' };
+
+    digest(html);
+
+    expect(html.find('dynamic-content-form-field-date-time').length).to.equal(1);
+  });
+
   it('should render a text field when given a field with type text', function () {
     var html = angular.element(
       '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
       '</dynamic-content-form-field-object>'
     );
-    $parentScope.schema = { fields: { title: { type: 'text' } } };
+    $parentScope.schema = { fields: { title: { type: 'richtext' } } };
     $parentScope.ngModel = { title: '' };
 
     digest(html);

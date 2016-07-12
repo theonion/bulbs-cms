@@ -6,10 +6,10 @@ angular.module('bulbs.cms.imageCropModal.controller', [
   'ui.bootstrap.modal'
 ])
   .controller('ImageCropModalCtrl', [
-    '$scope', '$timeout', '$modalInstance', 'BettyCropper', 'Selection',
-      'imageData', 'ratios', '$',
-    function ($scope, $timeout, $modalInstance, BettyCropper, Selection,
-        imageData, ratios, $) {
+    '$', '$modalInstance', '$scope', '$timeout', 'BettyCropper', 'Selection',
+      'imageData', 'ratios',
+    function ($, $modalInstance, $scope, $timeout, BettyCropper, Selection,
+          imageData, ratios) {
 
       $scope.selectedCrop = null;
       $scope.cropMode = false;
