@@ -23,15 +23,22 @@ describe('Filter: dateTimeFormat', function () {
   });
 
   it('should return a date string for given date with given format', function () {
-    console.log(moment().tz(CmsConfig.getTimezoneName()).format('z'));
-    console.log(moment().tz(CmsConfig.getTimezoneName()).format('ZZ'));
-
-    var date = moment('2016-04-20T04:20:00').tz(CmsConfig.getTimezoneName());
+    var date = moment.tz('2016-04-20T04:20:00', CmsConfig.getTimezoneName());
     var format = 'MM/DD/YYYY hh:mm';
 
     var value = filter(date, format);
 
     expect(value).to.equal('04/20/2016 04:20');
+  });
+
+  it('should return a time configured in CMS timezone', function () {
+    var utcDate = moment('2016-04-20T04:20:00Z');
+    var cmsDate = moment.tz(utcDate, CmsConfig.getTimezoneName());
+    var format = 'MM/DD/YYYY hh:mm';
+
+    var value = filter(utcDate, format);
+
+    expect(value).to.equal(cmsDate.format(format));
   });
 
   it('should return nothing if not given a string or moment', function () {
@@ -43,7 +50,7 @@ describe('Filter: dateTimeFormat', function () {
   });
 
   it('should default date time format to configured', function () {
-    var date = moment('2016-04-20T04:20:00').tz(CmsConfig.getTimezoneName());
+    var date = moment.tz('2016-04-20T04:20:00', CmsConfig.getTimezoneName());
     CmsConfig.getDateTimeFormatHumanReadable = sandbox.stub().returns('MM/DD/YYYY hh:mm');
 
     var value = filter(date);
