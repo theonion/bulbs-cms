@@ -410,6 +410,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         id: 12,
         feature_type: 'Dynamically Created CMS',
         title: 'Some Page Type',
+        header_image: null,
         slug: 'my-dynamic-content-type',
         polymorphic_ctype: 'core_dynamic_content_type_1',
         info_data: {
@@ -429,6 +430,10 @@ angular.module('bulbsCmsApp.mockApi.data', [])
             label: 'Title',
             type: 'text',
             required: true
+          },
+          header_image: {
+            label: 'Header Image',
+            type: 'image'
           },
           body: {
             label: 'Body',
