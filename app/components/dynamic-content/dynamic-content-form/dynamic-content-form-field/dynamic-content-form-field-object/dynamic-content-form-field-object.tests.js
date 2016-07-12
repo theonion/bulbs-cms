@@ -16,6 +16,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldMock');
 
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldList');
+        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldImage');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldText');
 
         var key = 'FIELD_TYPES_META';
@@ -132,6 +133,19 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     digest(html);
 
     expect(html.find('dynamic-content-form-field-object').length).to.equal(1);
+  });
+
+  it('should render an image field when given a field with type image', function () {
+    var html = angular.element(
+      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+      '</dynamic-content-form-field-object>'
+    );
+    $parentScope.schema = { fields: { my_image: { type: 'image' } } };
+    $parentScope.ngModel = { my_image: { id: 1 } };
+
+    digest(html);
+
+    expect(html.find('dynamic-content-form-field-image').length).to.equal(1);
   });
 
   it('should render a text field when given a field with type text', function () {
