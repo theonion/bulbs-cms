@@ -148,7 +148,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     expect(html.find('dynamic-content-form-field-text').length).to.equal(1);
   });
 
-  it('should render a boolean field when given a field with type text', function () {
+  it('should render a boolean field when given a field with type boolean', function () {
     var html = angular.element(
       '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
       '</dynamic-content-form-field-object>'
