@@ -13,6 +13,13 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
         controller: [
           '$scope',
           function ($scope) {
+            $scope.itemOrderingMemory = [];
+            $scope.redoOrdering = function () {
+              $scope.itemOrderingMemory = $scope.ngModel.map(function (v, i) {
+                return i + 1;
+              });
+            };
+
             $scope.newItem = function () {
               if ($scope.readOnly) {
                 return;
@@ -26,14 +33,20 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
               });
 
               $scope.ngModel.push(item);
+
+              $scope.redoOrdering();
             };
 
             $scope.moveItem = function (fromIndex, toIndex) {
-              Utils.moveTo($scope.ngModel, fromIndex, toIndex);
+              Utils.moveTo($scope.ngModel, fromIndex, toIndex, true);
+
+              $scope.redoOrdering();
             };
 
             $scope.removeItem = function (index) {
               Utils.removeFrom($scope.ngModel, index);
+
+              $scope.redoOrdering();
             };
           }
         ],
