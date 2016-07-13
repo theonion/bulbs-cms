@@ -19,6 +19,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldImage');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldDateTime');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldText');
+        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldColor');
 
         var key = 'FIELD_TYPES_META';
         var mapCopy = angular.copy($injector.get(key));
@@ -175,6 +176,19 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     digest(html);
 
     expect(html.find('dynamic-content-form-field-text').length).to.equal(1);
+  });
+
+  it('should render a color field when given a field with type color', function () {
+    var html = angular.element(
+      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+      '</dynamic-content-form-field-object>'
+    );
+    $parentScope.schema = { fields: { title: { type: 'color' } } };
+    $parentScope.ngModel = { title: '' };
+
+    digest(html);
+
+    expect(html.find('dynamic-content-form-field-color').length).to.equal(1);
   });
 
   it('should render a list field when given a field with type array', function () {

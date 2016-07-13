@@ -423,6 +423,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
           },
           body: '<p>Something something something</p>',
           publish_date: null,
+          main_color: '#000000',
           data: {
             is_numbered: 'hello',
             entries: []
@@ -463,6 +464,10 @@ angular.module('bulbsCmsApp.mockApi.data', [])
             label: 'Publish Date',
             type: 'datetime',
             required: true
+          },
+          main_color: {
+            label: 'Main Color',
+            type: 'color'
           },
           data: {
             fields: {
