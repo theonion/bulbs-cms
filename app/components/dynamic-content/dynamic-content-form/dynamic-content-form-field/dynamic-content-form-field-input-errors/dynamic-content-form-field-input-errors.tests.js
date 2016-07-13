@@ -37,7 +37,7 @@ describe('Directive: dynamicContentFormFieldInputErrors', function () {
     html.scope()[formName][inputName] = { $error: { required: true } };
     $parentScope.$digest();
 
-    expect(html.html().indexOf(label + ' is required!') > -1).to.equal(true);
+    expect(html.html()).to.have.string(label + ' is required!');
   });
 
   it('should render out a max length error if schema has a max_length', function () {
@@ -60,8 +60,8 @@ describe('Directive: dynamicContentFormFieldInputErrors', function () {
     $parentScope.$digest();
 
     var len = value.length - maxLength;
-    expect(html.html().indexOf(label + ' is ' + len + ' characters too long!') > -1)
-      .to.equal(true);
+    expect(html.html())
+      .to.have.string(label + ' is ' + len + ' characters too long!');
   });
 
   it('should render an rgbex herror if errors has rgbhex: true', function () {
