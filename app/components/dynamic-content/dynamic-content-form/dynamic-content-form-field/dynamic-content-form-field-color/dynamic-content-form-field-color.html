@@ -1,0 +1,22 @@
+<dynamic-content-form-field-input-label
+    name="{{ name }}"
+    schema="schema">
+</dynamic-content-form-field-input-label>
+
+<input
+    name="{{ name }}"
+    ng-model="ngModel"
+    type="text"
+    ng-readonly="schema.read_only">
+
+<input
+    name="{{ name }}"
+    ng-model="ngModel"
+    type="color"
+    ng-readonly="schema.read_only"
+    ng-required="schema.required">
+
+<dynamic-content-form-field-input-errors
+    name="{{ name }}"
+    schema="schema">
+</dynamic-content-form-field-input-errors>

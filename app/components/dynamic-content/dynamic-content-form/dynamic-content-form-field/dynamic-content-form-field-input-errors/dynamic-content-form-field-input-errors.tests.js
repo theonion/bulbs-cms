@@ -113,4 +113,20 @@ describe('Directive: dynamicContentFormFieldInputErrors', function () {
     expect(html.html().indexOf(label + ' is ' + len + ' characters too long!') > -1)
       .to.equal(true);
   });
+
+  it('should render an rgbex herror if errors has rgbhex: true', function () {
+    var label = 'Garbage Title';
+    $parentScope.schema = {
+      label: label,
+    };
+    html.find('dynamic-content-form-field-input-errors')
+      .attr('name', inputName)
+      .attr('schema', 'schema');
+    digestedScope();
+
+    html.scope()[formName][inputName] = { $error: { rgbhex: true } };
+    $parentScope.$digest();
+
+    expect(html.html()).to.have.string(label + ' must be formatted as an rgb hex. eg: #000000');
+  });
 });

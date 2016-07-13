@@ -2,7 +2,10 @@
 'use strict';
 
 angular.module('bulbs.cms.dynamicContent.form.field.object', [
+  'bulbs.cms.dynamicContent.form.field.boolean',
+  'bulbs.cms.dynamicContent.form.field.color',
   'bulbs.cms.dynamicContent.form.field.dateTime',
+  'bulbs.cms.dynamicContent.form.field.image',
   'bulbs.cms.dynamicContent.form.field.list',
   'bulbs.cms.dynamicContent.form.field.text',
   'bulbs.cms.dynamicContent.form.field.integer',
@@ -47,6 +50,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
                 html.attr('name', id);
                 html.attr('schema', 'schema.fields.' + id);
                 html.attr('ng-model', 'ngModel.' + id);
+                html.attr('class', 'dynamic-content-form-field');
 
                 $form.append(html);
                 $compile(html)(scope);

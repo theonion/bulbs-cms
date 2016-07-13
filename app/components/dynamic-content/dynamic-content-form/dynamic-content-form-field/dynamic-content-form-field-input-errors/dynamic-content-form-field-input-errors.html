@@ -3,3 +3,4 @@
 <div ng-if="form[name].$error.maxlength">{{ schema.label }} is {{ form[name].$viewValue.length - schema.max_length }} characters too long!</div>
 <div ng-if="form[name].$error.min">{{ schema.label }} must be greater than {{ schema.min_value }}.</div>
 <div ng-if="form[name].$error.required">{{ schema.label }} is required!</div>
+<div ng-if="form[name].$error.rgbhex">{{ schema.label }} must be formatted as an rgb hex. eg: #000000</div>

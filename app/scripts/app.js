@@ -17,12 +17,13 @@ angular.module('bulbsCmsApp', [
   'bulbs.cms.site.config',
 
   'bulbs.cms.dynamicContent',
-  'bulbs.cms.editor',
-  'bulbs.cms.imageCropModal',
 
   // TODO : these dependencies need to be reorganized, localized
   'bulbs.cms.dateTimeModal',
   'bulbs.cms.dateTimeFilter',
+  'bulbs.cms.editor',
+  'bulbs.cms.imageCropModal',
+  'bulbs.cms.staticImage',
   'ngCookies',
   'ngResource',
   'ngRoute',

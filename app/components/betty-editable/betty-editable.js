@@ -1,9 +1,10 @@
 'use strict';
 
 angular.module('bettyEditable', [
+  'BettyCropper',
   'bulbs.cms.imageCropModal',
-  'bulbs.cms.config',
-  'BettyCropper'
+  'bulbs.cms.site.config',
+  'ui.bootstrap.modal'
 ])
   .directive('bettyEditable',[
     '$http', 'CmsConfig', 'BettyCropper', 'openImageCropModal',
