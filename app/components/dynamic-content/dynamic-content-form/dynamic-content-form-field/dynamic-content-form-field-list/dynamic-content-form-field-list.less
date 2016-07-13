@@ -14,15 +14,28 @@ dynamic-content-form-field-list {
       .dynamic-content-form-field-list-item-meta {
         padding: 10px;
 
+        &:after {
+          content: " ";
+          clear: both;
+          display: block;
+        }
+
         .dynamic-content-form-field-list-item-meta-label {
           color: @interface-color-black;
+          float: left;
           font-weight: bold;
         }
 
         .dynamic-content-form-field-list-item-meta-tools {
+          float: right;
 
           form {
             display: inline;
+
+            .dynamic-content-form-field-list-item-meta-tools-order {
+              text-align: center;
+              width: 50px;
+            }
           }
         }
       }
