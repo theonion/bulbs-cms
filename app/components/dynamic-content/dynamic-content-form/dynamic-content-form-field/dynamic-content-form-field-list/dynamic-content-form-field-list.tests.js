@@ -142,6 +142,69 @@ describe('Directive: dynamicContentFormFieldList', function () {
     expect($parentScope.ngModel[1].title).to.equal(item1.title);
   });
 
+  it('should allow ordering of items via number input', function () {
+    var item1 = { title: 'one' };
+    var item2 = { title: 'two' };
+    var item3 = { title: 'three' };
+    var html = angular.element(
+      '<dynamic-content-form-field-list name="test" schema="schema" ng-model="ngModel">' +
+      '</dynamic-content-form-field-list>'
+    );
+    $parentScope.schema = { fields: { title: { type: 'mock' } } };
+    $parentScope.ngModel = [item1, item2, item3];
+
+    var element = digest(html);
+    var input = element.find('input[ng-model="itemOrderingMemory[$index]"]').eq(0);
+    var moveButton = element.find('button[ng-click*="moveItem"]').eq(0);
+
+    input.val(3);
+    input.trigger('change');
+    moveButton.trigger('click');
+    $parentScope.$digest();
+
+    expect($parentScope.ngModel[0].title).to.equal(item3.title);
+    expect($parentScope.ngModel[1].title).to.equal(item2.title);
+    expect($parentScope.ngModel[2].title).to.equal(item1.title);
+  });
+
+  it('should disable the up ordering button if first itme in list', function () {
+    var item1 = { title: 'one' };
+    var item2 = { title: 'two' };
+    var html = angular.element(
+      '<dynamic-content-form-field-list name="test" schema="schema" ng-model="ngModel">' +
+      '</dynamic-content-form-field-list>'
+    );
+    $parentScope.schema = { fields: { title: { type: 'mock' } } };
+    $parentScope.ngModel = [item1, item2];
+
+    var upButton = digest(html).find('button[ng-click="moveItem($index, $index - 1)"]').eq(0);
+    upButton.trigger('click');
+    $parentScope.$digest();
+
+    expect(upButton.attr('disabled')).to.equal('disabled');
+    expect($parentScope.ngModel[0].title).to.equal(item1.title);
+    expect($parentScope.ngModel[1].title).to.equal(item2.title);
+  });
+
+  it('should disable the down ordering button if last item in list', function () {
+    var item1 = { title: 'one' };
+    var item2 = { title: 'two' };
+    var html = angular.element(
+      '<dynamic-content-form-field-list name="test" schema="schema" ng-model="ngModel">' +
+      '</dynamic-content-form-field-list>'
+    );
+    $parentScope.schema = { fields: { title: { type: 'mock' } } };
+    $parentScope.ngModel = [item1, item2];
+
+    var downButton = digest(html).find('button[ng-click="moveItem($index, $index + 1)"]').eq(1);
+    downButton.trigger('click');
+    $parentScope.$digest();
+
+    expect(downButton.attr('disabled')).to.equal('disabled');
+    expect($parentScope.ngModel[0].title).to.equal(item1.title);
+    expect($parentScope.ngModel[1].title).to.equal(item2.title);
+  });
+
   it('should allow deleting an item', function () {
     var item1 = { title: 'one' };
     var item2 = { title: 'two' };

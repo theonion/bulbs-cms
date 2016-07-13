@@ -19,6 +19,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
                 return i + 1;
               });
             };
+            $scope.redoOrdering();
 
             $scope.newItem = function () {
               if ($scope.readOnly) {
