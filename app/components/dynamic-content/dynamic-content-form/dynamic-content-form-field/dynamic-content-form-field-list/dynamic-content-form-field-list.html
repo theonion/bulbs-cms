@@ -1,45 +1,59 @@
-<div ng-if="schema.label">{{ schema.label }}</div>
-<div
-    ng-repeat="itemValues in ngModel">
-  <div ng-if="schema.child_label">{{ schema.child_label }}</div>
-  <div>
-    <form>
-      <input
-          type="number"
-          ng-model="itemOrderingMemory[$index]">
+<dynamic-content-form-field-input-label
+    name="{{ name }}"
+    schema="schema">
+</dynamic-content-form-field-input-label>
+
+<ol>
+  <li
+      ng-repeat="itemValues in ngModel">
+    <div class="dynamic-content-form-field-list-item-header">
+      <div
+          class="dynamic-content-form-field-list-item-header-label"
+          ng-if="schema.child_label">
+        {{ schema.child_label }} {{ $index + 1 }}
+      </div>
+
+      <div class="dynamic-content-form-field-list-item-header-tools"></div>
+      <form>
+        <input
+            type="number"
+            ng-model="itemOrderingMemory[$index]">
+        <button
+            class="btn btn-xs btn-info"
+            ng-click="moveItem($index, itemOrderingMemory[$index] - 1)">
+          <i class="fa fa-check"></i>
+          <span>Move</span>
+        </button>
+      </form>
       <button
           class="btn btn-xs btn-info"
-          ng-click="moveItem($index, itemOrderingMemory[$index] - 1)">
-        <i class="fa fa-check"></i>
-        <span>Move</span>
+          ng-disabled="$index === 0"
+          ng-click="moveItem($index, $index - 1)">
+        <i class="fa fa-chevron-up"></i>
+        <span>Up</span>
       </button>
-    </form>
-    <button
-        class="btn btn-xs btn-info"
-        ng-disabled="$index === 0"
-        ng-click="moveItem($index, $index - 1)">
-      <i class="fa fa-chevron-up"></i>
-      <span>Up</span>
-    </button>
-    <button
-        class="btn btn-xs btn-info"
-        ng-disabled="$index === ngModel.length - 1"
-        ng-click="moveItem($index, $index + 1)">
-      <i class="fa fa-chevron-down"></i>
-      <span>Down</span>
-    </button>
-    <button
-        class="btn btn-xs btn-danger"
-        ng-click="removeItem($index)">
-      <i class="fa fa-times"></i>
-      <span>Remove</span>
-    </button>
-  </div>
-  <dynamic-content-form-field-object
-      schema="schema"
-      ng-model="itemValues">
-  </dynamic-content-form-field-object>
-</div>
+      <button
+          class="btn btn-xs btn-info"
+          ng-disabled="$index === ngModel.length - 1"
+          ng-click="moveItem($index, $index + 1)">
+        <i class="fa fa-chevron-down"></i>
+        <span>Down</span>
+      </button>
+      <button
+          class="btn btn-xs btn-danger"
+          ng-click="removeItem($index)">
+        <i class="fa fa-times"></i>
+        <span>Remove</span>
+      </button>
+    </div>
+
+    <dynamic-content-form-field-object
+        schema="schema"
+        ng-model="itemValues">
+    </dynamic-content-form-field-object>
+  </li>
+</ol>
+
 <button
     class="btn btn-success"
     ng-if="!readOnly"

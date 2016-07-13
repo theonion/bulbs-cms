@@ -1,5 +1,36 @@
+@import "../../../_dynamic-content-common";
 
 dynamic-content-form-field-list {
 
-  
+  ol {
+    list-style: none;
+
+    li {
+
+      .dynamic-content-form-field-list-item-header {
+        background: @interface-color-gray-3;
+        border-left: solid 1px @interface-color-gray-2;
+        border-right: solid 1px @interface-color-gray-2;
+        border-top: solid 1px @interface-color-gray-2;
+        border-top-left-radius: @interface-border-radius;
+        border-top-right-radius: @interface-border-radius;
+        padding: 10px;
+
+        .dynamic-content-form-field-list-item-header-label {
+          color: @interface-color-black;
+          font-weight: bold;
+        }
+
+        .dynamic-content-form-field-list-item-header-tools {
+
+        }
+      }
+
+      dynamic-content-form-field-object {
+        background-color: @interface-color-white;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+      }
+    }
+  }
 }

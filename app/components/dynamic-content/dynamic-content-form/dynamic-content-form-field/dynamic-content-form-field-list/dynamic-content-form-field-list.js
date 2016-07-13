@@ -2,6 +2,7 @@
 
 angular.module('bulbs.cms.dynamicContent.form.field.list', [
   'bulbs.cms.dynamicContent.form.field.object',
+  'bulbs.cms.dynamicContent.form.input.label',
   'bulbs.cms.dynamicContent.form.types',
   'bulbs.cms.site.config',
   'bulbs.cms.utils'
