@@ -20,10 +20,10 @@ angular.module('bulbs.cms.imageCropModal.controller', [
 
       if (!$scope.image) {
         $scope.image = null;
-
-        BettyCropper.get(imageData.id).then(function (success) {
-          $scope.image = success.data;
-        });
+        BettyCropper.get(imageData.id)
+          .then(function (success) {
+            $scope.image = success.data;
+          });
       }
 
       $scope.$watch('image', function (image) {

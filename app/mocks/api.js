@@ -1,6 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp.mockApi', [
+  'moment',
   'ngMockE2E',
 
   'bulbsCmsApp.mockApi.data',

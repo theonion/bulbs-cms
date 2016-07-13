@@ -415,6 +415,12 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         info_data: {
           some_read_only_thing: 'This May Not Be Changed',
           title: 'My Garbage Article',
+          header_image: {
+            id: 1
+          },
+          read_only_image: {
+            id: 1
+          },
           body: '<p>Something something something</p>',
           publish_date: null,
           data: {
@@ -437,6 +443,16 @@ angular.module('bulbsCmsApp.mockApi.data', [])
             type: 'richtext',
             required: true,
             max_length: 2
+          },
+          header_image: {
+            label: 'Header Image',
+            type: 'image',
+            required: true
+          },
+          read_only_image: {
+            label: 'A Read Only Image',
+            type: 'image',
+            read_only: true
           },
           body: {
             label: 'Body',

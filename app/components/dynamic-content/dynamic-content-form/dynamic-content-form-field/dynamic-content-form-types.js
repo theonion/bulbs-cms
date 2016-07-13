@@ -10,6 +10,10 @@ angular.module('bulbs.cms.dynamicContent.form.types', [])
       tagName: 'dynamic-content-form-field-date-time',
       initialValue: null
     },
+    image: {
+      tagName: 'dynamic-content-form-field-image',
+      initialValue: {}
+    },
     object: {
       tagName: 'dynamic-content-form-field-object',
       initialValue: {}
