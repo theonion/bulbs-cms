@@ -26,6 +26,7 @@ describe('Directive: dynamicContentFormFieldList', function () {
         $provide.constant(key, mapCopy);
       }
     );
+    module('jquery');
     module('jsTemplates');
 
     inject(function ($compile, $rootScope) {
@@ -76,11 +77,11 @@ describe('Directive: dynamicContentFormFieldList', function () {
     $parentScope.schema = { fields: { title: { type: 'mock' } } };
     $parentScope.ngModel = [{ title: 'one' }];
 
-    var $scope = digest(html).isolateScope();
-    $scope.newItem();
-    $scope.$digest();
+    var addButton = digest(html).find('button[ng-click="newItem()"]').eq(0);
+    addButton.trigger('click');
+    $parentScope.$digest();
 
-    expect($scope.ngModel[1].title).to.equal(mockInitialValue);
+    expect($parentScope.ngModel[1].title).to.equal(mockInitialValue);
     expect(html.find('dynamic-content-form-field-object').length).to.equal(2);
   });
 
@@ -97,10 +98,11 @@ describe('Directive: dynamicContentFormFieldList', function () {
     $parentScope.schema = { fields: { title: { type: 'mock' } } };
     $parentScope.ngModel = [{ title: 'one' }];
 
-    var $scope = digest(html).isolateScope();
-    $scope.newItem();
-    $scope.$digest();
+    var addButton = digest(html).find('button[ng-click="newItem()"]').eq(0);
+    addButton.trigger('click');
+    $parentScope.$digest();
 
+    expect($parentScope.ngModel.length).to.equal(1);
     expect(html.find('dynamic-content-form-field-object').length).to.equal(1);
   });
 
@@ -117,13 +119,9 @@ describe('Directive: dynamicContentFormFieldList', function () {
     $parentScope.schema = { fields: { title: { type: 'mock' } } };
     $parentScope.ngModel = [{ title: 'one' }];
 
-    digest(html);
+    var element = digest(html);
 
-    var addButton = Array.from(html[0].querySelectorAll('button'))
-      .filter(function (button) {
-        return angular.element(button).attr('ng-click') === 'newItem()';
-      });
-    expect(addButton.length).to.equal(0);
+    expect(element.find('button[ng-click="newItem()"]').length).to.equal(0);
   });
 
   it('should allow ordering of items', function () {
@@ -136,12 +134,75 @@ describe('Directive: dynamicContentFormFieldList', function () {
     $parentScope.schema = { fields: { title: { type: 'mock' } } };
     $parentScope.ngModel = [item1, item2];
 
-    var $scope = digest(html).isolateScope();
-    $scope.moveItem(0, 1);
-    $scope.$digest();
+    var downButton = digest(html).find('button[ng-click="moveItem($index, $index + 1)"]').eq(0);
+    downButton.trigger('click');
+    $parentScope.$digest();
 
-    expect($scope.ngModel[0].title).to.equal(item2.title);
-    expect($scope.ngModel[1].title).to.equal(item1.title);
+    expect($parentScope.ngModel[0].title).to.equal(item2.title);
+    expect($parentScope.ngModel[1].title).to.equal(item1.title);
+  });
+
+  it('should allow ordering of items via number input', function () {
+    var item1 = { title: 'one' };
+    var item2 = { title: 'two' };
+    var item3 = { title: 'three' };
+    var html = angular.element(
+      '<dynamic-content-form-field-list name="test" schema="schema" ng-model="ngModel">' +
+      '</dynamic-content-form-field-list>'
+    );
+    $parentScope.schema = { fields: { title: { type: 'mock' } } };
+    $parentScope.ngModel = [item1, item2, item3];
+
+    var element = digest(html);
+    var input = element.find('input[ng-model="itemOrderingMemory[$index]"]').eq(0);
+    var moveButton = element.find('button[ng-click*="moveItem"]').eq(0);
+
+    input.val(3);
+    input.trigger('change');
+    moveButton.trigger('click');
+    $parentScope.$digest();
+
+    expect($parentScope.ngModel[0].title).to.equal(item3.title);
+    expect($parentScope.ngModel[1].title).to.equal(item2.title);
+    expect($parentScope.ngModel[2].title).to.equal(item1.title);
+  });
+
+  it('should disable the up ordering button if first itme in list', function () {
+    var item1 = { title: 'one' };
+    var item2 = { title: 'two' };
+    var html = angular.element(
+      '<dynamic-content-form-field-list name="test" schema="schema" ng-model="ngModel">' +
+      '</dynamic-content-form-field-list>'
+    );
+    $parentScope.schema = { fields: { title: { type: 'mock' } } };
+    $parentScope.ngModel = [item1, item2];
+
+    var upButton = digest(html).find('button[ng-click="moveItem($index, $index - 1)"]').eq(0);
+    upButton.trigger('click');
+    $parentScope.$digest();
+
+    expect(upButton.attr('disabled')).to.equal('disabled');
+    expect($parentScope.ngModel[0].title).to.equal(item1.title);
+    expect($parentScope.ngModel[1].title).to.equal(item2.title);
+  });
+
+  it('should disable the down ordering button if last item in list', function () {
+    var item1 = { title: 'one' };
+    var item2 = { title: 'two' };
+    var html = angular.element(
+      '<dynamic-content-form-field-list name="test" schema="schema" ng-model="ngModel">' +
+      '</dynamic-content-form-field-list>'
+    );
+    $parentScope.schema = { fields: { title: { type: 'mock' } } };
+    $parentScope.ngModel = [item1, item2];
+
+    var downButton = digest(html).find('button[ng-click="moveItem($index, $index + 1)"]').eq(1);
+    downButton.trigger('click');
+    $parentScope.$digest();
+
+    expect(downButton.attr('disabled')).to.equal('disabled');
+    expect($parentScope.ngModel[0].title).to.equal(item1.title);
+    expect($parentScope.ngModel[1].title).to.equal(item2.title);
   });
 
   it('should allow deleting an item', function () {
@@ -154,11 +215,11 @@ describe('Directive: dynamicContentFormFieldList', function () {
     $parentScope.schema = { fields: { title: { type: 'mock' } } };
     $parentScope.ngModel = [item1, item2];
 
-    var $scope = digest(html).isolateScope();
-    $scope.removeItem(0);
-    $scope.$digest();
+    var deleteButton = digest(html).find('button[ng-click="removeItem($index)"]').eq(0);
+    deleteButton.trigger('click');
+    $parentScope.$digest();
 
-    expect($scope.ngModel[0].title).to.equal(item2.title);
+    expect($parentScope.ngModel[0].title).to.equal(item2.title);
     expect(html.find('dynamic-content-form-field-object').length).to.equal(1);
   });
 });

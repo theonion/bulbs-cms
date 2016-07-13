@@ -6,11 +6,15 @@ angular.module('bulbs.cms.dynamicContent.form.types', [])
       tagName: 'dynamic-content-form-field-list',
       initialValue: []
     },
+    datetime: {
+      tagName: 'dynamic-content-form-field-date-time',
+      initialValue: null
+    },
     object: {
       tagName: 'dynamic-content-form-field-object',
       initialValue: {}
     },
-    text: {
+    richtext: {
       tagName: 'dynamic-content-form-field-text',
       initialValue: ''
     },

@@ -8,7 +8,7 @@
       <div class="date-dropdown dropdown">
         <label>Date</label>
         <div class="input-group">
-          <input readonly class="form-control disabled uneditable-input" value="{{datePickerValue|tzDate:'MM/dd/yyyy'}}">
+          <input readonly class="form-control disabled uneditable-input" value="{{ datePickerValue | dateTimeFormat:'MM/DD/YYYY'}}">
           <div class="input-group-btn">
             <a class="btn-default btn" ng-click="setDateShortcut('today');">Today</a>
             <a class="btn-default btn" ng-click="setDateShortcut('tomorrow');">Tomorrow</a>

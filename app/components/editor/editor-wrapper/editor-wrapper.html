@@ -1,21 +1,70 @@
 <div class="editor-wrapper">
     <div class="editorPlaceholder"></div>
     <div class="editor" contenteditable="true"></div>
+
     <div class="document-tools toolbar fixed">
       <div class="toolbar-contents">
-        <button data-command-name="linkUI"><span class="fa fa-link"></span><span class="btn-label">Link</span></button>
-        <button data-command-name="bold"><span class="fa fa-bold"></span><span class="btn-label">Bold</span></button>
-        <button data-command-name="italic"><span class="fa fa-italic"></span><span class="btn-label">Italic</span></button>
-        <button data-command-name="h4"><span class="heading-icon">H<sub>2<sub></span><span class="btn-label">Sub Heading</span></button>
-        <button data-command-name="h3" class="hiddenbydefault"><span class="heading-icon">H<sub>1</sub></span><span class="btn-label">Heading</span></button>
-        <button class="hiddenbydefault" data-command-name="blockquote"><span class="fa fa-quote-left"></span><span class="btn-label">Block quote</span></button>
-        <button class="hiddenbydefault" data-command-name="insertOrderedList"><span class="fa fa-list-ol"></span><span class="btn-label">Numbered List</span></button>
-        <button class="hiddenbydefault" data-command-name="insertUnorderedList"><span class="fa fa-list-ul"></span><span class="btn-label">Bullet List</span></button>
-        <button class="hiddenbydefault" data-command-name="strikeThrough"><span class="fa fa-strikethrough"></span><span class="btn-label">Strikethrough</span></button>
-        <button class="hiddenbydefault" data-command-name="toggleAnchor"><span class="fa fa-anchor"></span><span class="btn-label">Add Anchor</span></button>
-        <button class="hiddenbydefault" data-command-name="removeFormat"><span class="fa fa-times"></span><span class="btn-label">Remove Formatting</span></button>
+        <button data-command-name="linkUI">
+          <span class="fa fa-link"></span>
+          <span class="btn-label">Link</span>
+        </button>
+        <button data-command-name="bold">
+          <span class="fa fa-bold"></span>
+          <span class="btn-label">Bold</span>
+        </button>
+        <button data-command-name="italic">
+          <span class="fa fa-italic"></span>
+          <span class="btn-label">Italic</span>
+        </button>
+        <button data-command-name="h4">
+          <span class="heading-icon">H<sub>2<sub></span>
+          <span class="btn-label">Sub Heading</span>
+        </button>
+        <button
+            class="hiddenbydefault"
+            data-command-name="h3">
+          <span class="heading-icon">H<sub>1</sub></span>
+          <span class="btn-label">Heading</span>
+        </button>
+        <button
+            class="hiddenbydefault"
+            data-command-name="blockquote">
+          <span class="fa fa-quote-left"></span>
+          <span class="btn-label">Block quote</span>
+        </button>
+        <button
+            class="hiddenbydefault"
+            data-command-name="insertOrderedList">
+          <span class="fa fa-list-ol"></span>
+          <span class="btn-label">Numbered List</span>
+        </button>
+        <button
+            class="hiddenbydefault"
+            data-command-name="insertUnorderedList">
+          <span class="fa fa-list-ul"></span>
+          <span class="btn-label">Bullet List</span>
+        </button>
+        <button
+            class="hiddenbydefault"
+            data-command-name="strikeThrough">
+          <span class="fa fa-strikethrough"></span>
+          <span class="btn-label">Strikethrough</span>
+        </button>
+        <button
+            class="hiddenbydefault"
+            data-command-name="toggleAnchor">
+          <span class="fa fa-anchor"></span>
+          <span class="btn-label">Add Anchor</span>
+        </button>
+        <button
+            class="hiddenbydefault"
+            data-command-name="removeFormat">
+          <span class="fa fa-times"></span>
+          <span class="btn-label">Remove Formatting</span>
+        </button>
       </div>
     </div>
+
     <div class="embed-tools embed-overlay">
       <button data-command-name="embed-before" class="embed-button insert-above"><span class="fa fa-plus-circle" data-command-name="show"></span></button>
       <button data-command-name="embed-after" class="embed-button insert-below"><span class="fa fa-plus-circle"></span></button>
