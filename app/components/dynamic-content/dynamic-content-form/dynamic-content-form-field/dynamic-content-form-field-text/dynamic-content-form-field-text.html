@@ -11,7 +11,9 @@
     name="{{ name }}"
     type="text">
 
-<div ng-if="schema.field_size === 'long'">
+<div
+    class="dynamic-content-form-field-text-multiline"
+    ng-if="schema.field_size === 'long'">
   <input
       ng-model="ngModel"
       ng-readonly="schema.read_only"

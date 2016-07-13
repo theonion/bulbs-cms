@@ -1,4 +1,30 @@
 
 dynamic-content-form-field-text {
-  
+
+  input {
+    border: 1px solid @interface-color-gray-4;
+    padding: 10px;
+  }
+
+  .dynamic-content-form-field-text-multiline {
+    background-color: @interface-color-white;
+    border: 1px solid @interface-color-gray-4;
+
+    .editor-wrapper {
+
+      .editor,
+      .editorPlaceholder {
+        padding: 0 10px;
+        z-index: auto;
+
+        p {
+          margin: 15px 0;
+        }
+      }
+
+      .editorPlaceholder {
+        top: -15px;
+      }
+    }
+  }
 }
