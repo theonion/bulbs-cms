@@ -473,7 +473,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
             fields: {
               is_numbered: {
                 label: 'Is Numbered',
-                type: 'richtext'
+                type: 'boolean'
               },
               entries: {
                 type: 'array',
