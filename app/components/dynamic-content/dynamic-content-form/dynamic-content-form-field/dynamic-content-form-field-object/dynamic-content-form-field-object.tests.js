@@ -21,6 +21,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldImage');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldList');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldText');
+        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldInteger');
 
         var key = 'FIELD_TYPES_META';
         var mapCopy = angular.copy($injector.get(key));
@@ -177,6 +178,19 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     digest(html);
 
     expect(html.find('dynamic-content-form-field-text').length).to.equal(1);
+  });
+
+  it('should render a integer field when given a field with type integer', function () {
+    var html = angular.element(
+      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+      '</dynamic-content-form-field-object>'
+    );
+    $parentScope.schema = { fields: { quantity: { type: 'integer' } } };
+    $parentScope.ngModel = { quantity: 10 };
+
+    digest(html);
+
+    expect(html.find('dynamic-content-form-field-integer').length).to.equal(1);
   });
 
   it('should render a boolean field when given a field with type boolean', function () {

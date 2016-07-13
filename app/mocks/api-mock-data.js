@@ -426,6 +426,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
           main_color: '#000000',
           data: {
             is_numbered: 'hello',
+            the_number: 123,
             entries: []
           }
         }
@@ -474,6 +475,10 @@ angular.module('bulbsCmsApp.mockApi.data', [])
               is_numbered: {
                 label: 'Is Numbered',
                 type: 'boolean'
+              },
+              the_number: {
+                label: 'The Number',
+                type: 'integer'
               },
               entries: {
                 type: 'array',

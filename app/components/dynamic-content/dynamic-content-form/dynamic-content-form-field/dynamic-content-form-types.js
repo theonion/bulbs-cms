@@ -29,5 +29,9 @@ angular.module('bulbs.cms.dynamicContent.form.types', [])
     richtext: {
       tagName: 'dynamic-content-form-field-text',
       initialValue: ''
+    },
+    integer: {
+      tagName: 'dynamic-content-form-field-integer',
+      initialValue: undefined
     }
   });

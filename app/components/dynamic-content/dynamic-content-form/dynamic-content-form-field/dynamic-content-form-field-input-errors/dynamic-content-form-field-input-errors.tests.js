@@ -40,6 +40,56 @@ describe('Directive: dynamicContentFormFieldInputErrors', function () {
     expect(html.html()).to.have.string(label + ' is required!');
   });
 
+  it('should render a min error if errors has min: true', function () {
+    var label = 'Garbage Title';
+    $parentScope.schema = {
+      label: label,
+       min_value: 11
+    };
+    html.find('dynamic-content-form-field-input-errors')
+      .attr('name', inputName)
+      .attr('schema', 'schema');
+    digestedScope();
+
+    html.scope()[formName][inputName] = { $error: { min: true } };
+    $parentScope.$digest();
+
+    expect(html.html()).to.have.string(label + ' must be greater than 11');
+  });
+
+  it('should render a max error if errors has max: true', function () {
+    var label = 'Garbage Title';
+    $parentScope.schema = {
+      label: label,
+      max_value: 11
+    };
+    html.find('dynamic-content-form-field-input-errors')
+      .attr('name', inputName)
+      .attr('schema', 'schema');
+    digestedScope();
+
+    html.scope()[formName][inputName] = { $error: { max: true } };
+    $parentScope.$digest();
+
+    expect(html.html()).to.have.string(label + ' must be less than 11');
+  });
+
+  it('should render a integer error if errors has integer: true', function () {
+    var label = 'Garbage Title';
+    $parentScope.schema = {
+      label: label,
+    };
+    html.find('dynamic-content-form-field-input-errors')
+      .attr('name', inputName)
+      .attr('schema', 'schema');
+    digestedScope();
+
+    html.scope()[formName][inputName] = { $error: { integer: true } };
+    $parentScope.$digest();
+
+    expect(html.html()).to.have.string(label + ' must be an integer.');
+  });
+
   it('should render out a max length error if schema has a max_length', function () {
     var label = 'Garbage Title';
     var maxLength = 10;
