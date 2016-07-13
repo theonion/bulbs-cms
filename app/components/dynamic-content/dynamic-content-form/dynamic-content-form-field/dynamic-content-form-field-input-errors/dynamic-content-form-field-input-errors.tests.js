@@ -110,8 +110,8 @@ describe('Directive: dynamicContentFormFieldInputErrors', function () {
     $parentScope.$digest();
 
     var len = value.length - maxLength;
-    expect(html.html().indexOf(label + ' is ' + len + ' characters too long!') > -1)
-      .to.equal(true);
+    expect(html.html())
+      .to.have.string(label + ' is ' + len + ' characters too long!');
   });
 
   it('should render an rgbex herror if errors has rgbhex: true', function () {

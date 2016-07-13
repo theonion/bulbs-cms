@@ -58,8 +58,7 @@ describe('Directive: dynamicContentForm', function () {
     deferred.reject();
     $parentScope.$digest();
 
-    expect(html.html().indexOf('Unable to retrieve schema') > -1)
-      .to.equal(true);
+    expect(html.html()).to.have.string('Unable to retrieve schema');
   });
 
   it('should show a loading message before form has loaded', function () {
@@ -71,7 +70,7 @@ describe('Directive: dynamicContentForm', function () {
 
     digest(html);
 
-    expect(html.html().indexOf('Loading dynamic content schema...') > -1).to.equal(true);
+    expect(html.html()).to.have.string('Loading dynamic content schema...');
   });
 
   it('should throw an error if not given a schema source', function () {
