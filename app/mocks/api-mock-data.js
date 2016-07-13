@@ -418,6 +418,9 @@ angular.module('bulbsCmsApp.mockApi.data', [])
           header_image: {
             id: 1
           },
+          read_only_image: {
+            id: 1
+          },
           body: '<p>Something something something</p>',
           publish_date: null,
           data: {
@@ -443,7 +446,13 @@ angular.module('bulbsCmsApp.mockApi.data', [])
           },
           header_image: {
             label: 'Header Image',
-            type: 'image'
+            type: 'image',
+            required: true
+          },
+          read_only_image: {
+            label: 'A Read Only Image',
+            type: 'image',
+            read_only: true
           },
           body: {
             label: 'Body',
