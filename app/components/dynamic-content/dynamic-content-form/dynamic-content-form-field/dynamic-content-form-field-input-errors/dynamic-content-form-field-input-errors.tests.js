@@ -40,7 +40,31 @@ describe('Directive: dynamicContentFormFieldInputErrors', function () {
     expect(html.html().indexOf(label + ' is required!') > -1).to.equal(true);
   });
 
-	it('should render an rgbex herror if errors has rgbhex: true', function () {
+  it('should render out a max length error if schema has a max_length', function () {
+    var label = 'Garbage Title';
+    var maxLength = 10;
+    var value = 'some garbage title';
+    $parentScope.schema = {
+      label: label,
+      max_length: maxLength
+    };
+    html.find('dynamic-content-form-field-input-errors')
+      .attr('name', inputName)
+      .attr('schema', 'schema');
+    digestedScope();
+
+    html.scope()[formName][inputName] = {
+      $error: { maxlength: true },
+      $viewValue: value
+    };
+    $parentScope.$digest();
+
+    var len = value.length - maxLength;
+    expect(html.html().indexOf(label + ' is ' + len + ' characters too long!') > -1)
+      .to.equal(true);
+  });
+
+  it('should render an rgbex herror if errors has rgbhex: true', function () {
     var label = 'Garbage Title';
     $parentScope.schema = {
       label: label,

@@ -2,6 +2,7 @@
 'use strict';
 
 angular.module('bulbs.cms.dynamicContent.form.field.object', [
+  'bulbs.cms.dynamicContent.form.field.dateTime',
   'bulbs.cms.dynamicContent.form.field.list',
   'bulbs.cms.dynamicContent.form.field.text',
   'bulbs.cms.dynamicContent.form.field.color',
