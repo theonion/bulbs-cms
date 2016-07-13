@@ -23,6 +23,7 @@ angular.module('bulbsCmsApp', [
   'bulbs.cms.dateTimeFilter',
   'bulbs.cms.editor',
   'bulbs.cms.imageCropModal',
+  'bulbs.cms.staticImage',
   'ngCookies',
   'ngResource',
   'ngRoute',
