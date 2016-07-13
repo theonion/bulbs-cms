@@ -117,8 +117,6 @@
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="cms-image.js"></script>
 
-    <script src="scripts/libraries/editor-cms-bridge.js"></script>
-
     <script src="scripts/app.js"></script>
 
     <script src="scripts/api/module.js"></script>
@@ -153,8 +151,13 @@
     <script src="components/custom-search/custom-search-simple-content-search/custom-search-simple-content-search-directive.js"></script>
     <script src="components/custom-search/custom-search-simple-content-search/custom-search-simple-content-search.js"></script>
     <script src="components/custom-search/custom-search.js"></script>
+    <script src="components/date-time-format-filter/date-time-format-filter.js"></script>
+    <script src="components/date-time-modal/date-time-modal-controller.js"></script>
+    <script src="components/date-time-modal/date-time-modal-opener.js"></script>
+    <script src="components/date-time-modal/date-time-modal.js"></script>
     <script src="components/dynamic-content/dynamic-content-api/dynamic-content-api.js"></script>
     <script src="components/dynamic-content/dynamic-content-form/dynamic-content-form-field/dynamic-content-form-field-boolean/dynamic-content-form-field-boolean.js"></script>
+    <script src="components/dynamic-content/dynamic-content-form/dynamic-content-form-field/dynamic-content-form-field-date-time/dynamic-content-form-field-date-time.js"></script>
     <script src="components/dynamic-content/dynamic-content-form/dynamic-content-form-field/dynamic-content-form-field-input-errors/dynamic-content-form-field-input-errors.js"></script>
     <script src="components/dynamic-content/dynamic-content-form/dynamic-content-form-field/dynamic-content-form-field-input-label/dynamic-content-form-field-input-label.js"></script>
     <script src="components/dynamic-content/dynamic-content-form/dynamic-content-form-field/dynamic-content-form-field-list/dynamic-content-form-field-list.js"></script>
@@ -163,6 +166,8 @@
     <script src="components/dynamic-content/dynamic-content-form/dynamic-content-form-field/dynamic-content-form-types.js"></script>
     <script src="components/dynamic-content/dynamic-content-form/dynamic-content-form.js"></script>
     <script src="components/dynamic-content/dynamic-content.js"></script>
+    <script src="components/editor/editor-wrapper/editor-wrapper.js"></script>
+    <script src="components/editor/editor.js"></script>
     <script src="components/editors-pick/editors-pick.js"></script>
     <script src="components/evergreen-field/evergreen-field-directive.js"></script>
     <script src="components/evergreen-field/evergreen-field.js"></script>
@@ -174,6 +179,8 @@
     <script src="components/generic-ajax-button/generic-ajax-button-directive.js"></script>
     <script src="components/generic-ajax-button/generic-ajax-button.js"></script>
     <script src="components/generic-ajax-button/save-button/save-button-directive.js"></script>
+    <script src="components/image-crop-modal/image-crop-modal-controller.js"></script>
+    <script src="components/image-crop-modal/image-crop-modal.js"></script>
     <script src="components/polls/polls-edit/polls-edit-directive.js"></script>
     <script src="components/polls/polls-edit/polls-edit.js"></script>
     <script src="components/polls/polls-list/polls-list.js"></script>
@@ -261,9 +268,7 @@
     <script src="scripts/directives/cms-notify-container.js"></script>
     <script src="scripts/directives/contributorfield.js"></script>
     <script src="scripts/directives/create-content.js"></script>
-    <script src="scripts/directives/datetimeselectionmodalopener.js"></script>
     <script src="scripts/directives/devicepreview.js"></script>
-    <script src="scripts/directives/editor.js"></script>
     <script src="scripts/directives/encode-status.js"></script>
     <script src="scripts/directives/featuretypefield.js"></script>
     <script src="scripts/directives/hide-if-forbidden.js"></script>
@@ -292,10 +297,8 @@
     <script src="scripts/controllers/contentlist.js"></script>
     <script src="scripts/controllers/contentworkflow.js"></script>
     <script src="scripts/controllers/contributions.js"></script>
-    <script src="scripts/controllers/datetimeselectionmodal.js"></script>
     <script src="scripts/controllers/descriptionmodal.js"></script>
     <script src="scripts/controllers/forbiddenmodal.js"></script>
-    <script src="scripts/controllers/imagecropmodal.js"></script>
     <script src="scripts/controllers/lastmodifiedguardmodal.js"></script>
     <script src="scripts/controllers/lineitemexportmodal.js"></script>
     <script src="scripts/controllers/loginmodal.js"></script>
@@ -322,7 +325,6 @@
     <script src="scripts/services/if-exists-else.js"></script>
     <script src="scripts/services/localstoragebackup.js"></script>
     <script src="scripts/services/login.js"></script>
-    <script src="scripts/services/openimagecropmodal.js"></script>
     <script src="scripts/services/permissionsinterceptor.js"></script>
     <script src="scripts/services/temporary-url-modal-opener.js"></script>
     <script src="scripts/services/versionStorageApi.js"></script>

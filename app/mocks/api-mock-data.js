@@ -413,8 +413,10 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         slug: 'my-dynamic-content-type',
         polymorphic_ctype: 'core_dynamic_content_type_1',
         info_data: {
+          some_read_only_thing: 'This May Not Be Changed',
           title: 'My Garbage Article',
           body: '<p>Something something something</p>',
+          publish_date: null,
           data: {
             is_numbered: 'hello',
             entries: []
@@ -425,14 +427,26 @@ angular.module('bulbsCmsApp.mockApi.data', [])
     'dynamicContent.schemas': {
       core_dynamic_content_type_1: {
         fields: {
+          some_read_only_thing: {
+            label: 'Some Read Only Thing',
+            type: 'richtext',
+            read_only: true
+          },
           title: {
             label: 'Title',
-            type: 'text',
-            required: true
+            type: 'richtext',
+            required: true,
+            max_length: 2
           },
           body: {
             label: 'Body',
-            type: 'text'
+            type: 'richtext',
+            field_size: 'long'
+          },
+          publish_date: {
+            label: 'Publish Date',
+            type: 'datetime',
+            required: true
           },
           data: {
             fields: {
@@ -442,15 +456,18 @@ angular.module('bulbsCmsApp.mockApi.data', [])
               },
               entries: {
                 type: 'array',
+                label: 'Entries',
+                child_label: 'Entry',
                 fields: {
                   title: {
                     label: 'Title',
-                    type: 'text',
+                    type: 'richtext',
                     required: true
                   },
                   body: {
                     label: 'Body',
-                    type: 'text'
+                    type: 'richtext',
+                    field_size: 'long'
                   }
                 }
               }
