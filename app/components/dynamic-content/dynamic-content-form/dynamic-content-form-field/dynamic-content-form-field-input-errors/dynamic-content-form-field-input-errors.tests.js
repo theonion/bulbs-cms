@@ -127,6 +127,6 @@ describe('Directive: dynamicContentFormFieldInputErrors', function () {
     html.scope()[formName][inputName] = { $error: { rgbhex: true } };
     $parentScope.$digest();
 
-    expect(html.html()).to.have.string(label + ' must be formatted as an rgb hex. eg: #000000');
+    expect(html.html()).to.have.string(label + ' must be formatted as an rgb hex. eg: "#000000".');
   });
 });
