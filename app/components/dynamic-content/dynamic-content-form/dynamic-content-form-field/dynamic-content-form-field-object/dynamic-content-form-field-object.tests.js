@@ -90,6 +90,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     expect(fields.attr('name')).to.eql('title');
     expect(fields.attr('schema')).to.eql('schema.fields.title');
     expect(fields.attr('ng-model')).to.eql('ngModel.title');
+    expect(fields.hasClass('dynamic-content-form-field'));
   });
 
   it('should throw and error if no value exists for schema-defined field', function () {
