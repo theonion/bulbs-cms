@@ -41,8 +41,14 @@ describe('Directive: dynamicContentFormFieldList', function () {
 
   it('should repeat given schema for each value instance in given ng-model', function () {
     var html = angular.element(
-      '<dynamic-content-form-field-list name="test" schema="schema" ng-model="ngModel">' +
-      '</dynamic-content-form-field-list>'
+      '<form>' +
+        '<dynamic-content-form-field-list ' +
+            'name="test" ' +
+            'schema="schema" ' +
+            'ng-model="ngModel" ' +
+            '>' +
+        '</dynamic-content-form-field-list>' +
+      '</form>'
     );
     $parentScope.schema = { fields: { title: { type: 'mock' } } };
     $parentScope.ngModel = [{
@@ -58,8 +64,14 @@ describe('Directive: dynamicContentFormFieldList', function () {
 
   it('should list at least one set of fields if there are no values in given ng-model', function () {
     var html = angular.element(
-      '<dynamic-content-form-field-list name="test" schema="schema" ng-model="ngModel">' +
-      '</dynamic-content-form-field-list>'
+      '<form>' +
+        '<dynamic-content-form-field-list ' +
+            'name="test" ' +
+            'schema="schema" ' +
+            'ng-model="ngModel" ' +
+            '>' +
+        '</dynamic-content-form-field-list>' +
+      '</form>'
     );
     $parentScope.schema = { fields: { title: { type: 'mock' } } };
     $parentScope.ngModel = [];
@@ -71,8 +83,14 @@ describe('Directive: dynamicContentFormFieldList', function () {
 
   it('should allow adding a new item', function () {
     var html = angular.element(
-      '<dynamic-content-form-field-list name="test" schema="schema" ng-model="ngModel">' +
-      '</dynamic-content-form-field-list>'
+      '<form>' +
+        '<dynamic-content-form-field-list ' +
+            'name="test" ' +
+            'schema="schema" ' +
+            'ng-model="ngModel" ' +
+            '>' +
+        '</dynamic-content-form-field-list>' +
+      '</form>'
     );
     $parentScope.schema = { fields: { title: { type: 'mock' } } };
     $parentScope.ngModel = [{ title: 'one' }];
@@ -87,13 +105,15 @@ describe('Directive: dynamicContentFormFieldList', function () {
 
   it('should prevent adding a new item if read only', function () {
     var html = angular.element(
-      '<dynamic-content-form-field-list ' +
-        'name="test" ' +
-        'schema="schema" ' +
-        'ng-model="ngModel" ' +
-        'read-only="true"' +
-        '>' +
-      '</dynamic-content-form-field-list>'
+      '<form>' +
+        '<dynamic-content-form-field-list ' +
+          'name="test" ' +
+          'schema="schema" ' +
+          'ng-model="ngModel" ' +
+          'read-only="true"' +
+          '>' +
+        '</dynamic-content-form-field-list>' +
+      '</form>'
     );
     $parentScope.schema = { fields: { title: { type: 'mock' } } };
     $parentScope.ngModel = [{ title: 'one' }];
@@ -108,13 +128,15 @@ describe('Directive: dynamicContentFormFieldList', function () {
 
   it('should not show add button if read only', function () {
     var html = angular.element(
-      '<dynamic-content-form-field-list ' +
-        'name="test" ' +
-        'schema="schema" ' +
-        'ng-model="ngModel" ' +
-        'read-only="true"' +
-        '>' +
-      '</dynamic-content-form-field-list>'
+      '<form>' +
+        '<dynamic-content-form-field-list ' +
+          'name="test" ' +
+          'schema="schema" ' +
+          'ng-model="ngModel" ' +
+          'read-only="true"' +
+          '>' +
+        '</dynamic-content-form-field-list>' +
+      '</form>'
     );
     $parentScope.schema = { fields: { title: { type: 'mock' } } };
     $parentScope.ngModel = [{ title: 'one' }];
@@ -128,8 +150,14 @@ describe('Directive: dynamicContentFormFieldList', function () {
     var item1 = { title: 'one' };
     var item2 = { title: 'two' };
     var html = angular.element(
-      '<dynamic-content-form-field-list name="test" schema="schema" ng-model="ngModel">' +
-      '</dynamic-content-form-field-list>'
+      '<form>' +
+        '<dynamic-content-form-field-list ' +
+            'name="test" ' +
+            'schema="schema" ' +
+            'ng-model="ngModel" ' +
+            '>' +
+        '</dynamic-content-form-field-list>' +
+      '</form>'
     );
     $parentScope.schema = { fields: { title: { type: 'mock' } } };
     $parentScope.ngModel = [item1, item2];
@@ -147,8 +175,14 @@ describe('Directive: dynamicContentFormFieldList', function () {
     var item2 = { title: 'two' };
     var item3 = { title: 'three' };
     var html = angular.element(
-      '<dynamic-content-form-field-list name="test" schema="schema" ng-model="ngModel">' +
-      '</dynamic-content-form-field-list>'
+      '<form>' +
+        '<dynamic-content-form-field-list ' +
+            'name="test" ' +
+            'schema="schema" ' +
+            'ng-model="ngModel" ' +
+            '>' +
+        '</dynamic-content-form-field-list>' +
+      '</form>'
     );
     $parentScope.schema = { fields: { title: { type: 'mock' } } };
     $parentScope.ngModel = [item1, item2, item3];
@@ -171,8 +205,14 @@ describe('Directive: dynamicContentFormFieldList', function () {
     var item1 = { title: 'one' };
     var item2 = { title: 'two' };
     var html = angular.element(
-      '<dynamic-content-form-field-list name="test" schema="schema" ng-model="ngModel">' +
-      '</dynamic-content-form-field-list>'
+      '<form>' +
+        '<dynamic-content-form-field-list ' +
+            'name="test" ' +
+            'schema="schema" ' +
+            'ng-model="ngModel" ' +
+            '>' +
+        '</dynamic-content-form-field-list>' +
+      '</form>'
     );
     $parentScope.schema = { fields: { title: { type: 'mock' } } };
     $parentScope.ngModel = [item1, item2];
@@ -190,8 +230,14 @@ describe('Directive: dynamicContentFormFieldList', function () {
     var item1 = { title: 'one' };
     var item2 = { title: 'two' };
     var html = angular.element(
-      '<dynamic-content-form-field-list name="test" schema="schema" ng-model="ngModel">' +
-      '</dynamic-content-form-field-list>'
+      '<form>' +
+        '<dynamic-content-form-field-list ' +
+            'name="test" ' +
+            'schema="schema" ' +
+            'ng-model="ngModel" ' +
+            '>' +
+        '</dynamic-content-form-field-list>' +
+      '</form>'
     );
     $parentScope.schema = { fields: { title: { type: 'mock' } } };
     $parentScope.ngModel = [item1, item2];
@@ -209,8 +255,14 @@ describe('Directive: dynamicContentFormFieldList', function () {
     var item1 = { title: 'one' };
     var item2 = { title: 'two' };
     var html = angular.element(
-      '<dynamic-content-form-field-list name="test" schema="schema" ng-model="ngModel">' +
-      '</dynamic-content-form-field-list>'
+      '<form>' +
+        '<dynamic-content-form-field-list ' +
+            'name="test" ' +
+            'schema="schema" ' +
+            'ng-model="ngModel" ' +
+            '>' +
+        '</dynamic-content-form-field-list>' +
+      '</form>'
     );
     $parentScope.schema = { fields: { title: { type: 'mock' } } };
     $parentScope.ngModel = [item1, item2];

@@ -57,7 +57,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
             scope.newItem();
           }
         },
-        require: 'ngModel',
+        require: ['ngModel', '^^form'],
         restrict: 'E',
         scope: {
           schema: '=',
