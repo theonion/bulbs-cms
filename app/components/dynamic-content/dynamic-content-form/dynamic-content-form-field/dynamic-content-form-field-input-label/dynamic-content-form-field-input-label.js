@@ -8,15 +8,20 @@ angular.module('bulbs.cms.dynamicContent.form.input.label', [
     function (CmsConfig) {
       return {
         link: function (scope, element, attrs, formCtrl) {
+          var form;
 
-          scope.$watch(
-            function () {
-              return formCtrl[scope.name].$error;
-            },
-            function () {
-              scope.hasErrors = Object.keys(formCtrl[scope.name].$error).length > 0;
-            }
-          );
+          if (scope.name in formCtrl) {
+            form = formCtrl[scope.name];
+
+            scope.$watch(
+              function () {
+                return form.$error;
+              },
+              function () {
+                scope.hasErrors = Object.keys(form.$error).length > 0;
+              }
+            );
+          }
         },
         require: '^^form',
         restrict: 'E',
