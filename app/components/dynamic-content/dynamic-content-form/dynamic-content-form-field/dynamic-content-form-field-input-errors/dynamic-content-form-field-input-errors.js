@@ -8,7 +8,16 @@ angular.module('bulbs.cms.dynamicContent.form.input.errors', [
     function (CmsConfig) {
       return {
         link: function (scope, element, attrs, formCtrl) {
-          scope.form = formCtrl;
+          scope.form = formCtrl[scope.name];
+
+          scope.$watch(
+            function () {
+              return scope.form.$error;
+            },
+            function () {
+              scope.errors = scope.form.$error;
+            }
+          );
         },
         require: '^^form',
         restrict: 'E',
