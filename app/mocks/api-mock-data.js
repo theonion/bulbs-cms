@@ -422,7 +422,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
             id: 1
           },
           body: '<p>Something something something</p>',
-          long_read_only: '<p>readonly readonly readonly</p>',
+          long_read_only: '<p>readonly readonly readonly</p><p>paragraph 2</p>',
           publish_date: null,
           main_color: '#000000',
           data: {

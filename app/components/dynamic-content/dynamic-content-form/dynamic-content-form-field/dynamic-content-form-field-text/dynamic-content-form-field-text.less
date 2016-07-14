@@ -18,9 +18,13 @@ dynamic-content-form-field-text {
     }
 
     p {
-      margin: 0 0 @interface-font-size-2;
+      margin: 0;
       min-height: @interface-font-size-2;
       line-height: inherit;
+
+      &:not(:first-child) {
+        margin-top: @interface-font-size-2;
+      }
     }
 
     .editor-wrapper {
@@ -29,6 +33,10 @@ dynamic-content-form-field-text {
       .editorPlaceholder {
         padding: 0;
         z-index: auto;
+      }
+
+      .editor {
+        min-height: 100px;
       }
     }
   }
