@@ -29,11 +29,27 @@ dynamic-content-form-field-list {
         .dynamic-content-form-field-list-item-meta-tools {
           float: right;
 
-          form {
-            display: inline;
+          form.dynamic-content-form-field-list-item-meta-tools-order {
+            @tooling-height: 25px;
 
-            .dynamic-content-form-field-list-item-meta-tools-order {
+            display: inline-block;
+
+            button {
+              background-color: @interface-color-success;
+              border: none;
+              color: @interface-color-white;
+              height: @tooling-height;
+              margin-left: -4px;
+              width: @tooling-height;
+
+              &[disabled] {
+                background-color: @interface-color-gray-4;
+              }
+            }
+
+            input {
               border: 1px solid @interface-color-gray-4;
+              height: @tooling-height;
               text-align: center;
               width: 50px;
             }
