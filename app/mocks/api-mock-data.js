@@ -422,6 +422,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
             id: 1
           },
           body: '<p>Something something something</p>',
+          long_read_only: '<p>readonly readonly readonly</p>',
           publish_date: null,
           main_color: '#000000',
           data: {
@@ -444,7 +445,8 @@ angular.module('bulbsCmsApp.mockApi.data', [])
             label: 'Title',
             type: 'richtext',
             required: true,
-            max_length: 2
+            max_length: 2,
+            placeholder: 'This is your title...'
           },
           header_image: {
             label: 'Header Image',
@@ -459,7 +461,14 @@ angular.module('bulbsCmsApp.mockApi.data', [])
           body: {
             label: 'Body',
             type: 'richtext',
-            field_size: 'long'
+            field_size: 'long',
+            placeholder: 'Start typing in this spot...'
+          },
+          long_read_only: {
+            label: 'Long Read Only Field',
+            type: 'richtext',
+            field_size: 'long',
+            read_only: true
           },
           publish_date: {
             label: 'Publish Date',
