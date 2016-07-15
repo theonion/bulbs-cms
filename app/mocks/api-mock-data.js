@@ -428,7 +428,16 @@ angular.module('bulbsCmsApp.mockApi.data', [])
           data: {
             is_numbered: 'hello',
             the_number: 123,
-            entries: []
+            entries: [{
+              title: 'ONE',
+              body: ''
+            }, {
+              title: 'TWO',
+              body: ''
+            }, {
+              title: 'Three',
+              body: ''
+            }]
           }
         }
       }]

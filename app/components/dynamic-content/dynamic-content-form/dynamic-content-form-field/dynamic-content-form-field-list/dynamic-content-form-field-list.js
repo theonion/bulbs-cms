@@ -5,7 +5,8 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
   'bulbs.cms.dynamicContent.form.input.label',
   'bulbs.cms.dynamicContent.form.types',
   'bulbs.cms.site.config',
-  'bulbs.cms.utils'
+  'bulbs.cms.utils',
+  'ui.sortable'
 ])
   .directive('dynamicContentFormFieldList', [
     'CmsConfig', 'FIELD_TYPES_META', 'Utils',
