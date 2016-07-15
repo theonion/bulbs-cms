@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <ul>
   <li ng-repeat="(errorName, isError) in form[name].$error">
     <i class="fa fa-exclamation-circle"></i>
@@ -9,3 +10,11 @@
     <span ng-if="errorName === 'rgbhex'">{{ schema.label }} must be formatted as an rgb hex. eg: #000000</span>
   </li>
 </ul>
+=======
+<div ng-if="form[name].$error.integer">{{ schema.label }} must be an integer.</div>
+<div ng-if="form[name].$error.max">{{ schema.label }} must be less than {{ schema.max_value }}.</div>
+<div ng-if="form[name].$error.maxlength">{{ schema.label }} is {{ form[name].$viewValue.length - schema.max_length }} characters too long!</div>
+<div ng-if="form[name].$error.min">{{ schema.label }} must be greater than {{ schema.min_value }}.</div>
+<div ng-if="form[name].$error.required">{{ schema.label }} is required!</div>
+<div ng-if="form[name].$error.rgbhex">{{ schema.label }} must be formatted as an rgb hex. eg: "#000000".</div>
+>>>>>>> 9ce41e0850d9e1393d2b33dfe681ed1297729286
