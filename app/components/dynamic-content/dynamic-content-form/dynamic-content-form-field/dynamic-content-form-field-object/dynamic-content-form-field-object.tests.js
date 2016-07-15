@@ -19,9 +19,10 @@ describe('Directive: dynamicContentFormFieldObject', function () {
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldColor');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldDateTime');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldImage');
+        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldInteger');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldList');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldRichtext');
-        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldInteger');
+        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldText');
 
         var key = 'FIELD_TYPES_META';
         var mapCopy = angular.copy($injector.get(key));
@@ -179,6 +180,19 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     digest(html);
 
     expect(html.find('dynamic-content-form-field-richtext').length).to.equal(1);
+  });
+
+  it('should render a text field when given a field with type string', function () {
+    var html = angular.element(
+      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+      '</dynamic-content-form-field-object>'
+    );
+    $parentScope.schema = { fields: { title: { type: 'string' } } };
+    $parentScope.ngModel = { title: '' };
+
+    digest(html);
+
+    expect(html.find('dynamic-content-form-field-text').length).to.equal(1);
   });
 
   it('should render a integer field when given a field with type integer', function () {
