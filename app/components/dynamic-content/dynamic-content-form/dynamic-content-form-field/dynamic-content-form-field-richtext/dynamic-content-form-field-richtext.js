@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('bulbs.cms.dynamicContent.form.field.text', [
+angular.module('bulbs.cms.dynamicContent.form.field.richtext', [
   'bulbs.cms.site.config',
   'bulbs.cms.dynamicContent.form.input.label',
   'bulbs.cms.dynamicContent.form.input.errors',
   'OnionEditor'
 ])
-  .directive('dynamicContentFormFieldText', [
+  .directive('dynamicContentFormFieldRichtext', [
     'CmsConfig',
     function (CmsConfig) {
       return {
@@ -24,8 +24,8 @@ angular.module('bulbs.cms.dynamicContent.form.field.text', [
           'dynamic-content',
           'dynamic-content-form',
           'dynamic-content-form-field',
-          'dynamic-content-form-field-text',
-          'dynamic-content-form-field-text.html'
+          'dynamic-content-form-field-richtext',
+          'dynamic-content-form-field-richtext.html'
         )
       };
     }
