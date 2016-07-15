@@ -2,9 +2,11 @@
 
 angular.module('bulbs.cms.dynamicContent.form.field.list', [
   'bulbs.cms.dynamicContent.form.field.object',
+  'bulbs.cms.dynamicContent.form.input.label',
   'bulbs.cms.dynamicContent.form.types',
   'bulbs.cms.site.config',
-  'bulbs.cms.utils'
+  'bulbs.cms.utils',
+  'ui.sortable'
 ])
   .directive('dynamicContentFormFieldList', [
     'CmsConfig', 'FIELD_TYPES_META', 'Utils',
@@ -56,7 +58,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
             scope.newItem();
           }
         },
-        require: 'ngModel',
+        require: ['ngModel', '^^form'],
         restrict: 'E',
         scope: {
           schema: '=',

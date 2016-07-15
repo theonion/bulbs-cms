@@ -8,7 +8,9 @@
     image="ngModel">
 </static-image>
 
-<div ng-if="!schema.read_only">
+<div
+    class="dynamic-content-form-field-image-container"
+    ng-if="!schema.read_only">
   <input
       type="hidden"
       name="{{ name }}"

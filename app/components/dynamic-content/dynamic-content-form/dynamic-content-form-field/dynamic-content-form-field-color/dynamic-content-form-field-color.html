@@ -4,17 +4,19 @@
 </dynamic-content-form-field-input-label>
 
 <input
-    name="{{ name }}"
     ng-model="ngModel"
-    type="text"
-    ng-readonly="schema.read_only">
+    ng-readonly="schema.read_only"
+    ng-required="schema.required"
+    class="dynamic-content-form-field-color-input-color"
+    name="{{ name }}"
+    type="color">
 
 <input
-    name="{{ name }}"
     ng-model="ngModel"
-    type="color"
     ng-readonly="schema.read_only"
-    ng-required="schema.required">
+    class="dynamic-content-form-field-color-input-text"
+    name="{{ name }}"
+    type="text">
 
 <dynamic-content-form-field-input-errors
     name="{{ name }}"

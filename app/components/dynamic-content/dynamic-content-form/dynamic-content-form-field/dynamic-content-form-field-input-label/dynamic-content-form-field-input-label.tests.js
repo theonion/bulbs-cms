@@ -8,6 +8,7 @@ describe('Directive: dynamicContentFormFieldInputLabel', function () {
 
   beforeEach(function () {
     module('bulbs.cms.dynamicContent.form.input.label');
+    module('jsTemplates');
 
     inject(function ($compile, $rootScope) {
       $parentScope = $rootScope.$new();
@@ -36,6 +37,6 @@ describe('Directive: dynamicContentFormFieldInputLabel', function () {
 
     digestedScope();
 
-    expect(html.find('label').html()).to.equal(title);
+    expect(html.find('label').html()).to.have.string(title);
   });
 });

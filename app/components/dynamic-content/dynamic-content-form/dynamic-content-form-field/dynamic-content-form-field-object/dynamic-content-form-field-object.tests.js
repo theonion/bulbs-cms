@@ -19,9 +19,10 @@ describe('Directive: dynamicContentFormFieldObject', function () {
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldColor');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldDateTime');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldImage');
-        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldList');
-        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldText');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldInteger');
+        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldList');
+        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldRichtext');
+        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldText');
 
         var key = 'FIELD_TYPES_META';
         var mapCopy = angular.copy($injector.get(key));
@@ -90,6 +91,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     expect(fields.attr('name')).to.eql('title');
     expect(fields.attr('schema')).to.eql('schema.fields.title');
     expect(fields.attr('ng-model')).to.eql('ngModel.title');
+    expect(fields.hasClass('dynamic-content-form-field'));
   });
 
   it('should throw and error if no value exists for schema-defined field', function () {
@@ -167,12 +169,25 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     expect(html.find('dynamic-content-form-field-date-time').length).to.equal(1);
   });
 
-  it('should render a text field when given a field with type text', function () {
+  it('should render a rich text field when given a field with type richtext', function () {
     var html = angular.element(
       '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
       '</dynamic-content-form-field-object>'
     );
     $parentScope.schema = { fields: { title: { type: 'richtext' } } };
+    $parentScope.ngModel = { title: '' };
+
+    digest(html);
+
+    expect(html.find('dynamic-content-form-field-richtext').length).to.equal(1);
+  });
+
+  it('should render a text field when given a field with type string', function () {
+    var html = angular.element(
+      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+      '</dynamic-content-form-field-object>'
+    );
+    $parentScope.schema = { fields: { title: { type: 'string' } } };
     $parentScope.ngModel = { title: '' };
 
     digest(html);

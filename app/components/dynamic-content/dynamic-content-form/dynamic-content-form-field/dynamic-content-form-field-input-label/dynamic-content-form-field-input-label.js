@@ -1,11 +1,17 @@
 'use strict';
 
-angular.module('bulbs.cms.dynamicContent.form.input.label', [])
+angular.module('bulbs.cms.dynamicContent.form.input.label', [
+  'bulbs.cms.site.config',
+  'lodash'
+])
   .directive('dynamicContentFormFieldInputLabel', [
-    function () {
+    '_', 'CmsConfig',
+    function (_, CmsConfig) {
       return {
         link: function (scope, element, attrs, formCtrl) {
           scope.form = formCtrl;
+
+          scope.isEmpty = _.isEmpty;
         },
         require: '^^form',
         restrict: 'E',
@@ -13,7 +19,13 @@ angular.module('bulbs.cms.dynamicContent.form.input.label', [])
           name: '@',
           schema: '='
         },
-        template: '<label for="{{ name }}">{{ schema.label }}</label>'
+        templateUrl: CmsConfig.buildComponentPath(
+          'dynamic-content',
+          'dynamic-content-form',
+          'dynamic-content-form-field',
+          'dynamic-content-form-field-input-label',
+          'dynamic-content-form-field-input-label.html'
+        )
       };
     }
   ]);
