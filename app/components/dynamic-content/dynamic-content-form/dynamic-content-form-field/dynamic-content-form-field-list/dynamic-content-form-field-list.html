@@ -1,0 +1,88 @@
+<dynamic-content-form-field-input-label
+    name="{{ name }}"
+    schema="schema">
+</dynamic-content-form-field-input-label>
+
+<ol ui-sortable ng-model="ngModel">
+  <li
+      ng-init="panelClosed = false"
+      ng-repeat="itemValues in ngModel">
+
+    <div class="dynamic-content-form-field-list-item-meta">
+      <button
+          ng-if="schema.child_label"
+          ng-click="$parent.panelClosed = !$parent.panelClosed"
+          class="dynamic-content-form-field-list-item-meta-label">
+        <i
+            ng-class="{
+              'fa-caret-right': $parent.panelClosed,
+              'fa-caret-down': !$parent.panelClosed
+            }"
+            class="fa">
+        </i>
+        <span>{{ schema.child_label }} {{ $index + 1 }}</span>
+        <i
+            ng-if="!isItemValid"
+            class="fa fa-exclamation-circle dynamic-content-form-field-list-item-meta-label-error">
+        </i>
+      </button>
+
+      <div class="dynamic-content-form-field-list-item-meta-tools">
+        <form
+            ng-submit="orderingInputForm.$setPristine()"
+            name="orderingInputForm"
+            class="dynamic-content-form-field-list-item-meta-tools-order">
+          <input
+              name="order"
+              type="number"
+              ng-model="itemOrderingMemory[$index]">
+          <button
+              ng-click="moveItem($index, itemOrderingMemory[$index] - 1)"
+              ng-disabled="orderingInputForm.$pristine">
+            <i class="fa fa-check"></i>
+          </button>
+        </form>
+        <button
+            class="dynamic-content-form-field-list-item-meta-tools-order-dir"
+            ng-disabled="$index === 0"
+            ng-click="moveItem($index, $index - 1)">
+          <i class="fa fa-chevron-up"></i>
+        </button>
+        <button
+            class="dynamic-content-form-field-list-item-meta-tools-order-dir"
+            ng-disabled="$index === ngModel.length - 1"
+            ng-click="moveItem($index, $index + 1)">
+          <i class="fa fa-chevron-down"></i>
+        </button>
+      </div>
+    </div>
+
+    <div ng-hide="panelClosed">
+      <dynamic-content-form-field-object
+          schema="schema"
+          ng-model="itemValues"
+          on-validity-change="isItemValid = isValid">
+      </dynamic-content-form-field-object>
+
+      <div class="dynamic-content-form-field-list-item-meta">
+
+        <div class="dynamic-content-form-field-list-item-meta-tools">
+          <button
+              class="btn btn-xs btn-danger"
+              ng-click="removeItem($index)">
+            <i class="fa fa-trash-o"></i>
+            <span>DELETE</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </li>
+</ol>
+
+<button
+    class="btn btn-primary dynamic-content-form-field-list-add"
+    ng-if="!readOnly"
+    ng-click="newItem()">
+  <i class="fa fa-plus"></i>
+  <span>Add {{ schema.child_label }}</span>
+</button>

@@ -1,0 +1,147 @@
+<div class="editor-wrapper">
+    <div class="editorPlaceholder"></div>
+    <div class="editor" contenteditable="true"></div>
+
+    <div class="document-tools toolbar fixed">
+      <div class="toolbar-contents">
+        <button data-command-name="linkUI">
+          <span class="fa fa-link"></span>
+          <span class="btn-label">Link</span>
+        </button>
+        <button data-command-name="bold">
+          <span class="fa fa-bold"></span>
+          <span class="btn-label">Bold</span>
+        </button>
+        <button data-command-name="italic">
+          <span class="fa fa-italic"></span>
+          <span class="btn-label">Italic</span>
+        </button>
+        <button data-command-name="h4">
+          <span class="heading-icon">H<sub>2<sub></span>
+          <span class="btn-label">Sub Heading</span>
+        </button>
+        <button
+            class="hiddenbydefault"
+            data-command-name="h3">
+          <span class="heading-icon">H<sub>1</sub></span>
+          <span class="btn-label">Heading</span>
+        </button>
+        <button
+            class="hiddenbydefault"
+            data-command-name="blockquote">
+          <span class="fa fa-quote-left"></span>
+          <span class="btn-label">Block quote</span>
+        </button>
+        <button
+            class="hiddenbydefault"
+            data-command-name="insertOrderedList">
+          <span class="fa fa-list-ol"></span>
+          <span class="btn-label">Numbered List</span>
+        </button>
+        <button
+            class="hiddenbydefault"
+            data-command-name="insertUnorderedList">
+          <span class="fa fa-list-ul"></span>
+          <span class="btn-label">Bullet List</span>
+        </button>
+        <button
+            class="hiddenbydefault"
+            data-command-name="strikeThrough">
+          <span class="fa fa-strikethrough"></span>
+          <span class="btn-label">Strikethrough</span>
+        </button>
+        <button
+            class="hiddenbydefault"
+            data-command-name="toggleAnchor">
+          <span class="fa fa-anchor"></span>
+          <span class="btn-label">Add Anchor</span>
+        </button>
+        <button
+            class="hiddenbydefault"
+            data-command-name="removeFormat">
+          <span class="fa fa-times"></span>
+          <span class="btn-label">Remove Formatting</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="embed-tools embed-overlay">
+      <button data-command-name="embed-before" class="embed-button insert-above"><span class="fa fa-plus-circle" data-command-name="show"></span></button>
+      <button data-command-name="embed-after" class="embed-button insert-below"><span class="fa fa-plus-circle"></span></button>
+    </div>
+    <div class="embed-fly-out" style="display: none;">
+      <button data-command-name="image" title="Image">
+          <span class="fa fa-picture-o"></span><span class="btn-label">Image</span>
+      </button>
+      <button data-command-name="onion-video" title="Upload Video">
+          <span class="fa fa-film"></span><span class="btn-label">Upload Video</span>
+      </button>
+      <button data-command-name="youtube" title="Youtube">
+          <span class="fa fa-youtube"></span><span class="btn-label">Youtube Video</span>
+      </button>
+      <button data-command-name="embed" title="Embed Something">
+          <span class="fa fa-code"></span><span class="btn-label">Embed</span>
+      </button>
+      <button data-command-name="embed-instagram" title="Embed Instagram">
+        <span class="fa fa-instagram"></span><span class="btn-label">Instagram</span>
+      </button>
+
+      <button data-command-name="hr" title="HR">
+          <span class="fa fa-minus"></span><span class="btn-label">Horizontal Rule</span>
+      </button>
+    </div>
+
+
+    <div class="inline-tools toolbar" style="display: none;">
+        <div class="top toolbar-contents">
+            <div>
+                <button data-command-name="inline_up" class="fa fa-arrow-up"></button>
+                <button data-command-name="inline_down" class="fa fa-arrow-down"></button>
+                <button class="size inline-attribute" data-command-name="inline_size"></button>
+                <button class="crop inline-attribute" data-command-name="inline_crop"></button>
+            </div>
+        </div>
+        <div class="remove">
+            <button data-command-name="inline_remove" class="fa fa-trash-o"></button>
+        </div>
+        <div class="edit">
+            <button data-command-name="inline_edit">Edit</button>
+            <button data-command-name="inline_caption">Caption</button>
+        </div>
+    </div>
+    <div class="link-tools toolbar" style="display:none">
+        <input class="link-url" type="text" placeholder="Enter URL or Search">
+        <button class="ok">OK</button>
+        <button class="remove">Remove</button>
+        <div class="filters"></div>
+        <div class="search-results"></div>
+    </div>
+    <div
+        class="embed-modal modal fade bs-modal-lg edit-page"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="extra-info"
+        aria-hidden="true"
+        data-backdrop="true">
+            <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Embed something</h4>
+                </div><!--/modal-header-->
+                <div class="modal-body">
+                    <label>Embed code</label>
+                    <textarea class="embed-body"></textarea>
+                    <div class="embed-error alert alert-danger" style="display:none"><strong>Can't embed nothin'</strong>. Be sure to enter something into the embed code field.</div>
+                    <label>Caption (optional)</label>
+                    <input type="text" class="embed-caption"></input>
+
+
+                </div><!--/modal-body-->
+                <div class="modal-footer">
+                    <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                    <button class="set-embed-button btn btn-primary" aria-hidden="true">Embed</button>
+                </div><!--/modal-footer-->
+            </div><!--/modal-content-->
+        </div><!--/modal-dialog-->
+    </div>
+</div>

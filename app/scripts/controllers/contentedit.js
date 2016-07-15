@@ -11,6 +11,9 @@ angular.module('bulbsCmsApp')
     $scope.PARTIALS_URL = '/views/';
     $scope.buildContentPartialsPath = CmsConfig.buildContentPartialsPath;
     $scope.page = 'edit';
+    $scope.contentEditGlobals = {
+      canSave: true
+    };
 
     var getArticleCallback = function (data) {
       $window.article = $scope.article = data; //exposing article on window for debugging
@@ -162,6 +165,10 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.saveArticle = function () {
+      if ($scope.contentEditGlobals.saveError) {
+        return $scope.saveArticleDeferred.reject();
+      }
+
       $(navbarSave)
         .removeClass('btn-danger')
         .addClass('btn-success')
@@ -188,7 +195,6 @@ angular.module('bulbsCmsApp')
         .catch(saveArticleErrorCbk);
 
       return $scope.saveArticleDeferred.promise;
-
     };
 
     var listener = new keypress.Listener();
