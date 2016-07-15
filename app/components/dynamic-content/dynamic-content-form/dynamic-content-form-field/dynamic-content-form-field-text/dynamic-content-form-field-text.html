@@ -4,36 +4,12 @@
 </dynamic-content-form-field-input-label>
 
 <input
-    ng-if="schema.field_size !== 'long'"
-    ng-model="ngModel"
-    ng-readonly="schema.read_only"
-    ng-required="schema.required"
-    placeholder="{{ schema.placeholder }}"
     name="{{ name }}"
-    type="text">
-
-<div
-    class="dynamic-content-form-field-text-multiline"
-    ng-class="{ 'dynamic-content-form-field-text-read-only': schema.read_only }"
-    ng-if="schema.field_size === 'long'">
-  <input
-      ng-model="ngModel"
-      ng-readonly="schema.read_only"
-      ng-required="schema.required"
-      name="{{ name }}"
-      type="hidden">
-
-  <div
-      ng-if="schema.read_only"
-      ng-bind-html="ngModel">
-  </div>
-  <onion-editor
-      role="multiline"
-      ng-if="!schema.read_only"
-      ng-model="ngModel"
-      ng-attr-placeholder="{{ schema.placeholder }}">
-  </onion-editor>
-</div>
+    ng-model="ngModel"
+    type="text"
+    ng-required="schema.required"
+    ng-readonly="schema.read_only"
+    ng-maxlength="schema.max_length">
 
 <dynamic-content-form-field-input-errors
     name="{{ name }}"

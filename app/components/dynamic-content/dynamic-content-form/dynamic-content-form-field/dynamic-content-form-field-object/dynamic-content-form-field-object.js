@@ -7,8 +7,9 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
   'bulbs.cms.dynamicContent.form.field.dateTime',
   'bulbs.cms.dynamicContent.form.field.image',
   'bulbs.cms.dynamicContent.form.field.list',
-  'bulbs.cms.dynamicContent.form.field.text',
   'bulbs.cms.dynamicContent.form.field.integer',
+  'bulbs.cms.dynamicContent.form.field.richtext',
+  'bulbs.cms.dynamicContent.form.field.text',
   'bulbs.cms.dynamicContent.form.types',
   'bulbs.cms.site.config',
   'lodash'
