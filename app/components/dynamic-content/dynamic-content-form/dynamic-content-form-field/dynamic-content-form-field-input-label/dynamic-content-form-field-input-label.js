@@ -1,27 +1,17 @@
 'use strict';
 
 angular.module('bulbs.cms.dynamicContent.form.input.label', [
-  'bulbs.cms.site.config'
+  'bulbs.cms.site.config',
+  'lodash'
 ])
   .directive('dynamicContentFormFieldInputLabel', [
-    'CmsConfig',
-    function (CmsConfig) {
+    '_', 'CmsConfig',
+    function (_, CmsConfig) {
       return {
         link: function (scope, element, attrs, formCtrl) {
-          var form;
+          scope.form = formCtrl;
 
-          if (scope.name in formCtrl) {
-            form = formCtrl[scope.name];
-
-            scope.$watch(
-              function () {
-                return form.$error;
-              },
-              function () {
-                scope.hasErrors = Object.keys(form.$error).length > 0;
-              }
-            );
-          }
+          scope.isEmpty = _.isEmpty;
         },
         require: '^^form',
         restrict: 'E',
