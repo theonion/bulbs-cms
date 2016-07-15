@@ -415,6 +415,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         info_data: {
           some_read_only_thing: 'This May Not Be Changed',
           title: 'My Garbage Article',
+          some_string: 'hello',
           header_image: {
             id: 1
           },
@@ -454,8 +455,12 @@ angular.module('bulbsCmsApp.mockApi.data', [])
             label: 'Title',
             type: 'richtext',
             required: true,
-            max_length: 2,
             placeholder: 'This is your title...'
+          },
+          some_string: {
+            label: 'Some Plain Old String Field',
+            type: 'string',
+            max_length: 4
           },
           header_image: {
             label: 'Header Image',
