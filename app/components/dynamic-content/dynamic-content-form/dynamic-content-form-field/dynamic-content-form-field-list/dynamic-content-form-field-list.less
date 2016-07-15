@@ -21,9 +21,18 @@ dynamic-content-form-field-list {
         }
 
         .dynamic-content-form-field-list-item-meta-label {
+          background-color: transparent;
+          border: none;
           color: @interface-color-black;
           float: left;
+          font-size: @interface-font-size-2;
           font-weight: bold;
+          margin: 5px;
+          text-transform: uppercase;
+
+          .dynamic-content-form-field-list-item-meta-label-error {
+            color: @interface-color-error;
+          }
         }
 
         .dynamic-content-form-field-list-item-meta-tools {
