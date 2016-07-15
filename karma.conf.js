@@ -25,6 +25,7 @@ module.exports = function(config) {
       'app/cms-image.js',
       'app/bower_components/lodash/lodash.js',
       'app/bower_components/jquery/dist/jquery.js',
+      'app/bower_components/jquery-ui/jquery-ui.js',
       'app/bower_components/jcrop/js/jquery.Jcrop.js',
       'app/bower_components/bootstrap/dist/js/bootstrap.js',
       'app/bower_components/firebase/firebase-debug.js',

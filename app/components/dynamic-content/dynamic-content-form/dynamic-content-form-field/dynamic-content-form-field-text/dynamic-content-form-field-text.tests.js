@@ -2,14 +2,16 @@
 
 describe('Directive: dynamicContentFormFieldText', function () {
   var $parentScope;
+  var $sce;
   var digest;
 
   beforeEach(function () {
     module('bulbs.cms.dynamicContent.form.field.text');
     module('jsTemplates');
 
-    inject(function ($compile, $rootScope) {
+    inject(function (_$sce_, $compile, $rootScope) {
       $parentScope = $rootScope.$new();
+      $sce = _$sce_;
 
       digest = window.testHelper.directiveBuilderWithDynamicHtml(
         $compile,
@@ -87,7 +89,7 @@ describe('Directive: dynamicContentFormFieldText', function () {
         '</dynamic-content-form-field-text>' +
       '</form>';
     $parentScope.name = 'title';
-    $parentScope.ngModel = 'some text value';
+    $parentScope.ngModel = $sce.trustAsHtml('some text value');
     $parentScope.schema = {
       field_size: 'long',
       read_only: true
