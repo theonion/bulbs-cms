@@ -5,6 +5,14 @@ dynamic-content-form-field-list {
   > ol {
     list-style: none;
 
+    .sortable-handle {
+      cursor: -webkit-grab;
+
+      &:active {
+        cursor: -webkit-grabbing;
+      }
+    }
+
     > li {
       background: @interface-color-gray-3;
       border-radius: @interface-border-radius;

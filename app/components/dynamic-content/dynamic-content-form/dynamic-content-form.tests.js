@@ -132,7 +132,6 @@ describe('Directive: dynamicContentForm', function () {
   });
 
   it('should allow pass through of include-only attribute', function () {
-    var isValid = true;
     var html = angular.element(
       '<dynamic-content-form ' +
         'schema-src="{{ schemaSrc }}" ' +

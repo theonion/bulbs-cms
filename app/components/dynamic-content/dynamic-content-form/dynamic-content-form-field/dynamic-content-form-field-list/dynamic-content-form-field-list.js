@@ -51,6 +51,13 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
 
               $scope.redoOrdering();
             };
+
+            $scope.sortableOptions = {
+              handle: '.sortable-handle',
+              stop: function () {
+                $scope.redoOrdering();
+              }
+            };
           }
         ],
         link: function (scope, elements, attrs) {
