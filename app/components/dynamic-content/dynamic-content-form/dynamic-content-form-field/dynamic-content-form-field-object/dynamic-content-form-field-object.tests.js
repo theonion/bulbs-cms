@@ -271,4 +271,36 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     // after digest call
     expect($parentScope.formValidCallback.withArgs(false).callCount).to.equal(1);
   });
+
+  it('should allow rendering of only a subset of fields', function () {
+    var html = angular.element(
+      '<dynamic-content-form-field-object ' +
+        'schema="schema" ' +
+        'ng-model="ngModel" ' +
+        'include-only="includes"' +
+        '>' +
+      '</dynamic-content-form-field-object>'
+    );
+    $parentScope.schema = {
+      fields: {
+        title: {
+          type: 'string'
+        },
+        some_count: {
+          type: 'integer'
+        },
+        is_active: {
+          type: 'boolean'
+        }
+      }
+    };
+    $parentScope.ngModel = { title: '', some_count: 2, is_active: false };
+    $parentScope.includes = ['title', 'is_active'];
+
+    digest(html);
+
+    expect(html.find('dynamic-content-form-field-text').length).to.equal(1);
+    expect(html.find('dynamic-content-form-field-integer').length).to.equal(0);
+    expect(html.find('dynamic-content-form-field-boolean').length).to.equal(1);
+  });
 });

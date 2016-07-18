@@ -53,7 +53,8 @@ angular.module('bulbs.cms.dynamicContent.form', [
         scope: {
           schemaSrc: '@',
           ngModel: '=',
-          onValidityChange: '&'
+          onValidityChange: '&',
+          includeOnly: '='
         },
         template: '<ng-include src="template"></ng-include>'
       };

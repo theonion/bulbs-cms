@@ -29,7 +29,13 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
 
           scope.$watch('schema', function () {
             if (_.has(scope.schema, 'fields')) {
-              Object.keys(scope.schema.fields).forEach(function (id) {
+              var fieldKeys = Object.keys(scope.schema.fields);
+
+              if (_.isArray(scope.includeOnly)) {
+                fieldKeys = _.intersection(fieldKeys, scope.includeOnly);
+              }
+
+              fieldKeys.forEach(function (id) {
                 var fieldSchema = scope.schema.fields[id];
                 var fieldMeta = FIELD_TYPES_META[fieldSchema.type];
 
@@ -64,7 +70,8 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
         scope: {
           schema: '=',
           ngModel: '=',
-          onValidityChange: '&'
+          onValidityChange: '&',
+          includeOnly: '='
         },
         templateUrl: CmsConfig.buildComponentPath(
           'dynamic-content',

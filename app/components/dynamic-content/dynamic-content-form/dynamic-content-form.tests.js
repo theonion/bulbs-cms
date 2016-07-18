@@ -130,4 +130,28 @@ describe('Directive: dynamicContentForm', function () {
 
     expect($parentScope.formValidCallback.withArgs(isValid).calledOnce).to.equal(true);
   });
+
+  it('should allow pass through of include-only attribute', function () {
+    var isValid = true;
+    var html = angular.element(
+      '<dynamic-content-form ' +
+        'schema-src="{{ schemaSrc }}" ' +
+        'ng-model="ngModel" ' +
+        'include-only="includeOnly" ' +
+        '>' +
+      '</dynamic-content>'
+    );
+    $parentScope.schemaSrc = schemaSrc;
+    $parentScope.ngModel = {};
+    deferred.resolve({ fields: { title: { field: 'mock' } } });
+    $parentScope.includeOnly = ['title'];
+
+    digest(html);
+
+    var form = html.find('dynamic-content-form-field-object');
+    expect(form.length).to.equal(1);
+    expect(form.attr('schema')).to.equal('schema');
+    expect(form.attr('ng-model')).to.equal('ngModel');
+    expect(form.attr('include-only')).to.equal('includeOnly');
+  });
 });
