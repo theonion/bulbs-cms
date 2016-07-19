@@ -306,4 +306,20 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     expect(html.find('dynamic-content-form-field-integer').length).to.equal(0);
     expect(html.find('dynamic-content-form-field-boolean').length).to.equal(1);
   });
+
+  it('should render a message if schema is missing a fields key', function () {
+    var html = angular.element(
+      '<dynamic-content-form-field-object ' +
+        'schema="schema" ' +
+        'ng-model="ngModel" ' +
+        '>' +
+      '</dynamic-content-form-field-object>'
+    );
+    $parentScope.schema = {};
+    $parentScope.ngModel = {}
+
+    digest(html);
+
+    expect(html.html()).to.have.string('Schema is malformed');
+  });
 });
