@@ -60,6 +60,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
         require: ['ngModel', '^^form'],
         restrict: 'E',
         scope: {
+          name: '@',
           schema: '=',
           ngModel: '=',
           readOnly: '='
