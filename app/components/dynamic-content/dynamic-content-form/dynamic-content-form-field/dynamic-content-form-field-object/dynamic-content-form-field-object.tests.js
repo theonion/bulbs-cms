@@ -49,10 +49,13 @@ describe('Directive: dynamicContentFormFieldObject', function () {
 
   it('should render a form', function () {
     var html = angular.element(
-      '<dynamic-content-form-field-object name="name" schema="schema" ng-model="ngModel">' +
+      '<dynamic-content-form-field-object ' +
+          'name="name" ' +
+          'schema="schema" ' +
+          'ng-model="ngModel" ' +
+          '>' +
       '</dynamic-content-form-field-object>'
     );
-
     $parentScope.schema = {};
     $parentScope.ngModel = {};
 
@@ -65,10 +68,12 @@ describe('Directive: dynamicContentFormFieldObject', function () {
 
   it('should insert dynamic fields that do have a mapping', function () {
     var html = angular.element(
-      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+      '<dynamic-content-form-field-object ' +
+          'schema="schema" ' +
+          'ng-model="ngModel" ' +
+          '>' +
       '</dynamic-content-form-field-object>'
     );
-
     $parentScope.schema = {
       fields: {
         title: {
@@ -102,7 +107,10 @@ describe('Directive: dynamicContentFormFieldObject', function () {
 
     expect(function () {
       digest(
-        '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+        '<dynamic-content-form-field-object ' +
+            'schema="schema" ' +
+            'ng-model="ngModel" ' +
+            '>' +
         '</dynamic-content-form-field-object>'
       );
     }).to.throw(
@@ -115,7 +123,10 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     var fieldKey = 'title';
     var fieldType = 'not a real field type';
     var html = angular.element(
-      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+      '<dynamic-content-form-field-object ' +
+          'schema="schema" ' +
+          'ng-model="ngModel" ' +
+          '>' +
       '</dynamic-content-form-field-object>'
     );
     $parentScope.schema = { fields: {} };
@@ -133,7 +144,10 @@ describe('Directive: dynamicContentFormFieldObject', function () {
 
   it('should render an object when not given a type, but schema has a `fields` property', function () {
     var html = angular.element(
-      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+      '<dynamic-content-form-field-object ' +
+          'schema="schema" ' +
+          'ng-model="ngModel" ' +
+          '>' +
       '</dynamic-content-form-field-object>'
     );
     $parentScope.schema = { fields: { my_nested_fields: { fields: {} } } };
@@ -146,10 +160,12 @@ describe('Directive: dynamicContentFormFieldObject', function () {
 
   it('should render an image field when given a field with type image', function () {
     var html = angular.element(
-      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+      '<dynamic-content-form-field-object ' +
+          'schema="schema" ' +
+          'ng-model="ngModel" ' +
+          '>' +
       '</dynamic-content-form-field-object>'
     );
-
     $parentScope.schema = { fields: { my_image: { type: 'image' } } };
     $parentScope.ngModel = { my_image: { id: 1 } };
 
@@ -160,7 +176,10 @@ describe('Directive: dynamicContentFormFieldObject', function () {
 
   it('should render a date field when given a field with type date', function () {
     var html = angular.element(
-      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+      '<dynamic-content-form-field-object ' +
+          'schema="schema" ' +
+          'ng-model="ngModel" ' +
+          '>' +
       '</dynamic-content-form-field-object>'
     );
 
@@ -174,7 +193,10 @@ describe('Directive: dynamicContentFormFieldObject', function () {
 
   it('should render a rich text field when given a field with type richtext', function () {
     var html = angular.element(
-      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+      '<dynamic-content-form-field-object ' +
+          'schema="schema" ' +
+          'ng-model="ngModel" ' +
+          '>' +
       '</dynamic-content-form-field-object>'
     );
     $parentScope.schema = { fields: { title: { type: 'richtext' } } };
@@ -187,7 +209,10 @@ describe('Directive: dynamicContentFormFieldObject', function () {
 
   it('should render a text field when given a field with type string', function () {
     var html = angular.element(
-      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+      '<dynamic-content-form-field-object ' +
+          'schema="schema" ' +
+          'ng-model="ngModel" ' +
+          '>' +
       '</dynamic-content-form-field-object>'
     );
     $parentScope.schema = { fields: { title: { type: 'string' } } };
@@ -200,7 +225,10 @@ describe('Directive: dynamicContentFormFieldObject', function () {
 
   it('should render a integer field when given a field with type integer', function () {
     var html = angular.element(
-      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+      '<dynamic-content-form-field-object ' +
+          'schema="schema" ' +
+          'ng-model="ngModel" ' +
+          '>' +
       '</dynamic-content-form-field-object>'
     );
     $parentScope.schema = { fields: { quantity: { type: 'integer' } } };
@@ -213,7 +241,10 @@ describe('Directive: dynamicContentFormFieldObject', function () {
 
   it('should render a boolean field when given a field with type boolean', function () {
     var html = angular.element(
-      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+      '<dynamic-content-form-field-object ' +
+          'schema="schema" ' +
+          'ng-model="ngModel" ' +
+          '>' +
       '</dynamic-content-form-field-object>'
     );
     $parentScope.schema = { fields: { flagForReview: { type: 'boolean' } } };
@@ -226,7 +257,10 @@ describe('Directive: dynamicContentFormFieldObject', function () {
 
   it('should render a color field when given a field with type color', function () {
     var html = angular.element(
-      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+      '<dynamic-content-form-field-object ' +
+          'schema="schema" ' +
+          'ng-model="ngModel" ' +
+          '>' +
       '</dynamic-content-form-field-object>'
     );
     $parentScope.schema = { fields: { title: { type: 'color' } } };
@@ -239,7 +273,10 @@ describe('Directive: dynamicContentFormFieldObject', function () {
 
   it('should render a list field when given a field with type array', function () {
     var html = angular.element(
-      '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
+      '<dynamic-content-form-field-object ' +
+          'schema="schema" ' +
+          'ng-model="ngModel" ' +
+          '>' +
       '</dynamic-content-form-field-object>'
     );
     $parentScope.schema = { fields: { title: { type: 'array' } } };
