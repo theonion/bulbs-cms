@@ -103,49 +103,6 @@ describe('Directive: dynamicContentFormFieldList', function () {
     expect(html.find('dynamic-content-form-field-object').length).to.equal(2);
   });
 
-  it('should prevent adding a new item if read only', function () {
-    var html = angular.element(
-      '<form>' +
-        '<dynamic-content-form-field-list ' +
-          'name="test" ' +
-          'schema="schema" ' +
-          'ng-model="ngModel" ' +
-          'read-only="true"' +
-          '>' +
-        '</dynamic-content-form-field-list>' +
-      '</form>'
-    );
-    $parentScope.schema = { fields: { title: { type: 'mock' } } };
-    $parentScope.ngModel = [{ title: 'one' }];
-
-    var addButton = digest(html).find('button[ng-click="newItem()"]').eq(0);
-    addButton.trigger('click');
-    $parentScope.$digest();
-
-    expect($parentScope.ngModel.length).to.equal(1);
-    expect(html.find('dynamic-content-form-field-object').length).to.equal(1);
-  });
-
-  it('should not show add button if read only', function () {
-    var html = angular.element(
-      '<form>' +
-        '<dynamic-content-form-field-list ' +
-          'name="test" ' +
-          'schema="schema" ' +
-          'ng-model="ngModel" ' +
-          'read-only="true"' +
-          '>' +
-        '</dynamic-content-form-field-list>' +
-      '</form>'
-    );
-    $parentScope.schema = { fields: { title: { type: 'mock' } } };
-    $parentScope.ngModel = [{ title: 'one' }];
-
-    var element = digest(html);
-
-    expect(element.find('button[ng-click="newItem()"]').length).to.equal(0);
-  });
-
   it('should allow ordering of items', function () {
     var item1 = { title: 'one' };
     var item2 = { title: 'two' };
