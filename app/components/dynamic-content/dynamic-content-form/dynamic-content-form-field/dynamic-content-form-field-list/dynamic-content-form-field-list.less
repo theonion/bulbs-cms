@@ -1,3 +1,4 @@
+@import "../../../../../styles/_mixin";
 @import "../../../_dynamic-content-common";
 
 dynamic-content-form-field-list {
@@ -10,6 +11,16 @@ dynamic-content-form-field-list {
 
       &:active {
         cursor: -webkit-grabbing;
+      }
+    }
+
+    .dropzone {
+      @box-shadow: 0px 0px 24px 1px @interface-color-success;
+
+      .mixin-dropzone(@interface-color-gray-2, @box-shadow);
+
+      &:before {
+        .mixin-dropzone-content ('Drop Item Here');
       }
     }
 

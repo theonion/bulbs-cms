@@ -8,7 +8,7 @@
     ng-model="ngModel">
   <li
       ng-init="panelClosed = false"
-      ng-repeat="itemValues in ngModel">
+      ng-repeat="itemValues in ngModel track by $index">
 
     <div class="dynamic-content-form-field-list-item-meta sortable-handle">
       <button
@@ -59,7 +59,7 @@
       </div>
     </div>
 
-    <div ng-hide="panelClosed">
+    <div class="dynamic-content-form-field-list-item-content">
       <dynamic-content-form-field-object
           schema="schema"
           ng-model="itemValues"
