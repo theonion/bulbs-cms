@@ -112,19 +112,22 @@ describe('Directive: dynamicContentFormFieldObject', function () {
   });
 
   it('should error out if given field type does not have a mapping', function () {
+    var fieldKey = 'title';
     var fieldType = 'not a real field type';
     var html = angular.element(
       '<dynamic-content-form-field-object schema="schema" ng-model="ngModel">' +
       '</dynamic-content-form-field-object>'
     );
-    $parentScope.schema = { fields: { title: { type: fieldType } } };
-    $parentScope.ngModel = { title: '' };
+    $parentScope.schema = { fields: {} };
+    $parentScope.schema.fields[fieldKey] = { type: fieldType };
+    $parentScope.ngModel = {};
+    $parentScope.ngModel[fieldKey] = '';
 
     expect(function () {
       digest(html);
     }).to.throw(
       BulbsCmsError,
-      '<dynamic-content-form-field-object>: "' + fieldType + '" is not a valid field type!'
+      '<dynamic-content-form-field-object>: "' + fieldKey + '" has an invalid field type "' + fieldType + '"!'
     );
   });
 

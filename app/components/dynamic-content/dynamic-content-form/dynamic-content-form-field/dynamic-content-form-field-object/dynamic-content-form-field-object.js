@@ -42,7 +42,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
                   if (_.has(fieldSchema, 'fields')) {
                     fieldMeta = FIELD_TYPES_META.object;
                   } else {
-                    throw new DynamicContentFormFieldObjectError('"' + fieldSchema.type + '" is not a valid field type!');
+                    throw new DynamicContentFormFieldObjectError('"' + id + '" has an invalid field type "' + fieldSchema.type + '"!');
                   }
                 }
 
