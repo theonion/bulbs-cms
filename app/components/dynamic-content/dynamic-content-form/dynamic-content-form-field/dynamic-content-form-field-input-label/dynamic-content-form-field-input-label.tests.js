@@ -39,4 +39,18 @@ describe('Directive: dynamicContentFormFieldInputLabel', function () {
 
     expect(html.find('label').html()).to.have.string(title);
   });
+
+  it('should fill label with key name if not given a schema label', function () {
+    var name = 'title';
+    var label = 'My Field Title';
+    $parentScope.schema = {};
+    $parentScope.name = name;
+    html.find('dynamic-content-form-field-input-label')
+      .attr('name', '{{ name }}')
+      .attr('schema', 'schema');
+
+    digestedScope();
+
+    expect(html.find('label').html()).to.have.string(name);
+  });
 });

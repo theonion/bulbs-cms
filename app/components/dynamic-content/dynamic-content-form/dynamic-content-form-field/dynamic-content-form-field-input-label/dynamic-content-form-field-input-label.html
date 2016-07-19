@@ -1,5 +1,5 @@
 <label for="{{ name }}">
-  <span>{{ schema.label }}</span>
+  <span>{{ schema.label || name }}</span>
   <span
       ng-if="!isEmpty(form[name].$error)"
       class="dynamic-content-form-field-input-label-has-error">
