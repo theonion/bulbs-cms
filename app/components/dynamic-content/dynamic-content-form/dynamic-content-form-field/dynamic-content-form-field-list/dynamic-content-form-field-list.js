@@ -5,8 +5,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
   'bulbs.cms.dynamicContent.form.input.label',
   'bulbs.cms.dynamicContent.form.types',
   'bulbs.cms.site.config',
-  'bulbs.cms.utils',
-  'ui.sortable'
+  'bulbs.cms.utils'
 ])
   .directive('dynamicContentFormFieldList', [
     'CmsConfig', 'FIELD_TYPES_META', 'Utils',
@@ -57,17 +56,6 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
           if (scope.ngModel.length === 0) {
             scope.newItem();
           }
-
-          scope.sortableOptions = {
-            axis: 'y',
-            tolerance: 'pointer',
-            handle: '.sortable-handle',
-            opacity: 0.75,
-            placeholder: 'dropzone',
-            stop: function () {
-              scope.redoOrdering();
-            }
-          };
         },
         require: ['ngModel', '^^form'],
         restrict: 'E',

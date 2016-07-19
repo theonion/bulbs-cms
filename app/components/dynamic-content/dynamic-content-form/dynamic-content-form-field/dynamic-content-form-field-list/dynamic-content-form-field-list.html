@@ -3,14 +3,12 @@
     schema="schema">
 </dynamic-content-form-field-input-label>
 
-<ol
-    ui-sortable="sortableOptions"
-    ng-model="ngModel">
+<ol ng-model="ngModel">
   <li
       ng-init="panelClosed = false"
       ng-repeat="itemValues in ngModel track by $index">
 
-    <div class="dynamic-content-form-field-list-item-meta sortable-handle">
+    <div class="dynamic-content-form-field-list-item-meta">
       <button
           ng-if="schema.child_label"
           ng-click="$parent.panelClosed = !$parent.panelClosed"
@@ -59,7 +57,9 @@
       </div>
     </div>
 
-    <div class="dynamic-content-form-field-list-item-content">
+    <div
+        ng-hide="panelClosed"
+        class="dynamic-content-form-field-list-item-content">
       <dynamic-content-form-field-object
           schema="schema"
           ng-model="itemValues"
