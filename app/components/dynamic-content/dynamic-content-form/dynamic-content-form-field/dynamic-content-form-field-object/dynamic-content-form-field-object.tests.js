@@ -316,7 +316,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
       '</dynamic-content-form-field-object>'
     );
     $parentScope.schema = {};
-    $parentScope.ngModel = {}
+    $parentScope.ngModel = {};
 
     digest(html);
 
