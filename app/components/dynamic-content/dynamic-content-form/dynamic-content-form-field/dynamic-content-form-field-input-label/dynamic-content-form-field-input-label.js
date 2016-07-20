@@ -16,6 +16,7 @@ angular.module('bulbs.cms.dynamicContent.form.input.label', [
         require: '^^form',
         restrict: 'E',
         scope: {
+          inputId: '@',
           name: '@',
           schema: '='
         },
