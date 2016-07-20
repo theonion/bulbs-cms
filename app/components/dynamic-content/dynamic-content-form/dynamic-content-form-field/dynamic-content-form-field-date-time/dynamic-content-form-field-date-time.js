@@ -15,22 +15,14 @@ angular.module('bulbs.cms.dynamicContent.form.field.dateTime', [
           '$scope',
           function ($scope) {
             $scope.setDate = function (newDate) {
-              $scope.ngModel[name] = newDate.format();
+              $scope.ngModel[$scope.name] = newDate.format();
             };
 
             $scope.clearDate = function () {
-              $scope.ngModel[name] = null;
+              $scope.ngModel[$scope.name] = null;
             };
           }
         ],
-        link: function (scope, element, attrs, ctrls) {
-          var ngModel = ctrls[0];
-
-// TODO : wtf? why are there two of these?
-          scope.clearDate = function () {
-            ngModel.$setViewValue(null);
-          };
-        },
         require: ['ngModel', '^^form'],
         restrict: 'E',
         scope: {

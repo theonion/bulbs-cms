@@ -415,6 +415,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         info_data: {
           some_read_only_thing: 'This May Not Be Changed',
           title: 'My Garbage Article',
+          some_date: '2015-04-20T00:00:00Z',
           header_image: {
             id: 1
           },
@@ -458,6 +459,10 @@ angular.module('bulbsCmsApp.mockApi.data', [])
             type: 'string',
             required: true,
             placeholder: 'This is your title...'
+          },
+          some_date: {
+            label: 'Some Date',
+            type: 'datetime'
           },
           header_image: {
             label: 'Header Image',

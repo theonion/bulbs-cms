@@ -79,7 +79,7 @@ describe('Directive: dynamicContentFormFieldDate', function () {
     directiveScope.clearDate();
     $parentScope.$digest();
 
-    expect(directiveScope.$parent.ngModel).to.equal(null);
+    expect(directiveScope.$parent.ngModel.publish_date).to.equal(null);
   });
 
   it('should render static html when given a schema with read_only', function () {
