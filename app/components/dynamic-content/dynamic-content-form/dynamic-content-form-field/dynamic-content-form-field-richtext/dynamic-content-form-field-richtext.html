@@ -28,6 +28,7 @@
       ng-bind-html="ngModel[name]">
   </div>
   <onion-editor
+      id="{{ uuid }}"
       role="multiline"
       ng-if="!schema.read_only"
       ng-model="ngModel[name]"

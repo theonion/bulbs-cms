@@ -98,6 +98,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
 
     var fields = html.find('dynamic-content-form-field-mock');
     expect(fields.length).to.eql(2);
+    expect(fields.attr('uuid')).to.equal('{{ uuid }}');
     expect(fields.attr('name')).to.eql('title');
     expect(fields.attr('schema')).to.eql('schema.fields.title');
     expect(fields.attr('ng-model')).to.eql('model');

@@ -1,4 +1,5 @@
 <dynamic-content-form-field-input-label
+    input-id="{{ uuid }}"
     name="{{ name }}"
     schema="schema">
 </dynamic-content-form-field-input-label>
@@ -15,6 +16,7 @@
       ng-readonly="schema.read_only">
 
   <button
+      id="{{ uuid }}"
       datetime-selection-modal-opener
       ng-class="{
         'btn-info': ngModel[name],
