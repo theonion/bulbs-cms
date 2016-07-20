@@ -16,7 +16,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
           function ($scope) {
             $scope.itemOrderingMemory = [];
             $scope.redoOrdering = function () {
-              $scope.itemOrderingMemory = $scope.ngModel.map(function (v, i) {
+              $scope.itemOrderingMemory = $scope.ngModel[$scope.name].map(function (v, i) {
                 return i + 1;
               });
             };
@@ -34,26 +34,26 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
                 item[key] = FIELD_TYPES_META[type].initialValue;
               });
 
-              $scope.ngModel.push(item);
+              $scope.ngModel[$scope.name].push(item);
 
               $scope.redoOrdering();
             };
 
             $scope.moveItem = function (fromIndex, toIndex) {
-              Utils.moveTo($scope.ngModel, fromIndex, toIndex, true);
+              Utils.moveTo($scope.ngModel[$scope.name], fromIndex, toIndex, true);
 
               $scope.redoOrdering();
             };
 
             $scope.removeItem = function (index) {
-              Utils.removeFrom($scope.ngModel, index);
+              Utils.removeFrom($scope.ngModel[$scope.name], index);
 
               $scope.redoOrdering();
             };
           }
         ],
         link: function (scope, elements, attrs) {
-          if (scope.ngModel.length === 0) {
+          if (scope.ngModel[scope.name].length === 0) {
             scope.newItem();
           }
         },

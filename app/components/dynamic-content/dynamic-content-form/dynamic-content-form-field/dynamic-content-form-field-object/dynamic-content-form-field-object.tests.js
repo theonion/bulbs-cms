@@ -5,6 +5,10 @@ describe('Directive: dynamicContentFormFieldObject', function () {
   var digest;
   var mockDirectiveNameKey = 'mock';
   var mockDirectiveName = 'dynamic-content-form-field-mock';
+  var mockDirectiveFormType = {
+    tagName: mockDirectiveName,
+    initialValue: 'mock'
+  };
   var sandbox;
 
   beforeEach(function () {
@@ -20,13 +24,14 @@ describe('Directive: dynamicContentFormFieldObject', function () {
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldDateTime');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldImage');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldInteger');
+        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldInvalid');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldList');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldRichtext');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldText');
 
         var key = 'FIELD_TYPES_META';
         var mapCopy = angular.copy($injector.get(key));
-        mapCopy[mockDirectiveNameKey] = { tagName: mockDirectiveName };
+        mapCopy[mockDirectiveNameKey] = mockDirectiveFormType;
 
         $provide.constant(key, mapCopy);
       }
@@ -95,31 +100,11 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     expect(fields.length).to.eql(2);
     expect(fields.attr('name')).to.eql('title');
     expect(fields.attr('schema')).to.eql('schema.fields.title');
-    expect(fields.attr('ng-model')).to.eql('ngModel.title');
+    expect(fields.attr('ng-model')).to.eql('model');
     expect(fields.hasClass('dynamic-content-form-field'));
   });
 
-  it('should throw and error if no value exists for schema-defined field', function () {
-    var fieldName = 'title';
-    $parentScope.schema = { fields: {} };
-    $parentScope.schema.fields[fieldName] = { type: 'mock' };
-    $parentScope.ngModel = {};
-
-    expect(function () {
-      digest(
-        '<dynamic-content-form-field-object ' +
-            'schema="schema" ' +
-            'ng-model="ngModel" ' +
-            '>' +
-        '</dynamic-content-form-field-object>'
-      );
-    }).to.throw(
-      BulbsCmsError,
-      '<dynamic-content-form-field-object>: "' + fieldName + '" has no matching value!'
-    );
-  });
-
-  it('should error out if given field type does not have a mapping', function () {
+  it('should render an error element when given an invalid field type', function () {
     var fieldKey = 'title';
     var fieldType = 'not a real field type';
     var html = angular.element(
@@ -134,12 +119,9 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     $parentScope.ngModel = {};
     $parentScope.ngModel[fieldKey] = '';
 
-    expect(function () {
-      digest(html);
-    }).to.throw(
-      BulbsCmsError,
-      '<dynamic-content-form-field-object>: "' + fieldKey + '" has an invalid field type "' + fieldType + '"!'
-    );
+    digest(html);
+
+    expect(html.find('dynamic-content-form-field-invalid').length).to.equal(1);
   });
 
   it('should render an object when not given a type, but schema has a `fields` property', function () {
@@ -317,7 +299,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
       '<dynamic-content-form-field-object ' +
         'schema="schema" ' +
         'ng-model="ngModel" ' +
-        'include-only="includes"' +
+        'include-only="includeOnly"' +
         '>' +
       '</dynamic-content-form-field-object>'
     );
@@ -334,8 +316,12 @@ describe('Directive: dynamicContentFormFieldObject', function () {
         }
       }
     };
-    $parentScope.ngModel = { title: '', some_count: 2, is_active: false };
-    $parentScope.includes = ['title', 'is_active'];
+    $parentScope.ngModel = {
+      title: '',
+      some_count: 2,
+      is_active: false
+    };
+    $parentScope.includeOnly = ['title', 'is_active'];
 
     digest(html);
 

@@ -4,7 +4,7 @@
 </dynamic-content-form-field-input-label>
 
 <input
-    ng-model="ngModel"
+    ng-model="ngModel[name]"
     ng-readonly="schema.read_only"
     ng-required="schema.required"
     class="dynamic-content-form-field-color-input-color"
@@ -12,7 +12,7 @@
     type="color">
 
 <input
-    ng-model="ngModel"
+    ng-model="ngModel[name]"
     ng-readonly="schema.read_only"
     class="dynamic-content-form-field-color-input-text"
     name="{{ name }}"

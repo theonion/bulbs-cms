@@ -29,7 +29,7 @@ describe('Directive: dynamicContentFormFieldDate', function () {
         '</dynamic-content-form-field-date-time>' +
       '</form>';
     $parentScope.name = 'publish_date';
-    $parentScope.ngModel = '2016-12-20T00:00:00';
+    $parentScope.ngModel = { publish_date: '2016-12-20T00:00:00' };
     $parentScope.schema = {};
 
     var element = digest(html);
@@ -49,7 +49,7 @@ describe('Directive: dynamicContentFormFieldDate', function () {
         '</dynamic-content-form-field-date-time>' +
       '</form>';
     $parentScope.name = 'publish_date';
-    $parentScope.ngModel = null;
+    $parentScope.ngModel = { publish_date: null };
     $parentScope.schema = {};
 
     var element = digest(html);
@@ -68,7 +68,7 @@ describe('Directive: dynamicContentFormFieldDate', function () {
         '</dynamic-content-form-field-date-time>' +
       '</form>';
     $parentScope.name = 'publish_date';
-    $parentScope.ngModel = '2016-04-20T00:00:00';
+    $parentScope.ngModel = { publish_date: '2016-04-20T00:00:00' };
     $parentScope.schema = {};
 
 
@@ -93,7 +93,7 @@ describe('Directive: dynamicContentFormFieldDate', function () {
         '</dynamic-content-form-field-date-time>' +
       '</form>';
     $parentScope.name = 'publish_date';
-    $parentScope.ngModel = '2016-12-20T00:00:00';
+    $parentScope.ngModel = { publish_date: '2016-12-20T00:00:00' };
     $parentScope.schema = { read_only: true };
 
     var element = digest(html);
@@ -114,7 +114,7 @@ describe('Directive: dynamicContentFormFieldDate', function () {
         '</dynamic-content-form-field-date-time>' +
       '</form>';
     $parentScope.name = 'publish_date';
-    $parentScope.ngModel = '2016-12-20T00:00:00';
+    $parentScope.ngModel = { publish_date: '2016-12-20T00:00:00' };
     $parentScope.schema = { required: true };
 
     var element = digest(html);

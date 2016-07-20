@@ -415,7 +415,6 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         info_data: {
           some_read_only_thing: 'This May Not Be Changed',
           title: 'My Garbage Article',
-          some_string: 'hello',
           header_image: {
             id: 1
           },
@@ -424,7 +423,6 @@ angular.module('bulbsCmsApp.mockApi.data', [])
           },
           body: '<p>Something something something</p>',
           long_read_only: '<p>readonly readonly readonly</p><p>paragraph 2</p>',
-          publish_date: null,
           main_color: '#000000',
           data: {
             is_numbered: 'hello',
@@ -451,16 +449,15 @@ angular.module('bulbsCmsApp.mockApi.data', [])
             type: 'richtext',
             read_only: true
           },
+          not_a_real_type: {
+            label: 'This Is Not a Valid Field Type',
+            type: 'garbage barbage'
+          },
           title: {
             label: 'Title',
-            type: 'richtext',
+            type: 'string',
             required: true,
             placeholder: 'This is your title...'
-          },
-          some_string: {
-            label: 'Some Plain Old String Field',
-            type: 'string',
-            max_length: 4
           },
           header_image: {
             label: 'Header Image',
@@ -483,11 +480,6 @@ angular.module('bulbsCmsApp.mockApi.data', [])
             type: 'richtext',
             field_size: 'long',
             read_only: true
-          },
-          publish_date: {
-            label: 'Publish Date',
-            type: 'datetime',
-            required: true
           },
           main_color: {
             label: 'Main Color',
@@ -517,6 +509,10 @@ angular.module('bulbsCmsApp.mockApi.data', [])
                     label: 'Body',
                     type: 'richtext',
                     field_size: 'long'
+                  },
+                  image: {
+                    label: 'Unset Image',
+                    type: 'image'
                   }
                 }
               }

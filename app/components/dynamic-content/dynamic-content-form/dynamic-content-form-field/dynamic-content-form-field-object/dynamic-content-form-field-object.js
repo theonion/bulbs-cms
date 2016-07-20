@@ -7,6 +7,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
   'bulbs.cms.dynamicContent.form.field.image',
   'bulbs.cms.dynamicContent.form.field.list',
   'bulbs.cms.dynamicContent.form.field.integer',
+  'bulbs.cms.dynamicContent.form.field.invalid',
   'bulbs.cms.dynamicContent.form.field.richtext',
   'bulbs.cms.dynamicContent.form.field.text',
   'bulbs.cms.dynamicContent.form.types',
@@ -16,7 +17,6 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
   .directive('dynamicContentFormFieldObject', [
     '_', '$compile', 'CmsConfig', 'FIELD_TYPES_META',
     function (_, $compile, CmsConfig, FIELD_TYPES_META) {
-      var DynamicContentFormFieldObjectError = BulbsCmsError.build('<dynamic-content-form-field-object>');
 
       return {
         link: function (scope, element, attrs) {
@@ -42,12 +42,8 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
                   if (_.has(fieldSchema, 'fields')) {
                     fieldMeta = FIELD_TYPES_META.object;
                   } else {
-                    throw new DynamicContentFormFieldObjectError('"' + id + '" has an invalid field type "' + fieldSchema.type + '"!');
+                    fieldMeta = FIELD_TYPES_META.invalid;
                   }
-                }
-
-                if (_.isUndefined(scope.ngModel[id])) {
-                  throw new DynamicContentFormFieldObjectError('"' + id + '" has no matching value!');
                 }
 
                 var tagName = fieldMeta.tagName;
@@ -55,8 +51,18 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
 
                 html.attr('name', id);
                 html.attr('schema', 'schema.fields.' + id);
-                html.attr('ng-model', 'ngModel.' + id);
                 html.attr('class', 'dynamic-content-form-field');
+
+                // when we're at a nested object, scope.name will be defined
+                scope.model = _.isString(scope.name) ? scope.ngModel[scope.name] : scope.ngModel;
+
+                // NOTE : Angular is not able to bind primitives properly when
+                //  passed into isolate scopes. See
+                //  https://github.com/angular/angular.js/issues/1924. The
+                //  parent object is passed in in its entirety and the child
+                //  directive is responsible for accessing the key it needs to
+                //  be able to modify.
+                html.attr('ng-model', 'model');
 
                 $form.append(html);
                 $compile(html)(scope);
@@ -67,6 +73,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
         require: 'ngModel',
         restrict: 'E',
         scope: {
+          name: '@',
           schema: '=',
           ngModel: '=',
           onValidityChange: '&',

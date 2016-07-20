@@ -24,7 +24,7 @@ describe('Directive: dynamicContentFormFieldColor', function () {
       );
 
       $parentScope.name = 'color';
-      $parentScope.ngModel = '#000000';
+      $parentScope.ngModel = { color: '#000000' };
       $parentScope.schema = {};
 
       digest = window.testHelper.directiveBuilderWithDynamicHtml(
@@ -37,14 +37,14 @@ describe('Directive: dynamicContentFormFieldColor', function () {
   it('renders a text input', function () {
     var input = digest(html).find('input[type="text"]');
     expect(input).to.have.length(1);
-    expect(input.attr('ng-model')).to.eql('ngModel');
+    expect(input.attr('ng-model')).to.eql('ngModel[name]');
     expect(input.attr('name')).to.eql('color');
   });
 
   it('renders a color input', function () {
     var input = digest(html).find('input[type="color"]');
     expect(input).to.have.length(1);
-    expect(input.attr('ng-model')).to.eql('ngModel');
+    expect(input.attr('ng-model')).to.eql('ngModel[name]');
     expect(input.attr('name')).to.eql('color');
   });
 
@@ -64,25 +64,25 @@ describe('Directive: dynamicContentFormFieldColor', function () {
 
   describe('hex color validation', function () {
     it('it allows hex values', function () {
-      $parentScope.ngModel = null;
+      $parentScope.ngModel = { color: null };
       var error = digest(html).scope().testForm.$error;
       expect(error.rgbhex).to.eql(undefined);
     });
 
     it('rejects mini-hex', function () {
-      $parentScope.ngModel = '#333';
+      $parentScope.ngModel = { color: '#333' };
       var error = digest(html).scope().testForm.$error;
       expect(error.rgbhex).to.have.length(1);
     });
 
     it('rejects out of range hex values', function () {
-      $parentScope.ngModel = '#3q3q3q';
+      $parentScope.ngModel = { color: '#3q3q3q' };
       var error = digest(html).scope().testForm.$error;
       expect(error.rgbhex).to.have.length(1);
     });
 
     it('rejects non-hex values', function () {
-      $parentScope.ngModel = 'turquoise';
+      $parentScope.ngModel = { color: 'turquoise' };
       var error = digest(html).scope().testForm.$error;
       expect(error.rgbhex).to.have.length(1);
     });
@@ -90,7 +90,7 @@ describe('Directive: dynamicContentFormFieldColor', function () {
 
   it('requires a value if schema.required is true', function () {
     $parentScope.schema.required = true;
-    $parentScope.ngModel = undefined;
+    $parentScope.ngModel = { color: undefined };
     var error = digest(html).scope().testForm.$error;
     expect(error.required).to.have.length(1);
   });

@@ -20,7 +20,10 @@ angular.module('bulbs.cms.dynamicContent.form.types', [])
     },
     image: {
       tagName: 'dynamic-content-form-field-image',
-      initialValue: {}
+      initialValue: null
+    },
+    invalid: {
+      tagName: 'dynamic-content-form-field-invalid'
     },
     object: {
       tagName: 'dynamic-content-form-field-object',

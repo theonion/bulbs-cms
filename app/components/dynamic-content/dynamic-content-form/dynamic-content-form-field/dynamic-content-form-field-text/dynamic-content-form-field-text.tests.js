@@ -29,7 +29,7 @@ describe('Directive: dynamicContentFormFieldText', function () {
         '</dynamic-content-form-field-text>' +
       '</form>';
     $parentScope.name = 'title';
-    $parentScope.ngModel = 'some text value';
+    $parentScope.ngModel = { title: 'some text value' };
     $parentScope.schema = {};
 
     var element = digest(html);
@@ -48,8 +48,8 @@ describe('Directive: dynamicContentFormFieldText', function () {
         '</dynamic-content-form-field-text>' +
       '</form>';
     $parentScope.name = 'title';
-    $parentScope.ngModel = 'some text value';
-    $parentScope.schema = { max_length: $parentScope.ngModel.length - 1 };
+    $parentScope.ngModel = { title: 'some text value' };
+    $parentScope.schema = { max_length: $parentScope.ngModel.title.length - 1 };
 
     var element = digest(html);
 
@@ -67,7 +67,7 @@ describe('Directive: dynamicContentFormFieldText', function () {
         '</dynamic-content-form-field-text>' +
       '</form>';
     $parentScope.name = 'title';
-    $parentScope.ngModel = 'some text value';
+    $parentScope.ngModel = { title: 'some text value' };
     $parentScope.schema = {};
 
     var element = digest(html);
@@ -86,7 +86,7 @@ describe('Directive: dynamicContentFormFieldText', function () {
         '</dynamic-content-form-field-text>' +
       '</form>';
     $parentScope.name = 'title';
-    $parentScope.ngModel = '';
+    $parentScope.ngModel = { title: '' };
     $parentScope.schema = { required: true };
 
     var element = digest(html);
@@ -105,7 +105,7 @@ describe('Directive: dynamicContentFormFieldText', function () {
         '</dynamic-content-form-field-text>' +
       '</form>';
     $parentScope.name = 'title';
-    $parentScope.ngModel = 'some text value';
+    $parentScope.ngModel = { title: 'some text value' };
     $parentScope.schema = { read_only: true };
 
     var element = digest(html);

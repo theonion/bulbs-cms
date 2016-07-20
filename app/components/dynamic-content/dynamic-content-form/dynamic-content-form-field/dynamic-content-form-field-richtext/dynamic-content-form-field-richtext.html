@@ -5,7 +5,7 @@
 
 <input
     ng-if="schema.field_size !== 'long'"
-    ng-model="ngModel"
+    ng-model="ngModel[name]"
     ng-readonly="schema.read_only"
     ng-required="schema.required"
     placeholder="{{ schema.placeholder }}"
@@ -17,7 +17,7 @@
     ng-class="{ 'dynamic-content-form-field-richtext-read-only': schema.read_only }"
     ng-if="schema.field_size === 'long'">
   <input
-      ng-model="ngModel"
+      ng-model="ngModel[name]"
       ng-readonly="schema.read_only"
       ng-required="schema.required"
       name="{{ name }}"
@@ -25,12 +25,12 @@
 
   <div
       ng-if="schema.read_only"
-      ng-bind-html="ngModel">
+      ng-bind-html="ngModel[name]">
   </div>
   <onion-editor
       role="multiline"
       ng-if="!schema.read_only"
-      ng-model="ngModel"
+      ng-model="ngModel[name]"
       ng-attr-placeholder="{{ schema.placeholder }}">
   </onion-editor>
 </div>

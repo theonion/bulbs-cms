@@ -24,7 +24,7 @@ describe('Directive: dynamicContentFormFieldBoolean', function () {
       );
 
       $parentScope.name = 'maybe';
-      $parentScope.ngModel = true;
+      $parentScope.ngModel = { maybe: true };
       $parentScope.schema = {};
 
       digest = window.testHelper.directiveBuilderWithDynamicHtml(
@@ -41,7 +41,7 @@ describe('Directive: dynamicContentFormFieldBoolean', function () {
 
   it('requires a value if schema.required is true', function () {
     $parentScope.schema.required = true;
-    $parentScope.ngModel = undefined;
+    $parentScope.ngModel = { maybe: undefined };
     var error = digest(html).scope().testForm.$error;
     expect(error.required).to.have.length(1);
   });

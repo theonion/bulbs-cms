@@ -28,8 +28,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.integer', [
           formField.$validators.integer = function (modelValue) {
             if (!modelValue) {
               return true;
-            }
-            else {
+            } else {
               return parseInt(modelValue, 10) === modelValue;
             }
           };

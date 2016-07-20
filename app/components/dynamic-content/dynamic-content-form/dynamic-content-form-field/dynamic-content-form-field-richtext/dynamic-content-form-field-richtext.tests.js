@@ -31,7 +31,7 @@ describe('Directive: dynamicContentFormFieldRichtext', function () {
         '</dynamic-content-form-field-richtext>' +
       '</form>';
     $parentScope.name = 'title';
-    $parentScope.ngModel = 'some text value';
+    $parentScope.ngModel = { title: 'some text value' };
     $parentScope.schema = {};
 
     var element = digest(html);
@@ -51,7 +51,7 @@ describe('Directive: dynamicContentFormFieldRichtext', function () {
         '</dynamic-content-form-field-richtext>' +
       '</form>';
     $parentScope.name = 'title';
-    $parentScope.ngModel = 'some text value';
+    $parentScope.ngModel = { title: 'some text value' };
     $parentScope.schema = { field_size: 'long' };
 
     var element = digest(html);
@@ -70,7 +70,7 @@ describe('Directive: dynamicContentFormFieldRichtext', function () {
         '</dynamic-content-form-field-richtext>' +
       '</form>';
     $parentScope.name = 'title';
-    $parentScope.ngModel = 'some text value';
+    $parentScope.ngModel = { title: 'some text value' };
     $parentScope.schema = { read_only: true };
 
     var element = digest(html);
@@ -89,7 +89,7 @@ describe('Directive: dynamicContentFormFieldRichtext', function () {
         '</dynamic-content-form-field-richtext>' +
       '</form>';
     $parentScope.name = 'title';
-    $parentScope.ngModel = $sce.trustAsHtml('some text value');
+    $parentScope.ngModel = { title: $sce.trustAsHtml('some text value') };
     $parentScope.schema = {
       field_size: 'long',
       read_only: true
@@ -98,7 +98,7 @@ describe('Directive: dynamicContentFormFieldRichtext', function () {
     var element = digest(html);
 
     expect(element.find('.dynamic-content-form-field-richtext-read-only').html())
-      .to.have.string($parentScope.ngModel.toString());
+      .to.have.string($parentScope.ngModel.title.toString());
     expect(element.find('onion-editor').length).to.equal(0);
   });
 
@@ -113,7 +113,7 @@ describe('Directive: dynamicContentFormFieldRichtext', function () {
         '</dynamic-content-form-field-richtext>' +
       '</form>';
     $parentScope.name = 'title';
-    $parentScope.ngModel = 'some text value';
+    $parentScope.ngModel = { title: 'some text value' };
     $parentScope.schema = { required: true };
 
     var element = digest(html);

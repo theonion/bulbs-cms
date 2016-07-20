@@ -3,33 +3,33 @@
     schema="schema">
 </dynamic-content-form-field-input-label>
 
-<div ng-if="schema.read_only">{{ ngModel | dateTimeFormat }}</div>
+<div ng-if="schema.read_only">{{ ngModel[name] | dateTimeFormat }}</div>
 
 <div ng-if="!schema.read_only">
 
   <input
       type="hidden"
       name="{{ name }}"
-      ng-model="ngModel"
+      ng-model="ngModel[name]"
       ng-required="schema.required"
       ng-readonly="schema.read_only">
 
   <button
       datetime-selection-modal-opener
       ng-class="{
-        'btn-info': ngModel,
-        'btn-warning': !ngModel
+        'btn-info': ngModel[name],
+        'btn-warning': !ngModel[name]
       }"
-      ng-model="ngModel"
+      ng-model="ngModel[name]"
       modal-on-close="setDate(newDate)"
       class="btn btn-xs">
     <i class="fa fa-calendar"></i>
-    <span ng-if="ngModel">{{ ngModel | dateTimeFormat }}</span>
-    <span ng-if="!ngModel">click to set date/time</span>
+    <span ng-if="ngModel[name]">{{ ngModel[name] | dateTimeFormat }}</span>
+    <span ng-if="!ngModel[name]">click to set date/time</span>
   </button>
 
   <button
-      ng-if="ngModel"
+      ng-if="ngModel[name]"
       ng-click="clearDate()"
       class="btn btn-xs btn-danger">
     <i class="fa fa-times"></i>
