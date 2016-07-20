@@ -95,7 +95,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
       body: ''
     };
 
-    var element = digest(html);
+    digest(html);
 
     var fields = html.find('dynamic-content-form-field-mock');
     expect(fields.length).to.eql(2);
