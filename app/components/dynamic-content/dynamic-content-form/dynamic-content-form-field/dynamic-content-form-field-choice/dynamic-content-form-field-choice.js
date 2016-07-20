@@ -1,17 +1,21 @@
 'use strict';
 
 angular.module('bulbs.cms.dynamicContent.form.field.choice', [
-  'bulbs.cms.site.config',
+  'bulbs.cms.dynamicContent.form.input.errors',
   'bulbs.cms.dynamicContent.form.input.label',
-  'bulbs.cms.dynamicContent.form.input.errors'
+  'bulbs.cms.site.config'
 ])
   .directive('dynamicContentFormFieldChoice', [
     'CmsConfig',
     function (CmsConfig) {
       return {
+        link: function (scope) {
+          console.log(scope.schema)
+        },
         require: ['ngModel', '^^form'],
         restrict: 'E',
         scope: {
+          uuid: '@',
           name: '@',
           ngModel: '=',
           schema: '='
