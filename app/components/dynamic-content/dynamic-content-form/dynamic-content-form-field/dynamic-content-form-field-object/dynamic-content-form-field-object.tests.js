@@ -20,6 +20,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldMock');
 
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldBoolean');
+        window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldChoice');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldColor');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldDateTime');
         window.testHelper.directiveMock($compileProvider, 'dynamicContentFormFieldImage');
@@ -235,6 +236,22 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     digest(html);
 
     expect(html.find('dynamic-content-form-field-boolean').length).to.equal(1);
+  });
+
+  it('should render a choice field when given a field with type choice', function () {
+    var html = angular.element(
+      '<dynamic-content-form-field-object ' +
+          'schema="schema" ' +
+          'ng-model="ngModel" ' +
+          '>' +
+      '</dynamic-content-form-field-object>'
+    );
+    $parentScope.schema = { fields: { choice_of_things: { type: 'choice' } } };
+    $parentScope.ngModel = { choice_of_things: '' };
+
+    digest(html);
+
+    expect(html.find('dynamic-content-form-field-choice').length).to.equal(1);
   });
 
   it('should render a color field when given a field with type color', function () {
