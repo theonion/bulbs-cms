@@ -25,6 +25,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.text', [
         require: ['ngModel', '^^form'],
         restrict: 'E',
         scope: {
+          uuid: '@',
           name: '@',
           ngModel: '=',
           schema: '='

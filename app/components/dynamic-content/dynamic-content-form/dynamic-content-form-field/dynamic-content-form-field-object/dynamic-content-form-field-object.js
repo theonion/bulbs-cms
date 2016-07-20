@@ -12,11 +12,12 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
   'bulbs.cms.dynamicContent.form.field.text',
   'bulbs.cms.dynamicContent.form.types',
   'bulbs.cms.site.config',
-  'lodash'
+  'lodash',
+  'uuid4'
 ])
   .directive('dynamicContentFormFieldObject', [
-    '_', '$compile', 'CmsConfig', 'FIELD_TYPES_META',
-    function (_, $compile, CmsConfig, FIELD_TYPES_META) {
+    '_', '$compile', 'CmsConfig', 'FIELD_TYPES_META', 'uuid4',
+    function (_, $compile, CmsConfig, FIELD_TYPES_META, uuid4) {
 
       return {
         link: function (scope, element, attrs) {
@@ -49,6 +50,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
                 var tagName = fieldMeta.tagName;
                 var html = angular.element('<' + tagName + '></' + tagName + '>');
 
+                html.attr('uuid', uuid4.generate());
                 html.attr('name', id);
                 html.attr('schema', 'schema.fields.' + id);
                 html.attr('class', 'dynamic-content-form-field');

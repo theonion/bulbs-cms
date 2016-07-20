@@ -12,6 +12,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.integer', [
         require: ['ngModel', '^^form'],
         restrict: 'E',
         scope: {
+          uuid: '@',
           name: '@',
           ngModel: '=',
           schema: '='
