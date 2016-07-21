@@ -6,10 +6,15 @@
 
 <select
     ng-model="ngModel[name]"
-    ng-options="choice.value as choice.display_name for choice in schema.choices track by choice.value"
     id="{{ uuid }}"
     name="{{ name }}">
   <option value="">Choose a {{ schema.label || name }}...</option>
+  <option
+      ng-repeat="choice in schema.choices track by choice.value"
+      ng-selected="choice.value === ngModel[name]"
+      value="{{ choice.value }}">
+    {{ choice.display_name }}
+  </option>
 </select>
 
 <dynamic-content-form-field-input-errors
