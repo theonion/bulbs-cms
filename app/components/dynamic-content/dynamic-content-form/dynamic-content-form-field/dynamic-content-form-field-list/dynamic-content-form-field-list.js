@@ -5,18 +5,24 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
   'bulbs.cms.dynamicContent.form.input.label',
   'bulbs.cms.dynamicContent.form.types',
   'bulbs.cms.site.config',
-  'bulbs.cms.utils'
+  'bulbs.cms.utils',
+  'lodash'
 ])
   .directive('dynamicContentFormFieldList', [
     'CmsConfig', 'FIELD_TYPES_META', 'Utils',
     function (CmsConfig, FIELD_TYPES_META, Utils) {
       return {
         controller: [
-          '$scope',
-          function ($scope) {
+          '_', '$scope',
+          function (_, $scope) {
+            if (_.isUndefined($scope.ngModel[$scope.name])) {
+              $scope.ngModel[$scope.name] = [];
+            }
+            $scope.model = $scope.ngModel[$scope.name];
+
             $scope.itemOrderingMemory = [];
             $scope.redoOrdering = function () {
-              $scope.itemOrderingMemory = $scope.ngModel[$scope.name].map(function (v, i) {
+              $scope.itemOrderingMemory = $scope.model.map(function (v, i) {
                 return i + 1;
               });
             };
@@ -34,26 +40,26 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
                 item[key] = FIELD_TYPES_META[type].initialValue;
               });
 
-              $scope.ngModel[$scope.name].push(item);
+              $scope.model.push(item);
 
               $scope.redoOrdering();
             };
 
             $scope.moveItem = function (fromIndex, toIndex) {
-              Utils.moveTo($scope.ngModel[$scope.name], fromIndex, toIndex, true);
+              Utils.moveTo($scope.model, fromIndex, toIndex, true);
 
               $scope.redoOrdering();
             };
 
             $scope.removeItem = function (index) {
-              Utils.removeFrom($scope.ngModel[$scope.name], index);
+              Utils.removeFrom($scope.model, index);
 
               $scope.redoOrdering();
             };
           }
         ],
         link: function (scope, elements, attrs) {
-          if (scope.ngModel[scope.name].length === 0) {
+          if (scope.model.length === 0) {
             scope.newItem();
           }
         },

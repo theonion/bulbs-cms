@@ -233,4 +233,24 @@ describe('Directive: dynamicContentFormFieldList', function () {
     expect($parentScope.ngModel.test[0].title).to.equal(item2.title);
     expect(html.find('dynamic-content-form-field-object').length).to.equal(1);
   });
+
+  it('should initialize given value to an empty list if null or undefined', function () {
+    var name = 'my_list';
+    var html = angular.element(
+      '<form>' +
+        '<dynamic-content-form-field-list ' +
+            'name="' + name + '" ' +
+            'schema="schema" ' +
+            'ng-model="ngModel" ' +
+            '>' +
+        '</dynamic-content-form-field-list>' +
+      '</form>'
+    );
+    $parentScope.schema = { fields: {} };
+    $parentScope.ngModel = {};
+
+    digest(html);
+
+    expect($parentScope.ngModel[name]).to.be.an.instanceof(Array);
+  });
 });
