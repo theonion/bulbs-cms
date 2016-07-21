@@ -14,12 +14,14 @@
 @interface-font-size-1: 10px;
 @interface-font-size-2: 12px;
 
+@interface-internal-spacing: 10px;
+
 .input-mixin (@width: 100%) {
   background-color: @interface-color-white;
   border: 1px solid @interface-color-gray-4;
   font-size: @interface-font-size-2;
   line-height: inherit;
-  padding: 10px;
+  padding: @interface-internal-spacing;
   width: @width;
 
   &[readonly] {

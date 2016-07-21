@@ -4,20 +4,23 @@
     schema="schema">
 </dynamic-content-form-field-input-label>
 
-<select
-    ng-model="ngModel[name]"
-    ng-readonly="schema.read_only"
-    ng-required="schema.required"
-    id="{{ uuid }}"
-    name="{{ name }}">
-  <option value="">Choose a {{ schema.label || name }}...</option>
-  <option
-      ng-repeat="choice in schema.choices track by choice.value"
-      ng-selected="choice.value === ngModel[name]"
-      value="{{ choice.value }}">
-    {{ choice.display_name }}
-  </option>
-</select>
+<div class="dynamic-content-form-field-choice-select-container">
+  <select
+      ng-model="ngModel[name]"
+      ng-readonly="schema.read_only"
+      ng-required="schema.required"
+      id="{{ uuid }}"
+      name="{{ name }}">
+    <option value="">Choose a {{ schema.label || name }}...</option>
+    <option
+        ng-repeat="choice in schema.choices track by choice.value"
+        ng-selected="choice.value === ngModel[name]"
+        value="{{ choice.value }}">
+      {{ choice.display_name }}
+    </option>
+  </select>
+  <i class="fa fa-sort"></i>
+</div>
 
 <dynamic-content-form-field-input-errors
     name="{{ name }}"
