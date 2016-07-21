@@ -40,12 +40,18 @@ describe('Directive: dynamicContentFormFieldChoice', function () {
 
     var element = digest(html);
 
-    console.log(element.html())
-
     var options = element.find('option');
     expect(options.length).to.equal(3);
     expect(options.eq(0).html()).to.have.string('Choose a ' + $parentScope.schema.label + '...');
     expect(options.eq(1).html()).to.have.string(choice1.display_name);
     expect(options.eq(2).html()).to.have.string(choice2.display_name);
+  });
+
+  it('should work correctly', function () {
+// NOTE: put in a test here about the display of the selection being correct
+
+
+    // TODO : add test code here
+    throw new Error('Not implemented yet.');
   });
 });

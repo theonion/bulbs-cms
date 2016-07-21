@@ -9,9 +9,6 @@ angular.module('bulbs.cms.dynamicContent.form.field.choice', [
     'CmsConfig',
     function (CmsConfig) {
       return {
-        link: function (scope) {
-          console.log(scope.schema)
-        },
         require: ['ngModel', '^^form'],
         restrict: 'E',
         scope: {

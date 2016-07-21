@@ -422,6 +422,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
           read_only_image: {
             id: 1
           },
+          shape: 1,
           body: '<p>Something something something</p>',
           long_read_only: '<p>readonly readonly readonly</p><p>paragraph 2</p>',
           main_color: '#000000',
@@ -473,6 +474,20 @@ angular.module('bulbsCmsApp.mockApi.data', [])
             label: 'A Read Only Image',
             type: 'image',
             read_only: true
+          },
+          shape: {
+            label: 'Shape',
+            type: 'choice',
+            choices: [{
+              display_name: 'Square',
+              value: 0
+            }, {
+              display_name: 'Circle',
+              value: 1
+            }, {
+              display_name: 'Rectangle',
+              value: 2
+            }]
           },
           body: {
             label: 'Body',
