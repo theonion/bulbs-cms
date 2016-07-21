@@ -157,6 +157,32 @@ describe('CmsConfig', function () {
         });
       });
 
+      context('date time format human readable', function () {
+
+        it('should provide a getter and setter', function () {
+          var dateFormat = 'M/d/yyyy h:mma';
+
+          configs.setDateTimeFormatHumanReadable(dateFormat);
+
+          expect(sealedConfigs().getDateTimeFormatHumanReadable()).to.equal(dateFormat);
+        });
+
+        it('should throw an error if given value is not a string', function () {
+
+          expect(function () {
+            configs.setDateTimeFormatHumanReadable(123);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): date time format human readable must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setDateTimeFormatHumanReadable('abc')).to.eql(configs);
+        });
+      });
+
       context('cms name', function () {
 
         it('should provide a getter and setter', function () {

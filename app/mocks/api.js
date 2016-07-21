@@ -1,6 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp.mockApi', [
+  'moment',
   'ngMockE2E',
 
   'bulbsCmsApp.mockApi.data',
@@ -45,18 +46,27 @@ angular.module('bulbsCmsApp.mockApi', [
     }
     $httpBackend.when('GET', detailRegex).respond(detailView);
 
-    function detailPut(method, url, data) {
+    $httpBackend.when('OPTIONS', detailRegex).respond(function (method, url, data) {
       var index = getContentId(url);
-      if(index === 7){
+      if (method === 'OPTIONS' && index === 7){
         return [403, {detail: 'You do not have permission to perform this action.'}];
+      } else {
+        var ctype = _.filter(
+          mockApiData['content.list'].results,
+          { id: Number(index) }
+        )[0].polymorphic_ctype;
+        var schema = mockApiData['dynamicContent.schemas'][ctype];
+
+        return [200, schema];
       }
-      if(method === 'PUT' && index === 8){
+    });
+    $httpBackend.when('PUT', detailRegex).respond(function (method, url, data) {
+      var index = getContentId(url);
+      if (method === 'PUT' && index === 8){
         return [400, {'season': ['This field is required.'], 'episode': ['This field is required.'], 'show': ['This field is required.']}];
       }
       return [200, data];
-    }
-    $httpBackend.when('OPTIONS', detailRegex).respond(detailPut);
-    $httpBackend.when('PUT', detailRegex).respond(detailPut);
+    });
 
     $httpBackend.whenPOST('/cms/api/v1/content/', mockApiData['content.create'])
       .respond(function(method, url, data) {
@@ -388,9 +398,9 @@ angular.module('bulbsCmsApp.mockApi', [
     $httpBackend.when('POST', /^http:\/\/localimages\.avclub\.com\/api\/new$/)
       .respond(mockApiData['bettycropper.new']);
 
-    $httpBackend.when('OPTIONS', /^http:\/\/clickholeimg.local.*/).respond(404);
-    $httpBackend.when('GET', /^http:\/\/clickholeimg.local.*/).respond(404);
-    $httpBackend.when('POST', /^http:\/\/clickholeimg.local.*/).respond(404);
+    $httpBackend.when('OPTIONS', /^http:\/\/clickholeimg.local.*/).respond('');
+    $httpBackend.when('GET', /^http:\/\/clickholeimg.local.*/).respond(mockApiData['bettycropper.detail']);
+    $httpBackend.when('POST', /^http:\/\/clickholeimg.local.*/).respond(mockApiData['bettycropper.new']);
 
     // send to webtech (fickle)
     $httpBackend.whenPOST('/cms/api/v1/report-bug/').respond('');

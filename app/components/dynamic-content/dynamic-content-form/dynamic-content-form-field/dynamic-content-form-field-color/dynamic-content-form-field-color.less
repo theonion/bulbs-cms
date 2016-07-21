@@ -1,0 +1,24 @@
+@import "../../../_dynamic-content-common";
+
+dynamic-content-form-field-color {
+
+  .dynamic-content-form-field-color-input-color {
+    height: 39px;
+    vertical-align: bottom;
+    width: 39px;
+
+    &::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    &::-webkit-color-swatch {
+      border: none;
+    }
+  }
+
+  .dynamic-content-form-field-color-input-text {
+    .input-mixin(7em);
+
+    color: @interface-color-gray-5;
+  }
+}

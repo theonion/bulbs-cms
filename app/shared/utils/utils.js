@@ -20,26 +20,46 @@ angular.module('bulbs.cms.utils', [
       };
 
       /**
-       * Content moving function.
+       * In given list, swaps item at indexFrom with item at indexTo.
        *
+       * @param {Array} list - list to swap items in.
        * @param {Number} indexFrom - Index to move content from.
        * @param {Number} indexTo - Index to move content to.
-       * @returns {Boolean} true if content moved, false otherwise.
+       * @param {Boolean} allowOutOfBounds - true to perform move when given
+       *    indexTo that's out of bounds.
+       * @returns {Boolean} true if item was moved, false otherwise.
        */
-      Utils.moveTo = function (list, indexFrom, indexTo) {
+      Utils.moveTo = function (list, indexFrom, indexTo, allowOutOfBounds) {
         var ret = false;
+        var modIndexTo = indexTo;
+
+        if (allowOutOfBounds) {
+          if (indexTo < 0) {
+            modIndexTo = 0;
+          } else if (indexTo >= list.length) {
+            modIndexTo = list.length - 1;
+          }
+        }
 
         if (indexFrom >= 0 && indexFrom < list.length &&
-            indexTo >= 0 && indexTo < list.length) {
-          var splicer = list.splice(indexFrom, 1, list[indexTo]);
+            modIndexTo >= 0 && modIndexTo < list.length) {
+          var splicer = list.splice(indexFrom, 1, list[modIndexTo]);
           if (splicer.length > 0) {
-            list[indexTo] = splicer[0];
+            list[modIndexTo] = splicer[0];
             ret = true;
           }
         }
+
         return ret;
       };
 
+      /**
+       * In given list, remove an item at given index.
+       *
+       * @param {Array} list - list to remove item from.
+       * @param {Number} index - index of item to remove.
+       * @returns {Boolean} true if item was removed, false otherwise.
+       */
       Utils.removeFrom = function (list, index) {
         return list.splice(index, 1).length > 0;
       };

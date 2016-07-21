@@ -12,6 +12,7 @@ angular.module('bulbs.cms.base.config', [
       CmsConfigProvider
         .setContentPartialsPath('/content_type_views')
         .setComponentPath('/components')
+        .setDateTimeFormatHumanReadable('M/D/YY h:mma z')
         .setDirectivePartialsPath('/views')
         .setSharedPath('/shared')
         .setTopBarMapping('nav', '/views/nav.html')

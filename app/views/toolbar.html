@@ -8,7 +8,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-save btn btn-success navbar-btn visible-xs-inline pull-right" ng-class="{'btn-clean': !articleIsDirty}" href="" ng-click="saveArticle();" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/">
+      <a class="navbar-save btn btn-success navbar-btn visible-xs-inline pull-right" ng-class="{'btn-clean': !articleIsDirty}" href="" ng-click="saveArticle();">
           <i class="glyphicon glyphicon-floppy-disk"></i> Save</a>
     </div>
 
@@ -56,58 +56,81 @@
             </button>
           </li>
       </ul>
-        <ul class="nav navbar-nav navbar-right" ng-show="page === 'edit'">
+      <ul class="nav navbar-nav navbar-right" ng-show="page === 'edit'">
 
-          <li class="content-status"
-              ng-controller="ContentworkflowCtrl"
-              ng-show="firebaseConnected && activeUsers.length > 0"
-              ng-init="showActiveUsers = false;">
-            <a href="" ng-mouseenter="showActiveUsers = true;" ng-mouseleave="showActiveUsers = false;">
-              <i class="glyphicon glyphicon-eye-open"></i>
-              <span>Active Users ({{ activeUsers.length }})</span>
-            </a>
-            <div class="active-users" ng-show="showActiveUsers">
-                <ul>
-                    <li ng-repeat="user in activeUsers">
-                        <span>{{ user.displayName }}</span><span ng-show="user.count > 1"> ({{ user.count }})</span>
-                    </li>
-                </ul>
-            </div>
-          </li>
+        <li class="content-status"
+            ng-controller="ContentworkflowCtrl"
+            ng-show="firebaseConnected && activeUsers.length > 0"
+            ng-init="showActiveUsers = false;">
+          <a href="" ng-mouseenter="showActiveUsers = true;" ng-mouseleave="showActiveUsers = false;">
+            <i class="glyphicon glyphicon-eye-open"></i>
+            <span>Active Users ({{ activeUsers.length }})</span>
+          </a>
+          <div class="active-users" ng-show="showActiveUsers">
+              <ul>
+                  <li ng-repeat="user in activeUsers">
+                      <span>{{ user.displayName }}</span><span ng-show="user.count > 1"> ({{ user.count }})</span>
+                  </li>
+              </ul>
+          </div>
+        </li>
 
-          <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'unpublished'" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/publish/">
-            <a href="" ng-click="saveArticle().then(pubTimeModal);">
-              <i class="glyphicon glyphicon-globe"></i> Publish...
-            </a>
-          </li>
+        <li
+            class="content-status"
+            ng-controller="ContentworkflowCtrl"
+            ng-show="getStatus(article) === 'unpublished'">
+          <a
+              href=""
+              ng-click="saveArticle().then(pubTimeModal);">
+            <i class="glyphicon glyphicon-globe"></i>
+            <span>Publish...</span>
+          </a>
+        </li>
 
-          <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'published'" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/publish/">
-            <a href="" class="changeable" ng-click="saveArticle().then(pubTimeModal);">
-              <i class="glyphicon glyphicon-calendar"></i>
-              <span>Published: {{article.published|tzDate:"M/d/yy '@' h:mm a" }}</span>
-            </a>
-          </li>
+        <li
+            class="content-status"
+            ng-controller="ContentworkflowCtrl"
+            ng-show="getStatus(article) === 'published'">
+          <a
+              href=""
+              class="changeable"
+              ng-click="saveArticle().then(pubTimeModal);">
+            <i class="glyphicon glyphicon-calendar"></i>
+            <span>Published: {{ article.published | dateTimeFormat:"M/D/YY[ @ ]h:mm a z" }}</span>
+          </a>
+        </li>
 
-          <li class="content-status" ng-controller="ContentworkflowCtrl" ng-show="getStatus(article) == 'scheduled'" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/publish/">
-            <a href="" class="changeable" ng-click="saveArticle().then(pubTimeModal);">
-              <i class="glyphicon glyphicon-calendar"></i>
-              <span>Scheduled: {{article.published|tzDate:"M/d/yy '@' h:mm a" }}</span>
-            </a>
-          </li>
+        <li
+            class="content-status"
+            ng-controller="ContentworkflowCtrl"
+            ng-show="getStatus(article) === 'scheduled'">
+          <a
+              href=""
+              class="changeable"
+              ng-click="saveArticle().then(pubTimeModal);">
+            <i class="glyphicon glyphicon-calendar"></i>
+            <span>Scheduled: {{ article.published | dateTimeFormat:"M/D/YY[ @ ]h:mm a z" }}</span>
+          </a>
+        </li>
 
-          <li class="content-status">
-            <a target="_blank" href="/r/{{article.id}}">
-              <i class="glyphicon glyphicon-share-alt"></i>
-              <span>Preview</span>
-            </a>
-          </li>
+        <li class="content-status">
+          <a target="_blank" href="/r/{{article.id}}">
+            <i class="glyphicon glyphicon-share-alt"></i>
+            <span>Preview</span>
+          </a>
+        </li>
 
-          <li class="hidden-xs" hide-if-forbidden options-url="/cms/api/v1/content/{{article.id}}/">
-            <button id="save-article-btn" class="navbar-save btn btn-success btn-sm navbar-btn" ng-class="{'btn-clean': !articleIsDirty}" href="" ng-click="saveArticle();">
-              <i class="glyphicon glyphicon-floppy-disk"></i>
-              <span>Save</span>
-            </button>
-          </li>
+        <li class="hidden-xs">
+          <button
+              id="save-article-btn"
+              class="navbar-save btn btn-success btn-sm navbar-btn"
+              ng-class="{'btn-clean': !articleIsDirty}"
+              ng-disabled="!contentEditGlobals.canSave"
+              ng-click="saveArticle();">
+            <i class="glyphicon glyphicon-floppy-disk"></i>
+            <span>Save</span>
+          </button>
+        </li>
 
       </ul>
     </div>

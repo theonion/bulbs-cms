@@ -90,4 +90,67 @@ describe('Utils', function () {
       expect(constructed).to.equal(one + '/' + two + '/' + three);
     });
   });
+
+  context('list modifiers', function () {
+
+    context('move items', function () {
+
+      it('should move an item at given index to another given index', function () {
+        var list = [1, 2, 3];
+
+        var moved = utils.moveTo(list, 0, 2);
+
+        expect(moved).to.equal(true);
+        expect(list[0]).to.equal(3);
+        expect(list[1]).to.equal(2);
+        expect(list[2]).to.equal(1);
+      });
+
+      context('when given allowOutOfBounds = true', function () {
+
+        it('should move an item to the beginning given a negative index', function () {
+          var list = [1, 2, 3];
+
+          var moved = utils.moveTo(list, 2, -5, true);
+
+          expect(moved).to.equal(true);
+          expect(list[0]).to.equal(3);
+          expect(list[1]).to.equal(2);
+          expect(list[2]).to.equal(1);
+        });
+
+        it('should move an item to the end given an index greater than list length', function () {
+          var list = [1, 2, 3];
+
+          var moved = utils.moveTo(list, 0, list.length + 10, true);
+
+          expect(moved).to.equal(true);
+          expect(list[0]).to.equal(3);
+          expect(list[1]).to.equal(2);
+          expect(list[2]).to.equal(1);
+        });
+      });
+    });
+
+    context('remove items', function () {
+
+      it('should remove an item at given index', function () {
+        var list = [1, 2, 3];
+
+        var moved = utils.removeFrom(list, 1);
+
+        expect(moved).to.equal(true);
+        expect(list).to.eql([1, 3]);
+      });
+
+      it('should not remove anything if given index is out of bounds', function () {
+        var list = [1, 2, 3];
+
+        var moved = utils.removeFrom(list, 10);
+
+        expect(moved).to.equal(false);
+        expect(list).to.eql([1, 2, 3]);
+      });
+    });
+  });
 });

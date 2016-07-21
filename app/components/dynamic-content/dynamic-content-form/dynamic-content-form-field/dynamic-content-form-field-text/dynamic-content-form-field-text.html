@@ -1,0 +1,19 @@
+<dynamic-content-form-field-input-label
+    input-id="{{ uuid }}"
+    name="{{ name }}"
+    schema="schema">
+</dynamic-content-form-field-input-label>
+
+<input
+    id="{{ uuid }}"
+    name="{{ name }}"
+    ng-model="ngModel[name]"
+    type="text"
+    ng-required="schema.required"
+    ng-readonly="schema.read_only"
+    ng-maxlength="schema.max_length">
+
+<dynamic-content-form-field-input-errors
+    name="{{ name }}"
+    schema="schema">
+</dynamic-content-form-field-input-errors>

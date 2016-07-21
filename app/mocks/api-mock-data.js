@@ -406,7 +406,125 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         body: 'This article has a really long title.',
         client_pixel: null,
         sponsor_name: null
+      }, {
+        id: 12,
+        feature_type: 'Dynamically Created CMS',
+        title: 'Some Page Type',
+        slug: 'my-dynamic-content-type',
+        polymorphic_ctype: 'core_dynamic_content_type_1',
+        info_data: {
+          some_read_only_thing: 'This May Not Be Changed',
+          title: 'My Garbage Article',
+          some_date: '2015-04-20T00:00:00Z',
+          header_image: {
+            id: 1
+          },
+          read_only_image: {
+            id: 1
+          },
+          body: '<p>Something something something</p>',
+          long_read_only: '<p>readonly readonly readonly</p><p>paragraph 2</p>',
+          main_color: '#000000',
+          data: {
+            is_numbered: 'hello',
+            the_number: 123,
+            entries: [{
+              title: 'ONE',
+              body: ''
+            }, {
+              title: 'TWO',
+              body: ''
+            }, {
+              title: 'Three',
+              body: ''
+            }]
+          }
+        }
       }]
+    },
+    'dynamicContent.schemas': {
+      core_dynamic_content_type_1: {
+        fields: {
+          some_read_only_thing: {
+            label: 'Some Read Only Thing',
+            type: 'richtext',
+            read_only: true
+          },
+          not_a_real_type: {
+            label: 'This Is Not a Valid Field Type',
+            type: 'garbage barbage'
+          },
+          title: {
+            label: 'Title',
+            type: 'string',
+            required: true,
+            placeholder: 'This is your title...'
+          },
+          some_date: {
+            label: 'Some Date',
+            type: 'datetime'
+          },
+          header_image: {
+            label: 'Header Image',
+            type: 'image',
+            required: true
+          },
+          read_only_image: {
+            label: 'A Read Only Image',
+            type: 'image',
+            read_only: true
+          },
+          body: {
+            label: 'Body',
+            type: 'richtext',
+            field_size: 'long',
+            placeholder: 'Start typing in this spot...'
+          },
+          long_read_only: {
+            label: 'Long Read Only Field',
+            type: 'richtext',
+            field_size: 'long',
+            read_only: true
+          },
+          main_color: {
+            label: 'Main Color',
+            type: 'color'
+          },
+          data: {
+            fields: {
+              is_numbered: {
+                label: 'Is Numbered',
+                type: 'boolean'
+              },
+              the_number: {
+                label: 'The Number',
+                type: 'integer'
+              },
+              entries: {
+                type: 'array',
+                label: 'Entries',
+                child_label: 'Entry',
+                fields: {
+                  title: {
+                    label: 'Title',
+                    type: 'richtext',
+                    required: true
+                  },
+                  body: {
+                    label: 'Body',
+                    type: 'richtext',
+                    field_size: 'long'
+                  },
+                  image: {
+                    label: 'Unset Image',
+                    type: 'image'
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
     'things.list': [
       {'url': '/search?tags=so-you-think-you-can-dance', 'param': 'tags', 'type': 'tag', 'name': 'So You Think You Can Dance', 'value': 'so-you-think-you-can-dance'},
