@@ -6,6 +6,8 @@
 
 <select
     ng-model="ngModel[name]"
+    ng-readonly="schema.read_only"
+    ng-required="schema.required"
     id="{{ uuid }}"
     name="{{ name }}">
   <option value="">Choose a {{ schema.label || name }}...</option>
