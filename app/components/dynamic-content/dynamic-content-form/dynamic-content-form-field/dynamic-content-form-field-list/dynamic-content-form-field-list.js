@@ -18,11 +18,10 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
             if (_.isUndefined($scope.ngModel[$scope.name])) {
               $scope.ngModel[$scope.name] = [];
             }
-            $scope.model = $scope.ngModel[$scope.name];
 
             $scope.itemOrderingMemory = [];
             $scope.redoOrdering = function () {
-              $scope.itemOrderingMemory = $scope.model.map(function (v, i) {
+              $scope.itemOrderingMemory = $scope.ngModel[$scope.name].map(function (v, i) {
                 return i + 1;
               });
             };
@@ -32,18 +31,18 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
               if ($scope.readOnly) {
                 return;
               }
-              $scope.model.push({});
+              $scope.ngModel[$scope.name].push({});
               $scope.redoOrdering();
             };
 
             $scope.moveItem = function (fromIndex, toIndex) {
-              Utils.moveTo($scope.model, fromIndex, toIndex, true);
+              Utils.moveTo($scope.ngModel[$scope.name], fromIndex, toIndex, true);
 
               $scope.redoOrdering();
             };
 
             $scope.removeItem = function (index) {
-              Utils.removeFrom($scope.model, index);
+              Utils.removeFrom($scope.ngModel[$scope.name], index);
 
               $scope.redoOrdering();
             };
@@ -52,7 +51,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
         link: function (scope, elements, attrs, ctrls) {
           scope.form = ctrls[1];
 
-          if (scope.model.length === 0) {
+          if (scope.ngModel[scope.name].length === 0) {
             scope.newItem();
           }
         },
