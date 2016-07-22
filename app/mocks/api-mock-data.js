@@ -414,7 +414,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         polymorphic_ctype: 'core_dynamic_content_type_1',
         info_data: {
           some_read_only_thing: 'This May Not Be Changed',
-          title: 'My Garbage Article',
+          title: '',
           some_date: '2015-04-20T00:00:00Z',
           header_image: {
             id: 1
@@ -429,7 +429,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
             is_numbered: 'hello',
             the_number: 123,
             entries: [{
-              title: 'ONE',
+              title: '',
               body: ''
             }, {
               title: 'TWO',

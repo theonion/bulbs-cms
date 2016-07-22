@@ -10,7 +10,6 @@
 
     <div class="dynamic-content-form-field-list-item-meta">
       <button
-          ng-if="schema.child_label"
           ng-click="$parent.panelClosed = !$parent.panelClosed"
           class="dynamic-content-form-field-list-item-meta-label">
         <i
@@ -20,9 +19,9 @@
             }"
             class="fa">
         </i>
-        <span>{{ schema.child_label }} {{ $index + 1 }}</span>
+        <span>{{ schema.child_label || 'Item' }} {{ $index + 1 }}</span>
         <i
-            ng-if="!isItemValid"
+            ng-if="!isItemValid && form.$dirty"
             class="fa fa-exclamation-circle dynamic-content-form-field-list-item-meta-label-error">
         </i>
       </button>
@@ -85,5 +84,5 @@
     class="btn btn-primary dynamic-content-form-field-list-add"
     ng-click="newItem()">
   <i class="fa fa-plus"></i>
-  <span>Add {{ schema.child_label }}</span>
+  <span>Add {{ schema.child_label || 'Item' }}</span>
 </button>

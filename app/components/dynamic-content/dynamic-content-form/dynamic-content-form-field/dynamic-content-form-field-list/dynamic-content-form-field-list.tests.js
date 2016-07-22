@@ -4,7 +4,6 @@ describe('Directive: dynamicContentFormFieldList', function () {
   var $parentScope;
   var digest;
   var mockFieldObject;
-  var mockInitialValue = 'my garbage';
 
   beforeEach(function () {
     module(
@@ -19,7 +18,6 @@ describe('Directive: dynamicContentFormFieldList', function () {
         var key = 'FIELD_TYPES_META';
         var mapCopy = angular.copy($injector.get(key));
         mapCopy['mock'] = {
-          initialValue: mockInitialValue,
           tagName: 'dynamic-content-form-field-mock'
         };
 
@@ -101,7 +99,6 @@ describe('Directive: dynamicContentFormFieldList', function () {
     addButton.trigger('click');
     $parentScope.$digest();
 
-    expect($parentScope.ngModel.test[1].title).to.equal(mockInitialValue);
     expect(html.find('dynamic-content-form-field-object').length).to.equal(2);
   });
 
@@ -252,5 +249,73 @@ describe('Directive: dynamicContentFormFieldList', function () {
     digest(html);
 
     expect($parentScope.ngModel[name]).to.be.an.instanceof(Array);
+  });
+
+  it('should show an error icon if containing form is invalid', function () {
+    var name = 'test';
+    var formName = 'testForm';
+    var html = angular.element(
+      '<form name="' + formName + '">' +
+        '<dynamic-content-form-field-list ' +
+            'name="' + name + '" ' +
+            'schema="schema" ' +
+            'ng-model="ngModel" ' +
+            '>' +
+        '</dynamic-content-form-field-list>' +
+      '</form>'
+    );
+    $parentScope.schema = {
+      fields: {
+        title: {
+          type: 'mock',
+          required: true
+        }
+      }
+    };
+    $parentScope.ngModel = {};
+    $parentScope.ngModel[name] = [{ title: '' }];
+    var element = digest(html);
+
+    element.find('li').scope().isItemValid = false;
+    element.scope()[formName].$setDirty();
+    $parentScope.$digest();
+
+    expect(
+      element.find('.dynamic-content-form-field-list-item-meta-label-error').length
+    ).to.equal(1);
+  });
+
+  it('should not render error if in an invalid state but form is pristine', function () {
+    var name = 'test';
+    var formName = 'testForm';
+    var html = angular.element(
+      '<form name="' + formName + '">' +
+        '<dynamic-content-form-field-list ' +
+            'name="' + name + '" ' +
+            'schema="schema" ' +
+            'ng-model="ngModel" ' +
+            '>' +
+        '</dynamic-content-form-field-list>' +
+      '</form>'
+    );
+    $parentScope.schema = {
+      fields: {
+        title: {
+          type: 'mock',
+          required: true
+        }
+      }
+    };
+    $parentScope.ngModel = {};
+    $parentScope.ngModel[name] = [{ title: '' }];
+    var element = digest(html);
+
+    element.find('li').scope().isItemValid = false;
+    element.scope()[formName].$setPristine();
+    $parentScope.$digest();
+
+    expect(
+      element.find('.dynamic-content-form-field-list-item-meta-label-error').length
+    ).to.equal(0);
   });
 });

@@ -33,6 +33,7 @@ describe('Directive: dynamicContentFormFieldInputErrors', function () {
       .attr('name', inputName)
       .attr('schema', 'schema');
     digestedScope();
+    html.scope()[formName].$setDirty();
 
     html.scope()[formName][inputName] = { $error: { required: true } };
     $parentScope.$digest();
@@ -50,6 +51,7 @@ describe('Directive: dynamicContentFormFieldInputErrors', function () {
       .attr('name', inputName)
       .attr('schema', 'schema');
     digestedScope();
+    html.scope()[formName].$setDirty();
 
     html.scope()[formName][inputName] = { $error: { min: true } };
     $parentScope.$digest();
@@ -67,6 +69,7 @@ describe('Directive: dynamicContentFormFieldInputErrors', function () {
       .attr('name', inputName)
       .attr('schema', 'schema');
     digestedScope();
+    html.scope()[formName].$setDirty();
 
     html.scope()[formName][inputName] = { $error: { max: true } };
     $parentScope.$digest();
@@ -83,6 +86,7 @@ describe('Directive: dynamicContentFormFieldInputErrors', function () {
       .attr('name', inputName)
       .attr('schema', 'schema');
     digestedScope();
+    html.scope()[formName].$setDirty();
 
     html.scope()[formName][inputName] = { $error: { integer: true } };
     $parentScope.$digest();
@@ -102,6 +106,7 @@ describe('Directive: dynamicContentFormFieldInputErrors', function () {
       .attr('name', inputName)
       .attr('schema', 'schema');
     digestedScope();
+    html.scope()[formName].$setDirty();
 
     html.scope()[formName][inputName] = {
       $error: { maxlength: true },
@@ -123,10 +128,29 @@ describe('Directive: dynamicContentFormFieldInputErrors', function () {
       .attr('name', inputName)
       .attr('schema', 'schema');
     digestedScope();
+    html.scope()[formName].$setDirty();
 
     html.scope()[formName][inputName] = { $error: { rgbhex: true } };
     $parentScope.$digest();
 
     expect(html.html()).to.have.string(label + ' must be formatted as an rgb hex. eg: "#000000".');
+  });
+
+  it('should render if form is not dirty', function () {
+    var label = 'Garbage Title';
+    $parentScope.schema = {
+      label: label,
+    };
+    html.find('dynamic-content-form-field-input-errors')
+      .attr('name', inputName)
+      .attr('schema', 'schema');
+    digestedScope();
+    html.scope()[formName].$setPristine();
+
+    html.scope()[formName][inputName] = { $error: { required: true } };
+    $parentScope.$digest();
+
+    expect(html.find('dynamic-content-form-field-input-errors').find('ul').length)
+      .to.equal(0);
   });
 });

@@ -6,8 +6,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
   var mockDirectiveNameKey = 'mock';
   var mockDirectiveName = 'dynamic-content-form-field-mock';
   var mockDirectiveFormType = {
-    tagName: mockDirectiveName,
-    initialValue: 'mock'
+    tagName: mockDirectiveName
   };
   var sandbox;
 

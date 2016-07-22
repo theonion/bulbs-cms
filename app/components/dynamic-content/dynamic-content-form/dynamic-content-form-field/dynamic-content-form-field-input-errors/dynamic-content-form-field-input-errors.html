@@ -1,4 +1,4 @@
-<ul>
+<ul ng-if="form.$dirty">
   <li ng-repeat="(errorName, isError) in form[name].$error">
     <i class="fa fa-exclamation-circle"></i>
     <span ng-if="errorName === 'integer'">{{ schema.label }} must be an integer.</span>

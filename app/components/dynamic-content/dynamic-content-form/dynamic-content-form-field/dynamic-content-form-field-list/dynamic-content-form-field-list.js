@@ -32,16 +32,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
               if ($scope.readOnly) {
                 return;
               }
-
-              var item = {};
-
-              Object.keys($scope.schema.fields).forEach(function (key) {
-                var type = $scope.schema.fields[key].type;
-                item[key] = FIELD_TYPES_META[type].initialValue;
-              });
-
-              $scope.model.push(item);
-
+              $scope.model.push({});
               $scope.redoOrdering();
             };
 
@@ -58,7 +49,9 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
             };
           }
         ],
-        link: function (scope, elements, attrs) {
+        link: function (scope, elements, attrs, ctrls) {
+          scope.form = ctrls[1];
+
           if (scope.model.length === 0) {
             scope.newItem();
           }
