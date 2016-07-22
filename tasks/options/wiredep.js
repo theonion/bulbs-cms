@@ -29,6 +29,9 @@ module.exports = {
           './css/jquery.Jcrop.css'
         ]
       },
+      'moment-timezone': {
+        main: './builds/moment-timezone-with-data.js'
+      },
       'onion-editor': {
         'main': [
           './build/editor-main.css',
