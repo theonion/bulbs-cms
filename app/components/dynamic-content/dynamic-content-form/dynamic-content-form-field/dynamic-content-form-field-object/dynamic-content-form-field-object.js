@@ -55,16 +55,18 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
                 html.attr('schema', 'schema.fields.' + id);
                 html.attr('class', 'dynamic-content-form-field');
 
-                // when we're at a nested object, scope.name will be defined
-                scope.model = _.isString(scope.name) ? scope.ngModel[scope.name] : scope.ngModel;
-
                 // NOTE : Angular is not able to bind primitives properly when
                 //  passed into isolate scopes. See
                 //  https://github.com/angular/angular.js/issues/1924. The
                 //  parent object is passed in in its entirety and the child
                 //  directive is responsible for accessing the key it needs to
                 //  be able to modify.
-                html.attr('ng-model', 'model');
+                if (_.isString(scope.name)) {
+                  // when we're at a nested object, scope.name will be defined
+                  html.attr('ng-model', 'ngModel[name]');
+                } else {
+                  html.attr('ng-model', 'ngModel');
+                }
 
                 $form.append(html);
                 $compile(html)(scope);
