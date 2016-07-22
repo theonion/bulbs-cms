@@ -6,7 +6,7 @@
 <ol>
   <li
       ng-init="panelClosed = false"
-      ng-repeat="itemValues in ngModel[name]">
+      ng-repeat="itemValues in ngModel[name] track by $index">
 
     <div class="dynamic-content-form-field-list-item-meta">
       <button
