@@ -58,7 +58,9 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
             };
           }
         ],
-        link: function (scope, elements, attrs) {
+        link: function (scope, elements, attrs, ctrls) {
+          scope.form = ctrls[1];
+
           if (scope.model.length === 0) {
             scope.newItem();
           }

@@ -253,4 +253,72 @@ describe('Directive: dynamicContentFormFieldList', function () {
 
     expect($parentScope.ngModel[name]).to.be.an.instanceof(Array);
   });
+
+  it('should show an error icon if containing form is invalid', function () {
+    var name = 'test';
+    var formName = 'testForm';
+    var html = angular.element(
+      '<form name="' + formName + '">' +
+        '<dynamic-content-form-field-list ' +
+            'name="' + name + '" ' +
+            'schema="schema" ' +
+            'ng-model="ngModel" ' +
+            '>' +
+        '</dynamic-content-form-field-list>' +
+      '</form>'
+    );
+    $parentScope.schema = {
+      fields: {
+        title: {
+          type: 'mock',
+          required: true
+        }
+      }
+    };
+    $parentScope.ngModel = {};
+    $parentScope.ngModel[name] = [{ title: '' }];
+    var element = digest(html);
+
+    element.find('li').scope().isItemValid = false;
+    element.scope()[formName].$setDirty();
+    $parentScope.$digest();
+
+    expect(
+      element.find('.dynamic-content-form-field-list-item-meta-label-error').length
+    ).to.equal(1);
+  });
+
+  it('should not render error if in an invalid state but form is pristine', function () {
+    var name = 'test';
+    var formName = 'testForm';
+    var html = angular.element(
+      '<form name="' + formName + '">' +
+        '<dynamic-content-form-field-list ' +
+            'name="' + name + '" ' +
+            'schema="schema" ' +
+            'ng-model="ngModel" ' +
+            '>' +
+        '</dynamic-content-form-field-list>' +
+      '</form>'
+    );
+    $parentScope.schema = {
+      fields: {
+        title: {
+          type: 'mock',
+          required: true
+        }
+      }
+    };
+    $parentScope.ngModel = {};
+    $parentScope.ngModel[name] = [{ title: '' }];
+    var element = digest(html);
+
+    element.find('li').scope().isItemValid = false;
+    element.scope()[formName].$setPristine();
+    $parentScope.$digest();
+
+    expect(
+      element.find('.dynamic-content-form-field-list-item-meta-label-error').length
+    ).to.equal(0);
+  });
 });
