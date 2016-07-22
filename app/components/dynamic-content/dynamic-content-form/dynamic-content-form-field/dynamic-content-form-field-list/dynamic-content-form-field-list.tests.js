@@ -4,7 +4,6 @@ describe('Directive: dynamicContentFormFieldList', function () {
   var $parentScope;
   var digest;
   var mockFieldObject;
-  var mockInitialValue = 'my garbage';
 
   beforeEach(function () {
     module(
@@ -19,7 +18,6 @@ describe('Directive: dynamicContentFormFieldList', function () {
         var key = 'FIELD_TYPES_META';
         var mapCopy = angular.copy($injector.get(key));
         mapCopy['mock'] = {
-          initialValue: mockInitialValue,
           tagName: 'dynamic-content-form-field-mock'
         };
 
@@ -101,7 +99,6 @@ describe('Directive: dynamicContentFormFieldList', function () {
     addButton.trigger('click');
     $parentScope.$digest();
 
-    expect($parentScope.ngModel.test[1].title).to.equal(mockInitialValue);
     expect(html.find('dynamic-content-form-field-object').length).to.equal(2);
   });
 

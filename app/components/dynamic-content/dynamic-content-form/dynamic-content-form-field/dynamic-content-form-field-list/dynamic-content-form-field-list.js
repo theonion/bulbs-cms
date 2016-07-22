@@ -32,16 +32,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.list', [
               if ($scope.readOnly) {
                 return;
               }
-
-              var item = {};
-
-              Object.keys($scope.schema.fields).forEach(function (key) {
-                var type = $scope.schema.fields[key].type;
-                item[key] = FIELD_TYPES_META[type].initialValue;
-              });
-
-              $scope.model.push(item);
-
+              $scope.model.push({});
               $scope.redoOrdering();
             };
 
