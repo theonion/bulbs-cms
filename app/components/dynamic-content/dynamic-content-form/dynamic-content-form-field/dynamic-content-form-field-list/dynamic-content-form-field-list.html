@@ -10,12 +10,12 @@
 
     <div class="dynamic-content-form-field-list-item-meta">
       <button
-          ng-click="$parent.panelClosed = !$parent.panelClosed"
+          ng-click="panelClosed = !panelClosed"
           class="dynamic-content-form-field-list-item-meta-label">
         <i
             ng-class="{
-              'fa-caret-right': $parent.panelClosed,
-              'fa-caret-down': !$parent.panelClosed
+              'fa-caret-right': panelClosed,
+              'fa-caret-down': !panelClosed
             }"
             class="fa">
         </i>
