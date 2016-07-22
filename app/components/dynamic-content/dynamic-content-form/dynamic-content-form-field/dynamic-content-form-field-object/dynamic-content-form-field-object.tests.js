@@ -101,7 +101,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     expect(fields.attr('uuid')).to.be.a('string');
     expect(fields.attr('name')).to.eql('title');
     expect(fields.attr('schema')).to.eql('schema.fields.title');
-    expect(fields.attr('ng-model')).to.eql('model');
+    expect(fields.attr('ng-model')).to.eql('ngModel');
     expect(fields.hasClass('dynamic-content-form-field'));
   });
 
