@@ -253,9 +253,8 @@ describe('Directive: dynamicContentFormFieldList', function () {
 
   it('should show an error icon if containing form is invalid', function () {
     var name = 'test';
-    var formName = 'testForm';
     var html = angular.element(
-      '<form name="' + formName + '">' +
+      '<form>' +
         '<dynamic-content-form-field-list ' +
             'name="' + name + '" ' +
             'schema="schema" ' +
@@ -275,9 +274,13 @@ describe('Directive: dynamicContentFormFieldList', function () {
     $parentScope.ngModel = {};
     $parentScope.ngModel[name] = [{ title: '' }];
     var element = digest(html);
+    var objectScope = element.find('dynamic-content-form-field-object').isolateScope();
 
-    element.find('li').scope().isItemValid = false;
-    element.scope()[formName].$setDirty();
+    objectScope.form.$setDirty();
+    objectScope.onValidityChange({
+      isValid: false,
+      internalForm: objectScope.form
+    });
     $parentScope.$digest();
 
     expect(
@@ -287,9 +290,8 @@ describe('Directive: dynamicContentFormFieldList', function () {
 
   it('should not render error if in an invalid state but form is pristine', function () {
     var name = 'test';
-    var formName = 'testForm';
     var html = angular.element(
-      '<form name="' + formName + '">' +
+      '<form>' +
         '<dynamic-content-form-field-list ' +
             'name="' + name + '" ' +
             'schema="schema" ' +
@@ -309,9 +311,13 @@ describe('Directive: dynamicContentFormFieldList', function () {
     $parentScope.ngModel = {};
     $parentScope.ngModel[name] = [{ title: '' }];
     var element = digest(html);
+    var objectScope = element.find('dynamic-content-form-field-object').isolateScope();
 
-    element.find('li').scope().isItemValid = false;
-    element.scope()[formName].$setPristine();
+    objectScope.form.$setPristine();
+    objectScope.onValidityChange({
+      isValid: false,
+      internalForm: objectScope.form
+    });
     $parentScope.$digest();
 
     expect(

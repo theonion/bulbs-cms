@@ -21,7 +21,7 @@
         </i>
         <span>{{ schema.child_label || 'Item' }} {{ $index + 1 }}</span>
         <i
-            ng-if="!isItemValid && form.$dirty"
+            ng-if="isItemInvalid"
             class="fa fa-exclamation-circle dynamic-content-form-field-list-item-meta-label-error">
         </i>
       </button>
@@ -59,10 +59,11 @@
     <div
         ng-hide="panelClosed"
         class="dynamic-content-form-field-list-item-content">
+
       <dynamic-content-form-field-object
           schema="schema"
           ng-model="itemValues"
-          on-validity-change="isItemValid = isValid">
+          on-validity-change="isItemInvalid = internalForm.$dirty && !isValid">
       </dynamic-content-form-field-object>
 
       <div class="dynamic-content-form-field-list-item-meta">
