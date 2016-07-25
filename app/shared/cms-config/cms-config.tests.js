@@ -473,6 +473,52 @@ describe('CmsConfig', function () {
         });
       });
 
+      context('super features api url', function () {
+
+        it('should provide a setter and getter', function () {
+          var url = '/super/features/url';
+
+          configs.setSuperFeaturesApiUrl(url);
+
+          expect(sealedConfigs().buildSuperFeaturesApiUrl()).to.equal(url);
+        });
+
+        it('should provide a getter to build out a url', function () {
+          var url = '/super/features/url';
+          var someId = '123456';
+
+          configs.setSuperFeaturesApiUrl(url);
+
+          expect(sealedConfigs().buildSuperFeaturesApiUrl(someId))
+            .to.equal(url + someId);
+        });
+
+        it('should throw an error if value given to getter is not a string', function () {
+
+          expect(function () {
+            sealedConfigs().buildSuperFeaturesApiUrl(123);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): value given to super features api url build must be a string!'
+          );
+        });
+
+        it('should throw an error if the given value is not a string', function () {
+
+          expect(function () {
+            configs.setSuperFeaturesApiUrl(123);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): super features api url must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setSuperFeaturesApiUrl('/super/features/url')).to.eql(configs);
+        });
+      });
+
       context('unpublished path', function () {
         var internalUrl = 'admin.my.site';
 

@@ -59,6 +59,8 @@ angular.module('bulbs.cms.config', [
       // path to shared directory
       // TODO : remove once app is fully in pods
       var sharedPath  = '';
+      // url of super features
+      var superFeaturesApiUrl = '';
       // name of timezone for to use for times in the cms
       var timezoneName = 'America/Chicago';
       // mappings for top bar templates
@@ -192,6 +194,14 @@ angular.module('bulbs.cms.config', [
         return this;
       };
 
+      this.setSuperFeaturesApiUrl = function (value) {
+        superFeaturesApiUrl = checkOrError(
+          value, _.isString,
+          'super features api url must be a string!'
+        );
+        return this;
+      };
+
       this.setTimezoneName = function (name) {
         timezoneName = checkOrError(
           name, moment.tz.zone,
@@ -275,6 +285,10 @@ angular.module('bulbs.cms.config', [
             buildSharedPath: pathBuilder(
               sharedPath,
               'value given to shared path build must be a string!'
+            ),
+            buildSuperFeaturesApiUrl: pathBuilder(
+              superFeaturesApiUrl,
+              'value given to super features api url build must be a string!'
             ),
             buildUnpublishedUrl: pathBuilder(
               Utils.path.join(internalUrl, unpublishedPath),
