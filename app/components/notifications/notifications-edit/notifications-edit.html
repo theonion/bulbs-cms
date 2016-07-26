@@ -6,7 +6,7 @@
 
 <div class="container col-xs-offset-2 col-xs-8">
   <h3>
-      <a href="/cms/app/notification/">Notifications</a>
+      <a href="/cms/app/notifications/">Notifications</a>
       &gt;
       <span ng-if="isNew && !model.internalName">New Notification</span>
       <span ng-if="!isNew || model.internalName">{{ model.internalTitle }}</span>
@@ -33,7 +33,7 @@
               'btn-success': !model.is_published
             }">
             <span
-              class="fa"
+              class="fa fa-lg"
               ng-class="{
                 'fa-times': model.is_published,
                 'fa-check': !model.is_published
