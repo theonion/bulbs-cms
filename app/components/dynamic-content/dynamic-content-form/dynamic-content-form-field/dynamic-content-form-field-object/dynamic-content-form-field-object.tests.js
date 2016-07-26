@@ -274,7 +274,7 @@ describe('Directive: dynamicContentFormFieldObject', function () {
       '<dynamic-content-form-field-object ' +
         'schema="schema" ' +
         'ng-model="ngModel" ' +
-        'on-validity-change="formValidCallback(isValid)" ' +
+        'on-validity-change="formValidCallback(isValid, internalForm)" ' +
         '>' +
       '</dynamic-content-form-field-object>'
     );
@@ -284,14 +284,15 @@ describe('Directive: dynamicContentFormFieldObject', function () {
 
     var element = digest(html);
     var directiveScope = element.isolateScope();
+    var form = directiveScope.form;
 
-    directiveScope.form.$valid = false;
+    form.$valid = false;
     directiveScope.$digest();
 
     // initial call
-    expect($parentScope.formValidCallback.withArgs(true).callCount).to.equal(1);
+    expect($parentScope.formValidCallback.withArgs(true, form).callCount).to.equal(1);
     // after digest call
-    expect($parentScope.formValidCallback.withArgs(false).callCount).to.equal(1);
+    expect($parentScope.formValidCallback.withArgs(false, form).callCount).to.equal(1);
   });
 
   it('should allow rendering of only a subset of fields', function () {

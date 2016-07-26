@@ -8,7 +8,8 @@ var config = require('../config');
 module.exports = {
   options: {
     jshintrc: '.jshintrc',
-    reporter: require('jshint-stylish')
+    reporter: require('jshint-stylish'),
+    reporterOutput: ''
   },
   all: [
     'Gruntfile.js',
