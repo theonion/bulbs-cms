@@ -22,6 +22,26 @@
             ng-model="model.internalTitle"
             class="form-control">
       </div>
+
+      <div class="form-group col-md-4">
+        <button
+            id="notificationPublish"
+            class="btn"
+            ng-click="model.is_published = !model.is_published"
+            ng-class="{
+              'btn-danger': model.is_published,
+              'btn-success': !model.is_published
+            }">
+            <span
+              class="fa"
+              ng-class="{
+                'fa-times': model.is_published,
+                'fa-check': !model.is_published
+              }"></span>
+            <span>{{ model.is_published ? 'Unpublish' : 'Publish' }}</span>
+        </button>
+      </div>
+
       <div class="form-group col-md-8">
         <label for="notificationHeadline">Headline <small>(optional)</small></label>
         <input
@@ -64,5 +84,6 @@
             class="form-control">
       </div>
     </div>
+
   </div>
 </div>
