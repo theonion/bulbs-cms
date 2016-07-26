@@ -437,6 +437,12 @@ angular.module('bulbsCmsApp.mockApi.data', [])
             }]
           }
         }
+      }, {
+        id: 13,
+        title: 'My Favorite Super Feature',
+        slug: 'my-favorite-super-feature',
+        polymorphic_ctype: 'core_super_feature_type',
+        published: '2016-04-20T16:20:00Z'
       }]
     },
     'dynamicContent.schemas': {

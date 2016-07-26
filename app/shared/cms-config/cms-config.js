@@ -1,4 +1,4 @@
-'use strict';
+  'use strict';
 
 angular.module('bulbs.cms.config', [
   'bulbs.cms.utils',
@@ -34,6 +34,8 @@ angular.module('bulbs.cms.config', [
       var directivePartialsPath = '';
       // name of CMS to display in title and in interface
       var cmsName = '';
+      // url for content
+      var contentApiUrl = '';
       // url for external links, those that are accessible to the public
       var externalUrl = '';
       // max number of states to store in an article's history
@@ -53,8 +55,6 @@ angular.module('bulbs.cms.config', [
       // path to shared directory
       // TODO : remove once app is fully in pods
       var sharedPath  = '';
-      // url of super features
-      var superFeaturesApiUrl = '';
       // name of timezone for to use for times in the cms
       var timezoneName = 'America/Chicago';
       // mappings for top bar templates
@@ -110,6 +110,14 @@ angular.module('bulbs.cms.config', [
         cmsName = checkOrError(
           value, _.isString,
           'cms name must be a string!'
+        );
+        return this;
+      };
+
+      this.setContentApiUrl = function (value) {
+        contentApiUrl = checkOrError(
+          value, _.isString,
+          'content api url must be a string!'
         );
         return this;
       };
@@ -188,14 +196,6 @@ angular.module('bulbs.cms.config', [
         return this;
       };
 
-      this.setSuperFeaturesApiUrl = function (value) {
-        superFeaturesApiUrl = checkOrError(
-          value, _.isString,
-          'super features api url must be a string!'
-        );
-        return this;
-      };
-
       this.setTimezoneName = function (name) {
         timezoneName = checkOrError(
           name, moment.tz.zone,
@@ -245,15 +245,15 @@ angular.module('bulbs.cms.config', [
         function () {
           return {
             buildComponentPath: pathBuilder(componentPath),
+            buildContentApiUrl: pathBuilder(contentApiUrl),
             buildContentPartialsPath: pathBuilder(contentPartialsPath),
             buildDirectivePartialsPath: pathBuilder(directivePartialsPath),
             buildExternalUrl: pathBuilder(externalUrl),
-            buildFirebaseUrl: pathBuilder(firebaseUrl),
             buildFirebaseSiteUrl: pathBuilder(Utils.path.join(firebaseUrl, firebaseSiteRoot)),
+            buildFirebaseUrl: pathBuilder(firebaseUrl),
             buildImageApiUrl: pathBuilder(imageApiUrl),
             buildInternalUrl: pathBuilder(internalUrl),
             buildSharedPath: pathBuilder(sharedPath),
-            buildSuperFeaturesApiUrl: pathBuilder(superFeaturesApiUrl),
             buildUnpublishedUrl: pathBuilder(Utils.path.join(internalUrl, unpublishedPath)),
             buildVideoUrl: pathBuilder(Utils.path.join(externalUrl, videoPath)),
             buildVideoThumbnailUrl: pathBuilder(videoThumbnailUrl),

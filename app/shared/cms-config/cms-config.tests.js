@@ -189,6 +189,42 @@ describe('CmsConfig', function () {
         });
       });
 
+      context('content api url', function () {
+
+        it('should provide a setter and getter', function () {
+          var url = '/content/url/';
+
+          configs.setContentApiUrl(url);
+
+          expect(sealedConfigs().buildContentApiUrl()).to.equal(url);
+        });
+
+        it('should provide a getter to build out a url', function () {
+          var url = '/content/url/';
+          var someId = '123456';
+
+          configs.setContentApiUrl(url);
+
+          expect(sealedConfigs().buildContentApiUrl(someId))
+            .to.equal(url + someId);
+        });
+
+        it('should throw an error if the given value is not a string', function () {
+
+          expect(function () {
+            configs.setContentApiUrl(123);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): content api url must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setContentApiUrl('/content/url')).to.eql(configs);
+        });
+      });
+
       context('directive partials path', function () {
 
         it('should provide a setter and getter', function () {
@@ -410,42 +446,6 @@ describe('CmsConfig', function () {
         it('should return config object', function () {
 
           expect(configs.setSharedPath('/directives/path')).to.eql(configs);
-        });
-      });
-
-      context('super features api url', function () {
-
-        it('should provide a setter and getter', function () {
-          var url = '/super/features/url/';
-
-          configs.setSuperFeaturesApiUrl(url);
-
-          expect(sealedConfigs().buildSuperFeaturesApiUrl()).to.equal(url);
-        });
-
-        it('should provide a getter to build out a url', function () {
-          var url = '/super/features/url/';
-          var someId = '123456';
-
-          configs.setSuperFeaturesApiUrl(url);
-
-          expect(sealedConfigs().buildSuperFeaturesApiUrl(someId))
-            .to.equal(url + someId);
-        });
-
-        it('should throw an error if the given value is not a string', function () {
-
-          expect(function () {
-            configs.setSuperFeaturesApiUrl(123);
-          }).to.throw(
-            BulbsCmsConfigError,
-            'Configuration Error (CmsConfig): super features api url must be a string!'
-          );
-        });
-
-        it('should return config object', function () {
-
-          expect(configs.setSuperFeaturesApiUrl('/super/features/url')).to.eql(configs);
         });
       });
 

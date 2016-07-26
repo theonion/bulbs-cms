@@ -24,7 +24,7 @@ angular.module('bulbs.cms.superFeatures.list', [
           templateUrl: CmsConfig.buildComponentPath(
             'super-features',
             'super-features-list',
-            'super-features-list-page.html'
+            'super-features-list.html'
           )
         });
     }
