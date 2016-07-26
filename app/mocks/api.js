@@ -10,6 +10,7 @@ angular.module('bulbsCmsApp.mockApi', [
   'bulbsCmsApp.mockApi.customSearch',
   'bulbsCmsApp.mockApi.lineItem',
   'bulbsCmsApp.mockApi.override',
+  'bulbsCmsApp.mockApi.notification',
   'bulbsCmsApp.mockApi.poll',
   'bulbsCmsApp.mockApi.role',
   'bulbsCmsApp.mockApi.specialCoverage',

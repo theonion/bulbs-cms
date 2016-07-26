@@ -1,0 +1,99 @@
+<top-bar
+  logo-href="/cms/app/notification/"
+  save-function="saveModel"
+  save-disable-when="model.$dirty().length === 0 && !isNew && !needsSave">
+</top-bar>
+
+<div class="container col-xs-offset-2 col-xs-8">
+  <h3>
+      <a href="/cms/app/notification/">Notifications</a>
+      &gt;
+      <span ng-if="isNew && !model.name">New Notification</span>
+      <span ng-if="!isNew || model.name">{{ model.name }}</span>
+  </h3>
+  <div class="row well">
+    <div class="row col-md-12">
+      <div class="form-group col-md-3">
+        <label for="notificationName">Notification Name</label>
+        <input
+            id="notificationName"
+            type="text"
+            ng-model="model.name"
+            class="form-control">
+      </div>
+      <div class="col-md-7">
+        <label for="notificationSlug">Notification URL</label>
+        <div class="input-group">
+          <span class="input-group-addon">{{ LIST_URL }}</span>
+          <input id="notificationSlug" type="text" class="form-control" ng-model="model.slug">
+          <copy-button
+              class="input-group-btn"
+              content="{{ LIST_URL + model.slug }}">
+          </copy-button>
+        </div>
+      </div>
+    </div>
+    <div class="row col-md-8">
+      <div class="form-group col-md-12">
+        <label for="notificationDescription">Description</label>
+        <textarea
+            id="notificationDescription"
+            type="text"
+            ng-model="model.description"
+            class="form-control">
+        </textarea>
+      </div>
+      <div class="form-group col-md-12">
+        <label for="notificationEmbedCode">Right Rail Embed Code</label>
+        <textarea
+            id="notificationEmbedCode"
+            type="text"
+            ng-model="model.embedCode"
+            class="form-control">
+        </textarea>
+      </div>
+    </div>
+    <div class="row col-md-4">
+      <div class="form-group col-md-12">
+        <label>Notification Logo</label>
+        <betty-editable
+            image="model.notificationLogo"
+            ratio="16x9"
+            placeholder-text="Notification Logo"
+            add-styles="fa fa-picture-o">
+        </betty-editable>
+      </div>
+      <div class="form-group col-md-12">
+        <label for="notificationTwitterHandle">Twitter Handle</label>
+        <input
+            id="notificationTwitterHandle"
+            type="text"
+            ng-model="model.twitterHandle"
+            class="form-control">
+      </div>
+      <div class="form-group col-md-12">
+        <label>
+          <input
+              id="notificationPromote"
+              type="checkbox"
+              ng-model="model.promoted">
+          <span>Promote this list on the home page</span>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="row" role="tabpanel">
+    <ul role="tablist" class="nav nav-tabs">
+      <li role="presentation" class="active">
+        <a href="#paneQuery" role="tab" data-toggle="tab">
+          Add Content
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="row tab-content well">
+    <div id="paneQuery" role="tabpanel" class="tab-pane active">
+      <custom-search ng-model="model.query" on-update="needsSave = true"></custom-search>
+    </div>
+  </div>
+</div>
