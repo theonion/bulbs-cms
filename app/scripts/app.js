@@ -17,6 +17,7 @@ angular.module('bulbsCmsApp', [
   'bulbs.cms.site.config',
 
   'bulbs.cms.dynamicContent',
+  'bulbs.cms.superFeatures.list',
 
   // TODO : these dependencies need to be reorganized, localized
   'bulbs.cms.dateTimeModal',

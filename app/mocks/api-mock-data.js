@@ -412,6 +412,17 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         title: 'Some Page Type',
         slug: 'my-dynamic-content-type',
         polymorphic_ctype: 'core_dynamic_content_type_1',
+        tags: [{
+          slug: 'hello',
+          type: 'core_section',
+          id: 1,
+          name: 'Hello'
+        }, {
+          slug: 'goodbye',
+          type: 'core_section',
+          id: 2,
+          name: 'Goodbye'
+        }],
         info_data: {
           data: {
             entries: [{
