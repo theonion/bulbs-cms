@@ -11,10 +11,10 @@ angular.module('notifications.list', [
 
     $routeProvider
       .when('/cms/app/notifications/', {
-        controller: function ($scope, $window, SECTIONS_LIST_REL_PATH, Notification) {
+        controller: function ($scope, $window, NOTIFICATIONS_LIST_REL_PATH, Notification) {
           $window.document.title = CmsConfig.getCmsName() + ' | Notification';
           $scope.modelFactory = Notification;
-          $scope.LIST_URL = CmsConfig.buildExternalUrl(SECTIONS_LIST_REL_PATH);
+          $scope.LIST_URL = CmsConfig.buildExternalUrl(NOTIFICATIONS_LIST_REL_PATH);
         },
         templateUrl: CmsConfig.buildComponentPath('notifications/notifications-list/notifications-list-page.html')
       });

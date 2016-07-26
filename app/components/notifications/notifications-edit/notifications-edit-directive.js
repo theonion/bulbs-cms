@@ -13,9 +13,9 @@ angular.module('notifications.edit.directive', [
 ])
   .directive('notificationsEdit', function (CmsConfig) {
     return {
-      controller: function (_, $location, $q, $scope, SECTIONS_LIST_REL_PATH, Notification) {
+      controller: function (_, $location, $q, $scope, NOTIFICATIONS_LIST_REL_PATH, Notification) {
 
-        $scope.LIST_URL = CmsConfig.buildExternalUrl(SECTIONS_LIST_REL_PATH);
+        $scope.LIST_URL = CmsConfig.buildExternalUrl(NOTIFICATIONS_LIST_REL_PATH);
 
         $scope.needsSave = false;
 
