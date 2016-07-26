@@ -16,59 +16,29 @@ angular.module('bulbsCmsApp.mockApi.notification', [
     };
     mockApiData.notification = [{
       id: 1,
-      name: 'Afterbirth',
-      slug: 'afterbirth',
-      description: 'After the birth.',
-      embed_code: '<iframe></iframe>',
-      notification_logo: {
-        id: 1
-      },
-      twitter_handle: '@TheOnion',
-      promoted: false,
-      query: {
-        groups: [{
-          conditions: [{
-            field: 'content-type',
-            type: 'all',
-            values: [{
-              name: 'for display',
-              value: 'actually-use-this-value-123'
-            }]
-          }],
-          time: 'Past day'
-        }],
-        included_ids: [1],
-        excluded_ids: [2],
-        pinned_ids: [3]
-      }
-    }, {
+      internal_title: 'Notification 1',
+      is_published: true,
+      created_on: moment('2016-07-29T12:13:14').format()
+    },{
       id: 2,
-      name: 'Politics',
-      slug: 'politics',
-      description: 'All the political stuff you need.',
-      embed_code: '<iframe></iframe>',
-      notification_logo: {
-        id: 2
-      },
-      twitter_handle: '@TheOnion',
-      promoted: false,
-      query: {}
-    }, {
+      internal_title: 'Notification 2',
+      is_published: false,
+      created_on: moment('2014-03-04T00:00:00').format()
+    },{
       id: 3,
-      name: 'Business',
-      description: 'For business people.',
-      embed_code: '<iframe></iframe>',
-      notification_logo: {
-        id: 1
-      },
-      twitter_handle: '@TheOnion',
-      promoted: false,
-      query: {}
-    }, {
+      internal_title: 'Rio Coverage A',
+      is_published: true,
+      created_on: moment('2016-06-23T06:00:00').format()
+    },{
       id: 4,
-      name: 'No Slug',
-      description: 'No slugs here.',
-      query: {}
+      internal_title: 'Rio Coverage B',
+      is_published: true,
+      created_on: moment('2016-06-23T06:00:00').format()
+    },{
+      id: 5,
+      internal_title: 'Rio Coverage C',
+      is_published: true,
+      created_on: moment('2016-06-23T06:00:00').format()
     }];
 
     $httpBackend.whenGET(reNotifications.list).respond(function () {
@@ -92,10 +62,6 @@ angular.module('bulbsCmsApp.mockApi.notification', [
       var newOne = _.merge(lastOne, JSON.parse(data));
       newOne.id++;
 
-      _.defaults(newOne, {
-        slug: slugify(newOne.name)
-      });
-
       mockApiData.notification.push(newOne);
       return [201, newOne];
     });
@@ -108,10 +74,6 @@ angular.module('bulbsCmsApp.mockApi.notification', [
       }
 
       var parsedData = JSON.parse(data);
-
-      _.defaults(parsedData, {
-        slug: slugify(parsedData.name)
-      });
 
       mockApiData.notification[index] = parsedData;
 

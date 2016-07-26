@@ -14,45 +14,29 @@ angular.module('apiServices.notification.factory', [
         plural: 'Notifications',
         primaryKey: 'id',
         fieldDisplays: [{
-          title: 'Notification Name',
-          value: 'record.name',
-          sorts: 'name'
+          title: 'Internal Name',
+          value: 'record.internalTitle || "--"',
+          sorts: 'internal_title'
         }, {
-          title: 'Article Count',
-          value: 'record.$resultCount'
+          title: 'State',
+          value: 'record.isPublished ? "Published" : "Unpublished"',
+          sorts: 'is_published'
+        }, {
+          title: 'Created On',
+          value: 'record.createdOn.format("MM/DD/YYYY")',
+          sorts: 'created_on'
         }]
       },
-      query: {
-        init: {}
+
+      // fields from frontend to backend
+      created_on: {
+        encode: 'moment_to_date_string',
       },
-      promoted: {
-        init: true
-      },
-      $hooks: {
-        'after-fetch': function () {
-          this.$refreshResultCount();
-        },
-        'after-fetch-many': function () {
-          _.each(this, function (record) {
-            record.$refreshResultCount();
-          });
-        }
-      },
-      $extend: {
-        Record: {
-          /**
-           * Getter for notification content count.
-           *
-           * @returns {String} notification content count.
-           */
-          $refreshResultCount: function () {
-            var record = this;
-            return CustomSearchCount.$retrieveResultCount(this.query)
-              .then(function (count) {
-                record.$resultCount = count;
-              });
-          }
-        }
-      },
+
+      // fields from backend to frontend
+      createdOn: {
+        decode: 'date_string_to_moment'
+      }
+
     });
   });

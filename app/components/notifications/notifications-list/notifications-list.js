@@ -10,7 +10,7 @@ angular.module('notifications.list', [
     var CmsConfig = $injector.invoke(CmsConfigProvider.$get);
 
     $routeProvider
-      .when('/cms/app/notification/', {
+      .when('/cms/app/notifications/', {
         controller: function ($scope, $window, SECTIONS_LIST_REL_PATH, Notification) {
           $window.document.title = CmsConfig.getCmsName() + ' | Notification';
           $scope.modelFactory = Notification;
