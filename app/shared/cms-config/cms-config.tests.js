@@ -433,16 +433,6 @@ describe('CmsConfig', function () {
             .to.equal(url + someId);
         });
 
-        it('should throw an error if value given to getter is not a string', function () {
-
-          expect(function () {
-            sealedConfigs().buildSuperFeaturesApiUrl(123);
-          }).to.throw(
-            BulbsCmsConfigError,
-            'Configuration Error (CmsConfig): value given to super features api url build must be a string!'
-          );
-        });
-
         it('should throw an error if the given value is not a string', function () {
 
           expect(function () {
