@@ -82,7 +82,7 @@ angular.module('bulbsCmsApp', [
       templateUrl: '/views/targeting-editor.html',
       controller: 'TargetingCtrl'
     })
-    .when('/cms/app/notifications/', {
+    .when('/cms/app/cms-notifications/', {
       templateUrl: '/views/cms-notifications.html',
       controller: 'CmsNotificationsCtrl'
     })

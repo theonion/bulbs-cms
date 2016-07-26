@@ -2,5 +2,5 @@
 
 angular.module('bulbsCmsApp')
   .factory('CmsNotificationsApi', function ($q, ContentFactory) {
-    return ContentFactory.service('notifications');
+    return ContentFactory.service('cms_notifications');
   });

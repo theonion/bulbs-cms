@@ -4,7 +4,7 @@ angular.module('bulbsCmsApp')
   .controller('CmsNotificationsCtrl', function ($q, $window, $scope, CmsConfig,
       CmsNotificationsApi, CurrentUser, _, moment) {
 
-    $window.document.title = CmsConfig.getCmsName() + ' | Notifications';
+    $window.document.title = CmsConfig.getCmsName() + ' | CMS Alerts';
 
     // get user info
     CurrentUser.$retrieveData().then(function (user) {
@@ -12,20 +12,20 @@ angular.module('bulbsCmsApp')
         $scope.userIsSuperuser = true;
       }
 
-      // get list of notifications
-      CmsNotificationsApi.getList().then(function (notifications) {
-        // filter out notifications for regular users that have a post date in the future
+      // get list of CMS notifications
+      CmsNotificationsApi.getList().then(function (cmsNotifications) {
+        // filter out CMS notifications for regular users that have a post date in the future
         var removeIndicies = [];
-        _.each(notifications, function (notification, i) {
-          if (!user.is_superuser && moment(notification.post_date).isAfter(moment())) {
+        _.each(cmsNotifications, function (cmsNotification, i) {
+          if (!user.is_superuser && moment(cmsNotification.post_date).isAfter(moment())) {
             removeIndicies.push(i);
           }
         });
         _.each(removeIndicies, function (i) {
-          notifications.splice(i, 1);
+          cmsNotifications.splice(i, 1);
         });
 
-        $scope.notifications = notifications;
+        $scope.cmsNotifications = cmsNotifications;
       });
     });
 
@@ -34,16 +34,16 @@ angular.module('bulbsCmsApp')
      *
      * @return  new notification with only nulled date properties.
      */
-    $scope.newNotification = function () {
+    $scope.newCmsNotification = function () {
 
-      var notification = {
+      var cmsNotification = {
         post_date: null,
         notify_end_date: null
       };
 
-      $scope.notifications.unshift(notification);
+      $scope.cmsNotifications.unshift(cmsNotification);
 
-      return notification;
+      return cmsNotification;
 
     };
 
@@ -53,25 +53,25 @@ angular.module('bulbsCmsApp')
      * @param notification  Notification to save.
      * @return  promise that resolves when notification is saved.
      */
-    $scope.$saveNotification = function (notification) {
+    $scope.$saveCmsNotification = function (cmsNotification) {
 
       var saveDefer = $q.defer(),
           savePromise = saveDefer.promise;
 
       if ($scope.userIsSuperuser) {
-        if ('id' in notification) {
+        if ('id' in cmsNotification) {
           // this thing already exists, update it
-          notification.put().then(function (updatedNotification) {
-            saveDefer.resolve(updatedNotification);
+          cmsNotification.put().then(function (updatedCmsNotification) {
+            saveDefer.resolve(updatedCmsNotification);
           });
         } else {
           // a new notification, post it to the list
-          $scope.notifications.post(notification)
-            .then(function (newNotification) {
+          $scope.cmsNotifications.post(cmsNotification)
+            .then(function (newCmsNotification) {
               // save succeeded, replace notification with restangularized notification
-              var i = $scope.notifications.indexOf(notification);
-              $scope.notifications[i] = newNotification;
-              saveDefer.resolve(newNotification);
+              var i = $scope.cmsNotifications.indexOf(cmsNotification);
+              $scope.cmsNotifications[i] = newCmsNotification;
+              saveDefer.resolve(newCmsNotification);
             })
             .catch(function (error) {
               saveDefer.reject(error);
@@ -88,26 +88,26 @@ angular.module('bulbsCmsApp')
     /**
      * Delete given notification from the database.
      *
-     * @param notification  Notification to delete.
+     * @param cmsNotification  Notification to delete.
      * @return  promise that resolves when notification is deleted.
      */
-    $scope.$deleteNotification = function (notification) {
+    $scope.$deleteCmsNotification = function (cmsNotification) {
 
       var deleteDefer = $q.defer(),
           deletePromise = deleteDefer.promise,
           removeFromList = function (index) {
-            $scope.notifications.splice(index, 1);
+            $scope.cmsNotifications.splice(index, 1);
             deleteDefer.resolve();
           };
 
       if ($scope.userIsSuperuser) {
         // find notification in list
-        var i = $scope.notifications.indexOf(notification);
+        var i = $scope.cmsNotifications.indexOf(cmsNotification);
         if (i > -1) {
           // notification in list, check if it is a restangular object and has a remove function
-          if (_.isFunction(notification.remove)) {
+          if (_.isFunction(cmsNotification.remove)) {
             // has remove, call it and resolve promise
-            notification.remove()
+            cmsNotification.remove()
               .then(function () {
                 removeFromList(i);
               })
