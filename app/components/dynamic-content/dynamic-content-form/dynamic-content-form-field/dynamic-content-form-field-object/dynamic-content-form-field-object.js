@@ -24,7 +24,10 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
           var $form = element.find('ng-form');
 
           scope.$watch('form.$valid', function (isValid) {
-            scope.onValidityChange({ isValid: isValid });
+            scope.onValidityChange({
+              isValid: isValid,
+              internalForm: scope.form
+            });
           });
 
           scope.$watch('schema', function () {
