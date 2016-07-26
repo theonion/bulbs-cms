@@ -98,11 +98,11 @@
           {{ field.evaluate(item) }}
         </td>
         <td>
-          <button
+          <a
               class="btn btn-xs btn-info"
-              ng-click="goToEditPage(item)">
+              href="{{ pathJoin(cmsEditPageUrl, item.id) }}">
             <i class="glyphicon glyphicon-pencil"></i>
-          </button>
+          </a>
           <copy-button
               ng-if="toolCopyContent"
               content="{{ copyContentInContext(item) }}"

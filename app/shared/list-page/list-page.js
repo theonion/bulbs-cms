@@ -2,13 +2,16 @@
 
 angular.module('listPage', [
   'bulbs.cms.site.config',
+  'bulbs.cms.utils',
   'confirmationModal',
   'copyButton',
   'lodash'
 ])
   .directive('listPage', function (CmsConfig) {
     return {
-      controller: function (_, $scope, $location, $parse) {
+      controller: function (_, $scope, $location, $parse, Utils) {
+        $scope.pathJoin = Utils.path.join;
+
         $scope.name = $scope.modelFactory.identity();
         $scope.namePlural = $scope.modelFactory.identity(true);
         $scope.fields = $scope.modelFactory.$fieldDisplays();
@@ -92,7 +95,7 @@ angular.module('listPage', [
         };
 
         $scope.$add = function () {
-          $location.path('/cms/app/' + $scope.cmsPage + '/edit/new/');
+          $location.path(Utils.path.join($scope.cmsEditPageUrl, 'new'));
         };
 
         $scope.$remove = function (item) {
@@ -100,7 +103,7 @@ angular.module('listPage', [
         };
 
         $scope.goToEditPage = function (item) {
-          $location.path('/cms/app/' + $scope.cmsPage + '/edit/' + item.id + '/');
+          $location.path(Utils.path.join($scope.cmsEditPageUrl, item.id));
         };
 
         // set the active filter, either the first button with active === true,
@@ -122,7 +125,7 @@ angular.module('listPage', [
       },
       restrict: 'E',
       scope: {
-        cmsPage: '@',
+        cmsEditPageUrl: '@',
         filterButtons: '&',
         modelFactory: '=',
         searchParameter: '@',
