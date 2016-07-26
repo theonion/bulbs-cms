@@ -19,7 +19,7 @@
     <div ng-if="cmsNotifications.length > 0" class="col-md-12 panel-group">
       <cms-notification
           ng-repeat="cmsNotification in cmsNotifications"
-          cmsNotification="cmsNotification"
+          cms-notification="cmsNotification"
           class="cms-notification"></cms-notification>
     </div>
     <div ng-if="!userIsSuperuser && cmsNotifications.length < 1">

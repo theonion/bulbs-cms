@@ -88,7 +88,7 @@ angular.module('bulbsCmsApp')
     /**
      * Delete given notification from the database.
      *
-     * @param notification  Notification to delete.
+     * @param cmsNotification  Notification to delete.
      * @return  promise that resolves when notification is deleted.
      */
     $scope.$deleteCmsNotification = function (cmsNotification) {
