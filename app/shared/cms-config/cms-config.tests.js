@@ -476,7 +476,7 @@ describe('CmsConfig', function () {
       context('super features api url', function () {
 
         it('should provide a setter and getter', function () {
-          var url = '/super/features/url';
+          var url = '/super/features/url/';
 
           configs.setSuperFeaturesApiUrl(url);
 
@@ -484,7 +484,7 @@ describe('CmsConfig', function () {
         });
 
         it('should provide a getter to build out a url', function () {
-          var url = '/super/features/url';
+          var url = '/super/features/url/';
           var someId = '123456';
 
           configs.setSuperFeaturesApiUrl(url);
