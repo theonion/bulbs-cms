@@ -1,6 +1,6 @@
- <div ng-repeat="notification in notifications" class="cms-notify alert alert-info">
+ <div ng-repeat="cmsNotification in cmsNotifications" class="cms-notify alert alert-info">
   <i class="glyphicon glyphicon-info-sign"></i>
-  <span>New Update: {{ notification.title }}</span>
-  <a href="/cms/app/notifications/" class="alert-link">Learn More</a>
-  <a href="" class="alert-link" ng-click="dismissNotification(notification)">Dismiss</a>
+  <span>New Update: {{ cmsNotification.title }}</span>
+  <a href="/cms/app/cms-notifications/" class="alert-link">Learn More</a>
+  <a href="" class="alert-link" ng-click="dismissCmsNotification(cmsNotification)">Dismiss</a>
 </div>
