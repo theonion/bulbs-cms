@@ -65,7 +65,7 @@ angular.module('bulbsCmsApp')
             $scope.cmsNotificationDirty = false;
           })
           .catch(function (error) {
-            console.log('CMS Notification save failed', error);
+            console.log('CMS Alert save failed', error);
           });
 
       }
@@ -81,7 +81,7 @@ angular.module('bulbsCmsApp')
 
         $scope.$parent.$deleteCmsNotification($scope.cmsNotification)
           .catch(function (error) {
-            console.log('CMS Notification delete failed', error);
+            console.log('CMS Alert delete failed', error);
           });
 
       }

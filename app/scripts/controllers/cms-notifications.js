@@ -4,7 +4,7 @@ angular.module('bulbsCmsApp')
   .controller('CmsNotificationsCtrl', function ($q, $window, $scope, CmsConfig,
       CmsNotificationsApi, CurrentUser, _, moment) {
 
-    $window.document.title = CmsConfig.getCmsName() + ' | CMS Notifications';
+    $window.document.title = CmsConfig.getCmsName() + ' | CMS Alerts';
 
     // get user info
     CurrentUser.$retrieveData().then(function (user) {
