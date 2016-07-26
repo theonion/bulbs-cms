@@ -2,11 +2,12 @@
 
 angular.module('bulbs.cms.superFeatures.api', [
   'bulbs.cms.site.config',
+  'bulbs.cms.utils',
   'lodash'
 ])
   .service('SuperFeaturesApi', [
-    '_', '$http', 'CmsConfig',
-    function (_, $http, CmsConfig) {
+    '_', '$http', 'CmsConfig', 'Utils',
+    function (_, $http, CmsConfig, Utils) {
       var endpoint = CmsConfig.buildSuperFeaturesApiUrl;
 
       var parsePayload = function (payload) {
@@ -50,14 +51,15 @@ angular.module('bulbs.cms.superFeatures.api', [
             return parsePayload(response.data);
           });
         },
-        getSuperFeatures: function () {
-          return $http.get(endpoint()).then(function (response) {
-            return {
-              results: response.data.results.map(function (result) {
-                return parsePayload(result);
-              })
-            };
-          });
+        getSuperFeatures: function (params) {
+          return $http.get(endpoint() + Utils.param(params))
+            .then(function (response) {
+              return {
+                results: response.data.results.map(function (result) {
+                  return parsePayload(result);
+                })
+              };
+            });
         },
         name: 'Super Feature',
         namePlural: 'Super Features',

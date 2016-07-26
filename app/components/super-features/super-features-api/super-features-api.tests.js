@@ -85,11 +85,15 @@ describe('Service: SuperFeaturesApi', function () {
         ]
       };
       var callback = sandbox.stub()
+      var key = 'something';
+      var val = '123';
+      var params = {};
+      params[key] = val;
       $httpBackend
-        .expectGET(CmsConfig.buildSuperFeaturesApiUrl())
+        .expectGET(CmsConfig.buildSuperFeaturesApiUrl() + '?' + key + '=' + val)
         .respond(200, listing);
 
-      SuperFeaturesApi.getSuperFeatures().then(callback);
+      SuperFeaturesApi.getSuperFeatures(params).then(callback);
       $httpBackend.flush();
 
       expect(callback.args[0][0]).to.eql(listing);
