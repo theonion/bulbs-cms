@@ -83,7 +83,7 @@
         <td>
           <a
               class="btn btn-xs btn-info"
-              href="{{ pathJoin(cmsEditPageUrl, item.id) }}">
+              href="{{ pathJoin(cmsEditPageUrl({item: item})) }}">
             <i class="fa fa-pencil"></i>
           </a>
           <copy-button

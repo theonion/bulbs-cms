@@ -4,7 +4,7 @@
   <cms-notify-container class="cms-notify-container"></cms-notify-container>
 
   <list-page
-      cms-edit-page-url="/cms/app/section/edit/"
+      cms-edit-page-url="'/cms/app/section/edit/' + item.id"
       model-factory="modelFactory"
       tool-copy-content="'{{ LIST_URL }}' + record.slug ">
   </list-page>

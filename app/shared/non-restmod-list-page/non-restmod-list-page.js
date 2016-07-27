@@ -91,7 +91,7 @@ angular.module('bulbsCmsApp.nonRestmodListPage', [
         };
 
         $scope.$add = function () {
-          $location.path(Utils.path.join($scope.cmsEditPageUrl, 'new'));
+          $location.path($scope.cmsEditPageUrl({ item: { id: 'new' } }));
         };
 
         $scope.$remove = function (removedItem) {
@@ -102,7 +102,7 @@ angular.module('bulbsCmsApp.nonRestmodListPage', [
         };
 
         $scope.goToEditPage = function (item) {
-          $location.path(Utils.path.join($scope.cmsEditPageUrl, item.id));
+          $location.path($scope.cmsEditPageUrl({ item: item }));
         };
 
         // set the active filter, either the first button with active === true,
@@ -125,7 +125,7 @@ angular.module('bulbsCmsApp.nonRestmodListPage', [
       },
       restrict: 'E',
       scope: {
-        cmsEditPageUrl: '@',  // url to edit page, will be postfixed with id or 'new'
+        cmsEditPageUrl: '&',  // url to edit page, will be postfixed with id or 'new'
         destroyItem: '&',     // returns promise, deletes given item
         getItems: '&',        // function returns promise, recieves search params
         filterButtons: '&',   // settings for filter buttons

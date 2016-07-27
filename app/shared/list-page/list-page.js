@@ -95,7 +95,7 @@ angular.module('listPage', [
         };
 
         $scope.$add = function () {
-          $location.path(Utils.path.join($scope.cmsEditPageUrl, 'new'));
+          $location.path($scope.cmsEditPageUrl({ item: { id: 'new' } }));
         };
 
         $scope.$remove = function (item) {
@@ -103,7 +103,7 @@ angular.module('listPage', [
         };
 
         $scope.goToEditPage = function (item) {
-          $location.path(Utils.path.join($scope.cmsEditPageUrl, item.id));
+          $location.path($scope.cmsEditPageUrl({ item: item }));
         };
 
         // set the active filter, either the first button with active === true,
@@ -125,7 +125,7 @@ angular.module('listPage', [
       },
       restrict: 'E',
       scope: {
-        cmsEditPageUrl: '@',
+        cmsEditPageUrl: '&',
         filterButtons: '&',
         modelFactory: '=',
         searchParameter: '@',
