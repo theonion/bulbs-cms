@@ -27,18 +27,18 @@
         <button
             id="notificationPublish"
             class="btn"
-            ng-click="model.is_published = !model.is_published"
+            ng-click="model.isPublished = !model.isPublished"
             ng-class="{
-              'btn-danger': model.is_published,
-              'btn-success': !model.is_published
+              'btn-danger': model.isPublished,
+              'btn-success': !model.isPublished
             }">
             <span
               class="fa fa-lg"
               ng-class="{
-                'fa-times': model.is_published,
-                'fa-check': !model.is_published
+                'fa-times': model.isPublished,
+                'fa-check': !model.isPublished
               }"></span>
-            <span>{{ model.is_published ? 'Unpublish' : 'Publish' }}</span>
+            <span>{{ model.isPublished ? 'Unpublish' : 'Publish' }}</span>
         </button>
       </div>
 

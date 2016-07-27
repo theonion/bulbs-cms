@@ -3,7 +3,8 @@
 angular.module('apiServices.notification.factory', [
   'apiServices',
   'apiServices.customSearch.count.factory',
-  'apiServices.mixins.fieldDisplay'
+  'apiServices.mixins.fieldDisplay',
+  'filters.moment',
 ])
   .factory('Notification', function (_, CustomSearchCount, restmod) {
     var notificationEndpoint = 'notification';

@@ -25,7 +25,7 @@ angular.module('notifications.edit.directive', [
           $scope.model = Notification.$build();
           $scope.isNew = true;
         } else {
-          // this is an existing special coverage, find it
+          // this is an existing notification, find it
           $scope.model = Notification.$find($scope.getModelId());
         }
 
