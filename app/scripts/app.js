@@ -70,14 +70,14 @@ angular.module('bulbsCmsApp', [
       controller: 'ContentlistCtrl',
       reloadOnSearch: false
     })
-    .when('/cms/app/edit/:id/', {
-      templateUrl: '/views/contentedit.html',
-      controller: 'ContenteditCtrl',
-      reloadOnSearch: false
-    })
     .when('/cms/app/edit/:id/contributions/', {
       templateUrl: '/views/contributions.html',
       controller: 'ContributionsCtrl'
+    })
+    .when('/cms/app/edit/:id/:contentType?', {
+      templateUrl: '/views/contentedit.html',
+      controller: 'ContenteditCtrl',
+      reloadOnSearch: false
     })
     .when('/cms/app/targeting/', {
       templateUrl: '/views/targeting-editor.html',
