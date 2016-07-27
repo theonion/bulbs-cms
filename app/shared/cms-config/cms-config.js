@@ -261,7 +261,7 @@ angular.module('bulbs.cms.config', [
               'value given to firebase url build must be a string!'
             ),
             buildFirebaseSiteUrl: pathBuilder(
-              Utils.path.join(firebaseUrl, firebaseSiteRoot),
+              Utils.path.join(firebaseUrl, 'sites', firebaseSiteRoot),
               'value given to firebase site url build must be a string!'
             ),
             buildImageApiUrl: pathBuilder(
