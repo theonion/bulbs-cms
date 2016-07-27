@@ -30,13 +30,13 @@
             ng-click="model.isPublished = !model.isPublished"
             ng-class="{
               'btn-danger': model.isPublished,
-              'btn-success': !model.isPublished
+              'btn-info': !model.isPublished
             }">
             <span
-              class="fa fa-lg"
+              class="fa"
               ng-class="{
-                'fa-times': model.isPublished,
-                'fa-check': !model.isPublished
+                'fa-check-square-o': model.isPublished,
+                'fa-square-o': !model.isPublished
               }"></span>
             <span>{{ model.isPublished ? 'Unpublish' : 'Publish' }}</span>
         </button>
