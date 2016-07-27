@@ -5,6 +5,17 @@
 
   <list-page
       cms-page="notification"
+      filter-buttons="[{
+        title: 'Published',
+        params: {
+          is_published: 'True'
+        }
+      }, {
+        title: 'Unpublished',
+        params: {
+          is_published: 'False'
+        }
+      }]"
       model-factory="modelFactory">
   </list-page>
 </div>
