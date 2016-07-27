@@ -4,6 +4,7 @@ angular.module('notifications.list', [
   'apiServices.notification.factory',
   'bulbs.cms.site.config',
   'listPage',
+  'moment',
   'notifications.settings'
 ])
   .config(function ($injector, $routeProvider, CmsConfigProvider) {
