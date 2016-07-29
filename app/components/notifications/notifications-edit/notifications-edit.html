@@ -35,8 +35,8 @@
             <span
               class="fa"
               ng-class="{
-                'fa-check-square-o': model.isPublished,
-                'fa-square-o': !model.isPublished
+                'fa-times': model.isPublished,
+                'fa-check': !model.isPublished
               }"></span>
             <span>{{ model.isPublished ? 'Unpublish' : 'Publish' }}</span>
         </button>
