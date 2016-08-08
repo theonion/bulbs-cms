@@ -15,15 +15,9 @@ angular.module('bulbs.cms.config', [
         }
         throw new CmsConfigError(errorMsg);
       };
-      var pathBuilder = function (start, errorMsg) {
+      var pathBuilder = function (start) {
         return function () {
-          return Utils.path.join(checkOrError(
-            arguments,
-            function (args) {
-              return _.every(args, _.isString);
-            },
-            errorMsg
-          ));
+          return Utils.path.join(arguments);
         }.bind(null, start);
       };
 
@@ -240,54 +234,18 @@ angular.module('bulbs.cms.config', [
       this.$get = [
         function () {
           return {
-            buildComponentPath: pathBuilder(
-              componentPath,
-              'value given to component path build must be a string!'
-            ),
-            buildContentPartialsPath: pathBuilder(
-              contentPartialsPath,
-              'value given to content partials path build must be a string!'
-            ),
-            buildDirectivePartialsPath: pathBuilder(
-              directivePartialsPath,
-              'value given to directive partials path build must be a string!'
-            ),
-            buildExternalUrl: pathBuilder(
-              externalUrl,
-              'value given to external url build must be a string!'
-            ),
-            buildFirebaseUrl: pathBuilder(
-              firebaseUrl,
-              'value given to firebase url build must be a string!'
-            ),
-            buildFirebaseSiteUrl: pathBuilder(
-              Utils.path.join(firebaseUrl, firebaseSiteRoot),
-              'value given to firebase site url build must be a string!'
-            ),
-            buildImageApiUrl: pathBuilder(
-              imageApiUrl,
-              'value given to image api url build must be a string!'
-            ),
-            buildInternalUrl: pathBuilder(
-              internalUrl,
-              'value given to internal url build must be a string!'
-            ),
-            buildSharedPath: pathBuilder(
-              sharedPath,
-              'value given to shared path build must be a string!'
-            ),
-            buildUnpublishedUrl: pathBuilder(
-              Utils.path.join(internalUrl, unpublishedPath),
-              'value given to unpublished url build must be a string!'
-            ),
-            buildVideoUrl: pathBuilder(
-              Utils.path.join(externalUrl, videoPath),
-              'value given to video url build must be a string!'
-            ),
-            buildVideoThumbnailUrl: pathBuilder(
-              videoThumbnailUrl,
-              'value given to video thumbnail url build must be a string!'
-            ),
+            buildComponentPath: pathBuilder(componentPath),
+            buildContentPartialsPath: pathBuilder(contentPartialsPath),
+            buildDirectivePartialsPath: pathBuilder(directivePartialsPath),
+            buildExternalUrl: pathBuilder(externalUrl),
+            buildFirebaseUrl: pathBuilder(firebaseUrl),
+            buildFirebaseSiteUrl: pathBuilder(Utils.path.join(firebaseUrl, firebaseSiteRoot)),
+            buildImageApiUrl: pathBuilder(imageApiUrl),
+            buildInternalUrl: pathBuilder(internalUrl),
+            buildSharedPath: pathBuilder(sharedPath),
+            buildUnpublishedUrl: pathBuilder(Utils.path.join(internalUrl, unpublishedPath)),
+            buildVideoUrl: pathBuilder(Utils.path.join(externalUrl, videoPath)),
+            buildVideoThumbnailUrl: pathBuilder(videoThumbnailUrl),
             getAutoAddAuthor: _.constant(autoAddAuthor),
             getCmsName: _.constant(cmsName),
             getDateTimeFormatHumanReadable: _.constant(dateTimeFormatHumanReadable),

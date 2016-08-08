@@ -20,7 +20,7 @@ angular.module('bulbs.cms.staticImage', [
 
           scope.$watch('image', function () {
             if (scope.image && scope.image.id) {
-              scope.imageUrl = CmsConfig.buildImageApiUrl(ratio, '' + scope.image.id, '1200.jpg');
+              scope.imageUrl = CmsConfig.buildImageApiUrl(ratio, scope.image.id, '1200.jpg');
             } else {
               scope.imageUrl = false;
             }
