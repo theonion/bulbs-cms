@@ -28,7 +28,7 @@ describe('Answer Factory', function () {
       answer = {id: 2, notOnSodahead: true, answer_text: 'wingapo'};
       pollId = 12;
       Answer.postAnswer(answer, pollId);
-      $httpBackend.expectPOST('/cms/api/v1/answer/').respond(201);
+      $httpBackend.expectPOST('/cms/api/v1/poll-answer/').respond(201);
       $httpBackend.flush();
     });
 
@@ -38,7 +38,7 @@ describe('Answer Factory', function () {
       Answer.postAnswer(answer, pollId).then(function(res) {
         response = res;
       });
-      $httpBackend.expectPOST('/cms/api/v1/answer/').respond(201, mockPayload);
+      $httpBackend.expectPOST('/cms/api/v1/poll-answer/').respond(201, mockPayload);
       $httpBackend.flush();
       expect(response).to.eql(mockPayload);
     });
@@ -68,7 +68,7 @@ describe('Answer Factory', function () {
         }
       };
       Answer.updatePollAnswers(scope);
-      $httpBackend.expectDELETE('/cms/api/v1/answer/1').respond(201);
+      $httpBackend.expectDELETE('/cms/api/v1/poll-answer/1').respond(201);
       $httpBackend.flush();
     });
 
@@ -81,7 +81,7 @@ describe('Answer Factory', function () {
         answers: [{id: 2, notOnSodahead: true, answer_text: 'foobar'}]
       };
       Answer.updatePollAnswers(scope);
-      $httpBackend.expectPOST('/cms/api/v1/answer/').respond(201);
+      $httpBackend.expectPOST('/cms/api/v1/poll-answer/').respond(201);
       $httpBackend.flush();
     });
 
@@ -95,7 +95,7 @@ describe('Answer Factory', function () {
         answers: [{id: 5, answer_text: 'feel the flo'}]
       };
       Answer.updatePollAnswers(scope);
-      $httpBackend.expectPUT('/cms/api/v1/answer/5').respond(201);
+      $httpBackend.expectPUT('/cms/api/v1/poll-answer/5').respond(201);
       $httpBackend.flush();
     });
   });
