@@ -4,7 +4,7 @@ describe('Directive: staticImage', function () {
 
   var $parentScope;
   var digest;
-  var imageApiUrl = 'http://i.example.com'
+  var imageApiUrl = 'http://i.example.com';
   var sandbox;
 
   beforeEach(function () {
@@ -61,7 +61,7 @@ describe('Directive: staticImage', function () {
     var id = 1;
     var ratio = '1000x10';
     $parentScope.imageData = { id: id };
-    $parentScope.ratio = ratio
+    $parentScope.ratio = ratio;
 
     var element = digest('<static-image image="imageData" ratio="{{ ratio }}"></static-image>');
 
