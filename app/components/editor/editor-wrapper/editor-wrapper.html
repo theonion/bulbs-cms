@@ -1,4 +1,12 @@
 <div class="editor-wrapper">
+    <button ng-click="clearHistory()">clear history</button>
+    <button ng-click="redoHistory()">redo</button>
+    <button ng-click="undoHistory()">undo</button>
+
+    {{ editor.scribe.undoManager.stack }}
+    {{ editor.scribe.undoManager.position }}
+
+
     <div class="editorPlaceholder"></div>
     <div class="editor" contenteditable="true"></div>
 
