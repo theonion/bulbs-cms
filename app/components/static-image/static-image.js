@@ -13,14 +13,18 @@ angular.module('bulbs.cms.staticImage', [
         ),
         restrict: 'E',
         scope: {
-          image: '='
+          image: '=',
+          ratio: '@'
         },
         link: function (scope, element, attrs) {
-          var ratio = attrs.ratio || '16x9';
 
           scope.$watch('image', function () {
             if (scope.image && scope.image.id) {
-              scope.imageUrl = CmsConfig.buildImageApiUrl(ratio, scope.image.id, '1200.jpg');
+              scope.imageUrl = CmsConfig.buildImageApiUrl(
+                scope.image.id,
+                scope.ratio || '16x9',
+                '1200.jpg'
+              );
             } else {
               scope.imageUrl = false;
             }
