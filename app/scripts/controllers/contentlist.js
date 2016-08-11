@@ -6,7 +6,10 @@ angular.module('bulbsCmsApp')
       ContentListService) {
 
     $scope.contentData = [];
-    ContentListService.$updateContent({page: 1})
+    ContentListService.$updateContent({
+      page: 1,
+      exclude: CmsConfig.getSuperFeaturesType()
+    })
       .then(function (data) {
         $scope.contentData = data;
       });
