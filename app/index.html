@@ -364,14 +364,15 @@
         function (CmsConfig) {
           CmsConfig
             .setCmsName('Smoove')
+            .setContentApiUrl('/cms/api/v1/content')
             .setExternalUrl('onion.local')
             .setFirebaseSiteRoot('sites/bulbs-cms-testing')
             .setFirebaseUrl('https://luminous-fire-8340.firebaseio.com/')
-            .setImageApiUrl('http://clickholeimg.local')
             .setImageApiKey('123abc')
+            .setImageApiUrl('http://clickholeimg.local')
             .setInternalUrl('onion.local')
             .setNavLogoPath('/images/onion-logo.png')
-            .setContentApiUrl('/cms/api/v1/content')
+            .setSuperFeaturesType('core_super_feature_type')
             .setVideoPath('videos/embed?id=')
             .setVideoThumbnailUrl('http://v.theonion.com/avclubmedia/video/');
         }

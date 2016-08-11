@@ -54,7 +54,9 @@ angular.module('bulbs.cms.config', [
       var navLogoPath = '';
       // path to shared directory
       // TODO : remove once app is fully in pods
-      var sharedPath  = '';
+      var sharedPath = '';
+      // super features ctype
+      var superFeaturesType = '';
       // name of timezone for to use for times in the cms
       var timezoneName = 'America/Chicago';
       // mappings for top bar templates
@@ -196,6 +198,14 @@ angular.module('bulbs.cms.config', [
         return this;
       };
 
+      this.setSuperFeaturesType = function (value) {
+        superFeaturesType = checkOrError(
+          value, _.isString,
+          'super features type must be a string!'
+        );
+        return this;
+      };
+
       this.setTimezoneName = function (name) {
         timezoneName = checkOrError(
           name, moment.tz.zone,
@@ -263,6 +273,7 @@ angular.module('bulbs.cms.config', [
             getFirebaseMaxArticleHistory: _.constant(firebaseMaxArticleHistory),
             getImageApiKey: _.constant(imageApiKey),
             getNavLogoPath: _.constant(navLogoPath),
+            getSuperFeaturesType: _.constant(superFeaturesType),
             getTimezoneName: _.constant(timezoneName),
             getTopBarMapping: function (name) {
               if (_.has(topBarMappings, name)) {

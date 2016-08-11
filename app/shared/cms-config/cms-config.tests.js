@@ -449,6 +449,32 @@ describe('CmsConfig', function () {
         });
       });
 
+      context('super features type', function () {
+
+        it('should provide a getter and setter', function () {
+          var type = 'core_super_features';
+
+          configs.setSuperFeaturesType(type);
+
+          expect(sealedConfigs().getSuperFeaturesType()).to.equal(type);
+        });
+
+        it('should throw an error if given value is not a string', function () {
+
+          expect(function () {
+            configs.setSuperFeaturesType(123);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): super features type must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setSuperFeaturesType('abc')).to.eql(configs);
+        });
+      });
+
       context('unpublished path', function () {
         var internalUrl = 'admin.my.site';
 

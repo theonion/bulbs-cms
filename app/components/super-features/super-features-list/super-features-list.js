@@ -19,6 +19,10 @@ angular.module('bulbs.cms.superFeatures.list', [
             function ($scope, $window, SuperFeaturesApi) {
               $window.document.title = CmsConfig.getCmsName() + ' | Super Feature';
               $scope.modelFactory = SuperFeaturesApi;
+
+              $scope.editPageUrlBuilder = function (item) {
+                return '/cms/app/edit/' + item.id + '/' + (item.polymorphic_ctype || CmsConfig.getSuperFeaturesType());
+              };
             }
           ],
           templateUrl: CmsConfig.buildComponentPath(
