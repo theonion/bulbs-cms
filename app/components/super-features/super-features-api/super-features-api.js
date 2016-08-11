@@ -12,7 +12,7 @@ angular.module('bulbs.cms.superFeatures.api', [
     function (_, $http, CmsConfig, dateTimeFormatFilter, moment, Utils) {
 
       var endpoint = function (path) {
-        return CmsConfig.buildApiUrlRoot('super-features', path);
+        return CmsConfig.buildApiUrlRoot('super-feature', path);
       };
 
       var parsePayload = function (payload) {
