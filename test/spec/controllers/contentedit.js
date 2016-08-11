@@ -216,25 +216,29 @@ describe('Controller: ContenteditCtrl', function () {
         expect(scope.postValidationSaveArticle).not.to.have.been.called;
       });
 
-      it('should POST when creating a new article', function () {
+      it('should save with a doctype when creating a new article', function () {
+        var doctype = 'some_doctype';
         ContenteditCtrl = controller('ContenteditCtrl', {
           $scope: scope,
-          $routeParams: { id: 'new' },
+          $routeParams: {
+            id: 'new',
+            polymorphic_ctype: doctype
+          },
           VersionStorageApi: VersionStorageApiMock,
           $modal: modalService
         });
         scope.$digest();
         window.onbeforeunload = function () {};
-        sandbox.spy(scope.article, 'post');
+        sandbox.spy(scope.article, 'save').withArgs(sinon.match({ doctype: doctype }));
 
         scope.saveArticle();
 
-        expect(scope.article.post.callCount).to.equal(1);
+        expect(scope.article.save.callCount).to.equal(1);
       });
 
       it('should switch current route to created aritcle IDed route', function () {
         var contentType = 'my_content_type';
-        httpBackend.expect('POST', '/cms/api/v1/content/').respond(mockArticle);
+        httpBackend.expect('POST', '/cms/api/v1/content/?doctype='+ contentType).respond(mockArticle);
         ContenteditCtrl = controller('ContenteditCtrl', {
           $scope: scope,
           $routeParams: {

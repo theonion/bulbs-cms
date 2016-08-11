@@ -46,10 +46,8 @@ describe('Service: SuperFeaturesApi', function () {
 
       expect(SuperFeaturesApi.fields[0].title).to.equal('Super Feature Name');
       expect(SuperFeaturesApi.fields[0].sorts).to.equal('title');
-      expect(SuperFeaturesApi.fields[1].title).to.equal('Sponsor');
-      // TODO : sponsor content
-      expect(SuperFeaturesApi.fields[2].title).to.equal('Total Nested Pages');
-      expect(SuperFeaturesApi.fields[3].title).to.equal('Publish Date');
+      expect(SuperFeaturesApi.fields[1].title).to.equal('Total Nested Pages');
+      expect(SuperFeaturesApi.fields[2].title).to.equal('Publish Date');
     });
 
     it('should provide singular name', function () {
@@ -65,7 +63,7 @@ describe('Service: SuperFeaturesApi', function () {
     it('should print publish date as "Draft" if super feature has no publish date', function () {
       var superFeature = {};
 
-      var cellContent = SuperFeaturesApi.fields[3].content(superFeature);
+      var cellContent = SuperFeaturesApi.fields[2].content(superFeature);
 
       expect(cellContent).to.equal('Draft');
     });
@@ -76,7 +74,7 @@ describe('Service: SuperFeaturesApi', function () {
         published: publishDate.toISOString()
       };
 
-      var cellContent = SuperFeaturesApi.fields[3].content(superFeature);
+      var cellContent = SuperFeaturesApi.fields[2].content(superFeature);
 
       expect(cellContent).to.equal(dateTimeFormatFilter(publishDate, '[Scheduled for] M/D/YY h:mma z'));
     });
@@ -87,7 +85,7 @@ describe('Service: SuperFeaturesApi', function () {
         published: publishDate.toISOString()
       };
 
-      var cellContent = SuperFeaturesApi.fields[3].content(superFeature);
+      var cellContent = SuperFeaturesApi.fields[2].content(superFeature);
 
       expect(cellContent).to.equal(dateTimeFormatFilter(publishDate));
     });
