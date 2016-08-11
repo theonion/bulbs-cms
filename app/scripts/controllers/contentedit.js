@@ -246,9 +246,12 @@ angular.module('bulbsCmsApp')
         $scope.article.slug = $window.URLify($scope.article.title, 50);
       }
 
-      var method = $routeParams.id === 'new' ? 'post' : 'put';
+      var params = {};
+      if ($routeParams.id === 'new') {
+        params['doctype'] = $scope.article.polymorphic_ctype;
+      }
 
-      $scope.article[method]()
+      $scope.article.save(params)
         .then(saveArticleSuccessCbk)
         .catch(saveArticleErrorCbk);
 
