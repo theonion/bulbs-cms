@@ -90,6 +90,19 @@ angular.module('bulbsCmsApp.nonRestmodListPage', [
             });
         };
 
+        $scope.cellContents = function (item, field) {
+          var cellContents = '-';
+
+          if (_.isFunction(field.content)) {
+            cellContents = field.content(item);
+          } else if (_.isString(field.content)) {
+            cellContents = item[field.content];
+          } else if (field.sorts) {
+            cellContents = item[field.sorts];
+          }
+          return cellContents;
+        };
+
         $scope.$add = function () {
           $location.path($scope.cmsEditPageUrl({ item: { id: 'new' } }));
         };
