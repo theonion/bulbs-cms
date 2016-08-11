@@ -138,8 +138,7 @@
         <li class="content-status">
           <a
               target="_blank"
-              href="/r/{{ article.id }}"
-              ng-disabled="articleIsNew">
+              ng-attr-href="{{ (!articleIsNew || undefined) && ('/r/' + article.id) }}">
             <i class="fa fa-share-alt"></i>
             <span>Preview</span>
           </a>
