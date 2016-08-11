@@ -171,6 +171,7 @@ angular.module('bulbsCmsApp')
       $window.article = $scope.article = resp;
       $scope.last_saved_article = angular.copy(resp);
       $scope.articleIsDirty = false;
+      $scope.articleIsNew = false;
       $scope.errors = null;
       $location.path('/cms/app/edit/' + $scope.article.id + '/' + $routeParams.contentType);
       $location.search('rating_type', null); //maybe just kill the whole query string with $location.url($location.path())
@@ -289,6 +290,7 @@ angular.module('bulbsCmsApp')
 
     var initialize = function () {
       if ($routeParams.id === 'new') {
+        $scope.articleIsNew = true;
         $scope.article = ContentFactory.oneUrl('content');
         $scope.article['polymorphic_ctype'] = $routeParams.contentType;
       } else {

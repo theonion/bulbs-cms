@@ -26,10 +26,20 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Article Tools <b class="caret"></b></a>
           <ul class="dropdown-menu">
             <li>
-              <a href="" role="button" class="changelog-button" ng-controller="ContentworkflowCtrl" ng-click="changelogModal(article);">
+              <a
+                  href=""
+                  role="button"
+                  class="changelog-button"
+                  ng-controller="ContentworkflowCtrl"
+                  ng-click="!articleIsNew && changelogModal(article);">
                 <i class="fa fa-cog"></i> View Changelog</a></li>
             <li>
-              <a href="" role="button" class="version-browser-button" ng-controller="ContentworkflowCtrl" ng-click="versionBrowserModal(article);">
+              <a
+                  href=""
+                  role="button"
+                  class="version-browser-button"
+                  ng-controller="ContentworkflowCtrl"
+                  ng-click="!articleIsNew && versionBrowserModal(article);">
                 <i class="fa fa-th-list"></i> Browse Versions</a></li>
             <li>
               <a href="" role="button" ng-controller="ContentworkflowCtrl" ng-click="thumbnailModal(article);">
@@ -38,7 +48,11 @@
                 <a href="" role="button" ng-controller="ContentworkflowCtrl" ng-click="descriptionModal(article)">
                     <i class="fa fa-edit"></i> Edit Description</a></li>
             <li>
-              <a href="" role="button" ng-controller="ContentworkflowCtrl" ng-click="temporaryUrlModal(article)">
+              <a
+                  href=""
+                  role="button"
+                  ng-controller="ContentworkflowCtrl"
+                  ng-click="!articleIsNew && temporaryUrlModal(article)">
                 <i class="fa fa-link"></i>
                 Temporary Link
               </a>
@@ -122,7 +136,10 @@
         </li>
 
         <li class="content-status">
-          <a target="_blank" href="/r/{{article.id}}">
+          <a
+              target="_blank"
+              href="/r/{{ article.id }}"
+              ng-disabled="articleIsNew">
             <i class="fa fa-share-alt"></i>
             <span>Preview</span>
           </a>
