@@ -39,12 +39,10 @@ angular.module('bulbs.cms.superFeatures.api', [
           sorts: 'title'
         }, {
           title: 'Sponsor',
-          content: function (superFeature) {
-            // TODO : fill this in
-            return 'garbage';
-          }
+          // TODO : add content
         }, {
-          title: 'Total Nested Pages'
+          title: 'Total Nested Pages',
+          content: 'children_count'
         }, {
           title: 'Publish Date',
           content: function (superFeature) {
