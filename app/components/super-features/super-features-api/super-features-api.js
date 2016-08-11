@@ -1,13 +1,15 @@
 'use strict';
 
 angular.module('bulbs.cms.superFeatures.api', [
+  'bulbs.cms.dateTimeFilter',
   'bulbs.cms.site.config',
   'bulbs.cms.utils',
-  'lodash'
+  'lodash',
+  'moment'
 ])
   .service('SuperFeaturesApi', [
-    '_', '$http', 'CmsConfig', 'Utils',
-    function (_, $http, CmsConfig, Utils) {
+    '_', '$http', 'CmsConfig', 'dateTimeFormatFilter', 'moment', 'Utils',
+    function (_, $http, CmsConfig, dateTimeFormatFilter, moment, Utils) {
       var endpoint = function (path) {
         return CmsConfig.buildApiUrlRoot('super-features', path);
       };
@@ -39,13 +41,25 @@ angular.module('bulbs.cms.superFeatures.api', [
           title: 'Sponsor',
           content: function (superFeature) {
             // TODO : fill this in
+            return 'garbage';
           }
         }, {
           title: 'Total Nested Pages'
         }, {
           title: 'Publish Date',
           content: function (superFeature) {
-            // TODO : fill this in
+            var now = moment();
+            var cellContent = '';
+
+            if (!superFeature.published) {
+              cellContent = 'Draft';
+            } else if (now.isSameOrAfter(superFeature.published)) {
+              cellContent = dateTimeFormatFilter(superFeature.published);
+            } else if (now.isBefore(superFeature.published)) {
+              cellContent = dateTimeFormatFilter(superFeature.published, '[Scheduled for] M/D/YY h:mma z');
+            }
+
+            return cellContent;
           }
         }],
         getSuperFeature: function (id) {

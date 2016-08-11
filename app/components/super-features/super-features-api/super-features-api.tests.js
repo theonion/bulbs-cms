@@ -3,8 +3,10 @@
 describe('Service: SuperFeaturesApi', function () {
   var $httpBackend;
   var CmsConfig;
+  var dateTimeFormatFilter;
   var endpoint;
   var mockSuperFeature;
+  var moment;
   var sandbox;
   var SuperFeaturesApi;
 
@@ -18,9 +20,12 @@ describe('Service: SuperFeaturesApi', function () {
       }
     );
 
-    inject(function (_$httpBackend_, _CmsConfig_, _SuperFeaturesApi_) {
+    inject(function (_$httpBackend_, _CmsConfig_, _dateTimeFormatFilter_, _moment_,
+        _SuperFeaturesApi_) {
       $httpBackend = _$httpBackend_;
       CmsConfig = _CmsConfig_;
+      dateTimeFormatFilter = _dateTimeFormatFilter_;
+      moment = _moment_;
       SuperFeaturesApi = _SuperFeaturesApi_;
 
       sandbox = sinon.sandbox.create();
@@ -45,7 +50,6 @@ describe('Service: SuperFeaturesApi', function () {
       // TODO : sponsor content
       expect(SuperFeaturesApi.fields[2].title).to.equal('Total Nested Pages');
       expect(SuperFeaturesApi.fields[3].title).to.equal('Publish Date');
-      // TODO : publish date content
     });
 
     it('should provide singular name', function () {
@@ -56,6 +60,36 @@ describe('Service: SuperFeaturesApi', function () {
     it('should provide plural name', function () {
 
       expect(SuperFeaturesApi.namePlural).to.equal('Super Features');
+    });
+
+    it('should print publish date as "Draft" if super feature has no publish date', function () {
+      var superFeature = {};
+
+      var cellContent = SuperFeaturesApi.fields[3].content(superFeature);
+
+      expect(cellContent).to.equal('Draft');
+    });
+
+    it('should print publish date prefixed with "Scheduled" if publish date is in the future', function () {
+      var publishDate = moment().add(1, 'days');
+      var superFeature = {
+        published: publishDate.toISOString()
+      };
+
+      var cellContent = SuperFeaturesApi.fields[3].content(superFeature);
+
+      expect(cellContent).to.equal(dateTimeFormatFilter(publishDate, '[Scheduled for] M/D/YY h:mma z'));
+    });
+
+    it('should print publish date if publish date is now or in the past', function () {
+      var publishDate = moment().subtract(1, 'days');
+      var superFeature = {
+        published: publishDate.toISOString()
+      };
+
+      var cellContent = SuperFeaturesApi.fields[3].content(superFeature);
+
+      expect(cellContent).to.equal(dateTimeFormatFilter(publishDate));
     });
   });
 
