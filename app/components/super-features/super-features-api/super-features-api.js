@@ -10,6 +10,7 @@ angular.module('bulbs.cms.superFeatures.api', [
   .service('SuperFeaturesApi', [
     '_', '$http', 'CmsConfig', 'dateTimeFormatFilter', 'moment', 'Utils',
     function (_, $http, CmsConfig, dateTimeFormatFilter, moment, Utils) {
+
       var endpoint = function (path) {
         return CmsConfig.buildApiUrlRoot('super-features', path);
       };
@@ -37,9 +38,6 @@ angular.module('bulbs.cms.superFeatures.api', [
         fields: [{
           title: 'Super Feature Name',
           sorts: 'title'
-        }, {
-          title: 'Sponsor',
-          // TODO : add content
         }, {
           title: 'Total Nested Pages',
           content: 'children_count'
