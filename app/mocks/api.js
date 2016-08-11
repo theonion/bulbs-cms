@@ -10,6 +10,7 @@ angular.module('bulbsCmsApp.mockApi', [
   'bulbsCmsApp.mockApi.customSearch',
   'bulbsCmsApp.mockApi.lineItem',
   'bulbsCmsApp.mockApi.override',
+  'bulbsCmsApp.mockApi.notification',
   'bulbsCmsApp.mockApi.poll',
   'bulbsCmsApp.mockApi.role',
   'bulbsCmsApp.mockApi.specialCoverage',
@@ -207,8 +208,8 @@ angular.module('bulbsCmsApp.mockApi', [
     }];
     $httpBackend.whenGET(/\/cms\/api\/v1\/content-type\/(\?search=.*)?/).respond(mockApiData.content_types);
 
-    // notifications
-    mockApiData.notifications = [{
+    // CMS notifications
+    mockApiData.cmsNotifications = [{
         id: 0,
         title: 'We\'ve Made An Update!',
         body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin quis aliquet risus, eget vulputate nibh. Fusce egestas porttitor libero in faucibus. Aliquam at orci eget massa tristique condimentum vel sit amet ipsum. Nulla tincidunt arcu tortor, a pulvinar mauris convallis id. Quisque imperdiet id ex ac fringilla. Aliquam fringilla dolor nec enim iaculis iaculis sed ac lacus. Nulla id condimentum magna. Aliquam dictum justo tortor, vitae blandit odio aliquet sagittis.',
@@ -238,22 +239,22 @@ angular.module('bulbsCmsApp.mockApi', [
         post_date: today.format(),
         notify_end_date: today.clone().add({days: 3}).format()
     }];
-    $httpBackend.whenGET('/cms/api/v1/notifications/').respond(mockApiData.notifications);
-    $httpBackend.whenPOST('/cms/api/v1/notifications/').respond(200, {
+    $httpBackend.whenGET('/cms/api/v1/cms_notifications/').respond(mockApiData.cmsNotifications);
+    $httpBackend.whenPOST('/cms/api/v1/cms_notifications/').respond(200, {
       id: 5,
       title: 'New Notification',
       body: 'Ipsum ipsum ipsum. This was POSTed here.',
       post_date: today.clone().add({days: 1}).format(),
       notify_end_date: today.clone().add({days: 4}).format()
     });
-    $httpBackend.whenPUT(/\/cms\/api\/v1\/notifications\/(\d+)\//).respond(200, {
+    $httpBackend.whenPUT(/\/cms\/api\/v1\/cms_notifications\/(\d+)\//).respond(200, {
       id: 5,
       title: 'Updated Notification',
       body: 'This was PUT here.',
       post_date: today.clone().add({days: 1}).format(),
       notify_end_date: today.clone().add({days: 4}).format()
     });
-    $httpBackend.whenDELETE(/\/cms\/api\/v1\/notifications\/(\d+)\//).respond(200);
+    $httpBackend.whenDELETE(/\/cms\/api\/v1\/cms_notifications\/(\d+)\//).respond(200);
 
     //current user
     $httpBackend.whenGET(/\/users\/me\/?/).respond({

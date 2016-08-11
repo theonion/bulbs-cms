@@ -22,7 +22,7 @@ angular.module('bulbsCmsApp')
 
     $scope.$watch('video.poster', function () {
       if (!$scope.video || !$scope.video.poster) { return; }
-      var defaultUrl = CmsConfig.buildVideoThumbnailUrl('' + videoId, 'thumbnail_{{thumbnail}}.png');
+      var defaultUrl = CmsConfig.buildVideoThumbnailUrl(videoId, 'thumbnail_{{thumbnail}}.png');
       var thumbnailIndex = defaultUrl.indexOf('{{thumbnail}}');
       if ($scope.video.poster.indexOf(defaultUrl.substr(0, thumbnailIndex)) === 0) {
         $scope.currentThumbnail = Number($scope.video.poster.substr(thumbnailIndex, 4));
@@ -35,7 +35,7 @@ angular.module('bulbsCmsApp')
     $scope.$watch('uploadedImage.id', function () {
       if ($scope.uploadedImage.id) {
         $scope.video.poster =
-          CmsConfig.buildImageApiUrl('16x9', '' + $scope.uploadedImage.id, '1200.jpg');
+          CmsConfig.buildImageApiUrl('16x9', $scope.uploadedImage.id, '1200.jpg');
       }
     });
 
@@ -61,7 +61,7 @@ angular.module('bulbsCmsApp')
     };
 
     function compilePosterUrl(thumbnail) {
-      return CmsConfig.buildVideoThumbnailUrl('' + videoId, 'thumbnail_' + pad4(thumbnail) + '.png');
+      return CmsConfig.buildVideoThumbnailUrl(videoId, 'thumbnail_' + pad4(thumbnail) + '.png');
     }
 
     function pad4(num) {

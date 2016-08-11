@@ -6,7 +6,7 @@ angular.module('bulbsCmsApp')
       restrict: 'E',
       templateUrl: '/views/cms-notification.html',
       scope: {
-        notification: '='
+        cmsNotification: '='
       },
       controller: 'CmsNotificationCtrl'
     };
