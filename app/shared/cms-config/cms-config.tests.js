@@ -34,6 +34,42 @@ describe('CmsConfig', function () {
 
     context('general cms', function () {
 
+      context('api url root', function () {
+
+        it('should provide a setter and getter', function () {
+          var url = '/api/root';
+
+          configs.setApiUrlRoot(url);
+
+          expect(sealedConfigs().buildApiUrlRoot()).to.equal(url);
+        });
+
+        it('should provide a getter to build out a url', function () {
+          var url = '/api/root';
+          var somePath = '/something-special';
+
+          configs.setApiUrlRoot(url);
+
+          expect(sealedConfigs().buildApiUrlRoot(somePath))
+            .to.equal(url + somePath);
+        });
+
+        it('should throw an error if the given value is not a string', function () {
+
+          expect(function () {
+            configs.setApiUrlRoot(123);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): api url root must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setApiUrlRoot('/api/root')).to.eql(configs);
+        });
+      });
+
       context('auto add author', function () {
 
         it('should provide a setter and getter', function () {

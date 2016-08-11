@@ -21,6 +21,8 @@ angular.module('bulbs.cms.config', [
         }.bind(null, start);
       };
 
+      // url for api root
+      var apiUrlRoot = '';
       // true to automatically add current user to author list when creating content
       var autoAddAuthor = false;
       // path to components
@@ -67,6 +69,14 @@ angular.module('bulbs.cms.config', [
       var videoPath = '';
       // thumbnail for inline video uploads
       var videoThumbnailUrl = '';
+
+      this.setApiUrlRoot = function (value) {
+        apiUrlRoot = checkOrError(
+          value, _.isString,
+          'api url root must be a string!'
+        );
+        return this;
+      };
 
       this.setAutoAddAuthor = function (value) {
         autoAddAuthor = checkOrError(
@@ -254,6 +264,7 @@ angular.module('bulbs.cms.config', [
       this.$get = [
         function () {
           return {
+            buildApiUrlRoot: pathBuilder(apiUrlRoot),
             buildComponentPath: pathBuilder(componentPath),
             buildContentApiUrl: pathBuilder(contentApiUrl),
             buildContentPartialsPath: pathBuilder(contentPartialsPath),

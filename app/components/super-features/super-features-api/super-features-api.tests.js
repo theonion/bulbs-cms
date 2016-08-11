@@ -12,9 +12,9 @@ describe('Service: SuperFeaturesApi', function () {
     module(
       'bulbs.cms.superFeatures.api',
       function (CmsConfigProvider) {
-        endpoint = '/super/features/';
+        endpoint = '/api/root/';
 
-        CmsConfigProvider.setContentApiUrl(endpoint);
+        CmsConfigProvider.setApiUrlRoot(endpoint);
       }
     );
 
@@ -65,7 +65,7 @@ describe('Service: SuperFeaturesApi', function () {
       var callback = sandbox.stub();
       var id = 1;
       $httpBackend
-        .expectGET(CmsConfig.buildContentApiUrl('' + id))
+        .expectGET(CmsConfig.buildApiUrlRoot('super-features', '' + id))
         .respond(200, mockSuperFeature);
 
       SuperFeaturesApi.getSuperFeature(id).then(callback);
@@ -90,7 +90,7 @@ describe('Service: SuperFeaturesApi', function () {
       var params = {};
       params[key] = val;
       $httpBackend
-        .expectGET(CmsConfig.buildContentApiUrl() + '?' + key + '=' + val)
+        .expectGET(CmsConfig.buildApiUrlRoot('super-features') + '/?' + key + '=' + val)
         .respond(200, listing);
 
       SuperFeaturesApi.getSuperFeatures(params).then(callback);
@@ -108,7 +108,7 @@ describe('Service: SuperFeaturesApi', function () {
       };
       var callback = sandbox.stub();
       $httpBackend
-        .expectPOST(CmsConfig.buildContentApiUrl())
+        .expectPOST(CmsConfig.buildApiUrlRoot('super-features') + '/')
         .respond(200, data);
 
       SuperFeaturesApi.createSuperFeature(data).then(callback);
@@ -127,7 +127,7 @@ describe('Service: SuperFeaturesApi', function () {
       };
       var callback = sandbox.stub();
       $httpBackend
-        .expectPUT(CmsConfig.buildContentApiUrl(data.id))
+        .expectPUT(CmsConfig.buildApiUrlRoot('super-features', data.id))
         .respond(200, data);
 
       SuperFeaturesApi.updateSuperFeature(data).then(callback);
@@ -146,7 +146,7 @@ describe('Service: SuperFeaturesApi', function () {
       };
       var callback = sandbox.stub();
       $httpBackend
-        .expectDELETE(CmsConfig.buildContentApiUrl(data.id))
+        .expectDELETE(CmsConfig.buildApiUrlRoot('super-features', data.id))
         .respond(200, data);
 
       SuperFeaturesApi.deleteSuperFeature(data).then(callback);

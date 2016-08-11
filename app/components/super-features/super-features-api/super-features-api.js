@@ -8,7 +8,9 @@ angular.module('bulbs.cms.superFeatures.api', [
   .service('SuperFeaturesApi', [
     '_', '$http', 'CmsConfig', 'Utils',
     function (_, $http, CmsConfig, Utils) {
-      var endpoint = CmsConfig.buildContentApiUrl;
+      var endpoint = function (path) {
+        return CmsConfig.buildApiUrlRoot('super-features', path);
+      };
 
       var parsePayload = function (payload) {
         var data = _.cloneDeep(payload);
