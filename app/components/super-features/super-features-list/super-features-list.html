@@ -7,29 +7,7 @@
         cms-edit-page-url="editPageUrlBuilder(item)"
         destroy-item="modelFactory.deleteSuperFeature(item.id)"
         get-items="modelFactory.getSuperFeatures(params)"
-        filter-buttons="[{
-          title: 'Draft',
-          params: {
-            status: 'draft'
-          }
-        }, {
-          title: 'Active',
-          params: {
-            active: 'true'
-          }
-        }, {
-          title: 'Scheduled',
-          params: {
-          }
-        }, {
-          title: 'Published',
-          params: {
-          }
-        }, {
-          title: 'All',
-          params: {
-          }
-        }]"
+        filter-buttons="statusFilterOptions"
         model-fields="modelFactory.fields"
         model-name="modelFactory.name"
         model-name-plural="modelFactory.namePlural"
