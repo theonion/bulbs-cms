@@ -3,6 +3,7 @@
 angular.module('bulbs.cms.dynamicContent.form', [
   'bulbs.cms.dynamicContent.api',
   'bulbs.cms.dynamicContent.form.field.object',
+  'bulbs.cms.dynamicContent.form.relations',
   'bulbs.cms.site.config',
   'lodash'
 ])

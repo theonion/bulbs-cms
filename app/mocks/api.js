@@ -113,7 +113,7 @@ angular.module('bulbsCmsApp.mockApi', [
     }]);
 
     // content list
-    var listRegex = /^\/cms\/api\/v1\/content\/(\?.*)?$/;
+    var listRegex = /^\/cms\/api\/v1\/(content|super-feature)\/(\?.*)?$/;
     $httpBackend.when('GET', listRegex).respond(mockApiData['content.list']);
     $httpBackend.when('OPTIONS', listRegex).respond(mockApiData['content.list']);
 
