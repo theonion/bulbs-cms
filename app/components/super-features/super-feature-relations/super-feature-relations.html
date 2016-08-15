@@ -1,7 +1,45 @@
 <h1>relations</h1>
 
+<button>
+  <i class="fa fa-plus"></i>
+  <span>Add New Page</span>
+</button>
+
 <ul>
   <li ng-repeat="relation in relations">
-    {{ relation.id }}
+    <button>
+      <i class="fa fa-pencil"></i>
+      <span>Edit</span>
+    </button>
+    <div>id: {{ relation.id }}</div>
+    <div>
+      headline:
+      <input ng-model="relation.title">
+    </div>
+    <div>
+      status:
+      <select ng-model="relation.status">
+        <option value="">-- Article Status --</option>
+        <option
+            ng-repeat="status in statuses track by status.value"
+            ng-selected="status.value === relation.status"
+            value="{{ status.value }}">
+          {{ status.label }}
+        </option>
+      </select>
+    </div>
+    <div>published: {{ relation.published }}</div>
+    <div>
+      image:
+      <betty-editable
+          image="relation.image"
+          ratio="16x9"
+          add-styles="fa fa-picture-o">
+      </betty-editable>
+    </div>
+    <button>
+      <i class="fa fa-trash"></i>
+      <span>Delete</span>
+    </button>
   </li>
 </ul>
