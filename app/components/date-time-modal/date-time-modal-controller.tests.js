@@ -25,12 +25,6 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
       $scope = $rootScope.$new();
       moment = _moment_;
 
-      var controllerBuilder = function (configs) {
-        return function () {
-          return $controller('DatetimeSelectionModalCtrl', configs);
-        };
-      };
-
       buildControllerInstance = function () {
         return $controller(
           'DatetimeSelectionModalCtrl',
@@ -135,17 +129,22 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
     expect($scope.tempDatetime.format()).to.equal(tempTimeStr);
   });
 
-  it('should have a setDate function for use with date picker', function () {
-    buildControllerInstance();
+  it('should have a setDate function for use with date picker that preserves selected time', function () {
+    var hour = moment().add(1, 'hour').hour();
     var newDate = moment().add(1, 'year');
+    buildControllerInstance();
 
+    $scope.tempDatetime.hour(hour);
     $scope.setDate(newDate);
 
-    expect($scope.tempDatetime.isSame(newDate)).to.equal(true);
+    expect($scope.tempDatetime.year()).to.equal(newDate.year());
+    expect($scope.tempDatetime.month()).to.equal(newDate.month());
+    expect($scope.tempDatetime.date()).to.equal(newDate.date());
+    expect($scope.tempDatetime.hour()).to.equal(hour);
   });
 
   it('should have a function to set the selected date to today while preserving selected time', function () {
-    var hour = 5;
+    var hour = moment().add(1, 'hour').hour();
     buildControllerInstance();
 
     $scope.tempDatetime.hour(hour);
@@ -159,7 +158,7 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
   });
 
   it('should have a function to set the selected date to tomorrow while preserving selected time', function () {
-    var hour = 5;
+    var hour = moment().add(1, 'hour').hour();
     buildControllerInstance();
 
     $scope.tempDatetime.hour(hour);
@@ -198,7 +197,7 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
     buildControllerInstance();
     $modalInstanceMock.close = sinon.stub();
 
-    $scope.chooseDatetime()
+    $scope.chooseDatetime();
 
     expect($scope.tempDatetime.isSame($modalInstanceMock.close.args[0][0])).to.equal(true);
   });
@@ -210,7 +209,7 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
 
     $scope.tempDatetime = moment(null);
     $scope.$digest();
-    $scope.chooseDatetime()
+    $scope.chooseDatetime();
 
     expect($modalInstanceMock.close.callCount).to.equal(0);
   });

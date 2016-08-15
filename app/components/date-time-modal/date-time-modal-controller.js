@@ -43,7 +43,11 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
       // callback function for using datetime calendar because it doesn't work
       //  at all in a sensible way
       $scope.setDate = function (newDate) {
-        $scope.tempDatetime = moment(newDate);
+        var newDateAsMoment = moment(newDate);
+        $scope.tempDatetime = ($scope.tempDatetime || moment())
+          .year(newDateAsMoment.year())
+          .month(newDateAsMoment.month())
+          .date(newDateAsMoment.date());
       };
 
       $scope.setDateToday = function () {
