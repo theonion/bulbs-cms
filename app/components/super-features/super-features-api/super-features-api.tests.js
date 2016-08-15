@@ -132,6 +132,31 @@ describe('Service: SuperFeaturesApi', function () {
     });
   });
 
+  context('retrieving a list of super feature relations', function () {
+
+    it('should provide a list of child pages', function () {
+      var parentId = 1;
+      var relations = [{
+        id: 1,
+        title: 'The First Relation',
+        status: 'Draft'
+      }];
+      var url = CmsConfig.buildApiUrlRoot('super-feature', parentId, 'relations');
+      $httpBackend.expect('GET', url).respond(function () {
+        return [200, relations];
+      });
+
+      var apiRelations;
+      SuperFeaturesApi.getSuperFeatureRelations(parentId)
+        .then(function (response) {
+          apiRelations = response.data;
+        });
+      $httpBackend.flush();
+
+      expect(apiRelations).to.eql(relations);
+    });
+  });
+
   context('creating a super feature', function () {
 
     it('should create a new super feature', function () {

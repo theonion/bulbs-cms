@@ -73,6 +73,9 @@ angular.module('bulbs.cms.superFeatures.api', [
               };
             });
         },
+        getSuperFeatureRelations: function (id) {
+          return $http.get(endpoint(Utils.path.join(id, 'relations')));
+        },
         name: 'Super Feature',
         namePlural: 'Super Features',
         updateSuperFeature: function (data) {
