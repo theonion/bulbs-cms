@@ -2,6 +2,7 @@
 
 angular.module('bulbs.cms.dateTimeModal.controller', [
   'bulbs.cms.site.config',
+  'moment',
   'ui.bootstrap.modal'
 ])
   .controller('DatetimeSelectionModalCtrl', [
@@ -10,16 +11,8 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
 
       $scope.TIMEZONE_LABEL = moment.tz(CmsConfig.getTimezoneName()).format('z');
 
-      // copy date temporarily so user has to actually verify change to the date
-      $scope.tempDatetime = angular.copy($scope.modDatetime);
-      if (!$scope.tempDatetime) {
-        // default to now if no time given
-        $scope.tempDatetime = moment();
-      }
-      $scope.tempTime = angular.copy($scope.tempDatetime);
-
       // ensure that we can't choose a time if date is invalid
-      $scope.dateValid = false;
+      $scope.dateValid = true;
       $scope.$watch('tempDatetime', function () {
         $scope.dateValid = $scope.tempDatetime.isValid();
       });
@@ -35,6 +28,14 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
         }
       });
 
+      // copy date temporarily so user has to actually verify change to the date
+      $scope.tempDatetime = angular.copy($scope.modDatetime);
+      if (!$scope.tempDatetime) {
+        // default to now if no time given
+        $scope.tempDatetime = moment();
+      }
+      $scope.tempTime = angular.copy($scope.tempDatetime);
+
       var timeNowWithOffset = function () {
         return moment.tz(CmsConfig.getTimezoneName());
       };
@@ -47,7 +48,7 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
 
       $scope.setDateToday = function () {
         var now = timeNowWithOffset();
-        $scope.tempDatetime = moment()
+        $scope.tempDatetime = ($scope.tempDatetime ||  moment())
           .year(now.year())
           .month(now.month())
           .date(now.date());
@@ -55,7 +56,7 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
 
       $scope.setDateTomorrow = function () {
         var now = timeNowWithOffset();
-        $scope.tempDatetime = moment()
+        $scope.tempDatetime = ($scope.tempDatetime ||  moment())
             .year(now.year())
             .month(now.month())
             .date(now.date() + 1);
@@ -68,7 +69,8 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
       $scope.setTimeMidnight = function () {
         $scope.tempDatetime = timeNowWithOffset()
             .hour(24)
-            .minute(0);
+            .minute(0)
+            .second(0);
       };
 
       $scope.chooseDatetime = function () {
