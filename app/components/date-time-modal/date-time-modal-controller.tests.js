@@ -162,9 +162,9 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
     buildControllerInstance();
 
     $scope.tempDatetime.hour(hour);
-    $scope.setDateToday();
+    $scope.setDateTomorrow();
 
-    var tomorrow = moment().add(1, 'date');
+    var tomorrow = moment().add(1, 'day');
     expect($scope.tempDatetime.year()).to.equal(tomorrow.year());
     expect($scope.tempDatetime.month()).to.equal(tomorrow.month());
     expect($scope.tempDatetime.date()).to.equal(tomorrow.date());

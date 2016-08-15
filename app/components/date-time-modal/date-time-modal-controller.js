@@ -55,7 +55,7 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
       };
 
       $scope.setDateTomorrow = function () {
-        $scope.setDate(timeNowWithOffset().add(1, 'date'));
+        $scope.setDate(timeNowWithOffset().add(1, 'day'));
       };
 
       $scope.setTimeNow = function () {
