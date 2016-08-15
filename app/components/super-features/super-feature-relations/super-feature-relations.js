@@ -12,17 +12,15 @@ angular.module('bulbs.cms.superFeatures.relations', [
           article: '='
         },
         link: function (scope, element, attrs) {
-          // TODO :
-          //    2. render relations
-
           SuperFeaturesApi.getSuperFeatureRelations(scope.article.id)
-            .then(function () {
-              console.log(arguments);
+            .then(function (response) {
+              scope.relations = response.data.results;
             });
         },
         templateUrl: CmsConfig.buildComponentPath(
-          'content-relations',
-          'content-relations.html'
+          'super-features',
+          'super-feature-relations',
+          'super-feature-relations.html'
         )
       };
     }

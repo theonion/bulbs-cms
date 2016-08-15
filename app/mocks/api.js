@@ -468,12 +468,12 @@ angular.module('bulbsCmsApp.mockApi', [
     });
 
     // super features
-    $httpBackend.whenGET(/\/cms\/api\/v1\/super-features\//).respond({
+    $httpBackend.whenGET(/\/cms\/api\/v1\/super-feature\//).respond({
       results: mockApiData['content.list'].results.filter(function (content) {
         return content.polymorphic_ctype === 'core_super_feature_type';
       })
     });
-    $httpBackend.whenGET(/\/cms\/api\/v1\/super-features\/(\d+)\/relations\//)
+    $httpBackend.whenGET(/\/cms\/api\/v1\/super-feature\/(\d+)\/relations\//)
       .respond(function (method, url, data) {
         var id = getContentId(url);
         var relations = mockApiData['superfeature.relations'][id];
