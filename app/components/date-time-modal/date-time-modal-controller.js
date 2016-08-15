@@ -40,8 +40,8 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
         return moment.tz(CmsConfig.getTimezoneName());
       };
 
-      // callback function for using datetime calendar because it doesn't work
-      //  at all in a sensible way
+      // callback function for using datetimepicker calendar because it doesn't
+      //  modify the given ngModel
       $scope.setDate = function (newDate) {
         var newDateAsMoment = moment(newDate);
         $scope.tempDatetime = ($scope.tempDatetime || moment())
@@ -51,19 +51,11 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
       };
 
       $scope.setDateToday = function () {
-        var now = timeNowWithOffset();
-        $scope.tempDatetime = ($scope.tempDatetime ||  moment())
-          .year(now.year())
-          .month(now.month())
-          .date(now.date());
+        $scope.setDate(timeNowWithOffset());
       };
 
       $scope.setDateTomorrow = function () {
-        var now = timeNowWithOffset();
-        $scope.tempDatetime = ($scope.tempDatetime ||  moment())
-            .year(now.year())
-            .month(now.month())
-            .date(now.date() + 1);
+        $scope.setDate(timeNowWithOffset().add(1, 'date'));
       };
 
       $scope.setTimeNow = function () {
