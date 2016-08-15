@@ -136,6 +136,9 @@ angular.module('bulbsCmsApp.nonRestmodListPage', [
         // do initial retrieval
         $scope.$retrieve();
       },
+      link: function (scope, element, attrs) {
+        scope.showAddButton = !('disableAddButton' in attrs);
+      },
       restrict: 'E',
       scope: {
         cmsEditPageUrl: '&',  // url to edit page, will be postfixed with id or 'new'
