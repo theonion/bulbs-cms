@@ -3,16 +3,10 @@
 describe('Service: DynamicContentApi', function () {
 
   var $httpBackend;
-  var apiUrlRoot = '/my/api/';
   var DynamicContentApi;
 
   beforeEach(function () {
-    module(
-      'bulbs.cms.dynamicContent.api',
-      function (CmsConfigProvider) {
-        CmsConfigProvider.setApiUrlRoot(apiUrlRoot);
-      }
-    );
+    module('bulbs.cms.dynamicContent.api');
 
     inject(function (_$httpBackend_, _DynamicContentApi_) {
       $httpBackend = _$httpBackend_;
@@ -40,28 +34,5 @@ describe('Service: DynamicContentApi', function () {
     $httpBackend.flush();
 
     expect(apiSchema).to.eql(schema);
-  });
-
-  it('should provide a way to retrieve relations for a given piece of content', function () {
-    var parentId = 1;
-    var relations = [{
-      id: 1,
-      internal_name: 'Some Internal Name',
-      title: 'The First Relation',
-      status: 'Draft'
-    }];
-    var url = apiUrlRoot + parentId + '/relations';
-    $httpBackend.expect('GET', url).respond(function () {
-      return [200, relations];
-    });
-
-    var apiRelations;
-    DynamicContentApi.retrieveRelations(parentId)
-      .then(function (response) {
-        apiRelations = response.data;
-      });
-    $httpBackend.flush();
-
-    expect(apiRelations).to.eql(relations);
   });
 });

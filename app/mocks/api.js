@@ -473,5 +473,12 @@ angular.module('bulbsCmsApp.mockApi', [
         return content.polymorphic_ctype === 'core_super_feature_type';
       })
     });
+    $httpBackend.whenGET(/\/cms\/api\/v1\/super-features\/(\d+)\/relations\//)
+      .respond(function (method, url, data) {
+        var id = getContentId(url);
+        var relations = mockApiData['superfeature.relations'][id];
+
+        return [200, relations];
+      });
   }
 ]);

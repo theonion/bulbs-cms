@@ -1,6 +1,5 @@
 angular.module('bulbsCmsApp.mockApi.data', [])
   .value('mockApiData', {
-    // NOTE: double-quotes are used because JSON
     'content.create': {
       'title': 'A Test Article'
     },
@@ -443,7 +442,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         slug: 'my-favorite-super-feature',
         polymorphic_ctype: 'core_super_feature_type',
         published: '2016-04-20T16:20:00Z',
-        children_count: 0,
+        children_count: 3,
         info_data: {
           title: 'garbage'
         }
@@ -880,5 +879,23 @@ angular.module('bulbsCmsApp.mockApi.data', [])
           'x1': 800
         }
       }
+    },
+    'superfeature.relations': {
+      13: [{
+        id: 100,
+        title: 'Guide to Catz',
+        status: 'Draft',
+        published: null
+      }, {
+        id: 110,
+        title: 'Guide to Batz',
+        status: 'Draft',
+        published: null
+      }, {
+        id: 120,
+        title: 'Guide to Ratz',
+        status: 'Draft',
+        published: null
+      }]
     }
   });

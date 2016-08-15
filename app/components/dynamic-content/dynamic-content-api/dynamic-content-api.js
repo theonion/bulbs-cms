@@ -12,12 +12,6 @@ angular.module('bulbs.cms.dynamicContent.api', [
             method: 'OPTIONS',
             url: url
           });
-        },
-        retrieveRelations: function (id) {
-          return $http({
-            method: 'GET',
-            url: CmsConfig.buildApiUrlRoot(id, 'relations')
-          });
         }
       };
     }
