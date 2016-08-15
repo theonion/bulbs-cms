@@ -52,12 +52,7 @@ angular.module('bulbsCmsApp.mockApi', [
       if (method === 'OPTIONS' && index === 7){
         return [403, {detail: 'You do not have permission to perform this action.'}];
       } else {
-        var ctype = _.filter(
-          mockApiData['content.list'].results,
-          { id: Number(index) }
-        )[0].polymorphic_ctype;
-        var schema = mockApiData['dynamicContent.schemas'][ctype];
-
+        var schema = mockApiData['dynamicContent.schemas'][Number(index)];
         return [200, schema];
       }
     });

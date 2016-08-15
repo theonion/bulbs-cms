@@ -3,8 +3,9 @@
 <div class="list-page-tools">
   <div class="utility-tools">
     <button
-        class="add-item btn btn-primary"
-        ng-click="$add()">
+        ng-click="$add()"
+        ng-if="showAddButton"
+        class="add-item btn btn-primary">
       <i class="glyphicon glyphicon-plus"></i>
       Add {{ name }}
     </button>

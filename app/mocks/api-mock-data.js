@@ -443,7 +443,10 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         slug: 'my-favorite-super-feature',
         polymorphic_ctype: 'core_super_feature_type',
         published: '2016-04-20T16:20:00Z',
-        children_count: 0
+        children_count: 0,
+        info_data: {
+          title: 'garbage'
+        }
       }, {
         id: 14,
         title: 'Another Super Duper Feature',
@@ -460,7 +463,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
       }]
     },
     'dynamicContent.schemas': {
-      core_dynamic_content_type_1: {
+      12: {
         fields: {
           data: {
             fields: {
@@ -486,6 +489,14 @@ angular.module('bulbsCmsApp.mockApi.data', [])
                 }
               }
             }
+          }
+        }
+      },
+      13: {
+        fields: {
+          title: {
+            label: 'Title',
+            type: 'richtext'
           }
         }
       }
