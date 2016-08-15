@@ -57,7 +57,32 @@
     <![endif]-->
 
     <!-- Add your site or application content here -->
-    <div ng-view=""></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- <div ng-view=""></div> -->
+
+
+
+
+
+
+
+
 
     <div hide-if-forbidden options-url="/returns-a-403/">You can't see this!</div>
 
@@ -352,6 +377,45 @@
 
     <script src="bower_components/angular-mocks/angular-mocks.js"></script>
 
+
+
+
+
+
+
+
+
+
+
+
+    <div
+        style="border: 1px solid red"
+        ng-controller="MyGarbageController">
+      <h1>GARBAGE</h1>
+
+      <div style="border: 1px solid blue">
+        <button ng-click="useGarbage1()">Use Garbage 1</button>
+        {{ datas.garbage1.title }}
+      </div>
+      <div style="border: 1px solid blue">
+        <button ng-click="useGarbage2()">Use Garbage 2</button>
+        {{ datas.garbage2.title }}
+      </div>
+
+      <onion-editor
+          style="border: 1px solid yellow"
+          ng-model="currentGarbage.title">
+      </onion-editor>
+    </div>
+
+
+
+
+
+
+
+
+
     <script type="text/javascript">
 
       angular.module('bulbs.cms.site.config', [
@@ -410,7 +474,43 @@
               {label: 'Filter 3', key: 'filter2key', value: function(){ return "cool"; }},
               {label: 'All', key: null, value: null}
             ]);
+          })
+
+
+
+
+
+
+
+
+          .controller('MyGarbageController', function ($scope) {
+            $scope.datas = {
+              garbage1: { title: 'garbage title 1' },
+              garbage2: { title: 'garbage title 2' }
+            }
+
+            $scope.currentGarbage = $scope.datas.garbage1;
+
+            $scope.useGarbage1 = function () {
+              $scope.currentGarbage = $scope.datas.garbage1;
+            };
+
+            $scope.useGarbage2 = function () {
+              $scope.currentGarbage = $scope.datas.garbage2;
+            };
           });
+
+
+
+
+
+
+
+
+
+
+
+
 
         //huhhhhh
         $("body").on("click", "a", function(e){

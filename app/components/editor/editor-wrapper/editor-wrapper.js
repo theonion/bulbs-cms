@@ -130,6 +130,27 @@ angular.module('bulbs.cms.editor.wrapper', [
 
           scope.editor = new OnionEditor($('.editor', element[0])[0], options);
 
+
+
+
+          scope.clearHistory = function () {
+            scope.editor.scribe.undoManager.stack = [];
+            scope.editor.scribe.undoManager.position = -1;
+          };
+
+          scope.undoHistory = function () {
+            scope.editor.scribe.commands.undo.execute();
+          };
+
+          scope.redoHistory = function () {
+            scope.editor.scribe.commands.redo.execute();
+          };
+
+
+
+
+
+
           ngModel.$render = function () {
             scope.editor.setContent(ngModel.$viewValue || defaultValue);
             // register on change here, after the initial load so angular doesn't get mad...
