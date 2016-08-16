@@ -117,8 +117,10 @@ angular.module('bulbsCmsApp.mockApi', [
     var superFeatureRelationsRegex = /\/cms\/api\/v1\/super-feature\/(\d+)\/relations\/?$/;
     $httpBackend.whenGET(superFeatureRelationsRegex)
       .respond(function (method, url, data) {
-        var id = superFeatureRelationsRegex.exec(url)[1];
-        var relations = mockApiData['superfeature.relations'][id];
+        var parentId = parseInt(superFeatureRelationsRegex.exec(url)[1], 10);
+        var relations = mockApiData['content.list'].results.filter(function (content) {
+          return content.parent === parentId;
+        });
 
         return [200, relations];
       });

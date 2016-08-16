@@ -438,8 +438,8 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         }
       }, {
         id: 13,
-        title: 'My Favorite Super Feature',
-        slug: 'my-favorite-super-feature',
+        title: 'Guide to My Favorite Animals',
+        slug: 'my-favorite-animals',
         polymorphic_ctype: 'core_super_feature_type',
         published: '2016-04-20T16:20:00Z',
         children_count: 3,
@@ -459,6 +459,24 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         polymorphic_ctype: 'core_super_feature_type',
         published: moment().add(1, 'day').format(),
         children_count: 4
+      }, {
+        id: 100,
+        title: 'Guide to Catz',
+        status: 'Published',
+        parent: 13,
+        published: '2016-04-20T16:20:00Z'
+      }, {
+        id: 110,
+        title: 'Guide to Batz',
+        status: 'Published',
+        parent: 13,
+        published: '2016-04-20T16:20:00Z'
+      }, {
+        id: 120,
+        title: 'Guide to Ratz',
+        status: 'Draft',
+        parent: 13,
+        published: null
       }]
     },
     'dynamicContent.schemas': {
@@ -879,23 +897,5 @@ angular.module('bulbsCmsApp.mockApi.data', [])
           'x1': 800
         }
       }
-    },
-    'superfeature.relations': {
-      13: [{
-        id: 100,
-        title: 'Guide to Catz',
-        status: 'Draft',
-        published: '2015-08-09T04:00:00Z'
-      }, {
-        id: 110,
-        title: 'Guide to Batz',
-        status: 'Draft',
-        published: null
-      }, {
-        id: 120,
-        title: 'Guide to Ratz',
-        status: 'Draft',
-        published: null
-      }]
     }
   });
