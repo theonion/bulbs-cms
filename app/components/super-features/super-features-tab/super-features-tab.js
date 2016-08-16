@@ -8,7 +8,7 @@ angular.module('bulbs.cms.superFeatures.tab', [
   'ui.sortable',
   'superFeatures.item.directive'
 ])
-  .directive('superFeatureList', function ($, CmsConfig) {
+  .directive('superFeaturesTab', function ($, CmsConfig) {
     return {
       controller: function (_, $scope, Utils, Video) {
 
@@ -65,6 +65,10 @@ angular.module('bulbs.cms.superFeatures.tab', [
         videos: '=',
         onUpdate: '&'
       },
-      templateUrl: CmsConfig.buildSharedPath('super-features-tab/super-features-tab.html')
+      templateUrl: CmsConfig.buildComponentPath(
+        'super-features',
+        'super-features-tab',
+        'super-features-tab.html'
+      )
     };
   });
