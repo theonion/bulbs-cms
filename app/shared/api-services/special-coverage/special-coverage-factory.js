@@ -73,6 +73,11 @@ angular.module('apiServices.specialCoverage.factory', [
         belongsToMany: 'Video',
         keys: 'videos'
       },
+      super_features: {
+        init: [],
+        belongsToMany: 'SuperFeatures',
+        keys: 'super_features'
+      },
       active: {
         init: true
       },

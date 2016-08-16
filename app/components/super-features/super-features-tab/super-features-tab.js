@@ -33,7 +33,7 @@ angular.module('bulbs.cms.superFeatures.tab', [
           $scope.onUpdate();
         };
 
-        $scope.searchVideos = function (query) {
+        $scope.searchSuperFeature = function (query) {
           // return Video.$postSearch({
           //   query: query,
           //   channel: VIDEOHUB_DEFAULT_CHANNEL
@@ -62,7 +62,7 @@ angular.module('bulbs.cms.superFeatures.tab', [
       restrict: 'E',
       scope: {
         addSuperFeatureCallback: '&addSuperFeature',
-        videos: '=',
+        super_features: '=',
         onUpdate: '&'
       },
       templateUrl: CmsConfig.buildComponentPath(
