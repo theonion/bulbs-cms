@@ -1,0 +1,29 @@
+@import "../../../_dynamic-content-common";
+
+dynamic-content-form-field-choice {
+
+  .dynamic-content-form-field-choice-select-container {
+    display: inline-block;
+    position: relative;
+
+    select {
+      .input-mixin;
+
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      border-radius: 0;
+      padding-right: 25px;
+      width: inherit;
+    }
+
+    i.fa {
+      margin-right: @interface-internal-spacing;
+      pointer-events: none;
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+}

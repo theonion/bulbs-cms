@@ -10,6 +10,10 @@ angular.module('bulbs.cms.dynamicContent.form.types', [])
       tagName: 'dynamic-content-form-field-boolean',
       initialValue: false
     },
+    choice: {
+      tagName: 'dynamic-content-form-field-choice',
+      initialValue: null
+    },
     color: {
       tagName: 'dynamic-content-form-field-color',
       initialValue: '#000000' // Paint It Black -- Rolling Stones
