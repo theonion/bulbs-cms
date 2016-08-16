@@ -35,12 +35,14 @@ angular.module('bulbsCmsApp.mockApi', [
     }
 
     function detailView(method, url, data) {
-      var index = getContentId(url);
+      var id = parseInt(getContentId(url), 10);
 
-      var content = mockApiData['content.list'];
+      var content = mockApiData['content.list'].results.find(function (content) {
+        return content.id === id;
+      });
 
-      if(index <= content.results.length) {
-        return [200, content.results[index - 1]];
+      if (content) {
+        return [200, content];
       } else {
         return [404, {'detail': 'Not found'}];
       }

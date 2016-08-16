@@ -451,32 +451,40 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         title: 'Another Super Duper Feature',
         slug: 'another-super-duper-feature',
         polymorphic_ctype: 'core_super_feature_type',
-        children_count: 10
+        children_count: 10,
+        info_data: {}
       }, {
         id: 15,
         title: 'Scheduled Super Feature',
         slug: 'scheduled-super-feature',
         polymorphic_ctype: 'core_super_feature_type',
         published: moment().add(1, 'day').format(),
-        children_count: 4
+        children_count: 4,
+        info_data: {}
       }, {
         id: 100,
         title: 'Guide to Catz',
         status: 'Published',
+        polymorphic_ctype: 'core_super_feature_type',
         parent: 13,
-        published: '2016-04-20T16:20:00Z'
+        published: '2016-04-20T16:20:00Z',
+        info_data: {}
       }, {
         id: 110,
         title: 'Guide to Batz',
         status: 'Published',
+        polymorphic_ctype: 'core_super_feature_type',
         parent: 13,
-        published: '2016-04-20T16:20:00Z'
+        published: '2016-04-20T16:20:00Z',
+        info_data: {}
       }, {
         id: 120,
         title: 'Guide to Ratz',
         status: 'Draft',
+        polymorphic_ctype: 'core_super_feature_type',
         parent: 13,
-        published: null
+        published: null,
+        info_data: {}
       }]
     },
     'dynamicContent.schemas': {
@@ -516,7 +524,12 @@ angular.module('bulbsCmsApp.mockApi.data', [])
             type: 'richtext'
           }
         }
-      }
+      },
+      14: { fields: {} },
+      15: { fields: {} },
+      100: { fields: {} },
+      110: { fields: {} },
+      120: { fields: {} }
     },
     'things.list': [
       {'url': '/search?tags=so-you-think-you-can-dance', 'param': 'tags', 'type': 'tag', 'name': 'So You Think You Can Dance', 'value': 'so-you-think-you-can-dance'},

@@ -34,10 +34,10 @@
           <span>{{ relation.status }}</span>
         </span>
 
-        <button>
+        <a href="/cms/app/edit/{{ relation.id }}">
           <i class="fa fa-pencil"></i>
           <span>Edit</span>
-        </button>
+        </a>
 
         <form
             ng-submit="orderingInputForm.$setPristine()"
