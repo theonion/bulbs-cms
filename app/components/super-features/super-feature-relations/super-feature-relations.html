@@ -68,33 +68,40 @@
       </div>
     </div>
 
-    <div>
-      status:
-      <select ng-model="relation.status">
-        <option value="">-- Article Status --</option>
-        <option
-            ng-repeat="status in statuses track by status.label"
-            ng-selected="status.value === relation.status"
-            value="{{ status.value }}">
-          {{ status.label }}
-        </option>
-      </select>
+    <div
+        ng-hide="panelClosed"
+        class="super-feature-relations-list-item-content">
+      <div>
+        status:
+        <select ng-model="relation.status">
+          <option value="">-- Article Status --</option>
+          <option
+              ng-repeat="status in statuses track by status.label"
+              ng-selected="status.value === relation.status"
+              value="{{ status.value }}">
+            {{ status.label }}
+          </option>
+        </select>
+      </div>
+      <div>
+        headline:
+        <input ng-model="relation.title">
+      </div>
+      <div>
+        image:
+        <betty-editable
+            image="relation.image"
+            ratio="16x9"
+            add-styles="fa fa-picture-o">
+        </betty-editable>
+      </div>
+
+      <div class="super-feature-relations-list-item-meta-tools">
+        <button>
+          <i class="fa fa-trash"></i>
+          <span>Delete</span>
+        </button>
+      </div>
     </div>
-    <div>
-      headline:
-      <input ng-model="relation.title">
-    </div>
-    <div>
-      image:
-      <betty-editable
-          image="relation.image"
-          ratio="16x9"
-          add-styles="fa fa-picture-o">
-      </betty-editable>
-    </div>
-    <button>
-      <i class="fa fa-trash"></i>
-      <span>Delete</span>
-    </button>
   </li>
 </ol>
