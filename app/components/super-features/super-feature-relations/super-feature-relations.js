@@ -42,6 +42,21 @@ angular.module('bulbs.cms.superFeatures.relations', [
 
               $scope.redoOrdering();
             };
+
+            $scope.addChildPage = function () {
+              $scope.addChildPageDisabled = true;
+
+              SuperFeaturesApi.createSuperFeature({
+                parent: $scope.article.id
+              })
+                .then(function (child) {
+                  $scope.relations.push(child);
+                  $scope.redoOrdering();
+                })
+                .finally(function () {
+                  $scope.addChildPageDisabled = false;
+                });
+            };
           }
         ],
         scope: {

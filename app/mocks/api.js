@@ -111,12 +111,23 @@ angular.module('bulbsCmsApp.mockApi', [
 
 
         // super features
-    $httpBackend.whenGET(/\/cms\/api\/v1\/super-feature\/$/).respond({
+    var superFeatureRegex = /\/cms\/api\/v1\/super-feature\/$/;
+    var superFeatureRelationsRegex = /\/cms\/api\/v1\/super-feature\/(\d+)\/relations\/?$/;
+
+    $httpBackend.whenPOST(superFeatureRegex).respond(function (method, url, data) {
+      var contents = mockApiData['content.list'].results;
+      var newId = _.max(mockApiData['content.list'].results, 'id').id + 1;
+      var newData = { id: newId };
+
+      contents.push(_.assign(newData, JSON.parse(data)));
+
+      return [201, newData];
+    });
+    $httpBackend.whenGET(superFeatureRegex).respond({
       results: mockApiData['content.list'].results.filter(function (content) {
         return content.polymorphic_ctype === 'core_super_feature_type';
       })
     });
-    var superFeatureRelationsRegex = /\/cms\/api\/v1\/super-feature\/(\d+)\/relations\/?$/;
     $httpBackend.whenGET(superFeatureRelationsRegex)
       .respond(function (method, url, data) {
         var parentId = parseInt(superFeatureRelationsRegex.exec(url)[1], 10);
