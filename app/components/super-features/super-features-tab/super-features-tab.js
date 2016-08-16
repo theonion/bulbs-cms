@@ -13,17 +13,17 @@ angular.module('bulbs.cms.superFeatures.tab', [
       controller: function (_, $scope, Utils, Video) {
 
         $scope.moveUp = function (index) {
-          Utils.moveTo($scope.super_features, index, index - 1);
+          Utils.moveTo($scope.superfeatures, index, index - 1);
           $scope.onUpdate();
         };
 
         $scope.moveDown = function (index) {
-          Utils.moveTo($scope.super_features, index, index + 1);
+          Utils.moveTo($scope.superfeatures, index, index + 1);
           $scope.onUpdate();
         };
 
         $scope.delete = function (index) {
-          Utils.removeFrom($scope.super_features, index);
+          Utils.removeFrom($scope.superfeatures, index);
           $scope.onUpdate();
         };
 
@@ -62,7 +62,7 @@ angular.module('bulbs.cms.superFeatures.tab', [
       restrict: 'E',
       scope: {
         addSuperFeatureCallback: '&addSuperFeature',
-        super_features: '=',
+        superfeatures: '=',
         onUpdate: '&'
       },
       templateUrl: CmsConfig.buildComponentPath(

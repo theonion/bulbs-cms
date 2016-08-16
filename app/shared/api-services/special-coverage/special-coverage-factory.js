@@ -75,7 +75,6 @@ angular.module('apiServices.specialCoverage.factory', [
       },
       super_features: {
         init: [],
-        belongsToMany: 'SuperFeatures',
         keys: 'super_features'
       },
       active: {
