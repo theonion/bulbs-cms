@@ -356,8 +356,24 @@
 
     <script src="bower_components/angular-mocks/angular-mocks.js"></script>
 
-    <script type="text/javascript">
+    <script src="mocks/api-mock-data.js"></script>
+    <script src="mocks/api.js"></script>
+    <script src="mocks/api/api-campaign.js"></script>
+    <script src="mocks/api/api-custom-search.js"></script>
+    <script src="mocks/api/api-line-item.js"></script>
+    <script src="mocks/api/api-override.js"></script>
+    <script src="mocks/api/api-notification.js"></script>
+    <script src="mocks/api/api-poll.js"></script>
+    <script src="mocks/api/api-role.js"></script>
+    <script src="mocks/api/api-special-coverage.js"></script>
+    <script src="mocks/api/api-sections.js"></script>
 
+    <script src="bower_components/videohub-client-js/src/videohub-client/videohub-api-mocks.js"></script>
+
+    <script src="mocks/newapp.js"></script>
+    <script src="scripts/api/mock.js"></script>
+
+    <script>
       angular.module('bulbs.cms.site.config', [
         'bulbs.cms.base.config',
       ]).config([
@@ -380,51 +396,29 @@
         }
       ]);
 
-        angular.module('VideohubClient.settings')
-          .constant('VIDEOHUB_API_BASE_URL', 'http://videohub.local/api/v0')
-          .constant('VIDEOHUB_SECRET_TOKEN', 'BLAH BLAH')
-          .constant('VIDEOHUB_DEFAULT_CHANNEL', 'The Onion');
+      angular.module('VideohubClient.settings')
+        .constant('VIDEOHUB_API_BASE_URL', 'http://videohub.local/api/v0')
+        .constant('VIDEOHUB_SECRET_TOKEN', 'BLAH BLAH')
+        .constant('VIDEOHUB_DEFAULT_CHANNEL', 'The Onion');
 
-        window.dummySearchHandler = function(term, resultsElement, filtersElement) {
-          filtersElement.html('<b>Filtering on:</b><br><button class="toggle-filter active">Donald Trump</button><button class="toggle-filter">Parents</button>')
-          resultsElement.html("<b>Searching for: " + term + "</b><br><a href='/fart/'>Fart</a><br><a href='/butt/'>Butt</a><br><a href='/dumb/'>Dumb</a><br>");
-        };
+      window.dummySearchHandler = function(term, resultsElement, filtersElement) {
+        filtersElement.html('<b>Filtering on:</b><br><button class="toggle-filter active">Donald Trump</button><button class="toggle-filter">Parents</button>')
+        resultsElement.html("<b>Searching for: " + term + "</b><br><a href='/fart/'>Fart</a><br><a href='/butt/'>Butt</a><br><a href='/dumb/'>Dumb</a><br>");
+      };
 
+      angular.module('bulbsCmsAppDev', [
+        'bulbsCmsApp.mockApi',
+        'bulbsCmsApp',
+        'bulbs.api.mock'
+      ]);
+
+      //huhhhhh
+      $("body").on("click", "a", function(e){
+        if($(this).attr("target") == "_blank") return true;
+        $(this).attr("target", "_self");
+      });
     </script>
 
-    <script src="mocks/api-mock-data.js"></script>
-    <script src="mocks/api.js"></script>
-    <script src="mocks/api/api-campaign.js"></script>
-    <script src="mocks/api/api-custom-search.js"></script>
-    <script src="mocks/api/api-line-item.js"></script>
-    <script src="mocks/api/api-override.js"></script>
-    <script src="mocks/api/api-notification.js"></script>
-    <script src="mocks/api/api-poll.js"></script>
-    <script src="mocks/api/api-role.js"></script>
-    <script src="mocks/api/api-special-coverage.js"></script>
-    <script src="mocks/api/api-sections.js"></script>
-    <script src="bower_components/videohub-client-js/src/videohub-client/videohub-api-mocks.js"></script>
-
-    <script src="mocks/newapp.js"></script>
-    <script src="scripts/api/mock.js"></script>
-
-    <script>
-        angular.module('bulbsCmsAppDev', ['bulbsCmsApp.mockApi', 'bulbsCmsApp', 'bulbs.api.mock'])
-          .config(function (StatusFilterOptionsProvider) {
-            StatusFilterOptionsProvider.setStatuses([
-              {label: 'Filter 1', key: 'filter1key', value: 'charizard'},
-              {label: 'Filter 2', key: 'filter2key', value: function(){ return moment().unix(); }},
-              {label: 'Filter 3', key: 'filter2key', value: function(){ return "cool"; }},
-              {label: 'All', key: null, value: null}
-            ]);
-          });
-
-        //huhhhhh
-        $("body").on("click", "a", function(e){
-          if($(this).attr("target") == "_blank") return true;
-          $(this).attr("target", "_self");
-        });
-    </script>
     <bug-reporter></bug-reporter>
     <firebase-save-reporter></firebase-save-reporter>
 

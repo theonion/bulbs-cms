@@ -73,7 +73,7 @@
       <select ng-model="relation.status">
         <option value="">-- Article Status --</option>
         <option
-            ng-repeat="status in statuses track by status.value"
+            ng-repeat="status in statuses track by status.label"
             ng-selected="status.value === relation.status"
             value="{{ status.value }}">
           {{ status.label }}
