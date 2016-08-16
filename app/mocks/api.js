@@ -107,6 +107,22 @@ angular.module('bulbsCmsApp.mockApi', [
       'expire_date': today.clone().add({days: 7})
     }]);
 
+
+        // super features
+    $httpBackend.whenGET(/\/cms\/api\/v1\/super-feature\/$/).respond({
+      results: mockApiData['content.list'].results.filter(function (content) {
+        return content.polymorphic_ctype === 'core_super_feature_type';
+      })
+    });
+    var superFeatureRelationsRegex = /\/cms\/api\/v1\/super-feature\/(\d+)\/relations\/?$/;
+    $httpBackend.whenGET(superFeatureRelationsRegex)
+      .respond(function (method, url, data) {
+        var id = superFeatureRelationsRegex.exec(url)[1];
+        var relations = mockApiData['superfeature.relations'][id];
+
+        return [200, relations];
+      });
+
     // content list
     var listRegex = /^\/cms\/api\/v1\/(content|super-feature)\/(\?.*)?$/;
     $httpBackend.when('GET', listRegex).respond(mockApiData['content.list']);
@@ -466,19 +482,5 @@ angular.module('bulbsCmsApp.mockApi', [
         '1x1': { x0: 0, x1: 1600, y0: 0, y1: 900}
       }
     });
-
-    // super features
-    $httpBackend.whenGET(/\/cms\/api\/v1\/super-feature\//).respond({
-      results: mockApiData['content.list'].results.filter(function (content) {
-        return content.polymorphic_ctype === 'core_super_feature_type';
-      })
-    });
-    $httpBackend.whenGET(/\/cms\/api\/v1\/super-feature\/(\d+)\/relations\//)
-      .respond(function (method, url, data) {
-        var id = getContentId(url);
-        var relations = mockApiData['superfeature.relations'][id];
-
-        return [200, relations];
-      });
   }
 ]);

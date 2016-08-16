@@ -885,7 +885,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         id: 100,
         title: 'Guide to Catz',
         status: 'Draft',
-        published: null
+        published: '2015-08-09T04:00:00Z'
       }, {
         id: 110,
         title: 'Guide to Batz',

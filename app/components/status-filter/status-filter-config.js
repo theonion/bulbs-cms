@@ -7,7 +7,7 @@ angular.module('statusFilter.config', [
 ])
   .provider('StatusFilterOptions', function (moment) {
     var _statuses = [
-      {label: 'Draft', key: 'status', value: 'draft'},
+      {label: 'Draft', key: 'status', value: 'Draft'},
       {label: 'Awaiting Review', key: 'status', value: 'Waiting for Editor'},
       {label: 'Published', key: 'before', value: function () { return moment().format('YYYY-MM-DDTHH:mmZ'); }},
       {label: 'Scheduled', key: 'after', value: function () { return moment().format('YYYY-MM-DDTHH:mmZ'); }},
