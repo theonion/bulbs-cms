@@ -44,19 +44,48 @@ angular.module('bulbs.cms.superFeatures.relations', [
             };
 
             $scope.addChildPage = function () {
-              $scope.addChildPageDisabled = true;
 
-              SuperFeaturesApi.createSuperFeature({
-                parent: $scope.article.id,
-                superfeature_type: $scope.article.default_child_type
-              })
-                .then(function (child) {
-                  $scope.relations.push(child);
-                  $scope.redoOrdering();
+              if (!$scope.addChildPageDisabled) {
+                $scope.addChildPageDisabled = true;
+
+                SuperFeaturesApi.createSuperFeature({
+                  parent: $scope.article.id,
+                  superfeature_type: $scope.article.default_child_type
                 })
-                .finally(function () {
-                  $scope.addChildPageDisabled = false;
-                });
+                  .then(function (child) {
+                    $scope.relations.push(child);
+                    $scope.redoOrdering();
+                  })
+                  .finally(function () {
+                    $scope.addChildPageDisabled = false;
+                  });
+              }
+            };
+
+            $scope.ongoingChildTransactions = {};
+
+            $scope.saveChildPage = function (relation) {
+
+              if (!$scope.ongoingChildTransactions[relation.id]) {
+                $scope.ongoingChildTransactions[relation.id] = true;
+
+                SuperFeaturesApi.updateSuperFeature(relation)
+                  .finally(function () {
+                    $scope.ongoingChildTransactions[relation.id] = false;
+                  });
+              }
+            };
+
+            $scope.deleteChildPage = function (relation) {
+
+              if (!$scope.ongoingChildTransactions[relation.id]) {
+                $scope.ongoingChildTransactions[relation.id] = true;
+
+                SuperFeaturesApi.deleteSuperFeature(relation)
+                  .finally(function () {
+                    $scope.ongoingChildTransactions[relation.id] = false;
+                  });
+              }
             };
           }
         ],

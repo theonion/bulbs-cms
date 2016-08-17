@@ -1,7 +1,8 @@
 <h1>relations</h1>
 
 <button
-    ng-click="addChildPage()">
+    ng-click="addChildPage()"
+    ng-disabled="addChildPageDisabled">
   <i class="fa fa-plus"></i>
   <span>Add New Page</span>
 </button>
@@ -72,6 +73,7 @@
     <div
         ng-hide="panelClosed"
         class="super-feature-relations-list-item-content">
+
       <div>
         status:
         <select ng-model="relation.status">
@@ -84,6 +86,7 @@
           </option>
         </select>
       </div>
+
       <div>
         headline:
         <input ng-model="relation.title">
@@ -98,8 +101,16 @@
       </div>
 
       <div class="super-feature-relations-list-item-meta-tools">
-        <button>
-          <i class="fa fa-trash"></i>
+        <button
+            ng-click="saveChildPage(relation)"
+            ng-disabled="ongoingChildTransactions[relation.id]">
+          <i class="fa fa-floppy-o"></i>
+          <span>Save</span>
+        </button>
+        <button
+            ng-click="deleteChildPage(relation)"
+            ng-disabled="ongoingChildTransactions[relation.id]">
+          <i class="fa fa-trash-o"></i>
           <span>Delete</span>
         </button>
       </div>
@@ -108,7 +119,8 @@
 </ol>
 
 <button
-    ng-click="addChildPage()">
+    ng-click="addChildPage()"
+    ng-disabled="addChildPageDisabled">
   <i class="fa fa-plus"></i>
   <span>Add New Page</span>
 </button>
