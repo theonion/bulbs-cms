@@ -157,7 +157,7 @@ describe('Directive: dynamicContentFormFieldList', function () {
     expect($parentScope.ngModel.test[2].title).to.equal(item1.title);
   });
 
-  it('should disable the up ordering button if first itme in list', function () {
+  it('should disable the up ordering button if first item in list', function () {
     var item1 = { title: 'one' };
     var item2 = { title: 'two' };
     var html = angular.element(

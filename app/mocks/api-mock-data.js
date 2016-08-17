@@ -469,6 +469,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         status: 'Published',
         polymorphic_ctype: 'core_super_feature_type',
         superfeature_type: 'GUIDE_TO_ANIMALZ_ENTRY',
+        order: 1,
         parent: 13,
         published: '2016-04-20T16:20:00Z',
         info_data: {}
@@ -478,6 +479,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         status: 'Published',
         polymorphic_ctype: 'core_super_feature_type',
         superfeature_type: 'GUIDE_TO_ANIMALZ_ENTRY',
+        order: 2,
         parent: 13,
         published: '2016-04-20T16:20:00Z',
         info_data: {}
@@ -487,6 +489,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         status: 'Draft',
         polymorphic_ctype: 'core_super_feature_type',
         superfeature_type: 'GUIDE_TO_ANIMALZ_ENTRY',
+        order: 3,
         parent: 13,
         published: null,
         info_data: {}

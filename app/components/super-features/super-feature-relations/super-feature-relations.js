@@ -16,10 +16,9 @@ angular.module('bulbs.cms.superFeatures.relations', [
           '_', '$scope', 'Utils',
           function (_, $scope, Utils) {
 
-            $scope.itemOrderingMemory = [];
             $scope.redoOrdering = function () {
-              $scope.itemOrderingMemory = $scope.relations.map(function (v, i) {
-                return i + 1;
+              $scope.relations.forEach(function (relation, i) {
+                relation.order = i + 1;
               });
             };
 
@@ -69,7 +68,10 @@ angular.module('bulbs.cms.superFeatures.relations', [
               if (!$scope.ongoingChildTransactions[relation.id]) {
                 $scope.ongoingChildTransactions[relation.id] = true;
 
-                SuperFeaturesApi.updateSuperFeature(relation)
+                var relationCopy = angular.copy(relation);
+                relationCopy.order = relation.order - 1;
+
+                SuperFeaturesApi.updateSuperFeature(relationCopy)
                   .finally(function () {
                     $scope.ongoingChildTransactions[relation.id] = false;
                   });
@@ -82,6 +84,9 @@ angular.module('bulbs.cms.superFeatures.relations', [
                 $scope.ongoingChildTransactions[relation.id] = true;
 
                 SuperFeaturesApi.deleteSuperFeature(relation)
+                  .then(function () {
+                    $scope.removeItem($scope.relations.indexOf(relation));
+                  })
                   .finally(function () {
                     $scope.ongoingChildTransactions[relation.id] = false;
                   });
@@ -101,7 +106,9 @@ angular.module('bulbs.cms.superFeatures.relations', [
 
           SuperFeaturesApi.getSuperFeatureRelations(scope.article.id)
             .then(function (response) {
-              scope.relations = response.data;
+              scope.relations = response.data.sort(function (relation1, relation2) {
+                return relation1.order - relation2.order;
+              });
               scope.redoOrdering();
             });
         },
