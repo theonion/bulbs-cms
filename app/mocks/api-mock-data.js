@@ -441,6 +441,8 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         title: 'Guide to My Favorite Animals',
         slug: 'my-favorite-animals',
         polymorphic_ctype: 'core_super_feature_type',
+        superfeature_type: 'GUIDE_TO_ANIMALZ_PARENT',
+        default_child_type: 'GUIDE_TO_ANIMALZ_ENTRY',
         published: '2016-04-20T16:20:00Z',
         children_count: 3,
         info_data: {
@@ -466,6 +468,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         title: 'Guide to Catz',
         status: 'Published',
         polymorphic_ctype: 'core_super_feature_type',
+        superfeature_type: 'GUIDE_TO_ANIMALZ_ENTRY',
         parent: 13,
         published: '2016-04-20T16:20:00Z',
         info_data: {}
@@ -474,6 +477,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         title: 'Guide to Batz',
         status: 'Published',
         polymorphic_ctype: 'core_super_feature_type',
+        superfeature_type: 'GUIDE_TO_ANIMALZ_ENTRY',
         parent: 13,
         published: '2016-04-20T16:20:00Z',
         info_data: {}
@@ -482,6 +486,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         title: 'Guide to Ratz',
         status: 'Draft',
         polymorphic_ctype: 'core_super_feature_type',
+        superfeature_type: 'GUIDE_TO_ANIMALZ_ENTRY',
         parent: 13,
         published: null,
         info_data: {}

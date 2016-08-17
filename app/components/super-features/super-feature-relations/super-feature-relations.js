@@ -47,7 +47,8 @@ angular.module('bulbs.cms.superFeatures.relations', [
               $scope.addChildPageDisabled = true;
 
               SuperFeaturesApi.createSuperFeature({
-                parent: $scope.article.id
+                parent: $scope.article.id,
+                superfeature_type: $scope.article.default_child_type
               })
                 .then(function (child) {
                   $scope.relations.push(child);
