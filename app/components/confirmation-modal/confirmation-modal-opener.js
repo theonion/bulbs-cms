@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('confirmationModal', [
-  'confirmationModal.factory'
+  'confirmationModal.factory',
+  'ui.bootstrap'
 ])
   .directive('confirmationModalOpener', function (ConfirmationModal) {
     return {

@@ -108,8 +108,12 @@
           <span>Save</span>
         </button>
         <button
-            ng-click="deleteChildPage(relation)"
-            ng-disabled="ongoingChildTransactions[relation.id]">
+            ng-disabled="ongoingChildTransactions[relation.id]"
+            confirmation-modal-opener
+            modal-body="Are you sure you want to delete this child page '{{ relation.title }}'?"
+            modal-title="Delete Child Page"
+            modal-ok-text="Delete"
+            modal-on-ok="deleteChildPage(relation)">
           <i class="fa fa-trash-o"></i>
           <span>Delete</span>
         </button>

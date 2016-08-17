@@ -123,11 +123,14 @@ describe('Directive: superFeatureRelations', function () {
       var relation = { id: 2 };
       getSuperFeatureRelationsDeferred.resolve({ data: [relation] });
       var element = digest(html);
-      var deleteButton = element.find('button[ng-click="deleteChildPage(relation)"]');
+      var deleteButton = element.find('button[modal-on-ok="deleteChildPage(relation)"]');
+      var scope = element.scope();
 
       deleteButton.trigger('click');
+      scope.$digest();
+      deleteButton.isolateScope().modalOnOk();
       deleteSuperFeatureDeferred.resolve();
-      element.scope().$digest();
+      scope.$digest();
 
       expect(SuperFeaturesApi.deleteSuperFeature.calledOnce).to.equal(true);
       expect(element.find('li').length).to.equal(0);
@@ -137,22 +140,27 @@ describe('Directive: superFeatureRelations', function () {
       var relations = [{ id: 2 }];
       getSuperFeatureRelationsDeferred.resolve({ data: relations });
       var element = digest(html);
-      var deleteButton = element.find('button[ng-click="deleteChildPage(relation)"]');
+      var deleteButton = element.find('button[modal-on-ok="deleteChildPage(relation)"]');
+      var scope = element.scope();
 
       deleteButton.trigger('click');
-      deleteButton.trigger('click');
+      scope.$digest();
+      deleteButton.isolateScope().modalOnOk();
+      scope.$digest();
 
-      expect(SuperFeaturesApi.deleteSuperFeature.calledOnce).to.equal(true);
+      expect(deleteButton.attr('disabled')).to.equal('disabled');
     });
 
     it('should prevent a delete from occurring if an update is happening on same child', function () {
       var relations = [{ id: 2 }];
       getSuperFeatureRelationsDeferred.resolve({ data: relations });
       var element = digest(html);
-      var deleteButton = element.find('button[ng-click="deleteChildPage(relation)"]');
+      var deleteButton = element.find('button[modal-on-ok="deleteChildPage(relation)"]');
       var saveButton = element.find('button[ng-click="saveChildPage(relation)"]');
 
       deleteButton.trigger('click');
+      element.scope().$digest();
+      deleteButton.isolateScope().modalOnOk();
       saveButton.trigger('click');
 
       expect(SuperFeaturesApi.deleteSuperFeature.called).to.equal(true);
@@ -163,13 +171,12 @@ describe('Directive: superFeatureRelations', function () {
       var relations = [{ id: 2 }];
       getSuperFeatureRelationsDeferred.resolve({ data: relations });
       var element = digest(html);
-      var deleteButton = element.find('button[ng-click="deleteChildPage(relation)"]');
+      var deleteButton = element.find('button[modal-on-ok="deleteChildPage(relation)"]');
       var saveButton = element.find('button[ng-click="saveChildPage(relation)"]');
 
       saveButton.trigger('click');
-      deleteButton.trigger('click');
 
-      expect(SuperFeaturesApi.deleteSuperFeature.called).to.equal(false);
+      expect(deleteButton.attr('disabled')).to.equal('disabled');
       expect(SuperFeaturesApi.updateSuperFeature.called).to.equal(true);
     });
 

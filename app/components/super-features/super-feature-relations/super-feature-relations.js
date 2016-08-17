@@ -6,6 +6,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
   'bulbs.cms.site.config',
   'bulbs.cms.superFeatures.api',
   'bulbs.cms.utils',
+  'confirmationModal',
   'statusFilter.config'
 ])
   .directive('superFeatureRelations', [
