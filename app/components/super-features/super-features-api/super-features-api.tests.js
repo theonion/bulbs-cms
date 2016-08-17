@@ -165,7 +165,7 @@ describe('Service: SuperFeaturesApi', function () {
       };
       var callback = sandbox.stub();
       $httpBackend
-        .expectPOST(CmsConfig.buildApiUrlRoot('super-feature') + '/')
+        .expectPOST(CmsConfig.buildApiUrlRoot('content') + '/')
         .respond(200, data);
 
       SuperFeaturesApi.createSuperFeature(data).then(callback);
@@ -184,7 +184,7 @@ describe('Service: SuperFeaturesApi', function () {
       };
       var callback = sandbox.stub();
       $httpBackend
-        .expectPUT(CmsConfig.buildApiUrlRoot('super-feature', data.id))
+        .expectPUT(CmsConfig.buildApiUrlRoot('content', data.id))
         .respond(200, data);
 
       SuperFeaturesApi.updateSuperFeature(data).then(callback);
@@ -203,7 +203,7 @@ describe('Service: SuperFeaturesApi', function () {
       };
       var callback = sandbox.stub();
       $httpBackend
-        .expectDELETE(CmsConfig.buildApiUrlRoot('super-feature', data.id))
+        .expectDELETE(CmsConfig.buildApiUrlRoot('content', data.id))
         .respond(200, data);
 
       SuperFeaturesApi.deleteSuperFeature(data).then(callback);

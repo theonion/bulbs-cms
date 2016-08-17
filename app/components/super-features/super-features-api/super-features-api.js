@@ -11,8 +11,12 @@ angular.module('bulbs.cms.superFeatures.api', [
     '_', '$http', 'CmsConfig', 'dateTimeFormatFilter', 'moment', 'Utils',
     function (_, $http, CmsConfig, dateTimeFormatFilter, moment, Utils) {
 
-      var endpoint = function (path) {
+      var superFeatureEndpoint = function (path) {
         return CmsConfig.buildApiUrlRoot('super-feature', path);
+      };
+
+      var contentEndpoint = function (path) {
+        return CmsConfig.buildApiUrlRoot('content', path);
       };
 
       var parsePayload = function (payload) {
@@ -28,12 +32,13 @@ angular.module('bulbs.cms.superFeatures.api', [
       return {
         createSuperFeature: function (data) {
           var payload = cleanData(data);
-          return $http.post(endpoint(), payload).then(function (response) {
-            return parsePayload(response.data);
-          });
+          return $http.post(contentEndpoint(), payload)
+            .then(function (response) {
+              return parsePayload(response.data);
+            });
         },
         deleteSuperFeature: function (data) {
-          return $http.delete(endpoint(data.id));
+          return $http.delete(contentEndpoint(data.id));
         },
         fields: [{
           title: 'Super Feature Name',
@@ -52,19 +57,22 @@ angular.module('bulbs.cms.superFeatures.api', [
             } else if (now.isSameOrAfter(superFeature.published)) {
               cellContent = dateTimeFormatFilter(superFeature.published);
             } else if (now.isBefore(superFeature.published)) {
-              cellContent = dateTimeFormatFilter(superFeature.published, '[Scheduled for] M/D/YY h:mma z');
+              cellContent = dateTimeFormatFilter(
+                superFeature.published,
+                '[Scheduled for] M/D/YY h:mma z'
+              );
             }
 
             return cellContent;
           }
         }],
         getSuperFeature: function (id) {
-          return $http.get(endpoint(id)).then(function (response) {
+          return $http.get(superFeatureEndpoint(id)).then(function (response) {
             return parsePayload(response.data);
           });
         },
         getSuperFeatures: function (params) {
-          return $http.get(endpoint(Utils.param(params)))
+          return $http.get(superFeatureEndpoint(Utils.param(params)))
             .then(function (response) {
               return {
                 results: response.data.results.map(function (result) {
@@ -74,14 +82,15 @@ angular.module('bulbs.cms.superFeatures.api', [
             });
         },
         getSuperFeatureRelations: function (id) {
-          return $http.get(endpoint(Utils.path.join(id, 'relations')));
+          return $http.get(superFeatureEndpoint(Utils.path.join(id, 'relations')));
         },
         name: 'Super Feature',
         namePlural: 'Super Features',
         updateSuperFeature: function (data) {
-          return $http.put(endpoint(data.id)).then(function (response) {
-            return parsePayload(response.data);
-          });
+          return $http.put(contentEndpoint(data.id))
+            .then(function (response) {
+              return parsePayload(response.data);
+            });
         }
       };
     }
