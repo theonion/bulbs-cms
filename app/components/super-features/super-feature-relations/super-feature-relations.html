@@ -3,7 +3,8 @@
     modal-title="Add Child Page"
     modal-ok-text="Create Child Page"
     modal-on-ok="addChildPage(title)"
-    ng-disabled="addChildPageDisabled">
+    ng-disabled="addChildPageDisabled"
+    class="btn btn-primary btn-sm">
   <i class="fa fa-plus"></i>
   <span>Add New Page</span>
 </button>
@@ -37,7 +38,17 @@
           <span>{{ relation.status }}</span>
         </span>
 
-        <a href="/cms/app/edit/{{ relation.id }}">
+        <button
+            ng-click="saveChildPage(relation)"
+            ng-disabled="ongoingChildTransactions[relation.id]"
+            class="btn btn-success btn-sm">
+          <i class="fa fa-floppy-o"></i>
+          <span>Save</span>
+        </button>
+
+        <a
+            href="/cms/app/edit/{{ relation.id }}"
+            class="btn btn-info btn-sm">
           <i class="fa fa-pencil"></i>
           <span>Edit</span>
         </a>
@@ -105,18 +116,13 @@
 
       <div class="super-feature-relations-list-item-meta-tools">
         <button
-            ng-click="saveChildPage(relation)"
-            ng-disabled="ongoingChildTransactions[relation.id]">
-          <i class="fa fa-floppy-o"></i>
-          <span>Save</span>
-        </button>
-        <button
             ng-disabled="ongoingChildTransactions[relation.id]"
             confirmation-modal-opener
             modal-body="Are you sure you want to delete this child page '{{ relation.title }}'?"
             modal-title="Delete Child Page"
             modal-ok-text="Delete"
-            modal-on-ok="deleteChildPage(relation)">
+            modal-on-ok="deleteChildPage(relation)"
+            class="btn btn-danger btn-sm">
           <i class="fa fa-trash-o"></i>
           <span>Delete</span>
         </button>
@@ -130,7 +136,8 @@
     modal-title="Add Child Page"
     modal-ok-text="Create Child Page"
     modal-on-ok="addChildPage(title)"
-    ng-disabled="addChildPageDisabled">
+    ng-disabled="addChildPageDisabled"
+    class="btn btn-primary btn-sm">
   <i class="fa fa-plus"></i>
   <span>Add New Page</span>
 </button>
