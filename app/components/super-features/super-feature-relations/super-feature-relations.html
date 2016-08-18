@@ -41,16 +41,16 @@
         <button
             ng-click="saveChildPage(relation)"
             ng-disabled="ongoingChildTransactions[relation.id]"
-            class="btn btn-success btn-sm">
+            class="btn btn-success btn-xs">
           <i class="fa fa-floppy-o"></i>
-          <span>Save</span>
+          <span>SAVE</span>
         </button>
 
         <a
             href="/cms/app/edit/{{ relation.id }}"
-            class="btn btn-info btn-sm">
+            class="btn btn-info btn-xs">
           <i class="fa fa-pencil"></i>
-          <span>Edit</span>
+          <span>EDIT</span>
         </a>
 
         <form
