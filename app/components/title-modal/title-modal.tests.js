@@ -2,6 +2,7 @@
 
 describe('Directive: titleModalOpener', function () {
 
+  var $;
   var $modal;
   var $q;
   var $rootScope;
@@ -12,9 +13,11 @@ describe('Directive: titleModalOpener', function () {
     sandbox = sinon.sandbox.create();
 
     module('bulbs.cms.titleModal');
+    module('jquery');
     module('jsTemplates');
 
-    inject(function (_$modal_, _$q_,  _$rootScope_, $compile) {
+    inject(function (_$_, _$modal_, _$q_,  _$rootScope_, $compile) {
+      $ = _$_;
       $modal = _$modal_;
       $q = _$q_;
       $rootScope = _$rootScope_;
@@ -121,7 +124,6 @@ describe('Directive: titleModalOpener', function () {
     );
     element.trigger('click');
     $rootScope.$digest();
-    var modal = $(document).find('#titleModal');
 
     $(document)
       .find('#titleModal button[ng-click="$dismiss()"]')
