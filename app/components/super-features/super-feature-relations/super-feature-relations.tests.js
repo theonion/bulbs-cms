@@ -96,10 +96,6 @@ describe('Directive: superFeatureRelations', function () {
       getSuperFeatureRelationsDeferred.resolve({ data: [] });
       var element = digest(html);
       var addButton = element.find('button[modal-on-ok="addChildPage(title)"]').eq(0);
-      var relation = {
-        id: 1,
-        order: 0
-      };
       var scope = element.scope();
 
       addButton.trigger('click');
