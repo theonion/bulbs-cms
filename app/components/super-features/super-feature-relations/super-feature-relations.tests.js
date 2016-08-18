@@ -7,6 +7,7 @@ describe('Directive: superFeatureRelations', function () {
   var html;
   var sandbox;
   var SuperFeaturesApi;
+  var createSuperFeatureDeferred;
   var deleteSuperFeatureDeferred;
   var getSuperFeatureRelationsDeferred;
   var updateSuperFeatureDeferred;
@@ -33,6 +34,10 @@ describe('Directive: superFeatureRelations', function () {
       );
 
       $parentScope.article = article;
+
+      createSuperFeatureDeferred = $q.defer();
+      sandbox.stub(SuperFeaturesApi, 'createSuperFeature')
+        .returns(createSuperFeatureDeferred.promise);
 
       getSuperFeatureRelationsDeferred = $q.defer();
       sandbox.stub(SuperFeaturesApi, 'getSuperFeatureRelations')
@@ -67,18 +72,43 @@ describe('Directive: superFeatureRelations', function () {
 
   context('child page interactions', function () {
 
-    // it('should allow adding a new one', function () {
-    //   // TODO : open modal for title
-    //
-    //   // TODO : add test code here
-    //   throw new Error('Not implemented yet.');
-    // });
-    //
-    // it('should prevent mutliple add child calls', function () {
-    //
-    //   // TODO : add test code here
-    //   throw new Error('Not implemented yet.');
-    // });
+    it('should allow adding a new one', function () {
+      getSuperFeatureRelationsDeferred.resolve({ data: [] });
+      var element = digest(html);
+      var addButton = element.find('button[modal-on-ok="addChildPage(title)"]').eq(0);
+      var relation = {
+        id: 1,
+        order: 0
+      };
+      var scope = element.scope();
+
+      addButton.trigger('click');
+      scope.$digest();
+      addButton.isolateScope().modalOnOk();
+      createSuperFeatureDeferred.resolve(relation);
+      scope.$digest();
+
+      expect(SuperFeaturesApi.createSuperFeature.calledOnce).to.equal(true);
+      expect(element.find('li').scope().relation).to.equal(relation);
+    });
+
+    it('should prevent mutliple add child calls', function () {
+      getSuperFeatureRelationsDeferred.resolve({ data: [] });
+      var element = digest(html);
+      var addButton = element.find('button[modal-on-ok="addChildPage(title)"]').eq(0);
+      var relation = {
+        id: 1,
+        order: 0
+      };
+      var scope = element.scope();
+
+      addButton.trigger('click');
+      scope.$digest();
+      addButton.isolateScope().modalOnOk();
+      scope.$digest();
+
+      expect(addButton.attr('disabled')).to.equal('disabled');
+    });
 
     it('should allow updating', function () {
       var relations = [{ id: 2 }];

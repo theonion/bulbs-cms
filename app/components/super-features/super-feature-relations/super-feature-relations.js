@@ -44,14 +44,15 @@ angular.module('bulbs.cms.superFeatures.relations', [
               $scope.redoOrdering();
             };
 
-            $scope.addChildPage = function () {
+            $scope.addChildPage = function (title) {
 
               if (!$scope.addChildPageDisabled) {
                 $scope.addChildPageDisabled = true;
 
                 SuperFeaturesApi.createSuperFeature({
                   parent: $scope.article.id,
-                  superfeature_type: $scope.article.default_child_type
+                  superfeature_type: $scope.article.default_child_type,
+                  title: title
                 })
                   .then(function (child) {
                     $scope.relations.push(child);

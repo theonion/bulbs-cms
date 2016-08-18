@@ -28,7 +28,7 @@ angular.module('bulbsCmsApp.mockApi', [
       return [403, {'detail': 'No permission'}];
     });
 
-    var detailRegex = /^\/cms\/api\/v1\/content\/(\d+)\/$/;
+    var detailRegex = /^\/cms\/api\/v1\/content\/(\d+)\/?$/;
     function getContentId(url) {
       var index = detailRegex.exec(url)[1];
       return index;
@@ -66,9 +66,15 @@ angular.module('bulbsCmsApp.mockApi', [
       return [200, data];
     });
 
-    $httpBackend.whenPOST('/cms/api/v1/content/', mockApiData['content.create'])
+    $httpBackend.whenPOST(/\/cms\/api\/v1\/content\/\?doctype=(.*)$/)
       .respond(function(method, url, data) {
-        return [201, mockApiData['content.create.response']];
+        var contents = mockApiData['content.list'].results;
+        var newId = _.max(mockApiData['content.list'].results, 'id').id + 1;
+        var newData = { id: newId };
+
+        contents.push(_.assign(newData, JSON.parse(data)));
+
+        return [201, newData];
       });
 
     var trashRegex = /\/cms\/api\/v1\/content\/\d+\/trash\//;
@@ -114,15 +120,6 @@ angular.module('bulbsCmsApp.mockApi', [
     var superFeatureRegex = /\/cms\/api\/v1\/super-feature\/$/;
     var superFeatureRelationsRegex = /\/cms\/api\/v1\/super-feature\/(\d+)\/relations\/?$/;
 
-    $httpBackend.whenPOST(superFeatureRegex).respond(function (method, url, data) {
-      var contents = mockApiData['content.list'].results;
-      var newId = _.max(mockApiData['content.list'].results, 'id').id + 1;
-      var newData = { id: newId };
-
-      contents.push(_.assign(newData, JSON.parse(data)));
-
-      return [201, newData];
-    });
     $httpBackend.whenGET(superFeatureRegex).respond({
       results: mockApiData['content.list'].results.filter(function (content) {
         return content.polymorphic_ctype === 'core_super_feature_type';

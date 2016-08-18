@@ -1,5 +1,8 @@
 <button
     title-modal-opener
+    modal-title="Add Child Page"
+    modal-ok-text="Create Child Page"
+    modal-on-ok="addChildPage(title)"
     ng-disabled="addChildPageDisabled">
   <i class="fa fa-plus"></i>
   <span>Add New Page</span>
@@ -123,7 +126,10 @@
 </ol>
 
 <button
-    ng-click="addChildPage()"
+    title-modal-opener
+    modal-title="Add Child Page"
+    modal-ok-text="Create Child Page"
+    modal-on-ok="addChildPage(title)"
     ng-disabled="addChildPageDisabled">
   <i class="fa fa-plus"></i>
   <span>Add New Page</span>
