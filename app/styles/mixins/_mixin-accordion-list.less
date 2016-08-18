@@ -34,7 +34,10 @@
           font-size: @interface-font-size-2;
           font-weight: bold;
           margin: 5px;
-          text-transform: uppercase;
+          max-width: 33%;
+          overflow-x: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
 
           .accordion-list-item-meta-label-error {
             color: @interface-color-error;
