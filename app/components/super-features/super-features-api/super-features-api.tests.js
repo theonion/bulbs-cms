@@ -9,14 +9,17 @@ describe('Service: SuperFeaturesApi', function () {
   var moment;
   var sandbox;
   var SuperFeaturesApi;
+  var superFeatureType;
 
   beforeEach(function () {
     module(
       'bulbs.cms.superFeatures.api',
       function (CmsConfigProvider) {
         endpoint = '/api/root/';
+        superFeatureType = 'my_super_feature_type';
 
         CmsConfigProvider.setApiUrlRoot(endpoint);
+        CmsConfigProvider.setSuperFeaturesType(superFeatureType);
       }
     );
 
@@ -165,7 +168,9 @@ describe('Service: SuperFeaturesApi', function () {
       };
       var callback = sandbox.stub();
       $httpBackend
-        .expectPOST(CmsConfig.buildApiUrlRoot('content') + '/')
+        .expectPOST(
+          CmsConfig.buildApiUrlRoot('content') + '/?doctype=' + superFeatureType
+        )
         .respond(200, data);
 
       SuperFeaturesApi.createSuperFeature(data).then(callback);

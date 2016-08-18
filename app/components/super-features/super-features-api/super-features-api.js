@@ -32,7 +32,10 @@ angular.module('bulbs.cms.superFeatures.api', [
       return {
         createSuperFeature: function (data) {
           var payload = cleanData(data);
-          return $http.post(contentEndpoint(), payload)
+          return $http.post(
+              contentEndpoint() +
+                Utils.param({ doctype: CmsConfig.getSuperFeaturesType() }),
+              payload)
             .then(function (response) {
               return parsePayload(response.data);
             });
