@@ -463,7 +463,10 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         order: 1,
         parent: 13,
         published: '2016-04-20T16:20:00Z',
-        info_data: {}
+        info_data: {},
+        image: {
+          id: 1
+        }
       }, {
         id: 110,
         title: 'Guide to Batz',

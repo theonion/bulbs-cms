@@ -13,7 +13,7 @@
 
 <ol ng-if="relations.length > 0">
   <li
-      ng-init="panelClosed = false"
+      ng-init="panelClosed = false; relationForm = {}"
       ng-repeat="relation in relations track by $index">
 
     <div class="accordion-list-item-meta">
@@ -40,7 +40,7 @@
 
         <button
             ng-click="saveChildPage(relation)"
-            ng-disabled="ongoingChildTransactions[relation.id]"
+            ng-disabled="ongoingChildTransactions[relation.id] || relationForm.$pristine"
             class="btn btn-success btn-xs">
           <i class="fa fa-floppy-o"></i>
           <span>SAVE</span>
@@ -88,41 +88,33 @@
         ng-hide="panelClosed"
         class="accordion-list-item-content">
 
-      <div>
-        status:
-        <select ng-model="relation.status">
-          <option value="">-- Article Status --</option>
-          <option
-              ng-repeat="status in statuses track by status.label"
-              ng-selected="status.value === relation.status"
-              value="{{ status.value }}">
-            {{ status.label }}
-          </option>
-        </select>
-      </div>
+      <form name="relationForm">
 
-      <div class="super-feature-relations-input-container">
-        <label
-            for="relationTitle-{{ relation.id }}"
-            class="input-container-label">
-          Headline
-        </label>
-        <input
-            id="relationTitle-{{ relation.id }}"
-            ng-model="relation.title"
-            class="input-container-input">
-      </div>
-
-      <div class="super-feature-relations-input-container">
-        <label class="input-container-label">Image</label>
-        <div class="super-feature-relations-list-item-image">
-          <betty-editable
-              image="relation.image"
-              ratio="16x9"
-              add-styles="fa fa-picture-o">
-          </betty-editable>
+        <div class="super-feature-relations-input-container">
+          <label
+              for="relationTitle-{{ relation.id }}"
+              class="input-container-label">
+            Headline
+          </label>
+          <input
+              id="relationTitle-{{ relation.id }}"
+              name="relation-{{ relation.id }}-title"
+              ng-model="relation.title"
+              class="input-container-input">
         </div>
-      </div>
+
+        <div class="super-feature-relations-input-container">
+          <label class="input-container-label">Image</label>
+          <div class="super-feature-relations-list-item-image">
+            <betty-editable
+                image="relation.image"
+                ratio="16x9"
+                add-styles="fa fa-picture-o"
+                on-change="relationForm.$setDirty()">
+            </betty-editable>
+          </div>
+        </div>
+      </form>
 
       <div class="accordion-list-item-meta">
 
