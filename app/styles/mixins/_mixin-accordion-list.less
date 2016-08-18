@@ -1,0 +1,94 @@
+/*
+  Mixin for displaying accordion-ed lists of items. Stylings for accordion
+    headers, panels, ordering buttons, ordering inputs.
+ */
+
+@import '_colors';
+@import '_sizing';
+
+.mixin-accordion-list () {
+
+  > ol {
+    list-style: none;
+
+    > li {
+      background: @interface-color-gray-3;
+      border-radius: @interface-border-radius;
+      border: solid 1px @interface-color-gray-2;
+      margin-bottom: 20px;
+
+      .accordion-list-item-meta {
+        padding: 10px;
+
+        &:after {
+          content: " ";
+          clear: both;
+          display: block;
+        }
+
+        .accordion-list-item-meta-label {
+          background-color: transparent;
+          border: none;
+          color: @interface-color-black;
+          float: left;
+          font-size: @interface-font-size-2;
+          font-weight: bold;
+          margin: 5px;
+          text-transform: uppercase;
+
+          .accordion-list-item-meta-label-error {
+            color: @interface-color-error;
+          }
+        }
+
+        .accordion-list-item-meta-tools {
+          float: right;
+
+          form.accordion-list-item-meta-tools-order {
+            @tooling-height: 25px;
+
+            display: inline-block;
+
+            button {
+              background-color: @interface-color-success;
+              border: none;
+              color: @interface-color-white;
+              height: @tooling-height;
+              margin-left: -4px;
+              width: @tooling-height;
+
+              &[disabled] {
+                background-color: @interface-color-gray-4;
+              }
+            }
+
+            input {
+              border: 1px solid @interface-color-gray-4;
+              height: @tooling-height;
+              text-align: center;
+              width: 50px;
+            }
+          }
+
+          .accordion-list-item-meta-tools-order-dir {
+            color: @interface-color-water;
+            background-color: transparent;
+            border: none;
+            height: 25px;
+            width: 15px;
+
+            &[disabled] {
+              color: @interface-color-gray-4;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .accordion-list-add {
+    display: block;
+    margin: auto;
+    text-align: center;
+  }
+}

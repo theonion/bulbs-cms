@@ -8,10 +8,10 @@
       ng-init="panelClosed = false"
       ng-repeat="itemValues in ngModel[name] track by $index">
 
-    <div class="dynamic-content-form-field-list-item-meta">
+    <div class="accordion-list-item-meta">
       <button
           ng-click="panelClosed = !panelClosed"
-          class="dynamic-content-form-field-list-item-meta-label">
+          class="accordion-list-item-meta-label">
         <i
             ng-class="{
               'fa-caret-right': panelClosed,
@@ -22,15 +22,15 @@
         <span>{{ schema.child_label || 'Item' }} {{ $index + 1 }}</span>
         <i
             ng-if="isItemInvalid"
-            class="fa fa-exclamation-circle dynamic-content-form-field-list-item-meta-label-error">
+            class="fa fa-exclamation-circle accordion-list-item-meta-label-error">
         </i>
       </button>
 
-      <div class="dynamic-content-form-field-list-item-meta-tools">
+      <div class="accordion-list-item-meta-tools">
         <form
             ng-submit="orderingInputForm.$setPristine()"
             name="orderingInputForm"
-            class="dynamic-content-form-field-list-item-meta-tools-order">
+            class="accordion-list-item-meta-tools-order">
           <input
               name="order"
               type="number"
@@ -42,13 +42,13 @@
           </button>
         </form>
         <button
-            class="dynamic-content-form-field-list-item-meta-tools-order-dir"
+            class="accordion-list-item-meta-tools-order-dir"
             ng-disabled="$index === 0"
             ng-click="moveItem($index, $index - 1)">
           <i class="fa fa-chevron-up"></i>
         </button>
         <button
-            class="dynamic-content-form-field-list-item-meta-tools-order-dir"
+            class="accordion-list-item-meta-tools-order-dir"
             ng-disabled="$index === ngModel[name].length - 1"
             ng-click="moveItem($index, $index + 1)">
           <i class="fa fa-chevron-down"></i>
@@ -58,7 +58,7 @@
 
     <div
         ng-hide="panelClosed"
-        class="dynamic-content-form-field-list-item-content">
+        class="accordion-list-item-content">
 
       <dynamic-content-form-field-object
           schema="schema"
@@ -66,9 +66,9 @@
           on-validity-change="isItemInvalid = internalForm.$dirty && !isValid">
       </dynamic-content-form-field-object>
 
-      <div class="dynamic-content-form-field-list-item-meta">
+      <div class="accordion-list-item-meta">
 
-        <div class="dynamic-content-form-field-list-item-meta-tools">
+        <div class="accordion-list-item-meta-tools">
           <button
               class="btn btn-xs btn-danger"
               ng-click="removeItem($index)">
@@ -82,7 +82,7 @@
 </ol>
 
 <button
-    class="btn btn-primary dynamic-content-form-field-list-add"
+    class="btn btn-primary accordion-list-add"
     ng-click="newItem()">
   <i class="fa fa-plus"></i>
   <span>Add {{ schema.child_label || 'Item' }}</span>

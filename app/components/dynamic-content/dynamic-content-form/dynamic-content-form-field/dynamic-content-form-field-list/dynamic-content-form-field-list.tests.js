@@ -284,7 +284,7 @@ describe('Directive: dynamicContentFormFieldList', function () {
     $parentScope.$digest();
 
     expect(
-      element.find('.dynamic-content-form-field-list-item-meta-label-error').length
+      element.find('.accordion-list-item-meta-label-error').length
     ).to.equal(1);
   });
 
@@ -321,7 +321,7 @@ describe('Directive: dynamicContentFormFieldList', function () {
     $parentScope.$digest();
 
     expect(
-      element.find('.dynamic-content-form-field-list-item-meta-label-error').length
+      element.find('.accordion-list-item-meta-label-error').length
     ).to.equal(0);
   });
 });
