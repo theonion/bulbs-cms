@@ -424,16 +424,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         }],
         info_data: {
           data: {
-            entries: [{
-              title: '',
-              body: ''
-            }, {
-              title: 'TWO',
-              body: ''
-            }, {
-              title: 'Three',
-              body: ''
-            }]
+            entries: []
           }
         }
       }, {
@@ -500,6 +491,9 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         fields: {
           data: {
             fields: {
+              test_field: {
+                type: 'string'
+              },
               entries: {
                 type: 'array',
                 label: 'Entries',
