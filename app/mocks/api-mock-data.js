@@ -492,7 +492,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
           data: {
             fields: {
               test_field: {
-                type: 'string'
+                type: 'integer'
               },
               entries: {
                 type: 'array',

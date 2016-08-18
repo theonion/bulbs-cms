@@ -15,9 +15,17 @@ super-feature-relations {
     .mixin-betty-container(190px, 190px);
   }
 
-  .super-feature-relations-input-container:not(:last-of-type) {
-    .mixin-input-container();
+  .super-feature-relations-input-container {
+    label {
+      .mixin-input-label();
+    }
 
-    margin-bottom: 40px;
+    input {
+      .mixin-input();
+    }
+
+    &:not(:last-of-type) {
+      margin-bottom: 40px;
+    }
   }
 }

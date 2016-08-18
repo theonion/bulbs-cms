@@ -1,15 +1,15 @@
 @import '_colors';
-@import '_mixin';
 @import '_sizing';
+@import 'mixins/_mixin-input-container';
 
 dynamic-content-form-field-richtext {
 
   input {
-    .mixin-input;
+    .mixin-input();
   }
 
   .dynamic-content-form-field-richtext-multiline {
-    .mixin-input;
+    .mixin-input();
 
     &.dynamic-content-form-field-richtext-read-only {
       background-color: @interface-color-gray-2;

@@ -102,8 +102,15 @@
       </div>
 
       <div class="super-feature-relations-input-container">
-        <label class="input-container-label">Headline</label>
-        <input ng-model="relation.title">
+        <label
+            for="relationTitle-{{ relation.id }}"
+            class="input-container-label">
+          Headline
+        </label>
+        <input
+            id="relationTitle-{{ relation.id }}"
+            ng-model="relation.title"
+            class="input-container-input">
       </div>
 
       <div class="super-feature-relations-input-container">

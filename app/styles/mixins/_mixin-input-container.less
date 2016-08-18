@@ -1,16 +1,26 @@
 @import '_colors';
 @import '_sizing';
 
-.mixin-input-container() {
+.mixin-input-label () {
+  color: @interface-color-gray-1;
+  font-size: @interface-font-size-1;
+  margin-bottom: 10px;
+  text-transform: uppercase;
 
-  label.input-container-label {
-    color: @interface-color-gray-1;
-    font-size: @interface-font-size-1;
-    margin-bottom: 10px;
-    text-transform: uppercase;
+  .input-container-label-has-error {
+    color: @interface-color-error;
+  }
+}
 
-    .input-container-label-has-error {
-      color: @interface-color-error;
-    }
+.mixin-input (@width: 100%) {
+  background-color: @interface-color-white;
+  border: 1px solid @interface-color-gray-4;
+  font-size: @interface-font-size-2;
+  line-height: inherit;
+  padding: 10px;
+  width: @width;
+
+  &[readonly] {
+    background-color: @interface-color-gray-2;
   }
 }
