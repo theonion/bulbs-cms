@@ -1,17 +1,9 @@
 @import '_colors';
 @import '_sizing';
+@import 'mixins/_mixin-input-container';
 
 dynamic-content-form-field-input-label {
   display: block;
 
-  label {
-    color: @interface-color-gray-1;
-    font-size: @interface-font-size-1;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-
-    .dynamic-content-form-field-input-label-has-error {
-      color: @interface-color-error;
-    }
-  }
+  .mixin-input-container();
 }

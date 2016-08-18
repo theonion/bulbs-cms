@@ -101,17 +101,20 @@
         </select>
       </div>
 
-      <div>
-        headline:
+      <div class="super-feature-relations-input-container">
+        <label class="input-container-label">Headline</label>
         <input ng-model="relation.title">
       </div>
-      <div>
-        image:
-        <betty-editable
-            image="relation.image"
-            ratio="16x9"
-            add-styles="fa fa-picture-o">
-        </betty-editable>
+
+      <div class="super-feature-relations-input-container">
+        <label class="input-container-label">Image</label>
+        <div class="super-feature-relations-list-item-image">
+          <betty-editable
+              image="relation.image"
+              ratio="16x9"
+              add-styles="fa fa-picture-o">
+          </betty-editable>
+        </div>
       </div>
 
       <div class="accordion-list-item-meta">
