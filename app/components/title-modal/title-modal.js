@@ -11,6 +11,8 @@ angular.module('bulbs.cms.titleModal', [
       return {
         restrict: 'A',
         scope: {
+          modalBodyBefore: '@',
+          modalBodyAfter: '@',
           modalCancelText: '@',
           modalOkText: '@',
           modalOnCancel: '&',

@@ -97,6 +97,32 @@ describe('Directive: titleModalOpener', function () {
       .to.have.string(ok);
   });
 
+  it('should allow customized before body text', function () {
+    $rootScope.text = 'some text';
+    var element = digest(
+      '<div title-modal-opener modal-body-before="{{ text }}"></div>'
+    );
+
+    element.trigger('click');
+    $rootScope.$digest();
+
+    expect($(document).find('#titleModal .modal-body').html())
+      .to.have.string($rootScope.text);
+  });
+
+  it('should allow customized after body text', function () {
+    $rootScope.text = 'some text';
+    var element = digest(
+      '<div title-modal-opener modal-body-after="{{ text }}"></div>'
+    );
+
+    element.trigger('click');
+    $rootScope.$digest();
+
+    expect($(document).find('#titleModal .modal-body').html())
+      .to.have.string($rootScope.text);
+  });
+
   it('should call modal-on-ok with new title when okayed', function () {
     $rootScope.modalOkayed = sandbox.stub();
     var newTitle = 'My Garbage Title';

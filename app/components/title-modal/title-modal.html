@@ -9,12 +9,15 @@
     <h4 class="modal-title">{{ modalTitle || 'Enter a Title' }}</h4>
   </div>
   <div class="modal-body">
+    {{ modalBodyBefore }}
+
     <onion-editor
         ng-model="newTitle"
-        class="article-header heading title new-title"
         role="singleline"
         formatting="italic,bold">
     </onion-editor>
+
+    {{ modalBodyAfter }}
   </div>
   <div class="modal-footer">
     <button
