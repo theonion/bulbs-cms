@@ -36,7 +36,7 @@ angular.module('bulbs.cms.sendToEditorModal', [
                 return SendToEditorApi.sendToEditor(
                   scope.modalArticle,
                   status,
-                  note
+                  'Status: ' + status + '\n\n' + note
                 )
                 .then(scope.modalInstance.close)
                 .catch(function (response) {

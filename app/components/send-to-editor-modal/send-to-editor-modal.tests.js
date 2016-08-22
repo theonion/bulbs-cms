@@ -115,7 +115,7 @@ describe('Directive: sendToEditorModalOpener', function () {
     expect(SendToEditorApi.sendToEditor.withArgs(
       $rootScope.article,
       articleStatuses[selectedStatusIndex].value,
-      note
+      'Status: ' + articleStatuses[selectedStatusIndex].value + '\n\n' + note
     ).calledOnce).to.equal(true);
   });
 
