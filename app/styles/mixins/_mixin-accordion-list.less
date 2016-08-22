@@ -9,6 +9,7 @@
 .mixin-accordion-list () {
 
   > ol {
+    clear: both;
     list-style: none;
 
     > li {
@@ -98,7 +99,11 @@
     }
   }
 
-  .accordion-list-add {
+  .accordion-list-add-top {
+    margin: @interface-internal-spacing;
+  }
+
+  .accordion-list-add-bottom {
     display: block;
     margin: auto;
     text-align: center;

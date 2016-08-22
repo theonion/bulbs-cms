@@ -1,13 +1,18 @@
-<button
-    title-modal-opener
-    modal-title="Add Child Page"
-    modal-ok-text="Create Child Page"
-    modal-on-ok="addChildPage(title)"
-    ng-disabled="addChildPageDisabled"
-    class="btn btn-primary btn-sm">
-  <i class="fa fa-plus"></i>
-  <span>Add New Page</span>
-</button>
+<div class="super-feature-relations-list-header">
+  <h4>Child Pages</h4>
+  <div class="super-feature-relations-list-header-tools">
+    <button
+        title-modal-opener
+        modal-title="Add Child Page"
+        modal-ok-text="Create Child Page"
+        modal-on-ok="addChildPage(title)"
+        ng-disabled="addChildPageDisabled"
+        class="btn btn-primary btn-sm accordion-list-add-top">
+      <i class="fa fa-plus"></i>
+      <span>Add New Page</span>
+    </button>
+  </div>
+</div>
 
 <div ng-if="relations.length < 1">No child pages yet!</div>
 
@@ -90,7 +95,7 @@
 
       <form name="relationForm">
 
-        <div>
+        <div class="super-feature-relations-input-container">
           <button
               send-to-editor-modal-opener
               modal-article="article"
@@ -152,7 +157,7 @@
     modal-ok-text="Create Child Page"
     modal-on-ok="addChildPage(title)"
     ng-disabled="addChildPageDisabled"
-    class="btn btn-primary btn-sm accordion-list-add">
+    class="btn btn-primary btn-sm accordion-list-add-bottom">
   <i class="fa fa-plus"></i>
   <span>Add New Page</span>
 </button>
