@@ -178,7 +178,7 @@ describe('Directive: sendToEditorModalOpener', function () {
     var modalElement = $(document).find('#sendToEditorModal');
 
     modalElement.find('select').val('').trigger('change');
-    $rootScope.$digest()
+    $rootScope.$digest();
 
     expect(modalElement.find('button[ng-click="sendToEditor(status, note)"]')
       .attr('disabled')).to.equal('disabled');
