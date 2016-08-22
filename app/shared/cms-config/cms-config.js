@@ -1,4 +1,4 @@
-  'use strict';
+'use strict';
 
 angular.module('bulbs.cms.config', [
   'bulbs.cms.utils',
@@ -23,6 +23,8 @@ angular.module('bulbs.cms.config', [
 
       // url for api root
       var apiUrlRoot = '';
+      // article statuses for sending to editoral
+      var articleEditoralStatuses = [];
       // true to automatically add current user to author list when creating content
       var autoAddAuthor = false;
       // path to components
@@ -69,6 +71,18 @@ angular.module('bulbs.cms.config', [
       var videoPath = '';
       // thumbnail for inline video uploads
       var videoThumbnailUrl = '';
+
+      this.addArticleEditoralStatus = function (label, value) {
+        checkOrError(label, _.isString, 'article editoral status label must be a string!');
+        checkOrError(value, _.isString, 'article editoral status value must be a string!');
+
+        articleEditoralStatuses.push({
+          label: label,
+          value: value
+        });
+
+        return this;
+      };
 
       this.setApiUrlRoot = function (value) {
         apiUrlRoot = checkOrError(
@@ -286,6 +300,7 @@ angular.module('bulbs.cms.config', [
             getNavLogoPath: _.constant(navLogoPath),
             getSuperFeaturesType: _.constant(superFeaturesType),
             getTimezoneName: _.constant(timezoneName),
+            getArticleEditoralStatuses: _.constant(_.cloneDeep(articleEditoralStatuses)),
             getTopBarMapping: function (name) {
               if (_.has(topBarMappings, name)) {
                 return topBarMappings[name];

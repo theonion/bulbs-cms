@@ -38,8 +38,7 @@ describe('Directive: titleModalOpener', function () {
   });
 
   it('should add the class "title-modal-opener" to opener', function () {
-    var resultDeferred = $q.defer();
-    sandbox.stub($modal, 'open').returns({ result: resultDeferred.promise });
+    sandbox.stub($modal, 'open').returns({ result:  $q.defer().promise });
 
     var element = digest('<div title-modal-opener></div>');
 
@@ -47,8 +46,7 @@ describe('Directive: titleModalOpener', function () {
   });
 
   it('should open a title modal when element is clicked', function () {
-    var resultDeferred = $q.defer();
-    sandbox.stub($modal, 'open').returns({ result: resultDeferred.promise });
+    sandbox.stub($modal, 'open').returns({ result: $q.defer().promise });
     var element = digest('<div title-modal-opener></div>');
 
     element.trigger('click');
@@ -134,9 +132,7 @@ describe('Directive: titleModalOpener', function () {
 
   it('should only allow one instance of modal to be opened', function () {
     sandbox.stub($modal, 'open').returns({ result: $q.defer().promise });
-    var element = digest(
-      '<div title-modal-opener modal-on-ok="modalOkayed(title)"></div>'
-    );
+    var element = digest('<div title-modal-opener></div>');
 
     element.trigger('click');
     element.trigger('click');
