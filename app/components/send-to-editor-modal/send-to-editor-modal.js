@@ -26,7 +26,13 @@ angular.module('bulbs.cms.sendToEditorModal', [
 
             if (!scope.modalInstance) {
 
+              scope.clearError = function () {
+                scope.errorMessage = '';
+              };
+
               scope.sendToEditor = function (status, note) {
+                scope.clearError();
+
                 return SendToEditorApi.sendToEditor(
                   scope.modalArticle,
                   status,

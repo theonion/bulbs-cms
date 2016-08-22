@@ -7,9 +7,12 @@ var config = require('../config');
 
 module.exports = {
   production: {
-    paths: [
-      'styles'
-    ],
+    options: {
+      paths: [
+        'app/styles',
+        'app/bower_components'
+      ],
+    },
     files: [{
       expand: true,
       cwd: config.paths.app,

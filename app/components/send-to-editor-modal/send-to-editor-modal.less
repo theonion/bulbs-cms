@@ -1,8 +1,37 @@
 @import '_colors';
+@import 'mixins/_mixin-input-container';
 
 #sendToEditorModal {
 
   .error-message-container {
+    background-color: @interface-color-error-2;
+    border: 1px solid @interface-color-error;
+    border-radius: @interface-border-radius;
     color: @interface-color-error;
+    margin-bottom: @interface-row-margin;
+    padding: @interface-internal-spacing;
+    text-align: center;
+  }
+
+  .input-container {
+    .mixin-input-container();
+
+    label {
+      .mixin-input-label();
+    }
+
+    .input-container-select {
+      .mixin-input-select-container();
+    }
+
+    textarea {
+      .mixin-input();
+
+      height: 200px;
+    }
+
+    .input-container-error {
+      .mixin-input-error();
+    }
   }
 }

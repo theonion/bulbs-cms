@@ -1,5 +1,56 @@
 @import '_colors';
 @import '_sizing';
+@import 'font-awesome/less/core';
+@import 'font-awesome/less/variables';
+
+.mixin-input-container () {
+
+  &:not(:last-of-type) {
+    margin-bottom: @interface-row-margin;
+  }
+}
+
+.mixin-input (@width: 100%) {
+  background-color: @interface-color-white;
+  border: 1px solid @interface-color-gray-4;
+  font-size: @interface-font-size-2;
+  line-height: @interface-font-size-2;
+  max-width: @width;
+  padding: 10px;
+  width: @width;
+
+  &[readonly] {
+    background-color: @interface-color-gray-2;
+  }
+}
+
+.mixin-input-select-container (@width: 100%) {
+  position: relative;
+  display: table-cell;
+
+  select {
+    .mixin-input(@width);
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0;
+    padding-right: 25px;
+    width: inherit;
+  }
+
+  &:after {
+    .fa;
+
+    content: @fa-var-sort;
+    margin-right: @interface-internal-spacing;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
 
 .mixin-input-label () {
   color: @interface-color-gray-1;
@@ -12,15 +63,9 @@
   }
 }
 
-.mixin-input (@width: 100%) {
-  background-color: @interface-color-white;
-  border: 1px solid @interface-color-gray-4;
+.mixin-input-error {
+  color: @interface-color-error;
   font-size: @interface-font-size-2;
-  line-height: inherit;
-  padding: 10px;
-  width: @width;
-
-  &[readonly] {
-    background-color: @interface-color-gray-2;
-  }
+  font-weight: bold;
+  margin-top: @interface-internal-spacing;
 }

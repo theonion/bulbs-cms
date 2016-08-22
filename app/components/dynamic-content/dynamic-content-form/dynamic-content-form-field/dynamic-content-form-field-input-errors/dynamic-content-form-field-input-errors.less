@@ -1,5 +1,6 @@
 @import '_colors';
 @import '_sizing';
+@import 'mixins/_mixin-input-container';
 
 dynamic-content-form-field-input-errors {
 
@@ -8,9 +9,7 @@ dynamic-content-form-field-input-errors {
     margin-top: 15px;
 
     li {
-      color: @interface-color-error;
-      font-size: @interface-font-size-2;
-      font-weight: bold;
+      .mixin-input-error();
     }
   }
 }

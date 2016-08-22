@@ -18,7 +18,7 @@
     </div>
 
     <form name="sendData">
-      <div>
+      <div class="input-container">
         <label
             for="sendToEditorModalStatus"
             ng-class="{
@@ -27,31 +27,35 @@
           <span>Article Status</span>
           <span class="input-container-label-has-error">*</span>
         </label>
-        <select
-            id="sendToEditorModalStatus"
-            name="status"
-            ng-model="status"
-            ng-options="option.value as option.label for option in statuses"
-            ng-class="{
-              'input-container-input-has-error': sendData.status.$error.length > 0
-            }"
-            required>
-          <option value="">- Article Status -</option>
-        </select>
+        <div class="input-container-select">
+          <select
+              id="sendToEditorModalStatus"
+              name="status"
+              ng-model="status"
+              ng-change="clearError()"
+              ng-options="option.value as option.label for option in statuses"
+              ng-class="{
+                'input-container-input-has-error': sendData.status.$error.length > 0
+              }"
+              required>
+            <option value="">- Article Status -</option>
+          </select>
+        </div>
         <div
             ng-if="sendData.$dirty && sendData.status.$error.required"
-            class="input-container-label-has-error">
+            class="input-container-error">
           <i class="fa fa-exclamation-circle"></i>
           <span>Please select an Article Status!</span>
         </div>
       </div>
 
-      <div>
+      <div class="input-container">
         <label for="sendToEditorModalNote">Note for Editor</label>
         <textarea
             id="sendToEditorModalNote"
             name="note"
-            ng-model="note">
+            ng-model="note"
+            ng-change="clearError()">
         </textarea>
       </div>
     </form>

@@ -16,16 +16,14 @@ super-feature-relations {
   }
 
   .super-feature-relations-input-container {
+    .mixin-input-container();
+
     label {
       .mixin-input-label();
     }
 
     input {
       .mixin-input();
-    }
-
-    &:not(:last-of-type) {
-      margin-bottom: 40px;
     }
   }
 }
