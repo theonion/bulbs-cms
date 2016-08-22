@@ -211,7 +211,7 @@ describe('Directive: superFeatureRelations', function () {
 
       var element = digest(html);
 
-      expect(element.find('div').html()).to.have.string('No child pages yet!');
+      expect(element.html()).to.have.string('No child pages yet!');
     });
   });
 

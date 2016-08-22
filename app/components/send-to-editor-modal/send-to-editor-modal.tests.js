@@ -178,10 +178,11 @@ describe('Directive: sendToEditorModalOpener', function () {
     var modalElement = $(document).find('#sendToEditorModal');
 
     modalElement.find('select').val('').trigger('change');
+    $rootScope.$digest()
 
     expect(modalElement.find('button[ng-click="sendToEditor(status, note)"]')
       .attr('disabled')).to.equal('disabled');
-    expect(modalElement.find('select').next().html())
+    expect(modalElement.find('select').parent().next().html())
       .to.have.string('Please select an Article Status!');
     expect(SendToEditorApi.sendToEditor.callCount).to.equal(0);
   });
