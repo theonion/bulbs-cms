@@ -82,7 +82,7 @@ angular.module('bettyEditable', [
             if (newImage && newImage.id) {
               BettyCropper.get(newImage.id).then(function (response) {
                 scope.bettyImage = response.data;
-                if (parseInt(response.data.id, 10) !== newImage.id) {
+                if (!oldImage || parseInt(response.data.id, 10) !== oldImage.id) {
                   scope.onChange();
                 }
               });
