@@ -7,6 +7,7 @@
         modal-title="Add Child Page"
         modal-ok-text="Create Child Page"
         modal-on-ok="addChildPage(title)"
+        ng-if="relations.length > 0"
         ng-disabled="addChildPageDisabled"
         class="btn btn-primary btn-sm accordion-list-add-top">
       <i class="fa fa-plus"></i>
@@ -15,7 +16,11 @@
   </div>
 </div>
 
-<div ng-if="relations.length < 1">No child pages yet!</div>
+<div
+    ng-if="relations.length < 1"
+    class="super-feature-relations-list-no-items">
+  No child pages yet!
+</div>
 
 <ol ng-if="relations.length > 0">
   <li

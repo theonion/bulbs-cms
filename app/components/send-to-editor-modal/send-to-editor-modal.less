@@ -1,16 +1,11 @@
 @import '_colors';
 @import 'mixins/_mixin-input-container';
+@import 'mixins/_mixin-alerts';
 
 #sendToEditorModal {
 
   .error-message-container {
-    background-color: @interface-color-error-2;
-    border: 1px solid @interface-color-error;
-    border-radius: @interface-border-radius;
-    color: @interface-color-error;
-    margin-bottom: @interface-row-margin;
-    padding: @interface-internal-spacing;
-    text-align: center;
+    .alert-error();
   }
 
   .input-container {

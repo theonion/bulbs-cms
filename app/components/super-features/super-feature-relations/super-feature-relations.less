@@ -1,4 +1,5 @@
 @import '_colors';
+@import 'mixins/_mixin-alerts';
 @import 'mixins/_mixin-betty-container';
 @import 'mixins/_mixin-input-container';
 
@@ -6,6 +7,15 @@ super-feature-relations {
   .mixin-accordion-list();
 
   display: block;
+  margin-bottom: @interface-row-margin;
+
+  .super-feature-relations-list-no-items {
+    .alert-info();
+
+    margin-bottom: @interface-row-margin;
+    margin-left: @interface-internal-spacing;
+    margin-right: @interface-internal-spacing;
+  }
 
   .super-feature-relations-list-header {
     display: flex;
