@@ -42,10 +42,15 @@
       </button>
 
       <div class="accordion-list-item-meta-tools">
-        <span>{{ relation.published | dateTimeFormat }}</span>
+        <span
+            ng-if="relation.published && !relation.published.isSame(article.published)"
+            class="super-feature-list-item-published">
+          <i class="fa fa-clock-o"></i>
+          <span>{{ relation.published | dateTimeFormat }}</span>
+        </span>
 
-        <span>
-          <span>Status:</span>
+        <span ng-if="!relation.published">
+          <span class="super-feature-list-item-status-label">Status:</span>
           <span>{{ relation.status }}</span>
         </span>
 

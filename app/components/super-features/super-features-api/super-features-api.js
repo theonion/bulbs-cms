@@ -21,11 +21,21 @@ angular.module('bulbs.cms.superFeatures.api', [
 
       var parsePayload = function (payload) {
         var data = _.cloneDeep(payload);
+
+        if (payload.published) {
+          data.published = moment.tz(payload.published, CmsConfig.getTimezoneName());
+        }
+
         return data;
       };
 
       var cleanData = function (data) {
         var payload = _.cloneDeep(data);
+
+        if (data.published) {
+          payload.published = payload.published.format();
+        }
+
         return payload;
       };
 
@@ -85,7 +95,14 @@ angular.module('bulbs.cms.superFeatures.api', [
             });
         },
         getSuperFeatureRelations: function (id) {
-          return $http.get(superFeatureEndpoint(Utils.path.join(id, 'relations')));
+          return $http.get(superFeatureEndpoint(Utils.path.join(id, 'relations')))
+            .then(function (response) {
+              return {
+                results: response.data.map(function (result) {
+                  return parsePayload(result);
+                })
+              };
+            });
         },
         name: 'Super Feature',
         namePlural: 'Super Features',

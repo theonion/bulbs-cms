@@ -152,11 +152,33 @@ describe('Service: SuperFeaturesApi', function () {
       var apiRelations;
       SuperFeaturesApi.getSuperFeatureRelations(parentId)
         .then(function (response) {
-          apiRelations = response.data;
+          apiRelations = response.results;
         });
       $httpBackend.flush();
 
       expect(apiRelations).to.eql(relations);
+    });
+
+    it('should return publish date as a moment object', function () {
+      var parentId = 1;
+      var relations = [{
+        id: 1,
+        title: 'The First Relation',
+        published: '2016-04-20T16:20:00Z'
+      }];
+      var url = CmsConfig.buildApiUrlRoot('super-feature', parentId, 'relations');
+      $httpBackend.expect('GET', url).respond(function () {
+        return [200, relations];
+      });
+
+      var apiRelations;
+      SuperFeaturesApi.getSuperFeatureRelations(parentId)
+        .then(function (response) {
+          apiRelations = response.results;
+        });
+      $httpBackend.flush();
+
+      expect(moment.isMoment(apiRelations[0].published)).to.equal(true);
     });
   });
 

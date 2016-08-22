@@ -110,7 +110,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
 
           SuperFeaturesApi.getSuperFeatureRelations(scope.article.id)
             .then(function (response) {
-              scope.relations = response.data.sort(function (relation1, relation2) {
+              scope.relations = response.results.sort(function (relation1, relation2) {
                 return relation1.order - relation2.order;
               });
               scope.redoOrdering();

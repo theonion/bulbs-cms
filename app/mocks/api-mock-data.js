@@ -475,7 +475,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         superfeature_type: 'GUIDE_TO_ANIMALZ_ENTRY',
         order: 2,
         parent: 13,
-        published: '2016-04-20T16:20:00Z',
+        published: '2016-04-21T16:20:00Z',
         info_data: {}
       }, {
         id: 120,
