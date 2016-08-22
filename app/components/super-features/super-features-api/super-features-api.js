@@ -90,7 +90,7 @@ angular.module('bulbs.cms.superFeatures.api', [
         name: 'Super Feature',
         namePlural: 'Super Features',
         updateSuperFeature: function (data) {
-          return $http.put(contentEndpoint(data.id))
+          return $http.put(contentEndpoint(data.id), data)
             .then(function (response) {
               return parsePayload(response.data);
             });

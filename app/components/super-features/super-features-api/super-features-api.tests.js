@@ -188,13 +188,15 @@ describe('Service: SuperFeaturesApi', function () {
         title: 'my updated super feature'
       };
       var callback = sandbox.stub();
+      var server = sandbox.stub().returns([200, data]);
       $httpBackend
         .expectPUT(CmsConfig.buildApiUrlRoot('content', data.id))
-        .respond(200, data);
+        .respond(server);
 
       SuperFeaturesApi.updateSuperFeature(data).then(callback);
       $httpBackend.flush();
 
+      expect(JSON.parse(server.args[0][2])).to.eql(data);
       expect(callback.args[0][0]).to.eql(data);
     });
   });
