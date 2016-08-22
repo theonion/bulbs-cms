@@ -111,6 +111,9 @@ angular.module('bulbs.cms.superFeatures.api', [
             .then(function (response) {
               return parsePayload(response.data);
             });
+        },
+        updateAllRelationPublishDates: function (id) {
+          return $http.put(superFeatureEndpoint(Utils.path.join(id, 'set-children-dates')));
         }
       };
     }

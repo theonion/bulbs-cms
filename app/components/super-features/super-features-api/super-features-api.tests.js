@@ -182,6 +182,23 @@ describe('Service: SuperFeaturesApi', function () {
     });
   });
 
+  context('setting child publish dates', function () {
+
+    it('should provide a method', function () {
+      var parentId = 1;
+      var callback = sandbox.stub();
+      $httpBackend.expectPUT(
+        CmsConfig.buildApiUrlRoot('super-feature', parentId, 'set-children-dates')
+      )
+      .respond(200);
+
+      SuperFeaturesApi.updateAllRelationPublishDates(parentId).then(callback);
+      $httpBackend.flush();
+
+      expect(callback.calledOnce).to.equal(true);
+    });
+  });
+
   context('creating a super feature', function () {
 
     it('should create a new super feature', function () {
