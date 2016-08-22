@@ -110,7 +110,7 @@ describe('Directive: sendToEditorModalOpener', function () {
 
     modalElement.find('select').val(selectedStatusIndex).trigger('change');
     modalElement.find('textarea').val(note).trigger('change');
-    modalElement.find('button[ng-click="sendToEditor(sendData)"]').trigger('click');
+    modalElement.find('button[ng-click="sendToEditor(status, note)"]').trigger('click');
 
     expect(SendToEditorApi.sendToEditor.withArgs(
       $rootScope.article,
@@ -134,7 +134,7 @@ describe('Directive: sendToEditorModalOpener', function () {
     $rootScope.$digest();
     var modalElement = $(document).find('#sendToEditorModal');
 
-    modalElement.find('button[ng-click="sendToEditor(sendData)"]').trigger('click');
+    modalElement.find('button[ng-click="sendToEditor(status, note)"]').trigger('click');
     sendToEditorDeferred.resolve();
     $rootScope.$digest();
 
@@ -156,7 +156,7 @@ describe('Directive: sendToEditorModalOpener', function () {
     $rootScope.$digest();
     var modalElement = $(document).find('#sendToEditorModal');
 
-    modalElement.find('button[ng-click="sendToEditor(sendData)"]').trigger('click');
+    modalElement.find('button[ng-click="sendToEditor(status, note)"]').trigger('click');
     sendToEditorDeferred.reject();
     $rootScope.$digest();
 
@@ -179,7 +179,7 @@ describe('Directive: sendToEditorModalOpener', function () {
 
     modalElement.find('select').val('').trigger('change');
 
-    expect(modalElement.find('button[ng-click="sendToEditor(sendData)"]')
+    expect(modalElement.find('button[ng-click="sendToEditor(status, note)"]')
       .attr('disabled')).to.equal('disabled');
     expect(modalElement.find('select').next().html())
       .to.have.string('Please select an Article Status!');

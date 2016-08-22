@@ -26,11 +26,11 @@ angular.module('bulbs.cms.sendToEditorModal', [
 
             if (!scope.modalInstance) {
 
-              scope.sendToEditor = function (sendData) {
+              scope.sendToEditor = function (status, note) {
                 return SendToEditorApi.sendToEditor(
                   scope.modalArticle,
-                  sendData.status,
-                  sendData.note
+                  status,
+                  note
                 )
                 .then(scope.modalInstance.close)
                 .catch(function (response) {

@@ -30,8 +30,8 @@
         <select
             id="sendToEditorModalStatus"
             name="status"
-            ng-model="sendData.status"
-            ng-options="status.value as status.label for status in statuses"
+            ng-model="status"
+            ng-options="option.value as option.label for option in statuses"
             ng-class="{
               'input-container-input-has-error': sendData.status.$error.length > 0
             }"
@@ -39,7 +39,7 @@
           <option value="">- Article Status -</option>
         </select>
         <div
-            ng-if="!sendData.status || sendData.status.$error.required"
+            ng-if="sendData.$dirty && sendData.status.$error.required"
             class="input-container-label-has-error">
           <i class="fa fa-exclamation-circle"></i>
           <span>Please select an Article Status!</span>
@@ -51,7 +51,7 @@
         <textarea
             id="sendToEditorModalNote"
             name="note"
-            ng-model="sendData.note">
+            ng-model="note">
         </textarea>
       </div>
     </form>
@@ -61,7 +61,7 @@
     <button
         class="btn btn-success"
         ng-disabled="sendData.$pristine || sendData.$invalid"
-        ng-click="sendToEditor(sendData)">
+        ng-click="sendToEditor(status, note)">
       <i class="fa fa-paper-plane"></i>
       <span>Send</span>
     </button>

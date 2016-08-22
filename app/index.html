@@ -384,6 +384,8 @@
         'CmsConfigProvider',
         function (CmsConfig) {
           CmsConfig
+            .addArticleEditoralStatus('Needs First Pass', 'Needs First Pass')
+            .addArticleEditoralStatus('Needs Final Edit', 'Needs Final Edit')
             .setApiUrlRoot('/cms/api/v1/')
             .setCmsName('Smoove')
             .setContentApiUrl('/cms/api/v1/content')
