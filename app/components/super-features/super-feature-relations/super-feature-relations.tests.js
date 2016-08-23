@@ -93,12 +93,12 @@ describe('Directive: superFeatureRelations', function () {
     });
   });
 
-  context('child page interactions', function () {
+  context('relation interactions', function () {
 
     it('should allow adding a new one', function () {
       getSuperFeatureRelationsDeferred.resolve({ results: [] });
       var element = digest(html);
-      var addButton = element.find('button[modal-on-ok="addChildPage(title)"]').eq(0);
+      var addButton = element.find('button[modal-on-ok="addRelation(title)"]').eq(0);
       var relation = {
         id: 1,
         order: 0
@@ -118,7 +118,7 @@ describe('Directive: superFeatureRelations', function () {
     it('should show an error message if adding fails', function () {
       getSuperFeatureRelationsDeferred.resolve({ results: [] });
       var element = digest(html);
-      var addButton = element.find('button[modal-on-ok="addChildPage(title)"]').eq(0);
+      var addButton = element.find('button[modal-on-ok="addRelation(title)"]').eq(0);
       var scope = element.scope();
 
       addButton.trigger('click');
@@ -132,10 +132,10 @@ describe('Directive: superFeatureRelations', function () {
       expect(Raven.captureMessage.calledOnce).to.equal(true);
     });
 
-    it('should allow setting all child publish dates', function () {
+    it('should allow setting all relation publish dates', function () {
       updateAllRelationPublishDatesDeferred.resolve();
       var element = digest(html);
-      var updateButton = element.find('button[ng-click="updateChildPublishDates()"]');
+      var updateButton = element.find('button[ng-click="updateRelationsPublishDates()"]');
 
       updateButton.trigger('click');
 
@@ -149,12 +149,12 @@ describe('Directive: superFeatureRelations', function () {
       $parentScope.article = { id: 1 };
       var element = digest(html);
 
-      var updateButton = element.find('button[ng-click="updateChildPublishDates()"]');
+      var updateButton = element.find('button[ng-click="updateRelationsPublishDates()"]');
 
       expect(updateButton.attr('disabled')).to.equal('disabled');
     });
 
-    it('should disable publish date set button if some child is not saved', function () {
+    it('should disable publish date set button if some relation is not saved', function () {
       $parentScope.article = {
         id: 1,
         published: '2020-06-20T12:00:00Z'
@@ -162,14 +162,14 @@ describe('Directive: superFeatureRelations', function () {
       var relations = [{ id: 2 }, { id: 3 }];
       getSuperFeatureRelationsDeferred.resolve({ results: relations });
       var element = digest(html);
-      var updateButton = element.find('button[ng-click="updateChildPublishDates()"]');
+      var updateButton = element.find('button[ng-click="updateRelationsPublishDates()"]');
 
       element.find('li input[ng-model="relation.title"]').val('garbage').trigger('change');
 
       expect(updateButton.attr('disabled')).to.equal('disabled');
     });
 
-    it('should disable publish date set button if there are no child pages', function () {
+    it('should disable publish date set button if there are no relations', function () {
       $parentScope.article = {
         id: 1,
         published: '2020-06-20T12:00:00Z'
@@ -177,19 +177,19 @@ describe('Directive: superFeatureRelations', function () {
       getSuperFeatureRelationsDeferred.resolve({ results: [] });
       var element = digest(html);
 
-      var updateButton = element.find('button[ng-click="updateChildPublishDates()"]');
+      var updateButton = element.find('button[ng-click="updateRelationsPublishDates()"]');
 
       expect(updateButton.attr('disabled')).to.equal('disabled');
     });
 
-    it('should show an error message if child publish date update fails', function () {
+    it('should show an error message if relation publish date update fails', function () {
       $parentScope.article = {
         id: 1,
         published: '2020-06-20T12:00:00Z'
       };
       getSuperFeatureRelationsDeferred.resolve({ results: [] });
       var element = digest(html);
-      var updateButton = element.find('button[ng-click="updateChildPublishDates()"]');
+      var updateButton = element.find('button[ng-click="updateRelationsPublishDates()"]');
 
       updateButton.trigger('click');
       updateAllRelationPublishDatesDeferred.reject();
@@ -207,7 +207,7 @@ describe('Directive: superFeatureRelations', function () {
       };
       getSuperFeatureRelationsDeferred.resolve({ results: [] });
       var element = digest(html);
-      var updateButton = element.find('button[ng-click="updateChildPublishDates()"]');
+      var updateButton = element.find('button[ng-click="updateRelationsPublishDates()"]');
 
       updateButton.trigger('click');
       updateButton.trigger('click');
@@ -216,10 +216,10 @@ describe('Directive: superFeatureRelations', function () {
         .to.equal(true);
     });
 
-    it('should prevent mutliple add child calls', function () {
+    it('should prevent mutliple add relation calls', function () {
       getSuperFeatureRelationsDeferred.resolve({ results: [] });
       var element = digest(html);
-      var addButton = element.find('button[modal-on-ok="addChildPage(title)"]').eq(0);
+      var addButton = element.find('button[modal-on-ok="addRelation(title)"]').eq(0);
       var scope = element.scope();
 
       addButton.trigger('click');
@@ -234,7 +234,7 @@ describe('Directive: superFeatureRelations', function () {
       var relations = [{ id: 2 }];
       getSuperFeatureRelationsDeferred.resolve({ results: relations });
       var element = digest(html);
-      var saveButton = element.find('button[ng-click="saveChildPage(relation)"]');
+      var saveButton = element.find('button[ng-click="saveRelation(relation)"]');
 
       saveButton.trigger('click');
 
@@ -248,7 +248,7 @@ describe('Directive: superFeatureRelations', function () {
       }];
       getSuperFeatureRelationsDeferred.resolve({ results: relations });
       var element = digest(html);
-      var saveButton = element.find('button[ng-click="saveChildPage(relation)"]');
+      var saveButton = element.find('button[ng-click="saveRelation(relation)"]');
 
       saveButton.trigger('click');
       updateSuperFeatureDeferred.reject();
@@ -259,11 +259,11 @@ describe('Directive: superFeatureRelations', function () {
       expect(Raven.captureMessage.calledOnce).to.equal(true);
     });
 
-    it('should prevent multiple updates at the same time for same child', function () {
+    it('should prevent multiple updates at the same time for same relation', function () {
       var relations = [{ id: 2 }];
       getSuperFeatureRelationsDeferred.resolve({ results: relations });
       var element = digest(html);
-      var saveButton = element.find('button[ng-click="saveChildPage(relation)"]');
+      var saveButton = element.find('button[ng-click="saveRelation(relation)"]');
 
       saveButton.trigger('click');
       saveButton.trigger('click');
@@ -278,7 +278,7 @@ describe('Directive: superFeatureRelations', function () {
       };
       getSuperFeatureRelationsDeferred.resolve({ results: [relation] });
       var element = digest(html);
-      var saveButton = element.find('button[ng-click="saveChildPage(relation)"]');
+      var saveButton = element.find('button[ng-click="saveRelation(relation)"]');
 
       saveButton.trigger('click');
       updateSuperFeatureDeferred.resolve({ results: relation });
@@ -291,7 +291,7 @@ describe('Directive: superFeatureRelations', function () {
       var relation = { id: 2 };
       getSuperFeatureRelationsDeferred.resolve({ results: [relation] });
       var element = digest(html);
-      var deleteButton = element.find('button[modal-on-ok="deleteChildPage(relation)"]');
+      var deleteButton = element.find('button[modal-on-ok="deleteRelation(relation)"]');
       var scope = element.scope();
 
       deleteButton.trigger('click');
@@ -304,11 +304,11 @@ describe('Directive: superFeatureRelations', function () {
       expect(element.find('li').length).to.equal(0);
     });
 
-    it('should prevent multiple deletes at the same time for same child', function () {
+    it('should prevent multiple deletes at the same time for same relation', function () {
       var relations = [{ id: 2 }];
       getSuperFeatureRelationsDeferred.resolve({ results: relations });
       var element = digest(html);
-      var deleteButton = element.find('button[modal-on-ok="deleteChildPage(relation)"]');
+      var deleteButton = element.find('button[modal-on-ok="deleteRelation(relation)"]');
       var scope = element.scope();
 
       deleteButton.trigger('click');
@@ -326,7 +326,7 @@ describe('Directive: superFeatureRelations', function () {
       };
       getSuperFeatureRelationsDeferred.resolve({ results: [relation] });
       var element = digest(html);
-      var deleteButton = element.find('button[modal-on-ok="deleteChildPage(relation)"]');
+      var deleteButton = element.find('button[modal-on-ok="deleteRelation(relation)"]');
       var scope = element.scope();
 
       deleteButton.trigger('click');
@@ -340,12 +340,12 @@ describe('Directive: superFeatureRelations', function () {
       expect(Raven.captureMessage.calledOnce).to.equal(true);
     });
 
-    it('should prevent a delete from occurring if an update is happening on same child', function () {
+    it('should prevent a delete from occurring if an update is happening on same relation', function () {
       var relations = [{ id: 2 }];
       getSuperFeatureRelationsDeferred.resolve({ results: relations });
       var element = digest(html);
-      var deleteButton = element.find('button[modal-on-ok="deleteChildPage(relation)"]');
-      var saveButton = element.find('button[ng-click="saveChildPage(relation)"]');
+      var deleteButton = element.find('button[modal-on-ok="deleteRelation(relation)"]');
+      var saveButton = element.find('button[ng-click="saveRelation(relation)"]');
 
       deleteButton.trigger('click');
       element.scope().$digest();
@@ -356,12 +356,12 @@ describe('Directive: superFeatureRelations', function () {
       expect(SuperFeaturesApi.updateSuperFeature.called).to.equal(false);
     });
 
-    it('should prevent an update from occurring if a delete is happening on same child', function () {
+    it('should prevent an update from occurring if a delete is happening on same relation', function () {
       var relations = [{ id: 2 }];
       getSuperFeatureRelationsDeferred.resolve({ results: relations });
       var element = digest(html);
-      var deleteButton = element.find('button[modal-on-ok="deleteChildPage(relation)"]');
-      var saveButton = element.find('button[ng-click="saveChildPage(relation)"]');
+      var deleteButton = element.find('button[modal-on-ok="deleteRelation(relation)"]');
+      var saveButton = element.find('button[ng-click="saveRelation(relation)"]');
 
       saveButton.trigger('click');
 
@@ -369,7 +369,7 @@ describe('Directive: superFeatureRelations', function () {
       expect(SuperFeaturesApi.updateSuperFeature.called).to.equal(true);
     });
 
-    it('should prevent publish date set button if another child transaction is occuring', function () {
+    it('should prevent publish date set button if another relation transaction is occuring', function () {
       $parentScope.article = {
         id: 1,
         published: '2020-06-20T12:00:00Z'
@@ -377,8 +377,8 @@ describe('Directive: superFeatureRelations', function () {
       var relations = [{ id: 2 }];
       getSuperFeatureRelationsDeferred.resolve({ results: relations });
       var element = digest(html);
-      var updateButton = element.find('button[ng-click="updateChildPublishDates()"]');
-      var saveButton = element.find('button[ng-click="saveChildPage(relation)"]');
+      var updateButton = element.find('button[ng-click="updateRelationsPublishDates()"]');
+      var saveButton = element.find('button[ng-click="saveRelation(relation)"]');
 
       element.find('li input[ng-model="relation.title"]').val('garbage').trigger('change');
       saveButton.trigger('click');
@@ -396,8 +396,8 @@ describe('Directive: superFeatureRelations', function () {
       var relations = [{ id: 2 }];
       getSuperFeatureRelationsDeferred.resolve({ results: relations });
       var element = digest(html);
-      var updateButton = element.find('button[ng-click="updateChildPublishDates()"]');
-      var saveButton = element.find('button[ng-click="saveChildPage(relation)"]');
+      var updateButton = element.find('button[ng-click="updateRelationsPublishDates()"]');
+      var saveButton = element.find('button[ng-click="saveRelation(relation)"]');
 
       updateButton.trigger('click');
       saveButton.trigger('click');
@@ -413,8 +413,8 @@ describe('Directive: superFeatureRelations', function () {
       var relations = [{ id: 2 }];
       getSuperFeatureRelationsDeferred.resolve({ results: relations });
       var element = digest(html);
-      var updateButton = element.find('button[ng-click="updateChildPublishDates()"]');
-      var deleteButton = element.find('button[modal-on-ok="deleteChildPage(relation)"]');
+      var updateButton = element.find('button[ng-click="updateRelationsPublishDates()"]');
+      var deleteButton = element.find('button[modal-on-ok="deleteRelation(relation)"]');
 
       updateButton.trigger('click');
       deleteButton.trigger('click');
@@ -424,7 +424,7 @@ describe('Directive: superFeatureRelations', function () {
       expect(SuperFeaturesApi.deleteSuperFeature.called).to.equal(false);
     });
 
-    it('should show a message if there are no child pages', function () {
+    it('should show a message if there are no relation pages', function () {
       getSuperFeatureRelationsDeferred.resolve({ results: [] });
 
       var element = digest(html);
@@ -433,7 +433,7 @@ describe('Directive: superFeatureRelations', function () {
     });
   });
 
-  context('child page list ordering', function () {
+  context('relation list ordering', function () {
     var relation1 = { id: 666 };
     var relation2 = { id: 420 };
 
@@ -441,7 +441,7 @@ describe('Directive: superFeatureRelations', function () {
       getSuperFeatureRelationsDeferred.resolve({ results: [relation1, relation2] });
     });
 
-    it('should be based on order property of children', function () {
+    it('should be based on order property of relations', function () {
       relation1.order = 1;
       relation2.order = 0;
 
@@ -452,7 +452,7 @@ describe('Directive: superFeatureRelations', function () {
       expect(items.eq(1).scope().relation).to.equal(relation1);
     });
 
-    it('should allow moving a child up via an up button', function () {
+    it('should allow moving a relation up via an up button', function () {
       relation1.order = 0;
       relation2.order = 1;
       var element = digest(html);
@@ -475,7 +475,7 @@ describe('Directive: superFeatureRelations', function () {
       expect(up.attr('disabled')).to.equal('disabled');
     });
 
-    it('should allow moving a child down via a down button', function () {
+    it('should allow moving a relation down via a down button', function () {
       relation1.order = 0;
       relation2.order = 1;
       var element = digest(html);

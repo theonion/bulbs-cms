@@ -73,17 +73,17 @@ angular.module('bulbs.cms.superFeatures.relations', [
               $scope.redoOrdering();
             };
 
-            $scope.addChildPage = function (title) {
-              if (!$scope.addChildPageDisabled) {
-                $scope.addChildPageDisabled = true;
+            $scope.addRelation = function (title) {
+              if (!$scope.addRelationDisabled) {
+                $scope.addRelationDisabled = true;
 
                 SuperFeaturesApi.createSuperFeature({
                   parent: $scope.article.id,
                   superfeature_type: $scope.article.default_child_type,
                   title: title
                 })
-                  .then(function (child) {
-                    $scope.relations.push(child);
+                  .then(function (relation) {
+                    $scope.relations.push(relation);
                     $scope.redoOrdering();
                   })
                   .catch(function (response) {
@@ -91,26 +91,26 @@ angular.module('bulbs.cms.superFeatures.relations', [
                     $scope.reportError(message, { response: response });
                   })
                   .finally(function () {
-                    $scope.addChildPageDisabled = false;
+                    $scope.addRelationDisabled = false;
                   });
               }
             };
 
-            $scope.ongoingChildTransactions = {};
+            $scope.ongoingRelationTransactions = {};
 
-            $scope.isAtLeastOneOngoingChildTransaction = function () {
-              return Object.keys($scope.ongoingChildTransactions)
+            $scope.isAtLeastOneOngoingRelationTransaction = function () {
+              return Object.keys($scope.ongoingRelationTransactions)
                 .reduce(function (ongoing, relationId) {
-                  return ongoing || $scope.ongoingChildTransactions[relationId];
+                  return ongoing || $scope.ongoingRelationTransactions[relationId];
                 }, false);
             };
 
-            $scope.updateChildPublishDates = function () {
+            $scope.updateRelationsPublishDates = function () {
 
-              if (!$scope.isAtLeastOneOngoingChildTransaction() &&
-                  !$scope.runningChildPublishDateUpdate) {
+              if (!$scope.isAtLeastOneOngoingRelationTransaction() &&
+                  !$scope.runningRelationPublishDateUpdate) {
 
-                $scope.runningChildPublishDateUpdate = true;
+                $scope.runningRelationPublishDateUpdate = true;
 
                 SuperFeaturesApi
                   .updateAllRelationPublishDates($scope.article.id)
@@ -119,17 +119,17 @@ angular.module('bulbs.cms.superFeatures.relations', [
                     $scope.reportError(message, { response: response });
                   })
                   .finally(function () {
-                    $scope.runningChildPublishDateUpdate = false;
+                    $scope.runningRelationPublishDateUpdate = false;
                   });
               }
             };
 
-            $scope.saveChildPage = function (relation) {
+            $scope.saveRelation = function (relation) {
 
-              if (!$scope.ongoingChildTransactions[relation.id] &&
-                  !$scope.runningChildPublishDateUpdate) {
+              if (!$scope.ongoingRelationTransactions[relation.id] &&
+                  !$scope.runningRelationPublishDateUpdate) {
 
-                $scope.ongoingChildTransactions[relation.id] = true;
+                $scope.ongoingRelationTransactions[relation.id] = true;
 
                 var relationCopy = angular.copy(relation);
                 relationCopy.order = relation.order - 1;
@@ -141,18 +141,18 @@ angular.module('bulbs.cms.superFeatures.relations', [
                     $scope.reportError(message, { response: response });
                   })
                   .finally(function () {
-                    $scope.ongoingChildTransactions[relation.id] = false;
+                    $scope.ongoingRelationTransactions[relation.id] = false;
                     $scope.getRelationForm(relation).$setPristine();
                   });
               }
             };
 
-            $scope.deleteChildPage = function (relation) {
+            $scope.deleteRelation = function (relation) {
 
-              if (!$scope.ongoingChildTransactions[relation.id] &&
-                  !$scope.runningChildPublishDateUpdate) {
+              if (!$scope.ongoingRelationTransactions[relation.id] &&
+                  !$scope.runningRelationPublishDateUpdate) {
 
-                $scope.ongoingChildTransactions[relation.id] = true;
+                $scope.ongoingRelationTransactions[relation.id] = true;
 
                 SuperFeaturesApi.deleteSuperFeature(relation)
                   .then(function () {
@@ -164,7 +164,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
                     $scope.reportError(message, { response: response });
                   })
                   .finally(function () {
-                    $scope.ongoingChildTransactions[relation.id] = false;
+                    $scope.ongoingRelationTransactions[relation.id] = false;
                   });
               }
             };
