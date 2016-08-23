@@ -1,19 +1,35 @@
 <div class="super-feature-relations-list-header">
   <h4>Child Pages</h4>
-  <div class="super-feature-relations-list-header-tools">
-    <button
-        title-modal-opener
-        modal-body-before="Enter a headline, you'll be able to change this later:"
-        modal-title="Add Child Page"
-        modal-ok-text="Create Child Page"
-        modal-on-ok="addChildPage(title)"
-        ng-if="relations.length > 0"
-        ng-disabled="addChildPageDisabled"
-        class="btn btn-primary btn-sm accordion-list-add-top">
-      <i class="fa fa-plus"></i>
-      <span>Add New Page</span>
-    </button>
-  </div>
+
+  <button
+      class="btn btn-success btn-sm"
+      ng-click="updateChildPublishDates()"
+      ng-disabled="
+        relations.length < 1 ||
+        !article.published ||
+        isAtLeastOneRelationFormDirty()">
+    <i class="fa fa-clock-o"></i>
+    <span>Use Parent Publish Date</span>
+  </button>
+  <button
+      title-modal-opener
+      modal-body-before="Enter a headline, you'll be able to change this later:"
+      modal-title="Add Child Page"
+      modal-ok-text="Create Child Page"
+      modal-on-ok="addChildPage(title)"
+      ng-if="relations.length > 0"
+      ng-disabled="addChildPageDisabled"
+      class="btn btn-primary btn-sm accordion-list-add-top">
+    <i class="fa fa-plus"></i>
+    <span>Add New Page</span>
+  </button>
+</div>
+
+<div
+    ng-if="errorMessage"
+    class="super-feature-relations-list-error">
+  <i class="fa fa-exclamation-circle"></i>
+  <span>{{ errorMessage }}</span>
 </div>
 
 <div
@@ -22,9 +38,11 @@
   No child pages yet!
 </div>
 
-<ol ng-if="relations.length > 0">
+<ol
+    ng-if="relations.length > 0"
+    ng-form="$parent.wrapperForm">
   <li
-      ng-init="panelClosed = false; relationForm = {}"
+      ng-init="panelClosed = false"
       ng-repeat="relation in relations track by $index">
 
     <div class="accordion-list-item-meta">
@@ -42,23 +60,26 @@
       </button>
 
       <div class="accordion-list-item-meta-tools">
-        <span class="super-feature-list-item-status">
+        <span class="super-feature-relations-list-item-status">
           <span
               ng-if="relation.published && !relation.published.isSame(article.published)"
-              class="super-feature-list-item-published">
+              class="super-feature-relations-list-item-published">
             <i class="fa fa-clock-o"></i>
             <span>{{ relation.published | dateTimeFormat }}</span>
           </span>
 
           <span ng-if="!relation.published">
-            <span class="super-feature-list-item-status-label">Status:</span>
+            <span class="super-feature-relations-list-item-status-label">Status:</span>
             <span>{{ relation.status }}</span>
           </span>
         </span>
 
         <button
             ng-click="saveChildPage(relation)"
-            ng-disabled="ongoingChildTransactions[relation.id] || relationForm.$pristine"
+            ng-disabled="
+              ongoingChildTransactions[relation.id] ||
+                getRelationForm(relation).$pristine
+            "
             class="btn btn-success btn-xs">
           <i class="fa fa-floppy-o"></i>
           <span>SAVE</span>
@@ -75,15 +96,15 @@
             ng-submit="
               $event.preventDefault();
               moveItem($index, relation.order - 1);
-              orderingInputForm.$setPristine();
+              getOrderingForm(relation).$setPristine();
             "
-            name="orderingInputForm"
+            name="{{ makeOrderingFormName(relation) }}"
             class="accordion-list-item-meta-tools-order">
           <input
               name="order"
               type="number"
               ng-model="relation.order">
-          <button ng-disabled="orderingInputForm.$pristine">
+          <button ng-disabled="getOrderingForm(relation).$pristine">
             <i class="fa fa-check"></i>
           </button>
         </form>
@@ -106,7 +127,7 @@
         ng-hide="panelClosed"
         class="accordion-list-item-content">
 
-      <form name="relationForm">
+      <form name="{{ makeRelationFormName(relation) }}">
 
         <div class="super-feature-relations-input-container">
           <button
@@ -138,7 +159,7 @@
                 image="relation.image"
                 ratio="16x9"
                 add-styles="fa fa-picture-o"
-                on-change="relationForm.$setDirty()">
+                on-change="getRelationForm(relation).$setDirty()">
             </betty-editable>
           </div>
         </div>

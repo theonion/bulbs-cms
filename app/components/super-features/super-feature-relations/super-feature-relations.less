@@ -18,35 +18,26 @@ super-feature-relations {
   }
 
   .super-feature-relations-list-header {
-    display: flex;
-
-    h4 {
-      flex: 1;
-      margin: @interface-internal-spacing;
-      line-height: 2em;
-    }
-
-    .super-feature-relations-list-header-tools {
-
-      button {
-        vertical-align: text-top;
-      }
-    }
+    margin: @interface-internal-spacing;
   }
 
   .accordion-list-item-content {
     padding: 10px;
   }
 
-  .super-feature-list-item-published {
+  .super-feature-relations-list-error {
+    .alert-error();
+  }
+
+  .super-feature-relations-list-item-published {
     color: @interface-color-error-3;
     font-weight: bold;
   }
 
-  .super-feature-list-item-status {
+  .super-feature-relations-list-item-status {
     font-size: @interface-font-size-2;
 
-    .super-feature-list-item-status-label {
+    .super-feature-relations-list-item-status-label {
       font-weight: bold;
       text-transform: uppercase;
     }

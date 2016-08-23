@@ -2,14 +2,15 @@
 
 describe('Directive: superFeatureRelations', function () {
   var $parentScope;
-  var article;
-  var digest;
-  var html;
-  var sandbox;
-  var SuperFeaturesApi;
   var createSuperFeatureDeferred;
   var deleteSuperFeatureDeferred;
+  var digest;
   var getSuperFeatureRelationsDeferred;
+  var html;
+  var Raven;
+  var sandbox;
+  var SuperFeaturesApi;
+  var updateAllRelationPublishDatesDeferred;
   var updateSuperFeatureDeferred;
 
   beforeEach(function () {
@@ -19,21 +20,23 @@ describe('Directive: superFeatureRelations', function () {
     module('jquery');
     module('jsTemplates');
 
-    article = { id: 1 };
     html = angular.element(
       '<super-feature-relations article="article"></super-feature-relations>'
     );
 
-    inject(function (_SuperFeaturesApi_, $q, $compile, $rootScope) {
+    inject(function (_Raven_, _SuperFeaturesApi_, $q, $compile, $rootScope) {
       $parentScope = $rootScope.$new();
       SuperFeaturesApi = _SuperFeaturesApi_;
+      Raven = _Raven_;
+
+      sandbox.stub(Raven, 'captureMessage');
 
       digest = window.testHelper.directiveBuilderWithDynamicHtml(
         $compile,
         $parentScope
       );
 
-      $parentScope.article = article;
+      $parentScope.article = { id: 1 };
 
       createSuperFeatureDeferred = $q.defer();
       sandbox.stub(SuperFeaturesApi, 'createSuperFeature')
@@ -50,6 +53,10 @@ describe('Directive: superFeatureRelations', function () {
       deleteSuperFeatureDeferred = $q.defer();
       sandbox.stub(SuperFeaturesApi, 'deleteSuperFeature')
         .returns(deleteSuperFeatureDeferred.promise);
+
+      updateAllRelationPublishDatesDeferred = $q.defer();
+      sandbox.stub(SuperFeaturesApi, 'updateAllRelationPublishDates')
+        .returns(updateAllRelationPublishDatesDeferred.promise);
     });
   });
 
@@ -90,6 +97,91 @@ describe('Directive: superFeatureRelations', function () {
 
       expect(SuperFeaturesApi.createSuperFeature.calledOnce).to.equal(true);
       expect(element.find('li').scope().relation).to.equal(relation);
+    });
+
+    it('should allow setting all child publish dates', function () {
+      updateAllRelationPublishDatesDeferred.resolve();
+      var element = digest(html);
+      var updateButton = element.find('button[ng-click="updateChildPublishDates()"]');
+      var scope = element.scope();
+
+      updateButton.trigger('click');
+
+      expect(SuperFeaturesApi.updateAllRelationPublishDates.calledOnce)
+        .to.equal(true);
+      expect(SuperFeaturesApi.getSuperFeatureRelations.calledOnce)
+        .to.equal(true);
+    });
+
+    it('should disable publish date set button if parent has no publish date', function () {
+      $parentScope.article = { id: 1 };
+      var element = digest(html);
+
+      var updateButton = element.find('button[ng-click="updateChildPublishDates()"]');
+
+      expect(updateButton.attr('disabled')).to.equal('disabled');
+    });
+
+    it('should disable publish date set button if some child is not saved', function () {
+      $parentScope.article = {
+        id: 1,
+        published: '2020-06-20T12:00:00Z'
+      };
+      var relations = [{ id: 2 }, { id: 3 }];
+      getSuperFeatureRelationsDeferred.resolve({ results: relations });
+      var element = digest(html);
+      var updateButton = element.find('button[ng-click="updateChildPublishDates()"]');
+
+      element.find('li input[ng-model="relation.title"]').val('garbage').trigger('change');
+
+      expect(updateButton.attr('disabled')).to.equal('disabled');
+    });
+
+    it('should disable publish date set button if there are no child pages', function () {
+      $parentScope.article = {
+        id: 1,
+        published: '2020-06-20T12:00:00Z'
+      };
+      getSuperFeatureRelationsDeferred.resolve({ results: [] });
+      var element = digest(html);
+
+      var updateButton = element.find('button[ng-click="updateChildPublishDates()"]');
+
+      expect(updateButton.attr('disabled')).to.equal('disabled');
+    });
+
+    it('should show an error message if child publish date update fails', function () {
+      $parentScope.article = {
+        id: 1,
+        published: '2020-06-20T12:00:00Z'
+      };
+      getSuperFeatureRelationsDeferred.resolve({ results: [] });
+      var element = digest(html);
+      var updateButton = element.find('button[ng-click="updateChildPublishDates()"]');
+
+      updateButton.trigger('click');
+      updateAllRelationPublishDatesDeferred.reject();
+      element.scope().$digest();
+
+      expect(element.find('.super-feature-relations-list-error').html())
+        .to.have.string('An error occurred!');
+      expect(Raven.captureMessage.calledOnce).to.equal(true);
+    });
+
+    it('should prevent multiple calls to publish date update', function () {
+      $parentScope.article = {
+        id: 1,
+        published: '2020-06-20T12:00:00Z'
+      };
+      getSuperFeatureRelationsDeferred.resolve({ results: [] });
+      var element = digest(html);
+      var updateButton = element.find('button[ng-click="updateChildPublishDates()"]');
+
+      updateButton.trigger('click');
+      updateButton.trigger('click');
+
+      expect(SuperFeaturesApi.updateAllRelationPublishDates.calledOnce)
+        .to.equal(true);
     });
 
     it('should prevent mutliple add child calls', function () {
@@ -206,6 +298,61 @@ describe('Directive: superFeatureRelations', function () {
       expect(SuperFeaturesApi.updateSuperFeature.called).to.equal(true);
     });
 
+    it('should prevent publish date set button if another child transaction is occuring', function () {
+      $parentScope.article = {
+        id: 1,
+        published: '2020-06-20T12:00:00Z'
+      };
+      var relations = [{ id: 2 }];
+      getSuperFeatureRelationsDeferred.resolve({ results: relations });
+      var element = digest(html);
+      var updateButton = element.find('button[ng-click="updateChildPublishDates()"]');
+      var saveButton = element.find('button[ng-click="saveChildPage(relation)"]');
+
+      element.find('li input[ng-model="relation.title"]').val('garbage').trigger('change');
+      saveButton.trigger('click');
+      updateButton.trigger('click');
+
+      expect(SuperFeaturesApi.updateAllRelationPublishDates.calledOnce)
+        .to.equal(false);
+    });
+
+    it('should prevent saving when updating publish dates', function () {
+      $parentScope.article = {
+        id: 1,
+        published: '2020-06-20T12:00:00Z'
+      };
+      var relations = [{ id: 2 }];
+      getSuperFeatureRelationsDeferred.resolve({ results: relations });
+      var element = digest(html);
+      var updateButton = element.find('button[ng-click="updateChildPublishDates()"]');
+      var saveButton = element.find('button[ng-click="saveChildPage(relation)"]');
+
+      updateButton.trigger('click');
+      saveButton.trigger('click');
+
+      expect(SuperFeaturesApi.updateSuperFeature.called).to.equal(false);
+    });
+
+    it('should prevent deleting when updating publish dates', function () {
+      $parentScope.article = {
+        id: 1,
+        published: '2020-06-20T12:00:00Z'
+      };
+      var relations = [{ id: 2 }];
+      getSuperFeatureRelationsDeferred.resolve({ results: relations });
+      var element = digest(html);
+      var updateButton = element.find('button[ng-click="updateChildPublishDates()"]');
+      var deleteButton = element.find('button[modal-on-ok="deleteChildPage(relation)"]');
+
+      updateButton.trigger('click');
+      deleteButton.trigger('click');
+      element.scope().$digest();
+      deleteButton.isolateScope().modalOnOk();
+
+      expect(SuperFeaturesApi.deleteSuperFeature.called).to.equal(false);
+    });
+
     it('should show a message if there are no child pages', function () {
       getSuperFeatureRelationsDeferred.resolve({ results: [] });
 
@@ -284,10 +431,10 @@ describe('Directive: superFeatureRelations', function () {
       relation1.order = 0;
       relation2.order = 1;
       var element = digest(html);
-      var orderingForm = element.find('form[name="orderingInputForm"]').eq(1);
+      var orderingForm = element.find('form[name="orderingInputForm_' + relation1.id + '"]');
       var ordering = orderingForm.find('input[name="order"]');
 
-      ordering.val(1).trigger('change');
+      ordering.val(2).trigger('change');
       orderingForm.trigger('submit');
 
       var items = element.find('li');
