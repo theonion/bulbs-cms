@@ -1,6 +1,7 @@
 'use strict';
 
 describe('Directive: superFeatureRelations', function () {
+  var $;
   var $parentScope;
   var createSuperFeatureDeferred;
   var deleteSuperFeatureDeferred;
@@ -24,7 +25,8 @@ describe('Directive: superFeatureRelations', function () {
       '<super-feature-relations article="article"></super-feature-relations>'
     );
 
-    inject(function (_Raven_, _SuperFeaturesApi_, $q, $compile, $rootScope) {
+    inject(function (_$_, _Raven_, _SuperFeaturesApi_, $q, $compile, $rootScope) {
+      $ = _$_;
       $parentScope = $rootScope.$new();
       SuperFeaturesApi = _SuperFeaturesApi_;
       Raven = _Raven_;
@@ -62,6 +64,10 @@ describe('Directive: superFeatureRelations', function () {
 
   afterEach(function () {
     sandbox.restore();
+
+    $(document).find('#titleModal').each(function () {
+      $(this).remove();
+    });
   });
 
   context('initialization', function () {
@@ -74,6 +80,16 @@ describe('Directive: superFeatureRelations', function () {
 
       expect(SuperFeaturesApi.getSuperFeatureRelations.calledOnce).to.equal(true);
       expect(element.find('li').length).to.eql(2);
+    });
+
+    it('should show an error message if unable to retrieve relations', function () {
+      getSuperFeatureRelationsDeferred.reject();
+
+      var element = digest(html);
+
+      expect(element.find('.super-feature-relations-list-error').html())
+        .to.have.string('An error occurred retrieving relations!');
+      expect(Raven.captureMessage.calledOnce).to.equal(true);
     });
   });
 
@@ -99,11 +115,27 @@ describe('Directive: superFeatureRelations', function () {
       expect(element.find('li').scope().relation).to.equal(relation);
     });
 
+    it('should show an error message if adding fails', function () {
+      getSuperFeatureRelationsDeferred.resolve({ results: [] });
+      var element = digest(html);
+      var addButton = element.find('button[modal-on-ok="addChildPage(title)"]').eq(0);
+      var scope = element.scope();
+
+      addButton.trigger('click');
+      scope.$digest();
+      addButton.isolateScope().modalOnOk();
+      createSuperFeatureDeferred.reject();
+      scope.$digest();
+
+      expect(element.find('.super-feature-relations-list-error').html())
+        .to.have.string('An error occurred attempting to add a child page!');
+      expect(Raven.captureMessage.calledOnce).to.equal(true);
+    });
+
     it('should allow setting all child publish dates', function () {
       updateAllRelationPublishDatesDeferred.resolve();
       var element = digest(html);
       var updateButton = element.find('button[ng-click="updateChildPublishDates()"]');
-      var scope = element.scope();
 
       updateButton.trigger('click');
 
@@ -164,7 +196,7 @@ describe('Directive: superFeatureRelations', function () {
       element.scope().$digest();
 
       expect(element.find('.super-feature-relations-list-error').html())
-        .to.have.string('An error occurred!');
+        .to.have.string('An error occurred attempting to update child publish dates!');
       expect(Raven.captureMessage.calledOnce).to.equal(true);
     });
 
@@ -207,6 +239,24 @@ describe('Directive: superFeatureRelations', function () {
       saveButton.trigger('click');
 
       expect(SuperFeaturesApi.updateSuperFeature.calledOnce).to.equal(true);
+    });
+
+    it('should show an error message if update fails', function () {
+      var relations = [{
+        id: 2,
+        title: 'Some Garbage Title'
+      }];
+      getSuperFeatureRelationsDeferred.resolve({ results: relations });
+      var element = digest(html);
+      var saveButton = element.find('button[ng-click="saveChildPage(relation)"]');
+
+      saveButton.trigger('click');
+      updateSuperFeatureDeferred.reject();
+      element.scope().$digest();
+
+      expect(element.find('.super-feature-relations-list-error').html())
+        .to.have.string('An error occurred attempting to update "' + relations[0].title + '"!');
+      expect(Raven.captureMessage.calledOnce).to.equal(true);
     });
 
     it('should prevent multiple updates at the same time for same child', function () {
@@ -267,6 +317,27 @@ describe('Directive: superFeatureRelations', function () {
       scope.$digest();
 
       expect(deleteButton.attr('disabled')).to.equal('disabled');
+    });
+
+    it('should show an error message if delete fails', function () {
+      var relation = {
+        id: 2,
+        title: 'Guide to Ratz'
+      };
+      getSuperFeatureRelationsDeferred.resolve({ results: [relation] });
+      var element = digest(html);
+      var deleteButton = element.find('button[modal-on-ok="deleteChildPage(relation)"]');
+      var scope = element.scope();
+
+      deleteButton.trigger('click');
+      scope.$digest();
+      deleteButton.isolateScope().modalOnOk();
+      deleteSuperFeatureDeferred.reject();
+      scope.$digest();
+
+      expect(element.find('.super-feature-relations-list-error').html())
+        .to.have.string('An error occurred attempting to delete "' + relation.title + '"!');
+      expect(Raven.captureMessage.calledOnce).to.equal(true);
     });
 
     it('should prevent a delete from occurring if an update is happening on same child', function () {

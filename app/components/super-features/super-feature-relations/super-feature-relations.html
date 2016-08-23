@@ -1,41 +1,43 @@
 <div class="super-feature-relations-list-header">
   <h4>Child Pages</h4>
 
-  <button
-      class="btn btn-success btn-sm"
-      ng-click="updateChildPublishDates()"
-      ng-disabled="
-        relations.length < 1 ||
-        !article.published ||
-        isAtLeastOneRelationFormDirty()">
-    <i class="fa fa-clock-o"></i>
-    <span>Use Parent Publish Date</span>
-  </button>
-  <button
-      title-modal-opener
-      modal-body-before="Enter a headline, you'll be able to change this later:"
-      modal-title="Add Child Page"
-      modal-ok-text="Create Child Page"
-      modal-on-ok="addChildPage(title)"
-      ng-if="relations.length > 0"
-      ng-disabled="addChildPageDisabled"
-      class="btn btn-primary btn-sm accordion-list-add-top">
-    <i class="fa fa-plus"></i>
-    <span>Add New Page</span>
-  </button>
-</div>
+  <div>
+    <button
+        class="btn btn-success btn-sm"
+        ng-click="updateChildPublishDates()"
+        ng-disabled="
+          relations.length < 1 ||
+          !article.published ||
+          isAtLeastOneRelationFormDirty()">
+      <i class="fa fa-clock-o"></i>
+      <span>Use Parent Publish Date</span>
+    </button>
+    <button
+        title-modal-opener
+        modal-body-before="Enter a headline, you'll be able to change this later:"
+        modal-title="Add Child Page"
+        modal-ok-text="Create Child Page"
+        modal-on-ok="addChildPage(title)"
+        ng-if="relations.length > 0"
+        ng-disabled="addChildPageDisabled"
+        class="btn btn-primary btn-sm accordion-list-add-top">
+      <i class="fa fa-plus"></i>
+      <span>Add New Page</span>
+    </button>
+  </div>
 
-<div
-    ng-if="errorMessage"
-    class="super-feature-relations-list-error">
-  <i class="fa fa-exclamation-circle"></i>
-  <span>{{ errorMessage }}</span>
-</div>
+  <div
+      ng-if="errorMessage"
+      class="super-feature-relations-list-error">
+    <i class="fa fa-exclamation-circle"></i>
+    <span>{{ errorMessage }}</span>
+  </div>
 
-<div
-    ng-if="relations.length < 1"
-    class="super-feature-relations-list-no-items">
-  No child pages yet!
+  <div
+      ng-if="relations.length < 1"
+      class="super-feature-relations-list-no-items">
+    No child pages yet!
+  </div>
 </div>
 
 <ol

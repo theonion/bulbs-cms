@@ -74,7 +74,6 @@ angular.module('bulbs.cms.superFeatures.relations', [
             };
 
             $scope.addChildPage = function (title) {
-
               if (!$scope.addChildPageDisabled) {
                 $scope.addChildPageDisabled = true;
 
@@ -86,6 +85,10 @@ angular.module('bulbs.cms.superFeatures.relations', [
                   .then(function (child) {
                     $scope.relations.push(child);
                     $scope.redoOrdering();
+                  })
+                  .catch(function (response) {
+                    var message = 'An error occurred attempting to add a child page!';
+                    $scope.reportError(message, { response: response });
                   })
                   .finally(function () {
                     $scope.addChildPageDisabled = false;
@@ -112,12 +115,8 @@ angular.module('bulbs.cms.superFeatures.relations', [
                 SuperFeaturesApi
                   .updateAllRelationPublishDates($scope.article.id)
                   .catch(function (response) {
-                    Raven.captureMessage(
-                      'Error attempting to update all relation publish dates', {
-                        response: response
-                      }
-                    );
-                    $scope.errorMessage = 'An error occurred!';
+                    var message = 'An error occurred attempting to update child publish dates!';
+                    $scope.reportError(message, { response: response });
                   })
                   .finally(function () {
                     $scope.runningChildPublishDateUpdate = false;
@@ -136,6 +135,11 @@ angular.module('bulbs.cms.superFeatures.relations', [
                 relationCopy.order = relation.order - 1;
 
                 SuperFeaturesApi.updateSuperFeature(relationCopy)
+                  .catch(function (response) {
+                    var titleDisplay = relation.title ? '"' + relation.title + '"' : 'a relation';
+                    var message = 'An error occurred attempting to update ' + titleDisplay + '!';
+                    $scope.reportError(message, { response: response });
+                  })
                   .finally(function () {
                     $scope.ongoingChildTransactions[relation.id] = false;
                     $scope.getRelationForm(relation).$setPristine();
@@ -154,6 +158,11 @@ angular.module('bulbs.cms.superFeatures.relations', [
                   .then(function () {
                     $scope.removeItem($scope.relations.indexOf(relation));
                   })
+                  .catch(function (response) {
+                    var titleDisplay = relation.title ? '"' + relation.title + '"' : 'a relation';
+                    var message = 'An error occurred attempting to delete ' + titleDisplay + '!';
+                    $scope.reportError(message, { response: response });
+                  })
                   .finally(function () {
                     $scope.ongoingChildTransactions[relation.id] = false;
                   });
@@ -165,6 +174,21 @@ angular.module('bulbs.cms.superFeatures.relations', [
           article: '='
         },
         link: function (scope, element, attrs) {
+          scope.reportError = function (message, data) {
+            Raven.captureMessage(message, data);
+            scope.errorMessage = message;
+          };
+
+          scope.clearError = function () {
+            scope.errorMessage = '';
+          };
+
+          scope.$watch('relations', function (newRelations, oldRelations) {
+            if (!angular.equals(newRelations, oldRelations)) {
+              scope.clearError();
+            }
+          }, true);
+
           scope.statuses = StatusFilterOptions.getStatuses()
             .filter(function (status) {
               // remove default status
@@ -177,6 +201,10 @@ angular.module('bulbs.cms.superFeatures.relations', [
                 return relation1.order - relation2.order;
               });
               scope.redoOrdering();
+            })
+            .catch(function (response) {
+              var message = 'An error occurred retrieving relations!';
+              scope.reportError(message, { response: response });
             });
         },
         templateUrl: CmsConfig.buildComponentPath(
