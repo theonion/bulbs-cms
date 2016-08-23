@@ -112,6 +112,15 @@ angular.module('bulbs.cms.superFeatures.api', [
               return parsePayload(response.data);
             });
         },
+        updateSuperFeatureRelationsOrdering: function (id, relations) {
+          var remappedRelations = relations.map(function (relation) {
+            return _.pick(relation, 'id', 'order');
+          });
+          return $http.put(
+            superFeatureEndpoint(Utils.path.join(id, 'relations', 'ordering')),
+            remappedRelations
+          );
+        },
         updateAllRelationPublishDates: function (id) {
           return $http.put(superFeatureEndpoint(Utils.path.join(id, 'set-children-dates')));
         }

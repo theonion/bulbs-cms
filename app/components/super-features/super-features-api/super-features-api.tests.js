@@ -135,9 +135,9 @@ describe('Service: SuperFeaturesApi', function () {
     });
   });
 
-  context('retrieving a list of super feature relations', function () {
+  context('super feature relations', function () {
 
-    it('should provide a list of child pages', function () {
+    it('should provide a method to get a list of relations', function () {
       var parentId = 1;
       var relations = [{
         id: 1,
@@ -159,7 +159,7 @@ describe('Service: SuperFeaturesApi', function () {
       expect(apiRelations).to.eql(relations);
     });
 
-    it('should return publish date as a moment object', function () {
+    it('should return list with publish dates as a moment objects', function () {
       var parentId = 1;
       var relations = [{
         id: 1,
@@ -180,11 +180,43 @@ describe('Service: SuperFeaturesApi', function () {
 
       expect(moment.isMoment(apiRelations[0].published)).to.equal(true);
     });
-  });
 
-  context('setting child publish dates', function () {
+    it('should provide a way to update ordering', function () {
+      var parentId = 1;
+      var relations = [{
+        id: 1,
+        title: 'abc',
+        order: 3
+      }, {
+        id: 2,
+        title: 'abc',
+        order: 2
+      }, {
+        id: 3,
+        title: 'abc',
+        order: 1
+      }];
+      var requestCallback = sandbox.stub().returns([200, relations]);
+      var responseCallback = sandbox.stub();
+      var url = CmsConfig.buildApiUrlRoot('super-feature', parentId, 'relations', 'ordering');
+      $httpBackend.expect('PUT', url).respond(requestCallback);
 
-    it('should provide a method', function () {
+      SuperFeaturesApi.updateSuperFeatureRelationsOrdering(parentId, relations)
+        .then(responseCallback);
+      $httpBackend.flush();
+
+      expect(JSON.parse(requestCallback.args[0][2])).to.eql(
+        relations.map(function (relation) {
+          return {
+            id: relation.id,
+            order: relation.order
+          };
+        })
+      );
+      expect(responseCallback.called).to.equal(true);
+    });
+
+    it('should provide a method to update all relation publish dates', function () {
       var parentId = 1;
       var callback = sandbox.stub();
       $httpBackend.expectPUT(
