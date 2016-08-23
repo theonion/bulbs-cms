@@ -133,6 +133,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
 
                 var relationCopy = angular.copy(relation);
                 relationCopy.ordering = relation.ordering - 1;
+                relationCopy.parent = $scope.article.id;
 
                 SuperFeaturesApi.updateSuperFeature(relationCopy)
                   .catch(function (response) {

@@ -241,6 +241,19 @@ describe('Directive: superFeatureRelations', function () {
       expect(SuperFeaturesApi.updateSuperFeature.calledOnce).to.equal(true);
     });
 
+    it('should include parent id when updating', function () {
+      $parentScope.article = { id: 1 };
+      var relations = [{ id: 2 }];
+      getSuperFeatureRelationsDeferred.resolve({ results: relations });
+      var element = digest(html);
+      var saveButton = element.find('button[ng-click="saveRelation(relation)"]');
+
+      saveButton.trigger('click');
+
+      expect(SuperFeaturesApi.updateSuperFeature.args[0][0].parent)
+        .to.equal($parentScope.article.id);
+    });
+
     it('should show an error message if update fails', function () {
       var relations = [{
         id: 2,
