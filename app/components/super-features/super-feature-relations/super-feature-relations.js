@@ -49,7 +49,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
 
             $scope.redoOrdering = function () {
               $scope.relations.forEach(function (relation, i) {
-                relation.order = i + 1;
+                relation.ordering = i + 1;
               });
             };
 
@@ -132,7 +132,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
                 $scope.ongoingRelationTransactions[relation.id] = true;
 
                 var relationCopy = angular.copy(relation);
-                relationCopy.order = relation.order - 1;
+                relationCopy.ordering = relation.ordering - 1;
 
                 SuperFeaturesApi.updateSuperFeature(relationCopy)
                   .catch(function (response) {
@@ -198,7 +198,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
           SuperFeaturesApi.getSuperFeatureRelations(scope.article.id)
             .then(function (response) {
               scope.relations = response.results.sort(function (relation1, relation2) {
-                return relation1.order - relation2.order;
+                return relation1.ordering - relation2.ordering;
               });
               scope.redoOrdering();
             })

@@ -97,15 +97,15 @@
         <form
             ng-submit="
               $event.preventDefault();
-              moveItem($index, relation.order - 1);
+              moveItem($index, relation.ordering - 1);
               getOrderingForm(relation).$setPristine();
             "
             name="{{ makeOrderingFormName(relation) }}"
             class="accordion-list-item-meta-tools-order">
           <input
-              name="order"
+              name="ordering"
               type="number"
-              ng-model="relation.order">
+              ng-model="relation.ordering">
           <button ng-disabled="getOrderingForm(relation).$pristine">
             <i class="fa fa-check"></i>
           </button>

@@ -101,7 +101,7 @@ describe('Directive: superFeatureRelations', function () {
       var addButton = element.find('button[modal-on-ok="addRelation(title)"]').eq(0);
       var relation = {
         id: 1,
-        order: 0
+        ordering: 0
       };
       var scope = element.scope();
 
@@ -274,7 +274,7 @@ describe('Directive: superFeatureRelations', function () {
     it('should 0-index ordering before updating', function () {
       var relation = {
         id: 2,
-        order: 1
+        ordering: 1
       };
       getSuperFeatureRelationsDeferred.resolve({ results: [relation] });
       var element = digest(html);
@@ -283,8 +283,8 @@ describe('Directive: superFeatureRelations', function () {
       saveButton.trigger('click');
       updateSuperFeatureDeferred.resolve({ results: relation });
 
-      expect(SuperFeaturesApi.updateSuperFeature.args[0][0].order).to.equal(0);
-      expect(relation.order).to.equal(1);
+      expect(SuperFeaturesApi.updateSuperFeature.args[0][0].ordering).to.equal(0);
+      expect(relation.ordering).to.equal(1);
     });
 
     it('should allow deleting', function () {
@@ -441,9 +441,9 @@ describe('Directive: superFeatureRelations', function () {
       getSuperFeatureRelationsDeferred.resolve({ results: [relation1, relation2] });
     });
 
-    it('should be based on order property of relations', function () {
-      relation1.order = 1;
-      relation2.order = 0;
+    it('should be based on ordering property of relations', function () {
+      relation1.ordering = 1;
+      relation2.ordering = 0;
 
       var element = digest(html);
 
@@ -453,8 +453,8 @@ describe('Directive: superFeatureRelations', function () {
     });
 
     it('should allow moving a relation up via an up button', function () {
-      relation1.order = 0;
-      relation2.order = 1;
+      relation1.ordering = 0;
+      relation2.ordering = 1;
       var element = digest(html);
       var up = element.find('button[ng-click="moveItem($index, $index - 1)"]').eq(1);
 
@@ -466,8 +466,8 @@ describe('Directive: superFeatureRelations', function () {
     });
 
     it('should disable the up ordering button if first item in list', function () {
-      relation1.order = 0;
-      relation2.order = 1;
+      relation1.ordering = 0;
+      relation2.ordering = 1;
 
       var element = digest(html);
       var up = element.find('button[ng-click="moveItem($index, $index - 1)"]').eq(0);
@@ -476,8 +476,8 @@ describe('Directive: superFeatureRelations', function () {
     });
 
     it('should allow moving a relation down via a down button', function () {
-      relation1.order = 0;
-      relation2.order = 1;
+      relation1.ordering = 0;
+      relation2.ordering = 1;
       var element = digest(html);
       var down = element.find('button[ng-click="moveItem($index, $index + 1)"]').eq(0);
 
@@ -489,8 +489,8 @@ describe('Directive: superFeatureRelations', function () {
     });
 
     it('should disable the down ordering button if last item in list', function () {
-      relation1.order = 0;
-      relation2.order = 1;
+      relation1.ordering = 0;
+      relation2.ordering = 1;
 
       var element = digest(html);
       var down = element.find('button[ng-click="moveItem($index, $index + 1)"]').eq(1);
@@ -499,11 +499,11 @@ describe('Directive: superFeatureRelations', function () {
     });
 
     it('should allow ordering via number input', function () {
-      relation1.order = 0;
-      relation2.order = 1;
+      relation1.ordering = 0;
+      relation2.ordering = 1;
       var element = digest(html);
       var orderingForm = element.find('form[name="orderingInputForm_' + relation1.id + '"]');
-      var ordering = orderingForm.find('input[name="order"]');
+      var ordering = orderingForm.find('input[name="ordering"]');
 
       ordering.val(2).trigger('change');
       orderingForm.trigger('submit');
@@ -514,10 +514,10 @@ describe('Directive: superFeatureRelations', function () {
     });
 
     it('should allow ordering via number input submission', function () {
-      relation1.order = 0;
-      relation2.order = 1;
+      relation1.ordering = 0;
+      relation2.ordering = 1;
       var element = digest(html);
-      var ordering = element.find('input[name="order"]').eq(1);
+      var ordering = element.find('input[name="ordering"]').eq(1);
 
       ordering.val(1).trigger('change');
       ordering.siblings('button').trigger('click');
