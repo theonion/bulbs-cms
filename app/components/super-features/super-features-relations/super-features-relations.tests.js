@@ -155,6 +155,7 @@ describe('Directive: superFeaturesRelations', function () {
 
     it('should disable publish date set button if parent has no publish date', function () {
       $parentScope.article = { id: 1 };
+      getSuperFeatureRelationsDeferred.resolve({ results: [{ id: 2 }] });
       var element = digest(html);
 
       var updateButton = element.find('button[ng-click="updateRelationsPublishDates()"]');
@@ -177,17 +178,17 @@ describe('Directive: superFeaturesRelations', function () {
       expect(updateButton.attr('disabled')).to.equal('disabled');
     });
 
-    it('should disable publish date set button if there are no relations', function () {
+    it('should hide publish date set button if there are no relations', function () {
       $parentScope.article = {
         id: 1,
         published: '2020-06-20T12:00:00Z'
       };
       getSuperFeatureRelationsDeferred.resolve({ results: [] });
+
       var element = digest(html);
 
-      var updateButton = element.find('button[ng-click="updateRelationsPublishDates()"]');
-
-      expect(updateButton.attr('disabled')).to.equal('disabled');
+      expect(element.find('button[ng-click="updateRelationsPublishDates()"]').length)
+        .to.equal(0);
     });
 
     it('should show an error message if relation publish date update fails', function () {
@@ -195,7 +196,7 @@ describe('Directive: superFeaturesRelations', function () {
         id: 1,
         published: '2020-06-20T12:00:00Z'
       };
-      getSuperFeatureRelationsDeferred.resolve({ results: [] });
+      getSuperFeatureRelationsDeferred.resolve({ results: [{ id: 2 }] });
       var element = digest(html);
       var updateButton = element.find('button[ng-click="updateRelationsPublishDates()"]');
 
@@ -213,7 +214,7 @@ describe('Directive: superFeaturesRelations', function () {
         id: 1,
         published: '2020-06-20T12:00:00Z'
       };
-      getSuperFeatureRelationsDeferred.resolve({ results: [] });
+      getSuperFeatureRelationsDeferred.resolve({ results: [{ id: 2 }] });
       var element = digest(html);
       var updateButton = element.find('button[ng-click="updateRelationsPublishDates()"]');
 
