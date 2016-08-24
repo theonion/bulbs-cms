@@ -9,12 +9,13 @@ angular.module('bulbs.cms.superFeatures.relations', [
   'bulbs.cms.titleModal',
   'bulbs.cms.utils',
   'confirmationModal',
+  'moment',
   'Raven',
   'statusFilter.config'
 ])
   .directive('superFeatureRelations', [
-    'CmsConfig', 'Raven', 'SuperFeaturesApi', 'StatusFilterOptions',
-    function (CmsConfig, Raven, SuperFeaturesApi, StatusFilterOptions) {
+    'CmsConfig', 'moment', 'Raven', 'SuperFeaturesApi', 'StatusFilterOptions',
+    function (CmsConfig, moment, Raven, SuperFeaturesApi, StatusFilterOptions) {
       return {
         controller: [
           '_', '$scope', 'Utils',
@@ -114,6 +115,14 @@ angular.module('bulbs.cms.superFeatures.relations', [
 
                 SuperFeaturesApi
                   .updateAllRelationPublishDates($scope.article.id)
+                  .then(function (response) {
+                    $scope.relations.forEach(function (relation) {
+                      relation.published = moment.tz(
+                        $scope.article.published,
+                        CmsConfig.getTimezoneName()
+                      );
+                    });
+                  })
                   .catch(function (response) {
                     var message = 'An error occurred attempting to update child publish dates!';
                     $scope.reportError(message, { response: response });

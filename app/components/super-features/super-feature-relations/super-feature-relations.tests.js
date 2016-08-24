@@ -133,6 +133,12 @@ describe('Directive: superFeatureRelations', function () {
     });
 
     it('should allow setting all relation publish dates', function () {
+      $parentScope.article = {
+        id: 1,
+        published: '2020-06-20T12:00:00Z'
+      };
+      var relations = [{ id: 2 }, { id: 3 }];
+      getSuperFeatureRelationsDeferred.resolve({ results: relations });
       updateAllRelationPublishDatesDeferred.resolve();
       var element = digest(html);
       var updateButton = element.find('button[ng-click="updateRelationsPublishDates()"]');
@@ -141,7 +147,9 @@ describe('Directive: superFeatureRelations', function () {
 
       expect(SuperFeaturesApi.updateAllRelationPublishDates.calledOnce)
         .to.equal(true);
-      expect(SuperFeaturesApi.getSuperFeatureRelations.calledOnce)
+      expect(relations[0].published.isSame($parentScope.article.published))
+        .to.equal(true);
+      expect(relations[1].published.isSame($parentScope.article.published))
         .to.equal(true);
     });
 
