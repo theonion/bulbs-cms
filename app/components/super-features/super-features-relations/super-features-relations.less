@@ -3,21 +3,21 @@
 @import 'mixins/_mixin-betty-container';
 @import 'mixins/_mixin-input-container';
 
-super-feature-relations {
+super-features-relations {
   .mixin-accordion-list();
 
   display: block;
   margin-bottom: @interface-row-margin;
 
-  .super-feature-relations-list-no-items {
+  .super-features-relations-list-no-items {
     .alert-info();
   }
 
-  .super-feature-relations-list-error {
+  .super-features-relations-list-error {
     .alert-error();
   }
 
-  .super-feature-relations-list-header {
+  .super-features-relations-list-header {
     margin: @interface-internal-spacing;
   }
 
@@ -25,25 +25,25 @@ super-feature-relations {
     padding: 10px;
   }
 
-  .super-feature-relations-list-item-published {
+  .super-features-relations-list-item-published {
     color: @interface-color-error-3;
     font-weight: bold;
   }
 
-  .super-feature-relations-list-item-status {
+  .super-features-relations-list-item-status {
     font-size: @interface-font-size-2;
 
-    .super-feature-relations-list-item-status-label {
+    .super-features-relations-list-item-status-label {
       font-weight: bold;
       text-transform: uppercase;
     }
   }
 
-  .super-feature-relations-list-item-image {
+  .super-features-relations-list-item-image {
     .mixin-betty-container(190px, 190px);
   }
 
-  .super-feature-relations-input-container {
+  .super-features-relations-input-container {
     .mixin-input-container();
 
     label {

@@ -13,7 +13,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
   'Raven',
   'statusFilter.config'
 ])
-  .directive('superFeatureRelations', [
+  .directive('superFeaturesRelations', [
     'CmsConfig', 'moment', 'Raven', 'SuperFeaturesApi', 'StatusFilterOptions',
     function (CmsConfig, moment, Raven, SuperFeaturesApi, StatusFilterOptions) {
       return {
@@ -219,8 +219,8 @@ angular.module('bulbs.cms.superFeatures.relations', [
         },
         templateUrl: CmsConfig.buildComponentPath(
           'super-features',
-          'super-feature-relations',
-          'super-feature-relations.html'
+          'super-features-relations',
+          'super-features-relations.html'
         )
       };
     }

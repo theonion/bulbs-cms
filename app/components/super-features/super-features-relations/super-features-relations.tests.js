@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Directive: superFeatureRelations', function () {
+describe('Directive: superFeaturesRelations', function () {
   var $;
   var $parentScope;
   var createSuperFeatureDeferred;
@@ -22,7 +22,7 @@ describe('Directive: superFeatureRelations', function () {
     module('jsTemplates');
 
     html = angular.element(
-      '<super-feature-relations article="article"></super-feature-relations>'
+      '<super-features-relations article="article"></super-features-relations>'
     );
 
     inject(function (_$_, _Raven_, _SuperFeaturesApi_, $q, $compile, $rootScope) {
@@ -87,7 +87,7 @@ describe('Directive: superFeatureRelations', function () {
 
       var element = digest(html);
 
-      expect(element.find('.super-feature-relations-list-error').html())
+      expect(element.find('.super-features-relations-list-error').html())
         .to.have.string('An error occurred retrieving relations!');
       expect(Raven.captureMessage.calledOnce).to.equal(true);
     });
@@ -127,7 +127,7 @@ describe('Directive: superFeatureRelations', function () {
       createSuperFeatureDeferred.reject();
       scope.$digest();
 
-      expect(element.find('.super-feature-relations-list-error').html())
+      expect(element.find('.super-features-relations-list-error').html())
         .to.have.string('An error occurred attempting to add a child page!');
       expect(Raven.captureMessage.calledOnce).to.equal(true);
     });
@@ -203,7 +203,7 @@ describe('Directive: superFeatureRelations', function () {
       updateAllRelationPublishDatesDeferred.reject();
       element.scope().$digest();
 
-      expect(element.find('.super-feature-relations-list-error').html())
+      expect(element.find('.super-features-relations-list-error').html())
         .to.have.string('An error occurred attempting to update child publish dates!');
       expect(Raven.captureMessage.calledOnce).to.equal(true);
     });
@@ -275,7 +275,7 @@ describe('Directive: superFeatureRelations', function () {
       updateSuperFeatureDeferred.reject();
       element.scope().$digest();
 
-      expect(element.find('.super-feature-relations-list-error').html())
+      expect(element.find('.super-features-relations-list-error').html())
         .to.have.string('An error occurred attempting to update "' + relations[0].title + '"!');
       expect(Raven.captureMessage.calledOnce).to.equal(true);
     });
@@ -356,7 +356,7 @@ describe('Directive: superFeatureRelations', function () {
       deleteSuperFeatureDeferred.reject();
       scope.$digest();
 
-      expect(element.find('.super-feature-relations-list-error').html())
+      expect(element.find('.super-features-relations-list-error').html())
         .to.have.string('An error occurred attempting to delete "' + relation.title + '"!');
       expect(Raven.captureMessage.calledOnce).to.equal(true);
     });
