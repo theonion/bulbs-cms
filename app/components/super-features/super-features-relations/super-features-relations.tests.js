@@ -13,6 +13,7 @@ describe('Directive: superFeaturesRelations', function () {
   var SuperFeaturesApi;
   var updateAllRelationPublishDatesDeferred;
   var updateSuperFeatureDeferred;
+  var updateSuperFeatureRelationsOrderingDeferred;
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
@@ -59,6 +60,10 @@ describe('Directive: superFeaturesRelations', function () {
       updateAllRelationPublishDatesDeferred = $q.defer();
       sandbox.stub(SuperFeaturesApi, 'updateAllRelationPublishDates')
         .returns(updateAllRelationPublishDatesDeferred.promise);
+
+      updateSuperFeatureRelationsOrderingDeferred = $q.defer();
+      sandbox.stub(SuperFeaturesApi, 'updateSuperFeatureRelationsOrdering')
+        .returns(updateSuperFeatureRelationsOrderingDeferred.promise);
     });
   });
 
@@ -460,93 +465,117 @@ describe('Directive: superFeaturesRelations', function () {
     var relation2 = { id: 420 };
 
     beforeEach(function () {
-      getSuperFeatureRelationsDeferred.resolve({ results: [relation1, relation2] });
+      relation1.ordering = 0;
+      relation2.ordering = 1;
+      getSuperFeatureRelationsDeferred.resolve({ results: [relation2, relation1] });
     });
 
     it('should be based on ordering property of relations', function () {
-      relation1.ordering = 1;
-      relation2.ordering = 0;
 
       var element = digest(html);
 
       var items = element.find('li');
-      expect(items.eq(0).scope().relation).to.equal(relation2);
-      expect(items.eq(1).scope().relation).to.equal(relation1);
+      expect(items.eq(0).scope().relation).to.equal(relation1);
+      expect(items.eq(1).scope().relation).to.equal(relation2);
     });
 
-    it('should allow moving a relation up via an up button', function () {
-      relation1.ordering = 0;
-      relation2.ordering = 1;
-      var element = digest(html);
-      var up = element.find('button[ng-click="moveItem($index, $index - 1)"]').eq(1);
+    context('up button', function () {
+      var element;
+      var ups;
 
-      up.trigger('click');
+      beforeEach(function () {
+        element = digest(html);
+        ups = element.find('button[ng-click="moveItem($index, $index - 1)"]');
+      });
 
-      var items = element.find('li');
-      expect(items.eq(0).scope().relation).to.equal(relation2);
-      expect(items.eq(1).scope().relation).to.equal(relation1);
+      it('should allow moving a relation up', function () {
+
+        ups.eq(1).trigger('click');
+
+        var items = element.find('li');
+        expect(items.eq(0).scope().relation).to.equal(relation2);
+        expect(items.eq(1).scope().relation).to.equal(relation1);
+      });
+
+      it('should be disabled for first item in list', function () {
+
+        expect(ups.eq(0).attr('disabled')).to.equal('disabled');
+      });
+      // 
+      // it('should be disabled while an ordering request is in progress', function () {
+      //
+      //   // TODO : add test code here
+      //   throw new Error('Not implemented yet.');
+      // });
     });
 
-    it('should disable the up ordering button if first item in list', function () {
-      relation1.ordering = 0;
-      relation2.ordering = 1;
+    context('down button', function () {
+      var element;
+      var downs;
 
-      var element = digest(html);
-      var up = element.find('button[ng-click="moveItem($index, $index - 1)"]').eq(0);
+      beforeEach(function () {
+        element = digest(html);
+        downs = element.find('button[ng-click="moveItem($index, $index + 1)"]');
+      });
 
-      expect(up.attr('disabled')).to.equal('disabled');
+      it('should allow moving a relation down', function () {
+
+        downs.eq(0).trigger('click');
+
+        var items = element.find('li');
+        expect(items.eq(0).scope().relation).to.equal(relation2);
+        expect(items.eq(1).scope().relation).to.equal(relation1);
+      });
+
+      it('should disable the down button if last item in list', function () {
+
+        expect(downs.eq(1).attr('disabled')).to.equal('disabled');
+      });
+      //
+      // it('should be disabled while an ordering request is in progress', function () {
+      //
+      //   // TODO : add test code here
+      //   throw new Error('Not implemented yet.');
+      // });
     });
 
-    it('should allow moving a relation down via a down button', function () {
-      relation1.ordering = 0;
-      relation2.ordering = 1;
-      var element = digest(html);
-      var down = element.find('button[ng-click="moveItem($index, $index + 1)"]').eq(0);
+    context('by input', function () {
+      var element;
+      var orderings;
+      var orderingForm;
 
-      down.trigger('click');
+      beforeEach(function () {
+        element = digest(html);
+        orderingForm = element.find('form[name="orderingInputForm_' + relation1.id + '"]');
+        orderings = orderingForm.find('input[name="ordering"]');
+      });
 
-      var items = element.find('li');
-      expect(items.eq(0).scope().relation).to.equal(relation2);
-      expect(items.eq(1).scope().relation).to.equal(relation1);
-    });
+      it('should allow ordering', function () {
 
-    it('should disable the down ordering button if last item in list', function () {
-      relation1.ordering = 0;
-      relation2.ordering = 1;
+        orderings.eq(0).val(2).trigger('change');
+        orderingForm.trigger('submit');
 
-      var element = digest(html);
-      var down = element.find('button[ng-click="moveItem($index, $index + 1)"]').eq(1);
+        var items = element.find('li');
+        expect(items.eq(0).scope().relation).to.equal(relation2);
+        expect(items.eq(1).scope().relation).to.equal(relation1);
+      });
 
-      expect(down.attr('disabled')).to.equal('disabled');
-    });
+      it('should allow ordering when submit button is clicked', function () {
 
-    it('should allow ordering via number input', function () {
-      relation1.ordering = 0;
-      relation2.ordering = 1;
-      var element = digest(html);
-      var orderingForm = element.find('form[name="orderingInputForm_' + relation1.id + '"]');
-      var ordering = orderingForm.find('input[name="ordering"]');
+        var ordering = orderings.eq(0);
+        ordering.val(2).trigger('change');
+        ordering.siblings('button').trigger('click');
 
-      ordering.val(2).trigger('change');
-      orderingForm.trigger('submit');
-
-      var items = element.find('li');
-      expect(items.eq(0).scope().relation).to.equal(relation2);
-      expect(items.eq(1).scope().relation).to.equal(relation1);
-    });
-
-    it('should allow ordering via number input submission', function () {
-      relation1.ordering = 0;
-      relation2.ordering = 1;
-      var element = digest(html);
-      var ordering = element.find('input[name="ordering"]').eq(1);
-
-      ordering.val(1).trigger('change');
-      ordering.siblings('button').trigger('click');
-
-      var items = element.find('li');
-      expect(items.eq(0).scope().relation).to.equal(relation2);
-      expect(items.eq(1).scope().relation).to.equal(relation1);
+        var items = element.find('li');
+        expect(items.eq(0).scope().relation).to.equal(relation2);
+        expect(items.eq(1).scope().relation).to.equal(relation1);
+      });
+      //
+      // it('should be disabled while an ordering request is in progress', function () {
+      //
+      //   // TODO : add test code here
+      //   throw new Error('Not implemented yet.');
+      // });
     });
   });
 });
