@@ -87,14 +87,30 @@ describe('Directive: superFeatureBreadcrumb', function () {
   });
 
   it('should allow dynamic titles', function () {
+    var label = 'Label 1';
+    $parentScope.links = [{
+      label: function () {
+        return label;
+      },
+      href: '/my/path/to/somewhere'
+    }];
 
-    // TODO : add test code here
-    throw new Error('Not implemented yet.');
+    var element = digest('<breadcrumb links-list="links"></breadcrumb>');
+
+    expect(element.find('a').eq(0).html()).to.have.string(label);
   });
 
   it('should allow dynamic hrefs', function () {
+    var href = '/some/path';
+    $parentScope.links = [{
+      label: 'hello',
+      href: function () {
+        return href;
+      }
+    }];
 
-    // TODO : add test code here
-    throw new Error('Not implemented yet.');
+    var element = digest('<breadcrumb links-list="links"></breadcrumb>');
+
+    expect(element.find('a').eq(0).attr('href')).to.have.string(href);
   });
 });
