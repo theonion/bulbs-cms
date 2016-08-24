@@ -379,7 +379,7 @@ describe('Directive: superFeaturesRelations', function () {
       deleteButton.isolateScope().modalOnOk();
       saveButton.trigger('click');
 
-      expect(SuperFeaturesApi.deleteSuperFeature.called).to.equal(true);
+      expect(SuperFeaturesApi.deleteSuperFeature.calledOnce).to.equal(true);
       expect(SuperFeaturesApi.updateSuperFeature.called).to.equal(false);
     });
 
@@ -393,7 +393,7 @@ describe('Directive: superFeaturesRelations', function () {
       saveButton.trigger('click');
 
       expect(deleteButton.attr('disabled')).to.equal('disabled');
-      expect(SuperFeaturesApi.updateSuperFeature.called).to.equal(true);
+      expect(SuperFeaturesApi.updateSuperFeature.calledOnce).to.equal(true);
     });
 
     it('should prevent publish date set button if another relation transaction is occuring', function () {
@@ -501,7 +501,7 @@ describe('Directive: superFeaturesRelations', function () {
 
         expect(ups.eq(0).attr('disabled')).to.equal('disabled');
       });
-      // 
+
       // it('should be disabled while an ordering request is in progress', function () {
       //
       //   // TODO : add test code here
@@ -531,7 +531,7 @@ describe('Directive: superFeaturesRelations', function () {
 
         expect(downs.eq(1).attr('disabled')).to.equal('disabled');
       });
-      //
+
       // it('should be disabled while an ordering request is in progress', function () {
       //
       //   // TODO : add test code here
@@ -570,7 +570,7 @@ describe('Directive: superFeaturesRelations', function () {
         expect(items.eq(0).scope().relation).to.equal(relation2);
         expect(items.eq(1).scope().relation).to.equal(relation1);
       });
-      //
+
       // it('should be disabled while an ordering request is in progress', function () {
       //
       //   // TODO : add test code here
