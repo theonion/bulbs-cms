@@ -25,7 +25,7 @@ angular.module('bulbs.cms.superFeatures.edit', [
             if (angular.isNumber(article.parent)) {
               SuperFeaturesApi.getSuperFeature(article.parent)
                 .then(function (superFeature) {
-                  scope.breadcrumbs.splice(-1, 0, {
+                  scope.breadcrumbs.splice(1, 0, {
                     label: superFeature.title,
                     href: '/cms/app/edit/' + superFeature.id + '/' + CmsConfig.getSuperFeaturesType()
                   });
