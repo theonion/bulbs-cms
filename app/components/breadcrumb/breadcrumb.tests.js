@@ -85,4 +85,16 @@ describe('Directive: superFeatureBreadcrumb', function () {
     expect(element.find('.breadcrumb-link-hrefless').html())
       .to.have.string($parentScope.links[1].label);
   });
+
+  it('should allow dynamic titles', function () {
+
+    // TODO : add test code here
+    throw new Error('Not implemented yet.');
+  });
+
+  it('should allow dynamic hrefs', function () {
+
+    // TODO : add test code here
+    throw new Error('Not implemented yet.');
+  });
 });

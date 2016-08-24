@@ -12,7 +12,9 @@ angular.module('bulbs.cms.breadcrumb', [
           linksList: '='
         },
         link: function (scope, element, attrs) {
-
+          scope.renderValue = function (value) {
+            return angular.isFunction(value) ? value() : value;
+          };
         },
         templateUrl: CmsConfig.buildComponentPath(
           'breadcrumb',

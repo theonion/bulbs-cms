@@ -7,12 +7,12 @@
   <span
       ng-if="!link.href"
       class="breadcrumb-link-hrefless">
-    {{ link.label }}
+    {{ renderValue(link.label) }}
   </span>
   <a
       ng-if="link.href"
-      href="{{ link.href }}">
-    {{ link.label }}
+      href="{{ renderValue(link.href) }}">
+    {{ renderValue(link.label) }}
   </a>
   <i
       ng-if="!$last"

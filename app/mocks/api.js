@@ -28,9 +28,9 @@ angular.module('bulbsCmsApp.mockApi', [
       return [403, {'detail': 'No permission'}];
     });
 
-    var detailRegex = /^\/cms\/api\/v1\/content\/(\d+)\/?$/;
+    var detailRegex = /^\/cms\/api\/v1\/(content|super-feature)\/(\d+)\/?$/;
     function getContentId(url) {
-      var index = detailRegex.exec(url)[1];
+      var index = detailRegex.exec(url)[2];
       return index;
     }
 
@@ -122,7 +122,7 @@ angular.module('bulbsCmsApp.mockApi', [
 
     $httpBackend.whenGET(superFeatureRegex).respond({
       results: mockApiData['content.list'].results.filter(function (content) {
-        return content.polymorphic_ctype === 'core_super_feature_type';
+        return content.polymorphic_ctype === 'core_super_feature_type' && !angular.isNumber(content.parent);
       })
     });
     $httpBackend.whenGET(superFeatureRelationsRegex)

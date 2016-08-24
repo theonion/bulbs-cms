@@ -1,15 +1,1 @@
-
-<dynamic-content-form
-    ng-if="!articleIsNew"
-    schema-src="/cms/api/v1/content/{{ article.id }}/"
-    ng-model="article.info_data"
-    on-validity-change="contentEditGlobals.canSave = isValid">
-</dynamic-content-form>
-
-<div
-    ng-if="articleIsNew"
-    class="well well-sm">
-  Please save article to see dynamic content tools!
-</div>
-
-<super-feature-relations article="article"></super-feature-relations>
+<super-features-edit></super-features-edit>
