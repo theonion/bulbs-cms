@@ -123,6 +123,9 @@ angular.module('listPage', [
         // do initial retrieval
         $scope.$retrieve();
       },
+      link: function (scope, element, attrs) {
+        scope.showAddButton = !('disableAddButton' in attrs);
+      },
       restrict: 'E',
       scope: {
         cmsEditPageUrl: '&',

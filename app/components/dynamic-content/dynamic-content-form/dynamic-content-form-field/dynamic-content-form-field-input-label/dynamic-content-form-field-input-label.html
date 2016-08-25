@@ -1,8 +1,10 @@
-<label ng-attr-for="{{ inputId }}">
+<label
+    ng-attr-for="{{ inputId }}"
+    class="input-container-label">
   <span>{{ schema.label || name }}</span>
   <span
       ng-if="!isEmpty(form[name].$error)"
-      class="dynamic-content-form-field-input-label-has-error">
+      class="input-container-label-has-error">
     *
   </span>
 </label>

@@ -157,7 +157,7 @@ describe('Directive: dynamicContentFormFieldList', function () {
     expect($parentScope.ngModel.test[2].title).to.equal(item1.title);
   });
 
-  it('should disable the up ordering button if first itme in list', function () {
+  it('should disable the up ordering button if first item in list', function () {
     var item1 = { title: 'one' };
     var item2 = { title: 'two' };
     var html = angular.element(
@@ -284,7 +284,7 @@ describe('Directive: dynamicContentFormFieldList', function () {
     $parentScope.$digest();
 
     expect(
-      element.find('.dynamic-content-form-field-list-item-meta-label-error').length
+      element.find('.accordion-list-item-meta-label-error').length
     ).to.equal(1);
   });
 
@@ -321,7 +321,7 @@ describe('Directive: dynamicContentFormFieldList', function () {
     $parentScope.$digest();
 
     expect(
-      element.find('.dynamic-content-form-field-list-item-meta-label-error').length
+      element.find('.accordion-list-item-meta-label-error').length
     ).to.equal(0);
   });
 });

@@ -6,9 +6,10 @@ angular.module('bulbs.cms.superFeatures.tab', [
   'bulbs.cms.utils',
   'jquery',
   'ui.sortable',
-  'superFeatures.item.directive'
+  'superFeatures.item.directive',
+  'bulbs.cms.superFeatures.api'
 ])
-  .directive('superFeaturesTab', function ($, CmsConfig) {
+  .directive('superFeaturesTab', function ($, SuperFeaturesApi, CmsConfig) {
     return {
       controller: function (_, $scope, Utils, Video) {
 
@@ -28,16 +29,19 @@ angular.module('bulbs.cms.superFeatures.tab', [
         };
 
         $scope.addSuperFeature = function (super_feature) {
-          // TODO: uh
-          // $scope.addVideoCallback({video: video});
+          $scope.superfeatures.push(super_feature);
           $scope.onUpdate();
         };
 
         $scope.searchSuperFeature = function (query) {
-          // return Video.$postSearch({
-          //   query: query,
-          //   channel: VIDEOHUB_DEFAULT_CHANNEL
-          // });
+          return SuperFeaturesApi.getSuperFeatures({search:query}).then(
+            function(data) {
+              console.log(data);
+              debugger;
+          }, function(error) {
+              console.log(error);
+              debugger;
+          });
         };
 
       },
@@ -62,7 +66,7 @@ angular.module('bulbs.cms.superFeatures.tab', [
       restrict: 'E',
       scope: {
         addSuperFeatureCallback: '&addSuperFeature',
-        superfeatures: '=',
+        superFeatures: '=',
         onUpdate: '&'
       },
       templateUrl: CmsConfig.buildComponentPath(

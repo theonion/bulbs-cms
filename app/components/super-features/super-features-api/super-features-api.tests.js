@@ -9,14 +9,25 @@ describe('Service: SuperFeaturesApi', function () {
   var moment;
   var sandbox;
   var SuperFeaturesApi;
+<<<<<<< HEAD
+=======
+  var superFeatureType;
+>>>>>>> master
 
   beforeEach(function () {
     module(
       'bulbs.cms.superFeatures.api',
       function (CmsConfigProvider) {
         endpoint = '/api/root/';
+<<<<<<< HEAD
 
         CmsConfigProvider.setApiUrlRoot(endpoint);
+=======
+        superFeatureType = 'my_super_feature_type';
+
+        CmsConfigProvider.setApiUrlRoot(endpoint);
+        CmsConfigProvider.setSuperFeaturesType(superFeatureType);
+>>>>>>> master
       }
     );
 
@@ -132,6 +143,105 @@ describe('Service: SuperFeaturesApi', function () {
     });
   });
 
+<<<<<<< HEAD
+=======
+  context('super feature relations', function () {
+
+    it('should provide a method to get a list of relations', function () {
+      var parentId = 1;
+      var relations = [{
+        id: 1,
+        title: 'The First Relation',
+        status: 'Draft'
+      }];
+      var url = CmsConfig.buildApiUrlRoot('super-feature', parentId, 'relations');
+      $httpBackend.expect('GET', url).respond(function () {
+        return [200, relations];
+      });
+
+      var apiRelations;
+      SuperFeaturesApi.getSuperFeatureRelations(parentId)
+        .then(function (response) {
+          apiRelations = response.results;
+        });
+      $httpBackend.flush();
+
+      expect(apiRelations).to.eql(relations);
+    });
+
+    it('should return list with publish dates as a moment objects', function () {
+      var parentId = 1;
+      var relations = [{
+        id: 1,
+        title: 'The First Relation',
+        published: '2016-04-20T16:20:00Z'
+      }];
+      var url = CmsConfig.buildApiUrlRoot('super-feature', parentId, 'relations');
+      $httpBackend.expect('GET', url).respond(function () {
+        return [200, relations];
+      });
+
+      var apiRelations;
+      SuperFeaturesApi.getSuperFeatureRelations(parentId)
+        .then(function (response) {
+          apiRelations = response.results;
+        });
+      $httpBackend.flush();
+
+      expect(moment.isMoment(apiRelations[0].published)).to.equal(true);
+    });
+
+    it('should provide a way to update ordering', function () {
+      var parentId = 1;
+      var relations = [{
+        id: 1,
+        title: 'abc',
+        ordering: 3
+      }, {
+        id: 2,
+        title: 'abc',
+        ordering: 2
+      }, {
+        id: 3,
+        title: 'abc',
+        ordering: 1
+      }];
+      var requestCallback = sandbox.stub().returns([200, relations]);
+      var responseCallback = sandbox.stub();
+      var url = CmsConfig.buildApiUrlRoot('super-feature', parentId, 'relations', 'ordering');
+      $httpBackend.expect('PUT', url).respond(requestCallback);
+
+      SuperFeaturesApi.updateSuperFeatureRelationsOrdering(parentId, relations)
+        .then(responseCallback);
+      $httpBackend.flush();
+
+      expect(JSON.parse(requestCallback.args[0][2])).to.eql(
+        relations.map(function (relation) {
+          return {
+            id: relation.id,
+            ordering: relation.ordering
+          };
+        })
+      );
+      expect(responseCallback.called).to.equal(true);
+    });
+
+    it('should provide a method to update all relation publish dates', function () {
+      var parentId = 1;
+      var callback = sandbox.stub();
+      $httpBackend.expectPUT(
+        CmsConfig.buildApiUrlRoot('super-feature', parentId, 'set-children-dates')
+      )
+      .respond(200);
+
+      SuperFeaturesApi.updateAllRelationPublishDates(parentId).then(callback);
+      $httpBackend.flush();
+
+      expect(callback.calledOnce).to.equal(true);
+    });
+  });
+
+>>>>>>> master
   context('creating a super feature', function () {
 
     it('should create a new super feature', function () {
@@ -140,7 +250,13 @@ describe('Service: SuperFeaturesApi', function () {
       };
       var callback = sandbox.stub();
       $httpBackend
+<<<<<<< HEAD
         .expectPOST(CmsConfig.buildApiUrlRoot('super-feature') + '/')
+=======
+        .expectPOST(
+          CmsConfig.buildApiUrlRoot('content') + '/?doctype=' + superFeatureType
+        )
+>>>>>>> master
         .respond(200, data);
 
       SuperFeaturesApi.createSuperFeature(data).then(callback);
@@ -158,13 +274,24 @@ describe('Service: SuperFeaturesApi', function () {
         title: 'my updated super feature'
       };
       var callback = sandbox.stub();
+<<<<<<< HEAD
       $httpBackend
         .expectPUT(CmsConfig.buildApiUrlRoot('super-feature', data.id))
         .respond(200, data);
+=======
+      var server = sandbox.stub().returns([200, data]);
+      $httpBackend
+        .expectPUT(CmsConfig.buildApiUrlRoot('content', data.id))
+        .respond(server);
+>>>>>>> master
 
       SuperFeaturesApi.updateSuperFeature(data).then(callback);
       $httpBackend.flush();
 
+<<<<<<< HEAD
+=======
+      expect(JSON.parse(server.args[0][2])).to.eql(data);
+>>>>>>> master
       expect(callback.args[0][0]).to.eql(data);
     });
   });
@@ -178,7 +305,11 @@ describe('Service: SuperFeaturesApi', function () {
       };
       var callback = sandbox.stub();
       $httpBackend
+<<<<<<< HEAD
         .expectDELETE(CmsConfig.buildApiUrlRoot('super-feature', data.id))
+=======
+        .expectDELETE(CmsConfig.buildApiUrlRoot('content', data.id))
+>>>>>>> master
         .respond(200, data);
 
       SuperFeaturesApi.deleteSuperFeature(data).then(callback);

@@ -1,0 +1,73 @@
+<breadcrumb links-list="breadcrumbs"></breadcrumb>
+
+<section>
+  <div class="metadata container-fluid">
+    <div class="row">
+      <featuretype-field
+          class="col-md-7"
+          article="article">
+      </featuretype-field>
+    </div>
+    <div class="row">
+      <evergreen-field
+          class="col-md-3"
+          article="article">
+      </evergreen-field>
+    </div>
+    <div class="row">
+      <campaign-autocomplete
+          class="col-md-3"
+          ng-model="article.tunic_campaign_id"
+          campaign-autocomplete-label="Sponsor Campaign">
+      </campaign-autocomplete>
+    </div>
+    <div class="row">
+      <tags-field article="article"></tags-field>
+    </div>
+  </div>
+</section>
+
+<section class="main-image row">
+  <div class="clearfix well">
+    <betty-editable
+        image="article.image"
+        ratio="16x9"
+        placeholder-text="Optional Main Image"
+        add-styles="fa fa-picture-o add-feature-image">
+    </betty-editable>
+  </div>
+</section>
+
+<section>
+  <onion-editor
+      id="content-title"
+      ng-model="article.title"
+      role="singleline"
+      placeholder="Headline">
+  </onion-editor>
+  <onion-editor
+      id="content-subhead"
+      ng-model="article.subhead"
+      role="singleline"
+      placeholder="Subhead (optional)">
+  </onion-editor></section>
+</section>
+
+<dynamic-content-form
+    ng-if="!articleIsNew"
+    schema-src="/cms/api/v1/content/{{ article.id }}/"
+    ng-model="article"
+    on-validity-change="contentEditGlobals.canSave = isValid"
+    include-only="['data']">
+</dynamic-content-form>
+
+<div
+    ng-if="articleIsNew"
+    class="well well-sm">
+  Please save article to see dynamic content tools!
+</div>
+
+<super-features-relations
+    ng-if="!article.parent"
+    article="article">
+</super-features-relations>

@@ -1,0 +1,36 @@
+<div id="titleModal">
+  <div class="modal-header">
+    <button
+        type="button"
+        class="close"
+        ng-click="$dismiss()">
+      <i class="fa fa-times"></i>
+    </button>
+    <h4 class="modal-title">{{ modalTitle || 'Enter a Title' }}</h4>
+  </div>
+  <div class="modal-body">
+    {{ modalBodyBefore }}
+
+    <onion-editor
+        ng-model="newTitle"
+        role="singleline"
+        formatting="italic,bold">
+    </onion-editor>
+
+    {{ modalBodyAfter }}
+  </div>
+  <div class="modal-footer">
+    <button
+        class="btn btn-success"
+        ng-click="$close({ title: newTitle })">
+      <i class="fa fa-check"></i>
+      <span>{{ modalOkText || 'Set Title' }}</span>
+    </button>
+    <button
+        class="btn btn-danger"
+        ng-click="$dismiss()">
+      <i class="fa fa-times"></i>
+      <span>{{ modalCancelText || 'Cancel' }}</span>
+    </button>
+  </div>
+</div>

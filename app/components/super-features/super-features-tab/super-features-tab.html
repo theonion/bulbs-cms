@@ -1,8 +1,8 @@
-<div class="super-feature-list-title">
+<div class="super-feature-tab-title">
   <span class="bold">Current List</span>
   <span>
     Items in List:
-    <span class="bold">{{ superfeatures.length }}</span>
+    <span class="bold">{{ superFeatures.length }}</span>
   </span>
 </div>
 
@@ -15,11 +15,11 @@
 </autocomplete-basic>
 
 <ul
-    class="super-feature-list-super-features"
-    ng-if="super_features.length > 0"
+    class="super-feature-tab-super-features"
+    ng-if="superFeatures.length > 0"
     ui-sortable="sortableOptions"
-    ng-model="superfeatures">
-  <li ng-repeat="superfeature in superfeatures">
+    ng-model="superFeatures">
+  <li ng-repeat="superFeature in superFeatures">
     <div class="wrapper-tools">
       <button
           class="btn btn-danger rm-btn"

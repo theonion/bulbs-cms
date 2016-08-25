@@ -1,0 +1,84 @@
+<div id="sendToEditorModal">
+  <div class="modal-header">
+    <button
+        type="button"
+        class="close"
+        ng-click="$dismiss()">
+      <i class="fa fa-times"></i>
+    </button>
+    <h4 class="modal-title">Send to Editor</h4>
+  </div>
+  <div class="modal-body">
+
+    <div
+        ng-if="errorMessage"
+        class="error-message-container">
+      <i class="fa fa-exclamation-circle"></i>
+      <span>{{ errorMessage }}</span>
+      <button
+          ng-click="clearError()"
+          class="btn btn-xs btn-link">
+        <i class="fa fa-times"></i>
+      </button>
+    </div>
+
+    <form name="sendData">
+      <div class="input-container">
+        <label
+            for="sendToEditorModalStatus"
+            ng-class="{
+              'input-container-label-has-error': sendData.status.$error.length > 0
+            }">
+          <span>Article Status</span>
+          <span class="input-container-label-has-error">*</span>
+        </label>
+        <div class="input-container-select">
+          <select
+              id="sendToEditorModalStatus"
+              name="status"
+              ng-model="status"
+              ng-change="clearError()"
+              ng-options="option.value as option.label for option in statuses"
+              ng-class="{
+                'input-container-input-has-error': sendData.status.$error.length > 0
+              }"
+              required>
+            <option value="">- Article Status -</option>
+          </select>
+        </div>
+        <div
+            ng-if="sendData.$dirty && sendData.status.$error.required"
+            class="input-container-error">
+          <i class="fa fa-exclamation-circle"></i>
+          <span>Please select an Article Status!</span>
+        </div>
+      </div>
+
+      <div class="input-container">
+        <label for="sendToEditorModalNote">Note for Editor</label>
+        <textarea
+            id="sendToEditorModalNote"
+            name="note"
+            ng-model="note"
+            ng-change="clearError()">
+        </textarea>
+      </div>
+    </form>
+
+  </div>
+  <div class="modal-footer">
+    <button
+        class="btn btn-success"
+        ng-disabled="sendData.$pristine || sendData.$invalid"
+        ng-click="sendToEditor(status, note)">
+      <i class="fa fa-paper-plane"></i>
+      <span>Send</span>
+    </button>
+    <button
+        class="btn btn-danger"
+        ng-click="$dismiss()">
+      <i class="fa fa-times"></i>
+      <span>Cancel</span>
+    </button>
+  </div>
+</div>
