@@ -1,82 +1,12 @@
-@import "../../../_dynamic-content-common";
+@import '_colors';
+@import 'mixins/_mixin-accordion-list';
 
 dynamic-content-form-field-list {
+  .mixin-accordion-list();
 
   > ol {
-    list-style: none;
 
     > li {
-      background: @interface-color-gray-3;
-      border-radius: @interface-border-radius;
-      border: solid 1px @interface-color-gray-2;
-      margin-bottom: 20px;
-
-      .dynamic-content-form-field-list-item-meta {
-        padding: 10px;
-
-        &:after {
-          content: " ";
-          clear: both;
-          display: block;
-        }
-
-        .dynamic-content-form-field-list-item-meta-label {
-          background-color: transparent;
-          border: none;
-          color: @interface-color-black;
-          float: left;
-          font-size: @interface-font-size-2;
-          font-weight: bold;
-          margin: 5px;
-          text-transform: uppercase;
-
-          .dynamic-content-form-field-list-item-meta-label-error {
-            color: @interface-color-error;
-          }
-        }
-
-        .dynamic-content-form-field-list-item-meta-tools {
-          float: right;
-
-          form.dynamic-content-form-field-list-item-meta-tools-order {
-            @tooling-height: 25px;
-
-            display: inline-block;
-
-            button {
-              background-color: @interface-color-success;
-              border: none;
-              color: @interface-color-white;
-              height: @tooling-height;
-              margin-left: -4px;
-              width: @tooling-height;
-
-              &[disabled] {
-                background-color: @interface-color-gray-4;
-              }
-            }
-
-            input {
-              border: 1px solid @interface-color-gray-4;
-              height: @tooling-height;
-              text-align: center;
-              width: 50px;
-            }
-          }
-
-          .dynamic-content-form-field-list-item-meta-tools-order-dir {
-            color: @interface-color-water;
-            background-color: transparent;
-            border: none;
-            height: 25px;
-            width: 15px;
-
-            &[disabled] {
-              color: @interface-color-gray-4;
-            }
-          }
-        }
-      }
 
       dynamic-content-form-field-object {
         background-color: @interface-color-white;
@@ -87,11 +17,5 @@ dynamic-content-form-field-list {
         border-radius: 0;
       }
     }
-  }
-
-  .dynamic-content-form-field-list-add {
-    display: block;
-    margin: auto;
-    text-align: center;
   }
 }

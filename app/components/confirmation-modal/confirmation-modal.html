@@ -3,7 +3,7 @@
       type="button"
       class="close"
       ng-click="cancel()">
-    &times;
+    <i class="fa fa-times"></i>
   </button>
   <h4 class="modal-title">{{ modalTitle || 'Confirm' }}</h4>
 </div>
@@ -14,13 +14,13 @@
   <button
       class="btn btn-success"
       ng-click="confirm()">
-    <i class="glyphicon glyphicon-ok"></i>
+    <i class="fa fa-check"></i>
     {{ modalOkText || 'Done' }}
   </button>
   <button
       class="btn btn-danger"
       ng-click="cancel()">
-    <i class="glyphicon glyphicon-remove"></i>
+    <i class="fa fa-times"></i>
     {{ modalCancelText || 'Cancel' }}
   </button>
 </div>

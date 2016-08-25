@@ -70,6 +70,52 @@ describe('CmsConfig', function () {
         });
       });
 
+      context('article editoral statuses', function () {
+
+        it('should provide a method to add a new status and a getter for statuses', function () {
+          var label1 = 'my label';
+          var value1 = 'my value';
+          var label2 = 'my label';
+          var value2 = 'my value';
+
+          configs.addArticleEditoralStatus(label1, value1);
+          configs.addArticleEditoralStatus(label2, value2);
+
+          expect(sealedConfigs().getArticleEditoralStatuses()).to.eql([{
+            label: label1,
+            value: value1
+          }, {
+            label: label2,
+            value: value2
+          }]);
+        });
+
+        it('should throw an error if label given to adder is not a string', function () {
+
+          expect(function () {
+            configs.addArticleEditoralStatus(1, 'hello');
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): article editoral status label must be a string!'
+          );
+        });
+
+        it('should throw an error if value given to adder is not a string', function () {
+
+          expect(function () {
+            configs.addArticleEditoralStatus('hello', 1);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): article editoral status value must be a string!'
+          );
+        });
+
+        it('should return config object from adder', function () {
+
+          expect(configs.addArticleEditoralStatus('one', 'two')).to.eql(configs);
+        });
+      });
+
       context('auto add author', function () {
 
         it('should provide a setter and getter', function () {

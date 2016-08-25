@@ -1,0 +1,214 @@
+<div class="super-features-relations-list-header">
+  <h4>Child Pages</h4>
+
+  <div ng-if="relations.length > 0">
+    <button
+        class="btn btn-success btn-sm"
+        ng-click="updateRelationsPublishDates()"
+        ng-disabled="
+          !article.published ||
+          isAtLeastOneRelationFormDirty()">
+      <i class="fa fa-clock-o"></i>
+      <span>Use Parent Publish Date</span>
+    </button>
+    <button
+        title-modal-opener
+        modal-body-before="Enter a headline, you'll be able to change this later:"
+        modal-title="Add Child Page"
+        modal-ok-text="Create Child Page"
+        modal-on-ok="addRelation(title)"
+        ng-disabled="transactionsLocked()"
+        class="btn btn-primary btn-sm accordion-list-add-top">
+      <i class="fa fa-plus"></i>
+      <span>Add New Page</span>
+    </button>
+  </div>
+
+  <div
+      ng-if="errorMessage"
+      class="super-features-relations-list-error">
+    <i class="fa fa-exclamation-circle"></i>
+    <span>{{ errorMessage }}</span>
+    <button
+        ng-click="clearError()"
+        class="btn btn-xs btn-link">
+      <i class="fa fa-times"></i>
+    </button>
+  </div>
+
+  <div
+      ng-if="relations.length < 1"
+      class="super-features-relations-list-no-items">
+    No child pages yet!
+  </div>
+</div>
+
+<ol
+    ng-if="relations.length > 0"
+    ng-form="$parent.wrapperForm">
+  <li
+      ng-init="panelClosed = false"
+      ng-repeat="relation in relations track by relation.id">
+
+    <div class="accordion-list-item-meta">
+      <button
+          ng-click="panelClosed = !panelClosed"
+          class="accordion-list-item-meta-label">
+        <i
+            ng-class="{
+              'fa-caret-right': panelClosed,
+              'fa-caret-down': !panelClosed
+            }"
+            class="fa">
+        </i>
+        <span>{{ relation.title }}</span>
+      </button>
+
+      <div class="accordion-list-item-meta-tools">
+        <span class="super-features-relations-list-item-status">
+          <span
+              ng-if="relation.published && !relation.published.isSame(article.published)"
+              class="super-features-relations-list-item-published">
+            <i class="fa fa-clock-o"></i>
+            <span>{{ relation.published | dateTimeFormat }}</span>
+          </span>
+
+          <span ng-if="!relation.published">
+            <span class="super-features-relations-list-item-status-label">Status:</span>
+            <span>{{ relation.status }}</span>
+          </span>
+        </span>
+
+        <button
+            ng-click="saveRelation(relation)"
+            ng-disabled="
+              transactionsLocked() ||
+              getRelationForm(relation).$pristine"
+            class="btn btn-success btn-xs">
+          <i class="fa fa-floppy-o"></i>
+          <span>SAVE</span>
+        </button>
+
+        <a
+            href="/cms/app/edit/{{ relation.id }}"
+            class="btn btn-info btn-xs">
+          <i class="fa fa-pencil"></i>
+          <span>EDIT</span>
+        </a>
+
+        <form
+            ng-submit="
+              $event.preventDefault();
+              moveRelation($index, relation.ordering - 1);
+              getOrderingForm(relation).$setPristine();
+            "
+            name="{{ makeOrderingFormName(relation) }}"
+            class="accordion-list-item-meta-tools-order">
+          <input
+              name="ordering"
+              type="number"
+              ng-model="relation.ordering"
+              ng-disabled="transactionsLocked() || relations.length < 2">
+          <button
+              ng-disabled="
+                transactionsLocked() ||
+                getOrderingForm(relation).$pristine ||
+                relations.length < 2
+              ">
+            <i class="fa fa-check"></i>
+          </button>
+        </form>
+        <button
+            class="accordion-list-item-meta-tools-order-dir"
+            ng-disabled="
+              transactionsLocked() ||
+              $index === 0
+            "
+            ng-click="moveRelation($index, $index - 1)">
+          <i class="fa fa-chevron-up"></i>
+        </button>
+        <button
+            class="accordion-list-item-meta-tools-order-dir"
+            ng-disabled="
+              transactionsLocked() ||
+              $index === relations.length - 1
+            "
+            ng-click="moveRelation($index, $index + 1)">
+          <i class="fa fa-chevron-down"></i>
+        </button>
+      </div>
+    </div>
+
+    <div
+        ng-hide="panelClosed"
+        class="accordion-list-item-content">
+
+      <form name="{{ makeRelationFormName(relation) }}">
+
+        <div class="super-features-relations-input-container">
+          <button
+              send-to-editor-modal-opener
+              modal-article="article"
+              class="btn btn-sm btn-info">
+            <i class="fa fa-paper-plane"></i>
+            <span>Send To Editors...</span>
+          </button>
+        </div>
+
+        <div class="super-features-relations-input-container">
+          <label
+              for="relationTitle-{{ relation.id }}"
+              class="input-container-label">
+            Headline
+          </label>
+          <input
+              id="relationTitle-{{ relation.id }}"
+              name="relation-{{ relation.id }}-title"
+              ng-model="relation.title"
+              class="input-container-input">
+        </div>
+
+        <div class="super-features-relations-input-container">
+          <label class="input-container-label">Image</label>
+          <div class="super-features-relations-list-item-image">
+            <betty-editable
+                image="relation.image"
+                ratio="16x9"
+                add-styles="fa fa-picture-o"
+                on-change="getRelationForm(relation).$setDirty()">
+            </betty-editable>
+          </div>
+        </div>
+      </form>
+
+      <div class="accordion-list-item-meta">
+
+        <div class="accordion-list-item-meta-tools">
+          <button
+              ng-disabled="transactionsLocked()"
+              confirmation-modal-opener
+              modal-body="Are you sure you want to delete this child page '{{ relation.title }}'?"
+              modal-title="Delete Child Page"
+              modal-ok-text="Delete"
+              modal-on-ok="deleteRelation(relation)"
+              class="btn btn-danger btn-sm">
+            <i class="fa fa-trash-o"></i>
+            <span>DELETE</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </li>
+</ol>
+
+<button
+    title-modal-opener
+    modal-body-before="Enter a headline, you'll be able to change this later:"
+    modal-title="Add Child Page"
+    modal-ok-text="Create Child Page"
+    modal-on-ok="addRelation(title)"
+    ng-disabled="transactionsLocked()"
+    class="btn btn-primary btn-sm accordion-list-add-bottom">
+  <i class="fa fa-plus"></i>
+  <span>Add New Page</span>
+</button>

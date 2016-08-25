@@ -1,6 +1,5 @@
 angular.module('bulbsCmsApp.mockApi.data', [])
   .value('mockApiData', {
-    // NOTE: double-quotes are used because JSON
     'content.create': {
       'title': 'A Test Article'
     },
@@ -425,26 +424,19 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         }],
         info_data: {
           data: {
-            entries: [{
-              title: '',
-              body: ''
-            }, {
-              title: 'TWO',
-              body: ''
-            }, {
-              title: 'Three',
-              body: ''
-            }]
+            entries: []
           }
         }
       }, {
         id: 13,
-        title: 'My Favorite Super Feature',
-        slug: 'my-favorite-super-feature',
+        title: 'Guide to My Favorite Animals',
+        slug: 'my-favorite-animals',
         polymorphic_ctype: 'core_super_feature_type',
+        superfeature_type: 'GUIDE_TO_ANIMALZ_PARENT',
+        default_child_type: 'GUIDE_TO_ANIMALZ_ENTRY',
         published: '2016-04-20T16:20:00Z',
-        children_count: 0,
-        info_data: {
+        children_count: 3,
+        data: {
           title: 'garbage'
         }
       }, {
@@ -452,14 +444,49 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         title: 'Another Super Duper Feature',
         slug: 'another-super-duper-feature',
         polymorphic_ctype: 'core_super_feature_type',
-        children_count: 10
+        children_count: 10,
+        data: {}
       }, {
         id: 15,
         title: 'Scheduled Super Feature',
         slug: 'scheduled-super-feature',
         polymorphic_ctype: 'core_super_feature_type',
         published: moment().add(1, 'day').format(),
-        children_count: 4
+        children_count: 4,
+        data: {}
+      }, {
+        id: 100,
+        title: 'Guide to Catz',
+        status: 'Published',
+        polymorphic_ctype: 'core_super_feature_type',
+        superfeature_type: 'GUIDE_TO_ANIMALZ_ENTRY',
+        order: 1,
+        parent: 13,
+        published: '2016-04-20T16:20:00Z',
+        data: {},
+        image: {
+          id: 1
+        }
+      }, {
+        id: 110,
+        title: 'Guide to Batz',
+        status: 'Published',
+        polymorphic_ctype: 'core_super_feature_type',
+        superfeature_type: 'GUIDE_TO_ANIMALZ_ENTRY',
+        order: 2,
+        parent: 13,
+        published: '2016-04-21T16:20:00Z',
+        data: {}
+      }, {
+        id: 120,
+        title: 'Guide to Ratz',
+        status: 'Draft',
+        polymorphic_ctype: 'core_super_feature_type',
+        superfeature_type: 'GUIDE_TO_ANIMALZ_ENTRY',
+        order: 3,
+        parent: 13,
+        published: null,
+        data: {}
       }]
     },
     'dynamicContent.schemas': {
@@ -467,6 +494,9 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         fields: {
           data: {
             fields: {
+              test_field: {
+                type: 'integer'
+              },
               entries: {
                 type: 'array',
                 label: 'Entries',
@@ -494,12 +524,21 @@ angular.module('bulbsCmsApp.mockApi.data', [])
       },
       13: {
         fields: {
-          title: {
-            label: 'Title',
-            type: 'richtext'
+          data: {
+            fields: {
+              title: {
+                label: 'Title',
+                type: 'richtext'
+              }
+            }
           }
         }
-      }
+      },
+      14: { fields: {} },
+      15: { fields: {} },
+      100: { fields: {} },
+      110: { fields: {} },
+      120: { fields: {} }
     },
     'things.list': [
       {'url': '/search?tags=so-you-think-you-can-dance', 'param': 'tags', 'type': 'tag', 'name': 'So You Think You Can Dance', 'value': 'so-you-think-you-can-dance'},

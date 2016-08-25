@@ -1,0 +1,32 @@
+@import '_colors';
+@import 'mixins/_mixin-input-container';
+@import 'mixins/_mixin-alerts';
+
+#sendToEditorModal {
+
+  .error-message-container {
+    .alert-error();
+  }
+
+  .input-container {
+    .mixin-input-container();
+
+    label {
+      .mixin-input-label();
+    }
+
+    .input-container-select {
+      .mixin-input-select-container();
+    }
+
+    textarea {
+      .mixin-input();
+
+      height: 200px;
+    }
+
+    .input-container-error {
+      .mixin-input-error();
+    }
+  }
+}

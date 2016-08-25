@@ -1,0 +1,23 @@
+/*
+  Mixin for direct wrapping container of a betty-edtiable.
+ */
+
+.mixin-betty-container(@height: 154px, @width: 275px) {
+  height: @height;
+  width: @width;
+
+  betty-editable {
+    display: block;
+    height: inherit;
+    width: inherit;
+
+    .betty-editable-add-image {
+      background-color: @interface-color-gray-4;
+      border: 2px dashed @interface-color-gray-1;
+      color: @interface-color-gray-1;
+      height: inherit;
+      font-size: 25px;
+      width: inherit;
+    }
+  }
+}
