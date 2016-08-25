@@ -101,22 +101,27 @@ describe('Directive: superFeaturesRelations', function () {
   context('relation interactions', function () {
 
     it('should allow adding a new one', function () {
+      $parentScope.article.default_child_type = 'test_child_type';
       getSuperFeatureRelationsDeferred.resolve({ results: [] });
       var element = digest(html);
       var addButton = element.find('button[modal-on-ok="addRelation(title)"]').eq(0);
-      var relation = {
-        id: 1,
-        ordering: 0
-      };
+      var relation = { id: 1 };
       var scope = element.scope();
+      var title = 'test title';
 
       addButton.trigger('click');
       scope.$digest();
-      addButton.isolateScope().modalOnOk();
+      addButton.isolateScope().modalOnOk({ title: title });
       createSuperFeatureDeferred.resolve(relation);
       scope.$digest();
 
       expect(SuperFeaturesApi.createSuperFeature.calledOnce).to.equal(true);
+      expect(SuperFeaturesApi.createSuperFeature.args[0][0]).to.eql({
+        parent: $parentScope.article.id,
+        superfeature_type: $parentScope.article.default_child_type,
+        title: title,
+        ordering: 1
+      });
       expect(element.find('li').scope().relation).to.equal(relation);
     });
 
@@ -168,7 +173,7 @@ describe('Directive: superFeaturesRelations', function () {
       expect(updateButton.attr('disabled')).to.equal('disabled');
     });
 
-    it('should disable publish date set button if some relation is not saved', function () {
+     it('should disable publish date set button if some relation is not saved', function () {
       $parentScope.article = {
         id: 1,
         published: '2020-06-20T12:00:00Z'
@@ -268,6 +273,22 @@ describe('Directive: superFeaturesRelations', function () {
         .to.equal($parentScope.article.id);
     });
 
+    it('should not include ordering propery when updating', function () {
+      $parentScope.article = { id: 1 };
+      var relations = [{
+        id: 2,
+        ordering: 1
+      }];
+      getSuperFeatureRelationsDeferred.resolve({ results: relations });
+      var element = digest(html);
+      var saveButton = element.find('button[ng-click="saveRelation(relation)"]');
+
+      saveButton.trigger('click');
+
+      expect(SuperFeaturesApi.updateSuperFeature.args[0][0].ordering)
+        .to.equal(undefined);
+    });
+
     it('should show an error message if update fails', function () {
       var relations = [{
         id: 2,
@@ -296,22 +317,6 @@ describe('Directive: superFeaturesRelations', function () {
       saveButton.trigger('click');
 
       expect(SuperFeaturesApi.updateSuperFeature.calledOnce).to.equal(true);
-    });
-
-    it('should 0-index ordering before updating', function () {
-      var relation = {
-        id: 2,
-        ordering: 1
-      };
-      getSuperFeatureRelationsDeferred.resolve({ results: [relation] });
-      var element = digest(html);
-      var saveButton = element.find('button[ng-click="saveRelation(relation)"]');
-
-      saveButton.trigger('click');
-      updateSuperFeatureDeferred.resolve({ results: relation });
-
-      expect(SuperFeaturesApi.updateSuperFeature.args[0][0].ordering).to.equal(0);
-      expect(relation.ordering).to.equal(1);
     });
 
     it('should allow deleting', function () {
@@ -467,16 +472,7 @@ describe('Directive: superFeaturesRelations', function () {
     beforeEach(function () {
       relation1.ordering = 0;
       relation2.ordering = 1;
-      getSuperFeatureRelationsDeferred.resolve({ results: [relation2, relation1] });
-    });
-
-    it('should be based on ordering property of relations', function () {
-
-      var element = digest(html);
-
-      var items = element.find('li');
-      expect(items.eq(0).scope().relation).to.equal(relation1);
-      expect(items.eq(1).scope().relation).to.equal(relation2);
+      getSuperFeatureRelationsDeferred.resolve({ results: [relation1, relation2] });
     });
 
     context('up button', function () {
@@ -485,12 +481,14 @@ describe('Directive: superFeaturesRelations', function () {
 
       beforeEach(function () {
         element = digest(html);
-        ups = element.find('button[ng-click="moveItem($index, $index - 1)"]');
+        ups = element.find('button[ng-click="moveRelation($index, $index - 1)"]');
       });
 
       it('should allow moving a relation up', function () {
 
         ups.eq(1).trigger('click');
+        updateSuperFeatureRelationsOrderingDeferred.resolve();
+        element.scope().$digest();
 
         var items = element.find('li');
         expect(items.eq(0).scope().relation).to.equal(relation2);
@@ -502,11 +500,13 @@ describe('Directive: superFeaturesRelations', function () {
         expect(ups.eq(0).attr('disabled')).to.equal('disabled');
       });
 
-      // it('should be disabled while an ordering request is in progress', function () {
-      //
-      //   // TODO : add test code here
-      //   throw new Error('Not implemented yet.');
-      // });
+      it('should be disabled while an ordering request is in progress', function () {
+        var up = ups.eq(1);
+
+        up.trigger('click');
+
+        expect(up.attr('disabled')).to.equal('disabled');
+      });
     });
 
     context('down button', function () {
@@ -515,12 +515,14 @@ describe('Directive: superFeaturesRelations', function () {
 
       beforeEach(function () {
         element = digest(html);
-        downs = element.find('button[ng-click="moveItem($index, $index + 1)"]');
+        downs = element.find('button[ng-click="moveRelation($index, $index + 1)"]');
       });
 
       it('should allow moving a relation down', function () {
 
         downs.eq(0).trigger('click');
+        updateSuperFeatureRelationsOrderingDeferred.resolve();
+        element.scope().$digest();
 
         var items = element.find('li');
         expect(items.eq(0).scope().relation).to.equal(relation2);
@@ -532,11 +534,13 @@ describe('Directive: superFeaturesRelations', function () {
         expect(downs.eq(1).attr('disabled')).to.equal('disabled');
       });
 
-      // it('should be disabled while an ordering request is in progress', function () {
-      //
-      //   // TODO : add test code here
-      //   throw new Error('Not implemented yet.');
-      // });
+      it('should be disabled while an ordering request is in progress', function () {
+        var down = downs.eq(0);
+
+        down.trigger('click');
+
+        expect(down.attr('disabled')).to.equal('disabled');
+      });
     });
 
     context('by input', function () {
@@ -554,6 +558,8 @@ describe('Directive: superFeaturesRelations', function () {
 
         orderings.eq(0).val(2).trigger('change');
         orderingForm.trigger('submit');
+        updateSuperFeatureRelationsOrderingDeferred.resolve();
+        element.scope().$digest();
 
         var items = element.find('li');
         expect(items.eq(0).scope().relation).to.equal(relation2);
@@ -565,17 +571,34 @@ describe('Directive: superFeaturesRelations', function () {
         var ordering = orderings.eq(0);
         ordering.val(2).trigger('change');
         ordering.siblings('button').trigger('click');
+        updateSuperFeatureRelationsOrderingDeferred.resolve();
+        element.scope().$digest();
 
         var items = element.find('li');
         expect(items.eq(0).scope().relation).to.equal(relation2);
         expect(items.eq(1).scope().relation).to.equal(relation1);
       });
 
-      // it('should be disabled while an ordering request is in progress', function () {
-      //
-      //   // TODO : add test code here
-      //   throw new Error('Not implemented yet.');
-      // });
+      it('should be disabled when relation is only one in the list', function () {
+        var scope = element.isolateScope();
+
+        scope.relations.pop();
+        scope.$digest();
+
+        var ordering = orderings.eq(0);
+        expect(ordering.attr('disabled')).to.equal('disabled');
+        expect(ordering.siblings('button').attr('disabled')).to.equal('disabled');
+      });
+
+      it('should be disabled while an ordering request is in progress', function () {
+        var ordering = orderings.eq(0);
+
+        ordering.val(2).trigger('change');
+        orderingForm.trigger('submit');
+
+        expect(ordering.attr('disabled')).to.equal('disabled');
+        expect(ordering.siblings('button').attr('disabled')).to.equal('disabled');
+      });
     });
   });
 });

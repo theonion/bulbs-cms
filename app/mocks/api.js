@@ -118,7 +118,7 @@ angular.module('bulbsCmsApp.mockApi', [
 
         // super features
     var superFeatureRegex = /\/cms\/api\/v1\/super-feature\/$/;
-    var superFeatureRelationsRegex = /\/cms\/api\/v1\/super-feature\/(\d+)\/relations\/?$/;
+    var superFeatureRelationsRegex = /\/cms\/api\/v1\/super-feature\/(\d+)\/relations(\/(ordering))?\/?$/;
 
     $httpBackend.whenGET(superFeatureRegex).respond({
       results: mockApiData['content.list'].results.filter(function (content) {
@@ -133,6 +133,14 @@ angular.module('bulbsCmsApp.mockApi', [
         });
 
         return [200, relations];
+      });
+    $httpBackend.whenPUT(superFeatureRelationsRegex)
+      .respond(function (method, url, data) {
+        if (superFeatureRelationsRegex.exec(url)[3] === 'ordering') {
+          return [200, {}];
+        }
+
+        return [404, {}];
       });
 
     // content list
