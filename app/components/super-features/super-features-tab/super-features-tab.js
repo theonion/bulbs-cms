@@ -37,10 +37,10 @@ angular.module('bulbs.cms.superFeatures.tab', [
           return SuperFeaturesApi.getSuperFeatures({search:query}).then(
             function(data) {
               console.log(data);
-              debugger;
+              // debugger;
           }, function(error) {
               console.log(error);
-              debugger;
+              // debugger;
           });
         };
 

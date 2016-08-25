@@ -12,7 +12,7 @@ angular.module('specialCoverage.edit.directive', [
   'topBar',
   'ui.bootstrap.tooltip',
   'videoList',
-  'bulbs.cms.superFeatures.tab'
+  'bulbs.cms.superFeatures.tab',
 ])
   .directive('specialCoverageEdit', function (CmsConfig) {
     return {
