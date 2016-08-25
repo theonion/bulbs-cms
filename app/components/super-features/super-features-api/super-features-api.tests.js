@@ -186,15 +186,15 @@ describe('Service: SuperFeaturesApi', function () {
       var relations = [{
         id: 1,
         title: 'abc',
-        order: 3
+        ordering: 3
       }, {
         id: 2,
         title: 'abc',
-        order: 2
+        ordering: 2
       }, {
         id: 3,
         title: 'abc',
-        order: 1
+        ordering: 1
       }];
       var requestCallback = sandbox.stub().returns([200, relations]);
       var responseCallback = sandbox.stub();
@@ -209,7 +209,7 @@ describe('Service: SuperFeaturesApi', function () {
         relations.map(function (relation) {
           return {
             id: relation.id,
-            order: relation.order
+            ordering: relation.ordering
           };
         })
       );

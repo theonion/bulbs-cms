@@ -114,7 +114,7 @@ angular.module('bulbs.cms.superFeatures.api', [
         },
         updateSuperFeatureRelationsOrdering: function (id, relations) {
           var remappedRelations = relations.map(function (relation) {
-            return _.pick(relation, 'id', 'order');
+            return _.pick(relation, 'id', 'ordering');
           });
           return $http.put(
             superFeatureEndpoint(Utils.path.join(id, 'relations', 'ordering')),
