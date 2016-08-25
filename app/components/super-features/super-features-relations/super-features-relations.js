@@ -169,7 +169,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
 
           scope.saveRelation = transaction(function (relation) {
 
-            var relationCopy = _.omit(relation, ['ordering']);
+            var relationCopy = angular.copy(relation);
             relationCopy.parent = scope.article.id;
 
             return SuperFeaturesApi.updateSuperFeature(relationCopy)

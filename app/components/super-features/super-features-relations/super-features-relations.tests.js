@@ -273,22 +273,6 @@ describe('Directive: superFeaturesRelations', function () {
         .to.equal($parentScope.article.id);
     });
 
-    it('should not include ordering propery when updating', function () {
-      $parentScope.article = { id: 1 };
-      var relations = [{
-        id: 2,
-        ordering: 1
-      }];
-      getSuperFeatureRelationsDeferred.resolve({ results: relations });
-      var element = digest(html);
-      var saveButton = element.find('button[ng-click="saveRelation(relation)"]');
-
-      saveButton.trigger('click');
-
-      expect(SuperFeaturesApi.updateSuperFeature.args[0][0].ordering)
-        .to.equal(undefined);
-    });
-
     it('should show an error message if update fails', function () {
       var relations = [{
         id: 2,
