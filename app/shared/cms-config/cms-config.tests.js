@@ -70,8 +70,6 @@ describe('CmsConfig', function () {
         });
       });
 
-<<<<<<< HEAD
-=======
       context('article editoral statuses', function () {
 
         it('should provide a method to add a new status and a getter for statuses', function () {
@@ -118,7 +116,6 @@ describe('CmsConfig', function () {
         });
       });
 
->>>>>>> master
       context('auto add author', function () {
 
         it('should provide a setter and getter', function () {

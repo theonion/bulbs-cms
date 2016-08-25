@@ -16,13 +16,7 @@ angular.module('OnionEditor', []).constant('OnionEditor', window.OnionEditor);
 angular.module('bulbsCmsApp', [
   'bulbs.cms.site.config',
 
-<<<<<<< HEAD
-  'bulbs.cms.dynamicContent',
-  'bulbs.cms.superFeatures.list',
-  'bulbs.cms.superFeatures.tab',
-=======
   'bulbs.cms.superFeatures',
->>>>>>> master
 
   // TODO : these dependencies need to be reorganized, localized
   'bulbs.cms.dateTimeModal',

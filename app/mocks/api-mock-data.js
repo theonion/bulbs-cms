@@ -429,13 +429,6 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         }
       }, {
         id: 13,
-<<<<<<< HEAD
-        title: 'My Favorite Super Feature',
-        slug: 'my-favorite-super-feature',
-        polymorphic_ctype: 'core_super_feature_type',
-        published: '2016-04-20T16:20:00Z',
-        children_count: 0
-=======
         title: 'Guide to My Favorite Animals',
         slug: 'my-favorite-animals',
         polymorphic_ctype: 'core_super_feature_type',
@@ -446,27 +439,19 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         data: {
           title: 'garbage'
         }
->>>>>>> master
       }, {
         id: 14,
         title: 'Another Super Duper Feature',
         slug: 'another-super-duper-feature',
         polymorphic_ctype: 'core_super_feature_type',
-<<<<<<< HEAD
-        children_count: 10
-=======
         children_count: 10,
         data: {}
->>>>>>> master
       }, {
         id: 15,
         title: 'Scheduled Super Feature',
         slug: 'scheduled-super-feature',
         polymorphic_ctype: 'core_super_feature_type',
         published: moment().add(1, 'day').format(),
-<<<<<<< HEAD
-        children_count: 4
-=======
         children_count: 4,
         data: {}
       }, {
@@ -502,7 +487,6 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         parent: 13,
         published: null,
         data: {}
->>>>>>> master
       }]
     },
     'dynamicContent.schemas': {
