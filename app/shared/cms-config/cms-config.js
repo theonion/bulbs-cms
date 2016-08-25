@@ -21,6 +21,10 @@ angular.module('bulbs.cms.config', [
         }.bind(null, start);
       };
 
+      // url for api root
+      var apiUrlRoot = '';
+      // article statuses for sending to editoral
+      var articleEditoralStatuses = [];
       // true to automatically add current user to author list when creating content
       var autoAddAuthor = false;
       // path to components
@@ -34,6 +38,8 @@ angular.module('bulbs.cms.config', [
       var directivePartialsPath = '';
       // name of CMS to display in title and in interface
       var cmsName = '';
+      // url for content
+      var contentApiUrl = '';
       // url for external links, those that are accessible to the public
       var externalUrl = '';
       // max number of states to store in an article's history
@@ -52,7 +58,9 @@ angular.module('bulbs.cms.config', [
       var navLogoPath = '';
       // path to shared directory
       // TODO : remove once app is fully in pods
-      var sharedPath  = '';
+      var sharedPath = '';
+      // super features ctype
+      var superFeaturesType = '';
       // name of timezone for to use for times in the cms
       var timezoneName = 'America/Chicago';
       // mappings for top bar templates
@@ -63,6 +71,26 @@ angular.module('bulbs.cms.config', [
       var videoPath = '';
       // thumbnail for inline video uploads
       var videoThumbnailUrl = '';
+
+      this.addArticleEditoralStatus = function (label, value) {
+        checkOrError(label, _.isString, 'article editoral status label must be a string!');
+        checkOrError(value, _.isString, 'article editoral status value must be a string!');
+
+        articleEditoralStatuses.push({
+          label: label,
+          value: value
+        });
+
+        return this;
+      };
+
+      this.setApiUrlRoot = function (value) {
+        apiUrlRoot = checkOrError(
+          value, _.isString,
+          'api url root must be a string!'
+        );
+        return this;
+      };
 
       this.setAutoAddAuthor = function (value) {
         autoAddAuthor = checkOrError(
@@ -108,6 +136,14 @@ angular.module('bulbs.cms.config', [
         cmsName = checkOrError(
           value, _.isString,
           'cms name must be a string!'
+        );
+        return this;
+      };
+
+      this.setContentApiUrl = function (value) {
+        contentApiUrl = checkOrError(
+          value, _.isString,
+          'content api url must be a string!'
         );
         return this;
       };
@@ -186,6 +222,14 @@ angular.module('bulbs.cms.config', [
         return this;
       };
 
+      this.setSuperFeaturesType = function (value) {
+        superFeaturesType = checkOrError(
+          value, _.isString,
+          'super features type must be a string!'
+        );
+        return this;
+      };
+
       this.setTimezoneName = function (name) {
         timezoneName = checkOrError(
           name, moment.tz.zone,
@@ -234,12 +278,14 @@ angular.module('bulbs.cms.config', [
       this.$get = [
         function () {
           return {
+            buildApiUrlRoot: pathBuilder(apiUrlRoot),
             buildComponentPath: pathBuilder(componentPath),
+            buildContentApiUrl: pathBuilder(contentApiUrl),
             buildContentPartialsPath: pathBuilder(contentPartialsPath),
             buildDirectivePartialsPath: pathBuilder(directivePartialsPath),
             buildExternalUrl: pathBuilder(externalUrl),
-            buildFirebaseUrl: pathBuilder(firebaseUrl),
             buildFirebaseSiteUrl: pathBuilder(Utils.path.join(firebaseUrl, firebaseSiteRoot)),
+            buildFirebaseUrl: pathBuilder(firebaseUrl),
             buildImageApiUrl: pathBuilder(imageApiUrl),
             buildInternalUrl: pathBuilder(internalUrl),
             buildSharedPath: pathBuilder(sharedPath),
@@ -252,7 +298,9 @@ angular.module('bulbs.cms.config', [
             getFirebaseMaxArticleHistory: _.constant(firebaseMaxArticleHistory),
             getImageApiKey: _.constant(imageApiKey),
             getNavLogoPath: _.constant(navLogoPath),
+            getSuperFeaturesType: _.constant(superFeaturesType),
             getTimezoneName: _.constant(timezoneName),
+            getArticleEditoralStatuses: _.constant(_.cloneDeep(articleEditoralStatuses)),
             getTopBarMapping: function (name) {
               if (_.has(topBarMappings, name)) {
                 return topBarMappings[name];

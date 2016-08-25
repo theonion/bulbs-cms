@@ -18,7 +18,8 @@ angular.module('bettyEditable', [
           hideMetas: '=',
           image: '=',
           placeholderText: '@',
-          ratio: '@'
+          ratio: '@',
+          onChange: '&'
         },
         controller: function ($scope, $element) {
           $scope.editable = angular.isDefined($scope.editable) ? $scope.editable : true;
@@ -81,7 +82,13 @@ angular.module('bettyEditable', [
             if (newImage && newImage.id) {
               BettyCropper.get(newImage.id).then(function (response) {
                 scope.bettyImage = response.data;
+                if (!oldImage || parseInt(response.data.id, 10) !== oldImage.id) {
+                  scope.onChange();
+                }
               });
+            } else if (!angular.equals(newImage, oldImage)) {
+              // image cleared out
+              scope.onChange();
             }
           });
 

@@ -1,0 +1,23 @@
+@import '_colors';
+@import '_sizing';
+
+.mixin-alert (
+    @color: @interface-color-gray-1,
+    @background-color: @interface-color-gray-3) {
+
+  background-color: @background-color;
+  border: 1px solid @color;
+  border-radius: @interface-border-radius;
+  color: @color;
+  margin-bottom: @interface-row-margin;
+  padding: @interface-internal-spacing;
+  text-align: center;
+}
+
+.alert-error() {
+  .mixin-alert(@interface-color-error, @interface-color-error-2);
+}
+
+.alert-info() {
+  .mixin-alert(@interface-color-water, @interface-color-water-2);
+}

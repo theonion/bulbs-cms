@@ -16,7 +16,7 @@ angular.module('OnionEditor', []).constant('OnionEditor', window.OnionEditor);
 angular.module('bulbsCmsApp', [
   'bulbs.cms.site.config',
 
-  'bulbs.cms.dynamicContent',
+  'bulbs.cms.superFeatures',
 
   // TODO : these dependencies need to be reorganized, localized
   'bulbs.cms.dateTimeModal',
@@ -70,14 +70,14 @@ angular.module('bulbsCmsApp', [
       controller: 'ContentlistCtrl',
       reloadOnSearch: false
     })
-    .when('/cms/app/edit/:id/', {
-      templateUrl: '/views/contentedit.html',
-      controller: 'ContenteditCtrl',
-      reloadOnSearch: false
-    })
     .when('/cms/app/edit/:id/contributions/', {
       templateUrl: '/views/contributions.html',
       controller: 'ContributionsCtrl'
+    })
+    .when('/cms/app/edit/:id/:contentType?', {
+      templateUrl: '/views/contentedit.html',
+      controller: 'ContenteditCtrl',
+      reloadOnSearch: false
     })
     .when('/cms/app/targeting/', {
       templateUrl: '/views/targeting-editor.html',

@@ -4,11 +4,14 @@ angular.module('bulbsCmsApp.nonRestmodListPage', [
   'bulbs.cms.site.config',
   'confirmationModal',
   'copyButton',
-  'lodash'
+  'lodash',
+  'bulbs.cms.utils'
 ])
   .directive('nonRestmodListPage', function (CmsConfig) {
     return {
-      controller: function (_, $scope, $location, $parse) {
+      controller: function (_, $scope, $location, $parse, Utils) {
+
+        $scope.pathJoin = Utils.path.join;
 
         // different types of filters that get combined to make seach query params
         $scope.orderingFilter = {};
@@ -87,8 +90,21 @@ angular.module('bulbsCmsApp.nonRestmodListPage', [
             });
         };
 
+        $scope.cellContents = function (item, field) {
+          var cellContents = '-';
+
+          if (_.isFunction(field.content)) {
+            cellContents = field.content(item);
+          } else if (_.isString(field.content)) {
+            cellContents = item[field.content];
+          } else if (field.sorts) {
+            cellContents = item[field.sorts];
+          }
+          return cellContents;
+        };
+
         $scope.$add = function () {
-          $location.path('/cms/app/' + $scope.cmsPage + '/edit/new/');
+          $location.path($scope.cmsEditPageUrl({ item: { id: 'new' } }));
         };
 
         $scope.$remove = function (removedItem) {
@@ -99,7 +115,7 @@ angular.module('bulbsCmsApp.nonRestmodListPage', [
         };
 
         $scope.goToEditPage = function (item) {
-          $location.path('/cms/app/' + $scope.cmsPage + '/edit/' + item.id + '/');
+          $location.path($scope.cmsEditPageUrl({ item: item }));
         };
 
         // set the active filter, either the first button with active === true,
@@ -120,9 +136,12 @@ angular.module('bulbsCmsApp.nonRestmodListPage', [
         // do initial retrieval
         $scope.$retrieve();
       },
+      link: function (scope, element, attrs) {
+        scope.showAddButton = !('disableAddButton' in attrs);
+      },
       restrict: 'E',
       scope: {
-        cmsPage: '@',         // name of page in route
+        cmsEditPageUrl: '&',  // url to edit page, will be postfixed with id or 'new'
         destroyItem: '&',     // returns promise, deletes given item
         getItems: '&',        // function returns promise, recieves search params
         filterButtons: '&',   // settings for filter buttons

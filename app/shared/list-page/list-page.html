@@ -3,8 +3,9 @@
 <div class="list-page-tools">
   <div class="utility-tools">
     <button
-        class="add-item btn btn-primary"
-        ng-click="$add()">
+        ng-click="$add()"
+        ng-if="showAddButton"
+        class="add-item btn btn-primary">
       <i class="glyphicon glyphicon-plus"></i>
       Add {{ name }}
     </button>
@@ -98,11 +99,11 @@
           {{ field.evaluate(item) }}
         </td>
         <td>
-          <button
+          <a
               class="btn btn-xs btn-info"
-              ng-click="goToEditPage(item)">
+              href="{{ pathJoin(cmsEditPageUrl({ item: item })) }}">
             <i class="glyphicon glyphicon-pencil"></i>
-          </button>
+          </a>
           <copy-button
               ng-if="toolCopyContent"
               content="{{ copyContentInContext(item) }}"

@@ -8,7 +8,6 @@ describe('Directive: confirmationModalOpener', function () {
     $scope;
 
   beforeEach(function () {
-    module('ui.bootstrap');
     module('confirmationModal');
     module('jsTemplates');
     module('jquery');

@@ -8,12 +8,12 @@ angular.module('bulbsCmsApp')
     IfExistsElse, VersionStorageApi, ContentFactory, FirebaseApi,
     FirebaseArticleFactory, Login, VersionBrowserModalOpener)
   {
-    $scope.PARTIALS_URL = '/views/';
-    $scope.buildContentPartialsPath = CmsConfig.buildContentPartialsPath;
-    $scope.page = 'edit';
-    $scope.contentEditGlobals = {
-      canSave: true
-    };
+    var listener = new keypress.Listener();
+    listener.simple_combo('cmd s', function (e) { $scope.saveArticle(); });
+    listener.simple_combo('ctrl s', function (e) { $scope.saveArticle(); });
+
+    var saveHTML =  '<i class=\'glyphicon glyphicon-floppy-disk\'></i> Save';
+    var navbarSave = '.navbar-save';
 
     var getArticleCallback = function (data) {
       $window.article = $scope.article = data; //exposing article on window for debugging
@@ -64,8 +64,8 @@ angular.module('bulbsCmsApp')
                     }
                     msg += ' Open the version browser to see their latest version.';
 
-                    // this isn't the current user that saved, so someone else must have saved, notify this user
-                    savePNotify = new PNotify({
+                  // this isn't the current user that saved, so someone else must have saved, notify this user
+                  savePNotify = new PNotify({
                       title: 'Another User Saved!',
                       text: msg,
                       type: 'error',
@@ -140,10 +140,50 @@ angular.module('bulbsCmsApp')
 
     };
 
-    function getContent() {
-      return ContentFactory.one('content', $routeParams.id).get().then(getArticleCallback);
-    }
-    getContent();
+    var getContent = function () {
+      return ContentFactory.one('content', $routeParams.id)
+          .get()
+          .then(getArticleCallback);
+    };
+
+    var saveArticleErrorCbk = function (data) {
+      $(navbarSave)
+        .removeClass('btn-success')
+        .addClass('btn-danger')
+        .html('<i class=\'glyphicon glyphicon-remove\'></i> Error');
+      if (status === 400) {
+        $scope.errors = data;
+      }
+      $scope.saveArticleDeferred.reject();
+    };
+
+    /**
+     * Last thing to happen on a successful save.
+     */
+    var saveArticleSuccessCbk = function (resp) {
+      // store a version with version api
+      VersionStorageApi.$create($scope.article, $scope.articleIsDirty);
+
+      $(navbarSave).html('<i class=\'glyphicon glyphicon-ok\'></i> Saved!');
+      setTimeout(function () {
+          $(navbarSave).html(saveHTML);
+        }, 2500);
+      $window.article = $scope.article = resp;
+      $scope.last_saved_article = angular.copy(resp);
+      $scope.articleIsDirty = false;
+      $scope.articleIsNew = false;
+      $scope.errors = null;
+      $location.path('/cms/app/edit/' + $scope.article.id + '/' + $routeParams.contentType);
+      $location.search('rating_type', null); //maybe just kill the whole query string with $location.url($location.path())
+      $scope.saveArticleDeferred.resolve(resp);
+    };
+
+    $scope.PARTIALS_URL = '/views/';
+    $scope.buildContentPartialsPath = CmsConfig.buildContentPartialsPath;
+    $scope.page = 'edit';
+    $scope.contentEditGlobals = {
+      canSave: true
+    };
 
     $scope.$watch('article.title', function () {
       $window.document.title = CmsConfig.getCmsName() + ' | Editing ' + ($scope.article && $('<span>' + $scope.article.title + '</span>').text());
@@ -173,83 +213,54 @@ angular.module('bulbsCmsApp')
         .removeClass('btn-danger')
         .addClass('btn-success')
         .html('<i class=\'glyphicon glyphicon-refresh fa-spin\'></i> Saving');
-      ContentFactory.one('content', $routeParams.id).get()
-        .then(function (data) {
-          if (data.last_modified &&
-            $scope.article.last_modified &&
-            moment(data.last_modified) > moment($scope.article.last_modified)) {
-            $scope.saveArticleDeferred.reject();
-            $modal.open({
-              templateUrl: '/views/modals/last-modified-guard-modal.html',
-              controller: 'LastmodifiedguardmodalCtrl',
-              scope: $scope,
-              resolve: {
-                articleOnPage: function () { return $scope.article; },
-                articleOnServer: function () { return data; }
-              }
-            });
-          } else {
-            $scope.postValidationSaveArticle();
-          }
-        })
-        .catch(saveArticleErrorCbk);
+
+      if ($routeParams.id === 'new') {
+        $scope.postValidationSaveArticle();
+      } else {
+        ContentFactory.one('content', $routeParams.id).get()
+          .then(function (data) {
+            if (data.last_modified &&
+              $scope.article.last_modified &&
+              moment(data.last_modified) > moment($scope.article.last_modified)) {
+              $scope.saveArticleDeferred.reject();
+              $modal.open({
+                templateUrl: '/views/modals/last-modified-guard-modal.html',
+                controller: 'LastmodifiedguardmodalCtrl',
+                scope: $scope,
+                resolve: {
+                  articleOnPage: function () { return $scope.article; },
+                  articleOnServer: function () { return data; }
+                }
+              });
+            } else {
+              $scope.postValidationSaveArticle();
+            }
+          })
+          .catch(saveArticleErrorCbk);
+      }
 
       return $scope.saveArticleDeferred.promise;
     };
-
-    var listener = new keypress.Listener();
-    listener.simple_combo('cmd s', function (e) { $scope.saveArticle(); });
-    listener.simple_combo('ctrl s', function (e) { $scope.saveArticle(); });
 
     $scope.postValidationSaveArticle = function () {
       if ($scope.article.status !== 'Published') {
         $scope.article.slug = $window.URLify($scope.article.title, 50);
       }
-      saveToContentApi();
+
+      var params = {};
+      if ($routeParams.id === 'new') {
+        params['doctype'] = $scope.article.polymorphic_ctype;
+      }
+
+      $scope.article.save(params)
+        .then(saveArticleSuccessCbk)
+        .catch(saveArticleErrorCbk);
+
       return $scope.saveArticleDeferred.promise;
     };
 
-    var saveHTML =  '<i class=\'glyphicon glyphicon-floppy-disk\'></i> Save';
-    var navbarSave = '.navbar-save';
-
-    function saveToContentApi() {
-      $scope.article.put()
-        .then(saveArticleSuccessCbk)
-        .catch(saveArticleErrorCbk);
-    }
-
-    function saveArticleErrorCbk(data) {
-      $(navbarSave)
-        .removeClass('btn-success')
-        .addClass('btn-danger')
-        .html('<i class=\'glyphicon glyphicon-remove\'></i> Error');
-      if (status === 400) {
-        $scope.errors = data;
-      }
-      $scope.saveArticleDeferred.reject();
-    }
-
-    /**
-     * Last thing to happen on a successful save.
-     */
-    function saveArticleSuccessCbk(resp) {
-      // store a version with version api
-      VersionStorageApi.$create($scope.article, $scope.articleIsDirty);
-
-      $(navbarSave).html('<i class=\'glyphicon glyphicon-ok\'></i> Saved!');
-      setTimeout(function () {
-          $(navbarSave).html(saveHTML);
-        }, 2500);
-      $window.article = $scope.article = resp;
-      $scope.last_saved_article = angular.copy(resp);
-      $scope.articleIsDirty = false;
-      $scope.errors = null;
-      $location.search('rating_type', null); //maybe just kill the whole query string with $location.url($location.path())
-      $scope.saveArticleDeferred.resolve(resp);
-    }
-
     // keep track of if article is dirty or not
-    $scope.articleIsDirty = false;
+    $scope.articleIsDirty = $routeParams.id === 'new';
     $scope.$watch(function () {
       return !angular.equals($scope.article, $scope.last_saved_article);
     }, function (isDirty) {
@@ -277,4 +288,15 @@ angular.module('bulbsCmsApp')
       }, 1500);
     };
 
+    var initialize = function () {
+      if ($routeParams.id === 'new') {
+        $scope.articleIsNew = true;
+        $scope.article = ContentFactory.oneUrl('content');
+        $scope.article['polymorphic_ctype'] = $routeParams.contentType;
+      } else {
+        getContent();
+      }
+    };
+
+    initialize();
   });

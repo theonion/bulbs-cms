@@ -34,6 +34,88 @@ describe('CmsConfig', function () {
 
     context('general cms', function () {
 
+      context('api url root', function () {
+
+        it('should provide a setter and getter', function () {
+          var url = '/api/root';
+
+          configs.setApiUrlRoot(url);
+
+          expect(sealedConfigs().buildApiUrlRoot()).to.equal(url);
+        });
+
+        it('should provide a getter to build out a url', function () {
+          var url = '/api/root';
+          var somePath = '/something-special';
+
+          configs.setApiUrlRoot(url);
+
+          expect(sealedConfigs().buildApiUrlRoot(somePath))
+            .to.equal(url + somePath);
+        });
+
+        it('should throw an error if the given value is not a string', function () {
+
+          expect(function () {
+            configs.setApiUrlRoot(123);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): api url root must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setApiUrlRoot('/api/root')).to.eql(configs);
+        });
+      });
+
+      context('article editoral statuses', function () {
+
+        it('should provide a method to add a new status and a getter for statuses', function () {
+          var label1 = 'my label';
+          var value1 = 'my value';
+          var label2 = 'my label';
+          var value2 = 'my value';
+
+          configs.addArticleEditoralStatus(label1, value1);
+          configs.addArticleEditoralStatus(label2, value2);
+
+          expect(sealedConfigs().getArticleEditoralStatuses()).to.eql([{
+            label: label1,
+            value: value1
+          }, {
+            label: label2,
+            value: value2
+          }]);
+        });
+
+        it('should throw an error if label given to adder is not a string', function () {
+
+          expect(function () {
+            configs.addArticleEditoralStatus(1, 'hello');
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): article editoral status label must be a string!'
+          );
+        });
+
+        it('should throw an error if value given to adder is not a string', function () {
+
+          expect(function () {
+            configs.addArticleEditoralStatus('hello', 1);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): article editoral status value must be a string!'
+          );
+        });
+
+        it('should return config object from adder', function () {
+
+          expect(configs.addArticleEditoralStatus('one', 'two')).to.eql(configs);
+        });
+      });
+
       context('auto add author', function () {
 
         it('should provide a setter and getter', function () {
@@ -186,6 +268,42 @@ describe('CmsConfig', function () {
         it('should return config object', function () {
 
           expect(configs.setCmsName('abc')).to.eql(configs);
+        });
+      });
+
+      context('content api url', function () {
+
+        it('should provide a setter and getter', function () {
+          var url = '/content/url/';
+
+          configs.setContentApiUrl(url);
+
+          expect(sealedConfigs().buildContentApiUrl()).to.equal(url);
+        });
+
+        it('should provide a getter to build out a url', function () {
+          var url = '/content/url/';
+          var someId = '123456';
+
+          configs.setContentApiUrl(url);
+
+          expect(sealedConfigs().buildContentApiUrl(someId))
+            .to.equal(url + someId);
+        });
+
+        it('should throw an error if the given value is not a string', function () {
+
+          expect(function () {
+            configs.setContentApiUrl(123);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): content api url must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setContentApiUrl('/content/url')).to.eql(configs);
         });
       });
 
@@ -410,6 +528,32 @@ describe('CmsConfig', function () {
         it('should return config object', function () {
 
           expect(configs.setSharedPath('/directives/path')).to.eql(configs);
+        });
+      });
+
+      context('super features type', function () {
+
+        it('should provide a getter and setter', function () {
+          var type = 'core_super_features';
+
+          configs.setSuperFeaturesType(type);
+
+          expect(sealedConfigs().getSuperFeaturesType()).to.equal(type);
+        });
+
+        it('should throw an error if given value is not a string', function () {
+
+          expect(function () {
+            configs.setSuperFeaturesType(123);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): super features type must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setSuperFeaturesType('abc')).to.eql(configs);
         });
       });
 
