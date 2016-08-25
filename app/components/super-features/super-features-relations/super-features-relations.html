@@ -43,7 +43,7 @@
     ng-form="$parent.wrapperForm">
   <li
       ng-init="panelClosed = false"
-      ng-repeat="relation in relations track by $index">
+      ng-repeat="relation in relations track by relation.id">
 
     <div class="accordion-list-item-meta">
       <button
