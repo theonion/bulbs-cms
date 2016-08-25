@@ -491,7 +491,9 @@ describe('Directive: superFeaturesRelations', function () {
         element.scope().$digest();
 
         var items = element.find('li');
+        expect(relation2.ordering).to.equal(1);
         expect(items.eq(0).scope().relation).to.equal(relation2);
+        expect(relation1.ordering).to.equal(2);
         expect(items.eq(1).scope().relation).to.equal(relation1);
       });
 
@@ -525,7 +527,9 @@ describe('Directive: superFeaturesRelations', function () {
         element.scope().$digest();
 
         var items = element.find('li');
+        expect(relation2.ordering).to.equal(1);
         expect(items.eq(0).scope().relation).to.equal(relation2);
+        expect(relation1.ordering).to.equal(2);
         expect(items.eq(1).scope().relation).to.equal(relation1);
       });
 
@@ -562,7 +566,9 @@ describe('Directive: superFeaturesRelations', function () {
         element.scope().$digest();
 
         var items = element.find('li');
+        expect(relation2.ordering).to.equal(1);
         expect(items.eq(0).scope().relation).to.equal(relation2);
+        expect(relation1.ordering).to.equal(2);
         expect(items.eq(1).scope().relation).to.equal(relation1);
       });
 
@@ -575,7 +581,9 @@ describe('Directive: superFeaturesRelations', function () {
         element.scope().$digest();
 
         var items = element.find('li');
+        expect(relation2.ordering).to.equal(1);
         expect(items.eq(0).scope().relation).to.equal(relation2);
+        expect(relation1.ordering).to.equal(2);
         expect(items.eq(1).scope().relation).to.equal(relation1);
       });
 

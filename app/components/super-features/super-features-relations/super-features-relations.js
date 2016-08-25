@@ -117,6 +117,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
             });
 
             Utils.moveTo(payload, fromIndex, toIndex, true);
+            normalizeOrderings(payload);
 
             return SuperFeaturesApi.updateSuperFeatureRelationsOrdering(
               scope.article.id,
@@ -124,6 +125,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
             )
               .then(function () {
                 Utils.moveTo(scope.relations, fromIndex, toIndex, true);
+                normalizeOrderings(scope.relations);
               })
               .catch(function () {
                 // log an error
