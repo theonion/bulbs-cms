@@ -9,25 +9,17 @@ describe('Service: SuperFeaturesApi', function () {
   var moment;
   var sandbox;
   var SuperFeaturesApi;
-<<<<<<< HEAD
-=======
   var superFeatureType;
->>>>>>> master
 
   beforeEach(function () {
     module(
       'bulbs.cms.superFeatures.api',
       function (CmsConfigProvider) {
         endpoint = '/api/root/';
-<<<<<<< HEAD
-
-        CmsConfigProvider.setApiUrlRoot(endpoint);
-=======
         superFeatureType = 'my_super_feature_type';
 
         CmsConfigProvider.setApiUrlRoot(endpoint);
         CmsConfigProvider.setSuperFeaturesType(superFeatureType);
->>>>>>> master
       }
     );
 
@@ -143,8 +135,6 @@ describe('Service: SuperFeaturesApi', function () {
     });
   });
 
-<<<<<<< HEAD
-=======
   context('super feature relations', function () {
 
     it('should provide a method to get a list of relations', function () {
@@ -241,7 +231,6 @@ describe('Service: SuperFeaturesApi', function () {
     });
   });
 
->>>>>>> master
   context('creating a super feature', function () {
 
     it('should create a new super feature', function () {
@@ -250,13 +239,9 @@ describe('Service: SuperFeaturesApi', function () {
       };
       var callback = sandbox.stub();
       $httpBackend
-<<<<<<< HEAD
-        .expectPOST(CmsConfig.buildApiUrlRoot('super-feature') + '/')
-=======
         .expectPOST(
           CmsConfig.buildApiUrlRoot('content') + '/?doctype=' + superFeatureType
         )
->>>>>>> master
         .respond(200, data);
 
       SuperFeaturesApi.createSuperFeature(data).then(callback);
@@ -274,24 +259,15 @@ describe('Service: SuperFeaturesApi', function () {
         title: 'my updated super feature'
       };
       var callback = sandbox.stub();
-<<<<<<< HEAD
-      $httpBackend
-        .expectPUT(CmsConfig.buildApiUrlRoot('super-feature', data.id))
-        .respond(200, data);
-=======
       var server = sandbox.stub().returns([200, data]);
       $httpBackend
         .expectPUT(CmsConfig.buildApiUrlRoot('content', data.id))
         .respond(server);
->>>>>>> master
 
       SuperFeaturesApi.updateSuperFeature(data).then(callback);
       $httpBackend.flush();
 
-<<<<<<< HEAD
-=======
       expect(JSON.parse(server.args[0][2])).to.eql(data);
->>>>>>> master
       expect(callback.args[0][0]).to.eql(data);
     });
   });
@@ -305,11 +281,7 @@ describe('Service: SuperFeaturesApi', function () {
       };
       var callback = sandbox.stub();
       $httpBackend
-<<<<<<< HEAD
-        .expectDELETE(CmsConfig.buildApiUrlRoot('super-feature', data.id))
-=======
         .expectDELETE(CmsConfig.buildApiUrlRoot('content', data.id))
->>>>>>> master
         .respond(200, data);
 
       SuperFeaturesApi.deleteSuperFeature(data).then(callback);
