@@ -85,13 +85,22 @@ angular.module('apiServices.specialCoverage.factory', [
       },
 
       $hooks: {
+        // TODO:
+        'before-save': function () {
+          // transform SF data into list of ids
+          debugger;
+        },
         'after-fetch': function () {
           // auto fetch all video records when first fetching
           this.$loadVideosData();
+          // TODO:
+          // loadSuperFeaturesData
         },
         'after-save': function () {
           // auto fetch all video records when saving/updating
           this.$loadVideosData();
+          // TODO:
+          // loadSuperFeaturesData
         }
       },
 
@@ -104,6 +113,9 @@ angular.module('apiServices.specialCoverage.factory', [
             _.each(this.videos, function (video) {
               video.$fetch();
             });
+          },
+          $loadSuperFeaturesData: function () {
+            debugger;
           },
           /**
            * Load campaign data from Tunic endpoint
@@ -144,6 +156,20 @@ angular.module('apiServices.specialCoverage.factory', [
             if (!existingVideo) {
               // not in list, add it to list
               this.videos.push(video);
+              added = true;
+            }
+
+            return added;
+          },
+          addSuperFeature: function (super_feature) {
+            var added = false
+
+            var existingSuperFeature = _.find(this.super_features, function(existingSuperFeature) {
+              return super_feature.id === existingSuperFeature.id;
+            });
+
+            if (!existingSuperFeature) {
+              this.super_features.push(super_feature);
               added = true;
             }
 

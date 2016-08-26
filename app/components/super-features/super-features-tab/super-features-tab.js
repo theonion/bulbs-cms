@@ -29,7 +29,7 @@ angular.module('bulbs.cms.superFeatures.tab', [
         };
 
         $scope.addSuperFeature = function (super_feature) {
-          $scope.superFeatures.push(super_feature.id);
+          $scope.addSuperFeatureCallback({super_feature: super_feature});
           $scope.onUpdate();
         };
 
