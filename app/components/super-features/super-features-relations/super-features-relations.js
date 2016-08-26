@@ -127,8 +127,9 @@ angular.module('bulbs.cms.superFeatures.relations', [
                 Utils.moveTo(scope.relations, fromIndex, toIndex, true);
                 normalizeOrderings(scope.relations);
               })
-              .catch(function () {
-                // log an error
+              .catch(function (response) {
+                var message = 'An error occurred attempting to reorder a child!';
+                scope.reportError(message, { response: response });
               });
           });
 
@@ -138,7 +139,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
               parent: scope.article.id,
               superfeature_type: scope.article.default_child_type,
               title: title,
-              ordering: (_.max(scope.relations, 'id').id || 0) + 1
+              ordering: (_.max(scope.relations, 'ordering').ordering || 0) + 1
             })
               .then(function (relation) {
                 scope.relations.push(relation);
