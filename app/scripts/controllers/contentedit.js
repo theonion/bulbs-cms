@@ -173,7 +173,11 @@ angular.module('bulbsCmsApp')
       $scope.articleIsDirty = false;
       $scope.articleIsNew = false;
       $scope.errors = null;
-      $location.path('/cms/app/edit/' + $scope.article.id + '/' + $routeParams.contentType);
+
+      if ($routeParams.id === 'new') {
+        $location.path('/cms/app/edit/' + $scope.article.id + '/' + $routeParams.contentType);
+      }
+
       $location.search('rating_type', null); //maybe just kill the whole query string with $location.url($location.path())
       $scope.saveArticleDeferred.resolve(resp);
     };
