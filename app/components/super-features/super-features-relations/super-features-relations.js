@@ -138,7 +138,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
               parent: scope.article.id,
               superfeature_type: scope.article.default_child_type,
               title: title,
-              ordering: (_.max(scope.relations, 'id').id || 0) + 1
+              ordering: (_.max(scope.relations, 'ordering').ordering || 0) + 1
             })
               .then(function (relation) {
                 scope.relations.push(relation);
