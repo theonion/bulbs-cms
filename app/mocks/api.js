@@ -77,6 +77,8 @@ angular.module('bulbsCmsApp.mockApi', [
         return [201, newData];
       });
 
+    $httpBackend.whenDELETE(/\/cms\/api\/v1\/content\/\d+\/?/).respond(204);
+
     var trashRegex = /\/cms\/api\/v1\/content\/\d+\/trash\//;
     $httpBackend.when('POST', trashRegex).respond(mockApiData['content.trash.response']);
     $httpBackend.when('OPTIONS', trashRegex).respond(mockApiData['content.trash.response']);
