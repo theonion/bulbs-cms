@@ -8,12 +8,13 @@ angular.module('bulbs.cms.sendToEditorModal', [
   'ui.bootstrap.modal'
 ])
   .directive('sendToEditorModalOpener', [
-    '$modal', 'CmsConfig', 'SendToEditorApi', 'Raven',
-    function ($modal, CmsConfig, SendToEditorApi, Raven) {
+    '$modal', '$q', 'CmsConfig', 'SendToEditorApi', 'Raven',
+    function ($modal, $q, CmsConfig, SendToEditorApi, Raven) {
       return {
         restrict: 'A',
         scope: {
           modalArticle: '=',
+          modalOnBeforeOpen: '&',
           modalOnCancel: '&',
           modalOnOk: '&'
         },
@@ -26,41 +27,48 @@ angular.module('bulbs.cms.sendToEditorModal', [
 
             if (!scope.modalInstance) {
 
-              scope.clearError = function () {
-                scope.errorMessage = '';
-              };
+              $q.when(scope.modalOnBeforeOpen())
+                .then(function (result) {
 
-              scope.sendToEditor = function (status, note) {
-                scope.clearError();
+                  if (result !== false) {
 
-                return SendToEditorApi.sendToEditor(
-                  scope.modalArticle,
-                  status,
-                  'Status: ' + status + '\n\n' + note
-                )
-                .then(scope.modalInstance.close)
-                .catch(function (response) {
-                  Raven.captureMessage('Error attempting to send to editor', {
-                    response: response
-                  });
-                  scope.errorMessage = 'An error occurred!';
-                });
-              };
+                    scope.clearError = function () {
+                      scope.errorMessage = '';
+                    };
 
-              scope.modalInstance = $modal
-                .open({
-                  scope: scope,
-                  templateUrl: CmsConfig.buildComponentPath(
-                    'send-to-editor-modal',
-                    'send-to-editor-modal.html'
-                  )
-                });
+                    scope.sendToEditor = function (status, note) {
+                      scope.clearError();
 
-              scope.modalInstance.result
-                .then(scope.modalOnOk)
-                .catch(scope.modalOnCancel)
-                .finally(function () {
-                  scope.modalInstance = false;
+                      return SendToEditorApi.sendToEditor(
+                        scope.modalArticle,
+                        status,
+                        'Status: ' + status + '\n\n' + note
+                      )
+                      .then(scope.modalInstance.close)
+                      .catch(function (response) {
+                        Raven.captureMessage('Error attempting to send to editor', {
+                          response: response
+                        });
+                        scope.errorMessage = 'An error occurred!';
+                      });
+                    };
+
+                    scope.modalInstance = $modal
+                      .open({
+                        scope: scope,
+                        templateUrl: CmsConfig.buildComponentPath(
+                          'send-to-editor-modal',
+                          'send-to-editor-modal.html'
+                        )
+                      });
+
+                    scope.modalInstance.result
+                      .then(scope.modalOnOk)
+                      .catch(scope.modalOnCancel)
+                      .finally(function () {
+                        scope.modalInstance = false;
+                      });
+                  }
                 });
             }
           });
