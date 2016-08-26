@@ -127,8 +127,9 @@ angular.module('bulbs.cms.superFeatures.relations', [
                 Utils.moveTo(scope.relations, fromIndex, toIndex, true);
                 normalizeOrderings(scope.relations);
               })
-              .catch(function () {
-                // log an error
+              .catch(function (response) {
+                var message = 'An error occurred attempting to reorder a child!';
+                scope.reportError(message, { response: response });
               });
           });
 
