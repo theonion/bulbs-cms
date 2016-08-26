@@ -14,33 +14,29 @@ angular.module('bulbs.cms.superFeatures.tab', [
       controller: function (_, $scope, Utils, Video) {
 
         $scope.moveUp = function (index) {
-          Utils.moveTo($scope.superfeatures, index, index - 1);
+          Utils.moveTo($scope.superFeatures, index, index - 1);
           $scope.onUpdate();
         };
 
         $scope.moveDown = function (index) {
-          Utils.moveTo($scope.superfeatures, index, index + 1);
+          Utils.moveTo($scope.superFeatures, index, index + 1);
           $scope.onUpdate();
         };
 
         $scope.delete = function (index) {
-          Utils.removeFrom($scope.superfeatures, index);
+          Utils.removeFrom($scope.superFeatures, index);
           $scope.onUpdate();
         };
 
         $scope.addSuperFeature = function (super_feature) {
-          $scope.superfeatures.push(super_feature);
+          $scope.superFeatures.push(super_feature.id);
           $scope.onUpdate();
         };
 
         $scope.searchSuperFeature = function (query) {
           return SuperFeaturesApi.getSuperFeatures({search:query}).then(
-            function(data) {
-              console.log(data);
-              // debugger;
-          }, function(error) {
-              console.log(error);
-              // debugger;
+            function(response) {
+              return response.results;
           });
         };
 
