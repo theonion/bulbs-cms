@@ -455,6 +455,11 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         children_count: 4,
         data: {}
       }, {
+        id: 16,
+        title: 'Live Blog #1',
+        slug: 'live-blog-1',
+        polymorphic_ctype: 'mock_live_blog'
+      }, {
         id: 100,
         title: 'Guide to Catz',
         status: 'Published',
