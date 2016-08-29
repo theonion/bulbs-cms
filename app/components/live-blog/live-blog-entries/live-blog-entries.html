@@ -47,16 +47,17 @@
             }"
             class="fa">
         </i>
-        <span>{{ entry.title }}</span>
+        <span>{{ entry.headline }}</span>
       </button>
 
       <div class="accordion-list-item-meta-tools">
         <button
-            ng-click="datetime-selection-modal-opener">
-          <span ng-if="entry.published">
-            <i class="fa fa-clock-o"></i>
-            <span>{{ entry.published }}</span>
-          </span>
+            datetime-selection-modal-opener
+            modal-clear-text="Unpublish"
+            ng-model="entry.published"
+            class="btn btn-primary btn-xs">
+          <i class="fa fa-clock-o"></i>
+          <span ng-if="entry.published">{{ entry.published | dateTimeFormat }}</span>
           <span ng-if="!entry.published">Publish</span>
         </button>
       </div>
@@ -72,17 +73,22 @@
             ng-model="entry.authors">
       </div>
 
-      <div>
+      <div class="input-container">
         <label>Headline</label>
         <input
-            ng-model="entry.headline">
+            ng-model="entry.headline"
+            placeholder="E.G. An Oral History Of Harriet The Spy, Nickelodeon's First Feature Film">
       </div>
 
-      <div>
+      <div class="input-container">
         <label>Copy</label>
-        <textarea
-            ng-model="entry.copy">
-        </textarea>
+        <div class="input-container-onion-editor-wrapper">
+          <onion-editor
+              role="multiline"
+              ng-model="entry.body"
+              placeholder="E.G. An Oral History Of Harriet The Spy, Nickelodeon's First Feature Film">
+          </onion-editor>
+        </div>
       </div>
 
       <div class="accordion-list-item-meta">

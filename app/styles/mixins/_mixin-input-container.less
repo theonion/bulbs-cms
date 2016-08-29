@@ -52,6 +52,37 @@
   }
 }
 
+.mixin-input-onion-editor-wrapper () {
+  .mixin-input();
+
+  &[readonly] {
+    background-color: @interface-color-gray-2;
+  }
+
+  p {
+    margin: 0;
+    min-height: @interface-font-size-2;
+    line-height: inherit;
+
+    &:not(:first-child) {
+      margin-top: @interface-font-size-2;
+    }
+  }
+
+  .editor-wrapper {
+
+    .editor,
+    .editorPlaceholder {
+      padding: 0;
+      z-index: auto;
+    }
+
+    .editor {
+      min-height: 100px;
+    }
+  }
+}
+
 .mixin-input-label () {
   color: @interface-color-gray-1;
   font-size: @interface-font-size-1;

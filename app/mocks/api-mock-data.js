@@ -424,7 +424,9 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         }],
         info_data: {
           data: {
-            entries: []
+            entries: [{
+              body: 'garbage<hr>garbage'
+            }]
           }
         }
       }, {
@@ -516,7 +518,8 @@ angular.module('bulbsCmsApp.mockApi.data', [])
                   body: {
                     label: 'Body',
                     type: 'richtext',
-                    field_size: 'long'
+                    field_size: 'long',
+                    read_only: true
                   },
                   image: {
                     label: 'Unset Image',

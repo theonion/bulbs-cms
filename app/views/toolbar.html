@@ -124,8 +124,7 @@
             ng-show="getStatus(article) === 'unpublished' && !articleIsNew">
           <a
               href=""
-              send-to-editor-modal-opener
-              modal-on-before-open="saveArticle()">
+              ng-click="saveArticle().then(pubTimeModal)">
             <i class="fa fa-globe"></i>
             <span>Publish...</span>
           </a>
@@ -138,7 +137,7 @@
           <a
               href=""
               class="changeable"
-              ng-click="saveArticle().then(pubTimeModal);">
+              ng-click="saveArticle().then(pubTimeModal)">
             <i class="fa fa-calendar"></i>
             <span>Published: {{ article.published | dateTimeFormat:"M/D/YY[ @ ]h:mm a z" }}</span>
           </a>
