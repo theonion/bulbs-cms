@@ -99,7 +99,7 @@
         <form
             ng-submit="
               $event.preventDefault();
-              moveRelation($index, relation.ordering - 1);
+              moveRelation($index, relation.ordering - 1, true);
               getOrderingForm(relation).$setPristine();
             "
             name="{{ makeOrderingFormName(relation) }}"
@@ -124,7 +124,7 @@
               transactionsLocked() ||
               $index === 0
             "
-            ng-click="moveRelation($index, $index - 1)">
+            ng-click="moveRelation($index, $index - 1, true)">
           <i class="fa fa-chevron-up"></i>
         </button>
         <button
@@ -133,7 +133,7 @@
               transactionsLocked() ||
               $index === relations.length - 1
             "
-            ng-click="moveRelation($index, $index + 1)">
+            ng-click="moveRelation($index, $index + 1, true)">
           <i class="fa fa-chevron-down"></i>
         </button>
       </div>
@@ -143,17 +143,17 @@
         ng-hide="panelClosed"
         class="accordion-list-item-content">
 
-      <form name="{{ makeRelationFormName(relation) }}">
+      <div class="super-features-relations-input-container">
+        <button
+            send-to-editor-modal-opener
+            modal-article="article"
+            class="btn btn-sm btn-info">
+          <i class="fa fa-paper-plane"></i>
+          <span>Send To Editors...</span>
+        </button>
+      </div>
 
-        <div class="super-features-relations-input-container">
-          <button
-              send-to-editor-modal-opener
-              modal-article="article"
-              class="btn btn-sm btn-info">
-            <i class="fa fa-paper-plane"></i>
-            <span>Send To Editors...</span>
-          </button>
-        </div>
+      <form name="{{ makeRelationFormName(relation) }}">
 
         <div class="super-features-relations-input-container">
           <label
