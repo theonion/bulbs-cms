@@ -1,8 +1,17 @@
+@import '_sizing';
 @import 'mixins/_mixin-accordion-list';
+@import 'mixins/_mixin-buttons';
 @import 'mixins/_mixin-input-container';
 
 live-blog-entries {
   .mixin-accordion-list();
+
+  display: block;
+  margin-bottom: @interface-row-margin;
+
+  .btn-minimal {
+    .mixin-button-minimal();
+  }
 
   .input-container {
     .mixin-input-container();

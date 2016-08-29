@@ -1,0 +1,12 @@
+@import '_colors';
+
+.mixin-button-no-style () {
+  border: none;
+  background-color: transparent;
+}
+
+.mixin-button-minimal () {
+  .mixin-button-no-style ();
+
+  color: @interface-color-near-black;
+}

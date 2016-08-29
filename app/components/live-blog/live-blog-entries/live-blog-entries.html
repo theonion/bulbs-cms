@@ -2,13 +2,19 @@
   <h4>Entries</h4>
 
   <div ng-if="entries.length > 0">
-    <button>
-      Collapse All
+    <button
+        class="btn-minimal">
+      <i class="fa fa-caret-square-o-down"></i>
+      <span>Collapse All</span>
     </button>
-    <button>
-      Expand All
+    <button
+        class="btn-minimal">
+      <i class="fa fa-caret-square-o-up"></i>
+      <span>Expand All</span>
     </button>
-    <button>
+    <button
+        ng-click="newEntry()"
+        class="btn btn-primary">
       <i class="fa fa-plus"></i>
       <span>Add New Entry</span>
     </button>
@@ -51,6 +57,12 @@
       </button>
 
       <div class="accordion-list-item-meta-tools">
+        <button
+            class="btn btn-success btn-xs">
+          <i class="fa fa-floppy-o"></i>
+          <span>Save</span>
+        </button>
+
         <button
             datetime-selection-modal-opener
             modal-clear-text="Unpublish"
@@ -110,3 +122,10 @@
     </div>
   </li>
 </ol>
+
+<button
+    class="btn btn-primary accordion-list-add-bottom"
+    ng-click="newEntry()">
+  <i class="fa fa-plus"></i>
+  <span>Add New Entry</span>
+</button>
