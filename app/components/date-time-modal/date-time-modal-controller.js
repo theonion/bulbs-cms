@@ -69,6 +69,10 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
             .second(0);
       };
 
+      $scope.clearDatetime = function () {
+        $modalInstance.close(null);
+      };
+
       $scope.chooseDatetime = function () {
         if ($scope.dateValid) {
           // close modal, ensuring that output date is a moment
