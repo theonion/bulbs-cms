@@ -458,7 +458,8 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         id: 16,
         title: 'Live Blog #1',
         slug: 'live-blog-1',
-        polymorphic_ctype: 'mock_live_blog'
+        polymorphic_ctype: 'mock_live_blog',
+        entries: [{}]
       }, {
         id: 100,
         title: 'Guide to Catz',

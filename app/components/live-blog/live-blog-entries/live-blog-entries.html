@@ -1,1 +1,106 @@
-LIVE BLOG ENTRIES
+<div>
+  <h4>Entries</h4>
+
+  <div ng-if="entries.length > 0">
+    <button>
+      Collapse All
+    </button>
+    <button>
+      Expand All
+    </button>
+    <button>
+      <i class="fa fa-plus"></i>
+      <span>Add New Entry</span>
+    </button>
+  </div>
+
+  <div
+      ng-if="errorMessage">
+    <i class="fa fa-exclamation-circle"></i>
+    <span>{{ errorMessage }}</span>
+    <button
+        ng-click="clearError()"
+        class="btn btn-xs btn-link">
+      <i class="fa fa-times"></i>
+    </button>
+  </div>
+
+  <div
+      ng-if="entries.length < 1">
+    No entries yet!
+  </div>
+</div>
+
+<ol ng-if="entries.length > 0">
+  <li
+      ng-init="panelClosed = false"
+      ng-repeat="entry in entries track by entry.id">
+
+    <div class="accordion-list-item-meta">
+      <button
+          ng-click="panelClosed = !panelClosed"
+          class="accordion-list-item-meta-label">
+        <i
+            ng-class="{
+              'fa-caret-right': panelClosed,
+              'fa-caret-down': !panelClosed
+            }"
+            class="fa">
+        </i>
+        <span>{{ entry.title }}</span>
+      </button>
+
+      <div class="accordion-list-item-meta-tools">
+        <button
+            ng-click="datetime-selection-modal-opener">
+          <span ng-if="entry.published">
+            <i class="fa fa-clock-o"></i>
+            <span>{{ entry.published }}</span>
+          </span>
+          <span ng-if="!entry.published">Publish</span>
+        </button>
+      </div>
+    </div>
+
+    <div
+        ng-hide="panelClosed"
+        class="accordion-list-item-content">
+
+      <div>
+        <label>Author</label>
+        <input
+            ng-model="entry.authors">
+      </div>
+
+      <div>
+        <label>Headline</label>
+        <input
+            ng-model="entry.headline">
+      </div>
+
+      <div>
+        <label>Copy</label>
+        <textarea
+            ng-model="entry.copy">
+        </textarea>
+      </div>
+
+      <div class="accordion-list-item-meta">
+
+        <div class="accordion-list-item-meta-tools">
+
+          <button
+              confirmation-modal-opener
+              modal-body="Are you sure you want to delete this entry '{{ entry.title }}'?"
+              modal-title="Delete Entry"
+              modal-ok-text="Delete"
+              modal-on-ok="deleteEntry(entry)"
+              class="btn btn-danger btn-sm">
+            <i class="fa fa-trash-o"></i>
+            <span>DELETE</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </li>
+</ol>
