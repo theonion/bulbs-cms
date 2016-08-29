@@ -6,7 +6,8 @@ angular.module('apiServices.specialCoverage.factory', [
   'apiServices.mixins.fieldDisplay',
   'cms.tunic.config',
   'filters.moment',
-  'VideohubClient.api'
+  'VideohubClient.api',
+  'bulbs.cms.superFeatures.api'
 ])
   .factory('SpecialCoverage', function (_, $http, $parse, $q, restmod, TunicConfig, Video) {
     var ACTIVE_STATES = {
@@ -88,19 +89,18 @@ angular.module('apiServices.specialCoverage.factory', [
         // TODO:
         'before-save': function () {
           // transform SF data into list of ids
-          debugger;
+          // debugger
+
         },
         'after-fetch': function () {
           // auto fetch all video records when first fetching
           this.$loadVideosData();
-          // TODO:
-          // loadSuperFeaturesData
+          this.$loadSuperFeaturesData();
         },
         'after-save': function () {
           // auto fetch all video records when saving/updating
           this.$loadVideosData();
-          // TODO:
-          // loadSuperFeaturesData
+          this.$loadSuperFeaturesData();
         }
       },
 
@@ -115,7 +115,9 @@ angular.module('apiServices.specialCoverage.factory', [
             });
           },
           $loadSuperFeaturesData: function () {
-            debugger;
+            _.each(this.super_features, function(super_feature) {
+
+            });
           },
           /**
            * Load campaign data from Tunic endpoint
@@ -162,7 +164,7 @@ angular.module('apiServices.specialCoverage.factory', [
             return added;
           },
           addSuperFeature: function (super_feature) {
-            var added = false
+            var added = false;
 
             var existingSuperFeature = _.find(this.super_features, function(existingSuperFeature) {
               return super_feature.id === existingSuperFeature.id;

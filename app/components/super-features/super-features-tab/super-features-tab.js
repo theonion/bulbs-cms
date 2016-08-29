@@ -6,7 +6,7 @@ angular.module('bulbs.cms.superFeatures.tab', [
   'bulbs.cms.utils',
   'jquery',
   'ui.sortable',
-  'superFeatures.item.directive',
+  'bulbs.cms.superFeatures.tab.item',
   'bulbs.cms.superFeatures.api'
 ])
   .directive('superFeaturesTab', function ($, SuperFeaturesApi, CmsConfig) {

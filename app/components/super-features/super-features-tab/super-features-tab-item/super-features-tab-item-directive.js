@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('superFeatures.item.directive', [
+angular.module('bulbs.cms.superFeatures.tab.item', [
   'bulbs.cms.site.config',
   'filters.moment'
 ])
