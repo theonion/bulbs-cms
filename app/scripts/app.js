@@ -16,7 +16,6 @@ angular.module('OnionEditor', []).constant('OnionEditor', window.OnionEditor);
 angular.module('bulbsCmsApp', [
   'bulbs.cms.site.config',
 
-  'bulbs.cms.sendToEditorModal',
   'bulbs.cms.superFeatures',
 
   // TODO : these dependencies need to be reorganized, localized
@@ -24,6 +23,8 @@ angular.module('bulbsCmsApp', [
   'bulbs.cms.dateTimeFilter',
   'bulbs.cms.editor',
   'bulbs.cms.imageCropModal',
+  'bulbs.cms.liveBlog',
+  'bulbs.cms.sendToEditorModal',
   'bulbs.cms.staticImage',
   'ngCookies',
   'ngResource',
