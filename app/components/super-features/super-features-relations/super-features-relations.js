@@ -117,7 +117,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
               });
 
               operation.bind(null, payload).apply(null, funcArgs);
-              normalizeOrderings(payload)
+              normalizeOrderings(payload);
 
               return SuperFeaturesApi.updateSuperFeatureRelationsOrdering(
                 scope.article.id,
