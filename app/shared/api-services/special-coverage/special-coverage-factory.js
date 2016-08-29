@@ -9,7 +9,7 @@ angular.module('apiServices.specialCoverage.factory', [
   'VideohubClient.api',
   'bulbs.cms.superFeatures.api'
 ])
-  .factory('SpecialCoverage', function (_, $http, $parse, $q, restmod, TunicConfig, Video) {
+  .factory('SpecialCoverage', function (_, $http, $parse, $q, SuperFeaturesApi, restmod, TunicConfig, Video) {
     var ACTIVE_STATES = {
       INACTIVE: 'Inactive',
       PROMOTED: 'Pin to HP'
@@ -115,8 +115,11 @@ angular.module('apiServices.specialCoverage.factory', [
             });
           },
           $loadSuperFeaturesData: function () {
-            _.each(this.super_features, function(super_feature) {
-
+            _.each(this.superFeatures, function(super_feature) {
+              return SuperFeaturesApi.getSuperFeature(super_feature).then(
+                function(response) {
+                  return response;
+              });
             });
           },
           /**
