@@ -107,30 +107,34 @@ angular.module('bulbs.cms.superFeatures.relations', [
               return $q.reject();
             };
           };
+          var reorder = function (operation) {
 
-          scope.moveRelation = transaction(function (fromIndex, toIndex) {
+            return function () {
+              var funcArgs = arguments;
 
-            // do transformation on a copy first, save that then after successful
-            //  request, apply transformation to actual list
-            var payload = scope.relations.map(function (relation) {
-              return _.pick(relation, 'id', 'ordering');
-            });
-
-            Utils.moveTo(payload, fromIndex, toIndex, true);
-            normalizeOrderings(payload);
-
-            return SuperFeaturesApi.updateSuperFeatureRelationsOrdering(
-              scope.article.id,
-              payload
-            )
-              .then(function () {
-                Utils.moveTo(scope.relations, fromIndex, toIndex, true);
-                normalizeOrderings(scope.relations);
-              })
-              .catch(function () {
-                // log an error
+              var payload = scope.relations.map(function (relation) {
+                return _.pick(relation, 'id', 'ordering');
               });
-          });
+
+              operation.bind(null, payload).apply(null, funcArgs);
+              normalizeOrderings(payload);
+
+              return SuperFeaturesApi.updateSuperFeatureRelationsOrdering(
+                scope.article.id,
+                payload
+              )
+                .then(function () {
+                  operation.bind(null, scope.relations).apply(null, funcArgs);
+                  normalizeOrderings(scope.relations);
+                })
+                .catch(function (response) {
+                  var message = 'An error occurred attempting to reorder a child!';
+                  scope.reportError(message, { response: response });
+                });
+            };
+          };
+
+          scope.moveRelation = transaction(reorder(Utils.moveTo));
 
           scope.addRelation = transaction(function (title) {
 
@@ -138,7 +142,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
               parent: scope.article.id,
               superfeature_type: scope.article.default_child_type,
               title: title,
-              ordering: (_.max(scope.relations, 'id').id || 0) + 1
+              ordering: (_.max(scope.relations, 'ordering').ordering || 0) + 1
             })
               .then(function (relation) {
                 scope.relations.push(relation);
@@ -188,8 +192,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
             return SuperFeaturesApi.deleteSuperFeature(relation)
               .then(function () {
                 var index = scope.relations.indexOf(relation);
-                Utils.removeFrom(scope.relations, index);
-                normalizeOrderings(scope.relations);
+                reorder(Utils.removeFrom)(index);
               })
               .catch(function (response) {
                 var titleDisplay = relation.title ? '"' + relation.title + '"' : 'a relation';

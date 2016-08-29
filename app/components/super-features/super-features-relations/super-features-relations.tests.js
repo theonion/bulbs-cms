@@ -110,7 +110,6 @@ describe('Directive: superFeaturesRelations', function () {
       var title = 'test title';
 
       addButton.trigger('click');
-      scope.$digest();
       addButton.isolateScope().modalOnOk({ title: title });
       createSuperFeatureDeferred.resolve(relation);
       scope.$digest();
@@ -242,7 +241,6 @@ describe('Directive: superFeaturesRelations', function () {
       var scope = element.scope();
 
       addButton.trigger('click');
-      scope.$digest();
       addButton.isolateScope().modalOnOk();
       scope.$digest();
 
@@ -311,9 +309,9 @@ describe('Directive: superFeaturesRelations', function () {
       var scope = element.scope();
 
       deleteButton.trigger('click');
-      scope.$digest();
       deleteButton.isolateScope().modalOnOk();
       deleteSuperFeatureDeferred.resolve();
+      updateSuperFeatureRelationsOrderingDeferred.resolve();
       scope.$digest();
 
       expect(SuperFeaturesApi.deleteSuperFeature.calledOnce).to.equal(true);
@@ -328,7 +326,6 @@ describe('Directive: superFeaturesRelations', function () {
       var scope = element.scope();
 
       deleteButton.trigger('click');
-      scope.$digest();
       deleteButton.isolateScope().modalOnOk();
       scope.$digest();
 
@@ -346,7 +343,6 @@ describe('Directive: superFeaturesRelations', function () {
       var scope = element.scope();
 
       deleteButton.trigger('click');
-      scope.$digest();
       deleteButton.isolateScope().modalOnOk();
       deleteSuperFeatureDeferred.reject();
       scope.$digest();
@@ -364,7 +360,6 @@ describe('Directive: superFeaturesRelations', function () {
       var saveButton = element.find('button[ng-click="saveRelation(relation)"]');
 
       deleteButton.trigger('click');
-      element.scope().$digest();
       deleteButton.isolateScope().modalOnOk();
       saveButton.trigger('click');
 
@@ -434,7 +429,6 @@ describe('Directive: superFeaturesRelations', function () {
 
       updateButton.trigger('click');
       deleteButton.trigger('click');
-      element.scope().$digest();
       deleteButton.isolateScope().modalOnOk();
 
       expect(SuperFeaturesApi.deleteSuperFeature.called).to.equal(false);
@@ -465,7 +459,7 @@ describe('Directive: superFeaturesRelations', function () {
 
       beforeEach(function () {
         element = digest(html);
-        ups = element.find('button[ng-click="moveRelation($index, $index - 1)"]');
+        ups = element.find('button[ng-click="moveRelation($index, $index - 1, true)"]');
       });
 
       it('should allow moving a relation up', function () {
@@ -501,7 +495,7 @@ describe('Directive: superFeaturesRelations', function () {
 
       beforeEach(function () {
         element = digest(html);
-        downs = element.find('button[ng-click="moveRelation($index, $index + 1)"]');
+        downs = element.find('button[ng-click="moveRelation($index, $index + 1, true)"]');
       });
 
       it('should allow moving a relation down', function () {

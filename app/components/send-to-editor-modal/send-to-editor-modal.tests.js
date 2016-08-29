@@ -76,6 +76,7 @@ describe('Directive: sendToEditorModalOpener', function () {
     var element = digest('<div send-to-editor-modal-opener></div>');
 
     element.trigger('click');
+    $rootScope.$digest();
 
     expect($modal.open.calledOnce).to.equal(true);
   });
@@ -209,8 +210,65 @@ describe('Directive: sendToEditorModalOpener', function () {
     );
 
     element.trigger('click');
+    $rootScope.$digest();
     element.trigger('click');
+    $rootScope.$digest();
 
     expect($modal.open.calledOnce).to.equal(true);
+  });
+
+  it('should call modal-on-before-open before opening', function () {
+    $rootScope.modalBeforeOpen = sandbox.stub();
+    var element = digest(
+      '<div send-to-editor-modal-opener modal-on-before-open="modalBeforeOpen()"></div>'
+    );
+
+    element.trigger('click');
+
+    expect($rootScope.modalBeforeOpen.calledOnce).to.equal(true);
+  });
+
+  it('should use promise interface given by modal-on-before-open', function () {
+    var beforeOpenDeferred = $q.defer();
+    $rootScope.modalBeforeOpen = sandbox.stub().returns(beforeOpenDeferred.promise);
+    var element = digest(
+      '<div send-to-editor-modal-opener modal-on-before-open="modalBeforeOpen()"></div>'
+    );
+
+    element.trigger('click');
+    var openAtFirst = $(document).find('#sendToEditorModal').length > 0;
+    beforeOpenDeferred.resolve();
+    $rootScope.$digest();
+    var openAfterResolve = $(document).find('#sendToEditorModal').length > 0;
+
+    expect(openAtFirst).to.equal(false);
+    expect(openAfterResolve).to.equal(true);
+  });
+
+  it('should not open modal if promise given to modal-on-before-open is rejected', function () {
+    var beforeOpenDeferred = $q.defer();
+    $rootScope.modalBeforeOpen = sandbox.stub().returns(beforeOpenDeferred.promise);
+    var element = digest(
+      '<div send-to-editor-modal-opener modal-on-before-open="modalBeforeOpen()"></div>'
+    );
+
+    element.trigger('click');
+    beforeOpenDeferred.reject();
+    $rootScope.$digest();
+    var openAfterReject = $(document).find('#sendToEditorModal').length > 0;
+
+    expect(openAfterReject).to.equal(false);
+  });
+
+  it('should not open modal if given false by modal-on-before-open', function () {
+    $rootScope.modalBeforeOpen = sandbox.stub();
+    var element = digest(
+      '<div send-to-editor-modal-opener modal-on-before-open="modalBeforeOpen()"></div>'
+    );
+
+    $rootScope.modalBeforeOpen.returns(false);
+    element.trigger('click');
+
+    expect($(document).find('#sendToEditorModal').length > 0).to.equal(false);
   });
 });
