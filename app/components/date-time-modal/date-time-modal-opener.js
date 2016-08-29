@@ -15,8 +15,10 @@ angular.module('bulbs.cms.dateTimeModal.opener', [
       return {
         restrict: 'A',
         scope: {
+          modalClearText: '@',
           modDatetime: '=?ngModel',
           modalTitle: '@',
+          modalOnClear: '&',
           modalOnClose: '&'
         },
         link: function (scope, element) {
@@ -35,7 +37,11 @@ angular.module('bulbs.cms.dateTimeModal.opener', [
             modalInstance.result
               .then(function (newDate) {
                 scope.modDatetime = newDate;
-                scope.modalOnClose({newDate: newDate});
+                if (newDate) {
+                  scope.modalOnClose({  newDate: newDate  });
+                } else {
+                  scope.modalOnClear();
+                }
               });
           });
         }
