@@ -2,7 +2,7 @@
 
 angular.module('apiServices.answer.factory', [
   'apiServices',
-  'cms.config',
+  'bulbs.cms.config',
   'lodash'
 ])
 .factory('Answer', ['$http', '$q', '_', 'CmsConfig', function ($http, $q, _, CmsConfig) {
