@@ -7,7 +7,7 @@ angular.module('apiServices.answer.factory', [
 ])
 .factory('Answer', ['$http', '$q', '_', 'CmsConfig', function ($http, $q, _, CmsConfig) {
 
-  var answerUrl = CmsConfig.buildBackendApiUrl('poll-answer/');
+  var answerUrl = CmsConfig.buildApiUrlRoot('poll-answer/');
   var error = function(message) {
     return new Error('Poll Error: ' + message);
   };
