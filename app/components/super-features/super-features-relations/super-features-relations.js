@@ -25,7 +25,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
           article: '='
         },
         link: function (scope, element, attrs) {
-          scope.reportError = function (message, data) {
+          var reportError = function (message, data) {
             Raven.captureMessage(message, data);
             scope.errorMessage = message;
           };
@@ -53,7 +53,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
             })
             .catch(function (response) {
               var message = 'An error occurred retrieving relations!';
-              scope.reportError(message, { response: response });
+              reportError(message, { response: response });
             });
 
           scope.statuses = StatusFilterOptions.getStatuses()
@@ -129,7 +129,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
                 })
                 .catch(function (response) {
                   var message = 'An error occurred attempting to reorder a child!';
-                  scope.reportError(message, { response: response });
+                  reportError(message, { response: response });
                 });
             };
           };
@@ -149,7 +149,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
               })
               .catch(function (response) {
                 var message = 'An error occurred attempting to add a child page!';
-                scope.reportError(message, { response: response });
+                reportError(message, { response: response });
               });
           });
 
@@ -167,7 +167,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
               })
               .catch(function (response) {
                 var message = 'An error occurred attempting to update child publish dates!';
-                scope.reportError(message, { response: response });
+                reportError(message, { response: response });
               });
           });
 
@@ -180,7 +180,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
               .catch(function (response) {
                 var titleDisplay = relation.title ? '"' + relation.title + '"' : 'a relation';
                 var message = 'An error occurred attempting to update ' + titleDisplay + '!';
-                scope.reportError(message, { response: response });
+                reportError(message, { response: response });
               })
               .finally(function () {
                 scope.getRelationForm(relation).$setPristine();
@@ -197,7 +197,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
               .catch(function (response) {
                 var titleDisplay = relation.title ? '"' + relation.title + '"' : 'a relation';
                 var message = 'An error occurred attempting to delete ' + titleDisplay + '!';
-                scope.reportError(message, { response: response });
+                reportError(message, { response: response });
               });
           });
         },
