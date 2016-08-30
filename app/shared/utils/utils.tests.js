@@ -52,7 +52,6 @@ describe('Utils', function () {
     });
 
     it('should allow functions using the lock to run after the lock is released', function () {
-      var function1Deferred = $q.defer();
       var function1 = sandbox.stub();
       var function2 = sandbox.stub();
 

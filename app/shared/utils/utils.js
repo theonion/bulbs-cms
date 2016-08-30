@@ -140,7 +140,7 @@ angular.module('bulbs.cms.utils', [
                         locked = false;
                       });
                   }
-                }
+                };
               },
               isLocked: function () {
                 return locked;
