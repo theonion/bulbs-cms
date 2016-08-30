@@ -11,13 +11,8 @@ angular.module('bulbs.cms.superFeatures.api', [
     '_', '$http', 'CmsConfig', 'dateTimeFormatFilter', 'moment', 'Utils',
     function (_, $http, CmsConfig, dateTimeFormatFilter, moment, Utils) {
 
-      var superFeatureEndpoint = function (path) {
-        return CmsConfig.buildApiUrlRoot('super-feature', path);
-      };
-
-      var contentEndpoint = function (path) {
-        return CmsConfig.buildApiUrlRoot('content', path);
-      };
+      var superFeatureEndpoint = CmsConfig.buildApiUrlRoot.bind(null, 'super-feature');
+      var contentEndpoint = CmsConfig.buildApiUrlRoot.bind(null, 'content');
 
       var parsePayload = function (payload) {
         var data = _.cloneDeep(payload);
@@ -43,8 +38,9 @@ angular.module('bulbs.cms.superFeatures.api', [
         createSuperFeature: function (data) {
           var payload = cleanData(data);
           return $http.post(
-              contentEndpoint() +
-                Utils.param({ doctype: CmsConfig.getSuperFeaturesType() }),
+              contentEndpoint(Utils.param({
+                doctype: CmsConfig.getSuperFeaturesType()
+              })),
               payload)
             .then(function (response) {
               return parsePayload(response.data);
@@ -95,7 +91,7 @@ angular.module('bulbs.cms.superFeatures.api', [
             });
         },
         getSuperFeatureRelations: function (id) {
-          return $http.get(superFeatureEndpoint(Utils.path.join(id, 'relations')))
+          return $http.get(superFeatureEndpoint(id, 'relations'))
             .then(function (response) {
               return {
                 results: response.data.map(function (result) {
@@ -117,12 +113,12 @@ angular.module('bulbs.cms.superFeatures.api', [
             return _.pick(relation, 'id', 'ordering');
           });
           return $http.put(
-            superFeatureEndpoint(Utils.path.join(id, 'relations', 'ordering')),
+            superFeatureEndpoint(id, 'relations', 'ordering'),
             remappedRelations
           );
         },
         updateAllRelationPublishDates: function (id) {
-          return $http.put(superFeatureEndpoint(Utils.path.join(id, 'set-children-dates')));
+          return $http.put(superFeatureEndpoint(id, 'set-children-dates'));
         }
       };
     }
