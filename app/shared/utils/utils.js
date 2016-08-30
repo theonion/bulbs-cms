@@ -124,21 +124,26 @@ angular.module('bulbs.cms.utils', [
            *  then be called as the original function would be called, but the result
            *  will be wrapped in a promise.
            */
-          Utils.buildLocker = function () {
+          Utils.buildLock = function () {
             var locked = false;
 
-            return function (func) {
+            return {
+              wrap: function (func) {
 
-              return function () {
-                if (!locked) {
-                  locked = true;
+                return function () {
+                  if (!locked) {
+                    locked = true;
 
-                  return $q
-                    .when(func.apply(null, arguments))
-                    .finally(function () {
-                      locked = false;
-                    });
+                    return $q
+                      .when(func.apply(null, arguments))
+                      .finally(function () {
+                        locked = false;
+                      });
+                  }
                 }
+              },
+              isLocked: function () {
+                return locked;
               }
             };
           };

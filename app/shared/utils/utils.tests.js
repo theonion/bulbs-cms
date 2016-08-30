@@ -35,15 +35,15 @@ describe('Utils', function () {
     expect($injector.invoke(utils.$get)).to.eql(utils);
   });
 
-  context('locker', function () {
+  context('locking', function () {
 
     it('should create a lock for use with different functions', function () {
       var function1 = sandbox.stub().returns($q.defer().promise);
       var function2 = sandbox.stub();
 
-      var lock = postConfigUtils.buildLocker();
-      var locked1 = lock(function1);
-      var locked2 = lock(function2);
+      var lock = postConfigUtils.buildLock();
+      var locked1 = lock.wrap(function1);
+      var locked2 = lock.wrap(function2);
       locked1();
       locked2();
 
@@ -56,15 +56,27 @@ describe('Utils', function () {
       var function1 = sandbox.stub();
       var function2 = sandbox.stub();
 
-      var lock = postConfigUtils.buildLocker();
-      var locked1 = lock(function1);
-      var locked2 = lock(function2);
+      var lock = postConfigUtils.buildLock();
+      var locked1 = lock.wrap(function1);
+      var locked2 = lock.wrap(function2);
       locked1();
       $rootScope.$digest();
       locked2();
 
       expect(function1.calledOnce).to.equal(true);
       expect(function2.calledOnce).to.equal(true);
+    });
+
+    it('should have a getter for the lock value', function () {
+      var function1 = sandbox.stub().returns($q.defer().promise);
+
+      var lock = postConfigUtils.buildLock();
+      var wasLocked = lock.isLocked();
+      lock.wrap(function1)();
+      var nowLocked = lock.isLocked();
+
+      expect(wasLocked).to.equal(false);
+      expect(nowLocked).to.equal(true);
     });
   });
 
