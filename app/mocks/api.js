@@ -118,17 +118,30 @@ angular.module('bulbsCmsApp.mockApi', [
     }]);
 
     // live blogs
-    var liveBlogEntryRegex = /\/cms\/api\/v1\/liveblog\/entry\/?\?liveblog=(\d+)$/;
+    var liveBlogListRegex = /\/cms\/api\/v1\/liveblog\/entry\/?\?liveblog=(\d+)$/;
+    var liveBlogDetailRegex = /\/cms\/api\/v1\/liveblog\/entry\/(\d+)\/?$/
 
-    $httpBackend.whenGET(liveBlogEntryRegex)
+    $httpBackend.whenGET(liveBlogListRegex)
       .respond(function (method, url, data) {
-        var liveBlogId = parseInt(liveBlogEntryRegex.exec(url)[1], 10);
+        var liveBlogId = parseInt(liveBlogListRegex.exec(url)[1], 10);
 
         return [200, {
           results: mockApiData['liveblog.entries'].filter(function (entry) {
             return entry.liveblog === liveBlogId;
           })
         }];
+      });
+    $httpBackend.whenDELETE(liveBlogDetailRegex)
+      .respond(function (method, url, data) {
+        var liveBlogId = parseInt(liveBlogDetailRegex.exec(url)[1], 10);
+
+        var index = mockApiData['liveblog.entries'].findIndex(function (entry) {
+          return entry.id === liveBlogId;
+        });
+
+        mockApiData['liveblog.entries'].splice(index, 1);
+
+        return [201, ''];
       });
 
     // super features
