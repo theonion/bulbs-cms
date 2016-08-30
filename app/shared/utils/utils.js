@@ -113,7 +113,36 @@ angular.module('bulbs.cms.utils', [
       };
 
       Utils.$get = [
-        function () {
+        '$q',
+        function ($q) {
+          /**
+           * Create a lock to apply to wrapped functions so that only one of the
+           *  functions using this lock can be run at a time.
+           *
+           * @returns {function} function that can be used to wrap functions that
+           *  should be locked by this instance of a lock. The wrapped function can
+           *  then be called as the original function would be called, but the result
+           *  will be wrapped in a promise.
+           */
+          Utils.buildLocker = function () {
+            var locked = false;
+
+            return function (func) {
+
+              return function () {
+                if (!locked) {
+                  locked = true;
+
+                  return $q
+                    .when(func.apply(null, arguments))
+                    .finally(function () {
+                      locked = false;
+                    });
+                }
+              }
+            };
+          };
+
           return Utils;
         }
       ];

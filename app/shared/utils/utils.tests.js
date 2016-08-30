@@ -1,10 +1,12 @@
 'use strict';
 
 describe('Utils', function () {
-
+  var $q;
   var $injector;
+  var $rootScope;
   var sandbox;
   var utils;
+  var postConfigUtils;
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
@@ -16,8 +18,11 @@ describe('Utils', function () {
       }
     );
 
-    inject(function (_$injector_) {
+    inject(function (_$q_, _$injector_, _$rootScope_, Utils) {
+      $q = _$q_;
       $injector = _$injector_;
+      $rootScope = _$rootScope_;
+      postConfigUtils = Utils;
     });
   });
 
@@ -28,6 +33,39 @@ describe('Utils', function () {
   it('should be the same object after providers have resolved', function () {
 
     expect($injector.invoke(utils.$get)).to.eql(utils);
+  });
+
+  context('locker', function () {
+
+    it('should create a lock for use with different functions', function () {
+      var function1 = sandbox.stub().returns($q.defer().promise);
+      var function2 = sandbox.stub();
+
+      var lock = postConfigUtils.buildLocker();
+      var locked1 = lock(function1);
+      var locked2 = lock(function2);
+      locked1();
+      locked2();
+
+      expect(function1.calledOnce).to.equal(true);
+      expect(function2.calledOnce).to.equal(false);
+    });
+
+    it('should allow functions using the lock to run after the lock is released', function () {
+      var function1Deferred = $q.defer();
+      var function1 = sandbox.stub();
+      var function2 = sandbox.stub();
+
+      var lock = postConfigUtils.buildLocker();
+      var locked1 = lock(function1);
+      var locked2 = lock(function2);
+      locked1();
+      $rootScope.$digest();
+      locked2();
+
+      expect(function1.calledOnce).to.equal(true);
+      expect(function2.calledOnce).to.equal(true);
+    });
   });
 
   context('path utilities', function () {
