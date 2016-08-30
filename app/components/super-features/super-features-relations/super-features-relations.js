@@ -89,24 +89,8 @@ angular.module('bulbs.cms.superFeatures.relations', [
               }, false);
           };
 
-          var transactionLock = false;
-          scope.transactionsLocked = function () {
-            return transactionLock;
-          };
-          var transaction = function (promised) {
-
-            return function () {
-              if (!transactionLock) {
-                transactionLock = true;
-
-                return promised.apply(null, arguments).finally(function () {
-                  transactionLock = false;
-                });
-              }
-
-              return $q.reject();
-            };
-          };
+          var lock = Utils.buildLock();
+          scope.transactionsLocked = lock.isLocked;
           var reorder = function (operation) {
 
             return function () {
@@ -134,9 +118,9 @@ angular.module('bulbs.cms.superFeatures.relations', [
             };
           };
 
-          scope.moveRelation = transaction(reorder(Utils.moveTo));
+          scope.moveRelation = lock(reorder(Utils.moveTo));
 
-          scope.addRelation = transaction(function (title) {
+          scope.addRelation = lock(function (title) {
 
             return SuperFeaturesApi.createSuperFeature({
               parent: scope.article.id,
@@ -153,7 +137,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
               });
           });
 
-          scope.updateRelationsPublishDates = transaction(function () {
+          scope.updateRelationsPublishDates = lock(function () {
 
             return SuperFeaturesApi
               .updateAllRelationPublishDates(scope.article.id)
@@ -171,7 +155,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
               });
           });
 
-          scope.saveRelation = transaction(function (relation) {
+          scope.saveRelation = lock(function (relation) {
 
             var relationCopy = angular.copy(relation);
             relationCopy.parent = scope.article.id;
@@ -187,7 +171,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
               });
           });
 
-          scope.deleteRelation = transaction(function (relation) {
+          scope.deleteRelation = lock(function (relation) {
 
             return SuperFeaturesApi.deleteSuperFeature(relation)
               .then(function () {

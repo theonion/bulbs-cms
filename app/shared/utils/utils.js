@@ -127,25 +127,26 @@ angular.module('bulbs.cms.utils', [
           Utils.buildLock = function () {
             var locked = false;
 
-            return {
-              wrap: function (func) {
+            var wrapper = function (func) {
 
-                return function () {
-                  if (!locked) {
-                    locked = true;
+              return function () {
+                if (!locked) {
+                  locked = true;
 
-                    return $q
-                      .when(func.apply(null, arguments))
-                      .finally(function () {
-                        locked = false;
-                      });
-                  }
-                };
-              },
-              isLocked: function () {
-                return locked;
-              }
+                  return $q
+                    .when(func.apply(null, arguments))
+                    .finally(function () {
+                      locked = false;
+                    });
+                }
+              };
             };
+
+            wrapper.isLocked = function () {
+              return locked;
+            };
+
+            return wrapper;
           };
 
           return Utils;

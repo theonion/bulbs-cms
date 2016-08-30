@@ -42,8 +42,8 @@ describe('Utils', function () {
       var function2 = sandbox.stub();
 
       var lock = postConfigUtils.buildLock();
-      var locked1 = lock.wrap(function1);
-      var locked2 = lock.wrap(function2);
+      var locked1 = lock(function1);
+      var locked2 = lock(function2);
       locked1();
       locked2();
 
@@ -56,8 +56,8 @@ describe('Utils', function () {
       var function2 = sandbox.stub();
 
       var lock = postConfigUtils.buildLock();
-      var locked1 = lock.wrap(function1);
-      var locked2 = lock.wrap(function2);
+      var locked1 = lock(function1);
+      var locked2 = lock(function2);
       locked1();
       $rootScope.$digest();
       locked2();
@@ -71,7 +71,7 @@ describe('Utils', function () {
 
       var lock = postConfigUtils.buildLock();
       var wasLocked = lock.isLocked();
-      lock.wrap(function1)();
+      lock(function1)();
       var nowLocked = lock.isLocked();
 
       expect(wasLocked).to.equal(false);
