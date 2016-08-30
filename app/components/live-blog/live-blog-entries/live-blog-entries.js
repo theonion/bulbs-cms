@@ -29,7 +29,7 @@ angular.module('bulbs.cms.liveBlog.entries', [
             }
           }, true);
 
-          LiveBlogApi.getLiveBlogEntries(scope.article.id)
+          LiveBlogApi.getEntries(scope.article.id)
             .then(function (response) {
               scope.entries = response.results;
             })

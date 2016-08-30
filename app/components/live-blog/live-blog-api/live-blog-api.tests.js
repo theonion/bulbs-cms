@@ -48,13 +48,13 @@ describe('Service: LiveBlogApi', function () {
         .expectGET(CmsConfig.buildApiUrlRoot('liveblog', 'entry') + '/?liveblog=' + parentId)
         .respond(200, { results: entries });
 
-      LiveBlogApi.getLiveBlogEntries(parentId).then(callback);
+      LiveBlogApi.getEntries(parentId).then(callback);
       $httpBackend.flush();
 
       expect(callback.withArgs({ results: entries }).calledOnce).to.equal(true);
     });
 
-    it('should transform publish dates to moment objects', function () {
+    it('should transform publish dates to moment objects in the list', function () {
       var callback = sandbox.stub();
       var parentId = 2;
       var entry = {
@@ -66,10 +66,108 @@ describe('Service: LiveBlogApi', function () {
         .expectGET(CmsConfig.buildApiUrlRoot('liveblog', 'entry') + '/?liveblog=' + parentId)
         .respond(200, { results: [entry] });
 
-      LiveBlogApi.getLiveBlogEntries(parentId).then(callback);
+      LiveBlogApi.getEntries(parentId).then(callback);
       $httpBackend.flush();
 
       expect(moment.isMoment(callback.args[0][0].results[0].published)).to.equal(true);
+    });
+
+    it('should provide a way to add a new entry', function () {
+      var callback = sandbox.stub();
+      var entry = {
+        headline: 'garbage',
+        liveblog: 1
+      };
+      $httpBackend
+        .expectPOST(CmsConfig.buildApiUrlRoot('liveblog', 'entry'), entry)
+        .respond(201, entry);
+
+      LiveBlogApi.createEntry(entry).then(callback);
+      $httpBackend.flush();
+
+      expect(callback.args[0][0]).to.eql(entry);
+    });
+
+    it('should transform publish date to moment in add entry response', function () {
+      var callback = sandbox.stub();
+      var entry = {
+        published: moment.tz('America/Chicago'),
+        liveblog: 1
+      };
+      var payload = {
+        published: entry.published.format(),
+        liveblog: entry.liveblog
+      }
+      $httpBackend
+        .expectPOST(CmsConfig.buildApiUrlRoot('liveblog', 'entry'), payload)
+        .respond(201, payload);
+
+      LiveBlogApi.createEntry(entry).then(callback);
+      $httpBackend.flush();
+
+      expect(moment.isMoment(callback.args[0][0].published)).to.equal(true);
+    });
+
+    it('should provide a way to update an entry', function () {
+      var callback = sandbox.stub();
+      var entry = {
+        id: 30,
+        headline: 'garbage',
+        liveblog: 1
+      };
+      $httpBackend
+        .expectPUT(
+          CmsConfig.buildApiUrlRoot('liveblog', 'entry', entry.id),
+          entry
+        )
+        .respond(200, entry);
+
+      LiveBlogApi.updateEntry(entry).then(callback);
+      $httpBackend.flush();
+
+      expect(callback.args[0][0]).to.eql(entry);
+    });
+
+    it('should transform publish date to a moment in update entry response', function () {
+      var callback = sandbox.stub();
+      var entry = {
+        id: 30,
+        published: moment.tz('America/Chicago'),
+        liveblog: 1
+      };
+      var payload = {
+        id: entry.id,
+        published: entry.published.format(),
+        liveblog: entry.liveblog
+      };
+      $httpBackend
+        .expectPUT(
+          CmsConfig.buildApiUrlRoot('liveblog', 'entry', entry.id),
+          payload
+        )
+        .respond(200, payload);
+
+      LiveBlogApi.updateEntry(entry).then(callback);
+      $httpBackend.flush();
+
+      expect(moment.isMoment(callback.args[0][0].published)).to.equal(true);
+    });
+
+    it('should provide a way to delete an entry', function () {
+      var callback = sandbox.stub();
+      var entry = {
+        id: 30,
+        headline: 'garbage',
+        liveblog: 10
+      };
+      $httpBackend
+        .expectDELETE(CmsConfig.buildApiUrlRoot('liveblog', 'entry', entry.id))
+        .respond(204);
+
+      LiveBlogApi.deleteEntry(entry).then(callback);
+      $httpBackend.flush();
+
+      expect(callback.calledOnce).to.equal(true);
     });
   });
 });

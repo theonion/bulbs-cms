@@ -3,7 +3,7 @@
 describe('Directive: liveBlogEntries', function () {
   var $parentScope;
   var digest;
-  var getLiveBlogEntriesDeferred;
+  var getEntriesDeferred;
   var html;
   var LiveBlogApi;
   var Raven;
@@ -31,9 +31,9 @@ describe('Directive: liveBlogEntries', function () {
 
       $parentScope.article = { id: 1 };
 
-      getLiveBlogEntriesDeferred = $q.defer();
-      sandbox.stub(LiveBlogApi, 'getLiveBlogEntries')
-        .returns(getLiveBlogEntriesDeferred.promise);
+      getEntriesDeferred = $q.defer();
+      sandbox.stub(LiveBlogApi, 'getEntries')
+        .returns(getEntriesDeferred.promise);
     });
   });
 
@@ -45,16 +45,16 @@ describe('Directive: liveBlogEntries', function () {
 
     it('should do an initial request for entries', function () {
       var entries = [{ id: 1 }, { id: 2 }];
-      getLiveBlogEntriesDeferred.resolve({ results: entries });
+      getEntriesDeferred.resolve({ results: entries });
 
       var element = digest(html);
 
-      expect(LiveBlogApi.getLiveBlogEntries.calledOnce).to.equal(true);
+      expect(LiveBlogApi.getEntries.calledOnce).to.equal(true);
       expect(element.find('li').length).to.eql(2);
     });
 
     it('should show an error message if unable to retrieve entries', function () {
-      getLiveBlogEntriesDeferred.reject();
+      getEntriesDeferred.reject();
 
       var element = digest(html);
 
