@@ -89,7 +89,7 @@ angular.module('apiServices.specialCoverage.factory', [
         // TODO:
         'before-save': function () {
           // transform SF data into list of ids
-          debugger;
+          // debugger;
         },
         'after-fetch': function () {
           // auto fetch all video records when first fetching
@@ -117,6 +117,8 @@ angular.module('apiServices.specialCoverage.factory', [
             _.each(this.superFeatures, function(super_feature) {
               return SuperFeaturesApi.getSuperFeature(super_feature).then(
                 function(response) {
+                  // debugger;
+                  // add response to internal SF list
                   return response;
               });
             });
