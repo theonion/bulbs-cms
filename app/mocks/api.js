@@ -117,8 +117,21 @@ angular.module('bulbsCmsApp.mockApi', [
       'expire_date': today.clone().add({days: 7})
     }]);
 
+    // live blogs
+    var liveBlogEntryRegex = /\/cms\/api\/v1\/liveblog\/entry\/?\?liveblog=(\d+)$/;
 
-        // super features
+    $httpBackend.whenGET(liveBlogEntryRegex)
+      .respond(function (method, url, data) {
+        var liveBlogId = parseInt(liveBlogEntryRegex.exec(url)[1], 10);
+
+        return [200, {
+          results: mockApiData['liveblog.entries'].filter(function (entry) {
+            return entry.liveblog === liveBlogId;
+          })
+        }];
+      });
+
+    // super features
     var superFeatureRegex = /\/cms\/api\/v1\/super-feature\/$/;
     var superFeatureRelationsRegex = /\/cms\/api\/v1\/super-feature\/(\d+)\/relations(\/(ordering))?\/?$/;
 

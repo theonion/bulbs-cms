@@ -1,5 +1,6 @@
 @import '_sizing';
 @import 'mixins/_mixin-accordion-list';
+@import 'mixins/_mixin-alerts';
 @import 'mixins/_mixin-buttons';
 @import 'mixins/_mixin-input-container';
 
@@ -11,6 +12,10 @@ live-blog-entries {
 
   .btn-minimal {
     .mixin-button-minimal();
+  }
+
+  .live-blog-entries-list-error {
+    .alert-error();
   }
 
   .input-container {

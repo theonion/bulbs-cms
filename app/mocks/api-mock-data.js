@@ -569,6 +569,13 @@ angular.module('bulbsCmsApp.mockApi.data', [])
       {'id': 5, 'slug': 'tag-5', 'name': 'Tag 5', 'type': 'content_tag'},
       {'id': 6, 'slug': 'tag-6', 'name': 'Tag 6', 'type': 'content_tag'}
     ],
+    'liveblog.entries': [{
+      id: 1,
+      liveblog: 16
+    }, {
+      id: 2,
+      liveblog: 16
+    }],
     'pzones.list': {
       count: 5,
       next: null,
