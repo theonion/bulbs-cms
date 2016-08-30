@@ -249,6 +249,29 @@ describe('Service: SuperFeaturesApi', function () {
 
       expect(callback.args[0][0]).to.eql(data);
     });
+
+    it('should transform publish date to moment in response', function () {
+      var data = {
+        title: 'my new super feature',
+        published: moment.tz('America/Chicago')
+      };
+      var payload = {
+        title: data.title,
+        published: data.published.format()
+      }
+      var callback = sandbox.stub();
+      $httpBackend
+        .expectPOST(
+          CmsConfig.buildApiUrlRoot('content') + '/?doctype=' + superFeatureType,
+          payload
+        )
+        .respond(200, payload);
+
+      SuperFeaturesApi.createSuperFeature(data).then(callback);
+      $httpBackend.flush();
+
+      expect(moment.isMoment(callback.args[0][0].published)).to.equal(true);
+    });
   });
 
   context('updating a super feature', function () {
@@ -269,6 +292,29 @@ describe('Service: SuperFeaturesApi', function () {
 
       expect(JSON.parse(server.args[0][2])).to.eql(data);
       expect(callback.args[0][0]).to.eql(data);
+    });
+
+    it('should transform publish date to moment in response', function () {
+      var data = {
+        id: 1,
+        published: moment.tz('America/Chicago')
+      };
+      var payload = {
+        id: data.id,
+        published: data.published.format()
+      };
+      var callback = sandbox.stub();
+      $httpBackend
+        .expectPUT(
+          CmsConfig.buildApiUrlRoot('content', data.id),
+          payload
+        )
+        .respond(200, payload);
+
+      SuperFeaturesApi.updateSuperFeature(data).then(callback);
+      $httpBackend.flush();
+
+      expect(moment.isMoment(callback.args[0][0].published)).to.equal(true);
     });
   });
 

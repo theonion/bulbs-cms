@@ -25,10 +25,13 @@ angular.module('bulbs.cms.superFeatures.api', [
       };
 
       var cleanData = function (data) {
-        var payload = _.cloneDeep(data);
+        var payload = _.chain(data)
+          .omit('published')
+          .cloneDeep()
+          .value();
 
         if (data.published) {
-          payload.published = payload.published.format();
+          payload.published = data.published.format();
         }
 
         return payload;
@@ -103,7 +106,8 @@ angular.module('bulbs.cms.superFeatures.api', [
         name: 'Super Feature',
         namePlural: 'Super Features',
         updateSuperFeature: function (data) {
-          return $http.put(contentEndpoint(data.id), data)
+          var payload = cleanData(data);
+          return $http.put(contentEndpoint(data.id), payload)
             .then(function (response) {
               return parsePayload(response.data);
             });
