@@ -11,6 +11,7 @@ angular.module('bulbs.cms.liveBlog.api', [
     function (_, $http, CmsConfig, moment, Utils) {
 
       var liveBlogEndpoint = CmsConfig.buildApiUrlRoot.bind(null, 'liveblog');
+      var liveBlogEntryEndpoint = liveBlogEndpoint.bind(null, 'entry');
 
       var parsePayload = function (payload) {
         var data = _.cloneDeep(payload);
@@ -38,20 +39,20 @@ angular.module('bulbs.cms.liveBlog.api', [
       return {
         createEntry: function (entry) {
           var payload = cleanData(entry);
-          return $http.post(liveBlogEndpoint('entry'), payload)
+          return $http.post(liveBlogEntryEndpoint(), payload)
             .then(function (response) {
               return parsePayload(response.data);
             });
         },
         updateEntry: function (entry) {
           var payload = cleanData(entry);
-          return $http.put(liveBlogEndpoint('entry', payload.id), payload)
+          return $http.put(liveBlogEntryEndpoint(payload.id), payload)
             .then(function (response) {
               return parsePayload(response.data);
             });
         },
         deleteEntry: function (entry) {
-          return $http.delete(liveBlogEndpoint('entry', entry.id));
+          return $http.delete(liveBlogEntryEndpoint(entry.id));
         },
         getEntries: function (id) {
           var params;
@@ -59,7 +60,7 @@ angular.module('bulbs.cms.liveBlog.api', [
             params = Utils.param({ liveblog: id });
           }
 
-          return $http.get(liveBlogEndpoint('entry', params))
+          return $http.get(liveBlogEntryEndpoint(params))
             .then(function (response) {
               return {
                 results: response.data.results.map(function (result) {
