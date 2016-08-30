@@ -258,7 +258,7 @@ describe('Service: SuperFeaturesApi', function () {
       var payload = {
         title: data.title,
         published: data.published.format()
-      }
+      };
       var callback = sandbox.stub();
       $httpBackend
         .expectPOST(

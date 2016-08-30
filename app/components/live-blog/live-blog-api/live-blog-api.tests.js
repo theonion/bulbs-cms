@@ -97,7 +97,7 @@ describe('Service: LiveBlogApi', function () {
       var payload = {
         published: entry.published.format(),
         liveblog: entry.liveblog
-      }
+      };
       $httpBackend
         .expectPOST(CmsConfig.buildApiUrlRoot('liveblog', 'entry'), payload)
         .respond(201, payload);
