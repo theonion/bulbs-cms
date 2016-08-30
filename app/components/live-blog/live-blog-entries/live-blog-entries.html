@@ -109,8 +109,9 @@
         <div class="accordion-list-item-meta-tools">
 
           <button
+              ng-disabled="transactionsLocked()"
               confirmation-modal-opener
-              modal-body="Are you sure you want to delete this entry '{{ entry.title }}'?"
+              modal-body="Are you sure you want to delete {{ entry.headline ? '\'' + entry.headline + '\'' : 'this entry' }}?"
               modal-title="Delete Entry"
               modal-ok-text="Delete"
               modal-on-ok="deleteEntry(entry)"

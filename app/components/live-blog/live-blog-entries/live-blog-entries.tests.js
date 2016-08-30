@@ -1,7 +1,9 @@
 'use strict';
 
 describe('Directive: liveBlogEntries', function () {
+  var $;
   var $parentScope;
+  var deleteEntryDeferred;
   var digest;
   var getEntriesDeferred;
   var html;
@@ -13,11 +15,13 @@ describe('Directive: liveBlogEntries', function () {
     sandbox = sinon.sandbox.create();
 
     module('bulbs.cms.liveBlog.entries');
+    module('jquery');
     module('jsTemplates');
 
     html = angular.element('<live-blog-entries article="article"></live-blog-entries>');
 
-    inject(function (_LiveBlogApi_, _Raven_, $compile, $q, $rootScope) {
+    inject(function (_$_, _LiveBlogApi_, _Raven_, $compile, $q, $rootScope) {
+      $ = _$_;
       $parentScope = $rootScope.$new();
       LiveBlogApi = _LiveBlogApi_;
       Raven = _Raven_;
@@ -34,6 +38,10 @@ describe('Directive: liveBlogEntries', function () {
       getEntriesDeferred = $q.defer();
       sandbox.stub(LiveBlogApi, 'getEntries')
         .returns(getEntriesDeferred.promise);
+
+      deleteEntryDeferred = $q.defer();
+      sandbox.stub(LiveBlogApi, 'deleteEntry')
+        .returns(deleteEntryDeferred.promise);
     });
   });
 
@@ -61,6 +69,145 @@ describe('Directive: liveBlogEntries', function () {
       expect(element.find('.live-blog-entries-list-error').html())
         .to.have.string('An error occurred retrieving entries!');
       expect(Raven.captureMessage.calledOnce).to.equal(true);
+    });
+  });
+
+  context('entry interactions', function () {
+
+  //   context('accordion', function () {
+  //
+  //     it('should have a button to collapse all entries', function () {
+  //
+  //       // TODO : add test code here
+  //       throw new Error('Not implemented yet.');
+  //     });
+  //
+  //     it('should have a button to expand all entries', function () {
+  //
+  //       // TODO : add test code here
+  //       throw new Error('Not implemented yet.');
+  //     });
+  //   });
+  //
+  //   context('adding', function () {
+  //
+  //     it('should post a new entry', function () {
+  //
+  //       // TODO : add test code here
+  //       throw new Error('Not implemented yet.');
+  //     });
+  //
+  //     it('should show an error message on failure', function () {
+  //
+  //       // TODO : add test code here
+  //       throw new Error('Not implemented yet.');
+  //     });
+  //
+  //     it('should be disabled if another transaction is running', function () {
+  //
+  //       // TODO : add test code here
+  //       throw new Error('Not implemented yet.');
+  //     });
+  //   });
+  //
+  //   context('updating', function () {
+  //
+  //     it('should put the entry', function () {
+  //
+  //       // TODO : add test code here
+  //       throw new Error('Not implemented yet.');
+  //     });
+  //
+  //     it('should show an error message on failure', function () {
+  //
+  //       // TODO : add test code here
+  //       throw new Error('Not implemented yet.');
+  //     });
+  //
+  //     it('should be disabled if another transaction is running', function () {
+  //
+  //       // TODO : add test code here
+  //       throw new Error('Not implemented yet.');
+  //     });
+  //
+  //     it('should be disabled if entry form is pristine', function () {
+  //
+  //       // TODO : add test code here
+  //       throw new Error('Not implemented yet.');
+  //     });
+  //   });
+  //
+  //   context('publish', function () {
+  //
+  //     it('should allow publish date to be changed', function () {
+  //
+  //       // TODO : add test code here
+  //       throw new Error('Not implemented yet.');
+  //     });
+  //
+  //     it('should show an error message on failure', function () {
+  //
+  //       // TODO : add test code here
+  //       throw new Error('Not implemented yet.');
+  //     });
+  //
+  //     it('should save after publish date is successfully changed', function () {
+  //
+  //       // TODO : add test code here
+  //       throw new Error('Not implemented yet.');
+  //     });
+  //
+  //     it('should be disabled if another transaction is running', function () {
+  //
+  //       // TODO : add test code here
+  //       throw new Error('Not implemented yet.');
+  //     });
+  //   });
+
+    context('delete', function () {
+      var element;
+      var entry;
+      var deleteButton;
+
+      beforeEach(function () {
+        entry = { id: 1 };
+        getEntriesDeferred.resolve({ results: [entry] });
+        element = digest(html);
+        deleteButton = element.find('button[modal-on-ok^="deleteEntry"]');
+      });
+
+      it('should allow an entry to be deleted', function () {
+
+        deleteButton.isolateScope().modalOnOk();
+        deleteEntryDeferred.resolve();
+        $parentScope.$digest();
+
+        expect(LiveBlogApi.deleteEntry.withArgs(entry).calledOnce)
+          .to.equal(true);
+        expect(element.find('li').length).to.equal(0);
+      });
+
+      it('should show an error message on failure', function () {
+
+        deleteButton.isolateScope().modalOnOk();
+        deleteEntryDeferred.reject();
+        $parentScope.$digest();
+
+        expect(element.find('.live-blog-entries-list-error').text())
+          .to.have.string('An error occurred attempting to delete an entry!');
+        expect(Raven.captureMessage.calledOnce).to.equal(true);
+      });
+
+      it('should be disabled if another transaction is running', function () {
+
+        deleteButton.isolateScope().modalOnOk();
+        deleteButton.isolateScope().modalOnOk();
+        $parentScope.$digest();
+
+        expect(deleteButton.attr('disabled')).to.equal('disabled');
+        expect(element.isolateScope().transactionsLocked()).to.equal(true);
+        expect(LiveBlogApi.deleteEntry.calledOnce).to.equal(true);
+      });
     });
   });
 });
