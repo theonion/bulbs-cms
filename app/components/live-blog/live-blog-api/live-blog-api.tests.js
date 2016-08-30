@@ -51,7 +51,7 @@ describe('Service: LiveBlogApi', function () {
       LiveBlogApi.getLiveBlogEntries(parentId).then(callback);
       $httpBackend.flush();
 
-      expect(callback.withArgs(entries).calledOnce).to.equal(true);
+      expect(callback.withArgs({ results: entries }).calledOnce).to.equal(true);
     });
 
     it('should transform publish dates to moment objects', function () {
@@ -69,7 +69,7 @@ describe('Service: LiveBlogApi', function () {
       LiveBlogApi.getLiveBlogEntries(parentId).then(callback);
       $httpBackend.flush();
 
-      expect(moment.isMoment(callback.args[0][0][0].published)).to.equal(true)
+      expect(moment.isMoment(callback.args[0][0].results[0].published)).to.equal(true)
     });
   });
 });

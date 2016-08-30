@@ -31,9 +31,11 @@ angular.module('bulbs.cms.liveBlog.api', [
 
           return $http.get(liveBlogEndpoint('entry', params))
             .then(function (response) {
-              return response.data.results.map(function (result) {
-                return parsePayload(result);
-              });
+              return {
+                results: response.data.results.map(function (result) {
+                  return parsePayload(result);
+                })
+              };
             });
         }
       };
