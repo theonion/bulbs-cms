@@ -86,10 +86,11 @@ angular.module('apiServices.specialCoverage.factory', [
       },
 
       $hooks: {
-        // TODO:
         'before-save': function () {
           // transform SF data into list of ids
+          // move from super_features to superFeatures
           // debugger;
+          this.$transformSuperFeatureData();
         },
         'after-fetch': function () {
           // auto fetch all video records when first fetching
@@ -106,6 +107,15 @@ angular.module('apiServices.specialCoverage.factory', [
       $extend: {
         Record: {
           /**
+           * Transform super feature data to list of IDs
+           */
+           $transformSuperFeatureData: function () {
+             this.superFeatures = [];
+             _.each(this.super_features, function(sf) {
+               this.superFeatures.push(sf.id);
+             }, this);
+          },
+          /**
            * Load video data by filling in video models listed in videos property.
            */
           $loadVideosData: function () {
@@ -113,15 +123,20 @@ angular.module('apiServices.specialCoverage.factory', [
               video.$fetch();
             });
           },
+          /**
+           * Load super feature data.
+           */
           $loadSuperFeaturesData: function () {
+            this.super_features = [];
             _.each(this.superFeatures, function(super_feature) {
-              return SuperFeaturesApi.getSuperFeature(super_feature).then(
-                function(response) {
-                  // debugger;
-                  // add response to internal SF list
-                  return response;
-              });
-            });
+              SuperFeaturesApi.getSuperFeature(super_feature).then(
+                  function(response) {
+                    this.$addToSuperFeaturesData(response);
+                }.bind(this));
+            }, this);
+          },
+          $addToSuperFeaturesData: function (response) {
+            this.super_features.push(response);
           },
           /**
            * Load campaign data from Tunic endpoint

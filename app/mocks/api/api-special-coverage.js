@@ -53,7 +53,7 @@ angular.module('bulbsCmsApp.mockApi.specialCoverage', [
       end_date: '2016-01-13T22:51:27.814000Z',
       query: {},
       videos: [],
-      super_features: [1],
+      super_features: [100],
       active: false,
       promoted: false
     }, {
