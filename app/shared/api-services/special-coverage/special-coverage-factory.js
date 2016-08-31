@@ -86,35 +86,22 @@ angular.module('apiServices.specialCoverage.factory', [
       },
 
       $hooks: {
-        'before-save': function () {
-          // transform SF data into list of ids
-          // move from super_features to superFeatures
-          // debugger;
-          this.$transformSuperFeatureData();
-        },
         'after-fetch': function () {
           // auto fetch all video records when first fetching
           this.$loadVideosData();
+          // fetch super features data
           this.$loadSuperFeaturesData();
         },
         'after-save': function () {
           // auto fetch all video records when saving/updating
           this.$loadVideosData();
+          // fetch super features data
           this.$loadSuperFeaturesData();
         }
       },
 
       $extend: {
         Record: {
-          /**
-           * Transform super feature data to list of IDs
-           */
-           $transformSuperFeatureData: function () {
-             this.superFeatures = [];
-             _.each(this.super_features, function(sf) {
-               this.superFeatures.push(sf.id);
-             }, this);
-          },
           /**
            * Load video data by filling in video models listed in videos property.
            */
@@ -191,6 +178,7 @@ angular.module('apiServices.specialCoverage.factory', [
 
             if (!existingSuperFeature) {
               this.super_features.push(super_feature);
+              this.superFeatures.push(super_feature.id);
               added = true;
             }
 
