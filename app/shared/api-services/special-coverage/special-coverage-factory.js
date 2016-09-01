@@ -111,7 +111,7 @@ angular.module('apiServices.specialCoverage.factory', [
             });
           },
           /**
-           * Load super feature data.
+           * Load super feature data
            */
           $loadSuperFeaturesData: function () {
             this.super_features = [];
@@ -122,6 +122,9 @@ angular.module('apiServices.specialCoverage.factory', [
                 }.bind(this));
             }, this);
           },
+          /**
+           * Add super feature data to array reprsenting list of super features
+           */
           $addToSuperFeaturesData: function (response) {
             this.super_features.push(response);
           },
