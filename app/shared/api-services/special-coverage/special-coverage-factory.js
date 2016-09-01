@@ -114,19 +114,12 @@ angular.module('apiServices.specialCoverage.factory', [
            * Load super feature data
            */
           $loadSuperFeaturesData: function () {
-            this.super_features = [];
             _.each(this.superFeatures, function(super_feature) {
               SuperFeaturesApi.getSuperFeature(super_feature).then(
                   function(response) {
-                    this.$addToSuperFeaturesData(response);
+                    this.addSuperFeature(response);
                 }.bind(this));
             }, this);
-          },
-          /**
-           * Add super feature data to array reprsenting list of super features
-           */
-          $addToSuperFeaturesData: function (response) {
-            this.super_features.push(response);
           },
           /**
            * Load campaign data from Tunic endpoint
