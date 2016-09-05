@@ -7,6 +7,7 @@ angular.module('bulbs.cms.liveBlog.entries', [
   'bulbs.cms.site.config',
   'bulbs.cms.utils',
   'confirmationModal',
+  'bulbs.cms.dateTimeModal',
   'OnionEditor',
   'Raven'
 ])
@@ -18,6 +19,10 @@ angular.module('bulbs.cms.liveBlog.entries', [
           var reportError = function (message, data) {
             Raven.captureMessage(message, data);
             scope.errorMessage = message;
+          };
+
+          var titleDisplay = function (entry) {
+            return entry.headline ? '"' + entry.headline + '"' : 'an entry';
           };
 
           scope.clearError = function () {
@@ -39,8 +44,33 @@ angular.module('bulbs.cms.liveBlog.entries', [
               reportError(message, { response: response });
             });
 
+          var entryForm = 'entryForm_';
+
+          scope.wrapperForm = {};
+          scope.makeEntryFormName = function (entry) {
+            return entryForm + entry.id;
+          };
+          scope.getEntryForm = function (entry) {
+            var name = scope.makeEntryFormName(entry);
+
+            if (scope.wrapperForm[name]) {
+              return scope.wrapperForm[name];
+            }
+            scope.wrapperForm[name] = {};
+            return scope.wrapperForm[name];
+          };
+
           var lock = Utils.buildLock();
           scope.transactionsLocked = lock.isLocked;
+
+          scope.saveEntry = lock(function (entry) {
+
+            return LiveBlogApi.updateEntry(entry)
+              .catch(function (response) {
+                var message = 'An error occurred attempting to save ' + titleDisplay(entry) + '!';
+                reportError(message, { response: response });
+              });
+          });
 
           scope.deleteEntry = lock(function (entry) {
 
@@ -50,8 +80,7 @@ angular.module('bulbs.cms.liveBlog.entries', [
                 Utils.removeFrom(scope.entries, index);
               })
               .catch(function (response) {
-                var titleDisplay = entry.headline ? '"' + entry.headline + '"' : 'an entry';
-                var message = 'An error occurred attempting to delete ' + titleDisplay + '!';
+                var message = 'An error occurred attempting to delete ' + titleDisplay(entry) + '!';
                 reportError(message, { response: response });
               });
           });

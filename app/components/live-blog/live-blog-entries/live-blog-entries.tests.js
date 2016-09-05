@@ -10,6 +10,7 @@ describe('Directive: liveBlogEntries', function () {
   var LiveBlogApi;
   var Raven;
   var sandbox;
+  var updateEntryDeferred;
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
@@ -42,6 +43,10 @@ describe('Directive: liveBlogEntries', function () {
       deleteEntryDeferred = $q.defer();
       sandbox.stub(LiveBlogApi, 'deleteEntry')
         .returns(deleteEntryDeferred.promise);
+
+      updateEntryDeferred = $q.defer();
+      sandbox.stub(LiveBlogApi, 'updateEntry')
+        .returns(updateEntryDeferred.promise);
     });
   });
 
@@ -109,60 +114,103 @@ describe('Directive: liveBlogEntries', function () {
   //       throw new Error('Not implemented yet.');
   //     });
   //   });
-  //
-  //   context('updating', function () {
-  //
-  //     it('should put the entry', function () {
-  //
-  //       // TODO : add test code here
-  //       throw new Error('Not implemented yet.');
-  //     });
-  //
-  //     it('should show an error message on failure', function () {
-  //
-  //       // TODO : add test code here
-  //       throw new Error('Not implemented yet.');
-  //     });
-  //
-  //     it('should be disabled if another transaction is running', function () {
-  //
-  //       // TODO : add test code here
-  //       throw new Error('Not implemented yet.');
-  //     });
-  //
-  //     it('should be disabled if entry form is pristine', function () {
-  //
-  //       // TODO : add test code here
-  //       throw new Error('Not implemented yet.');
-  //     });
-  //   });
-  //
-  //   context('publish', function () {
-  //
-  //     it('should allow publish date to be changed', function () {
-  //
-  //       // TODO : add test code here
-  //       throw new Error('Not implemented yet.');
-  //     });
-  //
-  //     it('should show an error message on failure', function () {
-  //
-  //       // TODO : add test code here
-  //       throw new Error('Not implemented yet.');
-  //     });
-  //
-  //     it('should save after publish date is successfully changed', function () {
-  //
-  //       // TODO : add test code here
-  //       throw new Error('Not implemented yet.');
-  //     });
-  //
-  //     it('should be disabled if another transaction is running', function () {
-  //
-  //       // TODO : add test code here
-  //       throw new Error('Not implemented yet.');
-  //     });
-  //   });
+
+    context('updating', function () {
+      var element;
+      var entry;
+      var headlineInput;
+      var updateButton;
+
+      beforeEach(function () {
+        entry = { id: 1 };
+        getEntriesDeferred.resolve({ results: [entry] });
+        element = digest(html);
+        headlineInput = element.find('input[ng-model="entry.headline"]');
+        updateButton = element.find('button[ng-click^="saveEntry"]');
+      });
+
+      it('should put the entry', function () {
+
+        headlineInput.val('junk').trigger('change');
+        updateButton.trigger('click');
+
+        expect(LiveBlogApi.updateEntry.withArgs(entry).calledOnce)
+          .to.equal(true);
+      });
+
+      it('should show an error message on failure', function () {
+        var newTitle = 'junk';
+
+        headlineInput.val(newTitle).trigger('change');
+        updateButton.trigger('click');
+        updateEntryDeferred.reject();
+        $parentScope.$digest();
+
+        expect(element.find('.live-blog-entries-list-error').text())
+          .to.have.string('An error occurred attempting to save "' + newTitle + '"!');
+        expect(Raven.captureMessage.calledOnce).to.equal(true);
+      });
+
+      it('should be disabled if another transaction is running', function () {
+
+        headlineInput.val('junk').trigger('change');
+        updateButton.trigger('click');
+        updateButton.trigger('click');
+        $parentScope.$digest();
+
+        expect(updateButton.attr('disabled')).to.equal('disabled');
+        expect(element.isolateScope().transactionsLocked()).to.equal(true);
+        expect(LiveBlogApi.updateEntry.calledOnce).to.equal(true);
+      });
+
+      it('should be disabled if entry form is pristine', function () {
+
+        expect(updateButton.attr('disabled')).to.equal('disabled');
+      });
+    });
+
+    context('publish', function () {
+      var element;
+      var entry;
+      var publishButton;
+
+      beforeEach(function () {
+        entry = { id: 1 };
+        getEntriesDeferred.resolve({ results: [entry] });
+        element = digest(html);
+        publishButton = element.find('button[ng-model="entry.published"]');
+      });
+
+      it('should allow publish date to be changed', function () {
+
+        publishButton.isolateScope().modalOnClose();
+
+        expect(LiveBlogApi.updateEntry.withArgs(entry).calledOnce)
+          .to.equal(true);
+      });
+
+      it('should show an error message on failure', function () {
+
+        publishButton.isolateScope().modalOnClose();
+        updateEntryDeferred.reject();
+        $parentScope.$digest();
+
+        expect(element.find('.live-blog-entries-list-error').text())
+          .to.have.string('An error occurred attempting to save an entry!');
+        expect(Raven.captureMessage.calledOnce).to.equal(true);
+      });
+
+      it('should be disabled if another transaction is running', function () {
+
+        publishButton.isolateScope().modalOnClose();
+        publishButton.isolateScope().modalOnClose();
+        $parentScope.$digest();
+
+        expect(publishButton.attr('disabled')).to.equal('disabled');
+        expect(element.isolateScope().transactionsLocked()).to.equal(true);
+        expect(LiveBlogApi.updateEntry.calledOnce).to.equal(true);
+      });
+    });
 
     context('delete', function () {
       var element;

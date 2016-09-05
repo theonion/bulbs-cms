@@ -59,14 +59,22 @@
 
       <div class="accordion-list-item-meta-tools">
         <button
+            ng-click="saveEntry(entry)"
+            ng-disabled="
+              transactionsLocked() ||
+              getEntryForm(entry).$pristine
+            "
             class="btn btn-success btn-xs">
           <i class="fa fa-floppy-o"></i>
           <span>Save</span>
         </button>
 
         <button
+            ng-disabled="transactionsLocked()"
             datetime-selection-modal-opener
             modal-clear-text="Unpublish"
+            modal-on-close="saveEntry(entry)"
+            modal-on-clear="saveEntry(entry)"
             ng-model="entry.published"
             class="btn btn-primary btn-xs">
           <i class="fa fa-clock-o"></i>
@@ -80,29 +88,42 @@
         ng-hide="panelClosed"
         class="accordion-list-item-content">
 
-      <div>
-        <label>Author</label>
-        <input
-            ng-model="entry.authors">
-      </div>
+      <form name="{{ 'wrapperForm.' + makeEntryFormName(entry) }}">
 
-      <div class="input-container">
-        <label>Headline</label>
-        <input
-            ng-model="entry.headline"
-            placeholder="E.G. An Oral History Of Harriet The Spy, Nickelodeon's First Feature Film">
-      </div>
-
-      <div class="input-container">
-        <label>Copy</label>
-        <div class="input-container-onion-editor-wrapper">
-          <onion-editor
-              role="multiline"
-              ng-model="entry.body"
-              placeholder="E.G. An Oral History Of Harriet The Spy, Nickelodeon's First Feature Film">
-          </onion-editor>
+        <div>
+          <label
+              for="entryAuthors-{{ entry.id }}">
+            Author
+          </label>
+          <input
+              ng-model="entry.authors"
+              id="entryAuthors-{{ entry.id }}"
+              name="entry-{{ entry.id }}-authors">
         </div>
-      </div>
+
+        <div class="input-container">
+          <label
+              for="entryHeadline-{{ entry.id }}">
+            Headline
+          </label>
+          <input
+              ng-model="entry.headline"
+              id="entryHeadline-{{ entry.id }}"
+              name="entry-{{ entry.id }}-headline"
+              placeholder="E.G. An Oral History Of Harriet The Spy, Nickelodeon's First Feature Film">
+        </div>
+
+        <div class="input-container">
+          <label>Copy</label>
+          <div class="input-container-onion-editor-wrapper">
+            <onion-editor
+                role="multiline"
+                ng-model="entry.body"
+                placeholder="E.G. An Oral History Of Harriet The Spy, Nickelodeon's First Feature Film">
+            </onion-editor>
+          </div>
+        </div>
+      </form>
 
       <div class="accordion-list-item-meta">
 
