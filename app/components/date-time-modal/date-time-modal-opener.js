@@ -16,6 +16,7 @@ angular.module('bulbs.cms.dateTimeModal.opener', [
         restrict: 'A',
         scope: {
           modalClearText: '@',
+          modalOkText: '@',
           modDatetime: '=?ngModel',
           modalTitle: '@',
           modalOnClear: '&',
