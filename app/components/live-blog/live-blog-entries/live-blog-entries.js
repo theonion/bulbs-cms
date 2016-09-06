@@ -101,6 +101,9 @@ angular.module('bulbs.cms.liveBlog.entries', [
           scope.saveEntry = lock(function (entry) {
 
             return LiveBlogApi.updateEntry(entry)
+              .then(function () {
+                scope.getEntryForm(entry).$setPristine();
+              })
               .catch(function (response) {
                 var message = 'An error occurred attempting to save ' + titleDisplay(entry) + '!';
                 reportError(message, { response: response });

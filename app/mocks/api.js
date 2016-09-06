@@ -118,12 +118,13 @@ angular.module('bulbsCmsApp.mockApi', [
     }]);
 
     // live blogs
-    var liveBlogListRegex = /\/cms\/api\/v1\/liveblog\/entry\/?\?liveblog=(\d+)$/;
-    var liveBlogDetailRegex = /\/cms\/api\/v1\/liveblog\/entry\/(\d+)\/?$/
+    var liveBlogEntryListRegex = /\/cms\/api\/v1\/liveblog\/entry\/?\?liveblog=(\d+)$/;
+    var liveBlogEntryDetailRegex = /\/cms\/api\/v1\/liveblog\/entry\/(\d+)\/?$/
+    var liveBlogEntryRegex = /\/cms\/api\/v1\/liveblog\/entry\/?$/
 
-    $httpBackend.whenGET(liveBlogListRegex)
+    $httpBackend.whenGET(liveBlogEntryListRegex)
       .respond(function (method, url, data) {
-        var liveBlogId = parseInt(liveBlogListRegex.exec(url)[1], 10);
+        var liveBlogId = parseInt(liveBlogEntryListRegex.exec(url)[1], 10);
 
         return [200, {
           results: mockApiData['liveblog.entries'].filter(function (entry) {
@@ -131,9 +132,29 @@ angular.module('bulbsCmsApp.mockApi', [
           })
         }];
       });
-    $httpBackend.whenDELETE(liveBlogDetailRegex)
+    $httpBackend.whenPOST(liveBlogEntryRegex)
       .respond(function (method, url, data) {
-        var liveBlogId = parseInt(liveBlogDetailRegex.exec(url)[1], 10);
+        var entries = mockApiData['liveblog.entries']
+        var newId = _.max(mockApiData['liveblog.entries'], 'id').id + 1;
+        var newData = { id: newId };
+
+        entries.push(_.assign(newData, JSON.parse(data)));
+
+        return [201, newData];
+      });
+    $httpBackend.whenPUT(liveBlogEntryDetailRegex)
+      .respond(function (method, url, data) {
+        var liveBlogId = parseInt(liveBlogEntryDetailRegex.exec(url)[1], 10);
+
+        var index = mockApiData['liveblog.entries'].findIndex(function (entry) {
+          return entry.id === liveBlogId;
+        });
+
+        return [200, data];
+      });
+    $httpBackend.whenDELETE(liveBlogEntryDetailRegex)
+      .respond(function (method, url, data) {
+        var liveBlogId = parseInt(liveBlogEntryDetailRegex.exec(url)[1], 10);
 
         var index = mockApiData['liveblog.entries'].findIndex(function (entry) {
           return entry.id === liveBlogId;

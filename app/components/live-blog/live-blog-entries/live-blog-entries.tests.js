@@ -226,6 +226,17 @@ describe('Directive: liveBlogEntries', function () {
 
         expect(updateButton.attr('disabled')).to.equal('disabled');
       });
+
+      it('should set the entry form pristine', function () {
+
+        headlineInput.val('junk').trigger('change');
+        updateButton.trigger('click');
+        updateEntryDeferred.resolve();
+        $parentScope.$digest();
+
+        expect(element.isolateScope().getEntryForm(entry).$pristine)
+          .to.equal(true);
+      });
     });
 
     context('publish', function () {
