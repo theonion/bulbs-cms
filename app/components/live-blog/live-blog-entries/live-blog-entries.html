@@ -3,11 +3,13 @@
 
   <div ng-if="entries.length > 0">
     <button
+        ng-click="collapseAll()"
         class="btn-minimal">
       <i class="fa fa-caret-square-o-down"></i>
       <span>Collapse All</span>
     </button>
     <button
+        ng-click="expandAll()"
         class="btn-minimal">
       <i class="fa fa-caret-square-o-up"></i>
       <span>Expand All</span>
@@ -39,18 +41,16 @@
 </div>
 
 <ol ng-if="entries.length > 0">
-  <li
-      ng-init="panelClosed = false"
-      ng-repeat="entry in entries track by entry.id">
+  <li ng-repeat="entry in entries track by entry.id">
 
     <div class="accordion-list-item-meta">
       <button
-          ng-click="panelClosed = !panelClosed"
+          ng-click="togglePanel(entry)"
           class="accordion-list-item-meta-label">
         <i
             ng-class="{
-              'fa-caret-right': panelClosed,
-              'fa-caret-down': !panelClosed
+              'fa-caret-right': !isPanelOpen(entry),
+              'fa-caret-down': isPanelOpen(entry)
             }"
             class="fa">
         </i>
@@ -85,7 +85,7 @@
     </div>
 
     <div
-        ng-hide="panelClosed"
+        ng-show="isPanelOpen(entry)"
         class="accordion-list-item-content">
 
       <form name="{{ 'wrapperForm.' + makeEntryFormName(entry) }}">

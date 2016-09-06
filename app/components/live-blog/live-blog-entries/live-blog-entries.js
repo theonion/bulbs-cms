@@ -44,6 +44,24 @@ angular.module('bulbs.cms.liveBlog.entries', [
               reportError(message, { response: response });
             });
 
+          var panelOpen = {};
+          scope.isPanelOpen = function (entry) {
+            return !!panelOpen[entry.id];
+          };
+          scope.togglePanel = function (entry) {
+            panelOpen[entry.id] = !panelOpen[entry.id];
+          };
+          scope.collapseAll = function () {
+            scope.entries.forEach(function (entry) {
+              panelOpen[entry.id] = false;
+            });
+          };
+          scope.expandAll = function () {
+            scope.entries.forEach(function (entry) {
+              panelOpen[entry.id] = true;
+            });
+          };
+
           var entryForm = 'entryForm_';
 
           scope.wrapperForm = {};

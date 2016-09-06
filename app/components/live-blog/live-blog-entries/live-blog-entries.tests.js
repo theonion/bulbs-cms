@@ -78,42 +78,64 @@ describe('Directive: liveBlogEntries', function () {
   });
 
   context('entry interactions', function () {
+    var element;
 
-  //   context('accordion', function () {
-  //
-  //     it('should have a button to collapse all entries', function () {
-  //
-  //       // TODO : add test code here
-  //       throw new Error('Not implemented yet.');
-  //     });
-  //
-  //     it('should have a button to expand all entries', function () {
-  //
-  //       // TODO : add test code here
-  //       throw new Error('Not implemented yet.');
-  //     });
-  //   });
-  //
-  //   context('adding', function () {
-  //
-  //     it('should post a new entry', function () {
-  //
-  //       // TODO : add test code here
-  //       throw new Error('Not implemented yet.');
-  //     });
-  //
-  //     it('should show an error message on failure', function () {
-  //
-  //       // TODO : add test code here
-  //       throw new Error('Not implemented yet.');
-  //     });
-  //
-  //     it('should be disabled if another transaction is running', function () {
-  //
-  //       // TODO : add test code here
-  //       throw new Error('Not implemented yet.');
-  //     });
-  //   });
+    beforeEach(function () {
+      element = digest(html);
+    });
+
+    context('accordion', function () {
+
+      beforeEach(function () {
+        getEntriesDeferred.resolve({ results: [{ id: 1 }, { id: 2 }] });
+        $parentScope.$digest();
+      });
+
+      it('should have a button to collapse all entries', function () {
+        var collapse = element.find('button[ng-click^="collapseAll"]');
+
+        collapse.trigger('click');
+
+        var contents = element.find('.accordion-list-item-content');
+
+        expect(contents.eq(0).hasClass('ng-hide')).to.equal(true);
+        expect(contents.eq(1).hasClass('ng-hide')).to.equal(true);
+      });
+
+      it('should have a button to expand all entries', function () {
+        var collapse = element.find('button[ng-click^="collapseAll"]');
+        var contents = element.find('.accordion-list-item-content');
+        var expand = element.find('button[ng-click^="expandAll"]');
+
+        collapse.trigger('click');
+        $parentScope.$digest();
+        expand.trigger('click');
+
+        expect(contents.eq(0).hasClass('ng-hide')).to.equal(false);
+        expect(contents.eq(1).hasClass('ng-hide')).to.equal(false);
+      });
+    });
+    //
+    // context('adding', function () {
+    //
+    //   it('should post a new entry', function () {
+    //
+    //     // TODO : add test code here
+    //     throw new Error('Not implemented yet.');
+    //   });
+    //
+    //   it('should show an error message on failure', function () {
+    //
+    //     // TODO : add test code here
+    //     throw new Error('Not implemented yet.');
+    //   });
+    //
+    //   it('should be disabled if another transaction is running', function () {
+    //
+    //     // TODO : add test code here
+    //     throw new Error('Not implemented yet.');
+    //   });
+    // });
 
     context('updating', function () {
       var element;
