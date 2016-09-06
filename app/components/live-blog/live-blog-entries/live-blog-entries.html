@@ -74,8 +74,9 @@
             ng-disabled="transactionsLocked()"
             datetime-selection-modal-opener
             modal-clear-text="Unpublish"
-            modal-on-close="saveEntry(entry)"
-            modal-on-clear="saveEntry(entry)"
+            modal-ok-text="Save"
+            modal-on-close="publishAndSave(entry)"
+            modal-on-clear="publishAndSave(entry)"
             ng-model="entry.published"
             class="btn btn-primary btn-xs">
           <i class="fa fa-clock-o"></i>

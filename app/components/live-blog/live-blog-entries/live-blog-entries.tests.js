@@ -259,6 +259,19 @@ describe('Directive: liveBlogEntries', function () {
         expect(Raven.captureMessage.calledOnce).to.equal(true);
       });
 
+      it('should reset publish date if save fails', function () {
+        var oldPublishDate = moment();
+        var newPublishDate = moment().add(1, 'day');
+
+        entry.published = oldPublishDate;
+        publishButton.isolateScope().modalOnClose();
+        entry.published = newPublishDate;
+        updateEntryDeferred.reject();
+        $parentScope.$digest();
+
+        expect(entry.published.isSame(oldPublishDate)).to.equal(true);
+      });
+
       it('should be disabled if another transaction is running', function () {
 
         publishButton.isolateScope().modalOnClose();

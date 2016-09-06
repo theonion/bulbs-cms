@@ -12,8 +12,8 @@ angular.module('bulbs.cms.liveBlog.entries', [
   'Raven'
 ])
   .directive('liveBlogEntries', [
-    'CmsConfig', 'LiveBlogApi', 'Raven', 'Utils',
-    function (CmsConfig, LiveBlogApi, Raven, Utils) {
+    '$q', 'CmsConfig', 'LiveBlogApi', 'Raven', 'Utils',
+    function ($q, CmsConfig, LiveBlogApi, Raven, Utils) {
       return {
         link: function (scope) {
           var reportError = function (message, data) {
@@ -104,8 +104,18 @@ angular.module('bulbs.cms.liveBlog.entries', [
               .catch(function (response) {
                 var message = 'An error occurred attempting to save ' + titleDisplay(entry) + '!';
                 reportError(message, { response: response });
+                return $q.reject();
               });
           });
+
+          scope.publishAndSave = function (entry) {
+            var oldPublished = entry.published;
+
+            return scope.saveEntry(entry)
+              .catch(function () {
+                entry.published = oldPublished;
+              });
+          };
 
           scope.deleteEntry = lock(function (entry) {
 
