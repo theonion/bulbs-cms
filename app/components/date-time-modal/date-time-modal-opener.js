@@ -10,8 +10,8 @@ angular.module('bulbs.cms.dateTimeModal.opener', [
   'ui.bootstrap.modal'
 ])
   .directive('datetimeSelectionModalOpener', [
-    '$modal', 'CmsConfig',
-    function ($modal, CmsConfig) {
+    '$modal', '$q', 'CmsConfig',
+    function ($modal, $q, CmsConfig) {
       return {
         restrict: 'A',
         scope: {
@@ -19,6 +19,7 @@ angular.module('bulbs.cms.dateTimeModal.opener', [
           modalOkText: '@',
           modDatetime: '=?ngModel',
           modalTitle: '@',
+          modalOnBeforeClose: '&',
           modalOnClear: '&',
           modalOnClose: '&'
         },
@@ -26,6 +27,7 @@ angular.module('bulbs.cms.dateTimeModal.opener', [
           var modalInstance = null;
           element.addClass('datetime-selection-modal-opener');
           element.on('click', function () {
+
             modalInstance = $modal
               .open({
                 templateUrl: CmsConfig.buildComponentPath(
@@ -35,14 +37,21 @@ angular.module('bulbs.cms.dateTimeModal.opener', [
                 controller: 'DatetimeSelectionModalCtrl',
                 scope: scope
               });
+
             modalInstance.result
               .then(function (newDate) {
-                scope.modDatetime = newDate;
-                if (newDate) {
-                  scope.modalOnClose({  newDate: newDate  });
-                } else {
-                  scope.modalOnClear();
-                }
+                return $q.when(scope.modalOnBeforeClose({ newDate: newDate }))
+                  .then(function (result) {
+
+                    if (result !== false) {
+                      scope.modDatetime = newDate;
+                      if (newDate) {
+                        scope.modalOnClose({ newDate: newDate });
+                      } else {
+                        scope.modalOnClear();
+                      }
+                    }
+                  });
               });
           });
         }

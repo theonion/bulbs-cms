@@ -108,12 +108,15 @@ angular.module('bulbs.cms.liveBlog.entries', [
               });
           });
 
-          scope.publishAndSave = function (entry) {
-            var oldPublished = entry.published;
+          scope.publishAndSave = function (entry, newDate) {
+            var oldDate = entry.published;
+
+            entry.published = newDate;
 
             return scope.saveEntry(entry)
               .catch(function () {
-                entry.published = oldPublished;
+                entry.published = oldDate;
+                return false;
               });
           };
 

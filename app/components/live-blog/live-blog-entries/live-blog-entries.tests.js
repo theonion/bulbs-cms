@@ -242,7 +242,7 @@ describe('Directive: liveBlogEntries', function () {
 
       it('should allow publish date to be changed', function () {
 
-        publishButton.isolateScope().modalOnClose();
+        publishButton.isolateScope().modalOnBeforeClose();
 
         expect(LiveBlogApi.updateEntry.withArgs(entry).calledOnce)
           .to.equal(true);
@@ -250,7 +250,7 @@ describe('Directive: liveBlogEntries', function () {
 
       it('should show an error message on failure', function () {
 
-        publishButton.isolateScope().modalOnClose();
+        publishButton.isolateScope().modalOnBeforeClose();
         updateEntryDeferred.reject();
         $parentScope.$digest();
 
@@ -262,9 +262,10 @@ describe('Directive: liveBlogEntries', function () {
       it('should reset publish date if save fails', function () {
         var oldPublishDate = moment();
         var newPublishDate = moment().add(1, 'day');
-
+        var buttonScope = publishButton.isolateScope();
         entry.published = oldPublishDate;
-        publishButton.isolateScope().modalOnClose();
+
+        buttonScope.modalOnBeforeClose();
         entry.published = newPublishDate;
         updateEntryDeferred.reject();
         $parentScope.$digest();
@@ -274,8 +275,8 @@ describe('Directive: liveBlogEntries', function () {
 
       it('should be disabled if another transaction is running', function () {
 
-        publishButton.isolateScope().modalOnClose();
-        publishButton.isolateScope().modalOnClose();
+        publishButton.isolateScope().modalOnBeforeClose();
+        publishButton.isolateScope().modalOnBeforeClose();
         $parentScope.$digest();
 
         expect(publishButton.attr('disabled')).to.equal('disabled');
