@@ -138,6 +138,8 @@ angular.module('bulbs.cms.utils', [
                     .finally(function () {
                       locked = false;
                     });
+                } else {
+                  return $q.reject();
                 }
               };
             };

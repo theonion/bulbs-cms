@@ -77,6 +77,19 @@ describe('Utils', function () {
       expect(wasLocked).to.equal(false);
       expect(nowLocked).to.equal(true);
     });
+
+    it('should return a rejected promise when attempting to run a function that is locked', function () {
+      var function1 = sandbox.stub().returns(123);
+      var lock = postConfigUtils.buildLock();
+      var lockedFunction1 = lock(function1);
+      var rejectCallback = sandbox.stub();
+
+      lockedFunction1();
+      lockedFunction1().catch(rejectCallback);
+      $rootScope.$digest();
+
+      expect(rejectCallback.calledOnce).to.equal(true);
+    });
   });
 
   context('path utilities', function () {
