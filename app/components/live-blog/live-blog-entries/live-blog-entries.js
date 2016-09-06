@@ -46,7 +46,10 @@ angular.module('bulbs.cms.liveBlog.entries', [
 
           var panelOpen = {};
           scope.isPanelOpen = function (entry) {
-            return !!panelOpen[entry.id];
+            if (angular.isUndefined(panelOpen[entry.id])) {
+              panelOpen[entry.id] = true;
+            }
+            return panelOpen[entry.id];
           };
           scope.togglePanel = function (entry) {
             panelOpen[entry.id] = !panelOpen[entry.id];

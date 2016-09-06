@@ -91,6 +91,14 @@ describe('Directive: liveBlogEntries', function () {
         $parentScope.$digest();
       });
 
+      it('should default to panels being open', function () {
+
+        var contents = element.find('.accordion-list-item-content');
+
+        expect(contents.eq(0).hasClass('ng-hide')).to.equal(false);
+        expect(contents.eq(1).hasClass('ng-hide')).to.equal(false);
+      });
+
       it('should have a button to collapse all entries', function () {
         var collapse = element.find('button[ng-click^="collapseAll"]');
 
