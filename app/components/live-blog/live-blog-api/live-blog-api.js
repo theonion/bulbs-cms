@@ -37,8 +37,8 @@ angular.module('bulbs.cms.liveBlog.api', [
       };
 
       return {
-        createEntry: function (entry) {
-          var payload = cleanData(entry);
+        createEntry: function (data) {
+          var payload = cleanData(data);
           return $http.post(liveBlogEntryEndpoint(), payload)
             .then(function (response) {
               return parsePayload(response.data);

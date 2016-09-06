@@ -84,6 +84,20 @@ angular.module('bulbs.cms.liveBlog.entries', [
           var lock = Utils.buildLock();
           scope.transactionsLocked = lock.isLocked;
 
+          scope.addEntry = lock(function () {
+
+            return LiveBlogApi.createEntry({
+              liveblog: scope.article.id
+            })
+              .then(function (entry) {
+                scope.entries.push(entry);
+              })
+              .catch(function (response) {
+                var message = 'An error occurred attempting to add an entry!';
+                reportError(message, { response: response });
+              });
+          });
+
           scope.saveEntry = lock(function (entry) {
 
             return LiveBlogApi.updateEntry(entry)

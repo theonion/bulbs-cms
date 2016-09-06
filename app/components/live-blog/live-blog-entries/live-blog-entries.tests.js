@@ -3,6 +3,7 @@
 describe('Directive: liveBlogEntries', function () {
   var $;
   var $parentScope;
+  var createEntryDeferred;
   var deleteEntryDeferred;
   var digest;
   var getEntriesDeferred;
@@ -35,6 +36,10 @@ describe('Directive: liveBlogEntries', function () {
       );
 
       $parentScope.article = { id: 1 };
+
+      createEntryDeferred = $q.defer();
+      sandbox.stub(LiveBlogApi, 'createEntry')
+        .returns(createEntryDeferred.promise);
 
       getEntriesDeferred = $q.defer();
       sandbox.stub(LiveBlogApi, 'getEntries')
@@ -123,27 +128,51 @@ describe('Directive: liveBlogEntries', function () {
         expect(contents.eq(1).hasClass('ng-hide')).to.equal(false);
       });
     });
-    //
-    // context('adding', function () {
-    //
-    //   it('should post a new entry', function () {
-    //
-    //     // TODO : add test code here
-    //     throw new Error('Not implemented yet.');
-    //   });
-    //
-    //   it('should show an error message on failure', function () {
-    //
-    //     // TODO : add test code here
-    //     throw new Error('Not implemented yet.');
-    //   });
-    //
-    //   it('should be disabled if another transaction is running', function () {
-    //
-    //     // TODO : add test code here
-    //     throw new Error('Not implemented yet.');
-    //   });
-    // });
+
+    context('adding', function () {
+      var addButton;
+
+      beforeEach(function () {
+        addButton = element.find('button[ng-click^="addEntry"]');
+        getEntriesDeferred.resolve({ results: [] });
+      });
+
+      it('should post a new entry', function () {
+        var entry = { id: 666 };
+
+        addButton.trigger('click');
+        createEntryDeferred.resolve(entry);
+        $parentScope.$digest();
+
+        expect(LiveBlogApi.createEntry.calledOnce).to.equal(true);
+        expect(LiveBlogApi.createEntry.args[0][0]).to.eql({
+          liveblog: $parentScope.article.id
+        });
+        expect(element.find('li').scope().entry).to.equal(entry);
+      });
+
+      it('should show an error message on failure', function () {
+
+        addButton.trigger('click');
+        createEntryDeferred.reject();
+        $parentScope.$digest();
+
+        expect(element.find('.live-blog-entries-list-error').html())
+          .to.have.string('An error occurred attempting to add an entry!');
+        expect(Raven.captureMessage.calledOnce).to.equal(true);
+      });
+
+      it('should be disabled if another transaction is running', function () {
+
+        addButton.trigger('click');
+        addButton.trigger('click');
+        $parentScope.$digest();
+
+        expect(addButton.attr('disabled')).to.equal('disabled');
+        expect(element.isolateScope().transactionsLocked()).to.equal(true);
+        expect(LiveBlogApi.createEntry.calledOnce).to.equal(true);
+      });
+    });
 
     context('updating', function () {
       var element;

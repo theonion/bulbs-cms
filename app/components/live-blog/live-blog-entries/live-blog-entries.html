@@ -15,7 +15,8 @@
       <span>Expand All</span>
     </button>
     <button
-        ng-click="newEntry()"
+        ng-click="addEntry()"
+        ng-disabled="transactionsLocked()"
         class="btn btn-primary">
       <i class="fa fa-plus"></i>
       <span>Add New Entry</span>
@@ -147,8 +148,9 @@
 </ol>
 
 <button
-    class="btn btn-primary accordion-list-add-bottom"
-    ng-click="newEntry()">
+    ng-click="addEntry()"
+    ng-disabled="transactionsLocked()"
+    class="btn btn-primary accordion-list-add-bottom">
   <i class="fa fa-plus"></i>
   <span>Add New Entry</span>
 </button>
