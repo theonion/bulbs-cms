@@ -8,6 +8,7 @@ angular.module('bulbs.cms.liveBlog.entries', [
   'bulbs.cms.utils',
   'confirmationModal',
   'bulbs.cms.dateTimeModal',
+  'bulbs.cms.liveBlog.authorSearch',
   'OnionEditor',
   'Raven'
 ])

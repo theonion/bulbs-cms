@@ -90,6 +90,10 @@
       <form name="{{ 'wrapperForm.' + makeEntryFormName(entry) }}">
 
         <div>
+          <live-blog-author-search ng-model="author"></live-blog-author-search>
+        </div>
+
+        <div>
           <label
               for="entryAuthors-{{ entry.id }}">
             Author
