@@ -3,11 +3,12 @@
 angular.module('bulbs.cms.liveBlog.entries', [
   'bulbs.cms.dateTimeFilter',
   'bulbs.cms.dateTimeModal',
+  'bulbs.cms.dateTimeModal',
   'bulbs.cms.liveBlog.api',
+  'bulbs.cms.liveBlog.entries.authorBridge',
   'bulbs.cms.site.config',
   'bulbs.cms.utils',
   'confirmationModal',
-  'bulbs.cms.dateTimeModal',
   'OnionEditor',
   'Raven'
 ])

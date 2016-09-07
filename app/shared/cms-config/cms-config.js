@@ -54,6 +54,8 @@ angular.module('bulbs.cms.config', [
       var imageApiKey = '';
       // url for internal links, those that are not accessible to the public
       var internalUrl = '';
+      // name of directive to use for live blog author selection
+      var liveBlogAuthorSelectorDirectiveName = '';
       // path to cms logo static asset
       var navLogoPath = '';
       // path to shared directory
@@ -206,6 +208,14 @@ angular.module('bulbs.cms.config', [
         return this;
       };
 
+      this.setLiveBlogAuthorSelectorDirectiveName = function (value) {
+        liveBlogAuthorSelectorDirectiveName = checkOrError(
+          value, _.isString,
+          'live blog author selector directive name must be a string!'
+        );
+        return this;
+      };
+
       this.setNavLogoPath = function (value) {
         navLogoPath = checkOrError(
           value, _.isString,
@@ -297,6 +307,7 @@ angular.module('bulbs.cms.config', [
             getDateTimeFormatHumanReadable: _.constant(dateTimeFormatHumanReadable),
             getFirebaseMaxArticleHistory: _.constant(firebaseMaxArticleHistory),
             getImageApiKey: _.constant(imageApiKey),
+            getLiveBlogAuthorSelectorDirectiveName: _.constant(liveBlogAuthorSelectorDirectiveName),
             getNavLogoPath: _.constant(navLogoPath),
             getSuperFeaturesType: _.constant(superFeaturesType),
             getTimezoneName: _.constant(timezoneName),

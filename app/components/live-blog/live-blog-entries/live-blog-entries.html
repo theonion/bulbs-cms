@@ -89,15 +89,16 @@
 
       <form name="{{ 'wrapperForm.' + makeEntryFormName(entry) }}">
 
-        <div>
+        <div class="input-container">
           <label
               for="entryAuthors-{{ entry.id }}">
-            Author
+            Authors
           </label>
-          <input
+          <live-blog-entries-author-bridge
               ng-model="entry.authors"
               id="entryAuthors-{{ entry.id }}"
               name="entry-{{ entry.id }}-authors">
+          </live-blog-entries-author-bridge>
         </div>
 
         <div class="input-container">
