@@ -6,7 +6,7 @@ angular.module('notifications.edit', [
 ])
   .config(function ($routeProvider) {
     $routeProvider
-      .when('/cms/app/notification/edit/:id/', {
+      .when('/cms/app/notifications/edit/:id/', {
         controller: function ($routeParams, $scope, $window, CmsConfig) {
           $window.document.title = CmsConfig.getCmsName() + ' | Edit Notification';
           $scope.routeId = $routeParams.id;
