@@ -42,7 +42,8 @@ angular.module('bulbsCmsApp.mockApi.specialCoverage', [
       },
       active: true,
       promoted: true,
-      videos: []
+      videos: [],
+      super_features: []
     }, {
       id: 2,
       name: 'Fun',
@@ -52,6 +53,7 @@ angular.module('bulbsCmsApp.mockApi.specialCoverage', [
       end_date: '2016-01-13T22:51:27.814000Z',
       query: {},
       videos: [],
+      super_features: [100],
       active: false,
       promoted: false
     }, {
@@ -64,6 +66,7 @@ angular.module('bulbsCmsApp.mockApi.specialCoverage', [
       end_date: '2016-01-13T22:51:27.814000Z',
       query: {},
       videos: [],
+      super_features: [],
       active: false,
       promoted: false
     }, {
@@ -76,6 +79,7 @@ angular.module('bulbsCmsApp.mockApi.specialCoverage', [
       end_date: '2016-01-13T22:51:27.814000Z',
       query: {},
       videos: [1, 2, 3],
+      super_features: [],
       active: false,
       promoted: false
     }, {
@@ -84,6 +88,7 @@ angular.module('bulbsCmsApp.mockApi.specialCoverage', [
       name: 'No Slug',
       description: 'No slug on this special coverage.',
       query: {},
+      super_features: [],
       start_date: '2016-01-13T22:51:27.814000Z',
       end_date: '2016-01-13T22:51:27.814000Z',
       active: false,

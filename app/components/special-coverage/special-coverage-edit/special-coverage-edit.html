@@ -143,6 +143,11 @@
           Add Videos
         </a>
       </li>
+      <li role="presentation">
+        <a href="#paneSuperFeatures" role="tab" data-toggle="tab">
+          Add Super Features
+        </a>
+      </li>
     </ul>
   </div>
   <div class="row tab-content well">
@@ -161,5 +166,15 @@
           add-video="model.addVideo(video)">
       </video-list>
     </div>
+
+    <div id="paneSuperFeatures" role="tabpanel" class="tab-pane">
+      <h4>Super Feature List</h4>
+      <super-features-tab
+        super-features="model.superFeatures"
+        on-update="needsSave = true"
+        add-super-feature="model.addSuperFeature(superFeature)">
+      </super-features-tab>
+    </div>
+
   </div>
 </div>
