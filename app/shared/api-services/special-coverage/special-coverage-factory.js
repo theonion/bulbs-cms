@@ -6,10 +6,9 @@ angular.module('apiServices.specialCoverage.factory', [
   'apiServices.mixins.fieldDisplay',
   'cms.tunic.config',
   'filters.moment',
-  'VideohubClient.api',
-  'bulbs.cms.superFeatures.api'
+  'VideohubClient.api'
 ])
-  .factory('SpecialCoverage', function (_, $http, $parse, $q, SuperFeaturesApi, restmod, TunicConfig, Video) {
+  .factory('SpecialCoverage', function (_, $http, $parse, $q, restmod, TunicConfig, Video) {
     var ACTIVE_STATES = {
       INACTIVE: 'Inactive',
       PROMOTED: 'Pin to HP'
@@ -89,14 +88,10 @@ angular.module('apiServices.specialCoverage.factory', [
         'after-fetch': function () {
           // auto fetch all video records when first fetching
           this.$loadVideosData();
-          // fetch super features data
-          this.$loadSuperFeaturesData();
         },
         'after-save': function () {
           // auto fetch all video records when saving/updating
           this.$loadVideosData();
-          // fetch super features data
-          this.$loadSuperFeaturesData();
         }
       },
 
@@ -109,19 +104,6 @@ angular.module('apiServices.specialCoverage.factory', [
             _.each(this.videos, function (video) {
               video.$fetch();
             });
-          },
-          /**
-           * Load super feature data
-           */
-          $loadSuperFeaturesData: function () {
-            // this.super_features = [];
-            _.each(this.superFeatures, function(super_feature) {
-              SuperFeaturesApi.getSuperFeature(super_feature).then(
-                  function(response) {
-                    this.addToSuperFeatureData(response);
-                    this.addToLocalSuperFeature(response);
-                }.bind(this));
-            }, this);
           },
           /**
            * Load campaign data from Tunic endpoint
@@ -167,27 +149,15 @@ angular.module('apiServices.specialCoverage.factory', [
 
             return added;
           },
-          addToSuperFeatureData: function (super_feature) {
-            var added = false;
+          addSuperFeature: function (superFeature) {
 
-            var existingSuperFeature = _.find(this.superFeatures, function(existingSuperFeature) {
-              return super_feature.id === existingSuperFeature;
-            });
-
-            if (!existingSuperFeature) {
-              this.superFeatures.push(super_feature.id);
-              added = true;
-            }
-
-            return added;
-          },
-          addToLocalSuperFeature: function (super_feature) {
-            var existingSuperFeature = _.find(this.super_features, function(existingSuperFeature) {
-              return super_feature.id === existingSuperFeature.id;
-            });
+            var existingSuperFeature = this.superFeatures
+              .find(function(existingSuperFeatureId) {
+                return superFeature.id === existingSuperFeatureId;
+              });
 
             if (!existingSuperFeature) {
-              this.super_features.push(super_feature);
+              this.superFeatures.push(superFeature.id);
             }
           },
           /**
