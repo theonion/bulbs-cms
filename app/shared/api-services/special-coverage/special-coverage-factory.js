@@ -114,10 +114,12 @@ angular.module('apiServices.specialCoverage.factory', [
            * Load super feature data
            */
           $loadSuperFeaturesData: function () {
+            // this.super_features = [];
             _.each(this.superFeatures, function(super_feature) {
               SuperFeaturesApi.getSuperFeature(super_feature).then(
                   function(response) {
-                    this.addSuperFeature(response);
+                    this.addToSuperFeatureData(response);
+                    this.addToLocalSuperFeature(response);
                 }.bind(this));
             }, this);
           },
@@ -165,7 +167,7 @@ angular.module('apiServices.specialCoverage.factory', [
 
             return added;
           },
-          addSuperFeature: function (super_feature) {
+          addToSuperFeatureData: function (super_feature) {
             var added = false;
 
             var existingSuperFeature = _.find(this.superFeatures, function(existingSuperFeature) {
@@ -173,12 +175,20 @@ angular.module('apiServices.specialCoverage.factory', [
             });
 
             if (!existingSuperFeature) {
-              this.super_features.push(super_feature);
               this.superFeatures.push(super_feature.id);
               added = true;
             }
 
             return added;
+          },
+          addToLocalSuperFeature: function (super_feature) {
+            var existingSuperFeature = _.find(this.super_features, function(existingSuperFeature) {
+              return super_feature.id === existingSuperFeature.id;
+            });
+
+            if (!existingSuperFeature) {
+              this.super_features.push(super_feature);
+            }
           },
           /**
            * Getter/setter for active state, a front end standin for the active
