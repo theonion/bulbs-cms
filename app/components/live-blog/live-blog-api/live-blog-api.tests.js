@@ -79,7 +79,7 @@ describe('Service: LiveBlogApi', function () {
         liveblog: 1
       };
       $httpBackend
-        .expectPOST(CmsConfig.buildApiUrlRoot('liveblog', 'entry'), entry)
+        .expectPOST(CmsConfig.buildApiUrlRoot('liveblog', 'entry/'), entry)
         .respond(201, entry);
 
       LiveBlogApi.createEntry(entry).then(callback);
@@ -99,7 +99,7 @@ describe('Service: LiveBlogApi', function () {
         liveblog: entry.liveblog
       };
       $httpBackend
-        .expectPOST(CmsConfig.buildApiUrlRoot('liveblog', 'entry'), payload)
+        .expectPOST(CmsConfig.buildApiUrlRoot('liveblog', 'entry/'), payload)
         .respond(201, payload);
 
       LiveBlogApi.createEntry(entry).then(callback);
@@ -117,7 +117,7 @@ describe('Service: LiveBlogApi', function () {
       };
       $httpBackend
         .expectPUT(
-          CmsConfig.buildApiUrlRoot('liveblog', 'entry', entry.id),
+          CmsConfig.buildApiUrlRoot('liveblog', 'entry', entry.id, '/'),
           entry
         )
         .respond(200, entry);
@@ -142,7 +142,7 @@ describe('Service: LiveBlogApi', function () {
       };
       $httpBackend
         .expectPUT(
-          CmsConfig.buildApiUrlRoot('liveblog', 'entry', entry.id),
+          CmsConfig.buildApiUrlRoot('liveblog', 'entry', entry.id, '/'),
           payload
         )
         .respond(200, payload);
@@ -161,7 +161,7 @@ describe('Service: LiveBlogApi', function () {
         liveblog: 10
       };
       $httpBackend
-        .expectDELETE(CmsConfig.buildApiUrlRoot('liveblog', 'entry', entry.id))
+        .expectDELETE(CmsConfig.buildApiUrlRoot('liveblog', 'entry', entry.id, '/'))
         .respond(204);
 
       LiveBlogApi.deleteEntry(entry).then(callback);

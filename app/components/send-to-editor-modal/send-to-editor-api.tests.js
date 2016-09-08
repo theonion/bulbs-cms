@@ -37,7 +37,7 @@ describe('Service: SendToEditorApi', function () {
     var status = 'Garbage';
     var response = { status: status };
     $httpBackend
-      .expectPOST(CmsConfig.buildApiUrlRoot('content', article.id, 'send'))
+      .expectPOST(CmsConfig.buildApiUrlRoot('content', article.id, 'send/'))
       .respond(200, response);
 
     SendToEditorApi.sendToEditor(article, status, note).then(callback);

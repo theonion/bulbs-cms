@@ -39,20 +39,20 @@ angular.module('bulbs.cms.liveBlog.api', [
       return {
         createEntry: function (data) {
           var payload = cleanData(data);
-          return $http.post(liveBlogEntryEndpoint(), payload)
+          return $http.post(liveBlogEntryEndpoint('/'), payload)
             .then(function (response) {
               return parsePayload(response.data);
             });
         },
         updateEntry: function (entry) {
           var payload = cleanData(entry);
-          return $http.put(liveBlogEntryEndpoint(payload.id), payload)
+          return $http.put(liveBlogEntryEndpoint(payload.id, '/'), payload)
             .then(function (response) {
               return parsePayload(response.data);
             });
         },
         deleteEntry: function (entry) {
-          return $http.delete(liveBlogEntryEndpoint(entry.id));
+          return $http.delete(liveBlogEntryEndpoint(entry.id, '/'));
         },
         getEntries: function (id) {
           var params;
@@ -60,7 +60,7 @@ angular.module('bulbs.cms.liveBlog.api', [
             params = Utils.param({ liveblog: id });
           }
 
-          return $http.get(liveBlogEntryEndpoint(params))
+          return $http.get(liveBlogEntryEndpoint('/', params))
             .then(function (response) {
               return {
                 results: response.data.results.map(function (result) {

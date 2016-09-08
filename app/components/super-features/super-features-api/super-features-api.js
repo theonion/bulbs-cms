@@ -50,7 +50,7 @@ angular.module('bulbs.cms.superFeatures.api', [
             });
         },
         deleteSuperFeature: function (data) {
-          return $http.delete(contentEndpoint(data.id));
+          return $http.delete(contentEndpoint(data.id, '/'));
         },
         fields: [{
           title: 'Super Feature Name',
@@ -79,7 +79,7 @@ angular.module('bulbs.cms.superFeatures.api', [
           }
         }],
         getSuperFeature: function (id) {
-          return $http.get(superFeatureEndpoint(id)).then(function (response) {
+          return $http.get(superFeatureEndpoint(id, '/')).then(function (response) {
             return parsePayload(response.data);
           });
         },
@@ -94,7 +94,7 @@ angular.module('bulbs.cms.superFeatures.api', [
             });
         },
         getSuperFeatureRelations: function (id) {
-          return $http.get(superFeatureEndpoint(id, 'relations'))
+          return $http.get(superFeatureEndpoint(id, 'relations/'))
             .then(function (response) {
               return {
                 results: response.data.map(function (result) {
@@ -107,7 +107,7 @@ angular.module('bulbs.cms.superFeatures.api', [
         namePlural: 'Super Features',
         updateSuperFeature: function (data) {
           var payload = cleanData(data);
-          return $http.put(contentEndpoint(data.id), payload)
+          return $http.put(contentEndpoint(data.id, '/'), payload)
             .then(function (response) {
               return parsePayload(response.data);
             });
@@ -117,12 +117,12 @@ angular.module('bulbs.cms.superFeatures.api', [
             return _.pick(relation, 'id', 'ordering');
           });
           return $http.put(
-            superFeatureEndpoint(id, 'relations', 'ordering'),
+            superFeatureEndpoint(id, 'relations', 'ordering/'),
             remappedRelations
           );
         },
         updateAllRelationPublishDates: function (id) {
-          return $http.put(superFeatureEndpoint(id, 'set-children-dates'));
+          return $http.put(superFeatureEndpoint(id, 'set-children-dates/'));
         }
       };
     }
