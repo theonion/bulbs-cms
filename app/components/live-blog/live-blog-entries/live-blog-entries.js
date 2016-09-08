@@ -137,6 +137,7 @@ angular.module('bulbs.cms.liveBlog.entries', [
               });
           });
         },
+        restrict: 'E',
         scope: {
           article: '='
         },

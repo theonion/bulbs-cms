@@ -23,6 +23,7 @@ angular.module('bulbs.cms.liveBlog.entries.authorBridge', [
             element.find('> div').html($compile(html)(scope));
           }
         },
+        restrict: 'E',
         scope: {
           ngModel: '='
         },

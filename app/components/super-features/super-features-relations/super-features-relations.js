@@ -21,9 +21,6 @@ angular.module('bulbs.cms.superFeatures.relations', [
         StatusFilterOptions, Utils) {
 
       return {
-        scope: {
-          article: '='
-        },
         link: function (scope, element, attrs) {
           var reportError = function (message, data) {
             Raven.captureMessage(message, data);
@@ -184,6 +181,10 @@ angular.module('bulbs.cms.superFeatures.relations', [
                 reportError(message, { response: response });
               });
           });
+        },
+        restrict: 'E',
+        scope: {
+          article: '='
         },
         templateUrl: CmsConfig.buildComponentPath(
           'super-features',
