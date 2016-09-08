@@ -8,24 +8,28 @@ angular.module('bulbs.cms.liveBlog.entries.authorBridge', [
     function ($compile, CmsConfig) {
 
       return {
-        link: function (scope, element, attrs) {
+        link: function (scope, element) {
           var name = CmsConfig.getLiveBlogAuthorSelectorDirectiveName();
 
-          if (name) {
-            var html = angular.element('<' + name + ' ng-model="ngModel"></' + name + '>');
+          scope.authors = scope.ngModel;
 
-            Object.keys(attrs).forEach(function (key) {
-              if (!key.startsWith('$') && key !== 'ngModel') {
-                html.attr(key, attrs[key]);
-              }
-            });
+          if (name) {
+            var html = angular.element('<' + name + ' ng-model="authors"></' + name + '>');
 
             element.find('> div').html($compile(html)(scope));
           }
+
+          scope.$watch('authors', function (newValue, oldValue) {
+            if (!angular.equals(newValue, oldValue)) {
+              scope.onUpdate({ newValue: newValue });
+              scope.ngModel = newValue;
+            }
+          }, true);
         },
         restrict: 'E',
         scope: {
-          ngModel: '='
+          ngModel: '=',
+          onUpdate: '&'
         },
         template:
           '<div>' +

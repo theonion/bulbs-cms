@@ -46,24 +46,7 @@ describe('Directive: liveBlogEntriesAuthorBridge', function () {
 
     var authorSelector = element.find(directiveName);
     expect(authorSelector.length).to.equal(1);
-    expect(authorSelector.attr('ng-model')).to.equal('ngModel');
-  });
-
-  it('should forward arbitrary attributes', function () {
-    var directiveName = 'my-author-selector';
-    CmsConfigProviderHook.setLiveBlogAuthorSelectorDirectiveName(directiveName);
-    var attr1Key = 'id';
-    var attr1Value = '123';
-    var attr2Key = 'arbitraryAttribute';
-    var attr2Value = 'arbitrary value';
-
-    html.attr(attr1Key, attr1Value);
-    html.attr(attr2Key, attr2Value);
-    var element = digest(html);
-
-    var authorSelector = element.find(directiveName);
-    expect(authorSelector.attr(attr1Key)).to.equal(attr1Value);
-    expect(authorSelector.attr(attr2Key)).to.equal(attr2Value);
+    expect(authorSelector.attr('ng-model')).to.equal('authors');
   });
 
   it('should fail gracefully if no name is set in configuration', function () {
@@ -71,5 +54,20 @@ describe('Directive: liveBlogEntriesAuthorBridge', function () {
     var element = digest(html);
 
     expect(element.html()).to.have.string('No live blog author selector has been configured!');
+  });
+
+  it('should have a on update handler', function () {
+    $parentScope.onUpdate = sandbox.stub();
+    $parentScope.authors = [];
+    html.attr('ng-model', 'authors');
+    html.attr('on-update', 'onUpdate(newValue)');
+    var newValue = [{ id: 1 }, { id: 2 }];
+
+    var element = digest(html);
+    element.isolateScope().authors = newValue;
+    $parentScope.$digest();
+
+    expect($parentScope.onUpdate.withArgs(sinon.match(newValue)).calledOnce)
+      .to.equal(true);
   });
 });

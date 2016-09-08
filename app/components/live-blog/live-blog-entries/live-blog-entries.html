@@ -91,14 +91,9 @@
       <form name="{{ 'wrapperForm.' + makeEntryFormName(entry) }}">
 
         <div class="input-container">
-          <label
-              for="entryAuthors-{{ entry.id }}">
-            Authors
-          </label>
           <live-blog-entries-author-bridge
               ng-model="entry.authors"
-              id="entryAuthors-{{ entry.id }}"
-              name="entry-{{ entry.id }}-authors">
+              on-update="getEntryForm(entry).$setDirty()">
           </live-blog-entries-author-bridge>
         </div>
 
