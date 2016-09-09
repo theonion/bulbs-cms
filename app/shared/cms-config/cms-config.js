@@ -52,6 +52,8 @@ angular.module('bulbs.cms.config', [
       var imageApiUrl = '';
       // key to access image api
       var imageApiKey = '';
+      // path to inline editor buttons configuration
+      var inlineObjectsPath = '';
       // url for internal links, those that are not accessible to the public
       var internalUrl = '';
       // name of directive to use for live blog author selection
@@ -200,6 +202,14 @@ angular.module('bulbs.cms.config', [
         return this;
       };
 
+      this.setInlineObjectsPath = function (value) {
+        inlineObjectsPath = checkOrError(
+          value, _.isString,
+          'inline objects path must be a string!'
+        );
+        return this;
+      };
+
       this.setInternalUrl = function (value) {
         internalUrl = checkOrError(
           value, _.isString,
@@ -307,6 +317,7 @@ angular.module('bulbs.cms.config', [
             getDateTimeFormatHumanReadable: _.constant(dateTimeFormatHumanReadable),
             getFirebaseMaxArticleHistory: _.constant(firebaseMaxArticleHistory),
             getImageApiKey: _.constant(imageApiKey),
+            getInlineObjecsPath: _.constant(inlineObjectsPath),
             getLiveBlogAuthorSelectorDirectiveName: _.constant(liveBlogAuthorSelectorDirectiveName),
             getNavLogoPath: _.constant(navLogoPath),
             getSuperFeaturesType: _.constant(superFeaturesType),

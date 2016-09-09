@@ -379,6 +379,33 @@ describe('CmsConfig', function () {
         });
       });
 
+      context('inline objects path', function () {
+
+        it('should provide a getter and setter', function () {
+          var path = '/inline-objects.json';
+
+          configs.setInlineObjectsPath(path);
+
+          expect(sealedConfigs().getInlineObjecsPath()).to.equal(path);
+        });
+
+        it('should throw an error if given value is not a string', function () {
+
+          expect(function () {
+            configs.setInlineObjectsPath(123);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): inline objects path must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setInlineObjectsPath('/inline-objects.json'))
+            .to.equal(configs);
+        });
+      });
+
       context('internal url', function () {
 
         it('should provide a setter and getter', function () {
