@@ -103,7 +103,7 @@ angular.module('bulbs.cms.editor.wrapper', [
                 searchHandler: window[attrs.linkSearchHandler] || false
               },
               statsContainer: '.wordcount',
-              inlineObjects: attrs.inlineObjects,
+              inlineObjects: attrs.inlineObjects || CmsConfig.getInlineObjecsPath(),
               image: {
                 insertDialog: BettyCropper.upload,
                 editDialog: openImageCropModal,
