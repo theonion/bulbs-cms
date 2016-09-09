@@ -60,12 +60,12 @@
   }
 
   p {
-    margin: 0;
-    min-height: @interface-font-size-2;
     line-height: inherit;
+    margin: @interface-font-size-2 0 0;
+    min-height: @interface-font-size-2;
 
-    &:not(:first-child) {
-      margin-top: @interface-font-size-2;
+    &:last-child {
+      margin-bottom: @interface-font-size-2;
     }
   }
 
@@ -79,6 +79,10 @@
 
     .editor {
       min-height: 100px;
+    }
+
+    .embed-tools {
+      margin: 0.5em 0;
     }
   }
 }
