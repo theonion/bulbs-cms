@@ -1,13 +1,15 @@
 <div
     class="input-list {{ name }} bulbs-autocomplete col-sm-8">
-  <h1
-      class="h6 col-xs-12 {{ name }}">
-    <label
-        for="{{ name }}-input"
-        class="control-label">
-      {{ label }}
-    </label>
-  </h1>
+  <label
+      for="{{ name }}-input"
+      class="input-label col-xs-12">
+    <span>{{ label }}</span>
+    <span
+        ng-if="labelSub"
+        class="input-container-label-sub">
+      {{ labelSub }}
+    </span>
+  </label>
   <div class="col-sm-4 form-group">
     <input
         id="{{ name }}-input"

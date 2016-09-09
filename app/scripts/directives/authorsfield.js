@@ -7,11 +7,14 @@ angular.module('bulbsCmsApp')
       restrict: 'E',
       replace: true,
       scope: {
-        article: '='
+        article: '=',
+        inputLabelText: '@',
+        inputLabelTextSub: '@'
       },
       link: function postLink(scope, element, attrs) {
         scope.name = 'author';
-        scope.label = 'Authors';
+        scope.label = scope.inputLabelText || 'Authors';
+        scope.labelSub = scope.inputLabelTextSub;
         scope.placeholder = 'Authors';
         scope.resourceUrl = CmsConfig.buildApiUrlRoot(
           'author',
