@@ -1,0 +1,153 @@
+<div class="live-blog-entries-header">
+  <h4>Entries</h4>
+
+  <div
+      ng-if="entries.length > 0"
+      class="live-blog-entries-header-meta-tools">
+    <button
+        ng-click="collapseAll()"
+        class="btn-minimal">
+      <i class="fa fa-caret-square-o-down"></i>
+      <span>Collapse All</span>
+    </button>
+    <button
+        ng-click="expandAll()"
+        class="btn-minimal">
+      <i class="fa fa-caret-square-o-up"></i>
+      <span>Expand All</span>
+    </button>
+    <button
+        ng-click="addEntry()"
+        ng-disabled="transactionsLocked()"
+        class="btn btn-primary live-blog-entries-list-add-top">
+      <i class="fa fa-plus"></i>
+      <span>Add New Entry</span>
+    </button>
+  </div>
+
+  <div
+      ng-if="errorMessage"
+      class="live-blog-entries-list-error">
+    <i class="fa fa-exclamation-circle"></i>
+    <span>{{ errorMessage }}</span>
+    <button ng-click="clearError()">
+      <i class="fa fa-times"></i>
+    </button>
+  </div>
+
+  <div
+      ng-if="entries.length < 1"
+      class="live-blog-entries-list-no-items">
+    No entries yet!
+  </div>
+</div>
+
+<ol ng-if="entries.length > 0">
+  <li ng-repeat="entry in entries track by entry.id">
+
+    <div class="accordion-list-item-meta">
+      <button
+          ng-click="togglePanel(entry)"
+          class="accordion-list-item-meta-label">
+        <i
+            ng-class="{
+              'fa-caret-right': !isPanelOpen(entry),
+              'fa-caret-down': isPanelOpen(entry)
+            }"
+            class="fa">
+        </i>
+        <span>{{ entry.headline }}</span>
+      </button>
+
+      <div class="accordion-list-item-meta-tools">
+        <button
+            ng-click="saveEntry(entry)"
+            ng-disabled="
+              transactionsLocked() ||
+              getEntryForm(entry).$pristine
+            "
+            class="btn btn-success btn-xs">
+          <i class="fa fa-floppy-o"></i>
+          <span>Save</span>
+        </button>
+
+        <button
+            ng-disabled="transactionsLocked()"
+            datetime-selection-modal-opener
+            modal-clear-text="Unpublish"
+            modal-on-before-close="publishAndSave(entry, newDate)"
+            modal-ok-text="Save"
+            ng-model="entry.published"
+            class="btn btn-primary btn-xs">
+          <i class="fa fa-clock-o"></i>
+          <span ng-if="entry.published">{{ entry.published | dateTimeFormat }}</span>
+          <span ng-if="!entry.published">Publish</span>
+        </button>
+      </div>
+    </div>
+
+    <div
+        ng-show="isPanelOpen(entry)"
+        class="accordion-list-item-content">
+
+      <form name="{{ 'wrapperForm.' + makeEntryFormName(entry) }}">
+
+        <div class="input-container">
+          <live-blog-entries-author-bridge
+              ng-model="entry.authors"
+              on-update="getEntryForm(entry).$setDirty()">
+          </live-blog-entries-author-bridge>
+        </div>
+
+        <div class="input-container">
+          <label
+              for="entryHeadline-{{ entry.id }}">
+            Headline
+          </label>
+          <input
+              ng-model="entry.headline"
+              id="entryHeadline-{{ entry.id }}"
+              name="entry-{{ entry.id }}-headline"
+              placeholder="E.G. An Oral History Of Harriet The Spy, Nickelodeon's First Feature Film">
+        </div>
+
+        <div class="input-container">
+          <label>Copy</label>
+          <div class="input-container-onion-editor-wrapper">
+            <onion-editor
+                role="multiline"
+                ng-model="entry.body"
+                placeholder="E.G. An Oral History Of Harriet The Spy, Nickelodeon's First Feature Film">
+            </onion-editor>
+          </div>
+        </div>
+      </form>
+
+      <div class="accordion-list-item-meta">
+
+        <div class="accordion-list-item-meta-tools">
+
+          <button
+              ng-disabled="transactionsLocked()"
+              confirmation-modal-opener
+              modal-body="Are you sure you want to delete {{ entry.headline ? '\'' + entry.headline + '\'' : 'this entry' }}?"
+              modal-title="Delete Entry"
+              modal-ok-text="Delete"
+              modal-on-ok="deleteEntry(entry)"
+              class="btn btn-danger btn-sm">
+            <i class="fa fa-trash-o"></i>
+            <span>DELETE</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </li>
+</ol>
+
+<button
+    ng-click="addEntry()"
+    ng-disabled="transactionsLocked()"
+    class="btn btn-primary accordion-list-add-bottom">
+  <i class="fa fa-plus"></i>
+  <span>Add New Entry</span>
+</button>

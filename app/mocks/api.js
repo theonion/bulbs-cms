@@ -117,8 +117,55 @@ angular.module('bulbsCmsApp.mockApi', [
       'expire_date': today.clone().add({days: 7})
     }]);
 
+    // live blogs
+    var liveBlogEntryListRegex = /\/cms\/api\/v1\/liveblog\/entry\/?\?liveblog=(\d+)$/;
+    var liveBlogEntryDetailRegex = /\/cms\/api\/v1\/liveblog\/entry\/(\d+)\/?$/
+    var liveBlogEntryRegex = /\/cms\/api\/v1\/liveblog\/entry\/?$/
 
-        // super features
+    $httpBackend.whenGET(liveBlogEntryListRegex)
+      .respond(function (method, url, data) {
+        var liveBlogId = parseInt(liveBlogEntryListRegex.exec(url)[1], 10);
+
+        return [200, {
+          results: mockApiData['liveblog.entries'].filter(function (entry) {
+            return entry.liveblog === liveBlogId;
+          })
+        }];
+      });
+    $httpBackend.whenPOST(liveBlogEntryRegex)
+      .respond(function (method, url, data) {
+        var entries = mockApiData['liveblog.entries']
+        var newId = _.max(mockApiData['liveblog.entries'], 'id').id + 1;
+        var newData = { id: newId };
+
+        entries.push(_.assign(newData, JSON.parse(data)));
+
+        return [201, newData];
+      });
+    $httpBackend.whenPUT(liveBlogEntryDetailRegex)
+      .respond(function (method, url, data) {
+        var liveBlogId = parseInt(liveBlogEntryDetailRegex.exec(url)[1], 10);
+
+        var index = mockApiData['liveblog.entries'].findIndex(function (entry) {
+          return entry.id === liveBlogId;
+        });
+
+        return [200, data];
+      });
+    $httpBackend.whenDELETE(liveBlogEntryDetailRegex)
+      .respond(function (method, url, data) {
+        var liveBlogId = parseInt(liveBlogEntryDetailRegex.exec(url)[1], 10);
+
+        var index = mockApiData['liveblog.entries'].findIndex(function (entry) {
+          return entry.id === liveBlogId;
+        });
+
+        mockApiData['liveblog.entries'].splice(index, 1);
+
+        return [201, ''];
+      });
+
+    // super features
     var superFeatureRegex = /\/cms\/api\/v1\/super-feature\/$/;
     var superFeatureRelationsRegex = /\/cms\/api\/v1\/super-feature\/(\d+)\/relations(\/(ordering))?\/?$/;
 

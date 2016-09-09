@@ -11,7 +11,7 @@ angular.module('bulbs.cms.sendToEditorModal.api', [
     function (_, $http, CmsConfig, dateTimeFormatFilter, moment, Utils) {
 
       var endpoint = function (article) {
-        return CmsConfig.buildApiUrlRoot('content', article.id, 'send');
+        return CmsConfig.buildApiUrlRoot('content', article.id, 'send/');
       };
 
       var parsePayload = function (payload) {

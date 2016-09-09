@@ -379,6 +379,33 @@ describe('CmsConfig', function () {
         });
       });
 
+      context('inline objects path', function () {
+
+        it('should provide a getter and setter', function () {
+          var path = '/inline-objects.json';
+
+          configs.setInlineObjectsPath(path);
+
+          expect(sealedConfigs().getInlineObjecsPath()).to.equal(path);
+        });
+
+        it('should throw an error if given value is not a string', function () {
+
+          expect(function () {
+            configs.setInlineObjectsPath(123);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): inline objects path must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setInlineObjectsPath('/inline-objects.json'))
+            .to.equal(configs);
+        });
+      });
+
       context('internal url', function () {
 
         it('should provide a setter and getter', function () {
@@ -789,6 +816,37 @@ describe('CmsConfig', function () {
         it('should return config object', function () {
 
           expect(configs.setFirebaseSiteRoot('/sites/onion')).to.eql(configs);
+        });
+      });
+    });
+
+    context('live blog', function () {
+
+      context('author selection directive name', function () {
+
+        it('should provide a setter and getter', function () {
+          var name = 'my-author-selection-directive';
+
+          configs.setLiveBlogAuthorSelectorDirectiveName(name);
+
+          expect(sealedConfigs().getLiveBlogAuthorSelectorDirectiveName())
+            .to.equal(name);
+        });
+
+        it('should throw an error if given value is not a string', function () {
+
+          expect(function () {
+            configs.setLiveBlogAuthorSelectorDirectiveName(123);
+          }).to.throw(
+            BulbsCmsConfigError,
+            'Configuration Error (CmsConfig): live blog author selector directive name must be a string!'
+          );
+        });
+
+        it('should return config object', function () {
+
+          expect(configs.setLiveBlogAuthorSelectorDirectiveName('hello'))
+            .to.equal(configs);
         });
       });
     });

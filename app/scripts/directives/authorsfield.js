@@ -1,19 +1,28 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('authorsField', function (userFilter, $) {
+  .directive('authorsField', function ($, CmsConfig, userFilter, Utils) {
     return {
       templateUrl: '/views/taglike-autocomplete-field.html',
       restrict: 'E',
       replace: true,
       scope: {
-        article: '='
+        article: '=',
+        inputLabelText: '@',
+        inputLabelTextSub: '@'
       },
       link: function postLink(scope, element, attrs) {
         scope.name = 'author';
-        scope.label = 'Authors';
+        scope.label = scope.inputLabelText || 'Authors';
+        scope.labelSub = scope.inputLabelTextSub;
         scope.placeholder = 'Authors';
-        scope.resourceUrl = '/cms/api/v1/author/?ordering=name&search=';
+        scope.resourceUrl = CmsConfig.buildApiUrlRoot(
+          'author',
+          Utils.param({
+            ordering: 'name',
+            search: ''
+          })
+        );
         scope.display = userFilter;
 
         scope.$watch('article.authors', function () {

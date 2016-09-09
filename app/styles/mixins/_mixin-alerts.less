@@ -3,7 +3,8 @@
 
 .mixin-alert (
     @color: @interface-color-gray-1,
-    @background-color: @interface-color-gray-3) {
+    @background-color: @interface-color-gray-3
+  ) {
 
   background-color: @background-color;
   border: 1px solid @color;
@@ -12,6 +13,16 @@
   margin-bottom: @interface-row-margin;
   padding: @interface-internal-spacing;
   text-align: center;
+
+  button, a {
+    background-color: transparent;
+    border: none;
+    color: @color;
+  }
+
+  a {
+    border-bottom: 1px dotted @color;
+  }
 }
 
 .alert-error() {

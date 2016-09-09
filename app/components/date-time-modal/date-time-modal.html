@@ -77,13 +77,19 @@
     </div>
 </div>
 <div class="modal-footer">
+  <button
+      class="btn btn-warning"
+      ng-click="clearDatetime()">
+    <i class="fa fa-calendar-times-o"></i>
+    <span>{{ modalClearText || 'Clear' }}</span>
+  </button>
   <span class="well well-sm">Selected Date: {{ tempDatetime | dateTimeFormat }}</span>
   <button
       class="btn btn-success"
       ng-disabled="!dateValid"
       ng-click="chooseDatetime()">
     <i class="fa fa-check"></i>
-    <span>Done</span>
+    <span>{{ modalOkText || 'Done' }}</span>
   </button>
   <button
       class="btn btn-danger"

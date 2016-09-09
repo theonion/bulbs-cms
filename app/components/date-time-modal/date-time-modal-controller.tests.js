@@ -213,4 +213,13 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
 
     expect($modalInstanceMock.close.callCount).to.equal(0);
   });
+
+  it('should allow given date to be cleared', function () {
+    buildControllerInstance();
+    $modalInstanceMock.close = sinon.stub();
+
+    $scope.clearDatetime();
+
+    expect($modalInstanceMock.close.withArgs(null).calledOnce).to.equal(true);
+  });
 });

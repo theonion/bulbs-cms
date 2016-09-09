@@ -424,7 +424,9 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         }],
         info_data: {
           data: {
-            entries: []
+            entries: [{
+              body: 'garbage<hr>garbage'
+            }]
           }
         }
       }, {
@@ -454,6 +456,12 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         published: moment().add(1, 'day').format(),
         children_count: 4,
         data: {}
+      }, {
+        id: 16,
+        title: 'Live Blog #1',
+        slug: 'live-blog-1',
+        polymorphic_ctype: 'mock_live_blog',
+        entries: [{}]
       }, {
         id: 100,
         title: 'Guide to Catz',
@@ -510,7 +518,8 @@ angular.module('bulbsCmsApp.mockApi.data', [])
                   body: {
                     label: 'Body',
                     type: 'richtext',
-                    field_size: 'long'
+                    field_size: 'long',
+                    read_only: true
                   },
                   image: {
                     label: 'Unset Image',
@@ -560,6 +569,15 @@ angular.module('bulbsCmsApp.mockApi.data', [])
       {'id': 5, 'slug': 'tag-5', 'name': 'Tag 5', 'type': 'content_tag'},
       {'id': 6, 'slug': 'tag-6', 'name': 'Tag 6', 'type': 'content_tag'}
     ],
+    'liveblog.entries': [{
+      id: 1,
+      liveblog: 16,
+      authors: []
+    }, {
+      id: 2,
+      liveblog: 16,
+      authors: []
+    }],
     'pzones.list': {
       count: 5,
       next: null,

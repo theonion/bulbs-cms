@@ -41,6 +41,7 @@ angular.module('bulbs.cms.superFeatures.edit', [
         //  having to make changes to the brittle content edit controller,
         //  maybe we remove this wrapper someday when we refactor content edit
         scope: false,
+        restrict: 'E',
         templateUrl: CmsConfig.buildComponentPath(
           'super-features',
           'super-features-edit',

@@ -21,11 +21,8 @@ angular.module('bulbs.cms.superFeatures.relations', [
         StatusFilterOptions, Utils) {
 
       return {
-        scope: {
-          article: '='
-        },
         link: function (scope, element, attrs) {
-          scope.reportError = function (message, data) {
+          var reportError = function (message, data) {
             Raven.captureMessage(message, data);
             scope.errorMessage = message;
           };
@@ -53,7 +50,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
             })
             .catch(function (response) {
               var message = 'An error occurred retrieving relations!';
-              scope.reportError(message, { response: response });
+              reportError(message, { response: response });
             });
 
           scope.statuses = StatusFilterOptions.getStatuses()
@@ -89,24 +86,8 @@ angular.module('bulbs.cms.superFeatures.relations', [
               }, false);
           };
 
-          var transactionLock = false;
-          scope.transactionsLocked = function () {
-            return transactionLock;
-          };
-          var transaction = function (promised) {
-
-            return function () {
-              if (!transactionLock) {
-                transactionLock = true;
-
-                return promised.apply(null, arguments).finally(function () {
-                  transactionLock = false;
-                });
-              }
-
-              return $q.reject();
-            };
-          };
+          var lock = Utils.buildLock();
+          scope.transactionsLocked = lock.isLocked;
           var reorder = function (operation) {
 
             return function () {
@@ -129,14 +110,14 @@ angular.module('bulbs.cms.superFeatures.relations', [
                 })
                 .catch(function (response) {
                   var message = 'An error occurred attempting to reorder a child!';
-                  scope.reportError(message, { response: response });
+                  reportError(message, { response: response });
                 });
             };
           };
 
-          scope.moveRelation = transaction(reorder(Utils.moveTo));
+          scope.moveRelation = lock(reorder(Utils.moveTo));
 
-          scope.addRelation = transaction(function (title) {
+          scope.addRelation = lock(function (title) {
 
             return SuperFeaturesApi.createSuperFeature({
               parent: scope.article.id,
@@ -149,11 +130,11 @@ angular.module('bulbs.cms.superFeatures.relations', [
               })
               .catch(function (response) {
                 var message = 'An error occurred attempting to add a child page!';
-                scope.reportError(message, { response: response });
+                reportError(message, { response: response });
               });
           });
 
-          scope.updateRelationsPublishDates = transaction(function () {
+          scope.updateRelationsPublishDates = lock(function () {
 
             return SuperFeaturesApi
               .updateAllRelationPublishDates(scope.article.id)
@@ -167,11 +148,11 @@ angular.module('bulbs.cms.superFeatures.relations', [
               })
               .catch(function (response) {
                 var message = 'An error occurred attempting to update child publish dates!';
-                scope.reportError(message, { response: response });
+                reportError(message, { response: response });
               });
           });
 
-          scope.saveRelation = transaction(function (relation) {
+          scope.saveRelation = lock(function (relation) {
 
             var relationCopy = angular.copy(relation);
             relationCopy.parent = scope.article.id;
@@ -180,14 +161,14 @@ angular.module('bulbs.cms.superFeatures.relations', [
               .catch(function (response) {
                 var titleDisplay = relation.title ? '"' + relation.title + '"' : 'a relation';
                 var message = 'An error occurred attempting to update ' + titleDisplay + '!';
-                scope.reportError(message, { response: response });
+                reportError(message, { response: response });
               })
               .finally(function () {
                 scope.getRelationForm(relation).$setPristine();
               });
           });
 
-          scope.deleteRelation = transaction(function (relation) {
+          scope.deleteRelation = lock(function (relation) {
 
             return SuperFeaturesApi.deleteSuperFeature(relation)
               .then(function () {
@@ -197,9 +178,13 @@ angular.module('bulbs.cms.superFeatures.relations', [
               .catch(function (response) {
                 var titleDisplay = relation.title ? '"' + relation.title + '"' : 'a relation';
                 var message = 'An error occurred attempting to delete ' + titleDisplay + '!';
-                scope.reportError(message, { response: response });
+                reportError(message, { response: response });
               });
           });
+        },
+        restrict: 'E',
+        scope: {
+          article: '='
         },
         templateUrl: CmsConfig.buildComponentPath(
           'super-features',

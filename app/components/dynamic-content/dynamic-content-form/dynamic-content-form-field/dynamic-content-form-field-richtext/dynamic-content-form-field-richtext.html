@@ -15,7 +15,8 @@
 <div
     class="dynamic-content-form-field-richtext-multiline"
     ng-class="{ 'dynamic-content-form-field-richtext-read-only': schema.read_only }"
-    ng-if="schema.field_size === 'long'">
+    ng-if="schema.field_size === 'long'"
+    ng-attr-readonly="schema.read_only">
   <input
       ng-model="ngModel[name]"
       ng-readonly="schema.read_only"
