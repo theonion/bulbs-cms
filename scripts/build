@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# build
+# Summary: run build commands.
+
+grunt build && say "bulbs-cms build is done!"
