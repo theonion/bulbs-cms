@@ -551,5 +551,12 @@ angular.module('bulbsCmsApp.mockApi', [
         '1x1': { x0: 0, x1: 1600, y0: 0, y1: 900}
       }
     });
+
+    // super features
+    $httpBackend.whenGET(/\/cms\/api\/v1\/super-features\//).respond({
+      results: mockApiData['content.list'].results.filter(function (content) {
+        return content.polymorphic_ctype === 'core_super_feature_type';
+      })
+    });
   }
 ]);

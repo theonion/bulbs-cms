@@ -73,6 +73,10 @@ angular.module('apiServices.specialCoverage.factory', [
         belongsToMany: 'Video',
         keys: 'videos'
       },
+      super_features: {
+        init: [],
+        keys: 'super_features'
+      },
       active: {
         init: true
       },
@@ -144,6 +148,17 @@ angular.module('apiServices.specialCoverage.factory', [
             }
 
             return added;
+          },
+          addSuperFeature: function (superFeature) {
+
+            var existingSuperFeature = this.superFeatures
+              .find(function(existingSuperFeatureId) {
+                return superFeature.id === existingSuperFeatureId;
+              });
+
+            if (!existingSuperFeature) {
+              this.superFeatures.push(superFeature.id);
+            }
           },
           /**
            * Getter/setter for active state, a front end standin for the active

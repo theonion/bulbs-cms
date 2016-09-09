@@ -1,0 +1,46 @@
+<div class="super-features-tab-title">
+  <span class="bold">Current List</span>
+  <span>
+    Items in List:
+    <span class="bold">{{ superFeatures.length }}</span>
+  </span>
+</div>
+
+<autocomplete-basic
+    class="form-control"
+    item-display-formatter="item.title"
+    on-select="addSuperFeature(selection.value); $parent.needsSave = true"
+    input-placeholder="Search Super Features..."
+    search-function="searchSuperFeature">
+</autocomplete-basic>
+
+<ul
+    class="super-features-tab-super-feature"
+    ng-if="superFeatures.length > 0"
+    ui-sortable="sortableOptions"
+    ng-model="superFeatures">
+  <li ng-repeat="superFeature in superFeatures">
+    <div class="wrapper-tools">
+      <button
+          class="btn btn-danger rm-btn"
+          ng-click="delete($index)">
+        <i class="glyphicon glyphicon-remove"></i>
+      </button>
+      <button
+          class="btn btn-info up-btn"
+          ng-click="moveUp($index)"
+          ng-disabled="$first">
+        <i class="glyphicon glyphicon-chevron-up"></i>
+      </button>
+      <button
+          class="btn btn-info dn-btn"
+          ng-click="moveDown($index)"
+          ng-disabled="$last">
+        <i class="glyphicon glyphicon-chevron-down"></i>
+      </button>
+    </div>
+    <super-features-tab-item
+        model="superFeature">
+    </super-features-tab-item>
+  </li>
+</ul>
