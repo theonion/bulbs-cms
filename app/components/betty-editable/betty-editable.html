@@ -3,6 +3,10 @@
     ng-click="upload();"
     ng-hide="image && image.id"
     ng-class="addStyles">
+  <i
+      ng-if="iconStyles"
+      class="{{ iconStyles }}">
+  </i>
   <span>{{ placeholderText }}</span>
 </button>
 <div

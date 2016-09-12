@@ -3,7 +3,7 @@
     <h4 class="modal-title">Change Thumbnail</h4>
 </div><!--/modal-header-->
 <div class="modal-body edit-page">
-    <div class="main-image thumbnail-image extra-info-section">
+    <div class="thumbnail-image extra-info-section">
         <label>Thumbnail Image</label>
         <div>
             <p ng-show="!article.thumbnail_override || article.thumbnail_override.id === null">
@@ -14,13 +14,13 @@
                     Choose Thumbnail
                 </button>
             </p>
-            <div class="thumbnail-modal-image" ng-show="article.thumbnail_override && article.thumbnail_override.id !== null">
+            <div class="main-image thumbnail-modal-image" ng-show="article.thumbnail_override && article.thumbnail_override.id !== null">
                 <betty-editable
                     image="article.thumbnail_override"
                     editable="true"
                     ratio="16x9"
                     placeholder-text="Thumbnail Image"
-                    add-styles="fa fa-picture-o">
+                    icon-styles="fa fa-picture-o">
                 </betty-editable>
             </div>
             <div class="thumbnail-modal-image" ng-show="(!article.thumbnail_override || article.thumbnail_override.id === null) && article.first_image && article.first_image.id">
@@ -29,7 +29,7 @@
                     editable="false"
                     ratio="16x9"
                     placeholder-text="Thumbnail Image"
-                    add-styles="fa fa-picture-o">
+                    icon-styles="fa fa-picture-o">
                 </betty-editable>
             </div>
         </div>
