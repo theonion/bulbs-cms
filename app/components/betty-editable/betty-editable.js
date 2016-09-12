@@ -13,7 +13,6 @@ angular.module('bettyEditable', [
         restrict: 'E',
         templateUrl: CmsConfig.buildComponentPath('betty-editable/betty-editable.html'),
         scope: {
-          addStyles: '@',
           iconStyles: '@',
           editable: '=?',
           hideMetas: '=',
