@@ -52,6 +52,7 @@ angular.module('bulbsCmsApp', [
   'bugReporter',
   'campaigns',
   'evergreenField',
+  'hideFromRssField',
   'filterWidget',
   'filterListWidget',
   'notifications',
