@@ -1,23 +1,40 @@
 /*
   Mixin for direct wrapping container of a betty-edtiable.
  */
+@import '_colors';
 
-.mixin-betty-container(@height: 154px, @width: 275px) {
-  height: @height;
+.mixin-betty-container(@ratio-width: 9, @ratio-height: 3, @width: 100%) {
+  position: relative;
+  height: @width * (@ratio-height / @ratio-width);
   width: @width;
 
-  betty-editable {
+  &:before {
     display: block;
-    height: inherit;
-    width: inherit;
+    content: "";
+    width: 100%;
+    padding-top: (@ratio-height / @ratio-width) * 100%;
+  }
+
+  > betty-editable {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    .betty-editable-add-image,
+    .image-edit-container {
+      height: 100%;
+      width: 100%;
+    }
 
     .betty-editable-add-image {
-      background-color: @interface-color-gray-4;
-      border: 2px dashed @interface-color-gray-1;
-      color: @interface-color-gray-1;
-      height: inherit;
-      font-size: 25px;
-      width: inherit;
-    }
+       background-color: @interface-color-gray-4;
+       border: 2px dashed @interface-color-gray-1;
+       color: @interface-color-gray-1;
+      //  height: inherit;
+       font-size: 25px;
+      //  width: inherit;
+     }
   }
 }

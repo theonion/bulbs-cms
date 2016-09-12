@@ -1,8 +1,11 @@
 <button
     class="betty-editable-add-image"
     ng-click="upload();"
-    ng-hide="image && image.id"
-    ng-class="addStyles">
+    ng-hide="image && image.id">
+  <i
+      ng-if="iconStyles"
+      class="{{ iconStyles }}">
+  </i>
   <span>{{ placeholderText }}</span>
 </button>
 <div

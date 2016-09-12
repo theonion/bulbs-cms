@@ -40,7 +40,7 @@
 	}
 
 </style>
-<button ng-hide="article && article.video" ng-click="addVideo();" class="add-video-button fa fa-video-camera add-feature-image"><span>Click to add video</span></button>
+<button ng-hide="article && article.video" ng-click="addVideo();" class="add-video-button fa fa-video-camera"><span>Click to add video</span></button>
 
 <div class="video-container" ng-show="article && article.video" data-videoid="{{video.id}}">
 	<iframe src="{{embedUrl || ''}}" name="embedded" allowfullscreen="" webkitallowfullscreen="" mozallowfullscreen="" frameborder="no" scrolling="no"></iframe>
