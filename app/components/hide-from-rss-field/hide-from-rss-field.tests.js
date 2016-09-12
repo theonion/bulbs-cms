@@ -1,44 +1,30 @@
 'use strict';
 
-describe('', function () {
+describe('Directive: superFeaturesEdit', function () {
   var $parentScope;
-  var $q;
   var digest;
-  var sandbox;
 
   beforeEach(function () {
-    sandbox = sinon.sandbox.create();
-
+    module('jsTemplates');
     module(
-      'hideFromRssField',
-      function ($compileProvider) {
-        window.testHelper.directiveMock($compileProvider, 'hideFromRssField');
+      'hideFromRssField.directive',
+      function (CmsConfigProvider) {
+        CmsConfigProvider.setExternalUrl('onion.local');
       }
     );
 
-    inject(function (_$q_, $compile, $rootScope) {
+    inject(function ($compile, $rootScope) {
       $parentScope = $rootScope.$new();
-      $q = _$q_;
-
-      $parentScope.article = {
-        id: 1,
-        title: 'My Garbage Title',
-        hide_from_rss: true
-      };
-
-      digest = window.testHelper.directiveBuilderWithDynamicHtml(
-        $compile,
-        $parentScope
-      );
+      digest = window.testHelper.directiveBuilderWithDynamicHtml($compile, $parentScope);
     });
   });
 
-  afterEach(function () {
-    sandbox.restore();
+  it('should change the value of hide_from_rss when clicked on', function () {
+    $parentScope.article = { hide_from_rss: true };
+
+    var element = digest('<hide-from-rss-field article="article"></hide-from-rss-field>');
+    element.find('input').trigger('click');
+
+    expect($parentScope.article.hide_from_rss).to.equal(false);
   });
-
-  it('should set to true if model is set to true', function () {
-
-  });
-
 });
