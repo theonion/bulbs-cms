@@ -247,10 +247,6 @@ angular.module('bulbsCmsApp')
     };
 
     $scope.postValidationSaveArticle = function () {
-      if ($scope.article.status !== 'Published') {
-        $scope.article.slug = $window.URLify($scope.article.title, 50);
-      }
-
       var params = {};
       if ($routeParams.id === 'new') {
         params['doctype'] = $scope.article.polymorphic_ctype;
