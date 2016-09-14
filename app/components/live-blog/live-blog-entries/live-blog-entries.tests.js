@@ -127,16 +127,15 @@ describe('Directive: liveBlogEntries', function () {
     });
 
     context('adding', function () {
-      var addButton;
       var element;
 
       beforeEach(function () {
         element = digest(html);
-        addButton = element.find('button[ng-click^="addEntry"]');
-        getEntriesDeferred.resolve({ results: [] });
       });
 
       it('should post a new entry', function () {
+        var addButton = element.find('button[ng-click^="addEntry"]');
+        getEntriesDeferred.resolve({ results: [] });
         var entry = { id: 666 };
 
         addButton.trigger('click');
@@ -150,7 +149,22 @@ describe('Directive: liveBlogEntries', function () {
         expect(element.find('li').scope().entry).to.equal(entry);
       });
 
+      it('should put the new entry at the top', function () {
+        var addButton = element.find('button[ng-click^="addEntry"]');
+        var entry1 = { id: 420 };
+        getEntriesDeferred.resolve({ results: [entry1] });
+        var entry2 = { id: 666 };
+
+        addButton.trigger('click');
+        createEntryDeferred.resolve(entry2);
+        $parentScope.$digest();
+
+        expect(element.find('li').eq(0).scope().entry).to.equal(entry2);
+      });
+
       it('should show an error message on failure', function () {
+        var addButton = element.find('button[ng-click^="addEntry"]');
+        getEntriesDeferred.resolve({ results: [] });
 
         addButton.trigger('click');
         createEntryDeferred.reject();
@@ -162,6 +176,8 @@ describe('Directive: liveBlogEntries', function () {
       });
 
       it('should be disabled if another transaction is running', function () {
+        var addButton = element.find('button[ng-click^="addEntry"]');
+        getEntriesDeferred.resolve({ results: [] });
 
         addButton.trigger('click');
         addButton.trigger('click');
@@ -240,27 +256,31 @@ describe('Directive: liveBlogEntries', function () {
 
     context('publish', function () {
       var element;
-      var entry;
-      var publishButton;
+      var entry1;
+      var entry2;
+      var entry3;
+      var publishButtons;
 
       beforeEach(function () {
-        entry = { id: 1 };
-        getEntriesDeferred.resolve({ results: [entry] });
+        entry1 = { id: 1 };
+        entry2 = { id: 2 };
+        entry3 = { id: 3 };
+        getEntriesDeferred.resolve({ results: [entry1, entry2, entry3] });
         element = digest(html);
-        publishButton = element.find('button[ng-model="entry.published"]');
+        publishButtons = element.find('button[ng-model="entry.published"]');
       });
 
       it('should allow publish date to be changed', function () {
 
-        publishButton.isolateScope().modalOnBeforeClose();
+        publishButtons.eq(0).isolateScope().modalOnBeforeClose();
 
-        expect(LiveBlogApi.updateEntry.withArgs(entry).calledOnce)
+        expect(LiveBlogApi.updateEntry.withArgs(entry1).calledOnce)
           .to.equal(true);
       });
 
       it('should show an error message on failure', function () {
 
-        publishButton.isolateScope().modalOnBeforeClose();
+        publishButtons.eq(0).isolateScope().modalOnBeforeClose();
         updateEntryDeferred.reject();
         $parentScope.$digest();
 
@@ -272,18 +292,19 @@ describe('Directive: liveBlogEntries', function () {
       it('should reset publish date if save fails', function () {
         var oldPublishDate = moment();
         var newPublishDate = moment().add(1, 'day');
-        var buttonScope = publishButton.isolateScope();
-        entry.published = oldPublishDate;
+        var buttonScope = publishButtons.eq(0).isolateScope();
+        entry1.published = oldPublishDate;
 
         buttonScope.modalOnBeforeClose();
-        entry.published = newPublishDate;
+        entry1.published = newPublishDate;
         updateEntryDeferred.reject();
         $parentScope.$digest();
 
-        expect(entry.published.isSame(oldPublishDate)).to.equal(true);
+        expect(entry1.published.isSame(oldPublishDate)).to.equal(true);
       });
 
       it('should be disabled if another transaction is running', function () {
+        var publishButton = publishButtons.eq(0);
 
         publishButton.isolateScope().modalOnBeforeClose();
         publishButton.isolateScope().modalOnBeforeClose();
@@ -292,6 +313,23 @@ describe('Directive: liveBlogEntries', function () {
         expect(publishButton.attr('disabled')).to.equal('disabled');
         expect(element.isolateScope().transactionsLocked()).to.equal(true);
         expect(LiveBlogApi.updateEntry.calledOnce).to.equal(true);
+      });
+
+      it('should reorder entries based on publish date', function () {
+
+        publishButtons.eq(0).isolateScope().modalOnBeforeClose();
+        entry1.published = moment();
+        updateEntryDeferred.resolve();
+        $parentScope.$digest();
+        publishButtons.eq(1).isolateScope().modalOnBeforeClose();
+        entry2.published = moment().add(1, 'day');
+        updateEntryDeferred.resolve();
+        $parentScope.$digest();
+
+        var contents = element.find('.accordion-list-item-content');
+        expect(contents.eq(0).scope().entry).to.eql(entry3);
+        expect(contents.eq(1).scope().entry).to.eql(entry2);
+        expect(contents.eq(2).scope().entry).to.eql(entry1);
       });
     });
 
