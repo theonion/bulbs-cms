@@ -83,15 +83,12 @@ describe('Directive: liveBlogEntries', function () {
   });
 
   context('entry interactions', function () {
-    var element;
-
-    beforeEach(function () {
-      element = digest(html);
-    });
 
     context('accordion', function () {
+      var element;
 
       beforeEach(function () {
+        element = digest(html);
         getEntriesDeferred.resolve({ results: [{ id: 1 }, { id: 2 }] });
         $parentScope.$digest();
       });
@@ -131,8 +128,10 @@ describe('Directive: liveBlogEntries', function () {
 
     context('adding', function () {
       var addButton;
+      var element;
 
       beforeEach(function () {
+        element = digest(html);
         addButton = element.find('button[ng-click^="addEntry"]');
         getEntriesDeferred.resolve({ results: [] });
       });
