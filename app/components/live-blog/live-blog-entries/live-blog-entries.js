@@ -91,7 +91,7 @@ angular.module('bulbs.cms.liveBlog.entries', [
               liveblog: scope.article.id
             })
               .then(function (entry) {
-                scope.entries.push(entry);
+                scope.entries.unshift(entry);
               })
               .catch(function (response) {
                 var message = 'An error occurred attempting to add an entry!';
@@ -118,6 +118,23 @@ angular.module('bulbs.cms.liveBlog.entries', [
             entry.published = newDate;
 
             return scope.saveEntry(entry)
+              .then(function () {
+                // sort entries from falsy to newest publish date to oldest publish date
+                scope.entries.sort(function (entry1, entry2) {
+                  var entry1IsMoment = moment.isMoment(entry1.published);
+                  var entry2IsMoment = moment.isMoment(entry2.published);
+
+                  if (entry1IsMoment &&
+                      (!entry2IsMoment || entry1.published.isBefore(entry2.published))) {
+                    return 1;
+                  } else if (entry2IsMoment &&
+                      (!entry1IsMoment || entry2.published.isBefore(entry1.published))) {
+                    return -1;
+                  }
+
+                  return 0;
+                });
+              })
               .catch(function () {
                 entry.published = oldDate;
                 return false;
