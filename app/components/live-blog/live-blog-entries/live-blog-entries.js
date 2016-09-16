@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbs.cms.liveBlog.entries', [
-  'bulbs.cms.currentUser.api',
+  'bulbs.cms.currentUser',
   'bulbs.cms.dateTimeFilter',
   'bulbs.cms.dateTimeModal',
   'bulbs.cms.dateTimeModal',
