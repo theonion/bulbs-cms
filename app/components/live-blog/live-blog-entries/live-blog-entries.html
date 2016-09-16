@@ -90,6 +90,10 @@
         ng-show="isPanelOpen(entry)"
         class="accordion-list-item-content">
 
+      <div class="live-blog-entries-list-entry-created-by">
+        <span>Created by {{ entry.createdBy | user }} @ {{ entry.created | dateTimeFormat }}</span>
+      </div>
+
       <form name="{{ 'wrapperForm.' + makeEntryFormName(entry) }}">
 
         <div class="input-container">

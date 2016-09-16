@@ -26,7 +26,7 @@ angular.module('bulbs.cms.currentUser.api', [
         if (!pendingGetCurrentUserRequest) {
           pendingGetCurrentUserRequest = $http.get(CmsConfig.buildApiUrlRoot('me/'))
             .then(function (response) {
-              currentUser = parsePayload(response.data)
+              currentUser = parsePayload(response.data);
               return currentUser;
             })
             .finally(function () {
