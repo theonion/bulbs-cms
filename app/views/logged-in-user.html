@@ -3,7 +3,7 @@
       href="#"
       class="dropdown-toggle"
       data-toggle="dropdown">
-    <span ng-if="currentUser">Logged in as {{ currentUser | user }}</span>
+    <span ng-if="currentUser">Logged in as {{ currentUser | userNameDisplay }}</span>
     <span ng-if="!currentUser">
       <i class="fa fa-spin fa-spinner"></i>
       <span>Loading user...</span>

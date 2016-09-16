@@ -8,7 +8,7 @@ describe('Filter: user', function () {
   // initialize a new instance of the filter before each test
   var user;
   beforeEach(inject(function ($filter) {
-    user = $filter('user');
+    user = $filter('userNameDisplay');
   }));
 
   it('should return empty string when there is no user', function () {

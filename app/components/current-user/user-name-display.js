@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbs.cms.user.nameDisplayFilter', [])
-  .filter('user', [
+  .filter('userNameDisplay', [
     function () {
 
       return function (user) {

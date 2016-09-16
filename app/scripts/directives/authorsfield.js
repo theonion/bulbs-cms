@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('authorsField', function ($, CmsConfig, userFilter, Utils) {
+  .directive('authorsField', function ($, CmsConfig, userNameDisplayFilter, Utils) {
     return {
       templateUrl: '/views/taglike-autocomplete-field.html',
       restrict: 'E',
@@ -23,7 +23,7 @@ angular.module('bulbsCmsApp')
             search: ''
           })
         );
-        scope.display = userFilter;
+        scope.display = userNameDisplayFilter;
 
         scope.$watch('article.authors', function () {
           scope.objects = scope.article.authors;

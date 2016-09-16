@@ -7,7 +7,7 @@
     <li class="list-group-item" ng-repeat="entry in changelog" ng-class='{"list-group-item-success": entry.change_message == "Published", "list-group-item-info": entry.change_message == "Scheduled", "list-group-item-warning": entry.change_message == "Waiting for Editor"}'>
       <h4 class="list-group-item-heading">
         {{entry.change_message}}</h4>
-      <p class="list-group-item-text">{{users[entry.user]|user}}</p>
+      <p class="list-group-item-text">{{users[entry.user] | userNameDisplay}}</p>
       <p class="list-group-item-text">{{entry.action_time|dateTimeFormat:"MMMM D[, ]YYYY[ at ]h:mm a z"}}</p></li></ul></div>
 
 <div class="modal-footer">

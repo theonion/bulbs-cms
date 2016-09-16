@@ -92,7 +92,7 @@
 
       <div class="live-blog-entries-list-entry-created-by">
         <span>Created<span>
-        <span>by {{ entry.createdBy | user }}</span>
+        <span>by {{ entry.createdBy | userNameDisplay }}</span>
         <span>@ {{ entry.created | dateTimeFormat }}</span>
       </div>
 
