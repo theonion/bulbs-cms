@@ -1,6 +1,7 @@
 'use strict';
 
 angular.module('bulbs.cms.liveBlog.entries', [
+  'bulbs.cms.currentUser.api',
   'bulbs.cms.dateTimeFilter',
   'bulbs.cms.dateTimeModal',
   'bulbs.cms.dateTimeModal',
@@ -13,8 +14,8 @@ angular.module('bulbs.cms.liveBlog.entries', [
   'Raven'
 ])
   .directive('liveBlogEntries', [
-    '$q', 'CmsConfig', 'LiveBlogApi', 'Raven', 'Utils',
-    function ($q, CmsConfig, LiveBlogApi, Raven, Utils) {
+    '$q', 'CmsConfig', 'CurrentUserApi', 'LiveBlogApi', 'Raven', 'Utils',
+    function ($q, CmsConfig, CurrentUserApi, LiveBlogApi, Raven, Utils) {
       return {
         link: function (scope) {
           var reportError = function (message, data) {
@@ -87,15 +88,21 @@ angular.module('bulbs.cms.liveBlog.entries', [
 
           scope.addEntry = lock(function () {
 
-            return LiveBlogApi.createEntry({
-              liveblog: scope.article.id
-            })
-              .then(function (entry) {
-                scope.entries.unshift(entry);
-              })
-              .catch(function (response) {
-                var message = 'An error occurred attempting to add an entry!';
-                reportError(message, { response: response });
+            return CurrentUserApi.getCurrentUserWithCache()
+              .then(function (user) {
+
+                return LiveBlogApi.createEntry({
+                  liveblog: scope.article.id,
+                  createdBy: user,
+                  created: moment().format()
+                })
+                  .then(function (entry) {
+                    scope.entries.unshift(entry);
+                  })
+                  .catch(function (response) {
+                    var message = 'An error occurred attempting to add an entry!';
+                    reportError(message, { response: response });
+                  });
               });
           });
 

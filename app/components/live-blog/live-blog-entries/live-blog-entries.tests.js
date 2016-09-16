@@ -4,11 +4,13 @@ describe('Directive: liveBlogEntries', function () {
   var $;
   var $parentScope;
   var createEntryDeferred;
+  var currentUser;
   var deleteEntryDeferred;
   var digest;
   var getEntriesDeferred;
   var html;
   var LiveBlogApi;
+  var moment;
   var Raven;
   var sandbox;
   var updateEntryDeferred;
@@ -22,10 +24,13 @@ describe('Directive: liveBlogEntries', function () {
 
     html = angular.element('<live-blog-entries article="article"></live-blog-entries>');
 
-    inject(function (_$_, _LiveBlogApi_, _Raven_, $compile, $q, $rootScope) {
+    inject(function (_$_, _LiveBlogApi_, _moment_, _Raven_, $compile, $q,
+        $rootScope, CurrentUserApi) {
+
       $ = _$_;
       $parentScope = $rootScope.$new();
       LiveBlogApi = _LiveBlogApi_;
+      moment = _moment_;
       Raven = _Raven_;
 
       sandbox.stub(Raven, 'captureMessage');
@@ -34,6 +39,9 @@ describe('Directive: liveBlogEntries', function () {
         $compile,
         $parentScope
       );
+
+      currentUser = { id: 123 };
+      sinon.stub(CurrentUserApi, 'getCurrentUserWithCache').returns($q.when(currentUser));
 
       $parentScope.article = { id: 1 };
 
@@ -138,14 +146,19 @@ describe('Directive: liveBlogEntries', function () {
         getEntriesDeferred.resolve({ results: [] });
         var entry = { id: 666 };
 
+        var then = moment();
         addButton.trigger('click');
         createEntryDeferred.resolve(entry);
         $parentScope.$digest();
+        var now = moment();
 
-        expect(LiveBlogApi.createEntry.calledOnce).to.equal(true);
-        expect(LiveBlogApi.createEntry.args[0][0]).to.eql({
-          liveblog: $parentScope.article.id
-        });
+        expect(LiveBlogApi.createEntry.calledWithMatch(sinon.match({
+          liveblog: $parentScope.article.id,
+          created: sinon.match(function (value) {
+            return moment(value).isBetween(then, now, 'second', '[]');
+          }),
+          createdBy: currentUser
+        }))).to.equal(true);
         expect(element.find('li').scope().entry).to.equal(entry);
       });
 
