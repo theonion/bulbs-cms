@@ -2,7 +2,9 @@
 
 describe('Controller: CmsNotificationsCtrl', function () {
 
-  beforeEach(module('bulbsCmsApp'));
+  beforeEach(module('bulbsCmsApp', function (CmsConfigProvider) {
+    CmsConfigProvider.setApiUrlRoot('/cms/api/v1/');
+  }));
   beforeEach(module('bulbsCmsApp.mockApi'));
 
   var CmsNotificationsCtrl,
@@ -32,7 +34,7 @@ describe('Controller: CmsNotificationsCtrl', function () {
     }));
 
     beforeEach(inject(function ($rootScope, $controller, CmsNotificationsApi, $window,
-                                mockApiData, CurrentUser) {
+                                mockApiData, CurrentUserApi) {
 
       $httpBackend.expectGET('/cms/api/v1/cms_notifications/').respond(mockApiData.cmsNotifications);
 
@@ -40,7 +42,7 @@ describe('Controller: CmsNotificationsCtrl', function () {
         $window: $window,
         $scope: $scope,
         CmsNotificationsApi: CmsNotificationsApi,
-        CurrentUser: CurrentUser
+        CurrentUserApi: CurrentUserApi
       });
 
       $httpBackend.flush();
@@ -150,7 +152,7 @@ describe('Controller: CmsNotificationsCtrl', function () {
 
     }));
 
-    beforeEach(inject(function ($rootScope, $controller, CmsNotificationsApi, $window, moment, CurrentUser) {
+    beforeEach(inject(function ($rootScope, $controller, CmsNotificationsApi, $window, moment, CurrentUserApi) {
 
       var today = moment();
       $httpBackend.expectGET('/cms/api/v1/cms_notifications/').respond([
@@ -170,7 +172,7 @@ describe('Controller: CmsNotificationsCtrl', function () {
         $window: $window,
         $scope: $scope,
         CmsNotificationsApi: CmsNotificationsApi,
-        CurrentUser: CurrentUser
+        CurrentUserApi: CurrentUserApi
       });
 
       $httpBackend.flush();

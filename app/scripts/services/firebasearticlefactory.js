@@ -5,7 +5,7 @@
  */
 angular.module('bulbsCmsApp')
   .factory('FirebaseArticleFactory', function ($q, $firebase, $routeParams, _, moment,
-                                               FirebaseApi, CurrentUser, CmsConfig) {
+                                               FirebaseApi, CurrentUserApi, CmsConfig) {
 
     /**
      * Create a new article.
@@ -25,18 +25,23 @@ angular.module('bulbsCmsApp')
         var registeredDeferred = $q.defer(),
             registeredPromise = registeredDeferred.promise;
 
-        CurrentUser.$simplified()
+        CurrentUserApi.getCurrentUser()
           .then(function (user) {
 
+            var simplifiedUser = _.pick(user, [
+              'id',
+              'displayName'
+            ]);
+
             $activeUsers
-              .$add(user)
+              .$add(simplifiedUser)
               .then(function (userRef) {
 
                 // ensure user is removed on disconnect
                 userRef.onDisconnect().remove();
 
                 // resolve registration
-                registeredDeferred.resolve(user);
+                registeredDeferred.resolve(simplifiedUser);
 
               })
               .catch(function (error) {
@@ -97,7 +102,12 @@ angular.module('bulbsCmsApp')
               $createPromise = createDefer.promise;
 
           // get simplified version of user then use that when creating version
-          CurrentUser.$simplified().then(function (user) {
+          CurrentUserApi.getCurrentUser().then(function (user) {
+
+            var simplifiedUser = _.pick(user, [
+              'id',
+              'displayName'
+            ]);
 
             // if we will have more than the max versions allowed, delete until we're one below the max
             var numVersions = $versions.length;
@@ -118,7 +128,7 @@ angular.module('bulbsCmsApp')
             // make version data
             var versionData = {
               timestamp: moment().valueOf(),
-              user: user,
+              user: simplifiedUser,
               content: articleData
             };
 

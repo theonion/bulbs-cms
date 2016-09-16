@@ -1,6 +1,18 @@
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Logged in as {{ current_user.data|user }} <b class="caret"></b></a>
+  <a
+      href="#"
+      class="dropdown-toggle"
+      data-toggle="dropdown">
+    <span ng-if="currentUser">Logged in as {{ currentUser | user }}</span>
+    <span ng-if="!currentUser">
+      <i class="fa fa-spin fa-spinner"></i>
+      <span>Loading user...</span>
+    </span>
+    <i class="fa fa-caret-down"></i>
+  </a>
   <ul class="dropdown-menu">
-    <li><a href="/cms/api/v1/me/logout/">Logout</a></li>
+    <li>
+      <a href="/cms/api/v1/me/logout/">Logout</a>
+    </li>
   </ul>
 </li>

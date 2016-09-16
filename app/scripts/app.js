@@ -19,6 +19,7 @@ angular.module('bulbsCmsApp', [
   'bulbs.cms.superFeatures',
 
   // TODO : these dependencies need to be reorganized, localized
+  'bulbs.cms.currentUser',
   'bulbs.cms.dateTimeModal',
   'bulbs.cms.dateTimeFilter',
   'bulbs.cms.editor',

@@ -5,7 +5,7 @@
  */
 angular.module('bulbsCmsApp')
   .factory('FirebaseApi', function (FirebaseRefFactory, $firebase, $rootScope,
-    $q, CurrentUser, CmsConfig) {
+    $q, CurrentUserApi, CmsConfig) {
 
     // get root reference in firebase for this site
     var rootRef = FirebaseRefFactory.newRef(CmsConfig.buildFirebaseSiteUrl());
@@ -24,7 +24,7 @@ angular.module('bulbsCmsApp')
       });
 
     // log current session in when their current user data is available
-    CurrentUser.$retrieveData().then(function (user) {
+    CurrentUserApi.getCurrentUser().then(function (user) {
 
       // attempt to login if user has firebase token, if they don't auth promise will reject with no error message
       //  which is okay if we're in an environment where firebase isn't set up yet

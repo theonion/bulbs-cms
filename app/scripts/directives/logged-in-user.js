@@ -1,14 +1,17 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('loggedInUser', function (CurrentUser) {
+  .directive('loggedInUser', function (CurrentUserApi) {
     return {
       restrict: 'E',
       replace: true,
       templateUrl: '/views/logged-in-user.html',
       scope: {},
       link: function (scope, element, attrs) {
-        scope.current_user = CurrentUser;
+        CurrentUserApi.getCurrentUser()
+          .then(function (user) {
+            scope.currentUser = user;
+          });
       }
     };
   });
