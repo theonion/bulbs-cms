@@ -8,7 +8,7 @@ angular.module('bulbsCmsApp')
       templateUrl: '/views/logged-in-user.html',
       scope: {},
       link: function (scope, element, attrs) {
-        CurrentUserApi.getCurrentUser()
+        CurrentUserApi.getCurrentUserWithCache()
           .then(function (user) {
             scope.currentUser = user;
           });

@@ -11,7 +11,7 @@ angular.module('bulbsCmsApp')
       link: function (scope) {
         scope.NAV_LOGO = CmsConfig.getNavLogoPath();
 
-        CurrentUserApi.getCurrentUser()
+        CurrentUserApi.getCurrentUserWithCache()
           .then(function (user) {
             scope.currentUser = user;
           });

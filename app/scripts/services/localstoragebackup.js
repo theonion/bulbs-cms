@@ -27,7 +27,7 @@ angular.module('bulbsCmsApp')
 
         // check if we have local storage
         if ($window.localStorage) {
-          CurrentUserApi.getCurrentUser().then(function (user) {
+          CurrentUserApi.getCurrentUserWithCache().then(function (user) {
 
             var simplifiedUser = _.pick(user, [
               'id',

@@ -25,7 +25,7 @@ angular.module('bulbsCmsApp')
         var registeredDeferred = $q.defer(),
             registeredPromise = registeredDeferred.promise;
 
-        CurrentUserApi.getCurrentUser()
+        CurrentUserApi.getCurrentUserWithCache()
           .then(function (user) {
 
             var simplifiedUser = _.pick(user, [
@@ -102,7 +102,7 @@ angular.module('bulbsCmsApp')
               $createPromise = createDefer.promise;
 
           // get simplified version of user then use that when creating version
-          CurrentUserApi.getCurrentUser().then(function (user) {
+          CurrentUserApi.getCurrentUserWithCache().then(function (user) {
 
             var simplifiedUser = _.pick(user, [
               'id',

@@ -7,7 +7,7 @@ angular.module('bulbsCmsApp')
     $window.document.title = CmsConfig.getCmsName() + ' | CMS Alerts';
 
     // get user info
-    CurrentUserApi.getCurrentUser().then(function (user) {
+    CurrentUserApi.getCurrentUserWithCache().then(function (user) {
       if (user.is_superuser) {
         $scope.userIsSuperuser = true;
       }
