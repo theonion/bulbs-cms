@@ -29,7 +29,7 @@ describe('Service: LiveBlogApi', function () {
   });
 
   afterEach(function () {
-    sandbox.create();
+    sandbox.restore();
   });
 
   context('live blog entries', function () {
