@@ -90,11 +90,14 @@ angular.module('bulbs.cms.liveBlog.entries', [
 
             return CurrentUserApi.getCurrentUserWithCache()
               .then(function (user) {
+                var now = moment();
 
                 return LiveBlogApi.createEntry({
                   liveblog: scope.article.id,
-                  createdBy: user,
-                  created: moment().format()
+                  created_by: user,
+                  created: now,
+                  updated_by: user,
+                  updated: now
                 })
                   .then(function (entry) {
                     scope.entries.unshift(entry);
@@ -108,14 +111,21 @@ angular.module('bulbs.cms.liveBlog.entries', [
 
           scope.saveEntry = lock(function (entry) {
 
-            return LiveBlogApi.updateEntry(entry)
-              .then(function () {
-                scope.getEntryForm(entry).$setPristine();
-              })
-              .catch(function (response) {
-                var message = 'An error occurred attempting to save ' + titleDisplay(entry) + '!';
-                reportError(message, { response: response });
-                return $q.reject();
+            return CurrentUserApi.getCurrentUserWithCache()
+              .then(function (user) {
+
+                entry.updated_by = user;
+                entry.updated = moment();
+
+                return LiveBlogApi.updateEntry(entry)
+                  .then(function () {
+                    scope.getEntryForm(entry).$setPristine();
+                  })
+                  .catch(function (response) {
+                    var message = 'An error occurred attempting to save ' + titleDisplay(entry) + '!';
+                    reportError(message, { response: response });
+                    return $q.reject();
+                  });
               });
           });
 

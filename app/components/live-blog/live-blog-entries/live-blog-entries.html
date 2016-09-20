@@ -91,9 +91,10 @@
         class="accordion-list-item-content">
 
       <div class="live-blog-entries-list-entry-created-by">
-        <span>Created<span>
-        <span>by {{ entry.createdBy | userNameDisplay }}</span>
-        <span>@ {{ entry.created | dateTimeFormat }}</span>
+        <span>
+          Created by {{ entry.created_by | userNameDisplay }} @ {{ entry.created | dateTimeFormat }}.
+          Last Updated by {{ entry.updated_by | userNameDisplay }} @ {{ entry.updated | dateTimeFormat }}.
+        </span>
       </div>
 
       <form name="{{ 'wrapperForm.' + makeEntryFormName(entry) }}">

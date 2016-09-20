@@ -24,6 +24,10 @@ angular.module('bulbs.cms.liveBlog.api', [
           data.created = moment.tz(payload.created, CmsConfig.getTimezoneName());
         }
 
+        if (payload.updated) {
+          data.updated = moment.tz(payload.updated, CmsConfig.getTimezoneName());
+        }
+
         return data;
       };
 
@@ -39,6 +43,10 @@ angular.module('bulbs.cms.liveBlog.api', [
 
         if (data.created) {
           payload.created = data.created.format();
+        }
+
+        if (data.updated) {
+          payload.updated = data.updated.format();
         }
 
         return payload;
