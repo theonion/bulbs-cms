@@ -509,7 +509,7 @@ angular.module('bulbsCmsApp.mockApi', [
 
 
 
-    var tokenGenerator = new FirebaseTokenGenerator('QbONvQ04VBWQzhBMzeH5v88lD0rKMTn3MXoXU292');
+    //var tokenGenerator = new FirebaseTokenGenerator('');
 
 
 
