@@ -22,6 +22,7 @@ angular.module('bulbsCmsApp', [
   'bulbs.cms.dateTimeModal',
   'bulbs.cms.dateTimeFilter',
   'bulbs.cms.editor',
+  'bulbs.cms.firebase',
   'bulbs.cms.imageCropModal',
   'bulbs.cms.liveBlog',
   'bulbs.cms.sendToEditorModal',
@@ -40,7 +41,6 @@ angular.module('bulbsCmsApp', [
   'PNotify',
   'keypress',
   'Raven',
-  'firebase',
   'ipCookie',
   'bulbs.api',
 

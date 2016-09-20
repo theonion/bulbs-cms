@@ -86,9 +86,7 @@
     <script src="bower_components/angular-ui-sortable/sortable.js"></script>
     <script src="bower_components/angular-uuid4/angular-uuid4.js"></script>
     <script src="bower_components/firebase/firebase.js"></script>
-    <script src="bower_components/firebase-simple-login/firebase-simple-login.js"></script>
-    <script src="bower_components/mockfirebase/dist/mockfirebase.js"></script>
-    <script src="bower_components/angularfire/dist/angularfire.min.js"></script>
+    <script src="bower_components/angularfire/dist/angularfire.js"></script>
     <script src="bower_components/lodash/lodash.js"></script>
     <script src="bower_components/bulbs-autocomplete/dist/bulbs-autocomplete.js"></script>
     <script src="bower_components/firebase-token-generator/build/firebase-token-generator.js"></script>
@@ -180,6 +178,7 @@
     <script src="components/filter-list-widget/filter-list-widget.js"></script>
     <script src="components/filter-widget/filter-widget-directive.js"></script>
     <script src="components/filter-widget/filter-widget.js"></script>
+    <script src="components/firebase/firebase-api.js"></script>
     <script src="components/generic-ajax-button/generic-ajax-button-controller.js"></script>
     <script src="components/generic-ajax-button/generic-ajax-button-directive.js"></script>
     <script src="components/generic-ajax-button/generic-ajax-button.js"></script>
@@ -346,7 +345,6 @@
     <script src="scripts/services/bulbsapi.js"></script>
     <script src="scripts/services/cmsnotificationsapi.js"></script>
     <script src="scripts/services/currentuser.js"></script>
-    <script src="scripts/services/firebaseapi.js"></script>
     <script src="scripts/services/firebasearticlefactory.js"></script>
     <script src="scripts/services/firebasereffactory.js"></script>
     <script src="scripts/services/gettemplate.js"></script>
@@ -399,6 +397,7 @@
             .setContentApiUrl('/cms/api/v1/content')
             .setExternalUrl('onion.local')
             .setFirebaseSiteRoot('sites/bulbs-cms-testing')
+            .setFirebasePublicSiteRoot('public/bulbs-cms-testing')
             .setFirebaseUrl('https://luminous-fire-8340.firebaseio.com/')
             .setImageApiKey('123abc')
             .setImageApiUrl('http://clickholeimg.local')

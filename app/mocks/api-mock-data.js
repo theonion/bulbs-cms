@@ -572,10 +572,12 @@ angular.module('bulbsCmsApp.mockApi.data', [])
     'liveblog.entries': [{
       id: 1,
       liveblog: 16,
+      headline: 'This is Title 1',
       authors: []
     }, {
       id: 2,
       liveblog: 16,
+      headline: 'This is Title 2',
       authors: []
     }],
     'pzones.list': {

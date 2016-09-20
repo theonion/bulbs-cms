@@ -4,7 +4,7 @@
  * Factory for getting references to articles as they are stored in firebase.
  */
 angular.module('bulbsCmsApp')
-  .factory('FirebaseArticleFactory', function ($q, $firebase, $routeParams, _, moment,
+  .factory('FirebaseArticleFactory', function ($q, $firebaseArray, $routeParams, _, moment,
                                                FirebaseApi, CurrentUser, CmsConfig) {
 
     /**
@@ -16,9 +16,9 @@ angular.module('bulbsCmsApp')
      */
     var createArticle = function (rootRef, articleId) {
 
-      var articleRef = rootRef.child('articles/' + articleId),
-          $activeUsers = $firebase(articleRef.child('users')).$asArray(),
-          $versions = $firebase(articleRef.child('versions')).$asArray();
+      var articleRef = rootRef.child('articles/' + articleId);
+      var $activeUsers = $firebaseArray(articleRef.child('users'));
+      var $versions = $firebaseArray(articleRef.child('versions'));
 
       var addCurrentUserToActiveUsers = function () {
 

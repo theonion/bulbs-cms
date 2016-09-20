@@ -9,14 +9,20 @@ angular.module('bulbs.cms.liveBlog.entries', [
   'bulbs.cms.site.config',
   'bulbs.cms.utils',
   'confirmationModal',
+  'firebase',
+  'lodash',
   'OnionEditor',
   'Raven'
 ])
   .directive('liveBlogEntries', [
-    '$q', 'CmsConfig', 'LiveBlogApi', 'Raven', 'Utils',
-    function ($q, CmsConfig, LiveBlogApi, Raven, Utils) {
+    '_', '$firebaseObject', '$q', 'CmsConfig', 'FirebaseApi', 'LiveBlogApi',
+      'Raven', 'Utils',
+    function (_, $firebaseObject, $q, CmsConfig, FirebaseApi, LiveBlogApi,
+        Raven, Utils) {
+
       return {
         link: function (scope) {
+
           var reportError = function (message, data) {
             Raven.captureMessage(message, data);
             scope.errorMessage = message;
@@ -25,6 +31,127 @@ angular.module('bulbs.cms.liveBlog.entries', [
           var titleDisplay = function (entry) {
             return entry.headline ? '"' + entry.headline + '"' : 'an entry';
           };
+
+          var sortEntries = function () {
+            // sort entries from falsy to newest publish date to oldest publish date
+            scope.entries.sort(function (entry1, entry2) {
+              var entry1IsMoment = moment.isMoment(entry1.published);
+              var entry2IsMoment = moment.isMoment(entry2.published);
+
+              if (entry1IsMoment &&
+                  (!entry2IsMoment || entry1.published.isBefore(entry2.published))) {
+                return 1;
+              } else if (entry2IsMoment &&
+                  (!entry1IsMoment || entry2.published.isBefore(entry1.published))) {
+                return -1;
+              }
+
+              return 0;
+            });
+          };
+
+          var refreshEntriesList = function () {
+            LiveBlogApi.getEntries(scope.article.id)
+              .then(function (response) {
+
+                if (scope.entries) {
+                  // local entries vs. sever entries diff-ing
+                  var unhandledEntriesFromServer = response.results;
+                  var localEntryIdsToDelete = [];
+
+                  scope.entries.forEach(function (entry, i) {
+                    var entryForm = scope.getEntryForm(entry);
+                    var entryFromServerIndex = _.findIndex(
+                      unhandledEntriesFromServer,
+                      'id',
+                      entry.id
+                    );
+
+                    if (entryFromServerIndex > -1) {
+                      var entryFromServer = unhandledEntriesFromServer
+                        .splice(entryFromServerIndex, 1)[0];
+                      var equivalentData = _.matches(entry)(entryFromServer);
+
+                      if (!equivalentData) {
+                        if (entryForm.$dirty) {
+                          // this entry has local changes and there's new data on
+                          //  the server, mark this as dangerous to save
+                          entryForm.$dirtyAndWillOverwrite = true;
+                        } else {
+                          // this entry doesn't have local changes and there's new
+                          //  data on the server, just replace with the new data
+                          scope.entries[i] = entryFromServer;
+                        }
+                      }
+                    } else if (entry.id) {
+                      if (entryForm.$dirty) {
+                        // deleted on the server and user has local changes
+// TODO : need a new strat here since we're tracking by id, there's currently no
+//  way to handle an entry with no id
+                        // delete entry.id;
+                        // entryForm.$setDirty();
+                      } else {
+                        // deleted and no local changes, just remove from the list
+                        localEntryIdsToDelete.push(entry.id);
+                      }
+                    }
+                  });
+
+                  // add remaining server entries to local list, these are new
+                  unhandledEntriesFromServer.forEach(function (entryFromServer) {
+                    // this is a new entry from the server
+                    scope.entries.push(entryFromServer);
+                  });
+
+                  // remove entries deleted on the server
+                  localEntryIdsToDelete.forEach(function (idToDelete) {
+                    var iToDelete = _.findIndex(scope.entries, function (entry) {
+                      return entry.id = idToDelete;
+                    });
+                    scope.entries.splice(iToDelete, 1);
+                  });
+                } else {
+                  scope.entries = response.results;
+                }
+
+                sortEntries();
+
+                scope.numberOfDifferentEntries = 0;
+              })
+              .catch(function (response) {
+                var message = 'An error occurred retrieving entries!';
+                reportError(message, { response: response });
+              });
+          };
+
+          scope.numberOfDifferentEntries = 0;
+          FirebaseApi.$authorizePublic()
+            .then(function (rootPublicRef) {
+
+              var firebaseEntries = $firebaseObject(rootPublicRef.child(
+                Utils.path.join(
+                  'articles',
+                  scope.article.id,
+                  'entries'
+                )
+              ));
+
+              firebaseEntries.$watch(function () {
+
+                if (scope.entries) {
+                  var firebaseIds = Object.keys(firebaseEntries)
+                    .filter(function (key) {
+                      return !key.startsWith('$');
+                    })
+                    .map(function (key) {
+                      return parseInt(key, 10);
+                    });
+                  var localIds = _.map(scope.entries, 'id');
+
+                  scope.numberOfDifferentEntries = _.xor(localIds, firebaseIds).length;
+                }
+              });
+            });
 
           scope.clearError = function () {
             scope.errorMessage = '';
@@ -35,15 +162,6 @@ angular.module('bulbs.cms.liveBlog.entries', [
               scope.clearError();
             }
           }, true);
-
-          LiveBlogApi.getEntries(scope.article.id)
-            .then(function (response) {
-              scope.entries = response.results;
-            })
-            .catch(function (response) {
-              var message = 'An error occurred retrieving entries!';
-              reportError(message, { response: response });
-            });
 
           var panelOpen = {};
           scope.isPanelOpen = function (entry) {
@@ -103,7 +221,10 @@ angular.module('bulbs.cms.liveBlog.entries', [
 
             return LiveBlogApi.updateEntry(entry)
               .then(function () {
-                scope.getEntryForm(entry).$setPristine();
+                var entryForm = scope.getEntryForm(entry);
+
+                entryForm.$dirtyAndWillOverwrite = false;
+                entryForm.$setPristine();
               })
               .catch(function (response) {
                 var message = 'An error occurred attempting to save ' + titleDisplay(entry) + '!';
@@ -112,29 +233,18 @@ angular.module('bulbs.cms.liveBlog.entries', [
               });
           });
 
+          scope.reloadEntries = lock(function (entry) {
+
+            return refreshEntriesList();
+          });
+
           scope.publishAndSave = function (entry, newDate) {
             var oldDate = entry.published;
 
             entry.published = newDate;
 
             return scope.saveEntry(entry)
-              .then(function () {
-                // sort entries from falsy to newest publish date to oldest publish date
-                scope.entries.sort(function (entry1, entry2) {
-                  var entry1IsMoment = moment.isMoment(entry1.published);
-                  var entry2IsMoment = moment.isMoment(entry2.published);
-
-                  if (entry1IsMoment &&
-                      (!entry2IsMoment || entry1.published.isBefore(entry2.published))) {
-                    return 1;
-                  } else if (entry2IsMoment &&
-                      (!entry1IsMoment || entry2.published.isBefore(entry1.published))) {
-                    return -1;
-                  }
-
-                  return 0;
-                });
-              })
+              .then(sortEntries)
               .catch(function () {
                 entry.published = oldDate;
                 return false;
@@ -153,6 +263,9 @@ angular.module('bulbs.cms.liveBlog.entries', [
                 reportError(message, { response: response });
               });
           });
+
+          // directive initialization
+          refreshEntriesList();
         },
         restrict: 'E',
         scope: {
