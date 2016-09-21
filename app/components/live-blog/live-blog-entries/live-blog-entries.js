@@ -1,6 +1,7 @@
 'use strict';
 
 angular.module('bulbs.cms.liveBlog.entries', [
+  'bulbs.cms.currentUser',
   'bulbs.cms.dateTimeFilter',
   'bulbs.cms.dateTimeModal',
   'bulbs.cms.dateTimeModal',
@@ -13,8 +14,8 @@ angular.module('bulbs.cms.liveBlog.entries', [
   'Raven'
 ])
   .directive('liveBlogEntries', [
-    '$q', 'CmsConfig', 'LiveBlogApi', 'Raven', 'Utils',
-    function ($q, CmsConfig, LiveBlogApi, Raven, Utils) {
+    '$q', 'CmsConfig', 'CurrentUserApi', 'LiveBlogApi', 'Raven', 'Utils',
+    function ($q, CmsConfig, CurrentUserApi, LiveBlogApi, Raven, Utils) {
       return {
         link: function (scope) {
           var reportError = function (message, data) {
@@ -29,12 +30,6 @@ angular.module('bulbs.cms.liveBlog.entries', [
           scope.clearError = function () {
             scope.errorMessage = '';
           };
-
-          scope.$watch('entries', function (newEntries, oldEntries) {
-            if (!angular.equals(newEntries, oldEntries)) {
-              scope.clearError();
-            }
-          }, true);
 
           LiveBlogApi.getEntries(scope.article.id)
             .then(function (response) {
@@ -87,28 +82,50 @@ angular.module('bulbs.cms.liveBlog.entries', [
 
           scope.addEntry = lock(function () {
 
-            return LiveBlogApi.createEntry({
-              liveblog: scope.article.id
-            })
-              .then(function (entry) {
-                scope.entries.unshift(entry);
-              })
-              .catch(function (response) {
-                var message = 'An error occurred attempting to add an entry!';
-                reportError(message, { response: response });
+            return CurrentUserApi.getCurrentUserWithCache()
+              .then(function (user) {
+                var now = moment();
+
+                return LiveBlogApi.createEntry({
+                  liveblog: scope.article.id,
+                  created_by: user,
+                  created: now,
+                  updated_by: user,
+                  updated: now
+                })
+                  .then(function (entry) {
+                    scope.entries.unshift(entry);
+                  })
+                  .catch(function (response) {
+                    var message = 'An error occurred attempting to add an entry!';
+                    reportError(message, { response: response });
+                  });
               });
           });
 
           scope.saveEntry = lock(function (entry) {
 
-            return LiveBlogApi.updateEntry(entry)
-              .then(function () {
-                scope.getEntryForm(entry).$setPristine();
-              })
-              .catch(function (response) {
-                var message = 'An error occurred attempting to save ' + titleDisplay(entry) + '!';
-                reportError(message, { response: response });
-                return $q.reject();
+            return CurrentUserApi.getCurrentUserWithCache()
+              .then(function (user) {
+                var oldUpdateBy = entry.updated_by;
+                var oldUpdated = entry.updated;
+
+                entry.updated_by = user;
+                entry.updated = moment();
+
+                return LiveBlogApi.updateEntry(entry)
+                  .then(function () {
+                    scope.getEntryForm(entry).$setPristine();
+                  })
+                  .catch(function (response) {
+                    entry.updated_by = oldUpdateBy;
+                    entry.updated = oldUpdated;
+
+                    var message = 'An error occurred attempting to save ' + titleDisplay(entry) + '!';
+                    reportError(message, { response: response });
+
+                    return $q.reject();
+                  });
               });
           });
 

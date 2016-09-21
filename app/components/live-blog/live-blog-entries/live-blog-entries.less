@@ -3,6 +3,7 @@
 @import 'mixins/_mixin-alerts';
 @import 'mixins/_mixin-buttons';
 @import 'mixins/_mixin-input-container';
+@import 'mixins/_mixin-text';
 
 live-blog-entries {
   .mixin-accordion-list();
@@ -24,6 +25,21 @@ live-blog-entries {
 
   .live-blog-entries-list-add-top {
     float: right;
+  }
+
+  .live-blog-entries-list-entry-created-by {
+    .mixin-text-muted();
+
+    margin-bottom: @interface-row-margin;
+
+    &:after {
+      clear: both;
+      content: " ";
+    }
+
+    > span {
+      float: right;
+    }
   }
 
   .btn-minimal {

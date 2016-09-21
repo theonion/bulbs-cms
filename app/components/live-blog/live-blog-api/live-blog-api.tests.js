@@ -29,7 +29,7 @@ describe('Service: LiveBlogApi', function () {
   });
 
   afterEach(function () {
-    sandbox.create();
+    sandbox.restore();
   });
 
   context('live blog entries', function () {
@@ -54,13 +54,14 @@ describe('Service: LiveBlogApi', function () {
       expect(callback.withArgs({ results: entries }).calledOnce).to.equal(true);
     });
 
-    it('should transform publish dates to moment objects in the list', function () {
+    it('should transform dates to moment objects in the list', function () {
       var callback = sandbox.stub();
       var parentId = 2;
       var entry = {
         id: 1,
         liveblog: parentId,
-        published: '2016-04-20T04:20:00Z'
+        published: '2016-04-20T04:20:00Z',
+        created: '2016-06-06T06:06:06Z'
       };
       $httpBackend
         .expectGET(CmsConfig.buildApiUrlRoot('liveblog', 'entry') + '/?liveblog=' + parentId)
@@ -69,33 +70,43 @@ describe('Service: LiveBlogApi', function () {
       LiveBlogApi.getEntries(parentId).then(callback);
       $httpBackend.flush();
 
-      expect(moment.isMoment(callback.args[0][0].results[0].published)).to.equal(true);
+      var entryData = callback.args[0][0].results[0];
+      expect(moment.isMoment(entryData.published)).to.equal(true);
+      expect(moment.isMoment(entryData.created)).to.equal(true);
     });
 
     it('should provide a way to add a new entry', function () {
       var callback = sandbox.stub();
       var entry = {
         headline: 'garbage',
+        published: moment.tz('America/Chicago'),
         liveblog: 1
       };
+      var payload = {
+        headline: entry.headline,
+        published: entry.published.format(),
+        liveblog: entry.liveblog
+      };
       $httpBackend
-        .expectPOST(CmsConfig.buildApiUrlRoot('liveblog', 'entry/'), entry)
+        .expectPOST(CmsConfig.buildApiUrlRoot('liveblog', 'entry/'), payload)
         .respond(201, entry);
 
       LiveBlogApi.createEntry(entry).then(callback);
       $httpBackend.flush();
 
-      expect(callback.args[0][0]).to.eql(entry);
+      expect(callback.withArgs(entry).calledOnce).to.equal(true);
     });
 
-    it('should transform publish date to moment in add entry response', function () {
+    it('should transform dates to moment in add entry response', function () {
       var callback = sandbox.stub();
       var entry = {
         published: moment.tz('America/Chicago'),
+        created: moment.tz('America/Chicago').subtract(1, 'day'),
         liveblog: 1
       };
       var payload = {
         published: entry.published.format(),
+        created: entry.created.format(),
         liveblog: entry.liveblog
       };
       $httpBackend
@@ -105,7 +116,9 @@ describe('Service: LiveBlogApi', function () {
       LiveBlogApi.createEntry(entry).then(callback);
       $httpBackend.flush();
 
-      expect(moment.isMoment(callback.args[0][0].published)).to.equal(true);
+      var entryData = callback.args[0][0];
+      expect(moment.isMoment(entryData.published)).to.equal(true);
+      expect(moment.isMoment(entryData.created)).to.equal(true);
     });
 
     it('should provide a way to update an entry', function () {
@@ -133,11 +146,13 @@ describe('Service: LiveBlogApi', function () {
       var entry = {
         id: 30,
         published: moment.tz('America/Chicago'),
+        created: moment.tz('America/Chicago').subtract(1, 'days'),
         liveblog: 1
       };
       var payload = {
         id: entry.id,
         published: entry.published.format(),
+        created: entry.created.format(),
         liveblog: entry.liveblog
       };
       $httpBackend
@@ -150,7 +165,9 @@ describe('Service: LiveBlogApi', function () {
       LiveBlogApi.updateEntry(entry).then(callback);
       $httpBackend.flush();
 
-      expect(moment.isMoment(callback.args[0][0].published)).to.equal(true);
+      var entryData = callback.args[0][0];
+      expect(moment.isMoment(entryData.published)).to.equal(true);
+      expect(moment.isMoment(entryData.created)).to.equal(true);
     });
 
     it('should provide a way to delete an entry', function () {

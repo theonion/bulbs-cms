@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bulbsCmsApp')
-  .directive('navBar', function (CmsConfig, CurrentUser) {
+  .directive('navBar', function (CmsConfig, CurrentUserApi) {
     return {
       restrict: 'E',
       scope: false,
@@ -10,7 +10,11 @@ angular.module('bulbsCmsApp')
       },
       link: function (scope) {
         scope.NAV_LOGO = CmsConfig.getNavLogoPath();
-        scope.current_user = CurrentUser;
+
+        CurrentUserApi.getCurrentUserWithCache()
+          .then(function (user) {
+            scope.currentUser = user;
+          });
       }
     };
   });

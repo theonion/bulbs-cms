@@ -572,10 +572,26 @@ angular.module('bulbsCmsApp.mockApi.data', [])
     'liveblog.entries': [{
       id: 1,
       liveblog: 16,
+      created: moment().subtract(1, 'day'),
+      createdBy: {
+        id: 0,
+        username: 'admin',
+        email: 'webtech@theonion.com',
+        first_name: 'Herman',
+        last_name: 'Zweibel',
+      },
       authors: []
     }, {
       id: 2,
       liveblog: 16,
+      created: moment().subtract(1, 'day'),
+      createdBy: {
+        id: 1,
+        username: 'jadams',
+        email: 'jadams@theonion.com',
+        first_name: 'John',
+        last_name: 'Adams'
+      },
       authors: []
     }],
     'pzones.list': {
