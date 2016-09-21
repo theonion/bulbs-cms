@@ -11,6 +11,8 @@ angular.module('bulbsCmsApp')
         CurrentUserApi.getCurrentUserWithCache()
           .then(function (user) {
             scope.currentUser = user;
+
+            scope.logout = CurrentUserApi.logout;
           });
       }
     };
