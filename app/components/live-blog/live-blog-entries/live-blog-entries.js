@@ -31,12 +31,6 @@ angular.module('bulbs.cms.liveBlog.entries', [
             scope.errorMessage = '';
           };
 
-          scope.$watch('entries', function (newEntries, oldEntries) {
-            if (!angular.equals(newEntries, oldEntries)) {
-              scope.clearError();
-            }
-          }, true);
-
           LiveBlogApi.getEntries(scope.article.id)
             .then(function (response) {
               scope.entries = response.results;
@@ -113,6 +107,8 @@ angular.module('bulbs.cms.liveBlog.entries', [
 
             return CurrentUserApi.getCurrentUserWithCache()
               .then(function (user) {
+                var oldUpdateBy = entry.updated_by;
+                var oldUpdated = entry.updated;
 
                 entry.updated_by = user;
                 entry.updated = moment();
@@ -122,8 +118,12 @@ angular.module('bulbs.cms.liveBlog.entries', [
                     scope.getEntryForm(entry).$setPristine();
                   })
                   .catch(function (response) {
+                    entry.updated_by = oldUpdateBy;
+                    entry.updated = oldUpdated;
+
                     var message = 'An error occurred attempting to save ' + titleDisplay(entry) + '!';
                     reportError(message, { response: response });
+
                     return $q.reject();
                   });
               });

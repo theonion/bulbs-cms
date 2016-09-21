@@ -157,7 +157,11 @@ describe('Directive: liveBlogEntries', function () {
           created: sinon.match(function (value) {
             return moment(value).isBetween(then, now, 'second', '[]');
           }),
-          createdBy: currentUser
+          created_by: currentUser,
+          updated: sinon.match(function (value) {
+            return moment(value).isBetween(then, now, 'second', '[]');
+          }),
+          updated_by: currentUser
         }))).to.equal(true);
         expect(element.find('li').scope().entry).to.equal(entry);
       });
@@ -230,6 +234,7 @@ describe('Directive: liveBlogEntries', function () {
 
         headlineInput.val(newTitle).trigger('change');
         updateButton.trigger('click');
+        $parentScope.$digest();
         updateEntryDeferred.reject();
         $parentScope.$digest();
 
@@ -285,10 +290,18 @@ describe('Directive: liveBlogEntries', function () {
 
       it('should allow publish date to be changed', function () {
 
+        var then = moment();
         publishButtons.eq(0).isolateScope().modalOnBeforeClose();
+        $parentScope.$digest();
+        var now = moment();
 
-        expect(LiveBlogApi.updateEntry.withArgs(entry1).calledOnce)
-          .to.equal(true);
+        expect(LiveBlogApi.updateEntry.calledWithMatch({
+          id: entry1.id,
+          updated: sinon.match(function (value) {
+            return moment(value).isBetween(then, now, 'second', '[]');
+          }),
+          updated_by: currentUser
+        })).to.equal(true);
       });
 
       it('should show an error message on failure', function () {
