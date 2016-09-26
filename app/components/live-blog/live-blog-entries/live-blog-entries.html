@@ -135,6 +135,17 @@
         <div class="accordion-list-item-meta-tools">
 
           <button
+              ng-click="saveEntry(entry)"
+              ng-disabled="
+                transactionsLocked() ||
+                getEntryForm(entry).$pristine
+              "
+              class="btn btn-success btn-sm">
+            <i class="fa fa-floppy-o"></i>
+            <span>SAVE</span>
+          </button>
+
+          <button
               ng-disabled="transactionsLocked()"
               confirmation-modal-opener
               modal-body="Are you sure you want to delete {{ entry.headline ? '\'' + entry.headline + '\'' : 'this entry' }}?"
