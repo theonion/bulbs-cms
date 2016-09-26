@@ -20,7 +20,6 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
     );
 
     inject(function (_moment_, $controller, $rootScope, CmsConfig) {
-
       $modalInstanceMock = {};
       $scope = $rootScope.$new();
       moment = _moment_;
@@ -32,7 +31,7 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
             $scope: $scope,
             $modalInstance: $modalInstanceMock,
             CmsConfig: CmsConfig,
-            moment: moment
+            moment: moment,
           }
         );
       };
@@ -45,9 +44,7 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
 
   it('should set a timezone label on scope', function () {
     CmsConfigProviderHook.setTimezoneName('America/Chicago');
-
     buildControllerInstance();
-
     expect($scope.TIMEZONE_LABEL).to.equal('CDT');
   });
 

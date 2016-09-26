@@ -3,7 +3,7 @@
 angular.module('bulbs.cms.dateTimeModal.controller', [
   'bulbs.cms.site.config',
   'moment',
-  'ui.bootstrap.modal'
+  'ui.bootstrap.modal',
 ])
   .controller('DatetimeSelectionModalCtrl', [
     '$scope', '$modalInstance', 'CmsConfig', 'moment',
@@ -20,10 +20,9 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
       // watch temp time to update date
       $scope.$watch('tempTime', function () {
         var newTime = moment($scope.tempTime);
-
         if (newTime.isValid()) {
           $scope.tempDatetime.hour(newTime.hour());
-          $scope.tempDatetime.minute (newTime.minute());
+          $scope.tempDatetime.minute(newTime.minute());
           $scope.tempDatetime.second(newTime.second());
         }
       });
@@ -78,10 +77,10 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
           // close modal, ensuring that output date is a moment
           var retMoment = moment($scope.tempDatetime);
           $modalInstance.close(retMoment);
-        } else {
+        }
+        else {
           console.error('Attempting to choose invalid date.');
         }
       };
-
-    }
+    },
   ]);
