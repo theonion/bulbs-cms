@@ -62,10 +62,7 @@
       <div class="accordion-list-item-meta-tools">
         <button
             ng-click="saveEntry(entry)"
-            ng-disabled="
-              transactionsLocked() ||
-              getEntryForm(entry).$pristine
-            "
+            ng-disabled="isEntryFormSaveDisabled(entry)"
             class="btn btn-success btn-xs">
           <i class="fa fa-floppy-o"></i>
           <span>Save</span>
@@ -136,10 +133,7 @@
 
           <button
               ng-click="saveEntry(entry)"
-              ng-disabled="
-                transactionsLocked() ||
-                getEntryForm(entry).$pristine
-              "
+              ng-disabled="isEntryFormSaveDisabled(entry)"
               class="btn btn-success btn-sm">
             <i class="fa fa-floppy-o"></i>
             <span>SAVE</span>
