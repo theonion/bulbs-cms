@@ -37,11 +37,11 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
       };
 
       $scope.dateInTimezone = function (date) {
-        return date.clone().tz(CmsConfig.getTimezoneName()).clone();
+        return date.clone().tz(CmsConfig.getTimezoneName());
       };
 
       $scope.setDate = function (selectedDate) {
-        $scope.date = $scope.dateInTimezone(moment(selectedDate)).clone();
+        $scope.date = $scope.dateInTimezone(moment(selectedDate));
       };
 
       $scope.isDateTimeInvalid = function () {
