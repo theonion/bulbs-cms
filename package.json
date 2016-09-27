@@ -71,10 +71,10 @@
     "node": ">=0.8.0"
   },
   "scripts": {
-    "test": "grunt travis",
+    "test": "karma start --single-run",
     "start": "grunt serve",
     "build": "grunt build",
-    "karma": "grunt karma",
+    "karma": "karma start",
     "setup": "npm install; bower install",
     "publish": "grunt publish",
     "lint": "grunt lint"

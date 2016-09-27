@@ -3,22 +3,30 @@
 angular.module('bulbs.cms.dateTimeFilter', [
   'bulbs.cms.site.config',
   'lodash',
-  'moment'
+  'moment',
 ])
   .filter('dateTimeFormat', [
     '_', 'moment', 'CmsConfig',
     function (_, moment, CmsConfig) {
-      return function (date, format) {
+      function isInvalidDateValue (dateValue) {
+        return !(
+          _.isString(dateValue) ||
+          _.isDate(dateValue) ||
+          moment.isMoment(dateValue)
+        );
+      }
 
-        if (!_.isString(date) && !moment.isMoment(date)) {
+      return function (date, format) {
+        if (isInvalidDateValue(date)) {
           return '';
         }
 
         if (!_.isString(format)) {
+          date = moment(date);
           format = CmsConfig.getDateTimeFormatHumanReadable();
         }
 
         return moment.tz(date, CmsConfig.getTimezoneName()).format(format);
       };
-    }
+    },
   ]);

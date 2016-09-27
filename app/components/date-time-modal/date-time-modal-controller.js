@@ -8,64 +8,66 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
   .controller('DatetimeSelectionModalCtrl', [
     '$scope', '$modalInstance', 'CmsConfig', 'moment',
     function ($scope, $modalInstance, CmsConfig, moment) {
-
       $scope.TIMEZONE_LABEL = moment.tz(CmsConfig.getTimezoneName()).format('z');
+      $scope.dateTime = $scope.modDatetime ? $scope.modDatetime.clone() : moment();
+      $scope.time = $scope.dateTime.toDate();
+      $scope.date = $scope.dateTime.clone();
 
-      // ensure that we can't choose a time if date is invalid
-      $scope.dateValid = true;
-      $scope.$watch('tempDatetime', function () {
-        $scope.dateValid = $scope.tempDatetime.isValid();
+      $scope.$watch('time', function () {
+        var time = moment($scope.time);
+        var newTime = moment()
+          .dayOfYear($scope.date.dayOfYear())
+          .hours(time.hours())
+          .minutes(time.minutes());
+        $scope.dateTime = $scope.dateInTimezone(newTime);
       });
 
-      // watch temp time to update date
-      $scope.$watch('tempTime', function () {
-        var newTime = moment($scope.tempTime);
-        if (newTime.isValid()) {
-          $scope.tempDatetime.hour(newTime.hour());
-          $scope.tempDatetime.minute(newTime.minute());
-          $scope.tempDatetime.second(newTime.second());
-        }
+      $scope.$watch('date', function () {
+        var date = $scope.date.clone();
+        var time = moment($scope.time);
+        var newDate = moment()
+          .dayOfYear(date.dayOfYear())
+          .hours(time.hours())
+          .minutes(time.minutes());
+        $scope.dateTime = $scope.dateInTimezone(newDate);
       });
 
-      // copy date temporarily so user has to actually verify change to the date
-      $scope.tempDatetime = angular.copy($scope.modDatetime);
-      if (!$scope.tempDatetime) {
-        // default to now if no time given
-        $scope.tempDatetime = moment();
-      }
-      $scope.tempTime = angular.copy($scope.tempDatetime);
-
-      var timeNowWithOffset = function () {
-        return moment.tz(CmsConfig.getTimezoneName());
+      $scope.nowInTimezone = function () {
+        return $scope.dateInTimezone(moment());
       };
 
-      // callback function for using datetimepicker calendar because it doesn't
-      //  modify the given ngModel
-      $scope.setDate = function (newDate) {
-        var newDateAsMoment = moment(newDate);
-        $scope.tempDatetime = ($scope.tempDatetime || moment())
-          .year(newDateAsMoment.year())
-          .month(newDateAsMoment.month())
-          .date(newDateAsMoment.date());
+      $scope.dateInTimezone = function (date) {
+        return date.clone().tz(CmsConfig.getTimezoneName()).clone();
+      };
+
+      $scope.setDate = function (selectedDate) {
+        $scope.date = $scope.dateInTimezone(moment(selectedDate)).clone();
+      };
+
+      $scope.isDateTimeInvalid = function () {
+        return !$scope.dateTime.isValid();
       };
 
       $scope.setDateToday = function () {
-        $scope.setDate(timeNowWithOffset());
+        var today = $scope.nowInTimezone();
+        $scope.date = $scope.dateTime.clone().dayOfYear(today.dayOfYear());
       };
 
       $scope.setDateTomorrow = function () {
-        $scope.setDate(timeNowWithOffset().add(1, 'day'));
+        var tomorrow = moment().add(1, 'day');
+        $scope.date = $scope.dateInTimezone(tomorrow.clone());
       };
 
       $scope.setTimeNow = function () {
-        $scope.tempDatetime = timeNowWithOffset();
+        var now = $scope.nowInTimezone();
+        $scope.date = now;
+        $scope.time = now.toDate();
       };
 
       $scope.setTimeMidnight = function () {
-        $scope.tempDatetime = timeNowWithOffset()
-            .hour(24)
-            .minute(0)
-            .second(0);
+        var midnightTonight = $scope.nowInTimezone().startOf('day');
+        $scope.date = midnightTonight;
+        $scope.time = midnightTonight.toDate();
       };
 
       $scope.clearDatetime = function () {
@@ -73,13 +75,8 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
       };
 
       $scope.chooseDatetime = function () {
-        if ($scope.dateValid) {
-          // close modal, ensuring that output date is a moment
-          var retMoment = moment($scope.tempDatetime);
-          $modalInstance.close(retMoment);
-        }
-        else {
-          console.error('Attempting to choose invalid date.');
+        if ($scope.dateTime.isValid()) {
+          $modalInstance.close($scope.dateTime);
         }
       };
     },
