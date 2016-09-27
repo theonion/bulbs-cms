@@ -42,7 +42,7 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
     });
 
     today = moment();
-    tomorrow = moment().add('days', 1);
+    tomorrow = moment().add(1, 'day');
     dateFormat = 'YYYY-MM-DD';
     timeFormat = 'HH:mm';
   });
