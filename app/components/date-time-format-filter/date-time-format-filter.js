@@ -9,10 +9,10 @@ angular.module('bulbs.cms.dateTimeFilter', [
     '_', 'moment', 'CmsConfig',
     function (_, moment, CmsConfig) {
       function isInvalidDateValue (dateValue) {
-        return !(
-          _.isString(dateValue) ||
-          _.isDate(dateValue) ||
-          moment.isMoment(dateValue)
+        return (
+          !_.isString(dateValue) &&
+          !_.isDate(dateValue) &&
+          !moment.isMoment(dateValue)
         );
       }
 
