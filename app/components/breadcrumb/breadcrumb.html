@@ -5,14 +5,14 @@
 
 <span ng-repeat="link in linksList track by $index">
   <span
+      ng-bind-html="renderValue(link.label)"
       ng-if="!link.href"
       class="breadcrumb-link-hrefless">
-    {{ renderValue(link.label) }}
   </span>
   <a
+      ng-bind-html="renderValue(link.label)"
       ng-if="link.href"
       href="{{ renderValue(link.href) }}">
-    {{ renderValue(link.label) }}
   </a>
   <i
       ng-if="!$last"
