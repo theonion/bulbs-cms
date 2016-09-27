@@ -20,6 +20,7 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
       'bulbs.cms.dateTimeModal.controller',
       function (CmsConfigProvider) {
         CmsConfigProviderHook = CmsConfigProvider;
+        CmsConfigProviderHook.setTimezoneName('America/Chicago');
       }
     );
 
