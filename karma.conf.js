@@ -22,6 +22,7 @@ module.exports = function(config) {
       'karma-ng-html2js-preprocessor',
       'karma-sinon-chai',
       'karma-chrome-launcher',
+      'karma-sauce-launcher',
     ],
 
     // testing framework to use (jasmine/mocha/qunit/...)
