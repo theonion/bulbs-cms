@@ -431,7 +431,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         }
       }, {
         id: 13,
-        title: 'Guide to My Favorite Animals',
+        title: 'Guide to My <em>Favorite</em> Animals',
         slug: 'my-favorite-animals',
         polymorphic_ctype: 'core_super_feature_type',
         superfeature_type: 'GUIDE_TO_ANIMALZ_PARENT',

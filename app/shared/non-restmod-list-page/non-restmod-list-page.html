@@ -78,8 +78,9 @@
     </thead>
     <tbody>
       <tr ng-repeat="item in items">
-        <td ng-repeat="field in modelFields()">
-          {{ cellContents(item, field) }}
+        <td
+            ng-repeat="field in modelFields()"
+            ng-bind-html="cellContents(item, field)">
         </td>
         <td>
           <a
