@@ -42,8 +42,8 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
       };
     });
 
-    today = moment();
-    tomorrow = moment().add(1, 'day');
+    today = moment().tz('America/Chicago');
+    tomorrow = moment().tz('America/Chicago').add(1, 'day');
     dateFormat = 'YYYY-MM-DD';
     timeFormat = 'HH:mm';
   });
@@ -164,7 +164,7 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
       $modalInstanceMock.close = sandbox.stub();
       buildControllerInstance();
       $scope.clearDatetime();
-      expect($modalInstanceMock.close).to.have.been.called;
+      expect($modalInstanceMock.close).to.have.been.called; // jshint ignore:line
     });
   });
 
