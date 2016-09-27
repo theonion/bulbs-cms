@@ -16,6 +16,7 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
       $scope.$watch('time', function () {
         var time = moment($scope.time);
         var newTime = moment()
+          .year($scope.date.year())
           .dayOfYear($scope.date.dayOfYear())
           .hours(time.hours())
           .minutes(time.minutes());
@@ -26,6 +27,7 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
         var date = $scope.date.clone();
         var time = moment($scope.time);
         var newDate = moment()
+          .year($scope.date.year())
           .dayOfYear(date.dayOfYear())
           .hours(time.hours())
           .minutes(time.minutes());
