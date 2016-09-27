@@ -148,6 +148,14 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
       $scope.setTimeMidnight();
       expect($scope.time.toString()).to.equal(today.toDate().toString());
     });
+
+    it('sets the date to midnight', function () {
+      $scope.modDatetime = moment('2016-09-25 09:30').tz('America/Chicago');
+      buildControllerInstance();
+      today.startOf('day');
+      $scope.setTimeMidnight();
+      expect($scope.date.isSame(today)).to.equal(true);
+    });
   });
 
   describe('clearDateTime', function () {

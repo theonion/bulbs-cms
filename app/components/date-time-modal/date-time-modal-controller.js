@@ -8,8 +8,16 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
   .controller('DatetimeSelectionModalCtrl', [
     '$scope', '$modalInstance', 'CmsConfig', 'moment',
     function ($scope, $modalInstance, CmsConfig, moment) {
+      $scope.nowInTimezone = function () {
+        return $scope.dateInTimezone(moment());
+      };
+
+      $scope.dateInTimezone = function (date) {
+        return date.clone().tz(CmsConfig.getTimezoneName());
+      };
+
       $scope.TIMEZONE_LABEL = moment.tz(CmsConfig.getTimezoneName()).format('z');
-      $scope.dateTime = $scope.modDatetime ? $scope.modDatetime.clone() : moment();
+      $scope.dateTime = $scope.modDatetime ? $scope.dateInTimezone($scope.modDatetime) : $scope.nowInTimezone();
       $scope.time = $scope.dateTime.toDate();
       $scope.date = $scope.dateTime.clone();
 
@@ -33,14 +41,6 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
           .minutes(time.minutes());
         $scope.dateTime = $scope.dateInTimezone(newDate);
       });
-
-      $scope.nowInTimezone = function () {
-        return $scope.dateInTimezone(moment());
-      };
-
-      $scope.dateInTimezone = function (date) {
-        return date.clone().tz(CmsConfig.getTimezoneName());
-      };
 
       $scope.setDate = function (selectedDate) {
         $scope.date = $scope.dateInTimezone(moment(selectedDate));
