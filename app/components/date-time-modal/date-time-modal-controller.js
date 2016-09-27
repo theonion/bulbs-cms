@@ -62,14 +62,14 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
 
       $scope.setTimeNow = function () {
         var now = $scope.nowInTimezone();
-        $scope.date = now;
-        $scope.time = now.toDate();
+        $scope.date = now.clone();
+        $scope.time = now.clone().toDate();
       };
 
       $scope.setTimeMidnight = function () {
         var midnightTonight = $scope.nowInTimezone().startOf('day');
-        $scope.date = midnightTonight;
-        $scope.time = midnightTonight.toDate();
+        $scope.date = midnightTonight.clone();
+        $scope.time = midnightTonight.clone().toDate();
       };
 
       $scope.clearDatetime = function () {
