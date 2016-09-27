@@ -76,6 +76,9 @@ angular.module('bulbs.cms.liveBlog.entries', [
             scope.wrapperForm[name] = {};
             return scope.wrapperForm[name];
           };
+          scope.isEntryFormSaveDisabled = function (entry) {
+            return scope.transactionsLocked() || scope.getEntryForm(entry).$pristine;
+          };
 
           var lock = Utils.buildLock();
           scope.transactionsLocked = lock.isLocked;
