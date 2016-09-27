@@ -95,8 +95,9 @@
     </thead>
     <tbody>
       <tr ng-repeat="item in $list">
-        <td ng-repeat="field in fields">
-          {{ field.evaluate(item) }}
+        <td
+            ng-repeat="field in fields"
+            ng-bind-html="field.evaluate(item)">
         </td>
         <td>
           <a

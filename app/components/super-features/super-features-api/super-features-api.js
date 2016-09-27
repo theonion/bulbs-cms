@@ -8,8 +8,8 @@ angular.module('bulbs.cms.superFeatures.api', [
   'moment'
 ])
   .service('SuperFeaturesApi', [
-    '_', '$http', 'CmsConfig', 'dateTimeFormatFilter', 'moment', 'Utils',
-    function (_, $http, CmsConfig, dateTimeFormatFilter, moment, Utils) {
+    '_', '$http', '$sce', 'CmsConfig', 'dateTimeFormatFilter', 'moment', 'Utils',
+    function (_, $http, $sce, CmsConfig, dateTimeFormatFilter, moment, Utils) {
 
       var superFeatureEndpoint = CmsConfig.buildApiUrlRoot.bind(null, 'super-feature');
       var contentEndpoint = CmsConfig.buildApiUrlRoot.bind(null, 'content');
@@ -54,7 +54,10 @@ angular.module('bulbs.cms.superFeatures.api', [
         },
         fields: [{
           title: 'Super Feature Name',
-          sorts: 'title'
+          sorts: 'title',
+          content: function (superFeature) {
+            return $sce.trustAsHtml(superFeature.title);
+          }
         }, {
           title: 'Total Nested Pages',
           content: 'children_count'
