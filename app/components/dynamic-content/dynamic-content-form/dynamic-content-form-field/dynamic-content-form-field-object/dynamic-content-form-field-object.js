@@ -36,9 +36,15 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
           scope.$watch('schema', function () {
             if (_.has(scope.schema, 'fields')) {
               var fieldKeys = Object.keys(scope.schema.fields);
+              var includeOnlyProvided = _.isArray(scope.includeOnly);
+              var hideOnlyChildLabel = false;
 
-              if (_.isArray(scope.includeOnly)) {
+              if (includeOnlyProvided) {
                 fieldKeys = _.intersection(fieldKeys, scope.includeOnly);
+
+                if (scope.includeOnly.length === 1) {
+                  hideOnlyChildLabel = true;
+                }
               }
 
               fieldKeys.forEach(function (id) {
@@ -60,6 +66,10 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
                 html.attr('name', id);
                 html.attr('schema', 'schema.fields.' + id);
                 html.attr('class', 'dynamic-content-form-field');
+
+                if (hideOnlyChildLabel) {
+                  html.attr('hide-label', 'true');
+                }
 
                 // NOTE : Angular is not able to bind primitives properly when
                 //  passed into isolate scopes. See

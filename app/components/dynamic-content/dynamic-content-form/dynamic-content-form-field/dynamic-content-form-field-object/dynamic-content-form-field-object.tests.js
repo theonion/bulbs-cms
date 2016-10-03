@@ -1,4 +1,5 @@
 'use strict';
+/*jshint -W030 */
 
 describe('Directive: dynamicContentFormFieldObject', function () {
   var $parentScope;
@@ -384,5 +385,26 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     digest(html);
 
     expect(html.find('dynamic-content-form-field-input-label').length).to.equal(0);
+  });
+
+  it('should not render immediate child label if include-only is one item', function () {
+    var html = angular.element(
+      '<dynamic-content-form-field-object ' +
+        'schema="schema" ' +
+        'ng-model="ngModel" ' +
+        'include-only="includeOnly" ' +
+        '>' +
+      '</dynamic-content-form-field-object>'
+    );
+    var name = 'child_object';
+    $parentScope.schema = { fields: {} };
+    $parentScope.schema.fields[name] = { fields: {} };
+    $parentScope.ngModel = {};
+    $parentScope.includeOnly = [name];
+
+    digest(html);
+
+    var child = html.find('dynamic-content-form-field-object');
+    expect(child.attr('hide-label')).to.not.be.undefined;
   });
 });

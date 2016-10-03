@@ -1,5 +1,6 @@
 <dynamic-content-form
     schema-src="/cms/api/v1/content/{{ article.id }}/"
     ng-model="article.info_data"
-    on-validity-change="contentEditGlobals.canSave = isValid">
+    on-validity-change="contentEditGlobals.canSave = isValid"
+    include-only="['data']">
 </dynamic-content-form>
