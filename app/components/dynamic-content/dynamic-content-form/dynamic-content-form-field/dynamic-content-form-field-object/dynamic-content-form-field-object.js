@@ -10,6 +10,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
   'bulbs.cms.dynamicContent.form.field.invalid',
   'bulbs.cms.dynamicContent.form.field.richtext',
   'bulbs.cms.dynamicContent.form.field.text',
+  'bulbs.cms.dynamicContent.form.input.label',
   'bulbs.cms.dynamicContent.form.types',
   'bulbs.cms.site.config',
   'lodash',
@@ -20,8 +21,10 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
     function (_, $compile, CmsConfig, FIELD_TYPES_META, uuid4) {
 
       return {
-        link: function (scope, element) {
+        link: function (scope, element, attrs) {
           var $form = element.find('ng-form');
+
+          scope.hideLabel = 'hideLabel' in attrs;
 
           scope.$watch('form.$valid', function (isValid) {
             scope.onValidityChange({

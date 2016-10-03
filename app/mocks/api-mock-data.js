@@ -505,6 +505,15 @@ angular.module('bulbsCmsApp.mockApi.data', [])
               test_field: {
                 type: 'integer'
               },
+              nested_things: {
+                fields: {
+                  title: {
+                    label: 'Title',
+                    type: 'richtext',
+                    required: true
+                  },
+                }
+              },
               entries: {
                 type: 'array',
                 label: 'Entries',
