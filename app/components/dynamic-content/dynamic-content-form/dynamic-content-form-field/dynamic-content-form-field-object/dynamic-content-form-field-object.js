@@ -20,7 +20,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
     function (_, $compile, CmsConfig, FIELD_TYPES_META, uuid4) {
 
       return {
-        link: function (scope, element, attrs) {
+        link: function (scope, element) {
           var $form = element.find('ng-form');
 
           scope.$watch('form.$valid', function (isValid) {
