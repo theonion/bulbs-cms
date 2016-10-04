@@ -64,14 +64,15 @@
           schema="schema"
           ng-model="itemValues"
           on-validity-change="isItemInvalid = internalForm.$dirty && !isValid"
-          class="accordion-list-item-content">
+          class="accordion-list-item-content"
+          hide-label>
       </dynamic-content-form-field-object>
 
       <div class="accordion-list-item-meta">
 
         <div class="accordion-list-item-meta-tools">
           <button
-              class="btn btn-xs btn-danger"
+              class="btn btn-sm btn-danger"
               ng-click="removeItem($index)">
             <i class="fa fa-trash-o"></i>
             <span>DELETE</span>

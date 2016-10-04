@@ -1,4 +1,5 @@
 'use strict';
+/*jshint -W030 */
 
 describe('Directive: dynamicContentFormFieldObject', function () {
   var $parentScope;
@@ -37,14 +38,14 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     );
     module('jsTemplates');
 
-   inject(function ($compile, $rootScope) {
-     $parentScope = $rootScope.$new();
+    inject(function ($compile, $rootScope) {
+      $parentScope = $rootScope.$new();
 
-     digest = window.testHelper.directiveBuilderWithDynamicHtml(
-       $compile,
-       $parentScope
-     );
-   });
+      digest = window.testHelper.directiveBuilderWithDynamicHtml(
+         $compile,
+         $parentScope
+       );
+    });
   });
 
   afterEach(function () {
@@ -345,5 +346,65 @@ describe('Directive: dynamicContentFormFieldObject', function () {
     digest(html);
 
     expect(html.html()).to.have.string('Schema is malformed');
+  });
+
+  it('should render a label if hide-label is not an attribute', function () {
+    var name = 'some name';
+    var html = angular.element(
+      '<dynamic-content-form-field-object ' +
+        'name="' + name + '"' +
+        'schema="schema" ' +
+        'ng-model="ngModel" ' +
+        '>' +
+      '</dynamic-content-form-field-object>'
+    );
+    $parentScope.schema = {};
+    $parentScope.ngModel = {};
+
+    digest(html);
+
+    var label = html.find('dynamic-content-form-field-input-label');
+    expect(label.length).to.equal(1);
+    expect(label.html()).to.have.string(name);
+  });
+
+  it('should not render a label if given attribute hide-label', function () {
+    var name = 'some name';
+    var html = angular.element(
+      '<dynamic-content-form-field-object ' +
+        'name="' + name + '"' +
+        'schema="schema" ' +
+        'ng-model="ngModel" ' +
+        'hide-label ' +
+        '>' +
+      '</dynamic-content-form-field-object>'
+    );
+    $parentScope.schema = {};
+    $parentScope.ngModel = {};
+
+    digest(html);
+
+    expect(html.find('dynamic-content-form-field-input-label').length).to.equal(0);
+  });
+
+  it('should not render immediate child label if include-only is one item', function () {
+    var html = angular.element(
+      '<dynamic-content-form-field-object ' +
+        'schema="schema" ' +
+        'ng-model="ngModel" ' +
+        'include-only="includeOnly" ' +
+        '>' +
+      '</dynamic-content-form-field-object>'
+    );
+    var name = 'child_object';
+    $parentScope.schema = { fields: {} };
+    $parentScope.schema.fields[name] = { fields: {} };
+    $parentScope.ngModel = {};
+    $parentScope.includeOnly = [name];
+
+    digest(html);
+
+    var child = html.find('dynamic-content-form-field-object');
+    expect(child.attr('hide-label')).to.not.be.undefined;
   });
 });
