@@ -151,18 +151,32 @@ td.author { max-width: 150px; }
 
         button.go{ width: 100%; margin-top: 5px; } } }
 
-/* navbar */
 nav.navbar {
 
-    .navbar-toggle { margin-right: 1px; border: 0; border-radius: 0; padding: 10px; }
+  .navbar-toggle {
+    border-radius: 0;
+    border: 0;
+    margin-right: 1px;
+    padding: 10px;
+  }
 
-    ul li {
+  ul li {
 
-        &:not(:first-child){ border-left: 1px solid #F1F1F1; }
+    &:not(:first-child){
+      border-left: 1px solid #F1F1F1;
+    }
 
-        i { padding-right: 4px; margin-left: -4px; } }
+    i {
+      margin-left: -4px;
+      padding-right: 4px;
+    }
+  }
 
-    .navbar-brand { padding: 0px; margin-left: 0; } }
+  .navbar-brand {
+    padding: 0px;
+    margin-left: 0;
+  }
+}
 
 .navbar-save { font-size: inherit; line-height: inherit; margin: 1px;
 
