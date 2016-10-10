@@ -1,5 +1,6 @@
 @import url('bootstrap-navbar-override.less');
 @import 'mixins/_mixin-buttons';
+@import '_colors';
 @import '_sizing';
 
 .cf:before, .cf:after { content: " "; display: table; }
@@ -152,6 +153,32 @@ td.author { max-width: 150px; }
         button.go{ width: 100%; margin-top: 5px; } } }
 
 nav.navbar {
+  @icon-spacing: 5px;
+
+  .dropdown {
+
+    button.dropdown-toggle {
+      .mixin-button-no-style();
+
+      padding: @interface-internal-spacing;
+
+      &[aria-expanded="true"] {
+        background-color: @interface-color-gray-2;
+      }
+
+      span {
+        margin-right: @icon-spacing;
+      }
+    }
+
+    ul.dropdown-menu {
+
+      li.active a {
+        background-color: @interface-color-gray-2;
+        color: inherit;
+      }
+    }
+  }
 
   .navbar-toggle {
     border-radius: 0;
@@ -163,17 +190,12 @@ nav.navbar {
   ul li {
 
     &:not(:first-child){
-      border-left: 1px solid #F1F1F1;
-    }
-
-    i {
-      margin-left: -4px;
-      padding-right: 4px;
+      border-left: 1px solid @interface-color-gray-2;
     }
   }
 
   .navbar-brand {
-    padding: 0px;
+    padding: 0;
     margin-left: 0;
   }
 }
