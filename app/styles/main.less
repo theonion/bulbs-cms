@@ -153,29 +153,34 @@ td.author { max-width: 150px; }
         button.go{ width: 100%; margin-top: 5px; } } }
 
 nav.navbar {
-  @icon-spacing: 5px;
 
   .dropdown {
 
     button.dropdown-toggle {
       .mixin-button-no-style();
 
-      padding: @interface-internal-spacing;
+      color: @interface-color-gray-7;
+      padding: @interface-internal-spacing 15px;
+      text-align: left;
 
       &[aria-expanded="true"] {
         background-color: @interface-color-gray-2;
       }
 
-      span {
-        margin-right: @icon-spacing;
+      &:hover {
+        color: @interface-color-gray-6;
       }
-    }
 
-    ul.dropdown-menu {
+      ul.dropdown-menu li {
 
-      li.active a {
-        background-color: @interface-color-gray-2;
-        color: inherit;
+        &.active a {
+          background-color: @interface-color-gray-2;
+          color: inherit;
+        }
+
+        a {
+          padding: @interface-internal-spacing/2 @interface-internal-spacing;
+        }
       }
     }
   }
@@ -187,7 +192,7 @@ nav.navbar {
     padding: 10px;
   }
 
-  ul li {
+  ul.navbar-nav > li {
 
     &:not(:first-child){
       border-left: 1px solid @interface-color-gray-2;
@@ -197,6 +202,27 @@ nav.navbar {
   .navbar-brand {
     padding: 0;
     margin-left: 0;
+  }
+
+  @media (max-width: @screen-md-max) {
+
+    ul.navbar-nav {
+
+      .navbar-collapse {
+        padding: 0;
+      }
+    }
+
+    .dropdown {
+
+      button.dropdown-toggle {
+        width: 100%;
+      }
+
+      ul.dropdown-menu {
+        padding-left: @interface-internal-spacing * 2;
+      }
+    }
   }
 }
 
