@@ -171,16 +171,17 @@ nav.navbar {
         color: @interface-color-gray-6;
       }
 
-      ul.dropdown-menu li {
+    }
 
-        &.active a {
-          background-color: @interface-color-gray-2;
-          color: inherit;
-        }
+    ul.dropdown-menu li {
 
-        a {
-          padding: @interface-internal-spacing/2 @interface-internal-spacing;
-        }
+      &.active a {
+        background-color: @interface-color-gray-2;
+        color: inherit;
+      }
+
+      a {
+        padding: @interface-internal-spacing/2 @interface-internal-spacing;
       }
     }
   }
@@ -205,6 +206,11 @@ nav.navbar {
   }
 
   @media (max-width: @screen-md-max) {
+
+    .navbar-header > .navbar-toggle {
+      font-size: 23px;
+      padding: 0 10px;
+    }
 
     ul.navbar-nav {
 
