@@ -1,0 +1,26 @@
+<div class="search-container">
+  <div class="search-input">
+    <label for="{{ inputId }}">
+      <i class="glyphicon glyphicon-search"></i>
+    </label>
+    <input
+        id="{{ inputId }}"
+        placeholder="Search content by article ID or headline..."
+        type="text"
+        ng-model="writables.searchTerm"
+        ng-blur="delayClearAutocomplete()"
+        ng-change="updateAutocomplete()"
+        ng-keydown="handleKeypress($event)">
+  </div>
+
+  <bulbs-autocomplete-suggest
+      ng-show="writables.searchTerm && autocompleteItems.length > 0"
+      formatter="item.name"
+      items="autocompleteItems"
+      on-select="
+        onSelect({ selection: selection.value });
+        autocompleteItems = [];
+        writables.searchTerm = '';
+      ">
+  </bulbs-autocomplete-suggest>
+</div>
