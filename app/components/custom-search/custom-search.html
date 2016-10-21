@@ -37,12 +37,21 @@
   </div>
 </div>
 
-<custom-search-simple-content-search
-    on-select="
-      resetFilters();
-      customSearchService.includesAdd(id);
-      $contentRetrieve()">
-</custom-search-simple-content-search>
+<div>
+  <label
+      class="muted-capitals"
+      for="customSearchContentSearch">
+    Manually Add Article to List
+  </label>
+
+  <content-search
+      input-id="customSearchContentSearch"
+      on-select="
+        resetFilters();
+        customSearchService.includesAdd(selection.id);
+        $contentRetrieve()">
+  </content-search>
+</div>
 
 <hr>
 
