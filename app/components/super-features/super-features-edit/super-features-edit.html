@@ -45,12 +45,52 @@
       role="singleline"
       placeholder="Headline">
   </onion-editor>
+
   <onion-editor
       id="content-subhead"
       ng-model="article.subhead"
       role="singleline"
       placeholder="Subhead (optional)">
-  </onion-editor></section>
+  </onion-editor>
+
+  <div class="well">
+    <div>
+      <div class="muted-capitals">Slot 1</div> 
+      <content-search
+          ng-if="!article.recirc_query.included_ids[0]"
+          input-id="content-recirc"
+          on-select="addToRecirc(selection)">
+      </content-search>
+      <div ng-if="article.recirc_query.included_ids[0]">
+        {{ article.recirc_query.included_ids[0] }}
+      </div>
+    </div>
+
+    <div>
+      <div class="muted-capitals">Slot 2</div> 
+      <content-search
+          ng-if="!article.recirc_query.included_ids[1]"
+          input-id="content-recirc"
+          on-select="addToRecirc(selection)">
+      </content-search>
+      <div ng-if="article.recirc_query.included_ids[1]">
+        {{ article.recirc_query.included_ids[1] }}
+      </div>
+    </div>
+
+    <div>
+      <div class="muted-capitals">Slot 3</div> 
+      <content-search
+          ng-if="!article.recirc_query.included_ids[2]"
+          input-id="content-recirc"
+          on-select="addToRecirc(selection)">
+      </content-search>
+      <div ng-if="article.recirc_query.included_ids[2]">
+        {{ article.recirc_query.included_ids[2] }}
+      </div>
+    </div>
+  </div>
+
 </section>
 
 <dynamic-content-form

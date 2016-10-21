@@ -440,6 +440,9 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         children_count: 3,
         data: {
           title: 'garbage'
+        },
+        recirc_query: {
+          included_ids: [1, 2, 3]
         }
       }, {
         id: 14,
@@ -447,7 +450,8 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         slug: 'another-super-duper-feature',
         polymorphic_ctype: 'core_super_feature_type',
         children_count: 10,
-        data: {}
+        data: {},
+        recirc_query: {}
       }, {
         id: 15,
         title: 'Scheduled Super Feature',
@@ -455,7 +459,8 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         polymorphic_ctype: 'core_super_feature_type',
         published: moment().add(1, 'day').format(),
         children_count: 4,
-        data: {}
+        data: {},
+        recirc_query: {}
       }, {
         id: 16,
         title: 'Live Blog #1',

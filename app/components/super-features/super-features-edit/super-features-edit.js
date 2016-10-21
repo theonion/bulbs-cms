@@ -2,6 +2,7 @@
 
 angular.module('bulbs.cms.superFeatures.edit', [
   'bulbs.cms.breadcrumb',
+  'bulbs.cms.contentSearch',
   'bulbs.cms.dynamicContent',
   'bulbs.cms.site.config',
   'bulbs.cms.superFeatures.api',
@@ -36,6 +37,21 @@ angular.module('bulbs.cms.superFeatures.edit', [
           };
 
           addParentToBreadcrumb(scope.article);
+
+          scope.requestRecircContent = function () {
+            scope.recircContent = scope.article.recirc_query.included_ids.map(function (id) {
+              // TODO : make a request to get content title
+            });
+          };
+
+          scope.addToRecirc = function (content) {
+            if (angular.isUndefined(scope.article.recirc_query.included_ids)) {
+              scope.article.recirc_query.included_ids = [];
+            }
+            
+            scope.recircContent.push(content);
+            scope.article.recirc_query.included_ids.push(content.id);
+          };
         },
         // no scope here so we have access to the content edit scope without
         //  having to make changes to the brittle content edit controller,
