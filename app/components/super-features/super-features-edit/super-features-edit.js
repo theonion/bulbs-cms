@@ -59,7 +59,11 @@ angular.module('bulbs.cms.superFeatures.edit', [
           };
 
           if (scope.article.recirc_query.included_ids) {
-// TODO : fill this in, should request and fill in for existing ids
+            scope.article.recirc_query.included_ids.forEach(function (contentId, i) {
+              retrieveContent(contentId).then(function (content) {
+                scope.fullRecircContents[i] = content;
+              });
+            });
           }
         },
         // no scope here so we have access to the content edit scope without
