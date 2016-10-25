@@ -9,8 +9,8 @@ angular.module('bulbs.cms.superFeatures.edit', [
   'bulbs.cms.superFeatures.relations'
 ])
   .directive('superFeaturesEdit', [
-    'CmsConfig', 'ContentFactory', 'SuperFeaturesApi',
-    function (CmsConfig, ContentFactory, SuperFeaturesApi) {
+    'CmsConfig', 'ContentFactory', 'SuperFeaturesApi', 'Utils',
+    function (CmsConfig, ContentFactory, SuperFeaturesApi, Utils) {
       return {
         link: function (scope) {
 
@@ -56,6 +56,11 @@ angular.module('bulbs.cms.superFeatures.edit', [
             retrieveContent(contentId).then(function (content) {
               scope.fullRecircContents[newRecircIdsLength - 1] = content;
             });
+          };
+
+          scope.removeRecirc = function (index) {
+            Utils.removeFrom(scope.article.recirc_query.included_ids, index);
+            Utils.removeFrom(scope.fullRecircContents, index);
           };
 
           if (scope.article.recirc_query.included_ids) {

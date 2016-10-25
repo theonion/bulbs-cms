@@ -65,9 +65,15 @@
           on-select="includeRecirc(selection)">
       </content-search>
     </div>
-    <ul ng-if="fullRecircContents">
+    <ul
+        class="super-features-edit-recirc-list"
+        ng-if="fullRecircContents">
       <li ng-repeat="content in fullRecircContents">
-        {{ content.title }}
+        <span>({{ content.id }}) {{ content.title }}</span>
+        <button
+            ng-click="removeRecirc($index)">
+          <i class="fa fa-times"></i>
+        </button>
       </li>
     </ul>
   </div>
