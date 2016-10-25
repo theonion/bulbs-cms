@@ -9,8 +9,8 @@ angular.module('bulbs.cms.superFeatures.edit', [
   'bulbs.cms.superFeatures.relations'
 ])
   .directive('superFeaturesEdit', [
-    'CmsConfig', 'SuperFeaturesApi',
-    function (CmsConfig, SuperFeaturesApi) {
+    'CmsConfig', 'ContentFactory', 'SuperFeaturesApi',
+    function (CmsConfig, ContentFactory, SuperFeaturesApi) {
       return {
         link: function (scope) {
 
@@ -39,6 +39,12 @@ angular.module('bulbs.cms.superFeatures.edit', [
 
           addParentToBreadcrumb(scope.article);
 
+          scope.fullRecircContents = [];
+
+          var retrieveContent = function (contentId) {
+            return ContentFactory.one('content', contentId).get();
+          };
+
           scope.includeRecirc = function (contentId) {
             var recirc = scope.article.recirc_query;
 
@@ -46,8 +52,15 @@ angular.module('bulbs.cms.superFeatures.edit', [
               recirc.included_ids = [];
             }
 
-            recirc.included_ids.push(contentId);
+            var newRecircIdsLength = recirc.included_ids.push(contentId);
+            retrieveContent(contentId).then(function (content) {
+              scope.fullRecircContents[newRecircIdsLength - 1] = content;
+            });
           };
+
+          if (scope.article.recirc_query.included_ids) {
+// TODO : fill this in, should request and fill in for existing ids
+          }
         },
         // no scope here so we have access to the content edit scope without
         //  having to make changes to the brittle content edit controller,

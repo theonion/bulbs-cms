@@ -65,9 +65,9 @@
           on-select="includeRecirc(selection)">
       </content-search>
     </div>
-    <ul ng-if="article.recirc_query.included_ids">
-      <li ng-repeat="contentId in article.recirc_query.included_ids">
-        {{ contentId }}
+    <ul ng-if="fullRecircContents">
+      <li ng-repeat="content in fullRecircContents">
+        {{ content.title }}
       </li>
     </ul>
   </div>
