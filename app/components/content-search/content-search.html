@@ -1,6 +1,7 @@
 <autocomplete-basic
     class="form-control"
     ng-if="!ngModel"
+    ng-disabled="ngDisabled()"
     item-display-formatter="itemDisplayFormatter(item)"
     item-value-formatter="itemValueFormatter(item)"
     initial-value="initialValue"
@@ -14,6 +15,7 @@
     class="form-control"
     ng-if="ngModel"
     ng-model="ngModel.$viewValue"
+    ng-disabled="ngDisabled()"
     item-display-formatter="itemDisplayFormatter(item)"
     item-value-formatter="itemValueFormatter(item)"
     initial-value="initialValue"

@@ -57,7 +57,8 @@ angular.module('bulbs.cms.contentSearch', [
         restrict: 'E',
         scope: {
           inputId: '@',
-          onSelect: '&'
+          onSelect: '&',
+          ngDisabled: '&'
         },
         templateUrl: CmsConfig.buildComponentPath(
           'content-search',

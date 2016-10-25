@@ -39,6 +39,7 @@ angular.module('bulbs.cms.superFeatures.edit', [
 
           addParentToBreadcrumb(scope.article);
 
+          scope.maxRecircItems = 3;
           scope.fullRecircContents = [];
 
           var retrieveContent = function (contentId) {

@@ -58,11 +58,12 @@
       <label
           for="manualRecircSearch"
           class="muted-capitals">
-        Manual Recirc
+        Manual Recirc (Maximum {{ maxRecircItems }})
       </label>
       <content-search
           input-id="manualRecircSearch"
-          on-select="includeRecirc(selection)">
+          on-select="includeRecirc(selection)"
+          ng-disabled="fullRecircContents.length === maxRecircItems">
       </content-search>
     </div>
     <ul
