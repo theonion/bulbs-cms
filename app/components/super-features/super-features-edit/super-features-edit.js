@@ -14,10 +14,6 @@ angular.module('bulbs.cms.superFeatures.edit', [
       return {
         link: function (scope) {
 
-          if (angular.isUndefined(scope.article.recirc_query.included_ids)) {
-            scope.article.recirc_query.included_ids = [];
-          }
-
           scope.breadcrumbs = [{
             label: 'Super Features',
             href: '/cms/app/super-features'
@@ -42,6 +38,16 @@ angular.module('bulbs.cms.superFeatures.edit', [
           };
 
           addParentToBreadcrumb(scope.article);
+
+          scope.includeRecirc = function (contentId) {
+            var recirc = scope.article.recirc_query;
+
+            if (angular.isUndefined(recirc.included_ids)) {
+              recirc.included_ids = [];
+            }
+
+            recirc.included_ids.push(contentId);
+          };
         },
         // no scope here so we have access to the content edit scope without
         //  having to make changes to the brittle content edit controller,

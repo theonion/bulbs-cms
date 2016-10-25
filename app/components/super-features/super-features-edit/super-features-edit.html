@@ -53,47 +53,24 @@
       placeholder="Subhead (optional)">
   </onion-editor>
 
-  <div class="well">
+  <div class="row well">
     <div>
       <label
-          for="contentRecirc0"
+          for="manualRecircSearch"
           class="muted-capitals">
-        Slot 1
-      </label> 
+        Manual Recirc
+      </label>
       <content-search
-          input-id="contentRecirc0"
-          ng-model="article.recirc_query.included_ids[0]"
-          on-select="initIncludedIds()">
+          input-id="manualRecircSearch"
+          on-select="includeRecirc(selection)">
       </content-search>
     </div>
-
-    <div>
-      <label
-          for="contentRecirc1"
-          class="muted-capitals">
-        Slot 2
-      </label> 
-      <content-search
-          input-id="contentRecirc1"
-          ng-model="article.recirc_query.included_ids[1]"
-          on-select="initIncludedIds()">
-      </content-search>
-    </div>
-
-    <div>
-      <label
-          for="contentRecirc2"
-          class="muted-capitals">
-        Slot 3
-      </label> 
-      <content-search
-          input-id="contentRecirc2"
-          ng-model="article.recirc_query.included_ids[2]"
-          on-select="initIncludedIds()">
-      </content-search>
-    </div>
+    <ul ng-if="article.recirc_query.included_ids">
+      <li ng-repeat="contentId in article.recirc_query.included_ids">
+        {{ contentId }}
+      </li>
+    </ul>
   </div>
-
 </section>
 
 <dynamic-content-form
