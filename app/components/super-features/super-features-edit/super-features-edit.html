@@ -55,39 +55,42 @@
 
   <div class="well">
     <div>
-      <div class="muted-capitals">Slot 1</div> 
+      <label
+          for="contentRecirc0"
+          class="muted-capitals">
+        Slot 1
+      </label> 
       <content-search
-          ng-if="!article.recirc_query.included_ids[0]"
-          input-id="content-recirc"
-          on-select="addToRecirc(selection)">
+          input-id="contentRecirc0"
+          ng-model="article.recirc_query.included_ids[0]"
+          on-select="initIncludedIds()">
       </content-search>
-      <div ng-if="article.recirc_query.included_ids[0]">
-        {{ article.recirc_query.included_ids[0] }}
-      </div>
     </div>
 
     <div>
-      <div class="muted-capitals">Slot 2</div> 
+      <label
+          for="contentRecirc1"
+          class="muted-capitals">
+        Slot 2
+      </label> 
       <content-search
-          ng-if="!article.recirc_query.included_ids[1]"
-          input-id="content-recirc"
-          on-select="addToRecirc(selection)">
+          input-id="contentRecirc1"
+          ng-model="article.recirc_query.included_ids[1]"
+          on-select="initIncludedIds()">
       </content-search>
-      <div ng-if="article.recirc_query.included_ids[1]">
-        {{ article.recirc_query.included_ids[1] }}
-      </div>
     </div>
 
     <div>
-      <div class="muted-capitals">Slot 3</div> 
+      <label
+          for="contentRecirc2"
+          class="muted-capitals">
+        Slot 3
+      </label> 
       <content-search
-          ng-if="!article.recirc_query.included_ids[2]"
-          input-id="content-recirc"
-          on-select="addToRecirc(selection)">
+          input-id="contentRecirc2"
+          ng-model="article.recirc_query.included_ids[2]"
+          on-select="initIncludedIds()">
       </content-search>
-      <div ng-if="article.recirc_query.included_ids[2]">
-        {{ article.recirc_query.included_ids[2] }}
-      </div>
     </div>
   </div>
 

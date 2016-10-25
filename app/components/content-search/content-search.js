@@ -1,69 +1,59 @@
 'use strict';
 
 angular.module('bulbs.cms.contentSearch', [
+  'autocompleteBasic',
   'bulbs.cms.site.config',
-  'BulbsAutocomplete',
-  'BulbsAutocomplete.suggest'
+  'contentServices.factory',
+  'lodash'
 ])
   .directive('contentSearch', [
-    '_', 'BULBS_AUTOCOMPLETE_EVENT_KEYPRESS', 'CmsConfig', 'ContentFactory',
-    function (_, BULBS_AUTOCOMPLETE_EVENT_KEYPRESS, CmsConfig, ContentFactory) {
+    '_', 'CmsConfig', 'ContentFactory',
+    function (_, CmsConfig, ContentFactory) {
 
       return {
-        link: function (scope) {
+        link: function (scope, element, attrs, ngModelCtrl) {
 
-          scope.writables = {
-            searchTerm: ''
+          scope.itemDisplayFormatter = function (content) {
+            if (_.isObject(content)) {
+              return content.title + ' - ' + content.id;
+            }
           };
 
-          scope.autocompleteItems = [];
+          scope.itemValueFormatter = function (content) {
+            // relatively heavy handed transformation to an id, will have to
+            //  reconsider this if another usage for this search comes up where
+            //  we need to return the entire content piece.
+            return _.isObject(content) ? content.id : null;
+          };
 
-          var $getItems = function () {
+          scope.searchContent = function (searchTerm) {
             return ContentFactory.all('content')
-              .getList({search: scope.writables.searchTerm})
-              .then(function (results) {
-                return _.chain(results)
-                  .take(10)
-                  .map(function (item) {
-                    return {
-                      name: 'ID: ' + item.id + ' | ' + item.title,
-                      value: item
-                    };
-                  })
-                  .value();
-                });
+              .getList({ search: searchTerm });
           };
 
-          scope.updateAutocomplete = function () {
-            if (scope.writables.searchTerm) {
-              $getItems().then(function (results) {
-                scope.autocompleteItems = results;
-              });
-            }
-          };
+          if (ngModelCtrl) {
 
-          scope.delayClearAutocomplete = function () {
-            _.delay(function () {
-              scope.clearAutocomplete();
-              scope.$digest();
-            }, 200);
-          };
+            scope.ngModel = ngModelCtrl;
 
-          scope.clearAutocomplete = function () {
-            scope.writables.searchTerm = '';
-            scope.autocompleteItems = [];
-          };
+            ngModelCtrl.$render = function () {
+              if (_.isNumber(ngModelCtrl.$modelValue) && !scope.initialValue) {
+                ContentFactory.one('content', ngModelCtrl.$modelValue).get()
+                  .then(function (content) {
+                    scope.initialValue = scope.itemDisplayFormatter(content);
+                  });
+              }
+            };
 
-          scope.handleKeypress = function ($event) {
-            if ($event.keyCode === 27) {
-              // esc, close dropdown
-              scope.clearAutocomplete();
-            } else {
-              scope.$broadcast(BULBS_AUTOCOMPLETE_EVENT_KEYPRESS, $event);
-            }
-          };
-        
+            scope.autocompleteOnSelect = function () {
+              ngModelCtrl.$commitViewValue();
+            };
+          } else {
+            scope.autocompleteOnSelect = function (selection) {
+              scope.onSelect({ selection: scope.itemValueFormatter(selection.value) });
+            };
+          }
         },
+        require: '?ngModel',
         restrict: 'E',
         scope: {
           inputId: '@',
@@ -76,3 +66,4 @@ angular.module('bulbs.cms.contentSearch', [
       };
     }
   ]);
+
