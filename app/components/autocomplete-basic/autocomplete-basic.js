@@ -137,7 +137,8 @@ angular.module('autocompleteBasic', [
           itemDisplayFormatter: '&',  // formatter to transform the display name of result
           itemValueFormatter: '&',    // formatter to transform the value of the result
           onSelect: '&',              // selection callback, recieves selection as argument
-          searchFunction: '='         // function to use for searching autocomplete results
+          searchFunction: '=',        // function to use for searching autocomplete results
+          ngDisabled: '&'
         },
         templateUrl: CmsConfig.buildComponentPath('autocomplete-basic/autocomplete-basic.html')
       };

@@ -1,0 +1,27 @@
+<autocomplete-basic
+    class="form-control"
+    ng-if="!ngModel"
+    ng-disabled="ngDisabled()"
+    item-display-formatter="itemDisplayFormatter(item)"
+    item-value-formatter="itemValueFormatter(item)"
+    initial-value="initialValue"
+    on-select="autocompleteOnSelect(selection)"
+    input-id="{{ inputId }}"
+    input-placeholder="Search content by article ID or headline..."
+    search-function="searchContent">
+</autocomplete-basic>
+
+<autocomplete-basic
+    class="form-control"
+    ng-if="ngModel"
+    ng-model="ngModel.$viewValue"
+    ng-disabled="ngDisabled()"
+    item-display-formatter="itemDisplayFormatter(item)"
+    item-value-formatter="itemValueFormatter(item)"
+    initial-value="initialValue"
+    on-select="autocompleteOnSelect(selection)"
+    input-id="{{ inputId }}"
+    input-placeholder="Search content by article ID or headline..."
+    search-function="searchContent">
+</autocomplete-basic>
+

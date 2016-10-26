@@ -1,11 +1,11 @@
 'use strict';
 
 angular.module('customSearch.directive', [
+  'bulbs.cms.contentSearch',
   'bulbs.cms.site.config',
   'customSearch.contentItem',
   'customSearch.group',
-  'customSearch.service',
-  'customSearch.simpleContentSearch'
+  'customSearch.service'
 ])
   .directive('customSearch', function (CmsConfig) {
     return {

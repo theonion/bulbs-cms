@@ -5,6 +5,7 @@ angular.module('bulbs.cms.site.config', [
     'CmsConfigProvider', 'ngClipProvider',
     function (CmsConfig, ngClipProvider) {
       CmsConfig
+        .setApiUrlRoot('/cms/api/v1/')
         .setContentPartialsPath('/content_type_views/')
         .setComponentPath('/components/')
         .setDirectivePartialsPath('/views/')
