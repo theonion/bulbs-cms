@@ -1,11 +1,15 @@
 'use strict';
 
-angular.module('contentServices.factory', [])
-  .factory('ContentFactory', function (Restangular, contentApiConfig) {
-    return Restangular.withConfig(function (RestangularConfigurer) {
-      RestangularConfigurer.setBaseUrl(contentApiConfig.baseUrl);
-    });
-  })
-  .constant('contentApiConfig', {
-    baseUrl: '/cms/api/v1'
-  });
+angular.module('contentServices.factory', [
+  'bulbs.cms.site.config',
+  'restangular'
+])
+  .factory('ContentFactory', [
+    'CmsConfig', 'Restangular',
+    function (CmsConfig, Restangular) {
+      return Restangular.withConfig(function (RestangularConfigurer) {
+        RestangularConfigurer.setBaseUrl(CmsConfig.buildApiUrlRoot());
+      });
+    }
+   ]);
+
