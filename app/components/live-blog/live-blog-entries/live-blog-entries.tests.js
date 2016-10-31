@@ -43,7 +43,10 @@ describe('Directive: liveBlogEntries', function () {
       currentUser = { id: 123 };
       sinon.stub(CurrentUserApi, 'getCurrentUserWithCache').returns($q.when(currentUser));
 
-      $parentScope.article = { id: 1 };
+      $parentScope.article = {
+        id: 1,
+        recirc_query: {}
+      };
 
       createEntryDeferred = $q.defer();
       sandbox.stub(LiveBlogApi, 'createEntry')
@@ -100,7 +103,6 @@ describe('Directive: liveBlogEntries', function () {
       var element = digest(html);
 
       element.scope().$digest();
-      element.isolateScope().onIncludeRecirc();
 
       expect(angular.isArray($parentScope.article.recirc_query.included_ids)).to.equal(true);
     });

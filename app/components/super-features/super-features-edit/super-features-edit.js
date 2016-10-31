@@ -14,6 +14,11 @@ angular.module('bulbs.cms.superFeatures.edit', [
       return {
         link: function (scope) {
 
+          var recirc = scope.article.recirc_query;
+          if (angular.isUndefined(recirc.included_ids)) {
+            recirc.included_ids = [];
+          }
+
           scope.breadcrumbs = [{
             label: 'Super Features',
             href: '/cms/app/super-features'
@@ -38,13 +43,6 @@ angular.module('bulbs.cms.superFeatures.edit', [
           };
 
           addParentToBreadcrumb(scope.article);
-
-          scope.onIncludeRecirc = function () {
-            var recirc = scope.article.recirc_query;
-            if (angular.isUndefined(recirc.included_ids)) {
-              recirc.included_ids = [];
-            }
-          };
 
         },
         // no scope here so we have access to the content edit scope without

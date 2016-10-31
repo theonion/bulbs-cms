@@ -28,6 +28,11 @@ angular.module('bulbs.cms.liveBlog.entries', [
             return entry.headline ? '"' + entry.headline + '"' : 'an entry';
           };
 
+          var recirc = scope.article.recirc_query;
+          if (angular.isUndefined(recirc.included_ids)) {
+            recirc.included_ids = [];
+          }
+
           scope.clearError = function () {
             scope.errorMessage = '';
           };
@@ -175,12 +180,6 @@ angular.module('bulbs.cms.liveBlog.entries', [
               });
           });
 
-          scope.onIncludeRecirc = function () {
-            var recirc = scope.article.recirc_query;
-            if (angular.isUndefined(recirc.included_ids)) {
-              recirc.included_ids = [];
-            }
-          };
         },
         restrict: 'E',
         scope: {

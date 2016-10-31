@@ -105,7 +105,7 @@ describe('Directive: superFeaturesEdit', function () {
 
   context('recirc', function () {
 
-    it('should initialize included_ids list when adding new recirc if not provided by backend', function () {
+    it('should initialize included_ids list if not provided by backend', function () {
       var article1 = {
         id: 1,
         title: 'Article 1',
@@ -123,7 +123,6 @@ describe('Directive: superFeaturesEdit', function () {
       var scope = element.scope();
 
       scope.$digest();
-      scope.onIncludeRecirc(article1.id);
 
       expect(angular.isArray($parentScope.article.recirc_query.included_ids)).to.equal(true);
     });
