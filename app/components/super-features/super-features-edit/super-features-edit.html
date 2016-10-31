@@ -53,31 +53,13 @@
       placeholder="Subhead (optional)">
   </onion-editor>
 
-  <div class="row well">
-    <div>
-      <label
-          for="manualRecircSearch"
-          class="muted-capitals">
-        Manual Recirc (Maximum {{ maxRecircItems }})
-      </label>
-      <content-search
-          input-id="manualRecircSearch"
-          on-select="includeRecirc(selection)"
-          ng-disabled="fullRecircContents.length === maxRecircItems">
-      </content-search>
-    </div>
-    <ul
-        class="super-features-edit-recirc-list"
-        ng-if="fullRecircContents">
-      <li ng-repeat="content in fullRecircContents">
-        <span>({{ content.id }}) {{ content.title }}</span>
-        <button
-            ng-click="removeRecirc($index)">
-          <i class="fa fa-times"></i>
-        </button>
-      </li>
-    </ul>
-  </div>
+  <recirc-chooser
+      class="row well"
+      ng-model="article.recirc_query.included_ids"
+      input-id="manualRecircSearch"
+      label="Some Garbage"
+      on-select="includeRecirc(selection)">
+  </recirc-chooser>
 </section>
 
 <dynamic-content-form
