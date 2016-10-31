@@ -1,3 +1,16 @@
+<div class="live-blog-recircs">
+  <recirc-chooser
+      input-label="Pinned Articles"
+      ng-model="article.pinned_content">
+  </recirc-chooser>
+
+  <recirc-chooser
+      input-label="Footer Article Recirc"
+      ng-model="article.recirc_query.included_ids"
+      on-select="onIncludeRecirc()">
+  </recirc-chooser>
+</div>
+
 <div class="live-blog-entries-header">
   <h4>Entries</h4>
 

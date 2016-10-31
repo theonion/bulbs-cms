@@ -7,6 +7,7 @@ angular.module('bulbs.cms.liveBlog.entries', [
   'bulbs.cms.dateTimeModal',
   'bulbs.cms.liveBlog.api',
   'bulbs.cms.liveBlog.entries.authorBridge',
+  'bulbs.cms.recircChooser',
   'bulbs.cms.site.config',
   'bulbs.cms.utils',
   'confirmationModal',
@@ -173,6 +174,13 @@ angular.module('bulbs.cms.liveBlog.entries', [
                 reportError(message, { response: response });
               });
           });
+
+          scope.onIncludeRecirc = function () {
+            var recirc = scope.article.recirc_query;
+            if (angular.isUndefined(recirc.included_ids)) {
+              recirc.included_ids = [];
+            }
+          };
         },
         restrict: 'E',
         scope: {
