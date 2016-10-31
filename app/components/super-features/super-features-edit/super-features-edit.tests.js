@@ -104,23 +104,13 @@ describe('Directive: superFeaturesEdit', function () {
   });
 
   context('recirc', function () {
-    var article1;
-    var article2;
 
-    beforeEach(function () {
-      article1 = {
+    it('should initialize included_ids list when adding new recirc if not provided by backend', function () {
+      var article1 = {
         id: 1,
         title: 'Article 1',
         recirc_query: {}
       };
-      article2 = {
-        id: 2,
-        title: 'Article 2',
-        recirc_query: {}
-      };
-    });
-
-    it('should initialize included_ids list when adding new recirc if not provided by backend', function () {
       $parentScope.article = {
         id: 12,
         title: 'Article 12',
