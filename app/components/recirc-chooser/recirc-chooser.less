@@ -1,4 +1,28 @@
+@import '_sizing';
+@import 'mixins/_mixin-buttons';
+
 recirc-chooser {
   display: block;
+
+  ul.recirc-chooser-content-list {
+    list-style: none;
+
+    li {
+      background-color: @interface-color-white;
+      border: 1px solid @interface-color-water;
+      border-radius: @interface-border-radius;
+      font-size: @interface-font-size-2;
+      margin-top: @interface-internal-spacing;
+      padding: @interface-internal-spacing;
+
+      button {
+        .mixin-button-no-style();
+
+        float: right;
+        font-size: @interface-font-size-3;
+        line-height: @interface-font-size-2;
+      }
+    }
+  }
 }
 
