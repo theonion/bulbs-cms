@@ -90,6 +90,22 @@ describe('Directive: liveBlogEntries', function () {
     });
   });
 
+  context('recirc', function () {
+
+    it('should initialize recirc_query.included_ids when not provided by backend', function () {
+      $parentScope.article = {
+        id: 1,
+        recirc_query: {}
+      };
+      var element = digest(html);
+
+      element.scope().$digest();
+      element.isolateScope().onIncludeRecirc();
+
+      expect(angular.isArray($parentScope.article.recirc_query.included_ids)).to.equal(true);
+    });
+  });
+
   context('entry interactions', function () {
 
     context('accordion', function () {
