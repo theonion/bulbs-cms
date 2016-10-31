@@ -12,7 +12,7 @@ angular.module('bulbs.cms.recircChooser', [
       return {
         link: function (scope) {
 
-          scope.maxRecircItems =
+          scope.maxRecircItemsInt =
             scope.maxRecircItems ? parseInt(scope.maxRecircItems, 10) : 3;
 
           scope.inputId =
@@ -51,6 +51,7 @@ angular.module('bulbs.cms.recircChooser', [
             });
           }
         },
+        require: 'ngModel',
         restrict: 'E',
         scope: {
           inputId: '@',

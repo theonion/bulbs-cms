@@ -2,16 +2,16 @@
   <label
       for="{{ inputId }}"
       class="muted-capitals">
-    {{ inputLabel || 'Manual Recirc (Maximum ' + maxRecircItems + ')' }}
+    {{ inputLabel || 'Manual Recirc (Maximum ' + maxRecircItemsInt + ')' }}
   </label>
   <content-search
       input-id="{{ inputId }}"
       on-select="includeRecirc(selection)"
-      ng-disabled="fullRecircContents.length === maxRecircItems">
+      ng-disabled="fullRecircContents.length >= maxRecircItemsInt">
   </content-search>
 </div>
 <ul
-    class="super-features-edit-recirc-list"
+    class="recirc-chooser-content-list"
     ng-if="fullRecircContents">
   <li ng-repeat="content in fullRecircContents">
     <span>({{ content.id }}) {{ content.title }}</span>

@@ -39,7 +39,7 @@ angular.module('bulbs.cms.superFeatures.edit', [
 
           addParentToBreadcrumb(scope.article);
 
-          scope.includeRecirc = function () {
+          scope.onIncludeRecirc = function () {
             var recirc = scope.article.recirc_query;
             if (angular.isUndefined(recirc.included_ids)) {
               recirc.included_ids = [];
