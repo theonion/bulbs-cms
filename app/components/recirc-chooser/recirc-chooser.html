@@ -9,7 +9,8 @@
     class="recirc-chooser-content-list"
     ng-if="fullRecircContents">
   <li ng-repeat="content in fullRecircContents">
-    <span>({{ content.id }}) {{ content.title }}</span>
+    <span>({{ content.id }})</span>
+    <span ng-bind-html="content.title"></span>
     <button
         ng-click="removeRecirc($index)">
       <i class="fa fa-times"></i>
