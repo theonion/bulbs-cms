@@ -100,7 +100,8 @@ angular.module('bulbs.cms.liveBlog.entries', [
                   created_by: user,
                   created: now,
                   updated_by: user,
-                  updated: now
+                  updated: now,
+                  recirc_content: []
                 })
                   .then(function (entry) {
                     scope.entries.unshift(entry);

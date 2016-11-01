@@ -1,11 +1,11 @@
 <div class="live-blog-recircs">
   <recirc-chooser
-      input-label="Pinned Articles"
+      input-label="Pinned Articles (Maximum 3)"
       ng-model="article.pinned_content">
   </recirc-chooser>
 
   <recirc-chooser
-      input-label="Footer Article Recirc"
+      input-label="Footer Article Recirc (Maximum 3)"
       ng-model="article.recirc_query.included_ids"
       on-select="onIncludeRecirc()">
   </recirc-chooser>
@@ -138,7 +138,13 @@
             </onion-editor>
           </div>
         </div>
+
+        <recirc-chooser
+            input-label="Add Article Recirc (Maximum 3)"
+            ng-model="entry.recirc_content">
+        </recirc-chooser>
       </form>
+
 
       <div class="accordion-list-item-meta">
 
