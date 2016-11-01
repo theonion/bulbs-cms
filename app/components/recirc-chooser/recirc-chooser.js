@@ -10,7 +10,9 @@ angular.module('bulbs.cms.recircChooser', [
     function (CmsConfig, ContentFactory, Utils, uuid4) {
 
       return {
-        link: function (scope) {
+        link: function (scope, element, attrs, controllers) {
+
+          var parentForm = controllers[1];
 
           scope.maxRecircItemsInt =
             scope.maxRecircItems ? parseInt(scope.maxRecircItems, 10) : 3;
@@ -34,6 +36,9 @@ angular.module('bulbs.cms.recircChooser', [
               scope.fullRecircContents[newRecircIdsLength - 1] = content;
             });
 
+            if (angular.isDefined(parentForm)) {
+              parentForm.$setDirty();
+            }
           };
 
           scope.removeRecirc = function (index) {
@@ -41,6 +46,10 @@ angular.module('bulbs.cms.recircChooser', [
 
             Utils.removeFrom(scope.ngModel, index);
             Utils.removeFrom(scope.fullRecircContents, index);
+
+            if (angular.isDefined(parentForm)) {
+              parentForm.$setDirty();
+            }
           };
 
           if (angular.isArray(scope.ngModel)) {
@@ -51,7 +60,7 @@ angular.module('bulbs.cms.recircChooser', [
             });
           }
         },
-        require: 'ngModel',
+        require: ['ngModel', '?^^form'],
         restrict: 'E',
         scope: {
           inputId: '@',
