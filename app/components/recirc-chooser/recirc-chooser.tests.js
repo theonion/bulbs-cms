@@ -58,40 +58,6 @@ describe('Directive: recircChooser', function () {
     sandbox.restore();
   });
 
-  context('input label', function () {
-
-    it('should allow a dynamic label value', function () {
-      $parentScope.article = testData.article1;
-      $parentScope.customLabel = 'my custom label thing';
-      var element = digest(
-        '<recirc-chooser ' +
-            'ng-model="article.recirc_query.included_ids" ' +
-            'input-label="{{ customLabel }}" ' +
-            '></recirc-chooser>'
-      );
-      var scope = element.scope();
-
-      scope.$digest();
-
-      expect(element.find('label').html()).to.have.string($parentScope.customLabel);
-    });
-
-    it('should have a default label value if none is provided', function () {
-      $parentScope.article = testData.article1;
-      var element = digest(
-        '<recirc-chooser ' +
-            'ng-model="article.recirc_query.included_ids" ' +
-            '></recirc-chooser>'
-      );
-      var defaultLabel = 'Manual Recirc (Maximum 3)';
-      var scope = element.scope();
-
-      scope.$digest();
-
-      expect(element.find('label').html()).to.have.string(defaultLabel);
-    });
-  });
-
   context('input id', function () {
 
     it('should be customizable property', function () {
@@ -107,8 +73,6 @@ describe('Directive: recircChooser', function () {
 
       scope.$digest();
 
-      expect(element.find('label[for="' + $parentScope.customInputId + '"]').length)
-          .to.equal(1);
       expect(element.find('content-search[input-id="' + $parentScope.customInputId + '"]').length)
           .to.equal(1);
     });
@@ -126,7 +90,6 @@ describe('Directive: recircChooser', function () {
 
       scope.$digest();
 
-      expect(element.find('label[for="' + mockUuid + '"]').length).to.equal(1);
       expect(element.find('content-search[input-id="' + mockUuid + '"]').length).to.equal(1);
     });
   });

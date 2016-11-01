@@ -53,12 +53,18 @@
       placeholder="Subhead (optional)">
   </onion-editor>
 
-  <recirc-chooser
-      class="row well"
-      ng-model="article.recirc_query.included_ids"
-      input-id="manualRecircSearch"
-      on-select="includeRecirc(selection)">
-  </recirc-chooser>
+  <div class="row well">
+    <label
+        class="muted-capitals"
+        for="manualRecircSearch">
+      Manual Recirc (Maximum 3)
+    </label>
+    <recirc-chooser
+        ng-model="article.recirc_query.included_ids"
+        input-id="manualRecircSearch"
+        on-select="includeRecirc(selection)">
+    </recirc-chooser>
+  </div>
 </section>
 
 <dynamic-content-form

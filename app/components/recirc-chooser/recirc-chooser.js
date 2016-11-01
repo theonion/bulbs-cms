@@ -55,7 +55,6 @@ angular.module('bulbs.cms.recircChooser', [
         restrict: 'E',
         scope: {
           inputId: '@',
-          inputLabel: '@',
           maxRecircItems: '@',
           ngModel: '=',
           onRemove: '&',
