@@ -36,7 +36,7 @@ angular.module('bulbs.cms.recircChooser', [
               scope.fullRecircContents[newRecircIdsLength - 1] = content;
             });
 
-            if (angular.isDefined(parentForm)) {
+            if (angular.isObject(parentForm)) {
               parentForm.$setDirty();
             }
           };
@@ -47,7 +47,7 @@ angular.module('bulbs.cms.recircChooser', [
             Utils.removeFrom(scope.ngModel, index);
             Utils.removeFrom(scope.fullRecircContents, index);
 
-            if (angular.isDefined(parentForm)) {
+            if (angular.isObject(parentForm)) {
               parentForm.$setDirty();
             }
           };
