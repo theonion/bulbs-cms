@@ -1,24 +1,30 @@
 <div class="live-blog-recircs">
-  <label
-      for="liveBlogRecircsPinned"
-      class="muted-capitals">
-    Pinned Articles (Maximum 3)
-  </label>
-  <recirc-chooser
-      input-id="liveBlogRecircsPinned"
-      ng-model="article.pinned_content">
-  </recirc-chooser>
 
-  <label
-      for="liveBlogRecircsFooter"
-      class="muted-capitals">
-    Footer Article Recirc (Maximum 3)
-  </label>
-  <recirc-chooser
-      input-id="liveBlogRecircsFooter"
-      ng-model="article.recirc_query.included_ids"
-      on-select="onIncludeRecirc()">
-  </recirc-chooser>
+  <div class="well">
+    <label
+        for="liveBlogRecircsPinned"
+        class="muted-capitals">
+      Pinned Articles (Maximum 3)
+    </label>
+    <recirc-chooser
+        input-id="liveBlogRecircsPinned"
+        ng-model="article.pinned_content">
+    </recirc-chooser>
+  </div>
+
+  <div class="well">
+    <label
+        for="liveBlogRecircsFooter"
+        class="muted-capitals">
+      Footer Article Recirc (Maximum 3)
+    </label>
+    <recirc-chooser
+        input-id="liveBlogRecircsFooter"
+        ng-model="article.recirc_query.included_ids"
+        on-select="onIncludeRecirc()">
+    </recirc-chooser>
+  </div>
+
 </div>
 
 <div class="live-blog-entries-header">
@@ -151,7 +157,7 @@
 
         <div class="input-container">
           <label for="entryRecirc-{{ entry.id }}">
-            Add Article Recirc (Maximum 3)
+            Add Related Recirc (Maximum 3)
           </label>
           <recirc-chooser
               input-id="entryRecirc-{{ entry.id }}"
