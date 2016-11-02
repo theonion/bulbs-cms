@@ -12,6 +12,10 @@ live-blog-entries {
   margin-bottom: @interface-row-margin;
   padding: @interface-internal-spacing;
 
+  .live-blog-recircs > div {
+    margin-bottom: @interface-row-margin;
+  }
+
   .live-blog-entries-header {
     margin-bottom: @interface-row-margin;
 
@@ -57,11 +61,11 @@ live-blog-entries {
   .input-container {
     .mixin-input-container();
 
-    label {
+    label:not(.autocomplete-basic-label) {
       .mixin-input-label();
     }
 
-    input {
+    input:not(.autocomplete-basic-input) {
       .mixin-input();
     }
 

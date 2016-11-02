@@ -104,73 +104,13 @@ describe('Directive: superFeaturesEdit', function () {
   });
 
   context('recirc', function () {
-    var article1;
-    var article2;
 
-    beforeEach(function () {
-      article1 = {
+    it('should initialize included_ids list if not provided by backend', function () {
+      var article1 = {
         id: 1,
         title: 'Article 1',
         recirc_query: {}
       };
-      article2 = {
-        id: 2,
-        title: 'Article 2',
-        recirc_query: {}
-      };
-    });
-
-    it('should request for existing recirc ids', function () {
-      $parentScope.article = {
-        id: 12,
-        title: 'Article 12',
-        recirc_query: {
-          included_ids: [article1.id, article2.id]
-        }
-      };
-      $httpBackend
-        .expectGET(CmsConfig.buildApiUrlRoot('content', article1.id))
-        .respond(article1);
-      $httpBackend
-        .expectGET(CmsConfig.buildApiUrlRoot('content', article2.id))
-        .respond(article2);
-      var element = digest('<super-features-edit></super-features-edit>');
-      var scope = element.scope();
-
-      scope.$digest();
-      $httpBackend.flush();
-
-      var recircEntries = element.find('.super-features-edit-recirc-list li');
-      expect(recircEntries.length).to.equal(2);
-      expect(recircEntries.eq(0).html()).to.have.string('(' + article1.id + ') ' + article1.title);
-      expect(recircEntries.eq(1).html()).to.have.string('(' + article2.id + ') ' + article2.title);
-    });
-
-    it('should allow adding new recirc', function () {
-      $parentScope.article = {
-        id: 12,
-        title: 'Article 12',
-        recirc_query: {
-          included_ids: []
-        }
-      };
-      $httpBackend
-        .expectGET(CmsConfig.buildApiUrlRoot('content', article1.id))
-        .respond(article1);
-      var element = digest('<super-features-edit></super-features-edit>');
-      var scope = element.scope();
-
-      scope.$digest();
-      scope.includeRecirc(article1.id);
-      $httpBackend.flush();
-
-      var recircEntries = element.find('.super-features-edit-recirc-list li');
-      expect($parentScope.article.recirc_query.included_ids).to.eql([article1.id]);
-      expect(recircEntries.length).to.equal(1);
-      expect(recircEntries.eq(0).html()).to.have.string('(' + article1.id + ') ' + article1.title);
-    });
-
-    it('should initialize included_ids list when addning new recirc if not provided by backend', function () {
       $parentScope.article = {
         id: 12,
         title: 'Article 12',
@@ -183,31 +123,8 @@ describe('Directive: superFeaturesEdit', function () {
       var scope = element.scope();
 
       scope.$digest();
-      scope.includeRecirc(article1.id);
 
-      expect($parentScope.article.recirc_query.included_ids).to.eql([article1.id]);
-    });
-
-    it('should allow removing existing recirc', function () {
-      $parentScope.article = {
-        id: 12,
-        title: 'Article 12',
-        recirc_query: {
-          included_ids: [article1.id]
-        }
-      };
-      $httpBackend
-        .expectGET(CmsConfig.buildApiUrlRoot('content', article1.id))
-        .respond(article1);
-      var element = digest('<super-features-edit></super-features-edit>');
-      var scope = element.scope();
-
-      scope.$digest();
-      scope.removeRecirc(0);
-
-      var recircEntries = element.find('.super-features-edit-recirc-list li');
-      expect($parentScope.article.recirc_query.included_ids).to.eql([]);
-      expect(recircEntries.length).to.equal(0);
+      expect(angular.isArray($parentScope.article.recirc_query.included_ids)).to.equal(true);
     });
   });
 });

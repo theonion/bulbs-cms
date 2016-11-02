@@ -1,3 +1,32 @@
+<div class="live-blog-recircs">
+
+  <div class="well">
+    <label
+        for="liveBlogRecircsPinned"
+        class="muted-capitals">
+      Pinned Articles (Maximum 3)
+    </label>
+    <recirc-chooser
+        input-id="liveBlogRecircsPinned"
+        ng-model="article.pinned_content">
+    </recirc-chooser>
+  </div>
+
+  <div class="well">
+    <label
+        for="liveBlogRecircsFooter"
+        class="muted-capitals">
+      Footer Article Recirc (Maximum 3)
+    </label>
+    <recirc-chooser
+        input-id="liveBlogRecircsFooter"
+        ng-model="article.recirc_query.included_ids"
+        on-select="onIncludeRecirc()">
+    </recirc-chooser>
+  </div>
+
+</div>
+
 <div class="live-blog-entries-header">
   <h4>Entries</h4>
 
@@ -125,7 +154,18 @@
             </onion-editor>
           </div>
         </div>
+
+        <div class="input-container">
+          <label for="entryRecirc-{{ entry.id }}">
+            Add Related Recirc (Maximum 3)
+          </label>
+          <recirc-chooser
+              input-id="entryRecirc-{{ entry.id }}"
+              ng-model="entry.recirc_content">
+          </recirc-chooser>
+        </div>
       </form>
+
 
       <div class="accordion-list-item-meta">
 

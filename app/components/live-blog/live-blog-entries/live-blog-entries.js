@@ -7,6 +7,7 @@ angular.module('bulbs.cms.liveBlog.entries', [
   'bulbs.cms.dateTimeModal',
   'bulbs.cms.liveBlog.api',
   'bulbs.cms.liveBlog.entries.authorBridge',
+  'bulbs.cms.recircChooser',
   'bulbs.cms.site.config',
   'bulbs.cms.utils',
   'confirmationModal',
@@ -26,6 +27,11 @@ angular.module('bulbs.cms.liveBlog.entries', [
           var titleDisplay = function (entry) {
             return entry.headline ? '"' + entry.headline + '"' : 'an entry';
           };
+
+          var recirc = scope.article.recirc_query;
+          if (angular.isUndefined(recirc.included_ids)) {
+            recirc.included_ids = [];
+          }
 
           scope.clearError = function () {
             scope.errorMessage = '';
@@ -94,7 +100,8 @@ angular.module('bulbs.cms.liveBlog.entries', [
                   created_by: user,
                   created: now,
                   updated_by: user,
-                  updated: now
+                  updated: now,
+                  recirc_content: []
                 })
                   .then(function (entry) {
                     scope.entries.unshift(entry);
@@ -173,6 +180,7 @@ angular.module('bulbs.cms.liveBlog.entries', [
                 reportError(message, { response: response });
               });
           });
+
         },
         restrict: 'E',
         scope: {

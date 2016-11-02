@@ -43,7 +43,10 @@ describe('Directive: liveBlogEntries', function () {
       currentUser = { id: 123 };
       sinon.stub(CurrentUserApi, 'getCurrentUserWithCache').returns($q.when(currentUser));
 
-      $parentScope.article = { id: 1 };
+      $parentScope.article = {
+        id: 1,
+        recirc_query: {}
+      };
 
       createEntryDeferred = $q.defer();
       sandbox.stub(LiveBlogApi, 'createEntry')
@@ -87,6 +90,21 @@ describe('Directive: liveBlogEntries', function () {
       expect(element.find('.live-blog-entries-list-error').html())
         .to.have.string('An error occurred retrieving entries!');
       expect(Raven.captureMessage.calledOnce).to.equal(true);
+    });
+  });
+
+  context('recirc', function () {
+
+    it('should initialize recirc_query.included_ids when not provided by backend', function () {
+      $parentScope.article = {
+        id: 1,
+        recirc_query: {}
+      };
+      var element = digest(html);
+
+      element.scope().$digest();
+
+      expect(angular.isArray($parentScope.article.recirc_query.included_ids)).to.equal(true);
     });
   });
 

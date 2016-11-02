@@ -465,8 +465,10 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         id: 16,
         title: 'Live Blog #1',
         slug: 'live-blog-1',
+        pinned_content: [],
         polymorphic_ctype: 'mock_live_blog',
-        entries: [{}]
+        entries: [{}],
+        recirc_query: {}
       }, {
         id: 100,
         title: 'Guide to Catz',
@@ -594,7 +596,8 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         first_name: 'Herman',
         last_name: 'Zweibel',
       },
-      authors: []
+      authors: [],
+      recirc_content: []
     }, {
       id: 2,
       liveblog: 16,
@@ -606,7 +609,8 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         first_name: 'John',
         last_name: 'Adams'
       },
-      authors: []
+      authors: [],
+      recirc_content: []
     }],
     'pzones.list': {
       count: 5,

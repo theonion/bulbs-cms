@@ -2,17 +2,22 @@
 
 angular.module('bulbs.cms.superFeatures.edit', [
   'bulbs.cms.breadcrumb',
-  'bulbs.cms.contentSearch',
   'bulbs.cms.dynamicContent',
+  'bulbs.cms.recircChooser',
   'bulbs.cms.site.config',
   'bulbs.cms.superFeatures.api',
   'bulbs.cms.superFeatures.relations'
 ])
   .directive('superFeaturesEdit', [
-    'CmsConfig', 'ContentFactory', 'SuperFeaturesApi', 'Utils',
-    function (CmsConfig, ContentFactory, SuperFeaturesApi, Utils) {
+    'CmsConfig', 'SuperFeaturesApi', 'Utils',
+    function (CmsConfig, SuperFeaturesApi, Utils) {
       return {
         link: function (scope) {
+
+          var recirc = scope.article.recirc_query;
+          if (angular.isUndefined(recirc.included_ids)) {
+            recirc.included_ids = [];
+          }
 
           scope.breadcrumbs = [{
             label: 'Super Features',
@@ -39,38 +44,6 @@ angular.module('bulbs.cms.superFeatures.edit', [
 
           addParentToBreadcrumb(scope.article);
 
-          scope.maxRecircItems = 3;
-          scope.fullRecircContents = [];
-
-          var retrieveContent = function (contentId) {
-            return ContentFactory.one('content', contentId).get();
-          };
-
-          scope.includeRecirc = function (contentId) {
-            var recirc = scope.article.recirc_query;
-
-            if (angular.isUndefined(recirc.included_ids)) {
-              recirc.included_ids = [];
-            }
-
-            var newRecircIdsLength = recirc.included_ids.push(contentId);
-            retrieveContent(contentId).then(function (content) {
-              scope.fullRecircContents[newRecircIdsLength - 1] = content;
-            });
-          };
-
-          scope.removeRecirc = function (index) {
-            Utils.removeFrom(scope.article.recirc_query.included_ids, index);
-            Utils.removeFrom(scope.fullRecircContents, index);
-          };
-
-          if (scope.article.recirc_query.included_ids) {
-            scope.article.recirc_query.included_ids.forEach(function (contentId, i) {
-              retrieveContent(contentId).then(function (content) {
-                scope.fullRecircContents[i] = content;
-              });
-            });
-          }
         },
         // no scope here so we have access to the content edit scope without
         //  having to make changes to the brittle content edit controller,
