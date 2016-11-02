@@ -17,7 +17,7 @@ describe('Directive: recircChooser', function () {
     module('jsTemplates');
 
     inject(function (_$httpBackend_, _CmsConfig_, _uuid4_, $compile,
-        $rootScope) {
+        $rootScope, $sce) {
 
       $httpBackend = _$httpBackend_;
       $parentScope = $rootScope.$new();
@@ -32,22 +32,22 @@ describe('Directive: recircChooser', function () {
       testData = {
         article1: {
           id: 420,
-          title: 'Article 1',
+          title: $sce.trustAsHtml('Article 1'),
           recirc_query: {}
         },
         article2: {
           id: 666,
-          title: 'Article 2',
+          title: $sce.trustAsHtml('Article 2'),
           recirc_query: {}
         },
         article3: {
           id: 789,
-          title: 'Article 3',
+          title: $sce.trustAsHtml('Article 3'),
           recirc_query: {}
         },
         article4: {
           id: 123,
-          title: 'Article 4',
+          title: $sce.trustAsHtml('Article 4'),
           recirc_query: {}
         }
       };
@@ -120,8 +120,10 @@ describe('Directive: recircChooser', function () {
 
       var recircEntries = element.find('.recirc-chooser-content-list li');
       expect(recircEntries.length).to.equal(2);
-      expect(recircEntries.eq(0).html()).to.have.string('(' + testData.article2.id + ') ' + testData.article2.title);
-      expect(recircEntries.eq(1).html()).to.have.string('(' + testData.article3.id + ') ' + testData.article3.title);
+      expect(recircEntries.eq(0).html()).to.have.string(testData.article2.id);
+      expect(recircEntries.eq(0).html()).to.have.string(testData.article2.title);
+      expect(recircEntries.eq(1).html()).to.have.string(testData.article3.id);
+      expect(recircEntries.eq(1).html()).to.have.string(testData.article3.title);
     });
 
     it('should allow adding new ones', function () {
@@ -144,7 +146,8 @@ describe('Directive: recircChooser', function () {
       var recircEntries = element.find('.recirc-chooser-content-list li');
       expect($parentScope.article.recirc_query.included_ids).to.eql([testData.article2.id]);
       expect(recircEntries.length).to.equal(1);
-      expect(recircEntries.eq(0).html()).to.have.string('(' + testData.article2.id + ') ' + testData.article2.title);
+      expect(recircEntries.eq(0).html()).to.have.string(testData.article2.id);
+      expect(recircEntries.eq(0).html()).to.have.string(testData.article2.title);
     });
 
     it('should allow removing existing ones', function () {
