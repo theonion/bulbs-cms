@@ -30,16 +30,16 @@
 <div class="live-blog-entries-header">
   <h4>Entries</h4>
 
-  <div
-      ng-if="entries.length > 0"
-      class="live-blog-entries-header-meta-tools">
+  <div class="live-blog-entries-header-meta-tools">
     <button
+        ng-if="entries.length > 0"
         ng-click="collapseAll()"
         class="btn-minimal">
       <i class="fa fa-caret-square-o-down"></i>
       <span>Collapse All</span>
     </button>
     <button
+        ng-if="entries.length > 0"
         ng-click="expandAll()"
         class="btn-minimal">
       <i class="fa fa-caret-square-o-up"></i>
@@ -197,10 +197,9 @@
 </ol>
 
 <button
-    ng-click="addEntry()"
-    ng-disabled="transactionsLocked()"
+    ng-click="jumpToTop()"
     class="btn btn-primary accordion-list-add-bottom">
-  <i class="fa fa-plus"></i>
-  <span>Add New Entry</span>
+  <i class="fa fa-arrow-up"></i>
+  <span>Jump To Top</span>
 </button>
 

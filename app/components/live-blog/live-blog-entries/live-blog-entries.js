@@ -182,6 +182,11 @@ angular.module('bulbs.cms.liveBlog.entries', [
               });
           });
 
+          scope.jumpToTop = function () {
+            $(document)
+              .scrollTop(element.find('.live-blog-entries-header').offset().top - 50);
+          };
+
         },
         restrict: 'E',
         scope: {

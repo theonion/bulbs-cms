@@ -422,5 +422,21 @@ describe('Directive: liveBlogEntries', function () {
         expect(LiveBlogApi.deleteEntry.calledOnce).to.equal(true);
       });
     });
+
+    context('jump to top', function () {
+
+      it('should send the user to the top of the entry list', function () {
+        var element = digest(html);
+        var jumpButton = element.find('button[ng-click^="jumpToTop"]');
+        sandbox.stub($.fn, 'scrollTop');
+        element.scope().$digest();
+
+        jumpButton.trigger('click');
+
+        expect($.fn.scrollTop.args[0][0]).to.equal(
+          element.find('.live-blog-entries-header').offset().top - 50
+        );
+      });
+    });
   });
 });
