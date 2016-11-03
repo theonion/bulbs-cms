@@ -187,6 +187,23 @@ angular.module('bulbs.cms.liveBlog.entries', [
               .scrollTop(element.find('.live-blog-entries-header').offset().top - 50);
           };
 
+          var topListElement = element.find('.live-blog-entries-header');
+          var jumpButton = element.find('.live-blog-entries-jump-to-top');
+          var beginStickingAt = 500;
+          var stickyClass = 'live-blog-entries-jump-to-top-fixed';
+          $(document).on('scroll', function () {
+            var offsetTop = topListElement.offset().top;
+            var windowTop = $(window).scrollTop();
+            var inThreshold =  windowTop - offsetTop > beginStickingAt;
+            var alreadyHasClass = jumpButton.hasClass(stickyClass);
+
+            if (inThreshold && !alreadyHasClass) {
+              jumpButton.addClass(stickyClass);
+            } else if (!inThreshold && alreadyHasClass) {
+              jumpButton.removeClass(stickyClass);
+            }
+          });
+
         },
         restrict: 'E',
         scope: {

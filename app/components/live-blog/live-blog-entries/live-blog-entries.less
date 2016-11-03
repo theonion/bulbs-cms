@@ -3,6 +3,7 @@
 @import 'mixins/_mixin-alerts';
 @import 'mixins/_mixin-buttons';
 @import 'mixins/_mixin-input-container';
+@import 'mixins/_mixin-positioning';
 @import 'mixins/_mixin-text';
 
 live-blog-entries {
@@ -71,6 +72,16 @@ live-blog-entries {
 
     .input-container-onion-editor-wrapper {
       .mixin-input-onion-editor-wrapper();
+    }
+  }
+
+  button.live-blog-entries-jump-to-top {
+
+    &.live-blog-entries-jump-to-top-fixed {
+      .center-x-only();
+
+      bottom: 50px;
+      position: fixed;
     }
   }
 }
