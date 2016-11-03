@@ -222,6 +222,11 @@ describe('Directive: liveBlogEntries', function () {
         expect(element.isolateScope().transactionsLocked()).to.equal(true);
         expect(LiveBlogApi.createEntry.calledOnce).to.equal(true);
       });
+
+      it('should scroll user to newly added item', function () {
+
+        throw new Error('not implemented yet');
+      });
     });
 
     context('updating', function () {

@@ -8,17 +8,19 @@ angular.module('bulbs.cms.liveBlog.entries', [
   'bulbs.cms.liveBlog.api',
   'bulbs.cms.liveBlog.entries.authorBridge',
   'bulbs.cms.recircChooser',
+  'bulbs.cms.scrollToAlert',
   'bulbs.cms.site.config',
   'bulbs.cms.utils',
   'confirmationModal',
+  'jquery',
   'OnionEditor',
   'Raven'
 ])
   .directive('liveBlogEntries', [
-    '$q', 'CmsConfig', 'CurrentUserApi', 'LiveBlogApi', 'Raven', 'Utils',
-    function ($q, CmsConfig, CurrentUserApi, LiveBlogApi, Raven, Utils) {
+    '$', '$compile', '$q', 'CmsConfig', 'CurrentUserApi', 'LiveBlogApi', 'Raven', 'Utils',
+    function ($, $compile, $q, CmsConfig, CurrentUserApi, LiveBlogApi, Raven, Utils) {
       return {
-        link: function (scope) {
+        link: function (scope, element) {
           var reportError = function (message, data) {
             Raven.captureMessage(message, data);
             scope.errorMessage = message;
@@ -105,6 +107,12 @@ angular.module('bulbs.cms.liveBlog.entries', [
                 })
                   .then(function (entry) {
                     scope.entries.unshift(entry);
+
+                    element.find('scroll-to-alert').remove();
+                    var scrollToAlert = angular.element('<scroll-to-alert></scroll-to-alert>');
+                    scrollToAlert.attr('label', 'Scroll to New Entry');
+                    scrollToAlert.attr('new-scroll-top', $(document).height());
+                    element.append($compile(scrollToAlert)(scope));
                   })
                   .catch(function (response) {
                     var message = 'An error occurred attempting to add an entry!';
