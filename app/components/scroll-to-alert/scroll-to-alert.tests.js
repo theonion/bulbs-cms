@@ -2,6 +2,7 @@
 
 describe('Directive: scrollToAlert', function () {
 
+  var $;
   var $parentScope;
   var digest;
   var sandbox;
@@ -12,8 +13,9 @@ describe('Directive: scrollToAlert', function () {
     module('bulbs.cms.scrollToAlert');
     module('jsTemplates');
 
-    inject(function ($compile, $rootScope) {
+    inject(function (_$_, $compile, $rootScope) {
 
+      $ = _$_;
       $parentScope = $rootScope.$new();
 
       digest = window.testHelper.directiveBuilderWithDynamicHtml(
