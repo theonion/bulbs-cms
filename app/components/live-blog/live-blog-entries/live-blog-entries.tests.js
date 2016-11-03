@@ -222,19 +222,6 @@ describe('Directive: liveBlogEntries', function () {
         expect(element.isolateScope().transactionsLocked()).to.equal(true);
         expect(LiveBlogApi.createEntry.calledOnce).to.equal(true);
       });
-
-      it('should create a scroll to alert element for scrolling to new item', function () {
-        var addButton = element.find('button[ng-click^="addEntry"]');
-        var entry1 = { id: 420 };
-        getEntriesDeferred.resolve({ results: [entry1] });
-        var entry2 = { id: 666 };
-
-        addButton.trigger('click');
-        createEntryDeferred.resolve(entry2);
-        $parentScope.$digest();
-
-        expect(element.find('scroll-to-alert').length).to.equal(1);
-      });
     });
 
     context('updating', function () {
