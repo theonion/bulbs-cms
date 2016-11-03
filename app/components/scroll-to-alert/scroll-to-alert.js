@@ -25,7 +25,6 @@ angular.module('bulbs.cms.scrollToAlert', [
             page.animate({
               scrollTop: scope.newScrollTop()
             }, {
-              duration: scope.scrollDuration() || 400,
               start: function () {
                 scope.dismiss();
                 page.one(scrollEvents, stopScroll);
@@ -37,7 +36,6 @@ angular.module('bulbs.cms.scrollToAlert', [
         scope: {
           label: '@',
           newScrollTop: '&',
-          scrollDuration: '&'
         },
         templateUrl: CmsConfig.buildComponentPath(
           'scroll-to-alert',
