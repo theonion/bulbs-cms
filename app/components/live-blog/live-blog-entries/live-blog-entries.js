@@ -11,14 +11,15 @@ angular.module('bulbs.cms.liveBlog.entries', [
   'bulbs.cms.site.config',
   'bulbs.cms.utils',
   'confirmationModal',
+  'jquery',
   'OnionEditor',
   'Raven'
 ])
   .directive('liveBlogEntries', [
-    '$q', 'CmsConfig', 'CurrentUserApi', 'LiveBlogApi', 'Raven', 'Utils',
-    function ($q, CmsConfig, CurrentUserApi, LiveBlogApi, Raven, Utils) {
+    '$', '$compile', '$q', 'CmsConfig', 'CurrentUserApi', 'LiveBlogApi', 'Raven', 'Utils',
+    function ($, $compile, $q, CmsConfig, CurrentUserApi, LiveBlogApi, Raven, Utils) {
       return {
-        link: function (scope) {
+        link: function (scope, element) {
           var reportError = function (message, data) {
             Raven.captureMessage(message, data);
             scope.errorMessage = message;
@@ -179,6 +180,26 @@ angular.module('bulbs.cms.liveBlog.entries', [
                 var message = 'An error occurred attempting to delete ' + titleDisplay(entry) + '!';
                 reportError(message, { response: response });
               });
+          });
+
+          scope.jumpToTop = function () {
+            $(document)
+              .scrollTop(element.find('.live-blog-entries-header').offset().top - 50);
+          };
+
+          var stickyClass = 'live-blog-entries-jump-to-top-fixed';
+          $(document).on('scroll', function () {
+            var offsetTop = element.find('.live-blog-entries-header').offset().top;
+            var windowTop = $(window).scrollTop();
+            var inThreshold =  windowTop - offsetTop > 500;
+            var jumpButton = element.find('.live-blog-entries-jump-to-top');
+            var alreadyHasClass = jumpButton.hasClass(stickyClass);
+
+            if (inThreshold && !alreadyHasClass) {
+              jumpButton.addClass(stickyClass);
+            } else if (!inThreshold && alreadyHasClass) {
+              jumpButton.removeClass(stickyClass);
+            }
           });
 
         },

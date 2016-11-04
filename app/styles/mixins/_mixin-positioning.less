@@ -1,0 +1,41 @@
+
+.mixin-transform (@transformation) {
+  -webkit-transform: @transformation;
+  transform: @transformation;
+}
+
+.mixin-center (@do-center-x, @do-center-y) {
+
+  & when (@do-center-x) and (@do-center-y) {
+    .mixin-transform(translateX(-50%) translateY(-50%));
+
+    left: 50%;
+    top: 50%;
+  }
+
+  & when (@do-center-y) and (@do-center-x = false) {
+    .mixin-transform(translateY(-50%));
+
+    top: 50%
+  }
+
+  & when (@do-center-x) and (@do-center-y = false) {
+    .mixin-transform(translateX(-50%));
+
+    left: 50%
+  }
+
+  position: relative;
+}
+
+.center-x-only () {
+  .mixin-center(true, false);
+}
+
+.center-y-only () {
+  .mixin-center(false, true);
+}
+
+.center-x-and-y () {
+  .mixin-center(true, true);
+}
