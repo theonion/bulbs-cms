@@ -1,4 +1,5 @@
 @import '_sizing';
+@import '_mixin';
 @import 'mixins/_mixin-accordion-list';
 @import 'mixins/_mixin-alerts';
 @import 'mixins/_mixin-buttons';
@@ -21,6 +22,9 @@ live-blog-entries {
     margin-bottom: @interface-row-margin;
 
     .live-blog-entries-header-meta-tools {
+      .clearfix;
+
+      margin-bottom: @interface-row-margin;
 
       button:not(:first-child) {
         margin-left: 10px;
