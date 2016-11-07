@@ -87,7 +87,7 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
 
     it('returns the current date and time in the configured timezone', function () {
       buildControllerInstance();
-      expect($scope.nowInTimezone().toString()).to.have.string(moment().tz('America/Chicago').format('zZZ'));
+      expect($scope.nowInTimezone().toString()).to.have.string(moment().tz('America/Chicago').format('ZZ'));
     });
   });
 
@@ -99,8 +99,8 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
 
     it('returns the given date in the configured timezone', function () {
       buildControllerInstance();
-      expect($scope.nowInTimezone().toString()).to.have.string(moment().tz('America/Chicago').format('zZZ'));
-    });
+      expect($scope.nowInTimezone().toString()).to.have.string(moment().tz('America/Chicago').format('ZZ'));
+    })
   });
 
   describe('setDateToday', function () {
