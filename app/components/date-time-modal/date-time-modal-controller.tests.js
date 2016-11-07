@@ -55,7 +55,7 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
   it('has a TIMEZONE_LABEL', function () {
     CmsConfigProviderHook.setTimezoneName('America/Chicago');
     buildControllerInstance();
-    expect($scope.TIMEZONE_LABEL).to.equal('CDT');
+    expect($scope.TIMEZONE_LABEL).to.equal(moment.tz('America/Chicago').format('z'));
   });
 
   it('has a dateTime', function () {
@@ -87,7 +87,7 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
 
     it('returns the current date and time in the configured timezone', function () {
       buildControllerInstance();
-      expect($scope.nowInTimezone().toString()).to.match(/GMT-0500/);
+      expect($scope.nowInTimezone().toString()).to.have.string(moment().format('zZZ'));
     });
   });
 
@@ -99,7 +99,7 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
 
     it('returns the given date in the configured timezone', function () {
       buildControllerInstance();
-      expect($scope.nowInTimezone().toString()).to.match(/GMT-0500/);
+      expect($scope.nowInTimezone().toString()).to.have.string(moment().format('zZZ'));
     });
   });
 
