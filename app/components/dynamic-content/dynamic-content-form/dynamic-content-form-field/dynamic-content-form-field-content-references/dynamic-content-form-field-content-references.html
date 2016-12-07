@@ -5,7 +5,9 @@
 </dynamic-content-form-field-input-label>
 
 <recirc-chooser
-    ng-model="ngModel[name]">
+    input-id="{{ uuid }}"
+    ng-model="ngModel[name]"
+    max-recirc-items="{{ schema.max_size }}">
 </recirc-chooser>
 
 <dynamic-content-form-field-input-errors
