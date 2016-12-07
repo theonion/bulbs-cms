@@ -31,5 +31,8 @@ angular.module('bulbs.cms.dynamicContent.form.types', [])
     },
     integer: {
       tagName: 'dynamic-content-form-field-integer'
+    },
+    slideshow_ids: {
+      tagName: 'dynamic-content-form-field-slideshow-ids'
     }
   });
