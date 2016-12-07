@@ -11,6 +11,9 @@ angular.module('bulbs.cms.dynamicContent.form.types', [])
     color: {
       tagName: 'dynamic-content-form-field-color'
     },
+    content: {
+      tagName: 'dynamic-content-form-field-content-reference'
+    },
     datetime: {
       tagName: 'dynamic-content-form-field-date-time'
     },
