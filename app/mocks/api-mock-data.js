@@ -424,7 +424,6 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         }],
         info_data: {
           data: {
-            content_list: [1, 2, 3],
             entries: [{
               body: 'garbage<hr>garbage'
             }]
@@ -510,12 +509,6 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         fields: {
           data: {
             fields: {
-              content_list: {
-                label: 'Content References',
-                type: 'content',
-                many: true,
-                max_size: 10
-              },
               test_field: {
                 type: 'integer'
               },
