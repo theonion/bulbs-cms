@@ -1,0 +1,18 @@
+
+<h5>Responses</h5>
+
+<div ng-if="!entry.responses || entry.responses.length === 0">
+  No responses yet.
+</div>
+
+<ol ng-if="entry.responses.length > 0">
+  <li
+      class="well"
+      ng-repeat="response in entry.responses track by response.id">
+    <button>
+      <i class="fa fa-files-o"></i>
+    </button>
+    <live-blog-response response="response"></live-blog-response>
+  </li>
+</ol>
+

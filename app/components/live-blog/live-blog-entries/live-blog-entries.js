@@ -7,6 +7,7 @@ angular.module('bulbs.cms.liveBlog.entries', [
   'bulbs.cms.dateTimeModal',
   'bulbs.cms.liveBlog.api',
   'bulbs.cms.liveBlog.entries.authorBridge',
+  'bulbs.cms.liveBlog.responses',
   'bulbs.cms.recircChooser',
   'bulbs.cms.site.config',
   'bulbs.cms.utils',

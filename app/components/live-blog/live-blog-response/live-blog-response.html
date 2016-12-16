@@ -1,0 +1,24 @@
+
+<div class="input-container">
+  TODO put author selector here
+</div>
+
+<div class="input-container">
+  <label for="">Response Name</label>
+  <span class="input-container-label-sub">Internal name, will not show on front end.</span>
+  <input
+      ng-model="response.internalName">
+</div>
+
+<div class="input-container">
+  <label>Copy</label>
+  <div class="input-container-onion-editor-wrapper">
+    <onion-editor
+        role="multiline"
+        ng-model="response.body">
+    </onion-editor>
+  </div>
+</div>
+
+<button>Delete</button>
+
