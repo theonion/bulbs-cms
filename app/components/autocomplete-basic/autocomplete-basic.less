@@ -1,3 +1,5 @@
+@import '_colors';
+
 autocomplete-basic {
   display: block;
   position: relative;
@@ -61,4 +63,20 @@ autocomplete-basic {
       }
     }
   }
+
+  &[disabled] {
+    background-color: @interface-color-gray-8;
+
+    label {
+      background-color: @interface-color-gray-8;
+      color: @interface-color-gray-5;
+      cursor: inherit;
+    }
+
+    input {
+      background-color: @interface-color-gray-8;
+      cursor: inherit;
+    }
+  }
 }
+

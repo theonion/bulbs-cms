@@ -16,6 +16,14 @@ module.exports = function(config) {
   config.set({
     // base path, that will be used to resolve files and exclude
     basePath: '',
+    plugins: [
+      'karma-coverage',
+      'karma-mocha',
+      'karma-ng-html2js-preprocessor',
+      'karma-sinon-chai',
+      'karma-chrome-launcher',
+      'karma-sauce-launcher',
+    ],
 
     // testing framework to use (jasmine/mocha/qunit/...)
     frameworks: ['mocha', 'sinon-chai'],

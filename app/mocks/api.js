@@ -536,12 +536,12 @@ angular.module('bulbsCmsApp.mockApi', [
         first_name: 'Herman',
         last_name: 'Zweibel',
         is_superuser: true,
-        firebase_token: tokenGenerator.createToken({
-          id: 0,
-          username: 'admin',
-          email: 'webtech@theonion.com',
-          is_staff: true
-        })
+//        firebase_token: tokenGenerator.createToken({
+//          id: 0,
+//          username: 'admin',
+//          email: 'webtech@theonion.com',
+//          is_staff: true
+//        })
       },
       {
         id: 1,
@@ -550,12 +550,12 @@ angular.module('bulbsCmsApp.mockApi', [
         first_name: 'John',
         last_name: 'Adams',
         is_manager: true,
-        firebase_token: tokenGenerator.createToken({
-          id: 1,
-          username: 'jadams',
-          email: 'jadams@theonion.com',
-          is_staff: true
-        })
+//        firebase_token: tokenGenerator.createToken({
+//          id: 1,
+//          username: 'jadams',
+//          email: 'jadams@theonion.com',
+//          is_staff: true
+//        })
       },
       {
         id: 2,
@@ -564,12 +564,12 @@ angular.module('bulbsCmsApp.mockApi', [
         first_name: 'Bob',
         last_name: 'Dole Dole Dole Dole Dole Dole',
         is_manager: false,
-        firebase_token: tokenGenerator.createToken({
-          id: 2,
-          username: 'bdoledoledoledoledoledole',
-          email: 'bdole@theonion.com',
-          is_staff: true
-        })
+//        firebase_token: tokengenerator.createtoken({
+//          id: 2,
+//          username: 'bdoledoledoledoledoledole',
+//          email: 'bdole@theonion.com',
+//          is_staff: true
+//        })
       }
     ];
     var userIndex = Math.floor(Math.random() * mockApiData.users.length);

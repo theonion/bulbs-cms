@@ -1,0 +1,20 @@
+<div>
+  <content-search
+      input-id="{{ inputId }}"
+      on-select="includeRecirc(selection)"
+      ng-disabled="fullRecircContents.length >= maxRecircItemsInt">
+  </content-search>
+</div>
+<ul
+    class="recirc-chooser-content-list"
+    ng-if="fullRecircContents">
+  <li ng-repeat="content in fullRecircContents">
+    <span>({{ content.id }})</span>
+    <span ng-bind-html="content.title"></span>
+    <button
+        ng-click="removeRecirc($index)">
+      <i class="fa fa-times"></i>
+    </button>
+  </li>
+</ul>
+

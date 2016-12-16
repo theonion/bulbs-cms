@@ -1,8 +1,11 @@
 @import '_sizing';
+@import '_mixin';
 @import 'mixins/_mixin-accordion-list';
 @import 'mixins/_mixin-alerts';
 @import 'mixins/_mixin-buttons';
 @import 'mixins/_mixin-input-container';
+@import 'mixins/_mixin-positioning';
+@import 'mixins/_mixin-text';
 
 live-blog-entries {
   .mixin-accordion-list();
@@ -11,10 +14,17 @@ live-blog-entries {
   margin-bottom: @interface-row-margin;
   padding: @interface-internal-spacing;
 
+  .live-blog-recircs > div {
+    margin-bottom: @interface-row-margin;
+  }
+
   .live-blog-entries-header {
     margin-bottom: @interface-row-margin;
 
     .live-blog-entries-header-meta-tools {
+      .clearfix;
+
+      margin-bottom: @interface-row-margin;
 
       button:not(:first-child) {
         margin-left: 10px;
@@ -24,6 +34,21 @@ live-blog-entries {
 
   .live-blog-entries-list-add-top {
     float: right;
+  }
+
+  .live-blog-entries-list-entry-created-by {
+    .mixin-text-muted();
+
+    margin-bottom: @interface-row-margin;
+
+    &:after {
+      clear: both;
+      content: " ";
+    }
+
+    > span {
+      float: right;
+    }
   }
 
   .btn-minimal {
@@ -41,16 +66,25 @@ live-blog-entries {
   .input-container {
     .mixin-input-container();
 
-    label {
+    label:not(.autocomplete-basic-label) {
       .mixin-input-label();
     }
 
-    input {
+    input:not(.autocomplete-basic-input) {
       .mixin-input();
     }
 
     .input-container-onion-editor-wrapper {
       .mixin-input-onion-editor-wrapper();
+    }
+  }
+
+  button.live-blog-entries-jump-to-top {
+
+    &.live-blog-entries-jump-to-top-fixed {
+      bottom: 50px;
+      left: 8%;
+      position: fixed;
     }
   }
 }

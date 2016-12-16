@@ -1,27 +1,30 @@
 'use strict';
 
 angular.module('bulbs.cms.liveBlog.entries', [
+  'OnionEditor',
+  'Raven',
+  'bulbs.cms.currentUser',
   'bulbs.cms.dateTimeFilter',
   'bulbs.cms.dateTimeModal',
   'bulbs.cms.dateTimeModal',
   'bulbs.cms.liveBlog.api',
   'bulbs.cms.liveBlog.entries.authorBridge',
+  'bulbs.cms.recircChooser',
   'bulbs.cms.site.config',
   'bulbs.cms.utils',
   'confirmationModal',
   'firebase',
-  'lodash',
-  'OnionEditor',
-  'Raven'
+  'jquery',
+  'lodash'
 ])
   .directive('liveBlogEntries', [
-    '_', '$firebaseObject', '$q', 'CmsConfig', 'FirebaseApi', 'LiveBlogApi',
-      'Raven', 'Utils',
-    function (_, $firebaseObject, $q, CmsConfig, FirebaseApi, LiveBlogApi,
-        Raven, Utils) {
+    '_', '$',  '$firebaseObject', '$q', 'CmsConfig', 'CurrentUserApi', 'FirebaseApi',
+      'LiveBlogApi', 'Raven', 'Utils',
+    function (_, $, $firebaseObject, $q, CmsConfig, CurrentUserApi, FirebaseApi,
+        LiveBlogApi, Raven, Utils) {
 
       return {
-        link: function (scope) {
+        link: function (scope, element) {
 
           var reportError = function (message, data) {
             Raven.captureMessage(message, data);
@@ -153,6 +156,11 @@ angular.module('bulbs.cms.liveBlog.entries', [
               });
             });
 
+          var recirc = scope.article.recirc_query;
+          if (angular.isUndefined(recirc.included_ids)) {
+            recirc.included_ids = [];
+          }
+
           scope.clearError = function () {
             scope.errorMessage = '';
           };
@@ -199,37 +207,62 @@ angular.module('bulbs.cms.liveBlog.entries', [
             scope.wrapperForm[name] = {};
             return scope.wrapperForm[name];
           };
+          scope.isEntryFormSaveDisabled = function (entry) {
+            return scope.transactionsLocked() || scope.getEntryForm(entry).$pristine;
+          };
 
           var lock = Utils.buildLock();
           scope.transactionsLocked = lock.isLocked;
 
           scope.addEntry = lock(function () {
 
-            return LiveBlogApi.createEntry({
-              liveblog: scope.article.id
-            })
-              .then(function (entry) {
-                scope.entries.unshift(entry);
-              })
-              .catch(function (response) {
-                var message = 'An error occurred attempting to add an entry!';
-                reportError(message, { response: response });
+            return CurrentUserApi.getCurrentUserWithCache()
+              .then(function (user) {
+                var now = moment();
+
+                return LiveBlogApi.createEntry({
+                  liveblog: scope.article.id,
+                  created_by: user,
+                  created: now,
+                  updated_by: user,
+                  updated: now,
+                  recirc_content: []
+                })
+                  .then(function (entry) {
+                    scope.entries.unshift(entry);
+                  })
+                  .catch(function (response) {
+                    var message = 'An error occurred attempting to add an entry!';
+                    reportError(message, { response: response });
+                  });
               });
           });
 
           scope.saveEntry = lock(function (entry) {
+            return CurrentUserApi.getCurrentUserWithCache()
+              .then(function (user) {
+                var oldUpdateBy = entry.updated_by;
+                var oldUpdated = entry.updated;
 
-            return LiveBlogApi.updateEntry(entry)
-              .then(function () {
-                var entryForm = scope.getEntryForm(entry);
+                entry.updated_by = user;
+                entry.updated = moment();
 
-                entryForm.$dirtyAndWillOverwrite = false;
-                entryForm.$setPristine();
-              })
-              .catch(function (response) {
-                var message = 'An error occurred attempting to save ' + titleDisplay(entry) + '!';
-                reportError(message, { response: response });
-                return $q.reject();
+                return LiveBlogApi.updateEntry(entry)
+                  .then(function () {
+                    var entryForm = scope.getEntryForm(entry);
+
+                    entryForm.$dirtyAndWillOverwrite = false;
+                    entryForm.$setPristine();
+                  })
+                  .catch(function (response) {
+                    entry.updated_by = oldUpdateBy;
+                    entry.updated = oldUpdated;
+
+                    var message = 'An error occurred attempting to save ' + titleDisplay(entry) + '!';
+                    reportError(message, { response: response });
+
+                    return $q.reject();
+                  });
               });
           });
 
@@ -262,6 +295,26 @@ angular.module('bulbs.cms.liveBlog.entries', [
                 var message = 'An error occurred attempting to delete ' + titleDisplay(entry) + '!';
                 reportError(message, { response: response });
               });
+          });
+
+          scope.jumpToTop = function () {
+            $(document)
+              .scrollTop(element.find('.live-blog-entries-header').offset().top - 50);
+          };
+
+          var stickyClass = 'live-blog-entries-jump-to-top-fixed';
+          $(document).on('scroll', function () {
+            var offsetTop = element.find('.live-blog-entries-header').offset().top;
+            var windowTop = $(window).scrollTop();
+            var inThreshold =  windowTop - offsetTop > 500;
+            var jumpButton = element.find('.live-blog-entries-jump-to-top');
+            var alreadyHasClass = jumpButton.hasClass(stickyClass);
+
+            if (inThreshold && !alreadyHasClass) {
+              jumpButton.addClass(stickyClass);
+            } else if (!inThreshold && alreadyHasClass) {
+              jumpButton.removeClass(stickyClass);
+            }
           });
 
           // directive initialization

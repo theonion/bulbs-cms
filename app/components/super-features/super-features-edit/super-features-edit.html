@@ -45,12 +45,33 @@
       role="singleline"
       placeholder="Headline">
   </onion-editor>
+
   <onion-editor
       id="content-subhead"
       ng-model="article.subhead"
       role="singleline"
       placeholder="Subhead (optional)">
-  </onion-editor></section>
+  </onion-editor>
+
+  <onion-editor
+      id="content-description"
+      ng-model="article.description"
+      role="singline"
+      placeholder="Description goes here">
+  </onion-editor>
+
+  <div class="row well">
+    <label
+        class="muted-capitals"
+        for="manualRecircSearch">
+      Manual Recirc (Maximum 3)
+    </label>
+    <recirc-chooser
+        ng-model="article.recirc_query.included_ids"
+        input-id="manualRecircSearch"
+        on-select="includeRecirc(selection)">
+    </recirc-chooser>
+  </div>
 </section>
 
 <dynamic-content-form
@@ -68,6 +89,6 @@
 </div>
 
 <super-features-relations
-    ng-if="!article.parent"
+    ng-if="!article.parent && article.default_child_type"
     article="article">
 </super-features-relations>

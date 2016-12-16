@@ -113,4 +113,19 @@ describe('Directive: superFeatureBreadcrumb', function () {
 
     expect(element.find('a').eq(0).attr('href')).to.have.string(href);
   });
+
+  it('should render html', function () {
+    $parentScope.links = [{
+      label: 'some <em>thing</em> to render'
+    }, {
+      label: 'another <em>thing</em> to render',
+      href: function () {
+        return 'some/link';
+      }
+    }];
+
+    var element = digest('<breadcrumb links-list="links"></breadcrumb>');
+
+    expect(element.find('em').length).to.equal(2);
+  });
 });

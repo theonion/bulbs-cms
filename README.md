@@ -3,6 +3,7 @@
 ## Development
 
 To start developing:
+
 1. `npm run setup` will run npm install and bower install
 1. `npm start` to run the dev server
 1. `npm run karma` will unit test your code as you make changes

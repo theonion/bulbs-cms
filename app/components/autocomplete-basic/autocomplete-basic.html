@@ -14,15 +14,17 @@
     ng-if="!selectedValue"
     class="input-container">
 
-  <label>
+  <label class="autocomplete-basic-label">
     <i
         class="fa fa-search"
         ng-if="!hideSearchIcon()">
     </i>
     <input
         id="{{ inputId }}"
+        class="autocomplete-basic-input"
         placeholder="{{ inputPlaceholder }}"
         type="text"
+        ng-disabled="ngDisabled()"
         ng-model="writables.searchTerm"
         ng-blur="delayClearAutocomplete()"
         ng-change="updateAutocomplete()"

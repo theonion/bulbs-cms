@@ -11,3 +11,5 @@ dist/
 .editorconfig
 npm-debug.log
 *.sw[nop]
+.s*
+*.vim

@@ -3,15 +3,22 @@
 angular.module('bulbs.cms.superFeatures.edit', [
   'bulbs.cms.breadcrumb',
   'bulbs.cms.dynamicContent',
+  'bulbs.cms.recircChooser',
   'bulbs.cms.site.config',
   'bulbs.cms.superFeatures.api',
   'bulbs.cms.superFeatures.relations'
 ])
   .directive('superFeaturesEdit', [
-    'CmsConfig', 'SuperFeaturesApi',
-    function (CmsConfig, SuperFeaturesApi) {
+    'CmsConfig', 'SuperFeaturesApi', 'Utils',
+    function (CmsConfig, SuperFeaturesApi, Utils) {
       return {
-        link: function (scope, element, attrs) {
+        link: function (scope) {
+
+          var recirc = scope.article.recirc_query;
+          if (angular.isUndefined(recirc.included_ids)) {
+            recirc.included_ids = [];
+          }
+
           scope.breadcrumbs = [{
             label: 'Super Features',
             href: '/cms/app/super-features'
@@ -36,6 +43,7 @@ angular.module('bulbs.cms.superFeatures.edit', [
           };
 
           addParentToBreadcrumb(scope.article);
+
         },
         // no scope here so we have access to the content edit scope without
         //  having to make changes to the brittle content edit controller,

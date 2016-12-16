@@ -8,6 +8,10 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
   var CmsConfigProviderHook;
   var moment;
   var sandbox;
+  var today;
+  var tomorrow;
+  var dateFormat;
+  var timeFormat;
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
@@ -16,11 +20,11 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
       'bulbs.cms.dateTimeModal.controller',
       function (CmsConfigProvider) {
         CmsConfigProviderHook = CmsConfigProvider;
+        CmsConfigProviderHook.setTimezoneName('America/Chicago');
       }
     );
 
     inject(function (_moment_, $controller, $rootScope, CmsConfig) {
-
       $modalInstanceMock = {};
       $scope = $rootScope.$new();
       moment = _moment_;
@@ -32,194 +36,197 @@ describe('Controller: DatetimeSelectionModalCtrl', function () {
             $scope: $scope,
             $modalInstance: $modalInstanceMock,
             CmsConfig: CmsConfig,
-            moment: moment
+            moment: moment,
           }
         );
       };
     });
+
+    today = moment().tz('America/Chicago');
+    tomorrow = moment().tz('America/Chicago').add(1, 'day');
+    dateFormat = 'YYYY-MM-DD';
+    timeFormat = 'HH:mm';
   });
 
   afterEach(function () {
     sandbox.restore();
   });
 
-  it('should set a timezone label on scope', function () {
+  it('has a TIMEZONE_LABEL', function () {
     CmsConfigProviderHook.setTimezoneName('America/Chicago');
-
     buildControllerInstance();
-
-    expect($scope.TIMEZONE_LABEL).to.equal('CDT');
+    expect($scope.TIMEZONE_LABEL).to.equal(moment.tz('America/Chicago').format('z'));
   });
 
-  it('should copy given date time on scope', function () {
+  it('has a dateTime', function () {
+    buildControllerInstance();
+    expect(moment.isMoment($scope.dateTime)).to.equal(true);
+  });
+
+  it('has a date', function () {
+    buildControllerInstance();
+    expect(moment.isMoment($scope.date)).to.equal(true);
+  });
+
+  it('has a time', function () {
+    buildControllerInstance();
+    expect($scope.time).to.be.an.instanceof(Date);
+  });
+
+  it('has a configurable dateTime', function () {
     $scope.modDatetime = moment();
-    var givenYear = $scope.modDatetime.year();
-    var newYear = givenYear + 1;
-
     buildControllerInstance();
-    $scope.tempDatetime.year(newYear);
-    $scope.$digest();
-
-    expect($scope.modDatetime.year()).to.equal(givenYear);
-    expect($scope.tempDatetime.year()).to.equal(newYear);
+    expect($scope.dateTime.isSame($scope.modDatetime)).to.equal(true);
   });
 
-  it('should set date time to now if no time given on scope', function () {
-    var then = moment();
+  describe('nowInTimezone', function () {
+    it('returns a moment object', function () {
+      buildControllerInstance();
+      expect(moment.isMoment($scope.nowInTimezone())).to.equal(true);
+    });
 
-    buildControllerInstance();
-    var now = moment();
-
-    expect($scope.tempDatetime.isBetween(then, now, null, '[]')).to.equal(true);
+    it('returns the current date and time in the configured timezone', function () {
+      buildControllerInstance();
+      expect($scope.nowInTimezone().toString()).to.have.string(moment().tz('America/Chicago').format('ZZ'));
+    });
   });
 
-  it('should set a temporary time variable on scope for use with timepicker', function () {
-    $scope.modDatetime = moment();
-    var givenHour = $scope.modDatetime.hour();
-    var newHour = givenHour + 1;
+  describe('dateInTimezone', function () {
+    it('returns a moment object', function () {
+      buildControllerInstance();
+      expect(moment.isMoment($scope.dateInTimezone(moment()))).to.equal(true);
+    });
 
-    buildControllerInstance();
-    $scope.tempDatetime.hour(newHour);
-    $scope.tempTime.hour(newHour);
-    $scope.$digest();
-
-    expect($scope.modDatetime.hour()).to.equal(givenHour);
-    expect($scope.tempDatetime.hour()).to.equal(newHour);
-    expect($scope.tempTime.hour()).to.equal(newHour);
+    it('returns the given date in the configured timezone', function () {
+      buildControllerInstance();
+      expect($scope.nowInTimezone().toString()).to.have.string(moment().tz('America/Chicago').format('ZZ'));
+    });
   });
 
-  it('should report an invalid date if chosen date time is not valid', function () {
-    buildControllerInstance();
-
-    $scope.dateValid = true;
-    $scope.tempDatetime = moment(null);
-    $scope.$digest();
-
-    expect($scope.dateValid).to.equal(false);
+  describe('setDateToday', function () {
+    it('sets the date to the selected date', function () {
+      $scope.modDatetime = moment('2016-09-25 09:30');
+      buildControllerInstance();
+      $scope.setDateToday();
+      expect($scope.date.format(dateFormat)).to.equal(today.format(dateFormat));
+    });
   });
 
-  it('should report a valid date if chosen date time is valid', function () {
-    buildControllerInstance();
-
-    $scope.dateValid = false;
-    $scope.tempDatetime = moment();
-    $scope.$digest();
-
-    expect($scope.dateValid).to.equal(true);
+  describe('setDateTomorrow', function () {
+    it('sets the date to tomorrow', function () {
+      $scope.modDatetime = moment('2016-09-25 09:30');
+      buildControllerInstance();
+      $scope.setDateTomorrow();
+      expect($scope.date.format(dateFormat)).to.equal(tomorrow.format(dateFormat));
+    });
   });
 
-  it('should update selected date time when temporary time variable is set', function () {
-    buildControllerInstance();
-    var currHour = $scope.tempDatetime.hour();
-    var newHour = currHour + 1;
+  describe('setTimeNow', function () {
+    it('sets the date to now', function () {
+      var now = moment();
+      $scope.modDatetime = moment('2016-09-25 09:30');
+      buildControllerInstance();
+      sandbox.stub($scope, 'nowInTimezone').returns(now);
+      $scope.setTimeNow();
+      expect($scope.date.isSame(now)).to.equal(true);
+    });
 
-    $scope.tempTime = moment().hour(newHour);
-    $scope.$digest();
-
-    expect($scope.tempDatetime.hour()).to.equal($scope.tempTime.hour());
+    it('sets the time to now', function () {
+      var now = moment();
+      $scope.modDatetime = moment('2016-09-25 09:30');
+      buildControllerInstance();
+      sandbox.stub($scope, 'nowInTimezone').returns(now);
+      $scope.setTimeNow();
+      expect($scope.time.toString()).to.equal(now.toDate().toString());
+    });
   });
 
-  it('should not update selected date time if temporary time variable is invalid', function () {
-    buildControllerInstance();
-    var tempTimeStr = $scope.tempDatetime.format();
+  describe('setTimeMidnight', function () {
+    it('sets the time to midnight', function () {
+      $scope.modDatetime = moment('2016-09-25 09:30').tz('America/Chicago');
+      buildControllerInstance();
+      today.startOf('day');
+      $scope.setTimeMidnight();
+      expect($scope.time.toString()).to.equal(today.toDate().toString());
+    });
 
-    $scope.tempTime = moment(null);
-    $scope.$digest();
-
-    expect($scope.tempDatetime.format()).to.equal(tempTimeStr);
+    it('sets the date to midnight', function () {
+      $scope.modDatetime = moment('2016-09-25 09:30').tz('America/Chicago');
+      buildControllerInstance();
+      today.startOf('day');
+      $scope.setTimeMidnight();
+      expect($scope.date.isSame(today)).to.equal(true);
+    });
   });
 
-  it('should have a setDate function for use with date picker that preserves selected time', function () {
-    var hour = moment().add(1, 'hour').hour();
-    var newDate = moment().add(1, 'year');
-    buildControllerInstance();
-
-    $scope.tempDatetime.hour(hour);
-    $scope.setDate(newDate);
-
-    expect($scope.tempDatetime.year()).to.equal(newDate.year());
-    expect($scope.tempDatetime.month()).to.equal(newDate.month());
-    expect($scope.tempDatetime.date()).to.equal(newDate.date());
-    expect($scope.tempDatetime.hour()).to.equal(hour);
+  describe('clearDateTime', function () {
+    it('closes the modal instance', function () {
+      $modalInstanceMock.close = sandbox.stub();
+      buildControllerInstance();
+      $scope.clearDatetime();
+      expect($modalInstanceMock.close).to.have.been.called; // jshint ignore:line
+    });
   });
 
-  it('should have a function to set the selected date to today while preserving selected time', function () {
-    var hour = moment().add(1, 'hour').hour();
-    buildControllerInstance();
-
-    $scope.tempDatetime.hour(hour);
-    $scope.setDateToday();
-
-    var now = moment();
-    expect($scope.tempDatetime.year()).to.equal(now.year());
-    expect($scope.tempDatetime.month()).to.equal(now.month());
-    expect($scope.tempDatetime.date()).to.equal(now.date());
-    expect($scope.tempDatetime.hour()).to.equal(hour);
+  describe('chooseDatetime', function () {
+    context('when the date is valid', () => {
+      it('closes the modal, passing the dateTime', function () {
+        $modalInstanceMock.close = sandbox.stub();
+        buildControllerInstance();
+        $scope.chooseDatetime();
+        expect($modalInstanceMock.close).to.have.been.calledWith($scope.dateTime);
+      });
+    });
   });
 
-  it('should have a function to set the selected date to tomorrow while preserving selected time', function () {
-    var hour = moment().add(1, 'hour').hour();
-    buildControllerInstance();
-
-    $scope.tempDatetime.hour(hour);
-    $scope.setDateTomorrow();
-
-    var tomorrow = moment().add(1, 'day');
-    expect($scope.tempDatetime.year()).to.equal(tomorrow.year());
-    expect($scope.tempDatetime.month()).to.equal(tomorrow.month());
-    expect($scope.tempDatetime.date()).to.equal(tomorrow.date());
-    expect($scope.tempDatetime.hour()).to.equal(hour);
+  describe('setDate', function () {
+    it('sets the date with the given date', function () {
+      $scope.modDatetime = moment('2016-09-25 12:37');
+      buildControllerInstance();
+      var givenDate = moment('2016-09-25 09:30');
+      $scope.setDate(givenDate.toDate());
+      expect($scope.date.format(dateFormat)).to.equal(givenDate.format(dateFormat));
+    });
   });
 
-  it('should have a function to set the selected time to now', function () {
-    buildControllerInstance();
-    var then = moment();
+  describe('time watcher', function () {
+    it('sets the dateTime with the new time', function () {
+      $scope.modDatetime = moment('2016-09-25 11:23');
+      buildControllerInstance();
+      var updatedTime = $scope.dateInTimezone(moment('2016-09-27 09:30'));
+      $scope.$apply(function () {
+        $scope.time = updatedTime.toDate();
+      });
+      expect($scope.dateTime.format(timeFormat)).to.equal(updatedTime.format(timeFormat));
+    });
 
-    $scope.setTimeNow();
-    var now = moment();
-
-    expect($scope.tempDatetime.isBetween(then, now, null, '[]')).to.equal(true);
+    it('preserves the date', function () {
+      $scope.modDatetime = moment('2016-09-25 09:30');
+      buildControllerInstance();
+      var updatedTime = $scope.dateInTimezone(moment('2016-09-27 12:37'));
+      $scope.time = updatedTime.clone().toDate();
+      $scope.$digest();
+      expect($scope.dateTime.format(dateFormat)).to.not.equal(updatedTime.format(dateFormat));
+    });
   });
 
-  it('should have a function to set the selected time to midnight', function () {
-    buildControllerInstance();
-    var now = moment();
+  describe('date watcher', function () {
+    it('sets the dateTime with the new date', function () {
+      $scope.modDatetime = moment('2016-09-27 11:30');
+      buildControllerInstance();
+      var updatedDate = $scope.dateInTimezone(moment('2016-09-25 09:30'));
+      $scope.date = updatedDate.clone();
+      $scope.$digest();
+      expect($scope.dateTime.format(dateFormat)).to.equal(updatedDate.format(dateFormat));
+    });
 
-    $scope.setTimeMidnight();
-
-    expect($scope.tempDatetime.date()).to.equal(now.date() + 1);
-    expect($scope.tempDatetime.hour()).to.equal(0);
-    expect($scope.tempDatetime.minute()).to.equal(0);
-    expect($scope.tempDatetime.second()).to.equal(0);
-  });
-
-  it('should have a function to finalize date time selection and close modal instance', function () {
-    buildControllerInstance();
-    $modalInstanceMock.close = sinon.stub();
-
-    $scope.chooseDatetime();
-
-    expect($scope.tempDatetime.isSame($modalInstanceMock.close.args[0][0])).to.equal(true);
-  });
-
-  it('should not allow an invalid date to be finalized and chosen', function () {
-    buildControllerInstance();
-    $modalInstanceMock.close = sinon.stub();
-    sinon.stub(console, 'error');
-
-    $scope.tempDatetime = moment(null);
-    $scope.$digest();
-    $scope.chooseDatetime();
-
-    expect($modalInstanceMock.close.callCount).to.equal(0);
-  });
-
-  it('should allow given date to be cleared', function () {
-    buildControllerInstance();
-    $modalInstanceMock.close = sinon.stub();
-
-    $scope.clearDatetime();
-
-    expect($modalInstanceMock.close.withArgs(null).calledOnce).to.equal(true);
+    it('preserves the time', function () {
+      $scope.modDatetime = moment('2016-09-27 11:30');
+      buildControllerInstance();
+      var updatedDate = $scope.dateInTimezone(moment('2016-09-25 09:30'));
+      $scope.date = updatedDate.clone();
+      $scope.$digest();
+      expect($scope.dateTime.format(timeFormat)).to.not.equal(updatedDate.format(timeFormat));
+    });
   });
 });

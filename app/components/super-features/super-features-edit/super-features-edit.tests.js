@@ -1,11 +1,14 @@
 'use strict';
 
 describe('Directive: superFeaturesEdit', function () {
+
+  var $httpBackend;
   var $parentScope;
   var $q;
+  var CmsConfig;
+  var SuperFeaturesApi;
   var digest;
   var sandbox;
-  var SuperFeaturesApi;
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
@@ -19,14 +22,19 @@ describe('Directive: superFeaturesEdit', function () {
     );
     module('jsTemplates');
 
-    inject(function (_$q_, _SuperFeaturesApi_, $compile, $rootScope) {
+    inject(function (_$httpBackend_, _$q_, _CmsConfig_, _SuperFeaturesApi_,
+          $compile, $rootScope) {
+
+      $httpBackend = _$httpBackend_;
       $parentScope = $rootScope.$new();
       $q = _$q_;
+      CmsConfig = _CmsConfig_;
       SuperFeaturesApi = _SuperFeaturesApi_;
 
       $parentScope.article = {
         id: 1,
-        title: 'My Garbage Title'
+        title: 'My Garbage Title',
+        recirc_query: {}
       };
 
       digest = window.testHelper.directiveBuilderWithDynamicHtml(
@@ -54,16 +62,19 @@ describe('Directive: superFeaturesEdit', function () {
     it('should gather all parents and list them in the middle', function () {
       var parentArticle1 = {
         id: 1,
-        title: 'Article 1'
+        title: 'Article 1',
+        recirc_query: {}
       };
       var parentArticle2 = {
         id: 2,
         title: 'Article 2',
-        parent: parentArticle1.id
+        parent: parentArticle1.id,
+        recirc_query: {}
       };
       $parentScope.article = {
         id: 3,
-        parent: parentArticle2.id
+        parent: parentArticle2.id,
+        recirc_query: {}
       };
       var request1 = $q.defer();
       var request2 = $q.defer();
@@ -91,4 +102,30 @@ describe('Directive: superFeaturesEdit', function () {
       expect(crumb.label()).to.equal($parentScope.article.title);
     });
   });
+
+  context('recirc', function () {
+
+    it('should initialize included_ids list if not provided by backend', function () {
+      var article1 = {
+        id: 1,
+        title: 'Article 1',
+        recirc_query: {}
+      };
+      $parentScope.article = {
+        id: 12,
+        title: 'Article 12',
+        recirc_query: {}
+      };
+      $httpBackend
+        .expectGET(CmsConfig.buildApiUrlRoot('content', article1.id))
+        .respond(article1);
+      var element = digest('<super-features-edit></super-features-edit>');
+      var scope = element.scope();
+
+      scope.$digest();
+
+      expect(angular.isArray($parentScope.article.recirc_query.included_ids)).to.equal(true);
+    });
+  });
 });
+

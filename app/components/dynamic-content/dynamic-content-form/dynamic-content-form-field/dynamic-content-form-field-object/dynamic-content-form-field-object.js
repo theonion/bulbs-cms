@@ -3,6 +3,7 @@
 angular.module('bulbs.cms.dynamicContent.form.field.object', [
   'bulbs.cms.dynamicContent.form.field.boolean',
   'bulbs.cms.dynamicContent.form.field.color',
+  'bulbs.cms.dynamicContent.form.field.contentReferences',
   'bulbs.cms.dynamicContent.form.field.dateTime',
   'bulbs.cms.dynamicContent.form.field.image',
   'bulbs.cms.dynamicContent.form.field.list',
@@ -10,6 +11,7 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
   'bulbs.cms.dynamicContent.form.field.invalid',
   'bulbs.cms.dynamicContent.form.field.richtext',
   'bulbs.cms.dynamicContent.form.field.text',
+  'bulbs.cms.dynamicContent.form.input.label',
   'bulbs.cms.dynamicContent.form.types',
   'bulbs.cms.site.config',
   'lodash',
@@ -23,6 +25,8 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
         link: function (scope, element, attrs) {
           var $form = element.find('ng-form');
 
+          scope.hideLabel = 'hideLabel' in attrs;
+
           scope.$watch('form.$valid', function (isValid) {
             scope.onValidityChange({
               isValid: isValid,
@@ -33,9 +37,15 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
           scope.$watch('schema', function () {
             if (_.has(scope.schema, 'fields')) {
               var fieldKeys = Object.keys(scope.schema.fields);
+              var includeOnlyProvided = _.isArray(scope.includeOnly);
+              var hideOnlyChildLabel = false;
 
-              if (_.isArray(scope.includeOnly)) {
+              if (includeOnlyProvided) {
                 fieldKeys = _.intersection(fieldKeys, scope.includeOnly);
+
+                if (scope.includeOnly.length === 1) {
+                  hideOnlyChildLabel = true;
+                }
               }
 
               fieldKeys.forEach(function (id) {
@@ -57,6 +67,10 @@ angular.module('bulbs.cms.dynamicContent.form.field.object', [
                 html.attr('name', id);
                 html.attr('schema', 'schema.fields.' + id);
                 html.attr('class', 'dynamic-content-form-field');
+
+                if (hideOnlyChildLabel) {
+                  html.attr('hide-label', 'true');
+                }
 
                 // NOTE : Angular is not able to bind primitives properly when
                 //  passed into isolate scopes. See

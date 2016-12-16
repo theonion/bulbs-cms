@@ -431,7 +431,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         }
       }, {
         id: 13,
-        title: 'Guide to My Favorite Animals',
+        title: 'Guide to My <em>Favorite</em> Animals',
         slug: 'my-favorite-animals',
         polymorphic_ctype: 'core_super_feature_type',
         superfeature_type: 'GUIDE_TO_ANIMALZ_PARENT',
@@ -440,6 +440,9 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         children_count: 3,
         data: {
           title: 'garbage'
+        },
+        recirc_query: {
+          included_ids: [11, 3, 12]
         }
       }, {
         id: 14,
@@ -447,7 +450,8 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         slug: 'another-super-duper-feature',
         polymorphic_ctype: 'core_super_feature_type',
         children_count: 10,
-        data: {}
+        data: {},
+        recirc_query: {}
       }, {
         id: 15,
         title: 'Scheduled Super Feature',
@@ -455,13 +459,16 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         polymorphic_ctype: 'core_super_feature_type',
         published: moment().add(1, 'day').format(),
         children_count: 4,
-        data: {}
+        data: {},
+        recirc_query: {}
       }, {
         id: 16,
         title: 'Live Blog #1',
         slug: 'live-blog-1',
+        pinned_content: [],
         polymorphic_ctype: 'mock_live_blog',
-        entries: [{}]
+        entries: [{}],
+        recirc_query: {}
       }, {
         id: 100,
         title: 'Guide to Catz',
@@ -504,6 +511,15 @@ angular.module('bulbsCmsApp.mockApi.data', [])
             fields: {
               test_field: {
                 type: 'integer'
+              },
+              nested_things: {
+                fields: {
+                  title: {
+                    label: 'Title',
+                    type: 'richtext',
+                    required: true
+                  },
+                }
               },
               entries: {
                 type: 'array',
@@ -578,7 +594,29 @@ angular.module('bulbsCmsApp.mockApi.data', [])
       id: 2,
       liveblog: 16,
       headline: 'This is Title 2',
-      authors: []
+      created: moment().subtract(1, 'day'),
+      createdBy: {
+        id: 0,
+        username: 'admin',
+        email: 'webtech@theonion.com',
+        first_name: 'Herman',
+        last_name: 'Zweibel',
+      },
+      authors: [],
+      recirc_content: []
+    }, {
+      id: 3,
+      liveblog: 16,
+      created: moment().subtract(1, 'day'),
+      createdBy: {
+        id: 1,
+        username: 'jadams',
+        email: 'jadams@theonion.com',
+        first_name: 'John',
+        last_name: 'Adams'
+      },
+      authors: [],
+      recirc_content: []
     }],
     'pzones.list': {
       count: 5,

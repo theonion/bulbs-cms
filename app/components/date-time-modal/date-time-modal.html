@@ -16,7 +16,7 @@
           <input
               readonly
               class="form-control disabled uneditable-input"
-              value="{{ tempDatetime | dateTimeFormat:'MM/DD/YYYY' }}">
+              value="{{ date | dateTimeFormat:'MM/DD/YYYY' }}">
           <div class="input-group-btn">
             <a
                 class="btn-default btn"
@@ -52,7 +52,7 @@
       <div class="row">
         <div class="col-sm-4 col-xs-12">
           <timepicker
-              ng-model="tempTime"
+              ng-model="time"
               minute-step="5"
               mousewheel="false">
           </timepicker>
@@ -83,10 +83,10 @@
     <i class="fa fa-calendar-times-o"></i>
     <span>{{ modalClearText || 'Clear' }}</span>
   </button>
-  <span class="well well-sm">Selected Date: {{ tempDatetime | dateTimeFormat }}</span>
+  <span class="well well-sm">Selected Date: {{ dateTime | dateTimeFormat }}</span>
   <button
       class="btn btn-success"
-      ng-disabled="!dateValid"
+      ng-disabled="isDateTimeInvalid()"
       ng-click="chooseDatetime()">
     <i class="fa fa-check"></i>
     <span>{{ modalOkText || 'Done' }}</span>

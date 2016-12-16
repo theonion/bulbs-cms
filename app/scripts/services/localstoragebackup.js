@@ -6,7 +6,8 @@
  *  yesterday.
  */
 angular.module('bulbsCmsApp')
-  .factory('LocalStorageBackup', function ($q, $routeParams, $window, moment, _, CurrentUser) {
+  .factory('LocalStorageBackup', function ($q, $routeParams, $window, moment, _,
+      CurrentUserApi) {
 
     var keyPrefixArticle = 'article';
     var keyPrefix = keyPrefixArticle + '.' + $routeParams.id + '.';
@@ -26,12 +27,17 @@ angular.module('bulbsCmsApp')
 
         // check if we have local storage
         if ($window.localStorage) {
-          CurrentUser.$simplified().then(function (user) {
+          CurrentUserApi.getCurrentUserWithCache().then(function (user) {
+
+            var simplifiedUser = _.pick(user, [
+              'id',
+              'displayName'
+            ]);
 
             // create new version object
             var version = {
               timestamp: moment().valueOf(),
-              user: user,
+              user: simplifiedUser,
               content: articleData
             };
 

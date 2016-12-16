@@ -2,9 +2,10 @@ angular.module('bulbs.cms.site.config', [
   'bulbs.cms.base.config'
 ])
   .config([
-    'CmsConfigProvider',
-    function (CmsConfig) {
+    'CmsConfigProvider', 'ngClipProvider',
+    function (CmsConfig, ngClipProvider) {
       CmsConfig
+        .setApiUrlRoot('/cms/api/v1/')
         .setContentPartialsPath('/content_type_views/')
         .setComponentPath('/components/')
         .setDirectivePartialsPath('/views/')
@@ -14,5 +15,8 @@ angular.module('bulbs.cms.site.config', [
         .setImageApiUrl('http://localimages.avclub.com')
         .setImageApiKey('abc123')
         .setSharedPath('/shared/');
+
+      // so ng clip doesn't complain about not finding ZeroClipboard.swf in tests
+      ngClipProvider.setPath('');
     }
   ]);

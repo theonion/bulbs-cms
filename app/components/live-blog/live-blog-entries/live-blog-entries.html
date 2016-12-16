@@ -1,16 +1,45 @@
+<div class="live-blog-recircs">
+
+  <div class="well">
+    <label
+        for="liveBlogRecircsPinned"
+        class="muted-capitals">
+      Pinned Articles (Maximum 3)
+    </label>
+    <recirc-chooser
+        input-id="liveBlogRecircsPinned"
+        ng-model="article.pinned_content">
+    </recirc-chooser>
+  </div>
+
+  <div class="well">
+    <label
+        for="liveBlogRecircsFooter"
+        class="muted-capitals">
+      Footer Article Recirc (Maximum 3)
+    </label>
+    <recirc-chooser
+        input-id="liveBlogRecircsFooter"
+        ng-model="article.recirc_query.included_ids"
+        on-select="onIncludeRecirc()">
+    </recirc-chooser>
+  </div>
+
+</div>
+
 <div class="live-blog-entries-header">
   <h4>Entries</h4>
 
-  <div
-      ng-if="entries.length > 0"
-      class="live-blog-entries-header-meta-tools">
+  <div class="live-blog-entries-header-meta-tools">
     <button
+        ng-if="entries.length > 0"
         ng-click="collapseAll()"
         class="btn-minimal">
       <i class="fa fa-caret-square-o-down"></i>
       <span>Collapse All</span>
     </button>
     <button
+        ng-if="entries.length > 0"
         ng-click="expandAll()"
         class="btn-minimal">
       <i class="fa fa-caret-square-o-up"></i>
@@ -70,10 +99,7 @@
         <button
             ng-class="getEntryForm(entry).$dirtyAndWillOverwrite ? 'btn-warning' : 'btn-success'"
             ng-click="saveEntry(entry)"
-            ng-disabled="
-              transactionsLocked() ||
-              getEntryForm(entry).$pristine
-            "
+            ng-disabled="isEntryFormSaveDisabled(entry)"
             class="btn btn-xs">
           <span ng-if="getEntryForm(entry).$dirtyAndWillOverwrite">
             <i class="fa fa-exclamation-triangle"></i>
@@ -103,6 +129,13 @@
     <div
         ng-show="isPanelOpen(entry)"
         class="accordion-list-item-content">
+
+      <div class="live-blog-entries-list-entry-created-by">
+        <span>
+          Created by {{ entry.created_by | userNameDisplay }} @ {{ entry.created | dateTimeFormat }}.
+          Last Updated by {{ entry.updated_by | userNameDisplay }} @ {{ entry.updated | dateTimeFormat }}.
+        </span>
+      </div>
 
       <form name="{{ 'wrapperForm.' + makeEntryFormName(entry) }}">
 
@@ -135,11 +168,30 @@
             </onion-editor>
           </div>
         </div>
+
+        <div class="input-container">
+          <label for="entryRecirc-{{ entry.id }}">
+            Add Related Recirc (Maximum 3)
+          </label>
+          <recirc-chooser
+              input-id="entryRecirc-{{ entry.id }}"
+              ng-model="entry.recirc_content">
+          </recirc-chooser>
+        </div>
       </form>
+
 
       <div class="accordion-list-item-meta">
 
         <div class="accordion-list-item-meta-tools">
+
+          <button
+              ng-click="saveEntry(entry)"
+              ng-disabled="isEntryFormSaveDisabled(entry)"
+              class="btn btn-success btn-sm">
+            <i class="fa fa-floppy-o"></i>
+            <span>SAVE</span>
+          </button>
 
           <button
               ng-disabled="transactionsLocked()"
@@ -159,9 +211,10 @@
 </ol>
 
 <button
-    ng-click="addEntry()"
-    ng-disabled="transactionsLocked()"
-    class="btn btn-primary accordion-list-add-bottom">
-  <i class="fa fa-plus"></i>
-  <span>Add New Entry</span>
+    ng-if="entries.length > 0"
+    ng-click="jumpToTop()"
+    class="btn btn-primary accordion-list-add-bottom live-blog-entries-jump-to-top">
+  <i class="fa fa-arrow-up"></i>
+  <span>Jump to Top</span>
 </button>
+
