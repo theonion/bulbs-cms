@@ -1,7 +1,6 @@
 
 angular.module('bulbs.cms.liveBlog.responses', [
-  'bulbs.cms.site.config',
-  'bulbs.cms.liveBlog.response'
+  'bulbs.cms.site.config'
 ])
   .directive('liveBlogResponses', [
     'CmsConfig',

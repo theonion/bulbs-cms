@@ -83,7 +83,41 @@
         ng-show="isPanelOpen(response)"
         class="accordion-list-item-content">
 
-      <live-blog-response response="response"></live-blog-response>
+      <div class="input-container">
+        <live-blog-entries-author-bridge
+            ng-model="response.author"
+            on-update="getResponseForm(response).$setDirty()">
+        </live-blog-entries-author-bridge>
+      </div>
+
+      <div class="input-container">
+        <label for="">Response Name</label>
+        <span class="input-container-label-sub">Internal name, will not show on front end.</span>
+        <input
+            ng-model="response.internalName">
+      </div>
+
+      <div class="input-container">
+        <label>Copy</label>
+        <div class="input-container-onion-editor-wrapper">
+          <onion-editor
+              role="multiline"
+              ng-model="response.body">
+          </onion-editor>
+        </div>
+      </div>
+
+      <button
+          ng-disabled="transactionsLocked()"
+          confirmation-modal-opener
+          modal-body="Are you sure you want to delete {{ entry.headline ? '\'' + entry.headline + '\'' : 'this entry' }}?"
+          modal-title="Delete Entry"
+          modal-ok-text="Delete"
+          modal-on-ok="deleteEntry(entry)"
+          class="btn btn-danger btn-sm">
+        <i class="fa fa-trash-o"></i>
+        <span>DELETE</span>
+      </button>
    </div>
 
   </li>
