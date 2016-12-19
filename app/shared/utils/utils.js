@@ -19,6 +19,31 @@ angular.module('bulbs.cms.utils', [
           .replace(/-+$/, '');            // Trim - from end of text
       };
 
+      Utils.toCamelCase = function (snakeCaseString, sep) {
+        if (typeof snakeCaseString !== 'string') {
+          return;
+        }
+
+        var separator = sep || '_';
+        var matcher = new RegExp(separator + '\\w?', 'g')
+
+        return snakeCaseString.replace(matcher, function (group) {
+          return group.length > 1 ? group[1].toUpperCase() : '';
+        });
+      };
+
+      Utils.toSnakeCase = function (camelCaseString, sep) {
+        if (typeof camelCaseString !== 'string') {
+          return;
+        }
+
+        var separator = sep || '_';
+
+        return camelCaseString.replace(/[A-Z]/g, function (group) {
+          return separator + group.toLowerCase();
+        });
+      };
+
       /**
        * In given list, swaps item at indexFrom with item at indexTo.
        *
