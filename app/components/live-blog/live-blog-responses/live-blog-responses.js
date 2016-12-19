@@ -9,6 +9,28 @@ angular.module('bulbs.cms.liveBlog.responses', [
 
       return {
         link: function (scope, element) {
+
+          var panelOpen = {};
+          scope.isPanelOpen = function (response) {
+            if (angular.isUndefined(panelOpen[response.id])) {
+              panelOpen[response.id] = true;
+            }
+            return panelOpen[response.id];
+          };
+          scope.togglePanel = function (response) {
+            panelOpen[response.id] = !panelOpen[response.id];
+          };
+          scope.collapseAll = function () {
+            scope.entry.responses.forEach(function (response) {
+              panelOpen[response.id] = false;
+            });
+          };
+          scope.expandAll = function () {
+            scope.entry.responses.forEach(function (response) {
+              panelOpen[response.id] = true;
+            });
+          };
+
         },
         restrict: 'E',
         scope: {

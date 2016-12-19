@@ -1,18 +1,91 @@
 
-<h5>Responses</h5>
+<div class="live-blog-responses-header">
+  <h5>Responses</h5>
 
-<div ng-if="!entry.responses || entry.responses.length === 0">
-  No responses yet.
+  <div class="live-blog-responses-header-meta-tools">
+    <button
+        ng-if="entry.responses.length > 0"
+        ng-click="collapseAll()"
+        class="btn-minimal">
+      <i class="fa fa-caret-square-o-down"></i>
+      <span>Collapse All</span>
+    </button>
+    <button
+        ng-if="entry.responses.length > 0"
+        ng-click="expandAll()"
+        class="btn-minimal">
+      <i class="fa fa-caret-square-o-up"></i>
+      <span>Expand All</span>
+    </button>
+    <button
+        ng-click="addEntry()"
+        ng-disabled="transactionsLocked()"
+        class="btn btn-primary live-blog-responses-list-add-top">
+      <i class="fa fa-plus"></i>
+      <span>Add New Entry</span>
+    </button>
+  </div>
+
+  <div
+      ng-if="errorMessage"
+      class="live-blog-entries-list-error">
+    <i class="fa fa-exclamation-circle"></i>
+    <span>{{ errorMessage }}</span>
+    <button ng-click="clearError()">
+      <i class="fa fa-times"></i>
+    </button>
+  </div>
+
+  <div
+      ng-if="entry.responses.length < 1"
+      class="live-blog-respones-list-no-items">
+    No respones yet!
+  </div>
 </div>
 
 <ol ng-if="entry.responses.length > 0">
   <li
       class="well"
       ng-repeat="response in entry.responses track by response.id">
-    <button>
-      <i class="fa fa-files-o"></i>
-    </button>
-    <live-blog-response response="response"></live-blog-response>
+
+    <div class="accordion-list-item-meta">
+      <button
+          class="accordion-list-item-meta-label"
+          ng-click="togglePanel(response)">
+        <i
+            ng-class="{
+                'fa-caret-right': !isPanelOpen(response),
+                'fa-caret-down': isPanelOpen(response)
+            }"
+            class="fa">
+        </i>
+        <span>{{ response.internalName || 'Response ' + ($index + 1) }}</span>
+      </button>
+
+      <div class="accordion-list-item-meta-tools">
+        <button
+            ng-click="saveResponse(response)"
+            ng-disabled="isResponseFormSaveDisabled(response)"
+            class="btn btn-success btn-xs">
+          <i class="fa fa-floppy-o"></i>
+          <span>Save</span>
+        </button>
+
+        <button
+            ng-disabled="transactionsLocked()"
+            class="btn btn-primary btn-xs">
+          <i class="fa fa-files-o"></i>
+        </button>
+      </div>
+    </div>
+
+    <div
+        ng-show="isPanelOpen(response)"
+        class="accordion-list-item-content">
+
+      <live-blog-response response="response"></live-blog-response>
+   </div>
+
   </li>
 </ol>
 

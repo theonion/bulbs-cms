@@ -1,6 +1,9 @@
 
 <div class="input-container">
-  TODO put author selector here
+  <live-blog-entries-author-bridge
+      ng-model="response.author"
+      on-update="getResponseForm(response).$setDirty()">
+  </live-blog-entries-author-bridge>
 </div>
 
 <div class="input-container">
