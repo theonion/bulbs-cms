@@ -114,3 +114,20 @@
   font-weight: bold;
   margin-top: @interface-internal-spacing;
 }
+
+.input-container {
+  .mixin-input-container();
+
+  label:not(.autocomplete-basic-label) {
+    .mixin-input-label();
+  }
+
+  input:not(.autocomplete-basic-input) {
+    .mixin-input();
+  }
+
+  .input-container-onion-editor-wrapper {
+    .mixin-input-onion-editor-wrapper();
+  }
+}
+

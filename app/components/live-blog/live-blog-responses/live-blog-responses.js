@@ -1,13 +1,20 @@
 
 angular.module('bulbs.cms.liveBlog.responses', [
-  'bulbs.cms.site.config'
+  'OnionEditor',
+  'bulbs.cms.site.config',
+  'bulbs.cms.utils',
+  'confirmationModal'
 ])
   .directive('liveBlogResponses', [
-    'CmsConfig',
-    function (CmsConfig) {
+    'CmsConfig', 'Utils',
+    function (CmsConfig, Utils) {
 
       return {
         link: function (scope, element) {
+
+          scope.clearError = function () {
+            scope.errorMessage = '';
+          };
 
           var panelOpen = {};
           scope.isPanelOpen = function (response) {
@@ -29,6 +36,28 @@ angular.module('bulbs.cms.liveBlog.responses', [
               panelOpen[response.id] = true;
             });
           };
+
+          var responseForm = 'responseForm_';
+
+          scope.wrapperForm = {};
+          scope.makeResponseFormName = function (response) {
+            return responseForm + response.id;
+          };
+          scope.getResponseForm = function (response) {
+            var name = scope.makeResponseFormName(response);
+
+            if (scope.wrapperForm[name]) {
+              return scope.wrapperForm[name];
+            }
+            scope.wrapperForm[name] = {};
+            return scope.wrapperForm[name];
+          };
+          scope.isEntryFormSaveDisabled = function (response) {
+            return scope.transactionsLocked() || scope.getResponseForm(response).$pristine;
+          };
+
+          var lock = Utils.buildLock();
+          scope.transactionsLocked = lock.isLocked;
 
         },
         restrict: 'E',

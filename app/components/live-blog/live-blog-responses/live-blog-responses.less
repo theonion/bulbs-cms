@@ -1,8 +1,16 @@
 @import 'mixins/_mixin-accordion-list';
+@import 'mixins/_mixin-input-container';
 
 live-blog-responses {
   .mixin-accordion-list();
 
   display: block;
+
+  .accordion-list-item-content {
+
+    label {
+      .mixin-input-label();
+    }
+  }
 }
 

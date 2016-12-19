@@ -18,11 +18,11 @@
       <span>Expand All</span>
     </button>
     <button
-        ng-click="addEntry()"
+        ng-click="addResponse()"
         ng-disabled="transactionsLocked()"
         class="btn btn-primary live-blog-responses-list-add-top">
       <i class="fa fa-plus"></i>
-      <span>Add New Entry</span>
+      <span>Add New Response</span>
     </button>
   </div>
 
@@ -44,9 +44,7 @@
 </div>
 
 <ol ng-if="entry.responses.length > 0">
-  <li
-      class="well"
-      ng-repeat="response in entry.responses track by response.id">
+  <li ng-repeat="response in entry.responses track by response.id">
 
     <div class="accordion-list-item-meta">
       <button
@@ -91,8 +89,10 @@
       </div>
 
       <div class="input-container">
-        <label for="">Response Name</label>
-        <span class="input-container-label-sub">Internal name, will not show on front end.</span>
+        <label>
+          <span>Response Name</span>
+          <span class="input-container-label-sub">Internal name, will not show on front end.</span>
+        </label>
         <input
             ng-model="response.internalName">
       </div>
@@ -110,10 +110,10 @@
       <button
           ng-disabled="transactionsLocked()"
           confirmation-modal-opener
-          modal-body="Are you sure you want to delete {{ entry.headline ? '\'' + entry.headline + '\'' : 'this entry' }}?"
-          modal-title="Delete Entry"
+          modal-body="Are you sure you want to delete {{ response.internalName ? '\'' + response.internalName + '\'' : 'this response' }}?"
+          modal-title="Delete Response"
           modal-ok-text="Delete"
-          modal-on-ok="deleteEntry(entry)"
+          modal-on-ok="deleteResponse(response)"
           class="btn btn-danger btn-sm">
         <i class="fa fa-trash-o"></i>
         <span>DELETE</span>
