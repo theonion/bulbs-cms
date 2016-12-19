@@ -25,7 +25,7 @@ angular.module('bulbs.cms.utils', [
         }
 
         var separator = sep || '_';
-        var matcher = new RegExp(separator + '\\w?', 'g')
+        var matcher = new RegExp(separator + '\\w?', 'g');
 
         return snakeCaseString.replace(matcher, function (group) {
           return group.length > 1 ? group[1].toUpperCase() : '';

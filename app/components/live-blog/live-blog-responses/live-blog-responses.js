@@ -1,3 +1,4 @@
+'use strict';
 
 angular.module('bulbs.cms.liveBlog.responses', [
   'OnionEditor',

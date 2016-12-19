@@ -136,7 +136,7 @@ angular.module('bulbs.cms.liveBlog.api', [
            .then(function (response) {
              return {
                results: response.data.results.map(function (result) {
-                 return parseEntryResponsePayload(result)
+                 return parseEntryResponsePayload(result);
                })
              };
            });

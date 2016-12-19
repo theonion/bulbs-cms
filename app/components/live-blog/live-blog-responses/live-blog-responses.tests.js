@@ -1,6 +1,10 @@
+'use strict';
 
 describe('Directive: liveBlogResponses', function () {
+  var $parentScope;
+  var digest;
   var entry;
+  var html;
   var sandbox;
 
   beforeEach(function () {
@@ -12,7 +16,7 @@ describe('Directive: liveBlogResponses', function () {
     html = angular.element('<live-blog-responses entry="entry"></live-blog-responses>');
     $parentScope.entry = entry = {};
 
-    inject(function ($comile, $rootScope) {
+    inject(function ($compile, $rootScope) {
 
       $parentScope = $rootScope.$new();
 
