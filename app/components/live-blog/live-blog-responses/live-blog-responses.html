@@ -57,7 +57,12 @@
             }"
             class="fa">
         </i>
-        <span>{{ entryResponse.internalName || 'Response ' + ($index + 1) }}</span>
+        <span ng-if="entryResponse.internalName">{{ entryResponse.internalName }}</span>
+        <span
+            class="accordion-list-item-meta-label-untitled"
+            ng-if="!entryResponse.internalName">
+          Untitled Response {{ $index + 1 }}
+        </span>
       </button>
 
       <div class="accordion-list-item-meta-tools">
