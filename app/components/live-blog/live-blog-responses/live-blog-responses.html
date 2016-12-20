@@ -112,19 +112,24 @@
         </div>
       </div>
 
-      <button
-          ng-disabled="transactionsLocked()"
-          confirmation-modal-opener
-          modal-body="Are you sure you want to delete {{ entryResponse.internalName ? '\'' + entryResponse.internalName + '\'' : 'this entryResponse' }}?"
-          modal-title="Delete Response"
-          modal-ok-text="Delete"
-          modal-on-ok="deleteEntryResponse(entryResponse)"
-          class="btn btn-danger btn-sm">
-        <i class="fa fa-trash-o"></i>
-        <span>DELETE</span>
-      </button>
-   </div>
+      <div class="accordion-list-item-meta">
 
+        <div class="accordion-list-item-meta-tools">
+
+          <button
+              ng-disabled="transactionsLocked()"
+              confirmation-modal-opener
+              modal-body="Are you sure you want to delete {{ entryResponse.internalName ? '\'' + entryResponse.internalName + '\'' : 'this entryResponse' }}?"
+              modal-title="Delete Response"
+              modal-ok-text="Delete"
+              modal-on-ok="deleteEntryResponse(entryResponse)"
+              class="btn btn-danger btn-sm">
+            <i class="fa fa-trash-o"></i>
+            <span>DELETE</span>
+          </button>
+        </div>
+      </div>
+   </div>
   </li>
 </ol>
 
