@@ -1,5 +1,6 @@
 @import '_sizing';
 @import 'mixins/_mixin-accordion-list';
+@import 'mixins/_mixin-alerts';
 @import 'mixins/_mixin-input-container';
 
 live-blog-responses {
@@ -27,6 +28,10 @@ live-blog-responses {
 
   .live-blog-responses-list-add-top {
     float: right;
+  }
+
+  .live-blog-responses-list-no-items {
+    .alert-info();
   }
 }
 
