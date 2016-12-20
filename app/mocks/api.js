@@ -121,6 +121,8 @@ angular.module('bulbsCmsApp.mockApi', [
     var liveBlogEntryListRegex = /\/cms\/api\/v1\/liveblog\/entry\/?\?liveblog=(\d+)$/;
     var liveBlogEntryDetailRegex = /\/cms\/api\/v1\/liveblog\/entry\/(\d+)\/?$/
     var liveBlogEntryRegex = /\/cms\/api\/v1\/liveblog\/entry\/?$/
+    var liveBlogEntryResponseDetailRegex = /\/cms\/api\/v1\/liveblog\/entry\/(\d+)\/responses\/(\d+)\/?$/;
+    var liveBlogEntryResponseRegex = /\/cms\/api\/v1\/liveblog\/entry\/(\d+)\/responses\/?$/;
 
     $httpBackend.whenGET(liveBlogEntryListRegex)
       .respond(function (method, url, data) {
@@ -149,6 +151,7 @@ angular.module('bulbsCmsApp.mockApi', [
         var index = mockApiData['liveblog.entries'].findIndex(function (entry) {
           return entry.id === liveBlogId;
         });
+        mockApiData['liveblog.entries'][index] = data;
 
         return [200, data];
       });
@@ -161,6 +164,63 @@ angular.module('bulbsCmsApp.mockApi', [
         });
 
         mockApiData['liveblog.entries'].splice(index, 1);
+
+        return [201, ''];
+      });
+    $httpBackend.whenGET(liveBlogEntryResponseRegex)
+      .respond(function (method, url, data) {
+        var entryId = parseInt(liveBlogEntryResponseRegex.exec(url)[1], 10);
+
+        var entryResponses = mockApiData['liveblog.responses'].filter(function (entryResponse) {
+          return entryResponse.entry === entryId;
+        });
+
+        return [200, { results: entryResponses }];
+      });
+    $httpBackend.whenPOST(liveBlogEntryResponseRegex)
+      .respond(function (method, url, data) {
+        var entryResponses = mockApiData['liveblog.responses'];
+        var newId = _.max(mockApiData['liveblog.responses'], 'id').id + 1;
+        var newData = { id: newId };
+
+        entryResponses.push(_.assign(newData, JSON.parse(data)));
+
+        return [201, newData];
+      });
+    $httpBackend.whenGET(liveBlogEntryResponseDetailRegex)
+      .respond(function (method, url, data) {
+        var matches = liveBlogEntryResponseDetailRegex.exec(url);
+        var entryResponseId = parseInt(matches[2], 10);
+
+        var entryResponse = mockApiData['liveblog.responses'].find(function (listedEntryResponse) {
+          return listedEntryResponse.id === entryResponseId;
+        });
+
+        return [200, entryResponse];
+      });
+    $httpBackend.whenPUT(liveBlogEntryResponseDetailRegex)
+      .respond(function (method, url, data) {
+        var matches = liveBlogEntryResponseDetailRegex.exec(url);
+        var entryResponseId = parseInt(matches[2], 10);
+
+        var index = mockApiData['liveblog.responses'].findIndex(function (entryResponse) {
+          return entryResponse.id === entryResponseId;
+        });
+
+        mockApiData['liveblog.responses'][index] = data;
+
+        return [200, data];
+      });
+    $httpBackend.whenDELETE(liveBlogEntryResponseDetailRegex)
+      .respond(function (method, url, data) {
+        var matches = liveBlogEntryResponseDetailRegex.exec(url);
+        var entryResponseId = parseInt(matches[2], 10);
+
+        var index = mockApiData['liveblog.responses'].findIndex(function (entry) {
+          return entry.id === liveBlogId;
+        });
+
+        mockApiData['liveblog.responses'].splice(index, 1);
 
         return [201, ''];
       });

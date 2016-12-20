@@ -18,7 +18,12 @@ describe('Directive: liveBlogEntries', function () {
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
 
-    module('bulbs.cms.liveBlog.entries');
+    module(
+      'bulbs.cms.liveBlog.entries',
+      function ($compileProvider) {
+        window.testHelper.directiveMock($compileProvider, 'liveBlogResponses');
+      }
+    );
     module('jquery');
     module('jsTemplates');
 

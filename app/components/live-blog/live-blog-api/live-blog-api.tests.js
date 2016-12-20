@@ -206,7 +206,7 @@ describe('Service: LiveBlogApi', function () {
         .expectGET(CmsConfig.buildApiUrlRoot('liveblog', 'entry', entry.id, 'responses', '/'))
         .respond(200, { results: responses });
 
-      LiveBlogApi.getEntryResponses(entry).then(callback);
+      LiveBlogApi.getEntryResponses(entry.id).then(callback);
       $httpBackend.flush();
 
       expect(callback.calledOnce).to.equal(true);
@@ -248,7 +248,7 @@ describe('Service: LiveBlogApi', function () {
         )
         .respond(200, response);
 
-      LiveBlogApi.updateEntryResponse(entry, response).then(callback);
+      LiveBlogApi.updateEntryResponse(response).then(callback);
       $httpBackend.flush();
 
       expect(callback.withArgs({
@@ -268,7 +268,7 @@ describe('Service: LiveBlogApi', function () {
         .expectDELETE(CmsConfig.buildApiUrlRoot('liveblog', 'entry', entry.id, 'responses', response.id, '/'))
         .respond(204);
 
-      LiveBlogApi.deleteEntryResponse(entry, response).then(callback);
+      LiveBlogApi.deleteEntryResponse(response).then(callback);
       $httpBackend.flush();
 
       expect(callback.calledOnce).to.equal(true);

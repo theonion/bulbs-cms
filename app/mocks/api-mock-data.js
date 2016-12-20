@@ -597,8 +597,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
       },
       authors: [],
       recirc_content: [],
-      responses: [{
-      }]
+      responses: [1, 2, 3]
     }, {
       id: 2,
       liveblog: 16,
@@ -612,6 +611,16 @@ angular.module('bulbsCmsApp.mockApi.data', [])
       },
       authors: [],
       recirc_content: []
+    }],
+    'liveblog.responses': [{
+      id: 1,
+      entry: 1
+    }, {
+      id: 2,
+      entry: 1
+    }, {
+      id: 3,
+      entry: 1
     }],
     'pzones.list': {
       count: 5,

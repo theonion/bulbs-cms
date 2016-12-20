@@ -18,7 +18,7 @@
       <span>Expand All</span>
     </button>
     <button
-        ng-click="addResponse()"
+        ng-click="addEntryResponse()"
         ng-disabled="transactionsLocked()"
         class="btn btn-primary live-blog-responses-list-add-top">
       <i class="fa fa-plus"></i>
@@ -37,33 +37,33 @@
   </div>
 
   <div
-      ng-if="entry.responses.length < 1"
+      ng-if="entryResponses.length < 1"
       class="live-blog-respones-list-no-items">
     No respones yet!
   </div>
 </div>
 
-<ol ng-if="entry.responses.length > 0">
-  <li ng-repeat="response in entry.responses track by response.id">
+<ol ng-if="entryResponses.length > 0">
+  <li ng-repeat="entryResponse in entryResponses track by entryResponse.id">
 
     <div class="accordion-list-item-meta">
       <button
           class="accordion-list-item-meta-label"
-          ng-click="togglePanel(response)">
+          ng-click="togglePanel(entryResponse)">
         <i
             ng-class="{
-                'fa-caret-right': !isPanelOpen(response),
-                'fa-caret-down': isPanelOpen(response)
+                'fa-caret-right': !isPanelOpen(entryResponse),
+                'fa-caret-down': isPanelOpen(entryResponse)
             }"
             class="fa">
         </i>
-        <span>{{ response.internalName || 'Response ' + ($index + 1) }}</span>
+        <span>{{ entryResponse.internalName || 'Response ' + ($index + 1) }}</span>
       </button>
 
       <div class="accordion-list-item-meta-tools">
         <button
-            ng-click="saveResponse(response)"
-            ng-disabled="isResponseFormSaveDisabled(response)"
+            ng-click="saveEntryResponse(entryResponse)"
+            ng-disabled="isEntryResponseFormSaveDisabled(entryResponse)"
             class="btn btn-success btn-xs">
           <i class="fa fa-floppy-o"></i>
           <span>Save</span>
@@ -78,13 +78,13 @@
     </div>
 
     <div
-        ng-show="isPanelOpen(response)"
+        ng-show="isPanelOpen(entryResponse)"
         class="accordion-list-item-content">
 
       <div class="input-container">
         <live-blog-entries-author-bridge
-            ng-model="response.author"
-            on-update="getResponseForm(response).$setDirty()">
+            ng-model="entryResponse.author"
+            on-update="getEntryResponseForm(entryResponse).$setDirty()">
         </live-blog-entries-author-bridge>
       </div>
 
@@ -94,7 +94,7 @@
           <span class="input-container-label-sub">Internal name, will not show on front end.</span>
         </label>
         <input
-            ng-model="response.internalName">
+            ng-model="entryResponse.internalName">
       </div>
 
       <div class="input-container">
@@ -102,7 +102,7 @@
         <div class="input-container-onion-editor-wrapper">
           <onion-editor
               role="multiline"
-              ng-model="response.body">
+              ng-model="entryResponse.body">
           </onion-editor>
         </div>
       </div>
@@ -110,10 +110,10 @@
       <button
           ng-disabled="transactionsLocked()"
           confirmation-modal-opener
-          modal-body="Are you sure you want to delete {{ response.internalName ? '\'' + response.internalName + '\'' : 'this response' }}?"
+          modal-body="Are you sure you want to delete {{ entryResponse.internalName ? '\'' + entryResponse.internalName + '\'' : 'this entryResponse' }}?"
           modal-title="Delete Response"
           modal-ok-text="Delete"
-          modal-on-ok="deleteResponse(response)"
+          modal-on-ok="deleteEntryResponse(entryResponse)"
           class="btn btn-danger btn-sm">
         <i class="fa fa-trash-o"></i>
         <span>DELETE</span>

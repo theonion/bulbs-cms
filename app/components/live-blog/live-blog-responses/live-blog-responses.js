@@ -25,7 +25,7 @@ angular.module('bulbs.cms.liveBlog.responses', [
 
           LiveBlogApi.getEntryResponses(scope.entry.id)
             .then(function (response) {
-              scope.responses = response.results;
+              scope.entryResponses = response.results;
             })
             .catch(function (response) {
               var message = 'An error occurred retrieving responses for entry with id ' + scope.entry.id + '!';
@@ -43,12 +43,12 @@ angular.module('bulbs.cms.liveBlog.responses', [
             panelOpen[entryResponse.id] = !panelOpen[entryResponse.id];
           };
           scope.collapseAll = function () {
-            scope.entry.responses.forEach(function (entryResponse) {
+            scope.entryResponses.forEach(function (entryResponse) {
               panelOpen[entryResponse.id] = false;
             });
           };
           scope.expandAll = function () {
-            scope.entry.responses.forEach(function (entryResponse) {
+            scope.entryResponses.forEach(function (entryResponse) {
               panelOpen[entryResponse.id] = true;
             });
           };
@@ -104,6 +104,18 @@ angular.module('bulbs.cms.liveBlog.responses', [
               });
           });
 
+          scope.deleteEntryResponse = lock(function (entryResponse) {
+
+            return LiveBlogApi.deleteEntryResponse(entryResponse)
+              .then(function () {
+                var index = scope.entryResponses.indexOf(entryResponse);
+                Utils.removeFrom(scope.entryResponses, index);
+              })
+              .catch(function (response) {
+                var message = 'An error ocurred attempting to delete response with id ' + entryResponse.id + ' for entry with id ' + scope.entry.id + '!';
+                reportError(message, { response: response });
+              });
+          });
         },
         restrict: 'E',
         scope: {
