@@ -75,12 +75,12 @@ angular.module('bulbs.cms.liveBlog.responses', [
           var lock = Utils.buildLock();
           scope.transactionsLocked = lock.isLocked;
 
-          scope.addEntryResponse = lock(function (entry) {
+          scope.addEntryResponse = lock(function (entry, newData) {
+            var newDataPayload = _.assign({
+              entry: entry.id
+            }, newData);
 
-            return LiveBlogApi.createEntryResponse(entry, {
-              entry: scope.entry.id,
-              published: false
-            })
+            return LiveBlogApi.createEntryResponse(entry, newDataPayload)
               .then(function (entryResponse) {
                 scope.entryResponses.unshift(entryResponse);
               })
@@ -89,6 +89,12 @@ angular.module('bulbs.cms.liveBlog.responses', [
                 reportError(message, { response: response });
               });
           });
+
+          scope.copyEntryResponse = function (entry, entryResponseToCopy) {
+            var newData = _.omit(entryResponseToCopy, 'id');
+
+            return scope.addEntryResponse(entry, newData);
+          };
 
           scope.saveEntryResponse = lock(function (entryResponse) {
 
