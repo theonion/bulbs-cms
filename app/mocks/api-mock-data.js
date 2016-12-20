@@ -617,7 +617,8 @@ angular.module('bulbsCmsApp.mockApi.data', [])
       entry: 1
     }, {
       id: 2,
-      entry: 1
+      entry: 1,
+      published: true
     }, {
       id: 3,
       entry: 1

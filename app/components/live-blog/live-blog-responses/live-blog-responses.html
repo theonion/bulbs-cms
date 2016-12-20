@@ -18,7 +18,7 @@
       <span>Expand All</span>
     </button>
     <button
-        ng-click="addEntryResponse()"
+        ng-click="addEntryResponse(entry)"
         ng-disabled="transactionsLocked()"
         class="btn btn-primary live-blog-responses-list-add-top">
       <i class="fa fa-plus"></i>
@@ -52,8 +52,8 @@
           ng-click="togglePanel(entryResponse)">
         <i
             ng-class="{
-                'fa-caret-right': !isPanelOpen(entryResponse),
-                'fa-caret-down': isPanelOpen(entryResponse)
+              'fa-caret-right': !isPanelOpen(entryResponse),
+              'fa-caret-down': isPanelOpen(entryResponse)
             }"
             class="fa">
         </i>
@@ -75,9 +75,24 @@
         </button>
 
         <button
+            ng-click="publishAndSaveEntryResponse(entryResponse)"
+            ng-diabled="transactionsLocked()"
+            class="btn btn-primary btn-xs">
+          <i
+              ng-class="{
+                'fa-square-o': !entryResponse.published,
+                'fa-check-square-o': entryResponse.published
+              }"
+              class="fa">
+          </i>
+          <span>Is Visible</span>
+        </button>
+
+        <button
             ng-disabled="transactionsLocked()"
             class="btn btn-primary btn-xs">
           <i class="fa fa-files-o"></i>
+          <span>Copy</span>
         </button>
       </div>
     </div>
@@ -86,31 +101,37 @@
         ng-show="isPanelOpen(entryResponse)"
         class="accordion-list-item-content">
 
-      <div class="input-container">
-        <live-blog-entries-author-bridge
-            ng-model="entryResponse.author"
-            on-update="getEntryResponseForm(entryResponse).$setDirty()">
-        </live-blog-entries-author-bridge>
-      </div>
+      <form name="{{ 'wrapperForm.' + makeEntryResponseFormName(entryResponse) }}">
 
-      <div class="input-container">
-        <label>
-          <span>Response Name</span>
-          <span class="input-container-label-sub">Internal name, will not show on front end.</span>
-        </label>
-        <input
-            ng-model="entryResponse.internalName">
-      </div>
-
-      <div class="input-container">
-        <label>Copy</label>
-        <div class="input-container-onion-editor-wrapper">
-          <onion-editor
-              role="multiline"
-              ng-model="entryResponse.body">
-          </onion-editor>
+        <div class="input-container">
+          <live-blog-entries-author-bridge
+              ng-model="entryResponse.author"
+              on-update="getEntryResponseForm(entryResponse).$setDirty()">
+          </live-blog-entries-author-bridge>
         </div>
-      </div>
+
+        <div class="input-container">
+          <label for="entryResponseInternalName-{{ entryResponse.id }}">
+            <span>Response Name</span>
+            <span class="input-container-label-sub">Internal name, will not show on front end.</span>
+          </label>
+          <input
+              ng-model="entryResponse.internalName"
+              id="entryResponseInternalName-{{ entryResponse.id }}"
+              name="entryResponse-{{ entryResponse.id }}-internalName">
+        </div>
+
+        <div class="input-container">
+          <label>Copy</label>
+          <div class="input-container-onion-editor-wrapper">
+            <onion-editor
+                role="multiline"
+                ng-model="entryResponse.body">
+            </onion-editor>
+          </div>
+        </div>
+
+      </form>
 
       <div class="accordion-list-item-meta">
 

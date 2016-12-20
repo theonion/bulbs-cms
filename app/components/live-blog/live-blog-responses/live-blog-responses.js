@@ -8,8 +8,8 @@ angular.module('bulbs.cms.liveBlog.responses', [
   'confirmationModal'
 ])
   .directive('liveBlogResponses', [
-    'CmsConfig', 'LiveBlogApi', 'Raven', 'Utils',
-    function (CmsConfig, LiveBlogApi, Raven, Utils) {
+    '$q', 'CmsConfig', 'LiveBlogApi', 'Raven', 'Utils',
+    function ($q, CmsConfig, LiveBlogApi, Raven, Utils) {
 
       return {
         link: function (scope, element) {
@@ -75,14 +75,14 @@ angular.module('bulbs.cms.liveBlog.responses', [
           var lock = Utils.buildLock();
           scope.transactionsLocked = lock.isLocked;
 
-          scope.addEntryResponse = lock(function () {
+          scope.addEntryResponse = lock(function (entry) {
 
             return LiveBlogApi.createEntryResponse(entry, {
               entry: scope.entry.id,
               published: false
             })
               .then(function (entryResponse) {
-                scope.responses.unshift(entryResponse);
+                scope.entryResponses.unshift(entryResponse);
               })
               .catch(function (response) {
                 var message = 'An error occurred attempting to add a response for entry with id ' + scope.entry.id + '!';
@@ -92,7 +92,7 @@ angular.module('bulbs.cms.liveBlog.responses', [
 
           scope.saveEntryResponse = lock(function (entryResponse) {
 
-            return LiveBlogApi.updateEntryResponse(entry, entryResponse)
+            return LiveBlogApi.updateEntryResponse(entryResponse)
               .then(function () {
                 scope.getEntryResponseForm(entryResponse).$setPristine();
               })
@@ -103,6 +103,18 @@ angular.module('bulbs.cms.liveBlog.responses', [
                 return $q.reject();
               });
           });
+
+          scope.publishAndSaveEntryResponse = function (entryResponse) {
+            var wasPublished = !!entryResponse.published;
+
+            entryResponse.published = !wasPublished;
+
+            return scope.saveEntryResponse(entryResponse)
+              .catch(function () {
+                entryResponse.published = wasPublished;
+                return false;
+              });
+          };
 
           scope.deleteEntryResponse = lock(function (entryResponse) {
 
