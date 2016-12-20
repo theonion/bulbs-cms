@@ -217,7 +217,7 @@ angular.module('bulbsCmsApp.mockApi', [
         var entryResponseId = parseInt(matches[2], 10);
 
         var index = mockApiData['liveblog.responses'].findIndex(function (entry) {
-          return entry.id === liveBlogId;
+          return entry.id === entryResponseId;
         });
 
         mockApiData['liveblog.responses'].splice(index, 1);
