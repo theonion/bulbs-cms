@@ -1,3 +1,4 @@
+@import '_sizing';
 @import 'mixins/_mixin-accordion-list';
 @import 'mixins/_mixin-input-container';
 
@@ -6,11 +7,26 @@ live-blog-responses {
 
   display: block;
 
-  .accordion-list-item-content {
+  h5 {
+    font-weight: bold;
+  }
 
-    label {
-      .mixin-input-label();
+  .live-blog-responses-header {
+    margin-bottom: @interface-row-margin;
+
+    .live-blog-responses-header-meta-tools {
+      .clearfix;
+
+      margin-bottom: @interface-row-margin;
+
+      button:not(:first-child) {
+        margin-left: 10px;
+      }
     }
+  }
+
+  .live-blog-responses-list-add-top {
+    float: right;
   }
 }
 
