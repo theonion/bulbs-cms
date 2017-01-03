@@ -1,100 +1,112 @@
-.image-edit-container { position: relative;
+.image-edit-container { 
+	position: relative;
+	img { 
+		max-width: 100%; 
+	}
+	&:hover .image-edit-overlay { 
+		display: block 
+	}
+	& + div { 
+		margin-top: 10px; 
+	} 
+}
 
-    img { max-width: 100%; }
-
-    &:hover .image-edit-overlay { display: block }
-
-    & + div { margin-top: 10px; } }
-
-.image-edit-overlay { position: absolute; top: 0px; left: 0px; display: none; }
+.image-edit-overlay { 
+	display: none; 
+	left: 0px; 
+	position: absolute; 
+	top: 0px; 
+}
 
 
 .buttonStyles {
-    border:1px transparent solid;
-    color: #4A4A4A;
-    background-clip: padding-box;
-    background-color:transparent;
-    border-radius:2px;
-    text-align:center;
-    display:inline-block;
-    line-height:25px;
-    cursor:pointer;
-    border-radius: 3px;
-    width:auto;
-    display:block;
-    font-size:14px;
-    width: 100%;
-    text-align:left;
-    padding:4px 8px;
-    height:auto; 
+	background-clip: padding-box;
+	background-color: transparent;
+	border-radius: 3px;
+	border-radius: 2px;
+	border: 1px transparent solid;
+	color: #4A4A4A;
+	cursor: pointer;
+	display: block;
+	display: inline-block;
+	font-size: 14px;
+	height: auto; 
+	line-height: 25px;
+	padding: 4px 8px;
+	text-align: center;
+	text-align: left;
+	width: auto;
 }
 
 .image-edit-overlay {
-    position:absolute;
-    display:none;
-    background-color: rgba(200,200,200,.5);
-    z-index: 100;
-
-    button {
-        .buttonStyles;
-        display:inline-block;
-        width:auto; }
-
-    .remove {
-        position: absolute;
-        right: 10px;
-        bottom: 10px;
-        background-color: #930900;
-        border-radius: 4px;
-
-        button:hover { background-color: #C70A00; } }
-
-    .edit {
-        position: absolute;
-        left: 10px;
-        bottom: 10px;
-        border-radius: 4px;
-        background-color: #333;
-        color: white;
-
-        button {
-            text-transform:uppercase;
-            font-size:11px;
-
-            &:hover { background-color: #444; } } }
-
-    .edit button, .remove button {
-        color: white;
-        text-align:center; } }
+	position:absolute;
+	display:none;
+	background-color: rgba(200,200,200,.5);
+	z-index: 100;
+	button {
+		.buttonStyles;
+		display: inline-block;
+		width: auto; 
+	}
+	.remove {
+		background-color: #930900;
+		border-radius: 4px;
+		bottom: 10px;
+		position: absolute;
+		right: 10px;
+		button:hover { 
+			background-color: #C70A00; 
+		} 
+	}
+	.edit {
+		background-color: #333;
+		border-radius: 4px;
+		bottom: 10px;
+		color: white;
+		left: 10px;
+		position: absolute;
+		button {
+			font-size:11px;
+			text-transform:uppercase;
+			&:hover { 
+				background-color: #444; 
+			} 
+		} 
+	}
+	.edit button, 
+	.remove button {
+		color: white;
+		text-align:center; 
+	} 
+}
 
 .image-edit-overlay {
-    width: 100%;
-    height: 100%; }
+	height: 100%; 
+	width: 100%;
+}
 
-.add-feature-image{
-    font-size:48px;
-    color: #B3B3B3;
-    text-align:left;
-    padding: 0 100px;
-    margin-top: 20px;
-    height: 48px;
-    
-    position:relative;
-    line-height:48px;
-    border:0px;
-    background-color: transparent;
-
-
-    >span {
-        display:none;
-        font-size: 16px;
-        line-height: 48px;
-        position: relative;
-        top: -12px;
-        left: 5px; }
-
-    &:hover { color: #4A4A4A;
-
-        >span { display:inline-block; } } } 
+.add-feature-image {
+	align-items: center;
+	background-color: transparent;
+	border: 1px dashed #333333;
+	color: #4A4A4A;
+	// to override FA styles
+	display: flex!important;
+	justify-content: center;
+	padding: 80px;
+	width: 100%;
+	> span {
+		font-family: 'Helvetica', Arial, sans-serif;
+		font-size: 20px;
+		margin-left: 20px;
+	}
+	// Icon size
+	&:before {
+		font-size: 50px;
+	}
+	&:hover {
+		opacity: .6;
+	}
+} 
 
 
