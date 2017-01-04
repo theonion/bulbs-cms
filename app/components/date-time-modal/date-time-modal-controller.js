@@ -52,7 +52,9 @@ angular.module('bulbs.cms.dateTimeModal.controller', [
 
       $scope.setDateToday = function () {
         var today = $scope.nowInTimezone();
-        $scope.date = $scope.dateTime.clone().dayOfYear(today.dayOfYear());
+        $scope.date = $scope.dateTime.clone()
+          .year(today.year())
+          .dayOfYear(today.dayOfYear());
       };
 
       $scope.setDateTomorrow = function () {

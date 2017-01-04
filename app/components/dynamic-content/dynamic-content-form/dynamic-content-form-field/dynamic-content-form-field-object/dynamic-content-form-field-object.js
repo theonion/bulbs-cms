@@ -3,6 +3,7 @@
 angular.module('bulbs.cms.dynamicContent.form.field.object', [
   'bulbs.cms.dynamicContent.form.field.boolean',
   'bulbs.cms.dynamicContent.form.field.color',
+  'bulbs.cms.dynamicContent.form.field.contentReferences',
   'bulbs.cms.dynamicContent.form.field.dateTime',
   'bulbs.cms.dynamicContent.form.field.image',
   'bulbs.cms.dynamicContent.form.field.list',

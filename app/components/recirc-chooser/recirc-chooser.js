@@ -29,9 +29,10 @@ angular.module('bulbs.cms.recircChooser', [
           };
 
           scope.includeRecirc = function (contentId) {
+            var newRecircIdsLength = scope.ngModel.push(contentId);
+
             scope.onSelect(contentId);
 
-            var newRecircIdsLength = scope.ngModel.push(contentId);
             retrieveContent(contentId).then(function (content) {
               scope.fullRecircContents[newRecircIdsLength - 1] = content;
             });
