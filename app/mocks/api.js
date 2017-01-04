@@ -125,12 +125,11 @@ angular.module('bulbsCmsApp.mockApi', [
     $httpBackend.whenGET(liveBlogEntryListRegex)
       .respond(function (method, url, data) {
         var liveBlogId = parseInt(liveBlogEntryListRegex.exec(url)[1], 10);
+        var entries = mockApiData['liveblog.entries'].filter(function (entry) {
+          return entry.liveblog === liveBlogId;
+        });
 
-        return [200, {
-          results: mockApiData['liveblog.entries'].filter(function (entry) {
-            return entry.liveblog === liveBlogId;
-          })
-        }];
+        return [200, { results: entries }];
       });
     $httpBackend.whenPOST(liveBlogEntryRegex)
       .respond(function (method, url, data) {
@@ -486,7 +485,47 @@ angular.module('bulbsCmsApp.mockApi', [
     // send to webtech (fickle)
     $httpBackend.whenPOST('/cms/api/v1/report-bug/').respond('');
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// TODO : NO
+
+
+
+
+
+
+
+
+
     //var tokenGenerator = new FirebaseTokenGenerator('');
+
+
+
+
+
+
+
+
+
+// TODO : NO
+
+
+
+
+
+
 
     // user, log in as a random user
     mockApiData.users = [
@@ -510,7 +549,7 @@ angular.module('bulbsCmsApp.mockApi', [
         email: 'jadams@theonion.com',
         first_name: 'John',
         last_name: 'Adams',
-        is_manager: true
+        is_manager: true,
 //        firebase_token: tokenGenerator.createToken({
 //          id: 1,
 //          username: 'jadams',
@@ -524,8 +563,8 @@ angular.module('bulbsCmsApp.mockApi', [
         email: 'bdole@theonion.com',
         first_name: 'Bob',
         last_name: 'Dole Dole Dole Dole Dole Dole',
-        is_manager: false
-//        firebase_token: tokenGenerator.createToken({
+        is_manager: false,
+//        firebase_token: tokengenerator.createtoken({
 //          id: 2,
 //          username: 'bdoledoledoledoledoledole',
 //          email: 'bdole@theonion.com',

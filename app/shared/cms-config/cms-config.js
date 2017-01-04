@@ -46,6 +46,8 @@ angular.module('bulbs.cms.config', [
       var firebaseMaxArticleHistory = 25;
       // path to site root in firebase instance
       var firebaseSiteRoot = '';
+      // path to public site root in firebase instance
+      var firebasePublicSiteRoot = '';
       // url of firebase instance to use
       var firebaseUrl = '';
       // url of image api
@@ -172,6 +174,14 @@ angular.module('bulbs.cms.config', [
         firebaseSiteRoot = checkOrError(
           value, _.isString,
           'firebase site url must be a string!'
+        );
+        return this;
+      };
+
+      this.setFirebasePublicSiteRoot = function (value) {
+        firebasePublicSiteRoot = checkOrError(
+          value, _.isString,
+          'firebase public site url must be a string!'
         );
         return this;
       };
@@ -305,6 +315,7 @@ angular.module('bulbs.cms.config', [
             buildDirectivePartialsPath: pathBuilder(directivePartialsPath),
             buildExternalUrl: pathBuilder(externalUrl),
             buildFirebaseSiteUrl: pathBuilder(Utils.path.join(firebaseUrl, firebaseSiteRoot)),
+            buildFirebasePublicSiteUrl: pathBuilder(Utils.path.join(firebaseUrl, firebasePublicSiteRoot)),
             buildFirebaseUrl: pathBuilder(firebaseUrl),
             buildImageApiUrl: pathBuilder(imageApiUrl),
             buildInternalUrl: pathBuilder(internalUrl),

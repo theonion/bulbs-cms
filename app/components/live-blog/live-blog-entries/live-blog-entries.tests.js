@@ -152,6 +152,22 @@ describe('Directive: liveBlogEntries', function () {
       });
     });
 
+    context('refreshing from firebase', function () {
+      var element;
+
+      beforeEach(function () {
+        element = digest(html);
+        getEntriesDeferred.resolve({ results: [] });
+        $parentScope.$digest();
+      });
+
+      it('should provide a button to add new articles from firebase', function () {
+
+        // TODO : add test code here
+        throw new Error('Not implemented yet.');
+      });
+    });
+
     context('adding', function () {
       var element;
 

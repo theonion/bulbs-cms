@@ -588,6 +588,12 @@ angular.module('bulbsCmsApp.mockApi.data', [])
     'liveblog.entries': [{
       id: 1,
       liveblog: 16,
+      headline: 'This is Title 1',
+      authors: []
+    }, {
+      id: 2,
+      liveblog: 16,
+      headline: 'This is Title 2',
       created: moment().subtract(1, 'day'),
       createdBy: {
         id: 0,
@@ -599,7 +605,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
       authors: [],
       recirc_content: []
     }, {
-      id: 2,
+      id: 3,
       liveblog: 16,
       created: moment().subtract(1, 'day'),
       createdBy: {

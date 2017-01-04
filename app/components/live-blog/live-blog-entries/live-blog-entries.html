@@ -52,6 +52,13 @@
       <i class="fa fa-plus"></i>
       <span>Add New Entry</span>
     </button>
+    <button
+        ng-if="numberOfDifferentEntries > 0"
+        ng-click="reloadEntries()"
+        class="btn btn-warning live-blog-entries-list-add-top">
+      <i class="fa fa-refresh"></i>
+      <span>Load {{ numberOfDifferentEntries }} Remote Entry {{ numberOfDifferentEntries === 1 ? 'Change' : 'Changes' }}</span>
+    </button>
   </div>
 
   <div
@@ -90,11 +97,18 @@
 
       <div class="accordion-list-item-meta-tools">
         <button
+            ng-class="getEntryForm(entry).$dirtyAndWillOverwrite ? 'btn-warning' : 'btn-success'"
             ng-click="saveEntry(entry)"
             ng-disabled="isEntryFormSaveDisabled(entry)"
-            class="btn btn-success btn-xs">
-          <i class="fa fa-floppy-o"></i>
-          <span>Save</span>
+            class="btn btn-xs">
+          <span ng-if="getEntryForm(entry).$dirtyAndWillOverwrite">
+            <i class="fa fa-exclamation-triangle"></i>
+            <span>Overwrite!</span>
+          </span>
+          <span ng-if="!getEntryForm(entry).$dirtyAndWillOverwrite">
+            <i class="fa fa-floppy-o"></i>
+            <span>Save</span>
+          </span>
         </button>
 
         <button
@@ -102,7 +116,7 @@
             datetime-selection-modal-opener
             modal-clear-text="Unpublish"
             modal-on-before-close="publishAndSave(entry, newDate)"
-            modal-ok-text="Save"
+            modal-ok-text="{{ getEntryForm(entry).$dirtyAndWillOverwrite ? 'Overwrite!' : 'Save' }}"
             ng-model="entry.published"
             class="btn btn-primary btn-xs">
           <i class="fa fa-clock-o"></i>
