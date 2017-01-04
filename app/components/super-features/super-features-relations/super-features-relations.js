@@ -63,6 +63,9 @@ angular.module('bulbs.cms.superFeatures.relations', [
           var orderingFormPrefix = 'orderingInputForm_';
 
           scope.wrapperForm = {};
+          scope.getSelectedChildType = function () {
+            return scope.article.default_child_type;
+          }
           scope.makeRelationFormName = function (relation) {
             return relationFormPrefix + relation.id;
           };
@@ -115,13 +118,14 @@ angular.module('bulbs.cms.superFeatures.relations', [
             };
           };
 
+
           scope.moveRelation = lock(reorder(Utils.moveTo));
 
           scope.addRelation = lock(function (title) {
 
             return SuperFeaturesApi.createSuperFeature({
               parent: scope.article.id,
-              superfeature_type: scope.article.default_child_type,
+              superfeature_type: scope.getSelectedChildType(),
               title: title,
               ordering: (_.max(scope.relations, 'ordering').ordering || 0) + 1
             })
