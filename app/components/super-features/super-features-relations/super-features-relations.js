@@ -64,7 +64,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
 
           scope.wrapperForm = {};
           scope.getSelectedChildType = function () {
-            return scope.article.default_child_type;
+            return scope.article._schema.fields.data.child_types[0];
           }
           scope.makeRelationFormName = function (relation) {
             return relationFormPrefix + relation.id;

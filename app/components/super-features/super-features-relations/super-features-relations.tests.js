@@ -101,6 +101,17 @@ describe('Directive: superFeaturesRelations', function () {
   context('relation interactions', function () {
 
     it('should allow adding a new one', function () {
+      $parentScope.article._schema = {
+        fields: {
+          title: 'richtext',
+          data: {
+            child_types: [
+              'typeA',
+              'typeB'
+            ]
+          }
+        },
+      }
       $parentScope.article.default_child_type = 'test_child_type';
       getSuperFeatureRelationsDeferred.resolve({ results: [] });
       var element = digest(html);
@@ -117,7 +128,7 @@ describe('Directive: superFeaturesRelations', function () {
       expect(SuperFeaturesApi.createSuperFeature.calledOnce).to.equal(true);
       expect(SuperFeaturesApi.createSuperFeature.args[0][0]).to.eql({
         parent: $parentScope.article.id,
-        superfeature_type: $parentScope.article.default_child_type,
+        superfeature_type: $parentScope.article._schema.fields.data.child_types[0],
         title: title,
         ordering: 1
       });
