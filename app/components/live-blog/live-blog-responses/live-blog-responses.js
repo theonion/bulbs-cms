@@ -2,14 +2,17 @@
 
 angular.module('bulbs.cms.liveBlog.responses', [
   'OnionEditor',
+  'bulbs.cms.currentUser',
   'bulbs.cms.liveBlog.api',
   'bulbs.cms.site.config',
+  'bulbs.cms.user.nameDisplayFilter',
   'bulbs.cms.utils',
-  'confirmationModal'
+  'confirmationModal',
+  'lodash'
 ])
   .directive('liveBlogResponses', [
-    '$q', 'CmsConfig', 'LiveBlogApi', 'Raven', 'Utils',
-    function ($q, CmsConfig, LiveBlogApi, Raven, Utils) {
+    '_', '$q', 'CmsConfig', 'CurrentUserApi', 'LiveBlogApi', 'Raven', 'Utils',
+    function (_, $q, CmsConfig, CurrentUserApi, LiveBlogApi, Raven, Utils) {
 
       return {
         link: function (scope, element) {
@@ -76,17 +79,27 @@ angular.module('bulbs.cms.liveBlog.responses', [
           scope.transactionsLocked = lock.isLocked;
 
           scope.addEntryResponse = lock(function (entry, newData) {
-            var newDataPayload = _.assign({
-              entry: entry.id
-            }, newData);
 
-            return LiveBlogApi.createEntryResponse(entry, newDataPayload)
-              .then(function (entryResponse) {
-                scope.entryResponses.unshift(entryResponse);
-              })
-              .catch(function (response) {
-                var message = 'An error occurred attempting to add a response for entry with id ' + scope.entry.id + '!';
-                reportError(message, { response: response });
+            return CurrentUserApi.getCurrentUserWithCache()
+              .then(function (user) {
+                var now = moment();
+
+                var newDataPayload = _.assign({
+                  entry: entry.id,
+                  created_by: user,
+                  created: now,
+                  updated_by: user,
+                  updated: now
+                }, newData);
+
+                return LiveBlogApi.createEntryResponse(entry, newDataPayload)
+                  .then(function (entryResponse) {
+                    scope.entryResponses.unshift(entryResponse);
+                  })
+                  .catch(function (response) {
+                    var message = 'An error occurred attempting to add a response for entry with id ' + scope.entry.id + '!';
+                    reportError(message, { response: response });
+                  });
               });
           });
 
@@ -98,15 +111,27 @@ angular.module('bulbs.cms.liveBlog.responses', [
 
           scope.saveEntryResponse = lock(function (entryResponse) {
 
-            return LiveBlogApi.updateEntryResponse(entryResponse)
-              .then(function () {
-                scope.getEntryResponseForm(entryResponse).$setPristine();
-              })
-              .catch(function (response) {
-                var message = 'An error occurred attempting to save response with id ' + entryResponse.id + ' for entry with id ' + scope.entry.id + '!';
-                reportError(message, { response: response });
+            return CurrentUserApi.getCurrentUserWithCache()
+              .then(function (user) {
+                var oldUpdateBy = entryResponse.updated_by;
+                var oldUpdated = entryResponse.updated;
 
-                return $q.reject();
+                entryResponse.updated_by = user;
+                entryResponse.updated = moment();
+
+                return LiveBlogApi.updateEntryResponse(entryResponse)
+                  .then(function () {
+                    scope.getEntryResponseForm(entryResponse).$setPristine();
+                  })
+                  .catch(function (response) {
+                    entryResponse.updated_by = oldUpdateBy;
+                    entryResponse.updated = oldUpdated;
+
+                    var message = 'An error occurred attempting to save response with id ' + entryResponse.id + ' for entry with id ' + scope.entry.id + '!';
+                    reportError(message, { response: response });
+
+                    return $q.reject();
+                  });
               });
           });
 

@@ -102,11 +102,18 @@
         ng-show="isPanelOpen(entryResponse)"
         class="accordion-list-item-content">
 
+      <div class="live-blog-entries-list-entry-created-by">
+        <span>
+          Created by {{ entryResponse.createdBy | userNameDisplay }} @ {{ entryResponse.created | dateTimeFormat }}.
+          Last Updated by {{ entryResponse.updatedBy | userNameDisplay }} @ {{ entryResponse.lastModified | dateTimeFormat }}.
+        </span>
+      </div>
+
       <form name="{{ 'wrapperForm.' + makeEntryResponseFormName(entryResponse) }}">
 
         <div class="input-container">
           <live-blog-entries-author-bridge
-              ng-model="entryResponse.author"
+              ng-model="entryResponse.authors"
               on-update="getEntryResponseForm(entryResponse).$setDirty()">
           </live-blog-entries-author-bridge>
         </div>

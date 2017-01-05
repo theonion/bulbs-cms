@@ -1,6 +1,8 @@
 'use strict';
 
 angular.module('bulbs.cms.liveBlog.entries', [
+  'OnionEditor',
+  'Raven',
   'bulbs.cms.currentUser',
   'bulbs.cms.dateTimeFilter',
   'bulbs.cms.dateTimeModal',
@@ -10,11 +12,10 @@ angular.module('bulbs.cms.liveBlog.entries', [
   'bulbs.cms.liveBlog.responses',
   'bulbs.cms.recircChooser',
   'bulbs.cms.site.config',
+  'bulbs.cms.user.nameDisplayFilter',
   'bulbs.cms.utils',
   'confirmationModal',
-  'jquery',
-  'OnionEditor',
-  'Raven'
+  'jquery'
 ])
   .directive('liveBlogEntries', [
     '$', '$compile', '$q', 'CmsConfig', 'CurrentUserApi', 'LiveBlogApi', 'Raven', 'Utils',

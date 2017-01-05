@@ -58,6 +58,14 @@ angular.module('bulbs.cms.liveBlog.api', [
       var parseEntryResponsePayload = function (payload) {
         var data = _.chain(payload)
           .cloneDeep()
+          .mapValues(function (value, key) {
+
+            if (_.includes(['created', 'last_modified'], key)) {
+              return moment.tz(value, CmsConfig.getTimezoneName());
+            }
+
+            return value;
+          })
           .mapKeys(function (value, key) {
             return Utils.toCamelCase(key);
           })
@@ -68,6 +76,14 @@ angular.module('bulbs.cms.liveBlog.api', [
 
       var cleanEntryResponseData = function (data) {
         var payload = _.chain(data)
+          .mapValues(function (value) {
+
+            if (moment.isMoment(value)) {
+              return value.format();
+            }
+
+            return value;
+          })
           .cloneDeep()
           .mapKeys(function (value, key) {
             return Utils.toSnakeCase(key);
