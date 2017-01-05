@@ -45,6 +45,19 @@ describe('Directive: superFeaturesRelationsModalOpener', function () {
     expect(element.hasClass('super-features-relations-modal-opener'));
   });
 
+  it('should add modalChoice elements to the modal', function() {
+    $rootScope.superFeatureTypes = ['typeA', 'typeB', 'typeC', 'typeD'];
+    var element = digest(
+      '<div super-features-relations-modal-opener modal-choices="superFeatureTypes"></div>'
+    );
+
+    element.trigger('click');
+    $rootScope.$digest();
+
+    expect($(document).find('#superFeaturesRelationsModal').eq(0).html())
+      .to.have.string('typeA');
+  });
+
   it('should open a superfeature relations modal when element is clicked', function () {
     sandbox.stub($modal, 'open').returns({ result: $q.defer().promise });
     var element = digest('<div super-features-relations-modal-opener></div>');
@@ -55,6 +68,8 @@ describe('Directive: superFeaturesRelationsModalOpener', function () {
   });
 
   it('should allow superfeature type selection', function () {
+    // No commit without
+    expect('no').to.equal('yes');
   });
 
   it('should allow customized cancel text', function () {

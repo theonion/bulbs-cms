@@ -10,7 +10,11 @@
   </div>
   <div class="modal-body">
     {{ modalBodyBefore }}
-
+    <ul class="nav nav-pills nav-stacked">
+      <li ng-repeat="choice in modalChoices track by $index" ng-click="setSuperFeatureChoice">
+        {{ choice }}
+      </li>
+    </ul>
     {{ modalBodyAfter }}
   </div>
   <div class="modal-footer">
