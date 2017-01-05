@@ -41,6 +41,7 @@ angular.module('bulbs.cms.dynamicContent.form', [
               .then(function (response) {
                 $scope.template = template('dynamic-content-form-loaded.html');
                 $scope.schema = response.data;
+                $scope.ngModel._schema = $scope.schema;
               })
               .catch(function () {
                 $scope.template = template('dynamic-content-form-error.html');

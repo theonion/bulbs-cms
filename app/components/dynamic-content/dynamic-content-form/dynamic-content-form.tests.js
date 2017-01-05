@@ -111,6 +111,22 @@ describe('Directive: dynamicContentForm', function () {
     expect(form.attr('ng-model')).to.equal('ngModel');
   });
 
+  it('should assign the schema to the ngModel', function () {
+    var html = angular.element(
+      '<dynamic-content-form schema-src="{{ schemaSrc }}" ng-model="ngModel"></dynamic-content>'
+    );
+    var schemaResponse = { data: { fields: { title: { field: 'mock' } } } }
+    $parentScope.schemaSrc = schemaSrc;
+    $parentScope.ngModel = {};
+
+    deferred.resolve(schemaResponse);
+    digest(html);
+
+    var form = html.find('dynamic-content-form-field-object');
+    expect(form.length).to.equal(1);
+    expect($parentScope.ngModel._schema).to.equal(schemaResponse.data);
+  });
+
   it('should have a hook into changes to form validity', function () {
     var isValid = true;
     var html = angular.element(
