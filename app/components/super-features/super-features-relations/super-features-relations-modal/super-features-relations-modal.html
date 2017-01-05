@@ -1,0 +1,30 @@
+<div id="superFeaturesRelationsModal">
+  <div class="modal-header">
+    <button
+        type="button"
+        class="close"
+        ng-click="$dismiss()">
+      <i class="fa fa-times"></i>
+    </button>
+    <h4 class="modal-relation-type">{{ modalRelationType || 'Select the super feature type' }}</h4>
+  </div>
+  <div class="modal-body">
+    {{ modalBodyBefore }}
+
+    {{ modalBodyAfter }}
+  </div>
+  <div class="modal-footer">
+    <button
+        class="btn btn-success"
+        ng-click="$close({ superfeatureType: newRelationType })">
+      <i class="fa fa-check"></i>
+      <span>{{ modalOkText || 'Choose Superfeature Type' }}</span>
+    </button>
+    <button
+        class="btn btn-danger"
+        ng-click="$dismiss()">
+      <i class="fa fa-times"></i>
+      <span>{{ modalCancelText || 'Cancel' }}</span>
+    </button>
+  </div>
+</div>
