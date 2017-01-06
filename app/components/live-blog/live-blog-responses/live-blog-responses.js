@@ -94,7 +94,7 @@ angular.module('bulbs.cms.liveBlog.responses', [
 
                 return LiveBlogApi.createEntryResponse(entry, newDataPayload)
                   .then(function (entryResponse) {
-                    scope.entryResponses.unshift(entryResponse);
+                    scope.entryResponses.push(entryResponse);
                   })
                   .catch(function (response) {
                     var message = 'An error occurred attempting to add a response for entry with id ' + scope.entry.id + '!';
