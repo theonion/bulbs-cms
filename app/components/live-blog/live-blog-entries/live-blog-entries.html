@@ -124,8 +124,8 @@
 
       <div class="live-blog-entries-list-entry-created-by">
         <span>
-          Created by {{ entry.created_by | userNameDisplay }} @ {{ entry.created | dateTimeFormat }}.
-          Last Updated by {{ entry.updated_by | userNameDisplay }} @ {{ entry.updated | dateTimeFormat }}.
+          Created by {{ entry.createdBy | userNameDisplay }} @ {{ entry.created | dateTimeFormat }}
+          Last Updated by {{ entry.updatedBy | userNameDisplay }} @ {{ entry.updated | dateTimeFormat }}
         </span>
       </div>
 
@@ -167,7 +167,7 @@
           </label>
           <recirc-chooser
               input-id="entryRecirc-{{ entry.id }}"
-              ng-model="entry.recirc_content">
+              ng-model="entry.recircContent">
           </recirc-chooser>
         </div>
       </form>

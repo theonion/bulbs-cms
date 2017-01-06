@@ -86,9 +86,9 @@ angular.module('bulbs.cms.liveBlog.responses', [
 
                 var newDataPayload = _.assign({
                   entry: entry.id,
-                  created_by: user,
+                  createdBy: user,
                   created: now,
-                  updated_by: user,
+                  updatedBy: user,
                   updated: now
                 }, newData);
 
@@ -113,10 +113,10 @@ angular.module('bulbs.cms.liveBlog.responses', [
 
             return CurrentUserApi.getCurrentUserWithCache()
               .then(function (user) {
-                var oldUpdateBy = entryResponse.updated_by;
+                var oldUpdateBy = entryResponse.updatedBy;
                 var oldUpdated = entryResponse.updated;
 
-                entryResponse.updated_by = user;
+                entryResponse.updatedBy = user;
                 entryResponse.updated = moment();
 
                 return LiveBlogApi.updateEntryResponse(entryResponse)
@@ -124,7 +124,7 @@ angular.module('bulbs.cms.liveBlog.responses', [
                     scope.getEntryResponseForm(entryResponse).$setPristine();
                   })
                   .catch(function (response) {
-                    entryResponse.updated_by = oldUpdateBy;
+                    entryResponse.updatedBy = oldUpdateBy;
                     entryResponse.updated = oldUpdated;
 
                     var message = 'An error occurred attempting to save response with id ' + entryResponse.id + ' for entry with id ' + scope.entry.id + '!';

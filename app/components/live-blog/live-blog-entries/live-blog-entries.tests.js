@@ -180,11 +180,11 @@ describe('Directive: liveBlogEntries', function () {
           created: sinon.match(function (value) {
             return moment(value).isBetween(then, now, 'second', '[]');
           }),
-          created_by: currentUser,
+          createdBy: currentUser,
           updated: sinon.match(function (value) {
             return moment(value).isBetween(then, now, 'second', '[]');
           }),
-          updated_by: currentUser
+          updatedBy: currentUser
         }))).to.equal(true);
         expect(element.find('li').scope().entry).to.equal(entry);
       });
@@ -323,7 +323,7 @@ describe('Directive: liveBlogEntries', function () {
           updated: sinon.match(function (value) {
             return moment(value).isBetween(then, now, 'second', '[]');
           }),
-          updated_by: currentUser
+          updatedBy: currentUser
         })).to.equal(true);
       });
 
