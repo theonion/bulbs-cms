@@ -187,4 +187,92 @@ describe('Service: LiveBlogApi', function () {
       expect(callback.calledOnce).to.equal(true);
     });
   });
+
+  context('live blog responses', function () {
+
+    it('should provide a method to get a list for a given entry', function () {
+      var callback = sandbox.stub();
+      var entry = { id: 10 };
+      var responses = [{
+        id: 3,
+        entry: entry.id,
+        internal_name: 'some name'
+      }, {
+        id: 5,
+        entry: entry.id,
+        internal_name: 'some other name'
+      }];
+      $httpBackend
+        .expectGET(CmsConfig.buildApiUrlRoot('liveblog', 'entry', entry.id, 'responses', '/'))
+        .respond(200, { results: responses });
+
+      LiveBlogApi.getEntryResponses(entry.id).then(callback);
+      $httpBackend.flush();
+
+      expect(callback.calledOnce).to.equal(true);
+      expect(callback.args[0][0].results[0].internalName).to.equal(responses[0].internal_name);
+      expect(callback.args[0][0].results[1].internalName).to.equal(responses[1].internal_name);
+    });
+
+    it('should provide a method to create a new one for a given entry', function () {
+      var callback = sandbox.stub();
+      var entry = { id: 10 };
+      var payload = {
+        entry: entry.id,
+        internalName: 'some name'
+      };
+      $httpBackend
+        .expectPOST(CmsConfig.buildApiUrlRoot('liveblog', 'entry', entry.id, 'responses', '/'), {
+          entry: payload.entry,
+          internal_name: payload.internalName
+        })
+        .respond(201, payload);
+
+      LiveBlogApi.createEntryResponse(entry, payload).then(callback);
+      $httpBackend.flush();
+
+      expect(callback.withArgs(payload).calledOnce).to.equal(true);
+    });
+
+    it('should provide a method to update', function () {
+      var callback = sandbox.stub();
+      var entry = { id: 10 };
+      var response = {
+        entry: entry.id,
+        internal_name: 'test name'
+      };
+      $httpBackend
+        .expectPUT(
+          CmsConfig.buildApiUrlRoot('liveblog', 'entry', entry.id, 'responses', '/'),
+          response
+        )
+        .respond(200, response);
+
+      LiveBlogApi.updateEntryResponse(response).then(callback);
+      $httpBackend.flush();
+
+      expect(callback.withArgs({
+        entry: response.entry,
+        internalName: response.internal_name
+      }).calledOnce).to.equal(true);
+    });
+
+    it('should provide a method to delete', function () {
+      var callback = sandbox.stub();
+      var entry = { id: 10 };
+      var response = {
+        id: 30,
+        entry: entry.id
+      };
+      $httpBackend
+        .expectDELETE(CmsConfig.buildApiUrlRoot('liveblog', 'entry', entry.id, 'responses', response.id, '/'))
+        .respond(204);
+
+      LiveBlogApi.deleteEntryResponse(response).then(callback);
+      $httpBackend.flush();
+
+      expect(callback.calledOnce).to.equal(true);
+    });
+  });
 });
+
