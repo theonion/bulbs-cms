@@ -106,7 +106,7 @@ angular.module('bulbs.cms.liveBlog.responses', [
           scope.copyEntryResponse = function (entry, entryResponseToCopy) {
             var newData = _.omit(entryResponseToCopy, 'id');
 
-            newData.internalName = entryResponseToCopy.internalName + ' (copy)';
+            newData.internalName = entryResponseToCopy.internalName || '' + '(copy)';
             newData.published = false;
 
             return scope.addEntryResponse(entry, newData);
