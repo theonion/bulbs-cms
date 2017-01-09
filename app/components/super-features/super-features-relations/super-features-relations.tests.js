@@ -135,11 +135,40 @@ describe('Directive: superFeaturesRelations', function () {
       expect(element.find('li').scope().relation).to.equal(relation);
     });
 
+    it('should show an error message if no schema', function () {
+      getSuperFeatureRelationsDeferred.resolve({ results: [] });
+      var element = digest(html);
+      var addButton = element.find('button[modal-on-ok="addRelation(title)"]').eq(0);
+      var scope = element.scope();
+
+      addButton.trigger('click');
+      scope.$digest();
+      addButton.isolateScope().modalOnOk();
+      createSuperFeatureDeferred.reject();
+      scope.$digest();
+
+      expect(element.find('.super-features-relations-list-error').html())
+        .to.have.string('An error occurred attempting to add a child page!');
+      expect(Raven.captureMessage.calledTwice).to.equal(true);
+    });
+
     it('should show an error message if adding fails', function () {
       getSuperFeatureRelationsDeferred.resolve({ results: [] });
       var element = digest(html);
       var addButton = element.find('button[modal-on-ok="addRelation(title)"]').eq(0);
       var scope = element.scope();
+      scope.article._schema = {
+        fields: {
+          title: 'richtext',
+          data: {
+            child_types: [
+              'typeA',
+              'typeB'
+            ]
+          }
+        },
+      }
+
 
       addButton.trigger('click');
       scope.$digest();
