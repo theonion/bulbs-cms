@@ -67,9 +67,38 @@ describe('Directive: superFeaturesRelationsModalOpener', function () {
     expect($modal.open.calledOnce).to.equal(true);
   });
 
-  it('should allow superfeature type selection', function () {
-    // No commit without
-    expect('no').to.equal('yes');
+  it('should allow superfeature type selection with setRelationTypeChoice', function () {
+    $rootScope.superFeatureTypes = ['typeA', 'typeB', 'typeC', 'typeD'];
+    var element = digest(
+      '<div super-features-relations-modal-opener modal-choices="superFeatureTypes"></div>'
+    );
+
+    element.trigger('click');
+    $rootScope.$digest();
+
+    var modalElement = $(document).find('#superFeaturesRelationsModal');
+
+    var liActive = modalElement.find('.active');
+    expect(liActive.length).to.equal(0)
+
+    var liElements = modalElement.find('li');
+    expect(liElements.length).to.equal(4);
+
+    var liFirst = liElements[0];
+    $(liFirst).click();
+
+    var liActive = modalElement.find('.active');
+    expect(liActive.length).to.equal(1);
+    expect(liActive.text()).to.have.string('typeA');
+    expect(element.isolateScope().modalRelationType).to.equal('typeA');
+
+    var liSecond = liElements[1];
+    $(liSecond).click();
+
+    var liActive = modalElement.find('.active');
+    expect(liActive.length).to.equal(1);
+    expect(liActive.text()).to.have.string('typeB');
+    expect(element.isolateScope().modalRelationType).to.equal('typeB');
   });
 
   it('should allow customized cancel text', function () {
@@ -143,7 +172,7 @@ describe('Directive: superFeaturesRelationsModalOpener', function () {
       .find('#superFeaturesRelationsModal button[ng-click="$close({ superfeatureType: newRelationType })"]')
       .trigger('click');
 
-    expect($rootScope.modalOkayed.calledWith(newRelationType)).to.equal(true);
+    expect($rootScope.modalOkayed.called).to.equal(true);
   });
 
   it('should call modal-on-cancel when canceled', function () {

@@ -21,7 +21,6 @@ angular.module('bulbs.cms.superFeatures.relations.modal', [
           modalChoices: '=',
         },
         link: function (scope, element) {
-
           element.addClass('super-features-relations-modal-opener');
           element.on('click', function () {
 
@@ -46,6 +45,18 @@ angular.module('bulbs.cms.superFeatures.relations.modal', [
                 });
             }
           });
+
+          var updateActiveChoiceElement = function(el) {
+            var oldEl = $('#superFeaturesRelationsModal').find('.active')
+            oldEl.removeClass('active')
+            $(el).addClass('active');
+          };
+
+          scope.setRelationTypeChoice = function(e, choice) {
+            scope.modalRelationType = choice;
+            updateActiveChoiceElement(e.currentTarget);
+          };
+
         }
       };
     }

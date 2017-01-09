@@ -11,7 +11,7 @@
   <div class="modal-body">
     {{ modalBodyBefore }}
     <ul class="nav nav-pills nav-stacked">
-      <li ng-repeat="choice in modalChoices track by $index" ng-click="setSuperFeatureChoice">
+      <li ng-repeat="choice in modalChoices track by $index" ng-click="setRelationTypeChoice($event, choice)">
         {{ choice }}
       </li>
     </ul>
