@@ -5,6 +5,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
   'bulbs.cms.dateTimeFilter',
   'bulbs.cms.site.config',
   'bulbs.cms.superFeatures.api',
+  'bulbs.cms.superFeatures.relations.modal',
   'bulbs.cms.sendToEditorModal',
   'bulbs.cms.titleModal',
   'bulbs.cms.utils',
