@@ -135,6 +135,32 @@ describe('Directive: superFeaturesRelations', function () {
       expect(element.find('li').scope().relation).to.equal(relation);
     });
 
+    it ('should render the `super-features-relations-modal`', function () {
+      getSuperFeatureRelationsDeferred.resolve({ results: [] });
+      var element = digest(html);
+      var addButton = element.find('button[super-features-relations-modal-opener]').eq(0);
+      var scope = element.scope();
+      scope.article._schema = {
+        fields: {
+          title: 'richtext',
+          data: {
+            child_types: [
+              'typeA',
+              'typeB'
+            ]
+          }
+        },
+      }
+
+      addButton.trigger('click');
+      scope.$digest();
+
+      var modalById = $(document).find('#superFeaturesRelationsModal');
+      expect(modalById.length).to.equal(1);
+
+      expect(modalById.find('li').length).to.equal(2);
+    });
+
     it('should show an error message if no schema', function () {
       getSuperFeatureRelationsDeferred.resolve({ results: [] });
       var element = digest(html);

@@ -18,6 +18,7 @@ angular.module('bulbs.cms.superFeatures.relations.modal', [
           modalOnCancel: '&',
           modalOnOk: '&',
           modalRelationType: '@',
+          modalTitle: '@',
           modalChoices: '=',
         },
         link: function (scope, element) {
