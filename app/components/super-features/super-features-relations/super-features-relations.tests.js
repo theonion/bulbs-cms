@@ -70,6 +70,10 @@ describe('Directive: superFeaturesRelations', function () {
   afterEach(function () {
     sandbox.restore();
 
+    $(document).find('#superFeaturesRelationsModal').each(function () {
+      $(this).remove();
+    });
+
     $(document).find('#titleModal').each(function () {
       $(this).remove();
     });
@@ -185,6 +189,8 @@ describe('Directive: superFeaturesRelations', function () {
         var typeA = modalById.find('li').first();
         expect(typeA.hasClass('active')).to.equal(false);
         typeA.trigger('click');
+        scope.$digest();
+
         expect(addButton.isolateScope().modalRelationType).to.equal('typeA');
         expect(typeA.hasClass('active')).to.equal(true);
       });

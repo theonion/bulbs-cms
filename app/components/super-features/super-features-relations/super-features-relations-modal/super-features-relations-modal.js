@@ -44,6 +44,11 @@ angular.module('bulbs.cms.superFeatures.relations.modal', [
                 .finally(function () {
                   scope.modalInstance = false;
                 });
+
+              scope.setRelationTypeChoice = function(e, choice) {
+                scope.modalRelationType = choice;
+                updateActiveChoiceElement(e.currentTarget);
+              };
             }
           });
 
@@ -51,11 +56,6 @@ angular.module('bulbs.cms.superFeatures.relations.modal', [
             var oldEl = $('#superFeaturesRelationsModal').find('.active')
             oldEl.removeClass('active')
             $(el).addClass('active');
-          };
-
-          scope.setRelationTypeChoice = function(e, choice) {
-            scope.modalRelationType = choice;
-            updateActiveChoiceElement(e.currentTarget);
           };
 
         }
