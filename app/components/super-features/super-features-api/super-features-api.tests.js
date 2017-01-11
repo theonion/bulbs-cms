@@ -6,6 +6,7 @@ describe('Service: SuperFeaturesApi', function () {
   var dateTimeFormatFilter;
   var endpoint;
   var mockSuperFeature;
+  var mockSuperFeatureOptions;
   var moment;
   var sandbox;
   var SuperFeaturesApi;
@@ -37,6 +38,19 @@ describe('Service: SuperFeaturesApi', function () {
     mockSuperFeature = {
       id: 1
     };
+
+    mockSuperFeatureOptions = {
+      fields: {
+        title: 'richtext',
+        data: {
+          child_types: [
+            'typeA',
+            'typeB'
+          ]
+        }
+      },
+    }
+
   });
 
   afterEach(function () {
@@ -91,6 +105,22 @@ describe('Service: SuperFeaturesApi', function () {
       var cellContent = SuperFeaturesApi.fields[2].content(superFeature);
 
       expect(cellContent).to.equal(dateTimeFormatFilter(publishDate));
+    });
+  });
+
+  context('retrieving options for a single super feature', function () {
+
+    it('should return the payload from an options request for a super feature', function () {
+      var callback = sandbox.stub();
+      var id = 1;
+      $httpBackend
+        .expect('OPTIONS', CmsConfig.buildApiUrlRoot('super-feature', '' + id, '/'))
+        .respond(200, mockSuperFeatureOptions);
+
+      SuperFeaturesApi.getSuperFeatureSchema(id).then(callback);
+      $httpBackend.flush();
+
+      expect(callback.args[0][0]).to.eql(mockSuperFeatureOptions);
     });
   });
 

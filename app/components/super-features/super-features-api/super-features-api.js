@@ -2,14 +2,15 @@
 
 angular.module('bulbs.cms.superFeatures.api', [
   'bulbs.cms.dateTimeFilter',
+  'bulbs.cms.dynamicContent.api',
   'bulbs.cms.site.config',
   'bulbs.cms.utils',
   'lodash',
   'moment'
 ])
   .service('SuperFeaturesApi', [
-    '_', '$http', '$sce', 'CmsConfig', 'dateTimeFormatFilter', 'moment', 'Utils',
-    function (_, $http, $sce, CmsConfig, dateTimeFormatFilter, moment, Utils) {
+    '_', '$http', '$sce', 'CmsConfig', 'dateTimeFormatFilter', 'moment', 'DynamicContentApi', 'Utils',
+    function (_, $http, $sce, CmsConfig, dateTimeFormatFilter, moment, DynamicContentApi, Utils) {
 
       var superFeatureEndpoint = CmsConfig.buildApiUrlRoot.bind(null, 'super-feature');
       var contentEndpoint = CmsConfig.buildApiUrlRoot.bind(null, 'content');
@@ -94,6 +95,15 @@ angular.module('bulbs.cms.superFeatures.api', [
                   return parsePayload(result);
                 })
               };
+            });
+        },
+        getSuperFeatureSchema: function (id) {
+          return $http({
+            method: 'OPTIONS',
+            url: superFeatureEndpoint(id, '/')
+          })
+            .then(function (response) {
+                return response.data
             });
         },
         getSuperFeatureRelations: function (id) {
