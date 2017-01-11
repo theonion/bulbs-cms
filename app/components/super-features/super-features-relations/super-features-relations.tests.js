@@ -39,7 +39,13 @@ describe('Directive: superFeaturesRelations', function () {
         $parentScope
       );
 
-      $parentScope.article = { id: 1 };
+      $parentScope.article = {
+        id: 1,
+        child_types: [
+            'typeA',
+            'typeB'
+          ],
+        };
 
       createSuperFeatureDeferred = $q.defer();
       sandbox.stub(SuperFeaturesApi, 'createSuperFeature')
@@ -105,17 +111,6 @@ describe('Directive: superFeaturesRelations', function () {
   context('relation interactions', function () {
 
     it('should allow adding a new one', function () {
-      $parentScope.article._schema = {
-        fields: {
-          title: 'richtext',
-          data: {
-            child_types: [
-              'typeA',
-              'typeB'
-            ]
-          }
-        },
-      }
       $parentScope.article.default_child_type = 'test_child_type';
       getSuperFeatureRelationsDeferred.resolve({ results: [] });
       var element = digest(html);
@@ -132,7 +127,7 @@ describe('Directive: superFeaturesRelations', function () {
       expect(SuperFeaturesApi.createSuperFeature.calledOnce).to.equal(true);
       expect(SuperFeaturesApi.createSuperFeature.args[0][0]).to.eql({
         parent: $parentScope.article.id,
-        superfeature_type: $parentScope.article._schema.fields.data.child_types[0],
+        superfeature_type: $parentScope.article.child_types[0],
         title: title,
         ordering: 1
       });
@@ -195,40 +190,12 @@ describe('Directive: superFeaturesRelations', function () {
         expect(typeA.hasClass('active')).to.equal(true);
       });
 
-    it('should show an error message if no schema', function () {
-      getSuperFeatureRelationsDeferred.resolve({ results: [] });
-      var element = digest(html);
-      var addButton = element.find('button[modal-on-ok="addRelation(title)"]').eq(0);
-      var scope = element.scope();
-
-      addButton.trigger('click');
-      scope.$digest();
-      addButton.isolateScope().modalOnOk();
-      createSuperFeatureDeferred.reject();
-      scope.$digest();
-
-      expect(element.find('.super-features-relations-list-error').html())
-        .to.have.string('An error occurred attempting to add a child page!');
-      expect(Raven.captureMessage.calledTwice).to.equal(true);
-    });
-
     it('should show an error message if adding fails', function () {
+      $parentScope.article = { id: 1 }
       getSuperFeatureRelationsDeferred.resolve({ results: [] });
       var element = digest(html);
       var addButton = element.find('button[modal-on-ok="addRelation(title)"]').eq(0);
       var scope = element.scope();
-      scope.article._schema = {
-        fields: {
-          title: 'richtext',
-          data: {
-            child_types: [
-              'typeA',
-              'typeB'
-            ]
-          }
-        },
-      }
-
 
       addButton.trigger('click');
       scope.$digest();
@@ -238,7 +205,7 @@ describe('Directive: superFeaturesRelations', function () {
 
       expect(element.find('.super-features-relations-list-error').html())
         .to.have.string('An error occurred attempting to add a child page!');
-      expect(Raven.captureMessage.calledOnce).to.equal(true);
+      expect(Raven.captureMessage.called).to.equal(true);
     });
 
     it('should allow setting all relation publish dates', function () {

@@ -66,7 +66,7 @@ angular.module('bulbs.cms.superFeatures.relations', [
           scope.wrapperForm = {};
           scope.getSelectedChildType = function () {
             try {
-              return scope.article._schema.fields.data.child_types[0]
+              return scope.article.child_types[0]
             } catch (err) {
               reportError(err.message)
             }
