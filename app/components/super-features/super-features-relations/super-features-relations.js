@@ -126,11 +126,11 @@ angular.module('bulbs.cms.superFeatures.relations', [
 
           scope.moveRelation = lock(reorder(Utils.moveTo));
 
-          scope.addRelation = lock(function (title) {
+          scope.addRelation = lock(function (title, superfeatureType) {
 
             return SuperFeaturesApi.createSuperFeature({
               parent: scope.article.id,
-              superfeature_type: scope.getSelectedChildType(),
+              superfeature_type: superfeatureType,
               title: title,
               ordering: (_.max(scope.relations, 'ordering').ordering || 0) + 1
             })

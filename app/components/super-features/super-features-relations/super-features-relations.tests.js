@@ -114,20 +114,21 @@ describe('Directive: superFeaturesRelations', function () {
       $parentScope.article.default_child_type = 'test_child_type';
       getSuperFeatureRelationsDeferred.resolve({ results: [] });
       var element = digest(html);
-      var addButton = element.find('button[modal-on-ok="addRelation(title)"]').eq(0);
+      var addButton = element.find('button[modal-on-ok="addRelation(title, superfeatureType)"]').eq(0);
       var relation = { id: 1 };
       var scope = element.scope();
       var title = 'test title';
+      var superfeatureType = 'type A';
 
       addButton.trigger('click');
-      addButton.isolateScope().modalOnOk({ title: title });
+      addButton.isolateScope().modalOnOk({ title: title, superfeatureType: superfeatureType });
       createSuperFeatureDeferred.resolve(relation);
       scope.$digest();
 
       expect(SuperFeaturesApi.createSuperFeature.calledOnce).to.equal(true);
       expect(SuperFeaturesApi.createSuperFeature.args[0][0]).to.eql({
         parent: $parentScope.article.id,
-        superfeature_type: $parentScope.article.child_types[0],
+        superfeature_type: superfeatureType,
         title: title,
         ordering: 1
       });
