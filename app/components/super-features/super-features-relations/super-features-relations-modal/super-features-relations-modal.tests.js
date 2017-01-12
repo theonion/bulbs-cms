@@ -171,7 +171,7 @@ describe('Directive: superFeaturesRelationsModalOpener', function () {
 
     modal.scope().modalRelationType = newRelationType;
     $(document)
-      .find('#superFeaturesRelationsModal button[ng-click="$close({ superfeatureType: newRelationType, title: newTitle })"]')
+      .find('#superFeaturesRelationsModal button[ng-click="$close({ superfeatureType: modalRelationType, title: newTitle })"]')
       .trigger('click');
 
     expect($rootScope.modalOkayed.called).to.equal(true);
