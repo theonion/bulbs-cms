@@ -201,10 +201,13 @@
 
 <button
   super-features-relations-modal-opener
+  class="btn btn-primary btn-sm accordion-list-add-bottom"
+  ng-disabled="transactionsLocked()"
   modal-title="Add Child Page"
-  modal-choices="article.child_types">
+  modal-choices="article.child_types"
+  modal-on-ok="addRelation(title)">
     <i class="fa fa-plus"></i>
-    <span>Add New Page"</span>
+    <span>Add New Page</span>
 </button>
 
 <button
