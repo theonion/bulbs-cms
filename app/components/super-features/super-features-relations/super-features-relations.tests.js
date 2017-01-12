@@ -182,7 +182,7 @@ describe('Directive: superFeaturesRelations', function () {
         expect(addButton.isolateScope().modalRelationType).to.equal(undefined);
 
         var modalById = $(document).find('#superFeaturesRelationsModal');
-        var typeA = modalById.find('li').first();
+        var typeA = modalById.find('button[ng-click="setRelationTypeChoice($event, choice)"]').first();
         expect(typeA.hasClass('active')).to.equal(false);
         typeA.trigger('click');
         scope.$digest();
