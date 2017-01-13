@@ -83,7 +83,7 @@ describe('Directive: superFeaturesRelationsModalOpener', function () {
 
     var ulElement = modalElement.find('ul');
 
-    var buttonElements = ulElement.find('button');
+    var buttonElements = ulElement.find('a');
     expect(buttonElements.length).to.equal(4);
 
     var buttonFirst = buttonElements[0];
