@@ -70,7 +70,7 @@ describe('Directive: superFeaturesRelationsModalOpener', function () {
   it('should allow superfeature type selection with setRelationTypeChoice', function () {
     $rootScope.superFeatureTypes = ['typeA', 'typeB', 'typeC', 'typeD'];
     var element = digest(
-      '<div super-features-relations-modal-opener modal-choices="superFeatureTypes"></div>'
+        '<div super-features-relations-modal-opener modal-choices="superFeatureTypes"></div>'
     );
 
     element.trigger('click');
@@ -83,7 +83,7 @@ describe('Directive: superFeaturesRelationsModalOpener', function () {
 
     var ulElement = modalElement.find('ul');
 
-    var buttonElements = ulElement.find('a');
+    var buttonElements = ulElement.find('button');
     expect(buttonElements.length).to.equal(4);
 
     var buttonFirst = buttonElements[0];

@@ -182,7 +182,7 @@ describe('Directive: superFeaturesRelations', function () {
         expect(addButton.isolateScope().modalRelationType).to.equal(undefined);
 
         var modalById = $(document).find('#superFeaturesRelationsModal');
-        var typeA = modalById.find('a[ng-click="setRelationTypeChoice($event, choice)"]').first();
+        var typeA = modalById.find('button[ng-click="setRelationTypeChoice($event, choice)"]').first();
         expect(typeA.hasClass('active')).to.equal(false);
         typeA.trigger('click');
         scope.$digest();
@@ -195,7 +195,7 @@ describe('Directive: superFeaturesRelations', function () {
       $parentScope.article = { id: 1 }
       getSuperFeatureRelationsDeferred.resolve({ results: [] });
       var element = digest(html);
-      var addButton = element.find('button[modal-on-ok="addRelation(title)"]').eq(0);
+      var addButton = element.find('button[modal-on-ok="addRelation(title, superfeatureType)"]').eq(0);
       var scope = element.scope();
 
       addButton.trigger('click');
@@ -305,7 +305,7 @@ describe('Directive: superFeaturesRelations', function () {
     it('should prevent mutliple add relation calls', function () {
       getSuperFeatureRelationsDeferred.resolve({ results: [] });
       var element = digest(html);
-      var addButton = element.find('button[modal-on-ok="addRelation(title)"]').eq(0);
+      var addButton = element.find('button[modal-on-ok="addRelation(title, superfeatureType)"]').eq(0);
       var scope = element.scope();
 
       addButton.trigger('click');
