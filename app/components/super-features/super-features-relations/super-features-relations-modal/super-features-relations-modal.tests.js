@@ -103,62 +103,6 @@ describe('Directive: superFeaturesRelationsModalOpener', function () {
     expect(element.isolateScope().modalRelationType).to.equal('typeB');
   });
 
-  it('should allow customized cancel text', function () {
-    var cancel = 'DISMISS ME';
-    var element = digest(
-      '<div super-features-relations-modal-opener modal-cancel-text="' + cancel + '"></div>'
-    );
-
-    element.trigger('click');
-    $rootScope.$digest();
-
-    expect($(document).find('#superFeaturesRelationsModal button[ng-click="$dismiss()"]').eq(1).html())
-      .to.have.string(cancel);
-  });
-
-  it('should customized ok text', function () {
-    var ok = 'OKAY ME';
-    var element = digest(
-      '<div super-features-relations-modal-opener modal-ok-text="' + ok + '"></div>'
-    );
-
-    element.trigger('click');
-    $rootScope.$digest();
-
-    expect(
-        $(document)
-        .find('#superFeaturesRelationsModal')
-        .html()
-      )
-      .to.have.string(ok);
-  });
-
-  it('should allow customized before body text', function () {
-    $rootScope.text = 'some text';
-    var element = digest(
-      '<div super-features-relations-modal-opener modal-body-before="{{ text }}"></div>'
-    );
-
-    element.trigger('click');
-    $rootScope.$digest();
-
-    expect($(document).find('#superFeaturesRelationsModal .modal-body').html())
-      .to.have.string($rootScope.text);
-  });
-
-  it('should allow customized after body text', function () {
-    $rootScope.text = 'some text';
-    var element = digest(
-      '<div super-features-relations-modal-opener modal-body-after="{{ text }}"></div>'
-    );
-
-    element.trigger('click');
-    $rootScope.$digest();
-
-    expect($(document).find('#superFeaturesRelationsModal .modal-body').html())
-      .to.have.string($rootScope.text);
-  });
-
   it('should call modal-on-ok with new relation when okayed', function () {
     $rootScope.modalOkayed = sandbox.stub();
     var newRelationType = 'typeA';

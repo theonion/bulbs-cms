@@ -6,18 +6,15 @@
         ng-click="$dismiss()">
       <i class="fa fa-times"></i>
     </button>
-    <h4 class="modal-relation-type">{{ modalTitle || 'Select the super feature type' }}</h4>
+    <h4 class="modal-relation-type">Add a child page</h4>
   </div>
   <div class="modal-body">
-    {{ modalBodyBefore }}
-
     <onion-editor
       ng-model="newTitle"
       role="singleline"
       placeholder="Enter a title..."
       formatting="italic,bold">
     </onion-editor>
-
     <ul class="nav nav-pills nav-stacked superfeature-choices">
       <li ng-repeat="choice in modalChoices track by $index">
         <a
@@ -27,20 +24,19 @@
         </a>
       </li>
     </ul>
-    {{ modalBodyAfter }}
   </div>
   <div class="modal-footer">
     <button
         class="btn btn-success"
         ng-click="$close({ superfeatureType: modalRelationType, title: newTitle })">
       <i class="fa fa-check"></i>
-      <span>{{ modalOkText || 'Ok' }}</span>
+      <span>Ok</span>
     </button>
     <button
         class="btn btn-danger"
         ng-click="$dismiss()">
       <i class="fa fa-times"></i>
-      <span>{{ modalCancelText || 'Cancel' }}</span>
+      <span>Cancel</span>
     </button>
   </div>
 </div>
