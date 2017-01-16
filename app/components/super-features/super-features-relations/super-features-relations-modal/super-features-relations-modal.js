@@ -45,10 +45,21 @@ angular.module('bulbs.cms.superFeatures.relations.modal', [
                   scope.modalInstance = false;
                 });
 
+              scope.setInitialChoice = function() {
+                if (scope.modalChoices) {
+                  var choiceUl = $('.supefeature-choices');
+                  var li = choiceUl.find('li');
+                  scope.modalRelationType = scope.modalChoices[0];
+                  updateActiveChoiceElement(li);
+                }
+              }
+
               scope.setRelationTypeChoice = function(e, choice) {
                 scope.modalRelationType = choice;
                 updateActiveChoiceElement(e.currentTarget);
               };
+
+              scope.setInitialChoice();
             }
           });
 
