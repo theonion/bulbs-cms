@@ -20,11 +20,11 @@
 
     <ul class="nav nav-pills nav-stacked">
       <li ng-repeat="choice in modalChoices track by $index">
-        <button
-        class="btn"
-        ng-click="setRelationTypeChoice($event, choice)">
-          {{ choice }}
-        </button>
+        <a
+          class="btn"
+          ng-click="setRelationTypeChoice($event, choice)">
+            {{ choice }}
+        </a>
       </li>
     </ul>
     {{ modalBodyAfter }}

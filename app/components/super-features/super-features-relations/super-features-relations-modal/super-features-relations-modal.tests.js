@@ -78,28 +78,28 @@ describe('Directive: superFeaturesRelationsModalOpener', function () {
 
     var modalElement = $(document).find('#superFeaturesRelationsModal');
 
-    var buttonActive = modalElement.find('.active');
-    expect(buttonActive.length).to.equal(0);
+    var childActive = modalElement.find('.active');
+    expect(childActive.length).to.equal(0);
 
     var ulElement = modalElement.find('ul');
 
-    var buttonElements = ulElement.find('button');
-    expect(buttonElements.length).to.equal(4);
+    var childElements = ulElement.find('a');
+    expect(childElements.length).to.equal(4);
 
-    var buttonFirst = buttonElements[0];
-    $(buttonFirst).click();
+    var childFirst = childElements[0];
+    $(childFirst).click();
 
-    buttonActive = modalElement.find('.active');
-    expect(buttonActive.length).to.equal(1);
-    expect(buttonActive.text()).to.have.string('typeA');
+    childActive = modalElement.find('.active');
+    expect(childActive.length).to.equal(1);
+    expect(childActive.text()).to.have.string('typeA');
     expect(element.isolateScope().modalRelationType).to.equal('typeA');
 
-    var liSecond = buttonElements[1];
-    $(liSecond).click();
+    var childSecond = childElements[1];
+    $(childSecond).click();
 
-    buttonActive = modalElement.find('.active');
-    expect(buttonActive.length).to.equal(1);
-    expect(buttonActive.text()).to.have.string('typeB');
+    childActive = modalElement.find('.active');
+    expect(childActive.length).to.equal(1);
+    expect(childActive.text()).to.have.string('typeB');
     expect(element.isolateScope().modalRelationType).to.equal('typeB');
   });
 
