@@ -150,7 +150,7 @@ describe('Directive: superFeaturesRelations', function () {
             ]
           }
         },
-      }
+      };
 
       addButton.trigger('click');
       scope.$digest();
@@ -175,7 +175,7 @@ describe('Directive: superFeaturesRelations', function () {
               ]
             }
           }
-        }
+        };
         addButton.trigger('click');
         scope.$digest();
 
@@ -192,7 +192,7 @@ describe('Directive: superFeaturesRelations', function () {
       });
 
     it('should show an error message if adding fails', function () {
-      $parentScope.article = { id: 1 }
+      $parentScope.article = { id: 1 };
       getSuperFeatureRelationsDeferred.resolve({ results: [] });
       var element = digest(html);
       var addButton = element.find('button[modal-on-ok="addRelation(title, superfeatureType)"]').eq(0);

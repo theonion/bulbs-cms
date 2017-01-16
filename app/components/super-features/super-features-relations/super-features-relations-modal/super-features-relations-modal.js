@@ -6,8 +6,8 @@ angular.module('bulbs.cms.superFeatures.relations.modal', [
   'ui.bootstrap.modal'
 ])
   .directive('superFeaturesRelationsModalOpener', [
-    '$modal', 'CmsConfig',
-    function ($modal, CmsConfig) {
+    '$', '$modal', 'CmsConfig',
+    function ($, $modal, CmsConfig) {
       return {
         restrict: 'A',
         scope: {
@@ -53,8 +53,8 @@ angular.module('bulbs.cms.superFeatures.relations.modal', [
           });
 
           var updateActiveChoiceElement = function(el) {
-            var oldEl = $('#superFeaturesRelationsModal').find('.active')
-            oldEl.removeClass('active')
+            var oldEl = $('#superFeaturesRelationsModal').find('.active');
+            oldEl.removeClass('active');
             $(el).addClass('active');
           };
 
