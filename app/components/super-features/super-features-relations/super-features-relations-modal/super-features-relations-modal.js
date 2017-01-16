@@ -47,7 +47,7 @@ angular.module('bulbs.cms.superFeatures.relations.modal', [
                   scope.modalRelationType = scope.modalChoices[0];
                   updateActiveChoiceElement(li);
                 }
-              }
+              };
 
               scope.setRelationTypeChoice = function(e, choice) {
                 scope.modalRelationType = choice;
