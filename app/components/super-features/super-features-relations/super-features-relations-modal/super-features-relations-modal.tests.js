@@ -5,7 +5,7 @@ describe('Directive: superFeaturesRelationsModalOpener', function () {
   var $;
   var $modal;
   var $q;
-  var $rootScope;
+  var $parentScope;
   var digest;
   var sandbox;
 
@@ -20,11 +20,11 @@ describe('Directive: superFeaturesRelationsModalOpener', function () {
       $ = _$_;
       $modal = _$modal_;
       $q = _$q_;
-      $rootScope = _$rootScope_;
+      $parentScope = _$rootScope_.$new();
 
       digest = window.testHelper.directiveBuilderWithDynamicHtml(
         $compile,
-        $rootScope.$new()
+        $parentScope
       );
     });
   });
@@ -46,13 +46,13 @@ describe('Directive: superFeaturesRelationsModalOpener', function () {
   });
 
   it('should add modalChoice elements to the modal', function() {
-    $rootScope.superFeatureTypes = ['typeA', 'typeB', 'typeC', 'typeD'];
+    $parentScope.superFeatureTypes = ['typeA', 'typeB', 'typeC', 'typeD'];
     var element = digest(
       '<div super-features-relations-modal-opener modal-choices="superFeatureTypes"></div>'
     );
 
     element.trigger('click');
-    $rootScope.$digest();
+    $parentScope.$digest();
 
     expect($(document).find('#superFeaturesRelationsModal').eq(0).html())
       .to.have.string('typeA');
@@ -68,13 +68,13 @@ describe('Directive: superFeaturesRelationsModalOpener', function () {
   });
 
   it('should allow superfeature type selection with setRelationTypeChoice', function () {
-    $rootScope.superFeatureTypes = ['typeA', 'typeB', 'typeC', 'typeD'];
+    $parentScope.superFeatureTypes = ['typeA', 'typeB', 'typeC', 'typeD'];
     var element = digest(
         '<div super-features-relations-modal-opener modal-choices="superFeatureTypes"></div>'
     );
 
     element.trigger('click');
-    $rootScope.$digest();
+    $parentScope.$digest();
 
     var modalElement = $(document).find('#superFeaturesRelationsModal');
 
@@ -104,13 +104,13 @@ describe('Directive: superFeaturesRelationsModalOpener', function () {
   });
 
   it('should call modal-on-ok with new relation when okayed', function () {
-    $rootScope.modalOkayed = sandbox.stub();
+    $parentScope.modalOkayed = sandbox.stub();
     var newRelationType = 'typeA';
     var element = digest(
       '<div super-features-relations-modal-opener modal-on-ok="modalOkayed()"></div>'
     );
     element.trigger('click');
-    $rootScope.$digest();
+    $parentScope.$digest();
     var modal = $(document).find('#superFeaturesRelationsModal');
 
     modal.scope().modalRelationType = newRelationType;
@@ -118,22 +118,22 @@ describe('Directive: superFeaturesRelationsModalOpener', function () {
       .find('#superFeaturesRelationsModal button[ng-click="$close({ superfeatureType: modalRelationType, title: newTitle })"]')
       .trigger('click');
 
-    expect($rootScope.modalOkayed.called).to.equal(true);
+    expect($parentScope.modalOkayed.called).to.equal(true);
   });
 
   it('should call modal-on-cancel when canceled', function () {
-    $rootScope.modalCanceled = sandbox.stub();
+    $parentScope.modalCanceled = sandbox.stub();
     var element = digest(
       '<div super-features-relations-modal-opener modal-on-cancel="modalCanceled()"></div>'
     );
     element.trigger('click');
-    $rootScope.$digest();
+    $parentScope.$digest();
 
     $(document)
       .find('#superFeaturesRelationsModal button[ng-click="$dismiss()"]')
       .trigger('click');
 
-    expect($rootScope.modalCanceled.calledOnce).to.equal(true);
+    expect($parentScope.modalCanceled.calledOnce).to.equal(true);
   });
 
   it('should only allow one instance of modal to be opened', function () {

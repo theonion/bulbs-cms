@@ -4,10 +4,7 @@
 @import 'font-awesome/less/variables';
 
 .mixin-input-container () {
-
-  &:not(:last-of-type) {
-    margin-bottom: @interface-row-margin;
-  }
+  margin-bottom: @interface-row-margin;
 }
 
 .mixin-input (@width: 100%) {
@@ -81,6 +78,13 @@
       min-height: 100px;
     }
 
+    .editorPlaceholder {
+
+      p {
+        margin: 0;
+      }
+    }
+
     .embed-tools {
       margin: 0.5em 0;
     }
@@ -114,3 +118,20 @@
   font-weight: bold;
   margin-top: @interface-internal-spacing;
 }
+
+.input-container {
+  .mixin-input-container();
+
+  label:not(.autocomplete-basic-label) {
+    .mixin-input-label();
+  }
+
+  input:not(.autocomplete-basic-input) {
+    .mixin-input();
+  }
+
+  .input-container-onion-editor-wrapper {
+    .mixin-input-onion-editor-wrapper();
+  }
+}
+

@@ -1,0 +1,165 @@
+
+<div class="live-blog-responses-header">
+  <h5>Responses</h5>
+
+  <div class="live-blog-responses-header-meta-tools">
+    <button
+        ng-if="entryResponses.length > 0"
+        ng-click="collapseAll()"
+        class="btn-minimal">
+      <i class="fa fa-caret-square-o-down"></i>
+      <span>Collapse All</span>
+    </button>
+    <button
+        ng-if="entryResponses.length > 0"
+        ng-click="expandAll()"
+        class="btn-minimal">
+      <i class="fa fa-caret-square-o-up"></i>
+      <span>Expand All</span>
+    </button>
+  </div>
+
+  <div
+      ng-if="errorMessage"
+      class="live-blog-entries-list-error">
+    <i class="fa fa-exclamation-circle"></i>
+    <span>{{ errorMessage }}</span>
+    <button ng-click="clearError()">
+      <i class="fa fa-times"></i>
+    </button>
+  </div>
+
+  <div
+      ng-if="entryResponses.length < 1"
+      class="live-blog-responses-list-no-items">
+    No responses yet!
+  </div>
+</div>
+
+<ol ng-if="entryResponses.length > 0">
+  <li ng-repeat="entryResponse in entryResponses track by entryResponse.id">
+
+    <div class="accordion-list-item-meta">
+      <button
+          class="accordion-list-item-meta-label"
+          ng-click="togglePanel(entryResponse)">
+        <i
+            ng-class="{
+              'fa-caret-right': !isPanelOpen(entryResponse),
+              'fa-caret-down': isPanelOpen(entryResponse)
+            }"
+            class="fa">
+        </i>
+        <span ng-if="entryResponse.internalName">{{ entryResponse.internalName }}</span>
+        <span
+            class="accordion-list-item-meta-label-untitled"
+            ng-if="!entryResponse.internalName">
+          Untitled Response {{ $index + 1 }}
+        </span>
+      </button>
+
+      <div class="accordion-list-item-meta-tools">
+        <button
+            ng-click="saveEntryResponse(entryResponse)"
+            ng-disabled="isEntryResponseFormSaveDisabled(entryResponse)"
+            class="btn btn-success btn-xs">
+          <i class="fa fa-floppy-o"></i>
+          <span>Save</span>
+        </button>
+
+        <button
+            ng-click="publishAndSaveEntryResponse(entryResponse)"
+            ng-disabled="transactionsLocked()"
+            class="btn btn-primary btn-xs">
+          <i
+              ng-class="{
+                'fa-square-o': !entryResponse.published,
+                'fa-check-square-o': entryResponse.published
+              }"
+              class="fa">
+          </i>
+          <span>Is Visible</span>
+        </button>
+
+        <button
+            ng-click="copyEntryResponse(entry, entryResponse)"
+            ng-disabled="transactionsLocked()"
+            class="btn btn-primary btn-xs">
+          <i class="fa fa-files-o"></i>
+          <span>Copy</span>
+        </button>
+      </div>
+    </div>
+
+    <div
+        ng-show="isPanelOpen(entryResponse)"
+        class="accordion-list-item-content">
+
+      <div class="live-blog-entries-list-entry-created-by">
+        <span>
+          Created by {{ entryResponse.createdBy | userNameDisplay }} @ {{ entryResponse.created | dateTimeFormat }}.
+          Last Updated by {{ entryResponse.updatedBy | userNameDisplay }} @ {{ entryResponse.lastModified | dateTimeFormat }}.
+        </span>
+      </div>
+
+      <form name="{{ 'wrapperForm.' + makeEntryResponseFormName(entryResponse) }}">
+
+        <div class="input-container">
+          <live-blog-entries-author-bridge
+              ng-model="entryResponse.authors"
+              on-update="getEntryResponseForm(entryResponse).$setDirty()">
+          </live-blog-entries-author-bridge>
+        </div>
+
+        <div class="input-container">
+          <label for="entryResponseInternalName-{{ entryResponse.id }}">
+            <span>Response Name</span>
+            <span class="input-container-label-sub">Internal name, will not show on front end.</span>
+          </label>
+          <input
+              ng-model="entryResponse.internalName"
+              id="entryResponseInternalName-{{ entryResponse.id }}"
+              name="entryResponse-{{ entryResponse.id }}-internalName">
+        </div>
+
+        <div class="input-container">
+          <label>Copy</label>
+          <div class="input-container-onion-editor-wrapper">
+            <onion-editor
+                role="multiline"
+                ng-model="entryResponse.body">
+            </onion-editor>
+          </div>
+        </div>
+
+      </form>
+
+      <div class="accordion-list-item-meta">
+
+        <div class="accordion-list-item-meta-tools">
+
+          <button
+              ng-disabled="transactionsLocked()"
+              confirmation-modal-opener
+              modal-body="Are you sure you want to delete {{ entryResponse.internalName ? '\'' + entryResponse.internalName + '\'' : 'this entryResponse' }}?"
+              modal-title="Delete Response"
+              modal-ok-text="Delete"
+              modal-on-ok="deleteEntryResponse(entryResponse)"
+              class="btn btn-danger btn-sm">
+            <i class="fa fa-trash-o"></i>
+            <span>DELETE</span>
+          </button>
+        </div>
+      </div>
+   </div>
+  </li>
+</ol>
+
+<button
+    ng-click="addEntryResponse(entry)"
+    ng-disabled="transactionsLocked()"
+    class="btn btn-primary accordion-list-add-bottom">
+  <i class="fa fa-plus"></i>
+  <span>Add New Response</span>
+</button>
+

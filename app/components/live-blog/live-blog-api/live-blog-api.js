@@ -12,9 +12,17 @@ angular.module('bulbs.cms.liveBlog.api', [
 
       var liveBlogEndpoint = CmsConfig.buildApiUrlRoot.bind(null, 'liveblog');
       var liveBlogEntryEndpoint = liveBlogEndpoint.bind(null, 'entry');
+      var liveBlogEntryResponseEndpoint = function (entryId) {
+        return liveBlogEntryEndpoint.bind(null, entryId, 'responses');
+      };
 
-      var parsePayload = function (payload) {
-        var data = _.cloneDeep(payload);
+      var parseEntryPayload = function (payload) {
+        var data = _.chain(payload)
+          .cloneDeep()
+          .mapKeys(function (value, key) {
+            return Utils.toCamelCase(key);
+          })
+          .value();
 
         if (payload.published) {
           data.published = moment.tz(payload.published, CmsConfig.getTimezoneName());
@@ -31,10 +39,13 @@ angular.module('bulbs.cms.liveBlog.api', [
         return data;
       };
 
-      var cleanData = function (data) {
+      var cleanEntryData = function (data) {
         var payload = _.chain(data)
           .omit('published')
           .cloneDeep()
+          .mapKeys(function (value, key) {
+            return Utils.toSnakeCase(key);
+          })
           .value();
 
         if (data.published) {
@@ -52,39 +63,109 @@ angular.module('bulbs.cms.liveBlog.api', [
         return payload;
       };
 
+      var parseEntryResponsePayload = function (payload) {
+        var data = _.chain(payload)
+          .cloneDeep()
+          .mapValues(function (value, key) {
+
+            if (_.includes(['created', 'last_modified'], key)) {
+              return moment.tz(value, CmsConfig.getTimezoneName());
+            }
+
+            return value;
+          })
+          .mapKeys(function (value, key) {
+            return Utils.toCamelCase(key);
+          })
+          .value();
+
+        return data;
+      };
+
+      var cleanEntryResponseData = function (data) {
+        var payload = _.chain(data)
+          .mapValues(function (value) {
+
+            if (moment.isMoment(value)) {
+              return value.format();
+            }
+
+            return value;
+          })
+          .cloneDeep()
+          .mapKeys(function (value, key) {
+            return Utils.toSnakeCase(key);
+          })
+          .value();
+
+        return payload;
+      };
+
       return {
         createEntry: function (data) {
-          var payload = cleanData(data);
+          var payload = cleanEntryData(data);
           return $http.post(liveBlogEntryEndpoint('/'), payload)
             .then(function (response) {
-              return parsePayload(response.data);
+              return parseEntryPayload(response.data);
             });
         },
         updateEntry: function (entry) {
-          var payload = cleanData(entry);
+          var payload = cleanEntryData(entry);
           return $http.put(liveBlogEntryEndpoint(payload.id, '/'), payload)
             .then(function (response) {
-              return parsePayload(response.data);
+              return parseEntryPayload(response.data);
             });
         },
         deleteEntry: function (entry) {
           return $http.delete(liveBlogEntryEndpoint(entry.id, '/'));
         },
-        getEntries: function (id) {
+        getEntries: function (parentId) {
           var params;
-          if (id) {
-            params = Utils.param({ liveblog: id });
+          if (parentId) {
+            params = Utils.param({ liveblog: parentId });
           }
 
           return $http.get(liveBlogEntryEndpoint('/', params))
             .then(function (response) {
               return {
                 results: response.data.results.map(function (result) {
-                  return parsePayload(result);
+                  return parseEntryPayload(result);
                 })
               };
             });
+        },
+        createEntryResponse: function (entry, data) {
+          var payload = cleanEntryResponseData(data);
+
+          return $http.post(liveBlogEntryResponseEndpoint(entry.id)('/'), payload)
+            .then(function (response) {
+              return parseEntryResponsePayload(response.data);
+            });
+        },
+        updateEntryResponse: function (entryResponse) {
+          var payload = cleanEntryResponseData(entryResponse);
+
+          return $http.put(liveBlogEntryResponseEndpoint(entryResponse.entry)(entryResponse.id, '/'), payload)
+            .then(function (response) {
+              return parseEntryResponsePayload(response.data);
+            });
+        },
+        deleteEntryResponse: function (entryResponse) {
+
+          return $http.delete(liveBlogEntryResponseEndpoint(entryResponse.entry)(entryResponse.id, '/'));
+        },
+        getEntryResponses: function (entryId) {
+
+         return $http.get(liveBlogEntryResponseEndpoint(entryId)('/'))
+           .then(function (response) {
+             return {
+               results: response.data.results.map(function (result) {
+                 return parseEntryResponsePayload(result);
+               })
+             };
+           });
         }
       };
     }
   ]);
+

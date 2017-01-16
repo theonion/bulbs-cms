@@ -35,6 +35,51 @@ describe('Utils', function () {
     expect($injector.invoke(utils.$get)).to.eql(utils);
   });
 
+  context('camel and snake case conversion', function () {
+
+    it('should have a conversion from camel to snake', function () {
+
+      var snakeCaseString = postConfigUtils.toSnakeCase('myCamelCaseString');
+
+      expect(snakeCaseString).to.equal('my_camel_case_string');
+    });
+
+    it('should allow separator to be passed into camel to snake converter', function () {
+
+      var snakeCaseString = postConfigUtils.toSnakeCase('myCamelCaseString', '-');
+
+      expect(snakeCaseString).to.equal('my-camel-case-string');
+    });
+
+    it('should return undefined from camel to snake converter when not given a string', function () {
+
+      var snakeCaseString = postConfigUtils.toSnakeCase();
+
+      expect(snakeCaseString).to.equal(undefined);
+    });
+
+    it('should have a conversion from snake to camel', function () {
+
+      var camelCaseString = postConfigUtils.toCamelCase('my_snake_case_string');
+
+      expect(camelCaseString).to.equal('mySnakeCaseString');
+    });
+
+    it('should allow separator to be passed into snake to camel converter', function () {
+
+      var camelCaseString = postConfigUtils.toCamelCase('my-snake-case-string', '-');
+
+      expect(camelCaseString).to.equal('mySnakeCaseString');
+    });
+
+    it('should return undefined from snake to camel converter when not given a string', function () {
+
+      var camelCaseString = postConfigUtils.toCamelCase();
+
+      expect(camelCaseString).to.equal(undefined);
+    });
+  });
+
   context('locking', function () {
 
     it('should create a lock for use with different functions', function () {

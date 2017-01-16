@@ -2,7 +2,9 @@
   "name": "bulbs-cms",
   "version": "0.0.0",
   "dependencies": {
-    "ng-clip": "~0.2.6"
+    "lodash": "3.10.1",
+    "ng-clip": "~0.2.6",
+    "zeroclipboard": "~2.3.0"
   },
   "devDependencies": {
     "angular-bootstrap-datetimepicker": "~0.2.2",
@@ -19,7 +21,7 @@
     "angular": "~1.3.0",
     "angularfire": "~0.8.2",
     "bootstrap": "~3.1.1",
-    "bulbs-autocomplete": "~0.2.1",
+    "bulbs-autocomplete": "0.2.4",
     "es5-shim": "~2.1.0",
     "firebase-token-generator": "~1.1.3",
     "firebase": "1.0.21",
@@ -28,7 +30,6 @@
     "jquery": "~2.1.0",
     "json3": "~3.2.6",
     "Keypress": "~2.0.2",
-    "lodash": "~3.1.0",
     "moment-timezone": "~0.5.4",
     "moment": "~2.13.0",
     "onion-editor": "theonion/editor#1.0.4",
@@ -58,6 +59,7 @@
     "dist/styles/vendor.css"
   ],
   "resolutions": {
-    "lodash": "~3.1.0"
+    "lodash": "3.10.1",
+    "zeroclipboard": "~2.3.0"
   }
 }

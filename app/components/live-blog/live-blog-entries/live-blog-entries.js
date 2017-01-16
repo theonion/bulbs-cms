@@ -1,19 +1,21 @@
 'use strict';
 
 angular.module('bulbs.cms.liveBlog.entries', [
+  'OnionEditor',
+  'Raven',
   'bulbs.cms.currentUser',
   'bulbs.cms.dateTimeFilter',
   'bulbs.cms.dateTimeModal',
   'bulbs.cms.dateTimeModal',
   'bulbs.cms.liveBlog.api',
   'bulbs.cms.liveBlog.entries.authorBridge',
+  'bulbs.cms.liveBlog.responses',
   'bulbs.cms.recircChooser',
   'bulbs.cms.site.config',
+  'bulbs.cms.user.nameDisplayFilter',
   'bulbs.cms.utils',
   'confirmationModal',
-  'jquery',
-  'OnionEditor',
-  'Raven'
+  'jquery'
 ])
   .directive('liveBlogEntries', [
     '$', '$compile', '$q', 'CmsConfig', 'CurrentUserApi', 'LiveBlogApi', 'Raven', 'Utils',
@@ -98,11 +100,11 @@ angular.module('bulbs.cms.liveBlog.entries', [
 
                 return LiveBlogApi.createEntry({
                   liveblog: scope.article.id,
-                  created_by: user,
+                  createdBy: user,
                   created: now,
-                  updated_by: user,
+                  updatedBy: user,
                   updated: now,
-                  recirc_content: []
+                  recircContent: []
                 })
                   .then(function (entry) {
                     scope.entries.unshift(entry);
@@ -118,10 +120,10 @@ angular.module('bulbs.cms.liveBlog.entries', [
 
             return CurrentUserApi.getCurrentUserWithCache()
               .then(function (user) {
-                var oldUpdateBy = entry.updated_by;
+                var oldUpdateBy = entry.updatedBy;
                 var oldUpdated = entry.updated;
 
-                entry.updated_by = user;
+                entry.updatedBy = user;
                 entry.updated = moment();
 
                 return LiveBlogApi.updateEntry(entry)
@@ -129,7 +131,7 @@ angular.module('bulbs.cms.liveBlog.entries', [
                     scope.getEntryForm(entry).$setPristine();
                   })
                   .catch(function (response) {
-                    entry.updated_by = oldUpdateBy;
+                    entry.updatedBy = oldUpdateBy;
                     entry.updated = oldUpdated;
 
                     var message = 'An error occurred attempting to save ' + titleDisplay(entry) + '!';

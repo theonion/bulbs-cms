@@ -85,7 +85,13 @@
             }"
             class="fa">
         </i>
-        <span>{{ entry.headline }}</span>
+        <span>({{ entry.id }})</span>
+        <span ng-if="entry.headline">{{ entry.headline }}</span>
+        <span
+            class="accordion-list-item-meta-label-untitled"
+            ng-if="!entry.headline">
+          Untitled Entry {{ $index + 1 }}
+        </span>
       </button>
 
       <div class="accordion-list-item-meta-tools">
@@ -118,8 +124,8 @@
 
       <div class="live-blog-entries-list-entry-created-by">
         <span>
-          Created by {{ entry.created_by | userNameDisplay }} @ {{ entry.created | dateTimeFormat }}.
-          Last Updated by {{ entry.updated_by | userNameDisplay }} @ {{ entry.updated | dateTimeFormat }}.
+          Created by {{ entry.createdBy | userNameDisplay }} @ {{ entry.created | dateTimeFormat }}
+          Last Updated by {{ entry.updatedBy | userNameDisplay }} @ {{ entry.updated | dateTimeFormat }}
         </span>
       </div>
 
@@ -161,11 +167,12 @@
           </label>
           <recirc-chooser
               input-id="entryRecirc-{{ entry.id }}"
-              ng-model="entry.recirc_content">
+              ng-model="entry.recircContent">
           </recirc-chooser>
         </div>
       </form>
 
+      <live-blog-responses entry="entry"></live-blog-responses>
 
       <div class="accordion-list-item-meta">
 
