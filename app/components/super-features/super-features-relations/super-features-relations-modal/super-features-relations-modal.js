@@ -59,9 +59,10 @@ angular.module('bulbs.cms.superFeatures.relations.modal', [
           });
 
           var updateActiveChoiceElement = function(el) {
-            var oldEl = $('#superFeaturesRelationsModal').find('.active');
+            var parentEl = $(el).parent();
+            var oldEl = parentEl.siblings().filter('.active');
             oldEl.removeClass('active');
-            $(el).parent().addClass('active');
+            parentEl.addClass('active');
           };
 
         }
