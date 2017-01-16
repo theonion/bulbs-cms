@@ -64,13 +64,6 @@ angular.module('bulbs.cms.superFeatures.relations', [
           var orderingFormPrefix = 'orderingInputForm_';
 
           scope.wrapperForm = {};
-          scope.getSelectedChildType = function () {
-            try {
-              return scope.article.child_types[0]
-            } catch (err) {
-              reportError(err.message)
-            }
-          }
           scope.makeRelationFormName = function (relation) {
             return relationFormPrefix + relation.id;
           };
