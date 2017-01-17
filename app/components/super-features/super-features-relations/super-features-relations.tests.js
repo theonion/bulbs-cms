@@ -160,6 +160,13 @@ describe('Directive: superFeaturesRelations', function () {
       expect(modalById.find('li').length).to.equal(2);
     });
 
+    it('should not show the `Add New Page` button if no child_types provided.', function () {
+        $parentScope.article.child_types = [];
+        var element = digest(html);
+        var addButton = element.find('button[super-features-relations-modal-opener]').eq(0);
+        expect(addButton.length).to.equal(0);
+    });
+
     it('should access new superfeature relation type when clicked', function() {
         getSuperFeatureRelationsDeferred.resolve({ results: []});
         var element = digest(html);
@@ -192,7 +199,7 @@ describe('Directive: superFeaturesRelations', function () {
       });
 
     it('should show an error message if adding fails', function () {
-      $parentScope.article = { id: 1 };
+      $parentScope.article = { id: 1, child_types: ['typeA'] };
       getSuperFeatureRelationsDeferred.resolve({ results: [] });
       var element = digest(html);
       var addButton = element.find('button[modal-on-ok="addRelation(title, superfeatureType)"]').eq(0);
