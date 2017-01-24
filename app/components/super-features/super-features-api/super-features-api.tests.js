@@ -37,6 +37,7 @@ describe('Service: SuperFeaturesApi', function () {
     mockSuperFeature = {
       id: 1
     };
+
   });
 
   afterEach(function () {

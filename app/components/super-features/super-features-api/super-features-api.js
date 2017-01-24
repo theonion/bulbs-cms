@@ -2,6 +2,7 @@
 
 angular.module('bulbs.cms.superFeatures.api', [
   'bulbs.cms.dateTimeFilter',
+  'bulbs.cms.dynamicContent.api',
   'bulbs.cms.site.config',
   'bulbs.cms.utils',
   'lodash',

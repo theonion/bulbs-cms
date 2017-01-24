@@ -438,6 +438,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         default_child_type: 'GUIDE_TO_ANIMALZ_ENTRY',
         published: '2016-04-20T16:20:00Z',
         children_count: 3,
+        child_types: ['typeA', 'typeB'],
         data: {
           title: 'garbage'
         },

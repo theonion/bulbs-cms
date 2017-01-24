@@ -1,0 +1,42 @@
+<div id="superFeaturesRelationsModal">
+  <div class="modal-header">
+    <button
+        type="button"
+        class="close"
+        ng-click="$dismiss()">
+      <i class="fa fa-times"></i>
+    </button>
+    <h4 class="modal-relation-type">Add a child page</h4>
+  </div>
+  <div class="modal-body">
+    <onion-editor
+      ng-model="newTitle"
+      role="singleline"
+      placeholder="Enter a title..."
+      formatting="italic,bold">
+    </onion-editor>
+    <ul class="nav nav-pills nav-stacked superfeature-choices">
+      <li ng-repeat="choice in modalChoices track by $index">
+        <a
+          class="btn"
+          ng-click="setRelationTypeChoice($event, choice)">
+            {{ choice }}
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="modal-footer">
+    <button
+        class="btn btn-success"
+        ng-click="$close({ superfeatureType: modalRelationType, title: newTitle })">
+      <i class="fa fa-check"></i>
+      <span>Ok</span>
+    </button>
+    <button
+        class="btn btn-danger"
+        ng-click="$dismiss()">
+      <i class="fa fa-times"></i>
+      <span>Cancel</span>
+    </button>
+  </div>
+</div>
