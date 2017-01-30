@@ -964,6 +964,27 @@ describe('CmsConfig', function () {
           expect(window.BC_API_KEY).to.equal(key);
         });
       });
+
+      context('zencoder path', function () {
+
+        it('should provide a setter and getter', function () {
+          var path = '/zencoder/path';
+
+          configs.setZencoderUrl(path);
+
+          expect(sealedConfigs().buildZencoderUrl()).to.equal(path);
+        });
+
+        it('should provide a getter to build out a path', function () {
+          var path = '/zencoder/path';
+          var newPath = '/new'
+
+          configs.setZencoderUrl(path);
+
+          expect(sealedConfigs().buildZencoderUrl('new'))
+            .to.equal(path + newPath);
+        });
+      });
     });
   });
 });
