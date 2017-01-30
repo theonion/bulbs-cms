@@ -977,7 +977,7 @@ describe('CmsConfig', function () {
 
         it('should provide a getter to build out a path', function () {
           var path = '/zencoder/path';
-          var newPath = '/new'
+          var newPath = '/new';
 
           configs.setZencoderUrl(path);
 
