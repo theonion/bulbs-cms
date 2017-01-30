@@ -484,7 +484,7 @@ describe('Directive: superFeaturesRelations', function () {
     it('should prevent saving when updating publish dates', function () {
       $parentScope.article = {
         id: 1,
-        published: '2020-06-20T12:00:00Z'
+        published: '2020-06-20T12:00:00Z',
         child_types: ['A_CHILD_TYPE'],
       };
       var relations = [{ id: 2 }];
