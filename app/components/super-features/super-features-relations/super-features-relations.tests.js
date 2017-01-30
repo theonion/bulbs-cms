@@ -219,7 +219,8 @@ describe('Directive: superFeaturesRelations', function () {
     it('should allow setting all relation publish dates', function () {
       $parentScope.article = {
         id: 1,
-        published: '2020-06-20T12:00:00Z'
+        published: '2020-06-20T12:00:00Z',
+        child_types: ['A_CHILD_TYPE'],
       };
       var relations = [{ id: 2 }, { id: 3 }];
       getSuperFeatureRelationsDeferred.resolve({ results: relations });
@@ -238,7 +239,10 @@ describe('Directive: superFeaturesRelations', function () {
     });
 
     it('should disable publish date set button if parent has no publish date', function () {
-      $parentScope.article = { id: 1 };
+      $parentScope.article = {
+        id: 1,
+        child_types: ['A_CHILD_TYPE'],
+      };
       getSuperFeatureRelationsDeferred.resolve({ results: [{ id: 2 }] });
       var element = digest(html);
 
@@ -250,7 +254,8 @@ describe('Directive: superFeaturesRelations', function () {
      it('should disable publish date set button if some relation is not saved', function () {
       $parentScope.article = {
         id: 1,
-        published: '2020-06-20T12:00:00Z'
+        published: '2020-06-20T12:00:00Z',
+        child_types: ['A_CHILD_TYPE'],
       };
       var relations = [{ id: 2 }, { id: 3 }];
       getSuperFeatureRelationsDeferred.resolve({ results: relations });
@@ -262,7 +267,7 @@ describe('Directive: superFeaturesRelations', function () {
       expect(updateButton.attr('disabled')).to.equal('disabled');
     });
 
-    it('should hide publish date set button if there are no relations', function () {
+    it('should hide publish date set button if there are no child types', function () {
       $parentScope.article = {
         id: 1,
         published: '2020-06-20T12:00:00Z'
@@ -278,7 +283,8 @@ describe('Directive: superFeaturesRelations', function () {
     it('should show an error message if relation publish date update fails', function () {
       $parentScope.article = {
         id: 1,
-        published: '2020-06-20T12:00:00Z'
+        published: '2020-06-20T12:00:00Z',
+        child_types: ['A_CHILD_TYPE'],
       };
       getSuperFeatureRelationsDeferred.resolve({ results: [{ id: 2 }] });
       var element = digest(html);
@@ -296,7 +302,8 @@ describe('Directive: superFeaturesRelations', function () {
     it('should prevent multiple calls to publish date update', function () {
       $parentScope.article = {
         id: 1,
-        published: '2020-06-20T12:00:00Z'
+        published: '2020-06-20T12:00:00Z',
+        child_types: ['A_CHILD_TYPE'],
       };
       getSuperFeatureRelationsDeferred.resolve({ results: [{ id: 2 }] });
       var element = digest(html);
@@ -478,6 +485,7 @@ describe('Directive: superFeaturesRelations', function () {
       $parentScope.article = {
         id: 1,
         published: '2020-06-20T12:00:00Z'
+        child_types: ['A_CHILD_TYPE'],
       };
       var relations = [{ id: 2 }];
       getSuperFeatureRelationsDeferred.resolve({ results: relations });
@@ -494,7 +502,8 @@ describe('Directive: superFeaturesRelations', function () {
     it('should prevent deleting when updating publish dates', function () {
       $parentScope.article = {
         id: 1,
-        published: '2020-06-20T12:00:00Z'
+        published: '2020-06-20T12:00:00Z',
+        child_types: ['A_CHILD_TYPE'],
       };
       var relations = [{ id: 2 }];
       getSuperFeatureRelationsDeferred.resolve({ results: relations });
