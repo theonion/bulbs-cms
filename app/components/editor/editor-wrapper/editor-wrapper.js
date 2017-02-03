@@ -111,7 +111,7 @@ angular.module('bulbs.cms.editor.wrapper', [
               video: {
                 insertDialog: Zencoder.onVideoFileUpload,
                 editDialog: Zencoder.openVideoThumbnailModal,
-                videoEmbedUrl: CmsConfig.buildVideoUrl()
+                videoEmbedUrl: '//' + CmsConfig.buildVideoUrl()
               }
             };
           } else {
