@@ -320,7 +320,7 @@ angular.module('bulbs.cms.config', [
             buildInternalUrl: pathBuilder(internalUrl),
             buildSharedPath: pathBuilder(sharedPath),
             buildUnpublishedUrl: pathBuilder(Utils.path.join(internalUrl, unpublishedPath)),
-            buildVideoUrl: pathBuilder(Utils.path.join(externalUrl, videoPath)),
+            buildVideoUrl: pathBuilder(videoPath),
             buildVideoThumbnailUrl: pathBuilder(videoThumbnailUrl),
             buildZencoderUrl: pathBuilder(zencoderUrl),
             getAutoAddAuthor: _.constant(autoAddAuthor),
