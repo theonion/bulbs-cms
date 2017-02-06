@@ -75,6 +75,8 @@ angular.module('bulbs.cms.config', [
       var videoPath = '';
       // thumbnail for inline video uploads
       var videoThumbnailUrl = '';
+      // zencoder root path
+      var zencoderUrl = '/video/';
 
       this.addArticleEditoralStatus = function (label, value) {
         checkOrError(label, _.isString, 'article editoral status label must be a string!');
@@ -295,6 +297,14 @@ angular.module('bulbs.cms.config', [
         return this;
       };
 
+      this.setZencoderUrl = function (value) {
+        zencoderUrl = checkOrError(
+          value, _.isString,
+          'zencoder url must be a string!'
+        );
+        return this;
+      };
+
       this.$get = [
         function () {
           return {
@@ -310,8 +320,9 @@ angular.module('bulbs.cms.config', [
             buildInternalUrl: pathBuilder(internalUrl),
             buildSharedPath: pathBuilder(sharedPath),
             buildUnpublishedUrl: pathBuilder(Utils.path.join(internalUrl, unpublishedPath)),
-            buildVideoUrl: pathBuilder(Utils.path.join(externalUrl, videoPath)),
+            buildVideoUrl: pathBuilder(videoPath),
             buildVideoThumbnailUrl: pathBuilder(videoThumbnailUrl),
+            buildZencoderUrl: pathBuilder(zencoderUrl),
             getAutoAddAuthor: _.constant(autoAddAuthor),
             getCmsName: _.constant(cmsName),
             getDateTimeFormatHumanReadable: _.constant(dateTimeFormatHumanReadable),

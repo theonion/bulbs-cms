@@ -627,11 +627,6 @@ describe('CmsConfig', function () {
       });
 
       context('video path', function () {
-        var externalUrl = 'www.my.site';
-
-        beforeEach(function () {
-          configs.setExternalUrl(externalUrl);
-        });
 
         it('should provide a setter and getter', function () {
           var path = '/videos/embed';
@@ -639,7 +634,7 @@ describe('CmsConfig', function () {
           configs.setVideoPath(path);
 
           expect(sealedConfigs().buildVideoUrl())
-            .to.equal(externalUrl + path);
+            .to.equal(path);
         });
 
         it('should provide a getter to build out a path', function () {
@@ -649,7 +644,7 @@ describe('CmsConfig', function () {
           configs.setVideoPath(path);
 
           expect(sealedConfigs().buildVideoUrl(someId))
-            .to.equal(externalUrl + path + someId);
+            .to.equal(path + someId);
         });
 
         it('should throw an error if the given value is not a string', function () {
@@ -962,6 +957,27 @@ describe('CmsConfig', function () {
           configs.setImageApiKey(key);
 
           expect(window.BC_API_KEY).to.equal(key);
+        });
+      });
+
+      context('zencoder path', function () {
+
+        it('should provide a setter and getter', function () {
+          var path = '/zencoder/path';
+
+          configs.setZencoderUrl(path);
+
+          expect(sealedConfigs().buildZencoderUrl()).to.equal(path);
+        });
+
+        it('should provide a getter to build out a path', function () {
+          var path = '/zencoder/path';
+          var newPath = '/new';
+
+          configs.setZencoderUrl(path);
+
+          expect(sealedConfigs().buildZencoderUrl('new'))
+            .to.equal(path + newPath);
         });
       });
     });
