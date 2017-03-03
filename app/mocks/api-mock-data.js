@@ -464,11 +464,12 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         recirc_query: {}
       }, {
         id: 16,
-        title: 'Live Blog #1',
-        slug: 'live-blog-1',
+        number_of_entries_before_more: 15,
         pinned_content: [],
         polymorphic_ctype: 'mock_live_blog',
         recirc_query: {},
+        slug: 'live-blog-1',
+        title: 'Live Blog #1',
       }, {
         id: 100,
         title: 'Guide to Catz',
