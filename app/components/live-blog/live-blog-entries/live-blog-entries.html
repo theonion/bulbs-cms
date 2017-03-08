@@ -54,6 +54,14 @@
     </button>
   </div>
 
+  <div class="input-container">
+    <label for="liveBlogEntriesBeforeMore">Entries to Display Before "Show More"</label>
+    <input
+        ng-model="article.number_of_entries_before_more"
+        id="liveBlogEntriesBeforeMore"
+        type="number">
+  </div>
+
   <div
       ng-if="errorMessage"
       class="live-blog-entries-list-error">
