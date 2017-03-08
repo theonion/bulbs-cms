@@ -6,7 +6,6 @@ describe('Directive: wordCount', function () {
   var $interval;
   var $parentScope;
   var testContainer;
-  var digest;
   var element;
   var sandbox;
 
