@@ -17,6 +17,7 @@ angular.module('bulbsCmsApp', [
   'bulbs.cms.site.config',
 
   'bulbs.cms.superFeatures',
+  'bulbs.cms.wordCount',
 
   // TODO : these dependencies need to be reorganized, localized
   'bulbs.cms.currentUser',
