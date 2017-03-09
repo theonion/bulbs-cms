@@ -102,7 +102,6 @@ angular.module('bulbs.cms.editor.wrapper', [
                 // Sean, you can figure out a nicer way to handle the search handler.
                 searchHandler: window[attrs.linkSearchHandler] || false
               },
-              statsContainer: '.wordcount',
               inlineObjects: attrs.inlineObjects || CmsConfig.getInlineObjecsPath(),
               image: {
                 insertDialog: BettyCropper.upload,
