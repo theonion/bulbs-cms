@@ -128,8 +128,13 @@
     .mixin-input-label();
   }
 
-  input:not(.autocomplete-basic-input) {
+  input:not(.autocomplete-basic-input):not([type="checkbox"]) {
     .mixin-input();
+  }
+
+  input[type="checkbox"] {
+    cursor: pointer;
+    display: block;
   }
 
   .input-container-onion-editor-wrapper {

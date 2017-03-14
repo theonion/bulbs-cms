@@ -598,6 +598,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         last_name: 'Zweibel',
       },
       authors: [],
+      hideAuthors: true,
       recirc_content: [],
       responses: [1, 2, 3]
     }, {

@@ -147,6 +147,17 @@
         </div>
 
         <div class="input-container">
+          <label>
+            <span>Hide Authors</span>
+            <input
+                ng-model="entry.hideAuthors"
+                id="entryHideAuthors-{{ entry.id }}"
+                name="entry-{{ entry.id }}-hide-authors"
+                type="checkbox">
+          </label>
+        </div>
+
+        <div class="input-container">
           <label
               for="entryHeadline-{{ entry.id }}">
             Headline
