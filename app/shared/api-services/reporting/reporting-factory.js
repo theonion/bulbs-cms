@@ -64,5 +64,7 @@ angular.module('apiServices.reporting.factory', [
           }
         ]
       },
+
+      flat_rate: { init: { rate: 0 } },
     });
   });
