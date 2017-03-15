@@ -468,6 +468,7 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         pinned_content: [],
         polymorphic_ctype: 'mock_live_blog',
         recirc_query: {},
+        hideEntryAuthors: true,
         slug: 'live-blog-1',
         title: 'Live Blog #1',
       }, {
@@ -598,7 +599,6 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         last_name: 'Zweibel',
       },
       authors: [],
-      hideAuthors: true,
       recirc_content: [],
       responses: [1, 2, 3]
     }, {

@@ -54,12 +54,26 @@
     </button>
   </div>
 
-  <div class="input-container">
-    <label for="liveBlogEntriesBeforeMore">Entries to Display Before "Show More"</label>
-    <input
-        ng-model="article.number_of_entries_before_more"
-        id="liveBlogEntriesBeforeMore"
-        type="number">
+  <div class="live-blog-entries-options well">
+    <h5>Options</h5>
+
+    <div class="input-container">
+      <label for="liveBlogEntriesBeforeMore">Entries to Display Before "Show More"</label>
+      <input
+          ng-model="article.number_of_entries_before_more"
+          id="liveBlogEntriesBeforeMore"
+          type="number">
+    </div>
+
+    <div class="input-container">
+      <label>
+        <span>Hide Entry Authors</span>
+        <input
+            ng-model="article.hideEntryAuthors"
+            id="liveBlogHideEntryAuthors"
+            type="checkbox">
+      </label>
+    </div>
   </div>
 
   <div
@@ -144,17 +158,6 @@
               ng-model="entry.authors"
               on-update="getEntryForm(entry).$setDirty()">
           </live-blog-entries-author-bridge>
-        </div>
-
-        <div class="input-container">
-          <label>
-            <span>Hide Authors</span>
-            <input
-                ng-model="entry.hideAuthors"
-                id="entryHideAuthors-{{ entry.id }}"
-                name="entry-{{ entry.id }}-hide-authors"
-                type="checkbox">
-          </label>
         </div>
 
         <div class="input-container">
