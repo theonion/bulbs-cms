@@ -135,6 +135,10 @@
   input[type="checkbox"] {
     cursor: pointer;
     display: block;
+
+    &:disabled {
+      cursor: not-allowed;
+    }
   }
 
   .input-container-onion-editor-wrapper {

@@ -68,7 +68,7 @@
     <div class="input-container">
       <label>
         <span>Hide Entry Authors</span>
-        <span class="input-container-label-sub">Property logo and name will show up in place of author avatars and names.</span>
+        <span class="input-container-label-sub">Don't show any author info on entries.</span>
         <input
             ng-model="article.hideEntryAuthors"
             id="liveBlogHideEntryAuthors"
@@ -79,9 +79,10 @@
     <div class="input-container">
       <label>
         <span>Don't Link To Author Pages</span>
-        <span class="input-container-label-sub">Don't link to author's content list page.</span>
+        <span class="input-container-label-sub">Don't link to entry author content list page. Note: this is disabled when "Hide Entry Authors" is active since that hides authors.</span>
         <input
             ng-model="article.noEntryAuthorLinks"
+            ng-disabled="article.hideEntryAuthors"
             id="liveBlogHideEntryAuthors"
             type="checkbox">
       </label>
