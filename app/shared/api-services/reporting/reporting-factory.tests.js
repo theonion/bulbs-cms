@@ -6,6 +6,8 @@ describe('Role Factory', function() {
 
   var Role;
 
+  var featureTypeRatesPayload;
+  var featureTypeRatesUrl;
   var mockRolePayload;
   var role;
   var roleUrl;
@@ -24,6 +26,18 @@ describe('Role Factory', function() {
         name: 'flat rate role',
         payment_type: 'Flat Rate',
         rate: 125
+      }
+
+      featureTypeRatesUrl = '/cms/api/v1/contributions/role/' + mockRolePayload.id + '/feature_type_rates/?page=1'
+      featureTypeRatesPayload = {
+        count: 1,
+        next: null,
+        previous: null,
+        results: [{
+          id: 1,
+          rate: 0,
+          feature_type: 'Any Feature Type',
+        }]
       }
     }));
 
@@ -53,6 +67,23 @@ describe('Role Factory', function() {
 
         role.hourly_rate.rate = 10;
         expect(role.$dirty('hourly_rate.rate')).to.be.true;
+      });
+
+      it('is dirty when feature_type_rates are updated.', function () {
+        mockRolePayload.payment_type = 'FeatureType';
+        $httpBackend.expectGET(roleUrl + mockRolePayload.id + '/').respond(200, mockRolePayload);
+        role = Role.$find(mockRolePayload.id);
+        $httpBackend.flush();
+
+        $httpBackend.expectGET(featureTypeRatesUrl).respond(200, featureTypeRatesPayload);
+        role.feature_type_rates.$fetch()
+        $httpBackend.flush();
+
+        expect(role.feature_type_rates[0].rate).to.equal(0);
+        expect(role.feature_type_rates[0].$dirty('rate')).to.be.false;
+
+        role.feature_type_rates[0].rate = 10;
+        expect(role.feature_type_rates[0].$dirty('rate')).to.be.true;
       });
 
   });
