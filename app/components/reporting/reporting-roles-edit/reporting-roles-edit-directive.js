@@ -65,12 +65,12 @@ angular.module('roles.edit.directive', [
         $scope.getDirtyRates = function () {
           var dirty = [];
           // // Validate if flat_rate is dirty
-          if ($scope.model.hasOwnProperty('flat_rate') && !_.isEmpty($scope.model.flat_rate.$dirty())) {
+          if ($scope.model.hasOwnProperty('flat_rate') && !_.isEmpty($scope.model.$dirty())) {
             dirty.push($scope.model.flat_rate);
           }
 
           // Validate if hourly_rate is dirty
-          if ($scope.model.hasOwnProperty('hourly_rate') && !_.isEmpty($scope.model.hourly_rate.$dirty())) {
+          if ($scope.model.hasOwnProperty('hourly_rate') && !_.isEmpty($scope.model.$dirty())) {
               dirty.push($scope.model.hourly_rate);
           }
 
