@@ -28,15 +28,31 @@ describe('Role Factory', function() {
     }));
 
   describe('updateRole()', function () {
+
       it('is dirty when flat_rate.rate is updated.', function () {
+        mockRolePayload.payment_type = 'Flat Rate';
         $httpBackend.expectGET(roleUrl + mockRolePayload.id + '/').respond(200, mockRolePayload);
         role = Role.$find(mockRolePayload.id);
         $httpBackend.flush();
+
         expect(role.flat_rate.rate).to.equal(0);
         expect(role.$dirty('flat_rate.rate')).to.be.false;
 
         role.flat_rate.rate = 10;
         expect(role.$dirty('flat_rate.rate')).to.be.true;
+      });
+
+      it('is dirty when hourly.rate is updated.', function () {
+        mockRolePayload.payment_type = 'Hourly';
+        $httpBackend.expectGET(roleUrl + mockRolePayload.id + '/').respond(200, mockRolePayload);
+        role = Role.$find(mockRolePayload.id);
+        $httpBackend.flush();
+
+        expect(role.hourly_rate.rate).to.equal(0);
+        expect(role.$dirty('hourly_rate.rate')).to.be.false;
+
+        role.hourly_rate.rate = 10;
+        expect(role.$dirty('hourly_rate.rate')).to.be.true;
       });
 
   });
