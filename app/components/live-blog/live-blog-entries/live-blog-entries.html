@@ -68,9 +68,43 @@
     <div class="input-container">
       <label>
         <span>Hide Entry Authors</span>
+        <span class="input-container-label-sub">Property logo and name will show up in place of author avatars and names.</span>
         <input
             ng-model="article.hideEntryAuthors"
             id="liveBlogHideEntryAuthors"
+            type="checkbox">
+      </label>
+    </div>
+
+    <div class="input-container">
+      <label>
+        <span>Don't Link To Author Pages</span>
+        <span class="input-container-label-sub">Don't link to author's content list page.</span>
+        <input
+            ng-model="article.noEntryAuthorLinks"
+            id="liveBlogHideEntryAuthors"
+            type="checkbox">
+      </label>
+    </div>
+
+    <div class="input-container">
+      <label>
+        <span>Hide Entry Publish Dates</span>
+        <span class="input-container-label-sub">Don't show publish date on entries.</span>
+        <input
+            ng-model="article.hideEntryDates"
+            id="liveBlogHideEntryDates"
+            type="checkbox">
+      </label>
+    </div>
+
+    <div class="input-container">
+      <label>
+        <span>Hide Entry Publish Times</span>
+        <span class="input-container-label-sub">Don't show publish time on entries.</span>
+        <input
+            ng-model="article.hideEntryTimes"
+            id="liveBlogHideEntryTimes"
             type="checkbox">
       </label>
     </div>
