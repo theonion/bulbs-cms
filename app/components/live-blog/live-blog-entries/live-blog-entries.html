@@ -54,12 +54,60 @@
     </button>
   </div>
 
-  <div class="input-container">
-    <label for="liveBlogEntriesBeforeMore">Entries to Display Before "Show More"</label>
-    <input
-        ng-model="article.number_of_entries_before_more"
-        id="liveBlogEntriesBeforeMore"
-        type="number">
+  <div class="live-blog-entries-options well">
+    <h5>Options</h5>
+
+    <div class="input-container">
+      <label for="liveBlogEntriesBeforeMore">Entries to Display Before "Show More"</label>
+      <input
+          ng-model="article.number_of_entries_before_more"
+          id="liveBlogEntriesBeforeMore"
+          type="number">
+    </div>
+
+    <div class="input-container">
+      <label>
+        <span>Hide Entry Authors</span>
+        <span class="input-container-label-sub">Don't show any author info on entries.</span>
+        <input
+            ng-model="article.hide_entry_authors"
+            id="liveBlogHideEntryAuthors"
+            type="checkbox">
+      </label>
+    </div>
+
+    <div class="input-container">
+      <label>
+        <span>Don't Link To Author Pages</span>
+        <span class="input-container-label-sub">Don't link to entry author content list page. Note: this is disabled when "Hide Entry Authors" is active since that hides authors.</span>
+        <input
+            ng-model="article.no_entry_author_links"
+            id="liveBlogHideEntryAuthors"
+            type="checkbox">
+      </label>
+    </div>
+
+    <div class="input-container">
+      <label>
+        <span>Hide Entry Publish Dates</span>
+        <span class="input-container-label-sub">Don't show publish date on entries.</span>
+        <input
+            ng-model="article.hide_entry_dates"
+            id="liveBlogHideEntryDates"
+            type="checkbox">
+      </label>
+    </div>
+
+    <div class="input-container">
+      <label>
+        <span>Hide Entry Publish Times</span>
+        <span class="input-container-label-sub">Don't show publish time on entries.</span>
+        <input
+            ng-model="article.hide_entry_times"
+            id="liveBlogHideEntryTimes"
+            type="checkbox">
+      </label>
+    </div>
   </div>
 
   <div

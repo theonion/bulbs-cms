@@ -468,6 +468,10 @@ angular.module('bulbsCmsApp.mockApi.data', [])
         pinned_content: [],
         polymorphic_ctype: 'mock_live_blog',
         recirc_query: {},
+        hide_entry_authors: true,
+        no_entry_author_links: true,
+        hide_entry_dates: true,
+        hide_entry_times: true,
         slug: 'live-blog-1',
         title: 'Live Blog #1',
       }, {
