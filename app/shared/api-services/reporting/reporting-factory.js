@@ -16,7 +16,7 @@ angular.module('apiServices.reporting.factory', [
             if (this.length > 0) {
               this.$owner.flat_rate = this[0];
             } else {
-              this.$owner.flat_rate = this.$owner.flat_rates.$create({ rate: 0 });
+              this.$owner.flat_rate = this.$owner.flat_rates.$create({ rate: this.$owner.flat_rate.rate });
             }
           }
         }
@@ -30,7 +30,7 @@ angular.module('apiServices.reporting.factory', [
             if (this.length > 0) {
               this.$owner.hourly_rate = this[0];
             } else {
-              this.$owner.hourly_rate = this.$owner.hourly_rates.$create({ rate: 0 });
+              this.$owner.hourly_rate = this.$owner.hourly_rates.$create({ rate: this.$owner.hourly_rate.rate });
             }
           }
         }
