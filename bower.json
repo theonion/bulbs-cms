@@ -30,7 +30,7 @@
     "jquery": "~2.1.0",
     "json3": "~3.2.6",
     "Keypress": "~2.0.2",
-    "moment-timezone": "~0.5.4",
+    "moment-timezone": "~0.5.13",
     "moment": "~2.13.0",
     "onion-editor": "theonion/editor#1.0.4",
     "pnotify": "~2.0.0",
@@ -61,10 +61,5 @@
   "resolutions": {
     "lodash": "3.10.1",
     "zeroclipboard": "~2.3.0"
-  },
-  "overrides": {
-    "moment-timezone": {
-      "main": "builds/moment-timezone-with-data-2012-2022.js"
-    }
   }
 }
