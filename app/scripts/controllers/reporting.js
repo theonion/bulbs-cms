@@ -74,6 +74,7 @@ angular.module('bulbsCmsApp')
         downloadURL: '/cms/api/v1/contributions/contentreporting/',
       }
     };
+    
     $scope.items = [];
     $scope.headings = [];
     $scope.orderOptions = [];
