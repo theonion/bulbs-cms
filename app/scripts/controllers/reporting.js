@@ -72,17 +72,6 @@ angular.module('bulbsCmsApp')
         ],
         orderOptions: [],
         downloadURL: '/cms/api/v1/contributions/contentreporting/',
-      },
-      'Freelance Pay': {
-        service: FreelancePayReportingService,
-        headings: [
-          {'title': 'Contributor', 'expression': 'contributor.full_name'},
-          {'title': 'Contribution #', 'expression': 'contributions_count'},
-          {'title': 'Pay', 'expression': 'pay'},
-          {'title': 'Payment Date', 'expression': 'payment_date | date: \'MM/dd/yyyy\''}
-        ],
-        orderOptions: [],
-        downloadURL: '/cms/api/v1/contributions/freelancereporting/'
       }
     };
     $scope.items = [];
